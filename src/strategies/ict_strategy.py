@@ -58,8 +58,8 @@ class ICTStrategy:
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
             
-            # 如果 1h 和 15m 都是 neutral，跳过（至少要有一个明确趋势）
-            if h1_trend == "neutral" and m15_trend == "neutral":
+            # 如果 1h 和 15m 都是 neutral，跳过（至少要有一个明確趨勢）
+            if h1_trend.lower() == "neutral" and m15_trend.lower() == "neutral":
                 logger.debug(f"{symbol}: 拒絕 - 1h 和 15m 都是 neutral")
                 return None
             
@@ -186,10 +186,18 @@ class ICTStrategy:
         ema_fast = calculate_ema(df['close'], self.config.EMA_FAST)
         ema_slow = calculate_ema(df['close'], self.config.EMA_SLOW)
         
-        # 放寬容忍度從 ±0.5% 到 ±0.2%，提高趨勢識別率
-        if ema_fast.iloc[-1] > ema_slow.iloc[-1] * 1.002:
+        current_price = float(df['close'].iloc[-1])
+        
+        # 檢查價格是否在 EMA 之上/之下（更實用的趨勢判斷）
+        price_above_fast = current_price > ema_fast.iloc[-1]
+        price_above_slow = current_price > ema_slow.iloc[-1]
+        fast_above_slow = ema_fast.iloc[-1] > ema_slow.iloc[-1]
+        
+        # 看漲：價格在兩條 EMA 之上，且快線在慢線之上
+        if price_above_fast and price_above_slow and fast_above_slow:
             return "bullish"
-        elif ema_fast.iloc[-1] < ema_slow.iloc[-1] * 0.998:
+        # 看跌：價格在兩條 EMA 之下，且快線在慢線之下
+        elif not price_above_fast and not price_above_slow and not fast_above_slow:
             return "bearish"
         else:
             return "neutral"
@@ -283,28 +291,34 @@ class ICTStrategy:
         
         策略：1h 和 15m 趨勢一致即可（5m 用於找入場點，不要求完全一致）
         """
-        # 优先级1: 三个时间框架完全一致（最高置信度）
-        if h1_trend == m15_trend == m5_trend == "bullish":
-            if market_structure in ["bullish", "neutral"]:
+        # 統一轉換為小寫進行比較
+        h1_trend_lower = h1_trend.lower()
+        m15_trend_lower = m15_trend.lower()
+        m5_trend_lower = m5_trend.lower()
+        market_structure_lower = market_structure.lower()
+        
+        # 优先级1: 三个时間框架完全一致（最高置信度）
+        if h1_trend_lower == m15_trend_lower == m5_trend_lower == "bullish":
+            if market_structure_lower in ["bullish", "neutral"]:
                 return "LONG"
-        elif h1_trend == m15_trend == m5_trend == "bearish":
-            if market_structure in ["bearish", "neutral"]:
+        elif h1_trend_lower == m15_trend_lower == m5_trend_lower == "bearish":
+            if market_structure_lower in ["bearish", "neutral"]:
                 return "SHORT"
         
-        # 优先级2: 1h 和 15m 一致（5m 可以不同，用于精准入场）
-        if h1_trend == m15_trend == "bullish":
-            if market_structure in ["bullish", "neutral"]:
+        # 优先级2: 1h 和 15m 一致（5m 可以不同，用于精準入場）
+        if h1_trend_lower == m15_trend_lower == "bullish":
+            if market_structure_lower in ["bullish", "neutral"]:
                 return "LONG"
-        elif h1_trend == m15_trend == "bearish":
-            if market_structure in ["bearish", "neutral"]:
+        elif h1_trend_lower == m15_trend_lower == "bearish":
+            if market_structure_lower in ["bearish", "neutral"]:
                 return "SHORT"
         
-        # 优先级3: 1h 有明确趋势，15m 是 neutral（等待 15m 确认）
-        if h1_trend == "bullish" and m15_trend == "neutral":
-            if m5_trend == "bullish" and market_structure == "bullish":
+        # 优先级3: 1h 有明确趨勢，15m 是 neutral（等待 15m 確認）
+        if h1_trend_lower == "bullish" and m15_trend_lower == "neutral":
+            if m5_trend_lower == "bullish" and market_structure_lower == "bullish":
                 return "LONG"
-        elif h1_trend == "bearish" and m15_trend == "neutral":
-            if m5_trend == "bearish" and market_structure == "bearish":
+        elif h1_trend_lower == "bearish" and m15_trend_lower == "neutral":
+            if m5_trend_lower == "bearish" and market_structure_lower == "bearish":
                 return "SHORT"
         
         return None
@@ -356,12 +370,16 @@ class ICTStrategy:
         trend_score = trend_alignment_count / 3.0
         scores['trend_alignment'] = trend_score
         
+        # 統一轉換為小寫
+        ms_lower = market_structure.lower()
+        h1_lower = h1_trend.lower()
+        
         structure_score = 0.0
-        if market_structure == "bullish" and h1_trend == "bullish":
+        if ms_lower == "bullish" and h1_lower == "bullish":
             structure_score = 1.0
-        elif market_structure == "bearish" and h1_trend == "bearish":
+        elif ms_lower == "bearish" and h1_lower == "bearish":
             structure_score = 1.0
-        elif market_structure == "neutral" or (market_structure != h1_trend and h1_trend != "neutral"):
+        elif ms_lower == "neutral" or (ms_lower != h1_lower and h1_lower != "neutral"):
             structure_score = 0.5
         scores['market_structure'] = structure_score
         
@@ -423,12 +441,12 @@ class ICTStrategy:
             macd_bullish = macd_val > signal_val
             macd_bearish = macd_val < signal_val
             
-            if h1_trend == "bullish":
+            if h1_trend.lower() == "bullish":
                 if rsi_bullish and macd_bullish:
                     momentum_score = 1.0
                 elif rsi_bullish or macd_bullish:
                     momentum_score = 0.6
-            elif h1_trend == "bearish":
+            elif h1_trend.lower() == "bearish":
                 if rsi_bearish and macd_bearish:
                     momentum_score = 1.0
                 elif rsi_bearish or macd_bearish:
