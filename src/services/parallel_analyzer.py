@@ -40,7 +40,7 @@ class ParallelAnalyzer:
         data_service
     ) -> List[Dict]:
         """
-        批量並行分析多個交易對
+        批量並行分析多個交易對（優化支持全部 648 個幣種）
         
         Args:
             symbols_data: 交易對列表
@@ -50,12 +50,26 @@ class ParallelAnalyzer:
             List[Dict]: 生成的交易信號列表
         """
         try:
-            # 分批處理以優化內存使用
-            batch_size = self.max_workers * 2  # 每批處理 64 個
-            signals = []
+            total_symbols = len(symbols_data)
+            logger.info(f"開始批量分析 {total_symbols} 個交易對")
             
-            for i in range(0, len(symbols_data), batch_size):
+            # 動態調整批次大小（優化 API 調用和內存使用）
+            # 對於全部 648 個幣種，使用更大的批次以提高效率
+            if total_symbols > 300:
+                batch_size = self.max_workers * 4  # 128 個/批次（適合 648 個幣種）
+            else:
+                batch_size = self.max_workers * 2  # 64 個/批次
+            
+            signals = []
+            total_batches = (total_symbols + batch_size - 1) // batch_size
+            
+            logger.info(f"批次配置: {batch_size} 個/批次, 共 {total_batches} 批次")
+            
+            for batch_idx in range(total_batches):
+                i = batch_idx * batch_size
                 batch = symbols_data[i:i + batch_size]
+                
+                logger.info(f"處理批次 {batch_idx + 1}/{total_batches} ({len(batch)} 個交易對)")
                 
                 # 並行獲取多時間框架數據
                 tasks = [
@@ -69,6 +83,7 @@ class ParallelAnalyzer:
                 analysis_tasks = []
                 for j, multi_tf_data in enumerate(multi_tf_data_list):
                     if isinstance(multi_tf_data, Exception):
+                        logger.debug(f"跳過 {batch[j]['symbol']}: 數據獲取失敗")
                         continue
                     
                     symbol = batch[j]['symbol']
@@ -79,19 +94,27 @@ class ParallelAnalyzer:
                 batch_signals = await asyncio.gather(*analysis_tasks, return_exceptions=True)
                 
                 # 收集有效信號
+                batch_signal_count = 0
                 for signal in batch_signals:
                     if signal and not isinstance(signal, Exception):
                         signals.append(signal)
+                        batch_signal_count += 1
                 
-                # 日志進度
-                if (i + batch_size) % (batch_size * 5) == 0:
-                    logger.info(f"分析進度: {min(i + batch_size, len(symbols_data))}/{len(symbols_data)}")
+                logger.info(
+                    f"批次 {batch_idx + 1} 完成: "
+                    f"生成 {batch_signal_count} 個信號, "
+                    f"累計 {len(signals)} 個"
+                )
+                
+                # 小延遲避免過載（僅在大量交易對時）
+                if total_symbols > 300 and batch_idx < total_batches - 1:
+                    await asyncio.sleep(0.1)
             
-            logger.info(f"批量分析完成: {len(signals)} 個信號")
+            logger.info(f"✅ 批量分析完成: 分析 {total_symbols} 個交易對, 生成 {len(signals)} 個信號")
             return signals
             
         except Exception as e:
-            logger.error(f"批量分析失敗: {e}")
+            logger.error(f"批量分析失敗: {e}", exc_info=True)
             return []
     
     async def _analyze_symbol(self, symbol: str, multi_tf_data: Dict) -> Dict:

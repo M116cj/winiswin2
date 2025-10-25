@@ -11,8 +11,14 @@ class Config:
     """系統配置管理類"""
     
     # Binance API 配置
+    # 主 API（數據收集）
     BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
     BINANCE_API_SECRET: str = os.getenv("BINANCE_API_SECRET", "")
+    
+    # 可選：交易專用 API（避免訂單限制影響數據收集）
+    BINANCE_TRADING_API_KEY: str = os.getenv("BINANCE_TRADING_API_KEY", "") or BINANCE_API_KEY
+    BINANCE_TRADING_API_SECRET: str = os.getenv("BINANCE_TRADING_API_SECRET", "") or BINANCE_API_SECRET
+    
     BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
     
     # Discord 配置
@@ -36,6 +42,11 @@ class Config:
     MIN_CONFIDENCE: float = 0.70
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
+    
+    # 掃描配置
+    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "300"))  # 掃描間隔（秒）
+    ANALYZE_ALL_SYMBOLS: bool = os.getenv("ANALYZE_ALL_SYMBOLS", "true").lower() == "true"  # 是否分析所有幣種
+    MAX_ANALYZE_SYMBOLS: int = int(os.getenv("MAX_ANALYZE_SYMBOLS", "0"))  # 0 = 全部
     
     # 技術指標配置
     EMA_FAST: int = 50
@@ -73,7 +84,8 @@ class Config:
     }
     
     # API 限流配置
-    RATE_LIMIT_REQUESTS: int = 1200
+    # 使用 80% 官方限額（2400 * 0.8 = 1920）留 20% 安全邊際
+    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "1920"))
     RATE_LIMIT_PERIOD: int = 60
     
     # 緩存配置
