@@ -125,21 +125,31 @@ class Config:
             tuple[bool, list[str]]: (是否有效, 錯誤消息列表)
         """
         errors = []
+        warnings = []
         
+        # 必需的配置
         if not cls.BINANCE_API_KEY:
             errors.append("缺少 BINANCE_API_KEY 環境變量")
         
         if not cls.BINANCE_API_SECRET:
             errors.append("缺少 BINANCE_API_SECRET 環境變量")
         
+        # 可選的配置（僅警告）
         if not cls.DISCORD_TOKEN:
-            errors.append("缺少 DISCORD_TOKEN 環境變量（通知系統需要）")
+            warnings.append("未設置 DISCORD_TOKEN - Discord 通知將被禁用")
         
         if cls.MAX_POSITIONS < 1 or cls.MAX_POSITIONS > 10:
             errors.append(f"MAX_POSITIONS 必須在 1-10 之間，當前為 {cls.MAX_POSITIONS}")
         
         if cls.MIN_CONFIDENCE < 0 or cls.MIN_CONFIDENCE > 1:
             errors.append(f"MIN_CONFIDENCE 必須在 0-1 之間，當前為 {cls.MIN_CONFIDENCE}")
+        
+        # 如果有警告，記錄但不阻止啟動
+        if warnings:
+            import logging
+            logger = logging.getLogger(__name__)
+            for warning in warnings:
+                logger.warning(f"⚠️  {warning}")
         
         return len(errors) == 0, errors
     
