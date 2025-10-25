@@ -91,7 +91,7 @@ class ICTStrategy:
                 )
                 return None
             
-            confidence_score = self._calculate_confidence(
+            confidence_score, sub_scores = self._calculate_confidence(
                 h1_trend=h1_trend,
                 m15_trend=m15_trend,
                 m5_trend=m5_trend,
@@ -99,8 +99,10 @@ class ICTStrategy:
                 order_blocks=order_blocks,
                 liquidity_zones=liquidity_zones,
                 current_price=current_price,
+                h1_data=h1_data,
                 m15_data=m15_data,
-                m5_data=m5_data
+                m5_data=m5_data,
+                direction=signal_direction
             )
             
             if confidence_score < self.config.MIN_CONFIDENCE:
@@ -124,18 +126,25 @@ class ICTStrategy:
                 'symbol': symbol,
                 'direction': signal_direction,
                 'confidence': confidence_score,
+                'scores': sub_scores,
                 'entry_price': entry_price,
                 'stop_loss': stop_loss,
                 'take_profit': take_profit,
                 'timestamp': datetime.now(),
+                'trends': {
+                    'h1': h1_trend,
+                    'm15': m15_trend,
+                    'm5': m5_trend
+                },
                 'timeframes': {
                     '1h': h1_trend,
                     '15m': m15_trend,
                     '5m': m5_trend
                 },
                 'market_structure': market_structure,
-                'order_blocks': len(order_blocks),
-                'liquidity_zones': len(liquidity_zones),
+                'order_blocks': order_blocks,
+                'liquidity_zones': liquidity_zones,
+                'current_price': current_price,
                 'indicators': indicators_data
             }
             
@@ -309,23 +318,42 @@ class ICTStrategy:
         order_blocks: List[Dict],
         liquidity_zones: List[Dict],
         current_price: float,
+        h1_data: pd.DataFrame,
         m15_data: pd.DataFrame,
-        m5_data: pd.DataFrame
-    ) -> float:
+        m5_data: pd.DataFrame,
+        direction: Optional[str] = None
+    ) -> Tuple[float, Dict]:
         """
-        計算信心度評分
+        計算信心度評分（新框架版本）
+        
+        五大子指標：
+        1. 趨勢對齊 40% - 基於 EMA
+        2. 市場結構 20% - 基於分形高低點
+        3. 價格位置 20% - 距離 OB 的 ATR 距離
+        4. 動量指標 10% - RSI + MACD 同向確認
+        5. 波動率適宜度 10% - 布林帶寬分位數
         
         Returns:
-            float: 信心度分數 (0-1)
+            Tuple[float, Dict]: (信心度分數 0-1, 各子指標得分)
         """
         weights = self.config.CONFIDENCE_WEIGHTS
         scores = {}
         
-        trend_score = 0.0
-        if h1_trend == m15_trend:
-            trend_score += 0.5
-        if m15_trend == m5_trend:
-            trend_score += 0.5
+        trend_alignment_count = 0
+        
+        ema20_5m = calculate_ema(m5_data['close'], 20)
+        if not ema20_5m.empty and m5_data['close'].iloc[-1] > ema20_5m.iloc[-1]:
+            trend_alignment_count += 1
+        
+        ema50_15m = calculate_ema(m15_data['close'], 50)
+        if not ema50_15m.empty and m15_data['close'].iloc[-1] > ema50_15m.iloc[-1]:
+            trend_alignment_count += 1
+        
+        ema100_1h = calculate_ema(h1_data['close'], 100)
+        if not ema100_1h.empty and h1_data['close'].iloc[-1] > ema100_1h.iloc[-1]:
+            trend_alignment_count += 1
+        
+        trend_score = trend_alignment_count / 3.0
         scores['trend_alignment'] = trend_score
         
         structure_score = 0.0
@@ -333,18 +361,52 @@ class ICTStrategy:
             structure_score = 1.0
         elif market_structure == "bearish" and h1_trend == "bearish":
             structure_score = 1.0
-        elif market_structure == "neutral":
+        elif market_structure == "neutral" or (market_structure != h1_trend and h1_trend != "neutral"):
             structure_score = 0.5
         scores['market_structure'] = structure_score
         
         position_score = 0.0
-        if order_blocks:
-            nearest_ob = min(
-                order_blocks,
-                key=lambda x: abs(x['price'] - current_price)
-            )
-            distance_pct = abs(nearest_ob['price'] - current_price) / current_price
-            position_score = max(0, 1 - distance_pct * 10)
+        if order_blocks and direction:
+            atr = calculate_atr(m15_data)
+            atr_value = atr.iloc[-1] if not atr.empty else current_price * 0.01
+            
+            relevant_obs = [ob for ob in order_blocks if ob['type'] == direction.lower()]
+            
+            if relevant_obs:
+                nearest_ob = min(relevant_obs, key=lambda x: abs(x['price'] - current_price))
+                
+                if direction == "LONG":
+                    distance_atr = (current_price - nearest_ob['zone_low']) / atr_value
+                    
+                    if current_price > nearest_ob['zone_high']:
+                        position_score = 0.3
+                    elif distance_atr <= 0.5:
+                        position_score = 1.0
+                    elif distance_atr <= 1.0:
+                        position_score = 0.8
+                    elif distance_atr <= 1.5:
+                        position_score = 0.6
+                    elif distance_atr <= 2.0:
+                        position_score = 0.4
+                    else:
+                        position_score = 0.2
+                
+                elif direction == "SHORT":
+                    distance_atr = (nearest_ob['zone_high'] - current_price) / atr_value
+                    
+                    if current_price < nearest_ob['zone_low']:
+                        position_score = 0.3
+                    elif distance_atr <= 0.5:
+                        position_score = 1.0
+                    elif distance_atr <= 1.0:
+                        position_score = 0.8
+                    elif distance_atr <= 1.5:
+                        position_score = 0.6
+                    elif distance_atr <= 2.0:
+                        position_score = 0.4
+                    else:
+                        position_score = 0.2
+        
         scores['price_position'] = position_score
         
         rsi = calculate_rsi(m5_data['close'])
@@ -356,31 +418,45 @@ class ICTStrategy:
             macd_val = macd_line.iloc[-1]
             signal_val = signal_line.iloc[-1]
             
+            rsi_bullish = 40 < rsi_val < 70
+            rsi_bearish = 30 < rsi_val < 60
+            macd_bullish = macd_val > signal_val
+            macd_bearish = macd_val < signal_val
+            
             if h1_trend == "bullish":
-                if 40 < rsi_val < 70 and macd_val > signal_val:
+                if rsi_bullish and macd_bullish:
                     momentum_score = 1.0
-                elif rsi_val < 70:
-                    momentum_score = 0.5
+                elif rsi_bullish or macd_bullish:
+                    momentum_score = 0.6
             elif h1_trend == "bearish":
-                if 30 < rsi_val < 60 and macd_val < signal_val:
+                if rsi_bearish and macd_bearish:
                     momentum_score = 1.0
-                elif rsi_val > 30:
-                    momentum_score = 0.5
+                elif rsi_bearish or macd_bearish:
+                    momentum_score = 0.6
         
         scores['momentum'] = momentum_score
         
-        atr = calculate_atr(m15_data)
         bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(m15_data['close'])
         
         volatility_score = 0.0
-        if not atr.empty and not bb_upper.empty:
-            atr_val = atr.iloc[-1]
-            bb_width = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1]
+        if not bb_upper.empty and len(m15_data) >= 168:
+            bb_widths = []
+            for i in range(max(0, len(m15_data) - 168), len(m15_data)):
+                if i >= 20:
+                    width = (bb_upper.iloc[i] - bb_lower.iloc[i]) / bb_middle.iloc[i]
+                    bb_widths.append(width)
             
-            if 0.02 < bb_width < 0.10:
-                volatility_score = 1.0
-            elif bb_width < 0.15:
-                volatility_score = 0.5
+            if bb_widths:
+                current_width = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1]
+                percentile_25 = np.percentile(bb_widths, 25)
+                percentile_75 = np.percentile(bb_widths, 75)
+                
+                if percentile_25 <= current_width <= percentile_75:
+                    volatility_score = 1.0
+                elif current_width < percentile_25:
+                    volatility_score = 0.6
+                else:
+                    volatility_score = 0.4
         
         scores['volatility'] = volatility_score
         
@@ -389,7 +465,7 @@ class ICTStrategy:
             for key in weights.keys()
         )
         
-        return min(1.0, max(0.0, confidence))
+        return min(1.0, max(0.0, confidence)), scores
     
     def _calculate_levels(
         self,

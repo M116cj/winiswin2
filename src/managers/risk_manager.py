@@ -68,32 +68,61 @@ class RiskManager:
     
     def calculate_leverage(
         self,
-        win_rate: float,
-        consecutive_losses: int,
-        current_drawdown: float
+        expectancy: float = None,
+        profit_factor: float = None,
+        win_rate: float = None,
+        consecutive_losses: int = 0,
+        current_drawdown: float = 0.0
     ) -> int:
         """
-        計算動態槓桿
+        計算動態槓桿（期望值驅動版本）
+        
+        優先使用期望值和盈亏比，降級使用勝率
         
         Args:
-            win_rate: 勝率 (0-1)
+            expectancy: 期望值百分比 (如 1.5 表示 1.5%)
+            profit_factor: 盈亏比
+            win_rate: 勝率 (0-1) - 僅在期望值不可用時使用
             consecutive_losses: 連續虧損次數
             current_drawdown: 當前回撤 (0-1)
         
         Returns:
             int: 槓桿倍數
         """
-        base_leverage = self.config.BASE_LEVERAGE
+        if consecutive_losses >= 5:
+            logger.warning(f"連續虧損 {consecutive_losses} 次，強制最低槓桿")
+            return self.config.MIN_LEVERAGE
         
-        if win_rate > self.config.WINRATE_THRESHOLDS['excellent']:
-            base_leverage += 6
-        elif win_rate > self.config.WINRATE_THRESHOLDS['great']:
-            base_leverage += 4
-        elif win_rate > self.config.WINRATE_THRESHOLDS['good']:
-            base_leverage += 2
+        if consecutive_losses >= 3:
+            logger.warning(f"連續虧損 {consecutive_losses} 次，進入保守模式")
+            return min(5, self.config.BASE_LEVERAGE)
         
-        loss_penalty = consecutive_losses * 1
-        base_leverage -= loss_penalty
+        if expectancy is not None and profit_factor is not None:
+            if expectancy < 0:
+                logger.warning(f"期望值為負 ({expectancy:.2f}%)，禁止開倉")
+                return 0
+            
+            if expectancy > 1.5 and profit_factor > 1.5:
+                base_leverage = 17
+            elif expectancy > 0.8 and profit_factor > 1.0:
+                base_leverage = 12
+            elif expectancy > 0.3 and profit_factor > 0.8:
+                base_leverage = 7
+            else:
+                base_leverage = 4
+        
+        elif win_rate is not None:
+            base_leverage = self.config.BASE_LEVERAGE
+            
+            if win_rate > self.config.WINRATE_THRESHOLDS.get('excellent', 0.80):
+                base_leverage += 6
+            elif win_rate > self.config.WINRATE_THRESHOLDS.get('great', 0.70):
+                base_leverage += 4
+            elif win_rate > self.config.WINRATE_THRESHOLDS.get('good', 0.60):
+                base_leverage += 2
+        
+        else:
+            base_leverage = self.config.BASE_LEVERAGE
         
         if current_drawdown > 0.10:
             base_leverage = self.config.BASE_LEVERAGE
@@ -104,6 +133,49 @@ class RiskManager:
         )
         
         return leverage
+    
+    def calculate_position_size_with_hard_rules(
+        self,
+        account_balance: float,
+        entry_price: float,
+        stop_loss: float,
+        leverage: float,
+        max_risk_pct: float = 0.01
+    ) -> Dict:
+        """
+        计算符合硬规则的仓位大小
+        
+        硬规则：单笔风险 ≤ 总资金 1%
+        
+        Args:
+            account_balance: 賬戶餘額
+            entry_price: 入場價格
+            stop_loss: 止損價格
+            leverage: 槓桿倍數
+            max_risk_pct: 最大風險百分比（默認 1%）
+        
+        Returns:
+            Dict: 倉位信息
+        """
+        stop_loss_pct = abs(entry_price - stop_loss) / entry_price
+        
+        max_position_value = (max_risk_pct * account_balance) / stop_loss_pct
+        
+        max_position_value = min(max_position_value, account_balance * leverage * 0.95)
+        
+        position_margin = max_position_value / leverage
+        
+        quantity = max_position_value / entry_price
+        
+        return {
+            'quantity': quantity,
+            'position_value': max_position_value,
+            'position_margin': position_margin,
+            'leverage': leverage,
+            'risk_amount': account_balance * max_risk_pct,
+            'risk_pct': max_risk_pct,
+            'stop_loss_pct': stop_loss_pct
+        }
     
     def calculate_stop_loss_take_profit(
         self,

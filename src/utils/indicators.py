@@ -196,7 +196,12 @@ def calculate_market_structure(close: pd.Series, lookback: int = 10) -> dict:
 
 def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
     """
-    識別 Order Blocks
+    識別 Order Blocks（严格版本）
+    
+    定义：
+    - 看涨 OB：下跌末期出现实体 ≥ 70% 全长的阳K，区间 = [Low, Open]
+    - 看跌 OB：上涨末期出现实体 ≥ 70% 全长的阴K，区间 = [High, Open]
+    - 需要后续 3 根 K 线确认方向延续
     
     Args:
         df: K線數據框
@@ -205,26 +210,67 @@ def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
     Returns:
         Order Blocks 列表
     """
-    if df.empty or len(df) < lookback:
+    if df.empty or len(df) < lookback + 4:
         return []
     
     order_blocks = []
     
-    volume_sma = calculate_volume_sma(df['volume'], period=20)
-    
-    for i in range(lookback, len(df) - 1):
-        current_volume = df['volume'].iloc[i]
-        avg_volume = volume_sma.iloc[i]
+    for i in range(lookback, len(df) - 4):
+        candle_high = df['high'].iloc[i]
+        candle_low = df['low'].iloc[i]
+        candle_open = df['open'].iloc[i]
+        candle_close = df['close'].iloc[i]
         
-        if current_volume > avg_volume * 1.5:
-            order_blocks.append({
-                'price': float(df['close'].iloc[i]),
-                'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
-                'volume': float(current_volume),
-                'type': 'bullish' if df['close'].iloc[i] > df['open'].iloc[i] else 'bearish'
-            })
+        full_length = candle_high - candle_low
+        body_length = abs(candle_close - candle_open)
+        
+        if full_length == 0:
+            continue
+        
+        body_pct = body_length / full_length
+        
+        if body_pct < 0.70:
+            continue
+        
+        is_bullish_candle = candle_close > candle_open
+        is_bearish_candle = candle_close < candle_open
+        
+        next_3_candles = df.iloc[i+1:i+4]
+        
+        if len(next_3_candles) < 3:
+            continue
+        
+        next_3_closes = next_3_candles['close']
+        
+        if is_bullish_candle:
+            confirmed = (next_3_closes > candle_close).sum() >= 2
+            
+            if confirmed:
+                order_blocks.append({
+                    'type': 'bullish',
+                    'price': float((candle_low + candle_open) / 2),
+                    'zone_low': float(candle_low),
+                    'zone_high': float(candle_open),
+                    'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
+                    'body_pct': float(body_pct),
+                    'confirmed': True
+                })
+        
+        elif is_bearish_candle:
+            confirmed = (next_3_closes < candle_close).sum() >= 2
+            
+            if confirmed:
+                order_blocks.append({
+                    'type': 'bearish',
+                    'price': float((candle_high + candle_open) / 2),
+                    'zone_low': float(candle_open),
+                    'zone_high': float(candle_high),
+                    'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
+                    'body_pct': float(body_pct),
+                    'confirmed': True
+                })
     
-    return order_blocks[-10:]
+    return order_blocks[-5:]
 
 
 def identify_swing_points(df: pd.DataFrame, lookback: int = 5) -> tuple:
