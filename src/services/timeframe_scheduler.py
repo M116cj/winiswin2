@@ -118,7 +118,7 @@ class TimeframeScheduler:
         current_time = time.time()
         status = {}
         
-        for tf in ["1h", "15m", "5m", "1m"]:
+        for tf in ["1h", "15m", "5m"]:  # 僅 3 個時間框架
             last_scan = self.last_scan_times.get(tf, 0)
             interval = self.scan_intervals.get(tf, 60)
             

@@ -167,9 +167,18 @@ class TradingBot:
             )
         
         try:
-            market_data = await self.data_service.scan_market()
+            # 掃描市場（波動率優先排序，返回前N個）
+            market_data = await self.data_service.scan_market(
+                top_n=Config.TOP_VOLATILITY_SYMBOLS
+            )
             
-            logger.info(f"📊 掃描到 {len(market_data)} 個交易對")
+            if market_data:
+                logger.info(
+                    f"📊 已選擇 {len(market_data)} 個高波動率交易對 "
+                    f"(平均波動率: {sum(x.get('volatility', 0) for x in market_data)/len(market_data):.2f}%)"
+                )
+            else:
+                logger.warning("未獲取到任何交易對數據")
             
             # 使用並行分析器處理波動率最高的前200個標的（充分利用 32 核心）
             symbols_to_analyze = market_data
