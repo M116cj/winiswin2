@@ -56,6 +56,7 @@ class TradingBot:
         """初始化系統"""
         logger.info("=" * 60)
         logger.info("🚀 Winiswin2 v1 Enhanced 啟動中...")
+        logger.info("📌 代碼版本: 2025-10-25-v2.0 (200個高波動率交易對 + 32核並行)")
         logger.info("=" * 60)
         
         is_valid, errors = Config.validate()
@@ -168,15 +169,26 @@ class TradingBot:
         
         try:
             # 掃描市場（波動率優先排序，返回前N個）
+            logger.info(f"🔍 開始掃描市場，目標選擇前 {Config.TOP_VOLATILITY_SYMBOLS} 個高波動率交易對...")
+            
             market_data = await self.data_service.scan_market(
                 top_n=Config.TOP_VOLATILITY_SYMBOLS
             )
             
             if market_data:
+                avg_vol = sum(x.get('volatility', 0) for x in market_data)/len(market_data)
                 logger.info(
-                    f"📊 已選擇 {len(market_data)} 個高波動率交易對 "
-                    f"(平均波動率: {sum(x.get('volatility', 0) for x in market_data)/len(market_data):.2f}%)"
+                    f"📊 ✅ 已選擇 {len(market_data)} 個高波動率交易對 "
+                    f"(平均波動率: {avg_vol:.2f}%)"
                 )
+                # 顯示前10個最高波動率的交易對
+                top_10 = market_data[:10]
+                logger.info("📈 波動率最高的前10個交易對:")
+                for i, data in enumerate(top_10, 1):
+                    logger.info(
+                        f"  #{i} {data['symbol']}: {data['price']:.4f} USDT "
+                        f"(24h波動: {data['volatility']:.2f}%)"
+                    )
             else:
                 logger.warning("未獲取到任何交易對數據")
             
