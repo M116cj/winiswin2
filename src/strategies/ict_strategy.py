@@ -58,10 +58,8 @@ class ICTStrategy:
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
             
-            # 如果 1h 和 15m 都是 neutral，跳过（至少要有一个明確趨勢）
-            if h1_trend.lower() == "neutral" and m15_trend.lower() == "neutral":
-                logger.debug(f"{symbol}: 拒絕 - 1h 和 15m 都是 neutral")
-                return None
+            # 放寬條件：只要不是三個時間框架全部 neutral 就可以
+            # （大部分時候市場會有方向）
             
             market_structure = determine_market_structure(m15_data)
             
@@ -172,7 +170,7 @@ class ICTStrategy:
     
     def _determine_trend(self, df: pd.DataFrame) -> str:
         """
-        判斷趨勢方向
+        判斷趨勢方向 - 使用簡化邏輯
         
         Args:
             df: K線數據
@@ -186,18 +184,18 @@ class ICTStrategy:
         ema_fast = calculate_ema(df['close'], self.config.EMA_FAST)
         ema_slow = calculate_ema(df['close'], self.config.EMA_SLOW)
         
-        current_price = float(df['close'].iloc[-1])
+        if ema_fast.empty or ema_slow.empty:
+            return "neutral"
         
-        # 檢查價格是否在 EMA 之上/之下（更實用的趨勢判斷）
-        price_above_fast = current_price > ema_fast.iloc[-1]
-        price_above_slow = current_price > ema_slow.iloc[-1]
-        fast_above_slow = ema_fast.iloc[-1] > ema_slow.iloc[-1]
+        # 簡化邏輯：只看快線和慢線的關係
+        fast_val = float(ema_fast.iloc[-1])
+        slow_val = float(ema_slow.iloc[-1])
         
-        # 看漲：價格在兩條 EMA 之上，且快線在慢線之上
-        if price_above_fast and price_above_slow and fast_above_slow:
+        # 快線 > 慢線 = 看漲
+        if fast_val > slow_val:
             return "bullish"
-        # 看跌：價格在兩條 EMA 之下，且快線在慢線之下
-        elif not price_above_fast and not price_above_slow and not fast_above_slow:
+        # 快線 < 慢線 = 看跌
+        elif fast_val < slow_val:
             return "bearish"
         else:
             return "neutral"
