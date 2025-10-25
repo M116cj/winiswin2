@@ -19,16 +19,15 @@ logger = logging.getLogger(__name__)
 class DataService:
     """數據服務類"""
     
-    def __init__(self, binance_client: BinanceClient, cache_manager: CacheManager):
+    def __init__(self, binance_client: BinanceClient):
         """
         初始化數據服務
         
         Args:
             binance_client: Binance 客戶端
-            cache_manager: 緩存管理器
         """
         self.client = binance_client
-        self.cache = cache_manager
+        self.cache = binance_client.cache
         self.timeframes = ["1h", "15m", "5m", "1m"]
         self.all_symbols: List[str] = []
     

@@ -8,14 +8,12 @@ import logging
 import signal
 import sys
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from src.config import Config
 from src.clients.binance_client import BinanceClient
-from src.core.cache_manager import CacheManager
-from src.core.rate_limiter import RateLimiter
-from src.core.circuit_breaker import CircuitBreaker
 from src.services.data_service import DataService
+from src.services.parallel_analyzer import ParallelAnalyzer
 from src.strategies.ict_strategy import ICTStrategy
 from src.managers.risk_manager import RiskManager
 from src.services.trading_service import TradingService
@@ -23,6 +21,7 @@ from src.managers.virtual_position_manager import VirtualPositionManager
 from src.managers.trade_recorder import TradeRecorder
 from src.integrations.discord_bot import TradingDiscordBot
 from src.monitoring.health_monitor import HealthMonitor
+from src.ml.predictor import MLPredictor
 
 logger = logging.getLogger(__name__)
 
@@ -34,15 +33,17 @@ class TradingBot:
         """初始化交易機器人"""
         self.running = False
         
-        self.binance_client: BinanceClient = None
-        self.data_service: DataService = None
-        self.strategy: ICTStrategy = None
-        self.risk_manager: RiskManager = None
-        self.trading_service: TradingService = None
-        self.virtual_position_manager: VirtualPositionManager = None
-        self.trade_recorder: TradeRecorder = None
-        self.discord_bot: TradingDiscordBot = None
-        self.health_monitor: HealthMonitor = None
+        self.binance_client: Optional[BinanceClient] = None
+        self.data_service: Optional[DataService] = None
+        self.parallel_analyzer: Optional[ParallelAnalyzer] = None
+        self.strategy: Optional[ICTStrategy] = None
+        self.risk_manager: Optional[RiskManager] = None
+        self.trading_service: Optional[TradingService] = None
+        self.virtual_position_manager: Optional[VirtualPositionManager] = None
+        self.trade_recorder: Optional[TradeRecorder] = None
+        self.discord_bot: Optional[TradingDiscordBot] = None
+        self.health_monitor: Optional[HealthMonitor] = None
+        self.ml_predictor: Optional[MLPredictor] = None
         
         self.discord_task = None
     
@@ -72,32 +73,18 @@ class TradingBot:
         
         logger.info("\n🔧 初始化核心組件...")
         
-        cache_manager = CacheManager()
-        rate_limiter = RateLimiter(
-            max_requests=Config.RATE_LIMIT_REQUESTS,
-            time_window=Config.RATE_LIMIT_PERIOD
-        )
-        circuit_breaker = CircuitBreaker(
-            threshold=Config.CIRCUIT_BREAKER_THRESHOLD,
-            timeout=Config.CIRCUIT_BREAKER_TIMEOUT
-        )
-        
-        self.binance_client = BinanceClient(
-            api_key=Config.BINANCE_API_KEY,
-            api_secret=Config.BINANCE_API_SECRET,
-            testnet=Config.BINANCE_TESTNET,
-            cache_manager=cache_manager,
-            rate_limiter=rate_limiter,
-            circuit_breaker=circuit_breaker
-        )
+        self.binance_client = BinanceClient()
         
         connected = await self.binance_client.test_connection()
         if not connected:
             logger.error("❌ 無法連接到 Binance API")
             return False
         
-        self.data_service = DataService(self.binance_client, cache_manager)
+        self.data_service = DataService(self.binance_client)
         await self.data_service.initialize()
+        
+        # 初始化並行分析器（32 核心）
+        self.parallel_analyzer = ParallelAnalyzer(max_workers=32)
         
         self.strategy = ICTStrategy()
         self.risk_manager = RiskManager()
@@ -107,6 +94,14 @@ class TradingBot:
         )
         self.virtual_position_manager = VirtualPositionManager()
         self.trade_recorder = TradeRecorder()
+        
+        # 初始化 ML 預測器
+        self.ml_predictor = MLPredictor()
+        ml_ready = await asyncio.to_thread(self.ml_predictor.initialize)
+        if ml_ready:
+            logger.info("✅ ML 預測器已就緒")
+        else:
+            logger.warning("⚠️  ML 預測器未就緒，使用傳統策略")
         
         self.discord_bot = TradingDiscordBot()
         self.discord_task = asyncio.create_task(self.discord_bot.start())
@@ -147,41 +142,48 @@ class TradingBot:
             
             logger.info(f"📊 掃描到 {len(market_data)} 個交易對")
             
-            signals = []
+            # 使用並行分析器處理（充分利用 32 核心）
+            symbols_to_analyze = market_data[:200]  # 分析前 200 個交易對（提高覆蓋率）
             
-            symbols_to_analyze = [item['symbol'] for item in market_data[:100]]
+            logger.info(f"🔍 使用 32 核心並行分析前 {len(symbols_to_analyze)} 個交易對...")
             
-            logger.info(f"🔍 分析前 100 個交易對...")
-            
-            for i, symbol in enumerate(symbols_to_analyze):
-                try:
-                    multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
-                    
-                    signal = self.strategy.analyze(symbol, multi_tf_data)
-                    
-                    if signal:
-                        signals.append(signal)
-                        logger.info(
-                            f"  ✅ {symbol}: {signal['direction']} "
-                            f"信心度 {signal['confidence']:.2%}"
-                        )
-                    
-                    if (i + 1) % 20 == 0:
-                        await asyncio.sleep(0.5)
-                    
-                except Exception as e:
-                    logger.error(f"  ❌ 分析 {symbol} 失敗: {e}")
-                    continue
+            signals = await self.parallel_analyzer.analyze_batch(
+                symbols_to_analyze,
+                self.data_service
+            )
             
             if signals:
+                # ML 預測增強（如果可用）
+                if self.ml_predictor and self.ml_predictor.is_ready:
+                    logger.info("🤖 使用 ML 模型增強信號...")
+                    for signal in signals:
+                        ml_prediction = self.ml_predictor.predict(signal)
+                        if ml_prediction:
+                            signal['ml_prediction'] = ml_prediction
+                            # 校準信心度
+                            original_confidence = signal['confidence']
+                            signal['confidence'] = self.ml_predictor.calibrate_confidence(
+                                original_confidence,
+                                ml_prediction
+                            )
+                            logger.debug(
+                                f"  {signal['symbol']}: 原始 {original_confidence:.2%} "
+                                f"→ ML校準 {signal['confidence']:.2%}"
+                            )
+                
                 signals.sort(key=lambda x: x['confidence'], reverse=True)
                 
                 logger.info(f"\n🎯 生成 {len(signals)} 個交易信號")
                 
                 for rank, signal in enumerate(signals[:Config.MAX_SIGNALS], 1):
+                    ml_info = ""
+                    if 'ml_prediction' in signal:
+                        ml_pred = signal['ml_prediction']
+                        ml_info = f" [ML勝率: {ml_pred['win_probability']:.1%}]"
+                    
                     logger.info(
                         f"  #{rank} {signal['symbol']} {signal['direction']} "
-                        f"信心度 {signal['confidence']:.2%}"
+                        f"信心度 {signal['confidence']:.2%}{ml_info}"
                     )
                     
                     await self.discord_bot.send_signal_notification(signal, rank)
@@ -327,6 +329,9 @@ class TradingBot:
         
         if self.trade_recorder:
             self.trade_recorder.force_flush()
+        
+        if self.parallel_analyzer:
+            await self.parallel_analyzer.close()
         
         if self.discord_bot:
             await self.discord_bot.send_alert("👋 交易系統已停止", "info")
