@@ -60,6 +60,7 @@ class ICTStrategy:
             
             # 如果 1h 和 15m 都是 neutral，跳过（至少要有一个明确趋势）
             if h1_trend == "neutral" and m15_trend == "neutral":
+                logger.debug(f"{symbol}: 拒絕 - 1h 和 15m 都是 neutral")
                 return None
             
             market_structure = determine_market_structure(m15_data)
@@ -84,6 +85,10 @@ class ICTStrategy:
             )
             
             if not signal_direction:
+                logger.debug(
+                    f"{symbol}: 拒絕 - 趨勢不對齊 "
+                    f"(1h:{h1_trend}, 15m:{m15_trend}, 5m:{m5_trend}, structure:{market_structure})"
+                )
                 return None
             
             confidence_score = self._calculate_confidence(
@@ -99,6 +104,10 @@ class ICTStrategy:
             )
             
             if confidence_score < self.config.MIN_CONFIDENCE:
+                logger.debug(
+                    f"{symbol}: 拒絕 - 信心度不足 "
+                    f"({confidence_score:.1%} < {self.config.MIN_CONFIDENCE:.1%})"
+                )
                 return None
             
             entry_price, stop_loss, take_profit = self._calculate_levels(

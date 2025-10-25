@@ -56,7 +56,7 @@ class TradingBot:
         """初始化系統"""
         logger.info("=" * 60)
         logger.info("🚀 Winiswin2 v1 Enhanced 啟動中...")
-        logger.info("📌 代碼版本: 2025-10-25-v2.2 (流動性優選 + 優化策略條件)")
+        logger.info("📌 代碼版本: 2025-10-25-v2.3 (修復日誌+放寬策略)")
         logger.info("=" * 60)
         
         is_valid, errors = Config.validate()
@@ -246,7 +246,8 @@ class TradingBot:
                     await self._process_signal(signal, rank)
             
             else:
-                logger.info("ℹ️  本週期未生成交易信號")
+                logger.info(f"ℹ️  本週期未生成交易信號 (分析了 {len(symbols_to_analyze)} 個交易對)")
+                logger.info("💡 提示：設置 LOG_LEVEL=DEBUG 查看拒絕原因詳情")
             
             await self._update_positions()
             
