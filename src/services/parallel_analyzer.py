@@ -18,21 +18,32 @@ logger = logging.getLogger(__name__)
 class ParallelAnalyzer:
     """並行分析器 - 充分利用 32vCPU 資源"""
     
-    def __init__(self, max_workers: int = 32):
+    def __init__(self, max_workers: Optional[int] = None):
         """
         初始化並行分析器
         
         Args:
-            max_workers: 最大工作線程數（默認 32 以充分利用 32 核心）
+            max_workers: 最大工作線程數（None 表示自動檢測）
         """
-        self.max_workers = max_workers
+        # 自動檢測 CPU 核心數
+        cpu_count = mp.cpu_count()
+        
+        # 如果未指定，使用所有可用核心；否則取較小值
+        if max_workers is None:
+            self.max_workers = min(cpu_count, 32)  # 最多 32 個
+        else:
+            self.max_workers = min(max_workers, cpu_count, 32)
+        
         self.strategy = ICTStrategy()
         self.config = Config
         
         # 使用線程池處理 I/O 密集型任務
-        self.thread_executor = ThreadPoolExecutor(max_workers=max_workers)
+        self.thread_executor = ThreadPoolExecutor(max_workers=self.max_workers)
         
-        logger.info(f"並行分析器初始化: {max_workers} 個工作線程")
+        logger.info(
+            f"並行分析器初始化: {self.max_workers} 個工作線程 "
+            f"(CPU 核心: {cpu_count})"
+        )
     
     async def analyze_batch(
         self,
