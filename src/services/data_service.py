@@ -232,21 +232,21 @@ class DataService:
     
     async def scan_market(self, top_n: int = 200) -> List[Dict]:
         """
-        掃描市場，按波動率排序，返回前N個交易對
+        掃描市場，按流動性排序，返回前N個交易對
         
-        策略：優先監控波動率最高的前200個標的
-        - 波動率計算：24h價格變化幅度（絕對值）
-        - 從648個交易對中選擇最活躍的
+        策略：優先監控流動性最高的前200個標的
+        - 流動性指標：24h 交易額（quoteVolume，以 USDT 計）
+        - 從 600+ 個 U本位合約中選擇最活躍的
         
         Args:
             top_n: 返回前N個交易對（默認200）
         
         Returns:
-            List[Dict]: 按波動率排序的交易對列表
+            List[Dict]: 按流動性排序的交易對列表
         """
-        logger.info(f"開始掃描 {len(self.all_symbols)} 個交易對（波動率排序）...")
+        logger.info(f"開始掃描 {len(self.all_symbols)} 個交易對（流動性排序）...")
         
-        # 獲取24h ticker數據（包含價格變化）
+        # 獲取24h ticker數據（包含交易量數據）
         try:
             exchange_info_data = await self.client.get_24h_tickers()
             
@@ -256,40 +256,40 @@ class DataService:
                 if symbol not in self.all_symbols:
                     continue
                 
-                # 計算波動率（24h價格變化百分比的絕對值）
-                price_change_pct = abs(float(ticker.get('priceChangePercent', 0)))
-                volume_24h = float(ticker.get('volume', 0))
+                # 流動性指標：24h 交易額（USDT）
                 quote_volume = float(ticker.get('quoteVolume', 0))
+                volume_24h = float(ticker.get('volume', 0))
+                price_change_pct = float(ticker.get('priceChangePercent', 0))
                 
                 market_data.append({
                     'symbol': symbol,
                     'price': float(ticker.get('lastPrice', 0)),
-                    'change_24h': float(ticker.get('priceChangePercent', 0)),
+                    'change_24h': price_change_pct,
                     'volume_24h': volume_24h,
-                    'quote_volume': quote_volume,
-                    'volatility': price_change_pct,  # 波動率指標
+                    'quote_volume': quote_volume,  # 流動性指標（USDT）
+                    'liquidity': quote_volume,     # 用於排序
                     'timestamp': datetime.now()
                 })
             
-            # 按波動率排序（從高到低）
-            market_data.sort(key=lambda x: x['volatility'], reverse=True)
+            # 按流動性排序（從高到低）
+            market_data.sort(key=lambda x: x['liquidity'], reverse=True)
             
             # 取前N個
-            top_volatility = market_data[:top_n]
+            top_liquidity = market_data[:top_n]
             
-            avg_volatility = sum(x['volatility'] for x in top_volatility) / len(top_volatility) if top_volatility else 0
+            avg_volume = sum(x['liquidity'] for x in top_liquidity) / len(top_liquidity) if top_liquidity else 0
             
             logger.info(
                 f"✅ 市場掃描完成: 從 {len(market_data)} 個交易對中選擇 "
-                f"波動率最高的前 {len(top_volatility)} 個 "
-                f"(平均波動率: {avg_volatility:.2f}%)"
+                f"流動性最高的前 {len(top_liquidity)} 個 "
+                f"(平均24h交易額: ${avg_volume:,.0f} USDT)"
             )
             
-            return top_volatility
+            return top_liquidity
             
         except Exception as e:
             logger.error(f"市場掃描失敗: {e}", exc_info=True)
-            # 降級：返回所有交易對（按交易量排序）
+            # 降級：返回所有交易對
             return await self._fallback_scan_market()
     
     async def _fallback_scan_market(self) -> List[Dict]:
@@ -303,7 +303,8 @@ class DataService:
                 market_data.append({
                     'symbol': symbol,
                     'price': float(ticker.get('price', 0)),
-                    'volatility': 0.0,
+                    'liquidity': 0.0,
+                    'quote_volume': 0.0,
                     'timestamp': datetime.now()
                 })
         
