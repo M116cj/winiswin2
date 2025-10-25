@@ -89,28 +89,6 @@ def calculate_bollinger_bands(
     
     return upper_band, middle_band, lower_band
 
-def calculate_atr(high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
-    """
-    計算平均真實波幅 (ATR)
-    
-    Args:
-        high: 最高價
-        low: 最低價
-        close: 收盤價
-        period: 周期
-    
-    Returns:
-        ATR 值
-    """
-    tr1 = high - low
-    tr2 = abs(high - close.shift())
-    tr3 = abs(low - close.shift())
-    
-    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-    atr = tr.rolling(window=period).mean()
-    
-    return atr
-
 def calculate_volume_sma(volume: pd.Series, period: int = 20) -> pd.Series:
     """
     計算成交量簡單移動平均

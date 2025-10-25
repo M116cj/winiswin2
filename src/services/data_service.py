@@ -324,7 +324,7 @@ class DataService:
             return cached_data
         
         try:
-            account = await self.client.get_account()
+            account = await self.client.get_account_info()
             self.cache.set(cache_key, account, ttl=Config.CACHE_TTL_ACCOUNT)
             return account
         except Exception as e:
