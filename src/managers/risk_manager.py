@@ -97,32 +97,60 @@ class RiskManager:
             logger.warning(f"連續虧損 {consecutive_losses} 次，進入保守模式")
             return min(5, self.config.BASE_LEVERAGE)
         
-        if expectancy is not None and profit_factor is not None:
+        # 優先級1：使用期望值（有或沒有盈亏比）
+        if expectancy is not None:
             if expectancy < 0:
                 logger.warning(f"期望值為負 ({expectancy:.2f}%)，禁止開倉")
                 return 0
             
-            if expectancy > 1.5 and profit_factor > 1.5:
-                base_leverage = 17
-            elif expectancy > 0.8 and profit_factor > 1.0:
-                base_leverage = 12
-            elif expectancy > 0.3 and profit_factor > 0.8:
-                base_leverage = 7
+            # 根據期望值和盈亏比動態調整槓桿
+            if profit_factor is not None:
+                # 有盈亏比數據，使用完整評分
+                if expectancy > 1.5 and profit_factor > 1.5:
+                    base_leverage = 17
+                    logger.info(f"✅ 優秀期望值 ({expectancy:.2f}%, PF:{profit_factor:.2f}) → 槓桿 17x")
+                elif expectancy > 0.8 and profit_factor > 1.0:
+                    base_leverage = 12
+                    logger.info(f"✅ 良好期望值 ({expectancy:.2f}%, PF:{profit_factor:.2f}) → 槓桿 12x")
+                elif expectancy > 0.3 and profit_factor > 0.8:
+                    base_leverage = 7
+                    logger.info(f"⚠️  一般期望值 ({expectancy:.2f}%, PF:{profit_factor:.2f}) → 槓桿 7x")
+                else:
+                    base_leverage = 4
+                    logger.warning(f"⚠️  低期望值 ({expectancy:.2f}%, PF:{profit_factor:.2f}) → 槓桿 4x")
             else:
-                base_leverage = 4
+                # 只有期望值，沒有盈亏比
+                if expectancy > 1.5:
+                    base_leverage = 15
+                    logger.info(f"✅ 優秀期望值 ({expectancy:.2f}%) → 槓桿 15x")
+                elif expectancy > 0.8:
+                    base_leverage = 10
+                    logger.info(f"✅ 良好期望值 ({expectancy:.2f}%) → 槓桿 10x")
+                elif expectancy > 0.3:
+                    base_leverage = 6
+                    logger.info(f"⚠️  一般期望值 ({expectancy:.2f}%) → 槓桿 6x")
+                else:
+                    base_leverage = 4
+                    logger.warning(f"⚠️  低期望值 ({expectancy:.2f}%) → 槓桿 4x")
         
+        # 優先級2：使用勝率（數據不足時降級方案）
         elif win_rate is not None:
             base_leverage = self.config.BASE_LEVERAGE
             
             if win_rate > self.config.WINRATE_THRESHOLDS.get('excellent', 0.80):
                 base_leverage += 6
+                logger.info(f"勝率優秀 ({win_rate:.1%}) → 槓桿 {base_leverage}x")
             elif win_rate > self.config.WINRATE_THRESHOLDS.get('great', 0.70):
                 base_leverage += 4
+                logger.info(f"勝率良好 ({win_rate:.1%}) → 槓桿 {base_leverage}x")
             elif win_rate > self.config.WINRATE_THRESHOLDS.get('good', 0.60):
                 base_leverage += 2
+                logger.info(f"勝率一般 ({win_rate:.1%}) → 槓桿 {base_leverage}x")
         
+        # 優先級3：默認基礎槓桿（完全沒有數據時）
         else:
             base_leverage = self.config.BASE_LEVERAGE
+            logger.info(f"無歷史數據 → 使用基礎槓桿 {base_leverage}x")
         
         if current_drawdown > 0.10:
             base_leverage = self.config.BASE_LEVERAGE

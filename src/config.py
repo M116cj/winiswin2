@@ -96,8 +96,12 @@ class Config:
     RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "1920"))
     RATE_LIMIT_PERIOD: int = 60
     
-    # 緩存配置
-    CACHE_TTL_KLINES: int = 30
+    # 緩存配置（根據時間框架優化）
+    # K線緩存時間應該匹配時間框架的持續時間
+    CACHE_TTL_KLINES_1H: int = 3600    # 1小時 K線緩存1小時
+    CACHE_TTL_KLINES_15M: int = 900    # 15分鐘 K線緩存15分鐘
+    CACHE_TTL_KLINES_5M: int = 300     # 5分鐘 K線緩存5分鐘
+    CACHE_TTL_KLINES_DEFAULT: int = 300  # 其他默認5分鐘
     CACHE_TTL_TICKER: int = 5
     CACHE_TTL_ACCOUNT: int = 10
     

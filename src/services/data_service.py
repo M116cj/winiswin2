@@ -104,7 +104,7 @@ class DataService:
         end_time: Optional[int] = None
     ) -> pd.DataFrame:
         """
-        獲取 K線數據
+        獲取 K線數據（智能緩存）
         
         Args:
             symbol: 交易對
@@ -116,11 +116,20 @@ class DataService:
         Returns:
             pd.DataFrame: K線數據框
         """
+        # 簡化緩存策略：基於交易對和時間框架
+        # 同一個時間框架的數據在TTL內都會使用緩存
         cache_key = f"klines_{symbol}_{interval}_{limit}"
         
-        cached_data = self.cache.get(cache_key)
-        if cached_data is not None:
-            return cached_data
+        # 歷史請求或指定時間範圍時，不使用緩存
+        if start_time is not None or end_time is not None:
+            cache_key = None  # 跳過緩存
+        
+        # 嘗試從緩存獲取
+        if cache_key:
+            cached_data = self.cache.get(cache_key)
+            if cached_data is not None:
+                logger.debug(f"緩存命中: {symbol} {interval}")
+                return cached_data
         
         try:
             klines = await self.client.get_klines(
@@ -147,7 +156,16 @@ class DataService:
             
             df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume']]
             
-            self.cache.set(cache_key, df, ttl=Config.CACHE_TTL_KLINES)
+            # 根據時間框架使用不同的 TTL
+            ttl_map = {
+                '1h': Config.CACHE_TTL_KLINES_1H,
+                '15m': Config.CACHE_TTL_KLINES_15M,
+                '5m': Config.CACHE_TTL_KLINES_5M
+            }
+            ttl = ttl_map.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+            
+            self.cache.set(cache_key, df, ttl=ttl)
+            logger.debug(f"緩存 {symbol} {interval} 數據，TTL={ttl}秒")
             
             return df
             
