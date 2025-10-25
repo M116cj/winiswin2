@@ -187,6 +187,36 @@ class BinanceClient:
         self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_TICKER)
         return result
     
+    async def get_24h_tickers(self, symbol: Optional[str] = None) -> Any:
+        """
+        獲取24小時價格變動統計
+        
+        包含：
+        - priceChange: 24h價格變化
+        - priceChangePercent: 24h價格變化百分比
+        - lastPrice: 最新價格
+        - volume: 24h交易量
+        - quoteVolume: 24h交易額
+        等
+        
+        Args:
+            symbol: 交易對符號（None 表示所有）
+        
+        Returns:
+            24h ticker 數據
+        """
+        params = {"symbol": symbol} if symbol else {}
+        cache_key = f"24h_ticker_{symbol or 'all'}"
+        
+        cached = self.cache.get(cache_key)
+        if cached:
+            return cached
+        
+        result = await self._request("GET", "/fapi/v1/ticker/24hr", params=params)
+        # 24h ticker 緩存時間短一些，因為需要實時波動率
+        self.cache.set(cache_key, result, ttl=60)  # 60秒緩存
+        return result
+    
     async def get_account_info(self) -> dict:
         """獲取賬戶信息"""
         cache_key = "account_info"
