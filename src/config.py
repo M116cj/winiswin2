@@ -114,6 +114,15 @@ class Config:
     # ML 數據收集配置
     ML_FLUSH_COUNT: int = 25
     ML_FLUSH_INTERVAL: int = 300
+    ML_DATA_DIR: str = "ml_data"
+    
+    # 期望值計算配置
+    EXPECTANCY_WINDOW: int = 30
+    MIN_EXPECTANCY_PCT: float = 0.3
+    MIN_PROFIT_FACTOR: float = 0.8
+    CONSECUTIVE_LOSS_LIMIT: int = 5
+    DAILY_LOSS_LIMIT_PCT: float = 0.03
+    COOLDOWN_HOURS: int = 24
     
     # 日誌配置
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")

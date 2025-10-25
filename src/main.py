@@ -17,6 +17,7 @@ from src.services.parallel_analyzer import ParallelAnalyzer
 from src.services.timeframe_scheduler import SmartDataManager
 from src.strategies.ict_strategy import ICTStrategy
 from src.managers.risk_manager import RiskManager
+from src.managers.expectancy_calculator import ExpectancyCalculator
 from src.services.trading_service import TradingService
 from src.managers.virtual_position_manager import VirtualPositionManager
 from src.managers.trade_recorder import TradeRecorder
@@ -24,6 +25,7 @@ from src.integrations.discord_bot import TradingDiscordBot
 from src.monitoring.health_monitor import HealthMonitor
 from src.monitoring.performance_monitor import PerformanceMonitor
 from src.ml.predictor import MLPredictor
+from src.ml.data_archiver import DataArchiver
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,8 @@ class TradingBot:
         self.parallel_analyzer: Optional[ParallelAnalyzer] = None
         self.strategy: Optional[ICTStrategy] = None
         self.risk_manager: Optional[RiskManager] = None
+        self.expectancy_calculator: Optional[ExpectancyCalculator] = None
+        self.data_archiver: Optional[DataArchiver] = None
         self.trading_service: Optional[TradingService] = None
         self.virtual_position_manager: Optional[VirtualPositionManager] = None
         self.trade_recorder: Optional[TradeRecorder] = None
@@ -51,12 +55,14 @@ class TradingBot:
         
         self.discord_task = None
         self.monitoring_task = None
+        
+        self.all_trades: List[Dict] = []
     
     async def initialize(self):
         """初始化系統"""
         logger.info("=" * 60)
-        logger.info("🚀 Winiswin2 v1 Enhanced 啟動中...")
-        logger.info("📌 代碼版本: 2025-10-25-v2.3 (修復日誌+放寬策略)")
+        logger.info("🚀 高頻交易系統 v3.0 啟動中...")
+        logger.info("📌 代碼版本: 2025-10-25-v3.0 (期望值驅動+五維評分系統)")
         logger.info("=" * 60)
         
         is_valid, errors = Config.validate()
@@ -101,6 +107,11 @@ class TradingBot:
         
         self.strategy = ICTStrategy()
         self.risk_manager = RiskManager()
+        self.expectancy_calculator = ExpectancyCalculator(window_size=Config.EXPECTANCY_WINDOW)
+        self.data_archiver = DataArchiver(data_dir=Config.ML_DATA_DIR)
+        logger.info(f"✅ 期望值計算器已就緒 (窗口大小: {Config.EXPECTANCY_WINDOW} 筆交易)")
+        logger.info(f"✅ 數據歸檔器已就緒 (目錄: {Config.ML_DATA_DIR})")
+        
         self.trading_service = TradingService(
             self.binance_client,
             self.risk_manager
@@ -255,6 +266,10 @@ class TradingBot:
             
             self.health_monitor.record_api_call(success=True)
             
+            if self.data_archiver:
+                self.data_archiver.flush_all()
+                logger.debug("✅ 數據已刷新到磁盤")
+            
         except Exception as e:
             logger.error(f"❌ 週期執行錯誤: {e}", exc_info=True)
             self.health_monitor.record_api_call(success=False)
@@ -265,26 +280,66 @@ class TradingBot:
         logger.info(f"{'=' * 60}")
     
     async def _process_signal(self, signal: Dict, rank: int):
-        """處理交易信號"""
+        """處理交易信號（期望值驅動版本）"""
         try:
+            expectancy_metrics = self.expectancy_calculator.calculate_expectancy(self.all_trades)
+            
+            can_trade, rejection_reason = self.expectancy_calculator.should_trade(
+                expectancy=expectancy_metrics['expectancy'],
+                profit_factor=expectancy_metrics['profit_factor'],
+                consecutive_losses=expectancy_metrics['consecutive_losses'],
+                daily_loss_pct=self.expectancy_calculator.get_daily_loss(self.all_trades)
+            )
+            
+            if not can_trade:
+                logger.warning(f"🚫 期望值檢查拒絕: {rejection_reason}")
+                self.data_archiver.archive_signal(
+                    signal_data=signal,
+                    accepted=False,
+                    rejection_reason=rejection_reason
+                )
+                return
+            
             if rank <= Config.IMMEDIATE_EXECUTION_RANK:
                 account_balance = 10000.0
                 
-                can_trade, reason = self.risk_manager.should_trade(
+                can_trade_risk, reason = self.risk_manager.should_trade(
                     account_balance,
                     self.trading_service.get_active_positions_count()
                 )
                 
-                if not can_trade:
-                    logger.warning(f"⏸️  跳過交易: {reason}")
+                if not can_trade_risk:
+                    logger.warning(f"⏸️  風險管理拒絕: {reason}")
+                    self.data_archiver.archive_signal(
+                        signal_data=signal,
+                        accepted=False,
+                        rejection_reason=reason
+                    )
                     return
                 
-                stats = self.risk_manager.get_statistics()
                 leverage = self.risk_manager.calculate_leverage(
-                    win_rate=stats.get('win_rate', 0.5),
-                    consecutive_losses=stats.get('consecutive_losses', 0),
-                    current_drawdown=stats.get('current_drawdown', 0)
+                    expectancy=expectancy_metrics['expectancy'],
+                    profit_factor=expectancy_metrics['profit_factor'],
+                    consecutive_losses=expectancy_metrics['consecutive_losses']
                 )
+                
+                if leverage == 0:
+                    logger.warning("🚫 期望值為負，禁止開倉")
+                    self.data_archiver.archive_signal(
+                        signal_data=signal,
+                        accepted=False,
+                        rejection_reason="期望值為負"
+                    )
+                    return
+                
+                logger.info(
+                    f"✅ 期望值檢查通過 - "
+                    f"期望值: {expectancy_metrics['expectancy']:.2f}%, "
+                    f"盈虧比: {expectancy_metrics['profit_factor']:.2f}, "
+                    f"建議槓桿: {leverage}x"
+                )
+                
+                self.data_archiver.archive_signal(signal_data=signal, accepted=True)
                 
                 trade_result = await self.trading_service.execute_signal(
                     signal,
@@ -297,15 +352,37 @@ class TradingBot:
                     
                     position_info = {
                         'leverage': leverage,
-                        'position_value': trade_result.get('position_value', 0)
+                        'position_value': trade_result.get('position_value', 0),
+                        **signal
                     }
                     self.trade_recorder.record_entry(signal, position_info)
+                    
+                    self.data_archiver.archive_position_open(
+                        position_data=position_info,
+                        is_virtual=False
+                    )
+                    
+                    self.all_trades.append({
+                        'timestamp': datetime.now(),
+                        'symbol': signal['symbol'],
+                        'direction': signal['direction'],
+                        'entry_price': signal['entry_price'],
+                        'leverage': leverage,
+                        'status': 'open'
+                    })
             
             else:
+                self.data_archiver.archive_signal(signal_data=signal, accepted=True)
                 self.virtual_position_manager.add_virtual_position(signal, rank)
+                
+                position_info = {**signal, 'rank': rank}
+                self.data_archiver.archive_position_open(
+                    position_data=position_info,
+                    is_virtual=True
+                )
         
         except Exception as e:
-            logger.error(f"處理信號失敗: {e}")
+            logger.error(f"處理信號失敗: {e}", exc_info=True)
     
     async def _update_positions(self):
         """更新所有持倉"""
@@ -382,6 +459,10 @@ class TradingBot:
     async def cleanup(self):
         """清理資源"""
         logger.info("\n🧹 清理資源...")
+        
+        if self.data_archiver:
+            logger.info("💾 刷新所有數據到磁盤...")
+            self.data_archiver.flush_all()
         
         if self.trade_recorder:
             self.trade_recorder.force_flush()
