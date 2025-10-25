@@ -214,3 +214,114 @@ def calculate_market_structure(close: pd.Series, lookback: int = 10) -> dict:
         "lower_high": lower_high,
         "lower_low": lower_low
     }
+
+
+def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
+    """
+    識別 Order Blocks
+    
+    Args:
+        df: K線數據框
+        lookback: 回溯周期
+    
+    Returns:
+        Order Blocks 列表
+    """
+    if df.empty or len(df) < lookback:
+        return []
+    
+    order_blocks = []
+    
+    volume_sma = calculate_volume_sma(df['volume'], period=20)
+    
+    for i in range(lookback, len(df) - 1):
+        current_volume = df['volume'].iloc[i]
+        avg_volume = volume_sma.iloc[i]
+        
+        if current_volume > avg_volume * 1.5:
+            order_blocks.append({
+                'price': float(df['close'].iloc[i]),
+                'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
+                'volume': float(current_volume),
+                'type': 'bullish' if df['close'].iloc[i] > df['open'].iloc[i] else 'bearish'
+            })
+    
+    return order_blocks[-10:]
+
+
+def identify_swing_points(df: pd.DataFrame, lookback: int = 5) -> tuple:
+    """
+    識別擺動點
+    
+    Args:
+        df: K線數據框
+        lookback: 回溯周期
+    
+    Returns:
+        tuple[擺動高點列表, 擺動低點列表]
+    """
+    if df.empty or len(df) < lookback * 2 + 1:
+        return [], []
+    
+    highs = []
+    lows = []
+    
+    for i in range(lookback, len(df) - lookback):
+        window_high = df['high'].iloc[i-lookback:i+lookback+1]
+        window_low = df['low'].iloc[i-lookback:i+lookback+1]
+        
+        if df['high'].iloc[i] == window_high.max():
+            highs.append({
+                'price': float(df['high'].iloc[i]),
+                'index': i
+            })
+        
+        if df['low'].iloc[i] == window_low.min():
+            lows.append({
+                'price': float(df['low'].iloc[i]),
+                'index': i
+            })
+    
+    return highs, lows
+
+
+def determine_market_structure(df: pd.DataFrame) -> str:
+    """
+    判斷市場結構
+    
+    Args:
+        df: K線數據框
+    
+    Returns:
+        str: 市場結構 ('bullish', 'bearish', 'neutral')
+    """
+    if df.empty or len(df) < 20:
+        return "neutral"
+    
+    structure = calculate_market_structure(df['close'], lookback=10)
+    return structure.get('trend', 'neutral')
+
+
+def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
+    """
+    計算平均真實波幅 (ATR) - DataFrame 版本
+    
+    Args:
+        df: K線數據框
+        period: 周期
+    
+    Returns:
+        ATR 值
+    """
+    high = df['high']
+    low = df['low']
+    close = df['close']
+    
+    tr1 = high - low
+    tr2 = abs(high - close.shift())
+    tr3 = abs(low - close.shift())
+    
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    atr = tr.rolling(window=period).mean()
+    
+    return atr
