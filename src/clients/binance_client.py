@@ -138,7 +138,9 @@ class BinanceClient:
         self,
         symbol: str,
         interval: str,
-        limit: int = 500
+        limit: int = 500,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None
     ) -> list:
         """
         獲取 K 線數據
@@ -147,11 +149,13 @@ class BinanceClient:
             symbol: 交易對符號
             interval: 時間間隔 (1m, 5m, 15m, 1h, etc.)
             limit: 數據條數
+            start_time: 開始時間戳（毫秒）
+            end_time: 結束時間戳（毫秒）
         
         Returns:
             K 線數據列表
         """
-        cache_key = f"klines_{symbol}_{interval}"
+        cache_key = f"klines_{symbol}_{interval}_{start_time}_{end_time}"
         cached = self.cache.get(cache_key)
         if cached:
             return cached
@@ -161,6 +165,11 @@ class BinanceClient:
             "interval": interval,
             "limit": limit
         }
+        
+        if start_time:
+            params["startTime"] = start_time
+        if end_time:
+            params["endTime"] = end_time
         
         result = await self._request("GET", "/fapi/v1/klines", params=params)
         self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_KLINES)
