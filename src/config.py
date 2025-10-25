@@ -12,8 +12,12 @@ class Config:
     
     # Binance API 配置
     # 主 API（數據收集）
+    # 支持多種命名方式以兼容不同配置
     BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
-    BINANCE_API_SECRET: str = os.getenv("BINANCE_API_SECRET", "")
+    BINANCE_API_SECRET: str = (
+        os.getenv("BINANCE_API_SECRET", "") or 
+        os.getenv("BINANCE_SECRET_KEY", "")  # 兼容舊命名
+    )
     
     # 可選：交易專用 API（避免訂單限制影響數據收集）
     BINANCE_TRADING_API_KEY: str = os.getenv("BINANCE_TRADING_API_KEY", "") or BINANCE_API_KEY
@@ -22,7 +26,11 @@ class Config:
     BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
     
     # Discord 配置
-    DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN", "")
+    # 支持多種命名方式以兼容不同配置
+    DISCORD_TOKEN: str = (
+        os.getenv("DISCORD_TOKEN", "") or 
+        os.getenv("DISCORD_BOT_TOKEN", "")  # 兼容舊命名
+    )
     DISCORD_CHANNEL_ID: Optional[str] = os.getenv("DISCORD_CHANNEL_ID")
     
     # 交易配置
