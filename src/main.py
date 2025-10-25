@@ -56,7 +56,7 @@ class TradingBot:
         """初始化系統"""
         logger.info("=" * 60)
         logger.info("🚀 Winiswin2 v1 Enhanced 啟動中...")
-        logger.info("📌 代碼版本: 2025-10-25-v2.1 (200個高流動性交易對 + 32核並行)")
+        logger.info("📌 代碼版本: 2025-10-25-v2.2 (流動性優選 + 優化策略條件)")
         logger.info("=" * 60)
         
         is_valid, errors = Config.validate()

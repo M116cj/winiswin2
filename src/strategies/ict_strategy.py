@@ -58,7 +58,8 @@ class ICTStrategy:
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
             
-            if h1_trend == "neutral" or m15_trend == "neutral":
+            # 如果 1h 和 15m 都是 neutral，跳过（至少要有一个明确趋势）
+            if h1_trend == "neutral" and m15_trend == "neutral":
                 return None
             
             market_structure = determine_market_structure(m15_data)
@@ -258,13 +259,33 @@ class ICTStrategy:
         liquidity_zones: List[Dict],
         current_price: float
     ) -> Optional[str]:
-        """判斷信號方向"""
+        """
+        判斷信號方向
+        
+        策略：1h 和 15m 趨勢一致即可（5m 用於找入場點，不要求完全一致）
+        """
+        # 优先级1: 三个时间框架完全一致（最高置信度）
         if h1_trend == m15_trend == m5_trend == "bullish":
             if market_structure in ["bullish", "neutral"]:
                 return "LONG"
-        
         elif h1_trend == m15_trend == m5_trend == "bearish":
             if market_structure in ["bearish", "neutral"]:
+                return "SHORT"
+        
+        # 优先级2: 1h 和 15m 一致（5m 可以不同，用于精准入场）
+        if h1_trend == m15_trend == "bullish":
+            if market_structure in ["bullish", "neutral"]:
+                return "LONG"
+        elif h1_trend == m15_trend == "bearish":
+            if market_structure in ["bearish", "neutral"]:
+                return "SHORT"
+        
+        # 优先级3: 1h 有明确趋势，15m 是 neutral（等待 15m 确认）
+        if h1_trend == "bullish" and m15_trend == "neutral":
+            if m5_trend == "bullish" and market_structure == "bullish":
+                return "LONG"
+        elif h1_trend == "bearish" and m15_trend == "neutral":
+            if m5_trend == "bearish" and market_structure == "bearish":
                 return "SHORT"
         
         return None
