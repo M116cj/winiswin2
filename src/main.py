@@ -147,7 +147,11 @@ class TradingBot:
         logger.info("\n🧹 清理資源...")
         
         if self.binance_client:
-            await self.binance_client.close()
+            try:
+                await self.binance_client.close()
+                logger.info("✅ Binance 客戶端已關閉")
+            except Exception as e:
+                logger.error(f"關閉 Binance 客戶端時出錯: {e}")
         
         logger.info("👋 系統已停止")
     

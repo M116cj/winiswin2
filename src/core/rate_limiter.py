@@ -30,27 +30,31 @@ class RateLimiter:
         """
         獲取請求許可（阻塞直到獲得許可）
         """
-        async with self._lock:
-            current_time = time.time()
-            
-            # 清理過期請求記錄
-            while self.requests and self.requests[0] < current_time - self.time_window:
-                self.requests.popleft()
-            
-            # 檢查是否超過限制
-            if len(self.requests) >= self.max_requests:
-                # 計算需要等待的時間
-                oldest_request = self.requests[0]
-                wait_time = self.time_window - (current_time - oldest_request)
+        while True:
+            wait_time = 0
+            async with self._lock:
+                current_time = time.time()
                 
-                if wait_time > 0:
-                    logger.warning(f"達到速率限制，等待 {wait_time:.2f} 秒")
-                    await asyncio.sleep(wait_time)
-                    # 遞歸重試
-                    return await self.acquire()
+                # 清理過期請求記錄
+                while self.requests and self.requests[0] < current_time - self.time_window:
+                    self.requests.popleft()
+                
+                # 檢查是否超過限制
+                if len(self.requests) >= self.max_requests:
+                    # 計算需要等待的時間
+                    oldest_request = self.requests[0]
+                    wait_time = self.time_window - (current_time - oldest_request) + 0.1
+                    
+                    if wait_time > 0:
+                        logger.warning(f"達到速率限制，等待 {wait_time:.2f} 秒")
+                else:
+                    # 記錄此次請求並返回
+                    self.requests.append(current_time)
+                    return
             
-            # 記錄此次請求
-            self.requests.append(current_time)
+            # 在鎖外等待
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
     
     def get_remaining_quota(self) -> int:
         """獲取剩餘配額"""

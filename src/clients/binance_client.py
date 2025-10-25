@@ -86,24 +86,29 @@ class BinanceClient:
         """
         await self.rate_limiter.acquire()
         
-        if params is None:
-            params = {}
-        
-        if signed:
-            params['timestamp'] = int(time.time() * 1000)
-            params['signature'] = self._generate_signature(params)
-        
-        headers = {'X-MBX-APIKEY': self.api_key} if self.api_key else {}
-        url = f"{self.base_url}{endpoint}"
-        
-        session = await self._get_session()
-        
-        try:
-            async with session.request(method, url, params=params, headers=headers) as response:
+        async def _do_request():
+            if params is None:
+                _params = {}
+            else:
+                _params = params.copy()
+            
+            if signed:
+                _params['timestamp'] = int(time.time() * 1000)
+                _params['signature'] = self._generate_signature(_params)
+            
+            headers = {'X-MBX-APIKEY': self.api_key} if self.api_key else {}
+            url = f"{self.base_url}{endpoint}"
+            
+            session = await self._get_session()
+            
+            async with session.request(method, url, params=_params, headers=headers) as response:
                 response.raise_for_status()
                 return await response.json()
+        
+        try:
+            result = await self.circuit_breaker.call_async(_do_request)
+            return result
         except Exception as e:
-            self.circuit_breaker.on_failure()
             logger.error(f"API 請求失敗: {endpoint} - {str(e)}")
             raise
     

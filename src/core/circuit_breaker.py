@@ -32,9 +32,38 @@ class CircuitBreaker:
         self.last_failure_time: float = 0
         self.state = CircuitState.CLOSED
     
+    async def call_async(self, func, *args, **kwargs):
+        """
+        通過熔斷器調用異步函數
+        
+        Args:
+            func: 要調用的異步函數
+            *args, **kwargs: 函數參數
+        
+        Returns:
+            函數返回值
+        
+        Raises:
+            Exception: 當熔斷器開啟時拋出異常
+        """
+        if self.state == CircuitState.OPEN:
+            if time.time() - self.last_failure_time >= self.timeout:
+                logger.info("熔斷器進入半開狀態，嘗試恢復")
+                self.state = CircuitState.HALF_OPEN
+            else:
+                raise Exception(f"熔斷器開啟，請 {self.timeout - (time.time() - self.last_failure_time):.0f} 秒後重試")
+        
+        try:
+            result = await func(*args, **kwargs)
+            self.on_success()
+            return result
+        except Exception as e:
+            self.on_failure()
+            raise e
+    
     def call(self, func, *args, **kwargs):
         """
-        通過熔斷器調用函數
+        通過熔斷器調用同步函數
         
         Args:
             func: 要調用的函數
