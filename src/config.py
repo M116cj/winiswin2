@@ -56,9 +56,9 @@ class Config:
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))  # 掃描間隔（秒，默認60秒）
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))  # 監控流動性最高的前N個（默認200）
     
-    # 技術指標配置
-    EMA_FAST: int = 50
-    EMA_SLOW: int = 200
+    # 技術指標配置（優化版：更靈敏的趨勢判斷）
+    EMA_FAST: int = 20   # 從50降到20，更快捕捉趨勢
+    EMA_SLOW: int = 50   # 從200降到50，更靈敏
     RSI_PERIOD: int = 14
     RSI_OVERBOUGHT: float = 70
     RSI_OVERSOLD: float = 30
