@@ -4,6 +4,7 @@
 """
 
 import os
+import sys
 from typing import Optional
 import logging
 
@@ -47,7 +48,7 @@ class Config:
     MAX_MARGIN_PCT: float = 0.13
     
     # 策略配置
-    MIN_CONFIDENCE: float = 0.70
+    MIN_CONFIDENCE: float = 0.55  # 降低從 0.70 → 0.55 提高信號生成率
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
     
@@ -163,7 +164,7 @@ class Config:
     
     @classmethod
     def setup_logging(cls):
-        """設置日誌系統"""
+        """設置日誌系統（輸出到 stdout 避免 Railway [err] 標籤）"""
         os.makedirs(os.path.dirname(cls.LOG_FILE), exist_ok=True)
         
         logging.basicConfig(
@@ -171,7 +172,7 @@ class Config:
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             handlers=[
                 logging.FileHandler(cls.LOG_FILE),
-                logging.StreamHandler()
+                logging.StreamHandler(sys.stdout)  # 輸出到 stdout 而非 stderr
             ]
         )
     

@@ -168,9 +168,10 @@ class ICTStrategy:
         ema_fast = calculate_ema(df['close'], self.config.EMA_FAST)
         ema_slow = calculate_ema(df['close'], self.config.EMA_SLOW)
         
-        if ema_fast.iloc[-1] > ema_slow.iloc[-1] * 1.005:
+        # 放寬容忍度從 ±0.5% 到 ±0.2%，提高趨勢識別率
+        if ema_fast.iloc[-1] > ema_slow.iloc[-1] * 1.002:
             return "bullish"
-        elif ema_fast.iloc[-1] < ema_slow.iloc[-1] * 0.995:
+        elif ema_fast.iloc[-1] < ema_slow.iloc[-1] * 0.998:
             return "bearish"
         else:
             return "neutral"
