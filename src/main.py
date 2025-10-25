@@ -94,7 +94,7 @@ class TradingBot:
         logger.info("✅ 智能數據管理器已就緒")
         logger.info("   - 1h: 每小時掃描（趨勢確認）")
         logger.info("   - 15m: 每15分鐘掃描（趨勢確認）")
-        logger.info("   - 5m/1m: 高頻掃描（入場信號）")
+        logger.info("   - 5m: 每分鐘掃描（入場信號）")
         
         # 初始化並行分析器（32 核心）
         self.parallel_analyzer = ParallelAnalyzer(max_workers=32)

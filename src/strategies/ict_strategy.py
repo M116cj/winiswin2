@@ -53,7 +53,6 @@ class ICTStrategy:
             h1_data = multi_tf_data.get('1h')
             m15_data = multi_tf_data.get('15m')
             m5_data = multi_tf_data.get('5m')
-            m1_data = multi_tf_data.get('1m')
             
             h1_trend = self._determine_trend(h1_data)
             m15_trend = self._determine_trend(m15_data)
@@ -140,7 +139,7 @@ class ICTStrategy:
     
     def _validate_data(self, multi_tf_data: Dict[str, pd.DataFrame]) -> bool:
         """驗證數據完整性"""
-        required_timeframes = ['1h', '15m', '5m', '1m']
+        required_timeframes = ['1h', '15m', '5m']
         
         for tf in required_timeframes:
             if tf not in multi_tf_data:

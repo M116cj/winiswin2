@@ -23,7 +23,7 @@ class TimeframeScheduler:
     
     def __init__(self):
         """初始化調度器"""
-        # 僅使用 1h/15m/5m（取消 1m 監控）
+        # 使用 1h/15m/5m 三个时间框架
         self.last_scan_times: Dict[str, float] = {
             "1h": 0,
             "15m": 0,
@@ -177,7 +177,7 @@ class SmartDataManager:
         
         策略：
         - 1h, 15m：使用緩存（除非到時間更新）
-        - 5m, 1m：始終獲取最新數據
+        - 5m：始終獲取最新數據
         
         Args:
             symbol: 交易對

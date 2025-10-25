@@ -28,7 +28,7 @@ class DataService:
         """
         self.client = binance_client
         self.cache = binance_client.cache
-        # 仅使用 1h/15m/5m（取消 1m 监控）
+        # 使用 1h/15m/5m 三个时间框架
         # 1h: 趋势确认（每小时）
         # 15m: 趋势确认（每15分钟）
         # 5m: 趋势符合确认 + 入场信号
