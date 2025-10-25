@@ -1,0 +1,1001 @@
+2025-10-25T17:03:52.454163255Z [inf]  2025-10-25 17:03:45,969 - src.strategies.ict_strategy - DEBUG - FILUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.454170684Z [inf]  2025-10-25 17:03:45,969 - src.strategies.ict_strategy - DEBUG - RVVUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.454177258Z [inf]  2025-10-25 17:03:45,969 - src.strategies.ict_strategy - DEBUG - APTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.454185012Z [inf]  2025-10-25 17:03:45,970 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.454191384Z [inf]  2025-10-25 17:03:45,970 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.454199992Z [inf]  2025-10-25 17:03:45,970 - src.strategies.ict_strategy - DEBUG - XANUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.455982881Z [inf]  2025-10-25 17:03:45,970 - src.strategies.ict_strategy - DEBUG - ZBTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.455989596Z [inf]  2025-10-25 17:03:45,971 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456486036Z [inf]  2025-10-25 17:03:45,970 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456493261Z [inf]  2025-10-25 17:03:45,971 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456501215Z [inf]  2025-10-25 17:03:45,971 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456507133Z [inf]  2025-10-25 17:03:45,972 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456512487Z [inf]  2025-10-25 17:03:45,972 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456518143Z [inf]  2025-10-25 17:03:45,972 - src.strategies.ict_strategy - DEBUG - RECALLUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456525081Z [inf]  2025-10-25 17:03:45,972 - src.strategies.ict_strategy - DEBUG - STBLUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456531705Z [inf]  2025-10-25 17:03:45,972 - src.strategies.ict_strategy - DEBUG - UBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456537811Z [inf]  2025-10-25 17:03:45,973 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456543860Z [inf]  2025-10-25 17:03:45,973 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456548542Z [inf]  2025-10-25 17:03:45,973 - src.strategies.ict_strategy - DEBUG - LAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.456553331Z [inf]  2025-10-25 17:03:45,978 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458027807Z [inf]  2025-10-25 17:03:45,978 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458044460Z [inf]  2025-10-25 17:03:45,979 - src.strategies.ict_strategy - DEBUG - FETUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458051938Z [inf]  2025-10-25 17:03:45,979 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458059655Z [inf]  2025-10-25 17:03:45,979 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458066274Z [inf]  2025-10-25 17:03:45,979 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458107186Z [inf]  2025-10-25 17:03:45,979 - src.strategies.ict_strategy - DEBUG - TONUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458113592Z [inf]  2025-10-25 17:03:45,980 - src.strategies.ict_strategy - DEBUG - TREEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458120049Z [inf]  2025-10-25 17:03:45,980 - src.strategies.ict_strategy - DEBUG - MIRAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458126647Z [inf]  2025-10-25 17:03:45,980 - src.strategies.ict_strategy - DEBUG - BANKUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458141298Z [inf]  2025-10-25 17:03:45,980 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458147943Z [inf]  2025-10-25 17:03:45,981 - src.strategies.ict_strategy - DEBUG - ETHFIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458153279Z [inf]  2025-10-25 17:03:45,982 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458159524Z [inf]  2025-10-25 17:03:45,982 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.458165803Z [inf]  2025-10-25 17:03:45,982 - src.strategies.ict_strategy - DEBUG - OPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459504874Z [inf]  2025-10-25 17:03:45,982 - src.strategies.ict_strategy - DEBUG - CLOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459512115Z [inf]  2025-10-25 17:03:45,983 - src.strategies.ict_strategy - DEBUG - AI16ZUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459518163Z [inf]  2025-10-25 17:03:45,983 - src.strategies.ict_strategy - DEBUG - KDAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459523663Z [inf]  2025-10-25 17:03:45,983 - src.strategies.ict_strategy - DEBUG - DASHUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459528325Z [inf]  2025-10-25 17:03:45,983 - src.strategies.ict_strategy - DEBUG - ZENUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459680897Z [inf]  2025-10-25 17:03:45,984 - src.strategies.ict_strategy - DEBUG - MLNUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459760568Z [inf]  2025-10-25 17:03:45,984 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459765084Z [inf]  2025-10-25 17:03:45,984 - src.strategies.ict_strategy - DEBUG - EPTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459770577Z [inf]  2025-10-25 17:03:45,984 - src.strategies.ict_strategy - DEBUG - WALUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459775717Z [inf]  2025-10-25 17:03:45,985 - src.strategies.ict_strategy - DEBUG - B2USDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459779532Z [inf]  2025-10-25 17:03:45,985 - src.strategies.ict_strategy - DEBUG - INJUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459783715Z [inf]  2025-10-25 17:03:45,986 - src.strategies.ict_strategy - DEBUG - SOMIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459787835Z [inf]  2025-10-25 17:03:45,986 - src.strategies.ict_strategy - DEBUG - 0GUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.459791903Z [inf]  2025-10-25 17:03:45,987 - src.strategies.ict_strategy - DEBUG - MYXUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461041102Z [inf]  2025-10-25 17:03:45,987 - src.strategies.ict_strategy - DEBUG - BELUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461047453Z [inf]  2025-10-25 17:03:45,987 - src.strategies.ict_strategy - DEBUG - ATOMUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461052068Z [inf]  2025-10-25 17:03:45,987 - src.strategies.ict_strategy - DEBUG - AUCTIONUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461059020Z [inf]  2025-10-25 17:03:45,987 - src.strategies.ict_strategy - DEBUG - IPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461063763Z [inf]  2025-10-25 17:03:45,988 - src.strategies.ict_strategy - DEBUG - BERAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461068865Z [inf]  2025-10-25 17:03:45,988 - src.strategies.ict_strategy - DEBUG - SIGNUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461076159Z [inf]  2025-10-25 17:03:45,988 - src.strategies.ict_strategy - DEBUG - PENDLEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461082299Z [inf]  2025-10-25 17:03:45,988 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461088132Z [inf]  2025-10-25 17:03:45,989 - src.strategies.ict_strategy - DEBUG - SPXUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461093533Z [inf]  2025-10-25 17:03:45,989 - src.strategies.ict_strategy - DEBUG - SEIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461098798Z [inf]  2025-10-25 17:03:45,990 - src.strategies.ict_strategy - DEBUG - 2ZUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461103699Z [inf]  2025-10-25 17:03:45,990 - src.strategies.ict_strategy - DEBUG - GALAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.461109091Z [inf]  2025-10-25 17:03:45,996 - src.services.parallel_analyzer - INFO - 批次 2 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:03:52.461115129Z [inf]  2025-10-25 17:03:45,996 - src.services.parallel_analyzer - INFO - 處理批次 3/4 (64 個交易對)
+2025-10-25T17:03:52.463153248Z [inf]  2025-10-25 17:03:45,997 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463158376Z [inf]  2025-10-25 17:03:45,998 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463162191Z [inf]  2025-10-25 17:03:45,998 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463166305Z [inf]  2025-10-25 17:03:45,999 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463170452Z [inf]  2025-10-25 17:03:45,999 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463181027Z [inf]  2025-10-25 17:03:46,000 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463187426Z [inf]  2025-10-25 17:03:46,000 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463191836Z [inf]  2025-10-25 17:03:46,000 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463195798Z [inf]  2025-10-25 17:03:46,000 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463199563Z [inf]  2025-10-25 17:03:46,001 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463204033Z [inf]  2025-10-25 17:03:46,001 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463209063Z [inf]  2025-10-25 17:03:46,001 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463213769Z [inf]  2025-10-25 17:03:46,001 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463218370Z [inf]  2025-10-25 17:03:46,002 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.463224344Z [inf]  2025-10-25 17:03:46,002 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464962690Z [inf]  2025-10-25 17:03:46,002 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464967508Z [inf]  2025-10-25 17:03:46,003 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464971323Z [inf]  2025-10-25 17:03:46,003 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464974786Z [inf]  2025-10-25 17:03:46,003 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464978601Z [inf]  2025-10-25 17:03:46,004 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464982261Z [inf]  2025-10-25 17:03:46,004 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464988493Z [inf]  2025-10-25 17:03:46,004 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464992425Z [inf]  2025-10-25 17:03:46,005 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464995914Z [inf]  2025-10-25 17:03:46,005 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.464999454Z [inf]  2025-10-25 17:03:46,005 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.465003059Z [inf]  2025-10-25 17:03:46,005 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.465006417Z [inf]  2025-10-25 17:03:46,006 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.465009723Z [inf]  2025-10-25 17:03:46,006 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.465013409Z [inf]  2025-10-25 17:03:46,006 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.465017709Z [inf]  2025-10-25 17:03:46,007 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466768855Z [inf]  2025-10-25 17:03:46,007 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466776802Z [inf]  2025-10-25 17:03:46,007 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466782962Z [inf]  2025-10-25 17:03:46,008 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466788762Z [inf]  2025-10-25 17:03:46,008 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466885640Z [inf]  2025-10-25 17:03:46,008 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466891693Z [inf]  2025-10-25 17:03:46,008 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466897487Z [inf]  2025-10-25 17:03:46,009 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466903405Z [inf]  2025-10-25 17:03:46,009 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466909771Z [inf]  2025-10-25 17:03:46,009 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466915745Z [inf]  2025-10-25 17:03:46,010 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466921780Z [inf]  2025-10-25 17:03:46,010 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466928315Z [inf]  2025-10-25 17:03:46,010 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466934274Z [inf]  2025-10-25 17:03:46,011 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466940759Z [inf]  2025-10-25 17:03:46,011 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.466947514Z [inf]  2025-10-25 17:03:46,011 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468374560Z [inf]  2025-10-25 17:03:46,011 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468382465Z [inf]  2025-10-25 17:03:46,012 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468389541Z [inf]  2025-10-25 17:03:46,012 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468395608Z [inf]  2025-10-25 17:03:46,012 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468400929Z [inf]  2025-10-25 17:03:46,012 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468406739Z [inf]  2025-10-25 17:03:46,013 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468413628Z [inf]  2025-10-25 17:03:46,013 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468419726Z [inf]  2025-10-25 17:03:46,013 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468426686Z [inf]  2025-10-25 17:03:46,013 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468432735Z [inf]  2025-10-25 17:03:46,014 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468439525Z [inf]  2025-10-25 17:03:46,014 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468448410Z [inf]  2025-10-25 17:03:46,014 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468453860Z [inf]  2025-10-25 17:03:46,015 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468460468Z [inf]  2025-10-25 17:03:46,015 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.468466031Z [inf]  2025-10-25 17:03:46,015 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.470394015Z [inf]  2025-10-25 17:03:46,015 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.470404840Z [inf]  2025-10-25 17:03:46,016 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.470411412Z [inf]  2025-10-25 17:03:46,016 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.470419038Z [inf]  2025-10-25 17:03:46,016 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.470425531Z [inf]  2025-10-25 17:03:46,229 - src.strategies.ict_strategy - DEBUG - NEIROUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470432177Z [inf]  2025-10-25 17:03:46,230 - src.strategies.ict_strategy - DEBUG - ALICEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470439027Z [inf]  2025-10-25 17:03:46,231 - src.strategies.ict_strategy - DEBUG - LINEAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470446437Z [inf]  2025-10-25 17:03:46,231 - src.strategies.ict_strategy - DEBUG - XMRUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470452878Z [inf]  2025-10-25 17:03:46,231 - src.strategies.ict_strategy - DEBUG - LYNUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470459747Z [inf]  2025-10-25 17:03:46,231 - src.strategies.ict_strategy - DEBUG - LABUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470467335Z [inf]  2025-10-25 17:03:46,231 - src.strategies.ict_strategy - DEBUG - 1000FLOKIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470473940Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - HANAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470479996Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - PORT3USDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.470485404Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - INUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472539560Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - HOLOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472549578Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - RENDERUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472557852Z [inf]  2025-10-25 17:03:46,232 - src.strategies.ict_strategy - DEBUG - JTOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472567628Z [inf]  2025-10-25 17:03:46,233 - src.strategies.ict_strategy - DEBUG - PNUTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472577319Z [inf]  2025-10-25 17:03:46,233 - src.strategies.ict_strategy - DEBUG - OMUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472585641Z [inf]  2025-10-25 17:03:46,233 - src.strategies.ict_strategy - DEBUG - TOSHIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472591123Z [inf]  2025-10-25 17:03:46,233 - src.strategies.ict_strategy - DEBUG - SWARMSUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472596654Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - ICPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472601760Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - MOODENGUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472608781Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - QUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472613267Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - STRKUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472620281Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - EULUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472626375Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - SOONUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.472632684Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - TRBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474954523Z [inf]  2025-10-25 17:03:46,235 - src.strategies.ict_strategy - DEBUG - COOKIEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474963916Z [inf]  2025-10-25 17:03:46,235 - src.strategies.ict_strategy - DEBUG - XNYUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474970349Z [inf]  2025-10-25 17:03:46,241 - src.strategies.ict_strategy - DEBUG - NXPCUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474977870Z [inf]  2025-10-25 17:03:46,236 - src.strategies.ict_strategy - DEBUG - CELOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474984633Z [inf]  2025-10-25 17:03:46,236 - src.strategies.ict_strategy - DEBUG - ARUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474991609Z [inf]  2025-10-25 17:03:46,236 - src.strategies.ict_strategy - DEBUG - TRUTHUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.474997713Z [inf]  2025-10-25 17:03:46,237 - src.strategies.ict_strategy - DEBUG - TRADOORUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475004558Z [inf]  2025-10-25 17:03:46,237 - src.strategies.ict_strategy - DEBUG - ORDIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475011047Z [inf]  2025-10-25 17:03:46,237 - src.strategies.ict_strategy - DEBUG - ALGOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475016644Z [inf]  2025-10-25 17:03:46,237 - src.strategies.ict_strategy - DEBUG - BIDUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475025499Z [inf]  2025-10-25 17:03:46,238 - src.strategies.ict_strategy - DEBUG - POPCATUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475033499Z [inf]  2025-10-25 17:03:46,238 - src.strategies.ict_strategy - DEBUG - SANDUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475039979Z [inf]  2025-10-25 17:03:46,238 - src.strategies.ict_strategy - DEBUG - WUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.475045782Z [inf]  2025-10-25 17:03:46,238 - src.strategies.ict_strategy - DEBUG - MORPHOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476776065Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - DYDXUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476782346Z [inf]  2025-10-25 17:03:46,234 - src.strategies.ict_strategy - DEBUG - SOPHUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476786292Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - ZEREBROUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476791433Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - MUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476795797Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - GRIFFAINUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476800251Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - FLOWUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476805030Z [inf]  2025-10-25 17:03:46,239 - src.strategies.ict_strategy - DEBUG - SYRUPUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476808790Z [inf]  2025-10-25 17:03:46,240 - src.strategies.ict_strategy - DEBUG - ZROUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476813341Z [inf]  2025-10-25 17:03:46,240 - src.strategies.ict_strategy - DEBUG - IMXUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476817857Z [inf]  2025-10-25 17:03:46,240 - src.strategies.ict_strategy - DEBUG - TAUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476821575Z [inf]  2025-10-25 17:03:46,240 - src.strategies.ict_strategy - DEBUG - PHBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476825751Z [inf]  2025-10-25 17:03:46,240 - src.strategies.ict_strategy - DEBUG - POLUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476831163Z [inf]  2025-10-25 17:03:46,241 - src.strategies.ict_strategy - DEBUG - AGTUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.476835409Z [inf]  2025-10-25 17:03:46,241 - src.strategies.ict_strategy - DEBUG - TAKEUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478592995Z [inf]  2025-10-25 17:03:46,235 - src.strategies.ict_strategy - DEBUG - AEROUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478601283Z [inf]  2025-10-25 17:03:46,241 - src.strategies.ict_strategy - DEBUG - SUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478608089Z [inf]  2025-10-25 17:03:46,242 - src.strategies.ict_strategy - DEBUG - ATHUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478614703Z [inf]  2025-10-25 17:03:46,242 - src.strategies.ict_strategy - DEBUG - IDOLUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478620038Z [inf]  2025-10-25 17:03:46,242 - src.strategies.ict_strategy - DEBUG - CATIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478626484Z [inf]  2025-10-25 17:03:46,242 - src.strategies.ict_strategy - DEBUG - IOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478632239Z [inf]  2025-10-25 17:03:46,243 - src.strategies.ict_strategy - DEBUG - OGUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478639120Z [inf]  2025-10-25 17:03:46,243 - src.strategies.ict_strategy - DEBUG - SOLVUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478645630Z [inf]  2025-10-25 17:03:46,243 - src.strategies.ict_strategy - DEBUG - ENSUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478651738Z [inf]  2025-10-25 17:03:46,244 - src.strategies.ict_strategy - DEBUG - BBUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478657981Z [inf]  2025-10-25 17:03:46,244 - src.strategies.ict_strategy - DEBUG - SUSHIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478663489Z [inf]  2025-10-25 17:03:46,244 - src.strategies.ict_strategy - DEBUG - NOMUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.478668779Z [inf]  2025-10-25 17:03:46,251 - src.services.parallel_analyzer - INFO - 批次 3 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:03:52.478674813Z [inf]  2025-10-25 17:03:46,251 - src.services.parallel_analyzer - INFO - 處理批次 4/4 (8 個交易對)
+2025-10-25T17:03:52.480458096Z [inf]  2025-10-25 17:03:46,251 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480468095Z [inf]  2025-10-25 17:03:46,252 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480475373Z [inf]  2025-10-25 17:03:46,252 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480481915Z [inf]  2025-10-25 17:03:46,252 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480488720Z [inf]  2025-10-25 17:03:46,252 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480500754Z [inf]  2025-10-25 17:03:46,253 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480507526Z [inf]  2025-10-25 17:03:46,253 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480514395Z [inf]  2025-10-25 17:03:46,253 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:03:52.480520660Z [inf]  2025-10-25 17:03:46,353 - src.strategies.ict_strategy - DEBUG - YGGUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.480527263Z [inf]  2025-10-25 17:03:46,353 - src.strategies.ict_strategy - DEBUG - PYTHUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.480533160Z [inf]  2025-10-25 17:03:46,353 - src.strategies.ict_strategy - DEBUG - AINUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.480540523Z [inf]  2025-10-25 17:03:46,354 - src.strategies.ict_strategy - DEBUG - AEVOUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.480547653Z [inf]  2025-10-25 17:03:46,354 - src.strategies.ict_strategy - DEBUG - HEMIUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.480553325Z [inf]  2025-10-25 17:03:46,354 - src.strategies.ict_strategy - DEBUG - API3USDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.483059350Z [inf]  2025-10-25 17:03:46,354 - src.strategies.ict_strategy - DEBUG - CROSSUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.483075346Z [inf]  2025-10-25 17:03:46,354 - src.strategies.ict_strategy - DEBUG - VFYUSDT: 拒絕 - 1h 和 15m 都是 neutral
+2025-10-25T17:03:52.483086138Z [inf]  2025-10-25 17:03:46,354 - src.services.parallel_analyzer - INFO - 批次 4 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:03:52.483095271Z [inf]  2025-10-25 17:03:46,354 - src.services.parallel_analyzer - INFO - ✅ 批量分析完成: 分析 200 個交易對, 生成 0 個信號
+2025-10-25T17:03:52.483103829Z [inf]  2025-10-25 17:03:46,354 - __main__ - INFO - ℹ️  本週期未生成交易信號 (分析了 200 個交易對)
+2025-10-25T17:03:52.483114174Z [inf]  2025-10-25 17:03:46,354 - __main__ - INFO - 💡 提示：設置 LOG_LEVEL=DEBUG 查看拒絕原因詳情
+2025-10-25T17:03:52.483122421Z [inf]  2025-10-25 17:03:47,537 - __main__ - INFO - 📊 系統狀態: CPU 14.1% | 內存 41.4% | API 調用 5
+2025-10-25T17:03:52.483132441Z [inf]  2025-10-25 17:03:47,537 - src.ml.data_archiver - INFO - 所有缓冲区已刷新
+2025-10-25T17:03:52.483142374Z [inf]  2025-10-25 17:03:47,537 - __main__ - DEBUG - ✅ 數據已刷新到磁盤
+2025-10-25T17:03:52.483153178Z [inf]  2025-10-25 17:03:47,537 - __main__ - INFO - 
+2025-10-25T17:03:52.483164584Z [inf]  ✅ 週期完成，耗時: 2.41 秒
+2025-10-25T17:03:52.483171832Z [inf]  2025-10-25 17:03:47,537 - __main__ - INFO - ============================================================
+2025-10-25T17:03:52.483184452Z [inf]  2025-10-25 17:03:47,538 - __main__ - INFO - 
+2025-10-25T17:03:52.483194565Z [inf]  ⏳ 等待 60 秒...
+2025-10-25T17:04:01.101410649Z [inf]  2025-10-25 17:04:00,724 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-25T17:04:01.101416700Z [inf]  2025-10-25 17:04:00,963 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2025-10-25T17:04:03.000000000Z [inf]  Starting Container
+2025-10-25T17:04:04.790719464Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - ============================================================
+2025-10-25T17:04:04.790734040Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - ✅ 配置驗證通過
+2025-10-25T17:04:04.790742043Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - 
+2025-10-25T17:04:04.790748585Z [inf]  📋 系統配置:
+2025-10-25T17:04:04.790754507Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   binance_testnet: False
+2025-10-25T17:04:04.790761040Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   trading_enabled: True
+2025-10-25T17:04:04.790769528Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   max_positions: 3
+2025-10-25T17:04:04.790777227Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   cycle_interval: 60
+2025-10-25T17:04:04.790785360Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   leverage_range: 3x - 20x
+2025-10-25T17:04:04.790794333Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO -   margin_range: 3.0% - 13.0%
+2025-10-25T17:04:04.790803227Z [inf]  2025-10-25 17:04:03,751 - __main__ - INFO -   min_confidence: 55.00000000000001%
+2025-10-25T17:04:04.790812579Z [inf]  2025-10-25 17:04:03,751 - __main__ - INFO -   log_level: DEBUG
+2025-10-25T17:04:04.790820837Z [inf]  2025-10-25 17:04:03,751 - __main__ - INFO - 
+2025-10-25T17:04:04.790827733Z [inf]  🔧 初始化核心組件...
+2025-10-25T17:04:04.790835591Z [inf]  2025-10-25 17:04:03,846 - src.clients.binance_client - INFO - ✅ Binance API 連接成功
+2025-10-25T17:04:04.790850690Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - ============================================================
+2025-10-25T17:04:04.790856990Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - 🚀 高頻交易系統 v3.0 啟動中...
+2025-10-25T17:04:04.790863703Z [inf]  2025-10-25 17:04:03,750 - __main__ - INFO - 📌 代碼版本: 2025-10-25-v3.0 (期望值驅動+五維評分系統)
+2025-10-25T17:04:04.793339676Z [inf]  2025-10-25 17:04:03,846 - src.services.data_service - INFO - 初始化數據服務...
+2025-10-25T17:04:04.793347463Z [inf]  2025-10-25 17:04:03,949 - src.services.data_service - INFO - 成功加載 526 個交易對
+2025-10-25T17:04:04.793354572Z [inf]  2025-10-25 17:04:03,949 - src.services.data_service - INFO - ✅ 已加載 526 個 USDT 永續合約
+2025-10-25T17:04:04.793361655Z [inf]  2025-10-25 17:04:03,949 - src.services.timeframe_scheduler - INFO - 時間框架調度器初始化: 1h=3600s, 15m=900s, 5m=60s
+2025-10-25T17:04:04.793369096Z [inf]  2025-10-25 17:04:03,949 - src.services.timeframe_scheduler - INFO - 智能數據管理器初始化完成
+2025-10-25T17:04:04.793375654Z [inf]  2025-10-25 17:04:03,949 - __main__ - INFO - ✅ 智能數據管理器已就緒
+2025-10-25T17:04:04.793381724Z [inf]  2025-10-25 17:04:03,949 - __main__ - INFO -    - 1h: 每小時掃描（趨勢確認）
+2025-10-25T17:04:04.793389100Z [inf]  2025-10-25 17:04:03,949 - __main__ - INFO -    - 15m: 每15分鐘掃描（趨勢確認）
+2025-10-25T17:04:04.793395415Z [inf]  2025-10-25 17:04:03,949 - __main__ - INFO -    - 5m: 每分鐘掃描（入場信號）
+2025-10-25T17:04:04.793403092Z [inf]  2025-10-25 17:04:03,950 - src.services.parallel_analyzer - INFO - 並行分析器初始化: 32 個工作線程 (CPU 核心: 48)
+2025-10-25T17:04:04.793409814Z [inf]  2025-10-25 17:04:03,950 - src.managers.expectancy_calculator - INFO - 期望值计算器已初始化，窗口大小: 30
+2025-10-25T17:04:04.793416488Z [inf]  2025-10-25 17:04:03,950 - src.ml.data_archiver - INFO - 数据归档器已初始化，数据目录: ml_data
+2025-10-25T17:04:04.793423654Z [inf]  2025-10-25 17:04:03,950 - __main__ - INFO - ✅ 期望值計算器已就緒 (窗口大小: 30 筆交易)
+2025-10-25T17:04:04.793429923Z [inf]  2025-10-25 17:04:03,950 - __main__ - INFO - ✅ 數據歸檔器已就緒 (目錄: ml_data)
+2025-10-25T17:04:04.793436646Z [inf]  2025-10-25 17:04:03,951 - src.ml.model_trainer - WARNING - 模型文件不存在: data/models/xgboost_model.pkl
+2025-10-25T17:04:04.793444592Z [inf]  2025-10-25 17:04:03,951 - src.ml.predictor - INFO - 未找到已訓練模型，嘗試自動訓練...
+2025-10-25T17:04:04.793451212Z [inf]  2025-10-25 17:04:03,951 - src.ml.data_processor - WARNING - 訓練數據文件不存在: data/trades.json
+2025-10-25T17:04:04.793458676Z [inf]  2025-10-25 17:04:03,952 - src.ml.model_trainer - INFO - 訓練數據不足: 0/100
+2025-10-25T17:04:04.793464570Z [inf]  2025-10-25 17:04:03,952 - src.ml.predictor - WARNING - ⚠️  ML 模型未就緒，將使用傳統策略
+2025-10-25T17:04:04.793485985Z [inf]  2025-10-25 17:04:03,952 - __main__ - WARNING - ⚠️  ML 預測器未就緒，使用傳統策略
+2025-10-25T17:04:04.793493600Z [inf]  2025-10-25 17:04:03,953 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-10-25T17:04:04.793499884Z [inf]  2025-10-25 17:04:03,953 - discord.client - DEBUG - on_ready has successfully been registered as an event
+2025-10-25T17:04:04.793505691Z [inf]  2025-10-25 17:04:03,953 - discord.client - INFO - logging in using static token
+2025-10-25T17:04:04.793512076Z [inf]  2025-10-25 17:04:04,342 - discord.http - DEBUG - GET https://discord.com/api/v10/users/@me with None has returned 200
+2025-10-25T17:04:04.793518597Z [inf]  2025-10-25 17:04:04,342 - discord.http - DEBUG - GET /users/@me has found its initial rate limit bucket hash (78bb8553d9352a5a2f89f9def401287a).
+2025-10-25T17:04:04.793524778Z [inf]  2025-10-25 17:04:04,342 - discord.http - DEBUG - GET https://discord.com/api/v10/users/@me has received {'id': '1052200352327413810', 'username': 'winiswin', 'avatar': '459976635fb37e45870dadda38aecc2e', 'discriminator': '6842', 'public_flags': 0, 'flags': 0, 'bot': True, 'banner': None, 'accent_color': None, 'global_name': None, 'avatar_decoration_data': None, 'collectibles': None, 'display_name_styles': None, 'banner_color': None, 'clan': None, 'primary_guild': None, 'mfa_enabled': False, 'locale': 'en-US', 'premium_type': 0, 'email': None, 'verified': True, 'bio': ''}
+2025-10-25T17:04:04.888563222Z [inf]  2025-10-25 17:04:04,884 - discord.http - DEBUG - GET https://discord.com/api/v10/oauth2/applications/@me with None has returned 200
+2025-10-25T17:04:04.888579376Z [inf]  2025-10-25 17:04:04,884 - discord.http - DEBUG - GET /oauth2/applications/@me has found its initial rate limit bucket hash (d28a133af187e91d71d96a223467ce49).
+2025-10-25T17:04:04.888597252Z [inf]  2025-10-25 17:04:04,884 - discord.http - DEBUG - GET https://discord.com/api/v10/oauth2/applications/@me has received {'id': '1052200352327413810', 'name': 'Tradingbot', 'icon': '459976635fb37e45870dadda38aecc2e', 'description': '', 'type': None, 'bot': {'id': '1052200352327413810', 'username': 'winiswin', 'avatar': '459976635fb37e45870dadda38aecc2e', 'discriminator': '6842', 'public_flags': 0, 'flags': 0, 'bot': True, 'banner': None, 'accent_color': None, 'global_name': None, 'avatar_decoration_data': None, 'collectibles': None, 'display_name_styles': None, 'banner_color': None, 'clan': None, 'primary_guild': None}, 'summary': '', 'is_monetized': False, 'is_verified': False, 'is_discoverable': False, 'bot_public': True, 'bot_require_code_grant': False, 'install_params': {'scopes': ['applications.commands', 'bot'], 'permissions': '4292493394837503'}, 'integration_types_config': {'0': {'oauth2_install_params': {'scopes': ['applications.commands', 'bot'], 'permissions': '4292493394837503'}}, '1': {'oauth2_install_params': {'scopes': ['applications.commands'], 'permissions': '0'}}}, 'verify_key': '5f84f20bc9708a56ee89e0fefe002c96ee1ab81bbf836c7bed2e3b823fdfd1aa', 'flags': 27828224, 'hook': True, 'storefront_available': False, 'redirect_uris': ['https://discord.gg/eBUzsdNQ', None], 'interactions_endpoint_url': None, 'role_connections_verification_url': None, 'owner': {'id': '511108519378812929', 'username': '1939374', 'avatar': 'baaa3f73b5154cdc3f3a367b3aafa0b6', 'discriminator': '0', 'public_flags': 0, 'flags': 0, 'banner': None, 'accent_color': 1171298, 'global_name': 'JCTT', 'avatar_decoration_data': None, 'collectibles': None, 'display_name_styles': None, 'banner_color': '#11df62', 'clan': None, 'primary_guild': None}, 'approximate_guild_count': 0, 'approximate_user_install_count': 1, 'approximate_user_authorization_count': 1, 'interactions_event_types': [], 'interactions_version': 1, 'explicit_content_filter': 0, 'rpc_application_state': 0, 'store_application_state': 1, 'verification_state': 1, 'integration_public': True, 'integration_require_code_grant': False, 'discoverability_state': 1, 'discovery_eligibility_flags': 480, 'monetization_state': 1, 'verification_eligibility_flags': 91036, 'monetization_eligibility_flags': 181988, 'bot_approximate_guild_count': 0, 'team': None, 'internal_guild_restriction': 2, 'approved_consoles': [], 'pricing_localization_strategy': 'localized_price_sets'}
+2025-10-25T17:04:05.108014408Z [inf]  2025-10-25 17:04:04,925 - __main__ - INFO - 
+2025-10-25T17:04:05.108020609Z [inf]  收到信號 15
+2025-10-25T17:04:05.858397413Z [inf]  2025-10-25 17:04:05,853 - discord.gateway - DEBUG - Created websocket connected to wss://gateway.discord.gg/
+2025-10-25T17:04:05.858407532Z [inf]  2025-10-25 17:04:05,856 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 10, 'd': {'heartbeat_interval': 41250, '_trace': ['["gateway-prd-arm-us-east1-c-10t7",{"micros":0.0}]']}}
+2025-10-25T17:04:05.860537552Z [inf]  2025-10-25 17:04:05,858 - discord.gateway - DEBUG - Shard ID None has sent the IDENTIFY payload.
+2025-10-25T17:04:05.960827419Z [inf]  2025-10-25 17:04:05,955 - src.monitoring.performance_monitor - INFO - 啟動性能監控，間隔 300 秒
+2025-10-25T17:04:06.086791936Z [inf]  2025-10-25 17:04:06,051 - __main__ - INFO - 💰 賬戶餘額: $47.02 USDT
+2025-10-25T17:04:06.086798928Z [inf]  2025-10-25 17:04:06,051 - __main__ - INFO - 
+2025-10-25T17:04:06.086806248Z [inf]  ============================================================
+2025-10-25T17:04:06.086811795Z [inf]  2025-10-25 17:04:06,051 - __main__ - INFO - ✅ 系統初始化完成
+2025-10-25T17:04:06.086818666Z [inf]  2025-10-25 17:04:06,051 - __main__ - INFO - ============================================================
+2025-10-25T17:04:06.086824719Z [inf]  2025-10-25 17:04:06,052 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-25T17:04:06.086832636Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - 
+2025-10-25T17:04:06.086839434Z [inf]  🔢 週期 #1
+2025-10-25T17:04:06.086846698Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - 
+2025-10-25T17:04:06.086852860Z [inf]  ============================================================
+2025-10-25T17:04:06.086859081Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - 🔄 交易週期開始: 2025-10-25 17:04:06
+2025-10-25T17:04:06.086864682Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - ============================================================
+2025-10-25T17:04:06.086870938Z [inf]  2025-10-25 17:04:06,052 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.086876565Z [inf]  2025-10-25 17:04:06,052 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.086885611Z [inf]  2025-10-25 17:04:06,052 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.086901810Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - ⏰ 時間框架調度狀態:
+2025-10-25T17:04:06.086910708Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO -   1h: 間隔=3600秒, 上次掃描=從未掃描, 下次掃描=立即, 需掃描=是
+2025-10-25T17:04:06.088003018Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO -   15m: 間隔=900秒, 上次掃描=從未掃描, 下次掃描=立即, 需掃描=是
+2025-10-25T17:04:06.088010736Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO -   5m: 間隔=60秒, 上次掃描=從未掃描, 下次掃描=立即, 需掃描=是
+2025-10-25T17:04:06.088017060Z [inf]  2025-10-25 17:04:06,052 - __main__ - INFO - 🔍 開始掃描市場，目標選擇前 200 個高流動性交易對...
+2025-10-25T17:04:06.088022536Z [inf]  2025-10-25 17:04:06,052 - src.services.data_service - INFO - 開始掃描 526 個交易對（流動性排序）...
+2025-10-25T17:04:06.169666847Z [inf]  2025-10-25 17:04:06,140 - src.services.data_service - INFO - ✅ 市場掃描完成: 從 526 個交易對中選擇 流動性最高的前 200 個 (平均24h交易額: $166,142,884 USDT)
+2025-10-25T17:04:06.169674208Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO - 📊 ✅ 已選擇 200 個高流動性交易對 (平均24h交易額: $166,142,884 USDT)
+2025-10-25T17:04:06.169679512Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO - 📈 流動性最高的前10個交易對:
+2025-10-25T17:04:06.169696590Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #1 BTCUSDT: 111285.9000 USDT (24h交易額: $5,923,607,527)
+2025-10-25T17:04:06.169702589Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #2 ETHUSDT: 3931.3800 USDT (24h交易額: $5,778,798,955)
+2025-10-25T17:04:06.169708235Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #3 SOLUSDT: 191.7500 USDT (24h交易額: $1,924,258,952)
+2025-10-25T17:04:06.169713161Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #4 GIGGLEUSDT: 236.1300 USDT (24h交易額: $1,750,004,992)
+2025-10-25T17:04:06.169718048Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #5 XRPUSDT: 2.5886 USDT (24h交易額: $1,325,060,735)
+2025-10-25T17:04:06.169722757Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #6 HUSDT: 0.3532 USDT (24h交易額: $1,240,845,097)
+2025-10-25T17:04:06.169728111Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #7 COAIUSDT: 7.3790 USDT (24h交易額: $902,795,106)
+2025-10-25T17:04:06.169733464Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #8 VIRTUALUSDT: 1.3067 USDT (24h交易額: $720,890,921)
+2025-10-25T17:04:06.169753014Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #9 BNBUSDT: 1111.5200 USDT (24h交易額: $623,681,683)
+2025-10-25T17:04:06.169758555Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO -   #10 DOGEUSDT: 0.1965 USDT (24h交易額: $621,443,147)
+2025-10-25T17:04:06.169763397Z [inf]  2025-10-25 17:04:06,140 - __main__ - INFO - 🔍 使用 32 核心並行分析 200 個高流動性交易對 (已按流動性排序)...
+2025-10-25T17:04:06.171329186Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.171340069Z [inf]  2025-10-25 17:04:06,140 - src.services.parallel_analyzer - INFO - 開始批量分析 200 個交易對
+2025-10-25T17:04:06.171345659Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.171359768Z [inf]  2025-10-25 17:04:06,141 - src.services.parallel_analyzer - INFO - 批次配置: 64 個/批次, 共 4 批次
+2025-10-25T17:04:06.171368580Z [inf]  2025-10-25 17:04:06,141 - src.services.parallel_analyzer - INFO - 處理批次 1/4 (64 個交易對)
+2025-10-25T17:04:06.171377069Z [inf]  2025-10-25 17:04:06,141 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.171384646Z [inf]  2025-10-25 17:04:06,141 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.171392157Z [inf]  2025-10-25 17:04:06,141 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.171398894Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.171406151Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.171412883Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.171421511Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.171428849Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.171436545Z [inf]  2025-10-25 17:04:06,142 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.171443887Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172754961Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172763159Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.172771168Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.172777851Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172784229Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.172790955Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.172799544Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172805286Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.172813121Z [inf]  2025-10-25 17:04:06,143 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.172820213Z [inf]  2025-10-25 17:04:06,144 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172827042Z [inf]  2025-10-25 17:04:06,144 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.172832791Z [inf]  2025-10-25 17:04:06,144 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.172839012Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.172845438Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.172854455Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.174079424Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.174087070Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.174091904Z [inf]  2025-10-25 17:04:06,145 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.174096086Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.174100999Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.174105286Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.174110645Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.174116455Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.174122545Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.174126744Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.174132011Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.174136939Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.174141524Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.174146532Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.174151434Z [inf]  2025-10-25 17:04:06,146 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.176441495Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.176454292Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.176461574Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.176468781Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.176475625Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.176485227Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.176491041Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.176496464Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.176503602Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.176509718Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.176516762Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.176521946Z [inf]  2025-10-25 17:04:06,147 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.176527068Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.176531833Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.176536986Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178349002Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.178358715Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.178360220Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178365290Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.178405935Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178410647Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.178414959Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.178419275Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178425050Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.178429072Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.178433336Z [inf]  2025-10-25 17:04:06,148 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178438267Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.178442605Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.178447127Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.178451554Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179374261Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179385139Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.179398441Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.179406647Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179414122Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.179421972Z [inf]  2025-10-25 17:04:06,149 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.179428877Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179436561Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.179443441Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.179451735Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179459014Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.179468188Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.179475539Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.179482320Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.179491386Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.180723512Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.180733503Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.180738284Z [inf]  2025-10-25 17:04:06,150 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.180743870Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.180749513Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.180754485Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.180759011Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.180763614Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.180802347Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.180808916Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.180813321Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.180817676Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.180822512Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.180828499Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.180834122Z [inf]  2025-10-25 17:04:06,151 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.182403958Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.182416054Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.182429059Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.182436931Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.182444013Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.182452100Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.182460007Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.182467399Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.182474978Z [inf]  2025-10-25 17:04:06,152 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.182482962Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.182490754Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.182499062Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.182505934Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.182513476Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.182520824Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183633697Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.183642346Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.183648101Z [inf]  2025-10-25 17:04:06,153 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183654437Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.183660212Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.183668322Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.183673331Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183722255Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183732547Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.183741059Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.183748811Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183756082Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.183763231Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.183769075Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.183776075Z [inf]  2025-10-25 17:04:06,154 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185237509Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185246061Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.185251968Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.185256954Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185262259Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.185267355Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.185272177Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185276630Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.185281834Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.185287208Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185291190Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.185296071Z [inf]  2025-10-25 17:04:06,155 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.185301473Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.185306994Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.185312203Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.186183502Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.186188939Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.186193751Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.186197476Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.186201271Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.186205047Z [inf]  2025-10-25 17:04:06,156 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.199553630Z [inf]  2025-10-25 17:04:06,193 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.199564398Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.199574514Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.199582763Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.199591026Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.199599507Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.199606487Z [inf]  2025-10-25 17:04:06,194 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.199614681Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.199623753Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.199632070Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.199643212Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.199651924Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.199660221Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.199668856Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.199677327Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.200845473Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.200856046Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.200863174Z [inf]  2025-10-25 17:04:06,195 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.200869895Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.200875546Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.200882043Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.200887765Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.200893099Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.200898419Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.200903699Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.200908226Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.200913076Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.200919811Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.200924724Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.200933824Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.201993439Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.202000067Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.202010365Z [inf]  2025-10-25 17:04:06,196 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.202018046Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.202023312Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.202029233Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.202034819Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 1h 需要更新
+2025-10-25T17:04:06.202039554Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 15m 需要更新
+2025-10-25T17:04:06.202043826Z [inf]  2025-10-25 17:04:06,197 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:06.274269264Z [inf]  2025-10-25 17:04:06,263 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.274282751Z [inf]  2025-10-25 17:04:06,268 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2025-10-25T17:04:06.325258389Z [inf]  2025-10-25 17:04:06,320 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749648925Z [inf]  2025-10-25 17:04:06,383 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749654639Z [inf]  2025-10-25 17:04:06,387 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749659221Z [inf]  2025-10-25 17:04:06,391 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749663491Z [inf]  2025-10-25 17:04:06,394 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749669819Z [inf]  2025-10-25 17:04:06,397 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749676522Z [inf]  2025-10-25 17:04:06,401 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749682800Z [inf]  2025-10-25 17:04:06,405 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749689309Z [inf]  2025-10-25 17:04:06,407 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749693711Z [inf]  2025-10-25 17:04:06,409 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749698479Z [inf]  2025-10-25 17:04:06,412 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749704113Z [inf]  2025-10-25 17:04:06,414 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749708979Z [inf]  2025-10-25 17:04:06,416 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749715435Z [inf]  2025-10-25 17:04:06,419 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749721022Z [inf]  2025-10-25 17:04:06,421 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749726368Z [inf]  2025-10-25 17:04:06,423 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.749731285Z [inf]  2025-10-25 17:04:06,426 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750278577Z [inf]  2025-10-25 17:04:06,428 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750283820Z [inf]  2025-10-25 17:04:06,430 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750288594Z [inf]  2025-10-25 17:04:06,433 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750293113Z [inf]  2025-10-25 17:04:06,435 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750298308Z [inf]  2025-10-25 17:04:06,437 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750303230Z [inf]  2025-10-25 17:04:06,439 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750307929Z [inf]  2025-10-25 17:04:06,442 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750313766Z [inf]  2025-10-25 17:04:06,444 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750318416Z [inf]  2025-10-25 17:04:06,446 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750323799Z [inf]  2025-10-25 17:04:06,449 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750329031Z [inf]  2025-10-25 17:04:06,457 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750334722Z [inf]  2025-10-25 17:04:06,459 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750338828Z [inf]  2025-10-25 17:04:06,462 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750343765Z [inf]  2025-10-25 17:04:06,464 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750349191Z [inf]  2025-10-25 17:04:06,466 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.750354178Z [inf]  2025-10-25 17:04:06,468 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751570305Z [inf]  2025-10-25 17:04:06,495 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751577127Z [inf]  2025-10-25 17:04:06,497 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751581973Z [inf]  2025-10-25 17:04:06,499 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751586084Z [inf]  2025-10-25 17:04:06,501 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751591138Z [inf]  2025-10-25 17:04:06,506 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751595690Z [inf]  2025-10-25 17:04:06,509 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751607405Z [inf]  2025-10-25 17:04:06,471 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751613556Z [inf]  2025-10-25 17:04:06,473 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751619297Z [inf]  2025-10-25 17:04:06,476 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751624917Z [inf]  2025-10-25 17:04:06,478 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751631737Z [inf]  2025-10-25 17:04:06,480 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751638905Z [inf]  2025-10-25 17:04:06,483 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751644826Z [inf]  2025-10-25 17:04:06,485 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751649161Z [inf]  2025-10-25 17:04:06,487 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751653996Z [inf]  2025-10-25 17:04:06,490 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.751658566Z [inf]  2025-10-25 17:04:06,492 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752681471Z [inf]  2025-10-25 17:04:06,536 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752685249Z [inf]  2025-10-25 17:04:06,511 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752689469Z [inf]  2025-10-25 17:04:06,539 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752692835Z [inf]  2025-10-25 17:04:06,513 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752695461Z [inf]  2025-10-25 17:04:06,541 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752698456Z [inf]  2025-10-25 17:04:06,516 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752703191Z [inf]  2025-10-25 17:04:06,518 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752707074Z [inf]  2025-10-25 17:04:06,520 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752711903Z [inf]  2025-10-25 17:04:06,543 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752712128Z [inf]  2025-10-25 17:04:06,523 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.752717903Z [inf]  2025-10-25 17:04:06,525 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752718071Z [inf]  2025-10-25 17:04:06,546 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.752722724Z [inf]  2025-10-25 17:04:06,527 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752726753Z [inf]  2025-10-25 17:04:06,529 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752730950Z [inf]  2025-10-25 17:04:06,532 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.752735457Z [inf]  2025-10-25 17:04:06,534 - src.services.timeframe_scheduler - DEBUG - 標記 1h 已掃描
+2025-10-25T17:04:06.754036718Z [inf]  2025-10-25 17:04:06,585 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754037991Z [inf]  2025-10-25 17:04:06,566 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754042438Z [inf]  2025-10-25 17:04:06,587 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754047651Z [inf]  2025-10-25 17:04:06,568 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754049262Z [inf]  2025-10-25 17:04:06,589 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754053180Z [inf]  2025-10-25 17:04:06,554 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754056335Z [inf]  2025-10-25 17:04:06,572 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754056500Z [inf]  2025-10-25 17:04:06,570 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754067954Z [inf]  2025-10-25 17:04:06,575 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754071584Z [inf]  2025-10-25 17:04:06,556 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754074510Z [inf]  2025-10-25 17:04:06,577 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754079536Z [inf]  2025-10-25 17:04:06,558 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754081479Z [inf]  2025-10-25 17:04:06,580 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754085900Z [inf]  2025-10-25 17:04:06,561 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754088616Z [inf]  2025-10-25 17:04:06,582 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.754093112Z [inf]  2025-10-25 17:04:06,563 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755155600Z [inf]  2025-10-25 17:04:06,611 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755162758Z [inf]  2025-10-25 17:04:06,613 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755165581Z [inf]  2025-10-25 17:04:06,592 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755169674Z [inf]  2025-10-25 17:04:06,616 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755173976Z [inf]  2025-10-25 17:04:06,594 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755176827Z [inf]  2025-10-25 17:04:06,618 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755183212Z [inf]  2025-10-25 17:04:06,597 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755183914Z [inf]  2025-10-25 17:04:06,620 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755190135Z [inf]  2025-10-25 17:04:06,622 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755190452Z [inf]  2025-10-25 17:04:06,599 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755196515Z [inf]  2025-10-25 17:04:06,625 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755199454Z [inf]  2025-10-25 17:04:06,601 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755202555Z [inf]  2025-10-25 17:04:06,628 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755206002Z [inf]  2025-10-25 17:04:06,604 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755210617Z [inf]  2025-10-25 17:04:06,606 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.755216235Z [inf]  2025-10-25 17:04:06,608 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756223300Z [inf]  2025-10-25 17:04:06,630 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756235242Z [inf]  2025-10-25 17:04:06,632 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756247019Z [inf]  2025-10-25 17:04:06,640 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756253720Z [inf]  2025-10-25 17:04:06,647 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756261095Z [inf]  2025-10-25 17:04:06,649 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756268423Z [inf]  2025-10-25 17:04:06,652 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756275532Z [inf]  2025-10-25 17:04:06,654 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756282470Z [inf]  2025-10-25 17:04:06,657 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756289041Z [inf]  2025-10-25 17:04:06,659 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756295595Z [inf]  2025-10-25 17:04:06,662 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756302685Z [inf]  2025-10-25 17:04:06,664 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756312286Z [inf]  2025-10-25 17:04:06,666 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756318616Z [inf]  2025-10-25 17:04:06,668 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756325535Z [inf]  2025-10-25 17:04:06,671 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756332679Z [inf]  2025-10-25 17:04:06,673 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.756339506Z [inf]  2025-10-25 17:04:06,675 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757894078Z [inf]  2025-10-25 17:04:06,678 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757901720Z [inf]  2025-10-25 17:04:06,680 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757907346Z [inf]  2025-10-25 17:04:06,683 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757914929Z [inf]  2025-10-25 17:04:06,685 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757922258Z [inf]  2025-10-25 17:04:06,687 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757928748Z [inf]  2025-10-25 17:04:06,692 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757935658Z [inf]  2025-10-25 17:04:06,694 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757941760Z [inf]  2025-10-25 17:04:06,696 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757947714Z [inf]  2025-10-25 17:04:06,699 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757954840Z [inf]  2025-10-25 17:04:06,701 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757961130Z [inf]  2025-10-25 17:04:06,704 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757967196Z [inf]  2025-10-25 17:04:06,706 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757972666Z [inf]  2025-10-25 17:04:06,708 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.757978352Z [inf]  2025-10-25 17:04:06,711 - src.services.timeframe_scheduler - DEBUG - 標記 15m 已掃描
+2025-10-25T17:04:06.935845359Z [inf]  2025-10-25 17:04:06,873 - src.strategies.ict_strategy - DEBUG - BTCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:06.935851297Z [inf]  2025-10-25 17:04:06,886 - src.strategies.ict_strategy - DEBUG - ETHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:06.935864345Z [inf]  2025-10-25 17:04:06,899 - src.strategies.ict_strategy - DEBUG - SOLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:06.950436658Z [inf]  2025-10-25 17:04:06,921 - src.strategies.ict_strategy - DEBUG - GIGGLEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:06.982111614Z [inf]  2025-10-25 17:04:06,925 - src.strategies.ict_strategy - DEBUG - XRPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.028774605Z [inf]  2025-10-25 17:04:06,969 - src.strategies.ict_strategy - DEBUG - COAIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.028780337Z [inf]  2025-10-25 17:04:06,972 - src.strategies.ict_strategy - DEBUG - BNBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.064076888Z [inf]  2025-10-25 17:04:06,975 - src.strategies.ict_strategy - DEBUG - VIRTUALUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.087789833Z [inf]  2025-10-25 17:04:06,978 - src.strategies.ict_strategy - DEBUG - HUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.121226618Z [inf]  2025-10-25 17:04:07,002 - src.strategies.ict_strategy - DEBUG - DOGEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.121235740Z [inf]  2025-10-25 17:04:07,005 - src.strategies.ict_strategy - DEBUG - FUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.165162103Z [inf]  2025-10-25 17:04:07,041 - src.strategies.ict_strategy - DEBUG - EVAAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.179014794Z [inf]  2025-10-25 17:04:07,055 - src.strategies.ict_strategy - DEBUG - ASTERUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.194885221Z [inf]  2025-10-25 17:04:07,059 - src.strategies.ict_strategy - DEBUG - ZECUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.229979315Z [inf]  2025-10-25 17:04:07,062 - src.strategies.ict_strategy - DEBUG - APRUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.259328988Z [inf]  2025-10-25 17:04:07,083 - src.strategies.ict_strategy - DEBUG - 币安人生USDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.260542932Z [inf]  2025-10-25 17:04:07,120 - src.strategies.ict_strategy - DEBUG - AVNTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.281592595Z [inf]  2025-10-25 17:04:07,141 - src.strategies.ict_strategy - DEBUG - BLESSUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.336263396Z [inf]  2025-10-25 17:04:07,144 - src.strategies.ict_strategy - DEBUG - KGENUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.344516498Z [inf]  2025-10-25 17:04:07,147 - src.strategies.ict_strategy - DEBUG - HYPEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.344521011Z [inf]  2025-10-25 17:04:07,151 - src.strategies.ict_strategy - DEBUG - SUIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.825922161Z [inf]  2025-10-25 17:04:07,172 - src.strategies.ict_strategy - DEBUG - 4USDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.825932275Z [inf]  2025-10-25 17:04:07,176 - src.strategies.ict_strategy - DEBUG - EDENUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825941458Z [inf]  2025-10-25 17:04:07,188 - src.strategies.ict_strategy - DEBUG - PIPPINUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825947769Z [inf]  2025-10-25 17:04:07,227 - src.strategies.ict_strategy - DEBUG - 1000PEPEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825956387Z [inf]  2025-10-25 17:04:07,239 - src.strategies.ict_strategy - DEBUG - ADAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825963162Z [inf]  2025-10-25 17:04:07,239 - src.strategies.ict_strategy - DEBUG - ENAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.825970335Z [inf]  2025-10-25 17:04:07,259 - src.strategies.ict_strategy - DEBUG - PUMPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825977553Z [inf]  2025-10-25 17:04:07,290 - src.strategies.ict_strategy - DEBUG - XPLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825983953Z [inf]  2025-10-25 17:04:07,294 - src.strategies.ict_strategy - DEBUG - LINKUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.825991231Z [inf]  2025-10-25 17:04:07,298 - src.strategies.ict_strategy - DEBUG - AVAXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.825997547Z [inf]  2025-10-25 17:04:07,302 - src.strategies.ict_strategy - DEBUG - TRXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.828496357Z [inf]  2025-10-25 17:04:07,305 - src.strategies.ict_strategy - DEBUG - XPINUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.828503333Z [inf]  2025-10-25 17:04:07,328 - src.strategies.ict_strategy - DEBUG - RIVERUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.828508852Z [inf]  2025-10-25 17:04:07,332 - src.strategies.ict_strategy - DEBUG - AIAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.828516516Z [inf]  2025-10-25 17:04:07,355 - src.strategies.ict_strategy - DEBUG - WLDUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.828523371Z [inf]  2025-10-25 17:04:07,359 - src.strategies.ict_strategy - DEBUG - AIXBTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.828531085Z [inf]  2025-10-25 17:04:07,393 - src.strategies.ict_strategy - DEBUG - DEGOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.828542018Z [inf]  2025-10-25 17:04:07,419 - src.strategies.ict_strategy - DEBUG - TAOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.828549381Z [inf]  2025-10-25 17:04:07,439 - src.strategies.ict_strategy - DEBUG - DOODUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.828556956Z [inf]  2025-10-25 17:04:07,444 - src.strategies.ict_strategy - DEBUG - ZKCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.828564101Z [inf]  2025-10-25 17:04:07,450 - src.strategies.ict_strategy - DEBUG - BCHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.828570206Z [inf]  2025-10-25 17:04:07,462 - src.strategies.ict_strategy - DEBUG - SPKUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.829524244Z [inf]  2025-10-25 17:04:07,467 - src.strategies.ict_strategy - DEBUG - TURTLEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829529607Z [inf]  2025-10-25 17:04:07,487 - src.strategies.ict_strategy - DEBUG - BLUAIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829535637Z [inf]  2025-10-25 17:04:07,525 - src.strategies.ict_strategy - DEBUG - LTCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829541051Z [inf]  2025-10-25 17:04:07,537 - src.strategies.ict_strategy - DEBUG - YBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829546663Z [inf]  2025-10-25 17:04:07,540 - src.strategies.ict_strategy - DEBUG - WLFIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829551984Z [inf]  2025-10-25 17:04:07,575 - src.strategies.ict_strategy - DEBUG - WIFUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829556724Z [inf]  2025-10-25 17:04:07,576 - src.strategies.ict_strategy - DEBUG - PENGUUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829561892Z [inf]  2025-10-25 17:04:07,577 - src.strategies.ict_strategy - DEBUG - FARTCOINUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.829567165Z [inf]  2025-10-25 17:04:07,600 - src.strategies.ict_strategy - DEBUG - SNXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.829571502Z [inf]  2025-10-25 17:04:07,610 - src.strategies.ict_strategy - DEBUG - PUMPBTCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.829576067Z [inf]  2025-10-25 17:04:07,632 - src.strategies.ict_strategy - DEBUG - FFUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831511296Z [inf]  2025-10-25 17:04:07,635 - src.strategies.ict_strategy - DEBUG - LIGHTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.831517537Z [inf]  2025-10-25 17:04:07,646 - src.strategies.ict_strategy - DEBUG - OPENUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831523228Z [inf]  2025-10-25 17:04:07,700 - src.strategies.ict_strategy - DEBUG - NEARUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.831527672Z [inf]  2025-10-25 17:04:07,703 - src.strategies.ict_strategy - DEBUG - METUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831532374Z [inf]  2025-10-25 17:04:07,711 - src.strategies.ict_strategy - DEBUG - AAVEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831536796Z [inf]  2025-10-25 17:04:07,714 - src.strategies.ict_strategy - DEBUG - PAXGUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:07.831542489Z [inf]  2025-10-25 17:04:07,731 - src.strategies.ict_strategy - DEBUG - BASUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831546983Z [inf]  2025-10-25 17:04:07,752 - src.strategies.ict_strategy - DEBUG - UNIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:07.831551551Z [inf]  2025-10-25 17:04:07,753 - src.strategies.ict_strategy - DEBUG - ENSOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:07.831556004Z [inf]  2025-10-25 17:04:07,763 - src.services.parallel_analyzer - INFO - 批次 1 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:04:07.831560262Z [inf]  2025-10-25 17:04:07,763 - src.services.parallel_analyzer - INFO - 處理批次 2/4 (64 個交易對)
+2025-10-25T17:04:07.833101837Z [inf]  2025-10-25 17:04:07,764 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833107861Z [inf]  2025-10-25 17:04:07,764 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833113819Z [inf]  2025-10-25 17:04:07,764 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833119543Z [inf]  2025-10-25 17:04:07,764 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833126270Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833136428Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833142241Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833148009Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833155622Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833161344Z [inf]  2025-10-25 17:04:07,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833167341Z [inf]  2025-10-25 17:04:07,766 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833173027Z [inf]  2025-10-25 17:04:07,766 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833178399Z [inf]  2025-10-25 17:04:07,766 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833184075Z [inf]  2025-10-25 17:04:07,766 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.833189321Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834799545Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834807711Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834814069Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834820050Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834825708Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834833292Z [inf]  2025-10-25 17:04:07,769 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834838767Z [inf]  2025-10-25 17:04:07,769 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834845486Z [inf]  2025-10-25 17:04:07,769 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834847557Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834850947Z [inf]  2025-10-25 17:04:07,769 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834854520Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834861126Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834867652Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834877414Z [inf]  2025-10-25 17:04:07,767 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.834889474Z [inf]  2025-10-25 17:04:07,768 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836080524Z [inf]  2025-10-25 17:04:07,769 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836091368Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836098509Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836105060Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836111821Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836119066Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836125624Z [inf]  2025-10-25 17:04:07,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836132257Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836167144Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836175890Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836181636Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836189380Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836197116Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836205277Z [inf]  2025-10-25 17:04:07,771 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.836212322Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839168730Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839178834Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839188170Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839194463Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839200857Z [inf]  2025-10-25 17:04:07,772 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839207470Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839214856Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839220399Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839225272Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839231985Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839241440Z [inf]  2025-10-25 17:04:07,773 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839247044Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839252933Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839262017Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.839267570Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.840757427Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.840768167Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.840776615Z [inf]  2025-10-25 17:04:07,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.840784116Z [inf]  2025-10-25 17:04:07,775 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:07.840790808Z [inf]  2025-10-25 17:04:07,775 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': 'READY', 's': 1, 'op': 0, 'd': {'v': 10, 'user_settings': {}, 'user': {'verified': True, 'username': 'winiswin', 'primary_guild': None, 'mfa_enabled': False, 'id': '1052200352327413810', 'global_name': None, 'flags': 0, 'email': None, 'discriminator': '6842', 'clan': None, 'bot': True, 'avatar': '459976635fb37e45870dadda38aecc2e'}, 'session_type': 'normal', 'session_id': 'e4b111fcedf8dc2b3c58bd14ebfb12ee', 'resume_gateway_url': 'wss://gateway-us-east1-c.discord.gg', 'relationships': [], 'private_channels': [], 'presences': [], 'guilds': [], 'guild_join_requests': [], 'geo_ordered_rtc_regions': ['singapore', 'hongkong', 'india', 'japan', 'dubai'], 'game_relationships': [], 'auth': {}, 'application': {'id': '1052200352327413810', 'flags': 27828224}, '_trace': ['["gateway-prd-arm-us-east1-c-10t7",{"micros":1482773,"calls":["id_created",{"micros":504,"calls":[]},"session_lookup_time",{"micros":3163,"calls":[]},"session_lookup_finished",{"micros":11,"calls":[]},"discord-sessions-prd-2-116",{"micros":1478748,"calls":["start_session",{"micros":1470739,"calls":["discord-api-rpc-545958f7c5-vq9sw",{"micros":1396784,"calls":["get_user",{"micros":10440},"get_guilds",{"micros":5513},"send_scheduled_deletion_message",{"micros":14},"guild_join_requests",{"micros":3},"authorized_ip_coro",{"micros":10},"pending_payments",{"micros":49664},"apex_experiments",{"micros":8395},"user_activities",{"micros":5},"played_application_ids",{"micros":3},"linked_users",{"micros":3}]}]},"starting_guild_connect",{"micros":30,"calls":[]},"presence_started",{"micros":6827,"calls":[]},"guilds_started",{"micros":1,"calls":[]},"lobbies_started",{"micros":1,"calls":[]},"guilds_connect",{"micros":0,"calls":[]},"presence_connect",{"micros":1132,"calls":[]},"connect_finished",{"micros":1139,"calls":[]},"build_ready",{"micros":8,"calls":[]},"clean_ready",{"micros":1,"calls":[]},"optimize_ready",{"micros":0,"calls":[]},"split_ready",{"micros":1,"calls":[]}]}]}]']}}
+2025-10-25T17:04:07.842431954Z [inf]  2025-10-25 17:04:07,775 - discord.client - DEBUG - Dispatching event socket_event_type
+2025-10-25T17:04:07.842440501Z [inf]  2025-10-25 17:04:07,775 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: e4b111fcedf8dc2b3c58bd14ebfb12ee).
+2025-10-25T17:04:07.842447143Z [inf]  2025-10-25 17:04:07,775 - discord.client - DEBUG - Dispatching event connect
+2025-10-25T17:04:08.887785897Z [inf]  2025-10-25 17:04:08,631 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:08.887796900Z [inf]  2025-10-25 17:04:08,641 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887804525Z [inf]  2025-10-25 17:04:08,645 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887853813Z [inf]  2025-10-25 17:04:08,467 - src.strategies.ict_strategy - DEBUG - RVVUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:08.887861855Z [inf]  2025-10-25 17:04:08,471 - src.strategies.ict_strategy - DEBUG - FILUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:08.887867637Z [inf]  2025-10-25 17:04:08,483 - src.strategies.ict_strategy - DEBUG - ORDERUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887873171Z [inf]  2025-10-25 17:04:08,508 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887881358Z [inf]  2025-10-25 17:04:08,522 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887886626Z [inf]  2025-10-25 17:04:08,574 - src.strategies.ict_strategy - DEBUG - APTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:08.887892955Z [inf]  2025-10-25 17:04:08,601 - src.strategies.ict_strategy - DEBUG - XANUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.887898680Z [inf]  2025-10-25 17:04:08,629 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:08.891383723Z [inf]  2025-10-25 17:04:08,678 - src.strategies.ict_strategy - DEBUG - PROVEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:08.904909631Z [inf]  2025-10-25 17:04:08,681 - src.strategies.ict_strategy - DEBUG - XLMUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:08.913566519Z [inf]  2025-10-25 17:04:08,780 - src.strategies.ict_strategy - DEBUG - STBLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:08.998262750Z [inf]  2025-10-25 17:04:08,802 - src.strategies.ict_strategy - DEBUG - UBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.017009429Z [inf]  2025-10-25 17:04:08,805 - src.strategies.ict_strategy - DEBUG - RECALLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.024129682Z [inf]  2025-10-25 17:04:08,806 - src.strategies.ict_strategy - DEBUG - APEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.152040386Z [inf]  2025-10-25 17:04:08,823 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.181862615Z [inf]  2025-10-25 17:04:08,825 - src.strategies.ict_strategy - DEBUG - ZBTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.215490414Z [inf]  2025-10-25 17:04:08,826 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.248190957Z [inf]  2025-10-25 17:04:08,830 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.260777487Z [inf]  2025-10-25 17:04:08,834 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.267621209Z [inf]  2025-10-25 17:04:08,861 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.275124506Z [inf]  2025-10-25 17:04:08,863 - src.strategies.ict_strategy - DEBUG - LAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.318118606Z [inf]  2025-10-25 17:04:08,899 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.318127811Z [inf]  2025-10-25 17:04:08,903 - src.strategies.ict_strategy - DEBUG - FETUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.345724276Z [inf]  2025-10-25 17:04:08,937 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.354685536Z [inf]  2025-10-25 17:04:08,941 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.354691650Z [inf]  2025-10-25 17:04:08,944 - src.strategies.ict_strategy - DEBUG - TONUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.380575088Z [inf]  2025-10-25 17:04:08,950 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.395933501Z [inf]  2025-10-25 17:04:08,981 - src.strategies.ict_strategy - DEBUG - TREEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.395940341Z [inf]  2025-10-25 17:04:08,997 - src.strategies.ict_strategy - DEBUG - BANKUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.418248933Z [inf]  2025-10-25 17:04:09,000 - src.strategies.ict_strategy - DEBUG - MIRAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425001470Z [inf]  2025-10-25 17:04:09,112 - src.strategies.ict_strategy - DEBUG - AI16ZUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425011328Z [inf]  2025-10-25 17:04:09,140 - src.strategies.ict_strategy - DEBUG - ZENUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425018056Z [inf]  2025-10-25 17:04:09,141 - src.strategies.ict_strategy - DEBUG - DASHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425023795Z [inf]  2025-10-25 17:04:09,172 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.425054105Z [inf]  2025-10-25 17:04:09,022 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.425059241Z [inf]  2025-10-25 17:04:09,040 - src.strategies.ict_strategy - DEBUG - OPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425064631Z [inf]  2025-10-25 17:04:09,040 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.425069754Z [inf]  2025-10-25 17:04:09,060 - src.strategies.ict_strategy - DEBUG - ETHFIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.425074247Z [inf]  2025-10-25 17:04:09,064 - src.strategies.ict_strategy - DEBUG - CLOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.425078767Z [inf]  2025-10-25 17:04:09,089 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.425082674Z [inf]  2025-10-25 17:04:09,109 - src.strategies.ict_strategy - DEBUG - KDAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849015245Z [inf]  2025-10-25 17:04:09,287 - src.strategies.ict_strategy - DEBUG - BELUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849026718Z [inf]  2025-10-25 17:04:09,292 - src.strategies.ict_strategy - DEBUG - MYXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849033569Z [inf]  2025-10-25 17:04:09,300 - src.strategies.ict_strategy - DEBUG - IPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849038875Z [inf]  2025-10-25 17:04:09,303 - src.strategies.ict_strategy - DEBUG - ATOMUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.849109792Z [inf]  2025-10-25 17:04:09,175 - src.strategies.ict_strategy - DEBUG - MLNUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849115256Z [inf]  2025-10-25 17:04:09,178 - src.strategies.ict_strategy - DEBUG - EPTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.849121061Z [inf]  2025-10-25 17:04:09,210 - src.strategies.ict_strategy - DEBUG - WALUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849128838Z [inf]  2025-10-25 17:04:09,214 - src.strategies.ict_strategy - DEBUG - INJUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.849136387Z [inf]  2025-10-25 17:04:09,226 - src.strategies.ict_strategy - DEBUG - B2USDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.849142321Z [inf]  2025-10-25 17:04:09,242 - src.strategies.ict_strategy - DEBUG - SOMIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.849148619Z [inf]  2025-10-25 17:04:09,245 - src.strategies.ict_strategy - DEBUG - 0GUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.851176861Z [inf]  2025-10-25 17:04:09,392 - src.strategies.ict_strategy - DEBUG - SEIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.851184021Z [inf]  2025-10-25 17:04:09,416 - src.strategies.ict_strategy - DEBUG - GALAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.851189384Z [inf]  2025-10-25 17:04:09,419 - src.strategies.ict_strategy - DEBUG - 2ZUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.851194101Z [inf]  2025-10-25 17:04:09,427 - src.services.parallel_analyzer - INFO - 批次 2 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:04:09.851199696Z [inf]  2025-10-25 17:04:09,427 - src.services.parallel_analyzer - INFO - 處理批次 3/4 (64 個交易對)
+2025-10-25T17:04:09.851256003Z [inf]  2025-10-25 17:04:09,312 - src.strategies.ict_strategy - DEBUG - AUCTIONUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.851260264Z [inf]  2025-10-25 17:04:09,326 - src.strategies.ict_strategy - DEBUG - SIGNUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.851265228Z [inf]  2025-10-25 17:04:09,340 - src.strategies.ict_strategy - DEBUG - BERAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.851270376Z [inf]  2025-10-25 17:04:09,352 - src.strategies.ict_strategy - DEBUG - PENDLEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:09.851275502Z [inf]  2025-10-25 17:04:09,375 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:09.851280405Z [inf]  2025-10-25 17:04:09,390 - src.strategies.ict_strategy - DEBUG - SPXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:09.853036184Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853110076Z [inf]  2025-10-25 17:04:09,428 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853116254Z [inf]  2025-10-25 17:04:09,428 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853120772Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853125529Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853130285Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853135715Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853140834Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853145430Z [inf]  2025-10-25 17:04:09,429 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853150698Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853154987Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853160480Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853165227Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853169525Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.853173547Z [inf]  2025-10-25 17:04:09,430 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854418485Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854423823Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854429182Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854434187Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854439276Z [inf]  2025-10-25 17:04:09,431 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854444956Z [inf]  2025-10-25 17:04:09,432 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854451160Z [inf]  2025-10-25 17:04:09,432 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854459050Z [inf]  2025-10-25 17:04:09,432 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854463804Z [inf]  2025-10-25 17:04:09,432 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854468618Z [inf]  2025-10-25 17:04:09,433 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854473797Z [inf]  2025-10-25 17:04:09,433 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854480314Z [inf]  2025-10-25 17:04:09,433 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854486193Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854492862Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.854498108Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855407901Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855417312Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855424586Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855428800Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855438795Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855447386Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855455211Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855463304Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855470773Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855476999Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855534737Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855542017Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855550024Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855557534Z [inf]  2025-10-25 17:04:09,434 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.855564756Z [inf]  2025-10-25 17:04:09,435 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856923799Z [inf]  2025-10-25 17:04:09,436 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856929782Z [inf]  2025-10-25 17:04:09,437 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856932008Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856935733Z [inf]  2025-10-25 17:04:09,437 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856940499Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856943312Z [inf]  2025-10-25 17:04:09,437 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856949280Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856951952Z [inf]  2025-10-25 17:04:09,437 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856959396Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856961829Z [inf]  2025-10-25 17:04:09,437 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856974775Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856986504Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.856995157Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.857000338Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.857006081Z [inf]  2025-10-25 17:04:09,438 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.858509600Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.858518526Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.858526586Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.858532726Z [inf]  2025-10-25 17:04:09,439 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:09.990888125Z [inf]  2025-10-25 17:04:09,985 - discord.client - DEBUG - Dispatching event ready
+2025-10-25T17:04:10.015846495Z [inf]  2025-10-25 17:04:10,012 - src.integrations.discord_bot - INFO - ✅ Discord 機器人已連接: winiswin#6842
+2025-10-25T17:04:10.155351673Z [inf]  2025-10-25 17:04:10,144 - src.strategies.ict_strategy - DEBUG - NEIROUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.217412527Z [inf]  2025-10-25 17:04:10,148 - src.strategies.ict_strategy - DEBUG - ALICEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.316022925Z [inf]  2025-10-25 17:04:10,182 - src.strategies.ict_strategy - DEBUG - LINEAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.329867717Z [inf]  2025-10-25 17:04:10,186 - src.strategies.ict_strategy - DEBUG - LYNUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.423179226Z [inf]  2025-10-25 17:04:10,189 - src.strategies.ict_strategy - DEBUG - XMRUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.423186206Z [inf]  2025-10-25 17:04:10,261 - src.strategies.ict_strategy - DEBUG - PORT3USDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.858797847Z [inf]  2025-10-25 17:04:10,372 - src.strategies.ict_strategy - DEBUG - ICPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.858809287Z [inf]  2025-10-25 17:04:10,375 - src.strategies.ict_strategy - DEBUG - OMUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.858814935Z [inf]  2025-10-25 17:04:10,387 - src.strategies.ict_strategy - DEBUG - RENDERUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.858821940Z [inf]  2025-10-25 17:04:10,399 - src.strategies.ict_strategy - DEBUG - MOODENGUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.858835868Z [inf]  2025-10-25 17:04:10,403 - src.strategies.ict_strategy - DEBUG - SWARMSUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.859006307Z [inf]  2025-10-25 17:04:10,266 - src.strategies.ict_strategy - DEBUG - LABUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.859012126Z [inf]  2025-10-25 17:04:10,303 - src.strategies.ict_strategy - DEBUG - INUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.859018322Z [inf]  2025-10-25 17:04:10,311 - src.strategies.ict_strategy - DEBUG - TOSHIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.859024103Z [inf]  2025-10-25 17:04:10,317 - src.strategies.ict_strategy - DEBUG - HANAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.859029431Z [inf]  2025-10-25 17:04:10,329 - src.strategies.ict_strategy - DEBUG - PNUTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.859036899Z [inf]  2025-10-25 17:04:10,360 - src.strategies.ict_strategy - DEBUG - 1000FLOKIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.859388320Z [inf]  2025-10-25 17:04:10,406 - src.strategies.ict_strategy - DEBUG - QUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.874695925Z [inf]  2025-10-25 17:04:10,409 - src.strategies.ict_strategy - DEBUG - JTOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.882351626Z [inf]  2025-10-25 17:04:10,410 - src.strategies.ict_strategy - DEBUG - HOLOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.895800490Z [inf]  2025-10-25 17:04:10,454 - src.strategies.ict_strategy - DEBUG - SOONUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.914287527Z [inf]  2025-10-25 17:04:10,457 - src.strategies.ict_strategy - DEBUG - SOPHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:10.914295281Z [inf]  2025-10-25 17:04:10,461 - src.strategies.ict_strategy - DEBUG - TRBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.938829083Z [inf]  2025-10-25 17:04:10,499 - src.strategies.ict_strategy - DEBUG - DYDXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:10.945986610Z [inf]  2025-10-25 17:04:10,501 - src.strategies.ict_strategy - DEBUG - COOKIEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.954985180Z [inf]  2025-10-25 17:04:10,505 - src.strategies.ict_strategy - DEBUG - AEROUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:10.967692751Z [inf]  2025-10-25 17:04:10,532 - discord.http - DEBUG - PUT https://discord.com/api/v10/applications/1052200352327413810/commands with [{"name":"status","description":"\u67e5\u770b\u4ea4\u6613\u7cfb\u7d71\u72c0\u614b","type":1,"options":[],"nsfw":false,"dm_permission":true,"default_member_permissions":null,"contexts":null,"integration_types":null},{"name":"stats","description":"\u67e5\u770b\u4ea4\u6613\u7d71\u8a08","type":1,"options":[],"nsfw":false,"dm_permission":true,"default_member_permissions":null,"contexts":null,"integration_types":null},{"name":"positions","description":"\u67e5\u770b\u7576\u524d\u6301\u5009","type":1,"options":[],"nsfw":false,"dm_permission":true,"default_member_permissions":null,"contexts":null,"integration_types":null}] has returned 200
+2025-10-25T17:04:10.982702850Z [inf]  2025-10-25 17:04:10,543 - src.strategies.ict_strategy - DEBUG - ARUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.000000000Z [inf]  Stopping Container
+2025-10-25T17:04:11.008187317Z [inf]  2025-10-25 17:04:10,569 - src.strategies.ict_strategy - DEBUG - TRUTHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.008194959Z [inf]  2025-10-25 17:04:10,572 - src.strategies.ict_strategy - DEBUG - CELOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.034176203Z [inf]  2025-10-25 17:04:10,577 - src.strategies.ict_strategy - DEBUG - ALGOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.034184995Z [inf]  2025-10-25 17:04:10,591 - src.strategies.ict_strategy - DEBUG - ORDIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.034191374Z [inf]  2025-10-25 17:04:10,637 - src.strategies.ict_strategy - DEBUG - POPCATUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.041105955Z [inf]  2025-10-25 17:04:10,596 - src.strategies.ict_strategy - DEBUG - XNYUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.056229678Z [inf]  2025-10-25 17:04:10,651 - src.strategies.ict_strategy - DEBUG - TRADOORUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081173002Z [inf]  2025-10-25 17:04:10,653 - src.strategies.ict_strategy - DEBUG - WUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081187943Z [inf]  2025-10-25 17:04:10,657 - src.strategies.ict_strategy - DEBUG - SANDUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081196254Z [inf]  2025-10-25 17:04:10,660 - src.strategies.ict_strategy - DEBUG - BIDUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081204405Z [inf]  2025-10-25 17:04:10,687 - src.strategies.ict_strategy - DEBUG - MORPHOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.081214866Z [inf]  2025-10-25 17:04:10,691 - src.strategies.ict_strategy - DEBUG - STRKUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.081223825Z [inf]  2025-10-25 17:04:10,719 - src.strategies.ict_strategy - DEBUG - MUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.081231699Z [inf]  2025-10-25 17:04:10,752 - src.strategies.ict_strategy - DEBUG - ZEREBROUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081239750Z [inf]  2025-10-25 17:04:10,761 - src.strategies.ict_strategy - DEBUG - EULUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081247462Z [inf]  2025-10-25 17:04:10,779 - src.strategies.ict_strategy - DEBUG - GRIFFAINUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.081256408Z [inf]  2025-10-25 17:04:10,780 - src.strategies.ict_strategy - DEBUG - SYRUPUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.081263712Z [inf]  2025-10-25 17:04:10,789 - src.strategies.ict_strategy - DEBUG - FLOWUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.082833634Z [inf]  2025-10-25 17:04:10,822 - src.strategies.ict_strategy - DEBUG - IMXUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.082845784Z [inf]  2025-10-25 17:04:10,828 - src.strategies.ict_strategy - DEBUG - ZROUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.082853316Z [inf]  2025-10-25 17:04:10,832 - src.strategies.ict_strategy - DEBUG - TAUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.082860666Z [inf]  2025-10-25 17:04:10,853 - src.strategies.ict_strategy - DEBUG - PHBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.082867051Z [inf]  2025-10-25 17:04:10,867 - src.strategies.ict_strategy - DEBUG - POLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.082874351Z [inf]  2025-10-25 17:04:10,892 - src.strategies.ict_strategy - DEBUG - NXPCUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.082880770Z [inf]  2025-10-25 17:04:10,895 - src.strategies.ict_strategy - DEBUG - AGTUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.082886677Z [inf]  2025-10-25 17:04:10,908 - src.strategies.ict_strategy - DEBUG - TAKEUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.082898726Z [inf]  2025-10-25 17:04:10,935 - src.strategies.ict_strategy - DEBUG - ATHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.082905071Z [inf]  2025-10-25 17:04:10,940 - src.strategies.ict_strategy - DEBUG - SUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.082910118Z [inf]  2025-10-25 17:04:10,953 - src.strategies.ict_strategy - DEBUG - IDOLUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.084222721Z [inf]  2025-10-25 17:04:11,078 - discord.http - DEBUG - PUT https://discord.com/api/v10/applications/1052200352327413810/commands has received [{'id': '1430836562085810179', 'application_id': '1052200352327413810', 'version': '1431654471682887751', 'default_member_permissions': None, 'type': 1, 'name': 'status', 'name_localizations': None, 'description': '查看交易系統狀態', 'description_localizations': None, 'dm_permission': True, 'contexts': None, 'integration_types': [0, 1], 'nsfw': False}, {'id': '1430836562085810178', 'application_id': '1052200352327413810', 'version': '1431654471682887752', 'default_member_permissions': None, 'type': 1, 'name': 'stats', 'name_localizations': None, 'description': '查看交易統計', 'description_localizations': None, 'dm_permission': True, 'contexts': None, 'integration_types': [0, 1], 'nsfw': False}, {'id': '1430836562085810176', 'application_id': '1052200352327413810', 'version': '1430836562085810181', 'default_member_permissions': None, 'type': 1, 'name': 'positions', 'name_localizations': None, 'description': '查看當前持倉', 'description_localizations': None, 'dm_permission': True, 'contexts': None, 'integration_types': [0, 1], 'nsfw': False}]
+2025-10-25T17:04:11.084232054Z [inf]  2025-10-25 17:04:11,022 - src.strategies.ict_strategy - DEBUG - BBUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084236483Z [inf]  2025-10-25 17:04:11,037 - src.strategies.ict_strategy - DEBUG - ENSUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.084241268Z [inf]  2025-10-25 17:04:11,073 - src.strategies.ict_strategy - DEBUG - NOMUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084246419Z [inf]  2025-10-25 17:04:11,074 - src.strategies.ict_strategy - DEBUG - SUSHIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084252793Z [inf]  2025-10-25 17:04:10,964 - discord.http - DEBUG - PUT /applications/{application_id}/commands has found its initial rate limit bucket hash (3e32a240d3716487d7d8f6dae6c54f6b).
+2025-10-25T17:04:11.084261538Z [inf]  2025-10-25 17:04:10,992 - src.strategies.ict_strategy - DEBUG - CATIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084267502Z [inf]  2025-10-25 17:04:10,992 - src.strategies.ict_strategy - DEBUG - IOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084273724Z [inf]  2025-10-25 17:04:10,996 - src.strategies.ict_strategy - DEBUG - OGUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.084280043Z [inf]  2025-10-25 17:04:11,020 - src.strategies.ict_strategy - DEBUG - SOLVUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.086151607Z [inf]  2025-10-25 17:04:11,080 - src.integrations.discord_bot - INFO - ✅ 指令已同步
+2025-10-25T17:04:11.086164653Z [inf]  2025-10-25 17:04:11,081 - src.services.parallel_analyzer - INFO - 批次 3 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:04:11.086172461Z [inf]  2025-10-25 17:04:11,081 - src.services.parallel_analyzer - INFO - 處理批次 4/4 (8 個交易對)
+2025-10-25T17:04:11.086183953Z [inf]  2025-10-25 17:04:11,081 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086194676Z [inf]  2025-10-25 17:04:11,082 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086201328Z [inf]  2025-10-25 17:04:11,082 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086207569Z [inf]  2025-10-25 17:04:11,082 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086213896Z [inf]  2025-10-25 17:04:11,083 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086220834Z [inf]  2025-10-25 17:04:11,083 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086227659Z [inf]  2025-10-25 17:04:11,083 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.086234213Z [inf]  2025-10-25 17:04:11,083 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-25T17:04:11.412730768Z [inf]  2025-10-25 17:04:11,390 - src.strategies.ict_strategy - DEBUG - PYTHUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.838718974Z [inf]  2025-10-25 17:04:11,392 - src.strategies.ict_strategy - DEBUG - AINUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:neutral)
+2025-10-25T17:04:11.838726507Z [inf]  2025-10-25 17:04:11,417 - src.strategies.ict_strategy - DEBUG - YGGUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.838734816Z [inf]  2025-10-25 17:04:11,435 - src.strategies.ict_strategy - DEBUG - API3USDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.838756298Z [inf]  2025-10-25 17:04:11,466 - src.strategies.ict_strategy - DEBUG - CROSSUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.838765591Z [inf]  2025-10-25 17:04:11,472 - src.strategies.ict_strategy - DEBUG - HEMIUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bearish)
+2025-10-25T17:04:11.838774139Z [inf]  2025-10-25 17:04:11,477 - src.strategies.ict_strategy - DEBUG - AEVOUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.838782488Z [inf]  2025-10-25 17:04:11,485 - src.strategies.ict_strategy - DEBUG - VFYUSDT: 拒絕 - 趨勢不對齊 (1h:neutral, 15m:neutral, 5m:neutral, structure:bullish)
+2025-10-25T17:04:11.838793422Z [inf]  2025-10-25 17:04:11,485 - src.services.parallel_analyzer - INFO - 批次 4 完成: 生成 0 個信號, 累計 0 個
+2025-10-25T17:04:11.838801733Z [inf]  2025-10-25 17:04:11,486 - src.services.parallel_analyzer - INFO - ✅ 批量分析完成: 分析 200 個交易對, 生成 0 個信號
+2025-10-25T17:04:11.838820827Z [inf]  2025-10-25 17:04:11,486 - __main__ - INFO - ℹ️  本週期未生成交易信號 (分析了 200 個交易對)
+2025-10-25T17:04:11.838830770Z [inf]  2025-10-25 17:04:11,486 - __main__ - INFO - 💡 提示：設置 LOG_LEVEL=DEBUG 查看拒絕原因詳情
+2025-10-25T17:04:12.979149775Z [inf]  ⏳ 等待 60 秒...
+2025-10-25T17:04:12.979170981Z [inf]  2025-10-25 17:04:12,672 - __main__ - INFO - 📊 系統狀態: CPU 22.4% | 內存 64.6% | API 調用 0
+2025-10-25T17:04:12.979183094Z [inf]  2025-10-25 17:04:12,673 - src.ml.data_archiver - INFO - 所有缓冲区已刷新
+2025-10-25T17:04:12.979194291Z [inf]  2025-10-25 17:04:12,673 - __main__ - DEBUG - ✅ 數據已刷新到磁盤
+2025-10-25T17:04:12.979202097Z [inf]  2025-10-25 17:04:12,673 - __main__ - INFO - 
+2025-10-25T17:04:12.979210084Z [inf]  ✅ 週期完成，耗時: 6.62 秒
+2025-10-25T17:04:12.979217370Z [inf]  2025-10-25 17:04:12,673 - __main__ - INFO - ============================================================
+2025-10-25T17:04:12.979224828Z [inf]  2025-10-25 17:04:12,674 - __main__ - INFO - 
+2025-10-25T17:04:52.610248334Z [inf]  2025-10-25 17:04:47,108 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-25T17:04:52.610254974Z [inf]  2025-10-25 17:04:47,412 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}

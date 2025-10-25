@@ -58,8 +58,8 @@ class ICTStrategy:
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
             
-            # 放寬條件：只要不是三個時間框架全部 neutral 就可以
-            # （大部分時候市場會有方向）
+            # v3.0.2: 移除過嚴的 neutral 過濾，讓信號生成邏輯自行判斷
+            logger.debug(f"{symbol}: 趨勢檢測 - 1h:{h1_trend}, 15m:{m15_trend}, 5m:{m5_trend}")
             
             market_structure = determine_market_structure(m15_data)
             
