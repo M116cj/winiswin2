@@ -172,7 +172,8 @@ class BinanceClient:
             params["endTime"] = end_time
         
         result = await self._request("GET", "/fapi/v1/klines", params=params)
-        self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_KLINES)
+        # 默認使用5分鐘緩存
+        self.cache.set(cache_key, result, ttl=300)
         return result
     
     async def get_ticker_price(self, symbol: Optional[str] = None) -> Any:
