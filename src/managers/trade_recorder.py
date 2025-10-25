@@ -49,6 +49,7 @@ class TradeRecorder:
             'market_structure': signal.get('market_structure'),
             'order_blocks': signal.get('order_blocks', 0),
             'liquidity_zones': signal.get('liquidity_zones', 0),
+            'indicators': signal.get('indicators', {}),
         }
         
         self.pending_entries.append(entry_data)
@@ -109,6 +110,8 @@ class TradeRecorder:
         
         hold_duration = (exit_time - entry_time).total_seconds() / 3600
         
+        indicators = entry.get('indicators', {})
+        
         ml_record = {
             'symbol': entry['symbol'],
             'direction': entry['direction'],
@@ -140,7 +143,19 @@ class TradeRecorder:
             'max_favorable_excursion': 0,
             'max_adverse_excursion': 0,
             'trade_id': entry.get('entry_id'),
-            'recorded_at': datetime.now().isoformat()
+            'recorded_at': datetime.now().isoformat(),
+            'rsi_entry': indicators.get('rsi', 0),
+            'macd_entry': indicators.get('macd', 0),
+            'macd_signal_entry': indicators.get('macd_signal', 0),
+            'macd_histogram_entry': indicators.get('macd_histogram', 0),
+            'atr_entry': indicators.get('atr', 0),
+            'bb_upper_entry': indicators.get('bb_upper', 0),
+            'bb_middle_entry': indicators.get('bb_middle', 0),
+            'bb_lower_entry': indicators.get('bb_lower', 0),
+            'bb_width_pct': indicators.get('bb_width_pct', 0),
+            'volume_sma_ratio': indicators.get('volume_sma_ratio', 0),
+            'price_vs_ema50': indicators.get('price_vs_ema50', 0),
+            'price_vs_ema200': indicators.get('price_vs_ema200', 0)
         }
         
         return ml_record

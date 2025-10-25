@@ -109,6 +109,8 @@ class ICTStrategy:
                 liquidity_zones
             )
             
+            indicators_data = self._collect_indicators(m15_data, m5_data)
+            
             signal = {
                 'symbol': symbol,
                 'direction': signal_direction,
@@ -124,7 +126,8 @@ class ICTStrategy:
                 },
                 'market_structure': market_structure,
                 'order_blocks': len(order_blocks),
-                'liquidity_zones': len(liquidity_zones)
+                'liquidity_zones': len(liquidity_zones),
+                'indicators': indicators_data
             }
             
             logger.info(f"✅ 生成交易信號: {symbol} {signal_direction} 信心度 {confidence_score:.2%}")
@@ -388,3 +391,59 @@ class ICTStrategy:
             take_profit = entry_price - take_profit_distance
         
         return entry_price, stop_loss, take_profit
+    
+    def _collect_indicators(self, m15_data: pd.DataFrame, m5_data: pd.DataFrame) -> Dict:
+        """
+        收集所有技術指標數據用於 ML 訓練
+        
+        Args:
+            m15_data: 15分鐘數據
+            m5_data: 5分鐘數據
+        
+        Returns:
+            Dict: 技術指標數據
+        """
+        indicators = {}
+        
+        try:
+            rsi = calculate_rsi(m5_data['close'])
+            if not rsi.empty:
+                indicators['rsi'] = float(rsi.iloc[-1])
+            
+            macd_line, signal_line, histogram = calculate_macd(m5_data['close'])
+            if not macd_line.empty:
+                indicators['macd'] = float(macd_line.iloc[-1])
+                indicators['macd_signal'] = float(signal_line.iloc[-1])
+                indicators['macd_histogram'] = float(histogram.iloc[-1])
+            
+            atr = calculate_atr(m15_data)
+            if not atr.empty:
+                indicators['atr'] = float(atr.iloc[-1])
+            
+            bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(m15_data['close'])
+            if not bb_upper.empty:
+                indicators['bb_upper'] = float(bb_upper.iloc[-1])
+                indicators['bb_middle'] = float(bb_middle.iloc[-1])
+                indicators['bb_lower'] = float(bb_lower.iloc[-1])
+                bb_width = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1]
+                indicators['bb_width_pct'] = float(bb_width)
+            
+            if len(m15_data) >= 20 and 'volume' in m15_data.columns:
+                volume_sma = m15_data['volume'].rolling(window=20).mean()
+                if not volume_sma.empty and volume_sma.iloc[-1] > 0:
+                    indicators['volume_sma_ratio'] = float(m15_data['volume'].iloc[-1] / volume_sma.iloc[-1])
+            
+            ema50 = calculate_ema(m15_data['close'], 50)
+            if not ema50.empty:
+                price = float(m15_data['close'].iloc[-1])
+                indicators['price_vs_ema50'] = (price - float(ema50.iloc[-1])) / float(ema50.iloc[-1])
+            
+            ema200 = calculate_ema(m15_data['close'], 200)
+            if not ema200.empty:
+                price = float(m15_data['close'].iloc[-1])
+                indicators['price_vs_ema200'] = (price - float(ema200.iloc[-1])) / float(ema200.iloc[-1])
+                
+        except Exception as e:
+            logger.error(f"收集指標數據失敗: {e}")
+        
+        return indicators
