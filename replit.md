@@ -54,9 +54,17 @@ src/
 
 ### 快速開始
 
+#### Replit 部署
 1. **設置環境變量**: 在 Replit Secrets 中配置所有必需的 API 密鑰
 2. **啟動系統**: 點擊 Run 按鈕或運行 `python -m src.main`
 3. **監控運行**: 查看控制台日誌和 Discord 通知
+
+#### Railway 雲端部署
+1. **推送代碼到 GitHub**: 確保所有代碼已提交
+2. **連接 Railway**: 在 Railway.app 選擇您的 GitHub 倉庫
+3. **配置環境變量**: 在 Railway Variables 中設置所有必需的 API 密鑰
+4. **自動部署**: Railway 會自動檢測配置並部署
+5. **查看詳細指南**: 參考 `docs/RAILWAY_DEPLOYMENT.md`
 
 ### 風險管理策略
 
@@ -104,12 +112,13 @@ src/
 當前版本: v1.0.0 (基礎框架)
 
 已完成:
-- ✅ 項目結構
-- ✅ 配置管理系統
-- ✅ Binance API 客戶端
+- ✅ 項目結構和模組化設計
+- ✅ 配置管理系統（環境變量驗證）
+- ✅ Binance API 客戶端（完整封裝）
 - ✅ 核心基礎設施（緩存、限流、熔斷器）
-- ✅ 技術指標計算
-- ✅ 主程序框架
+- ✅ 技術指標計算（EMA, MACD, RSI, ATR, Order Blocks）
+- ✅ 主程序框架和生命週期管理
+- ✅ Railway 部署配置
 
 待實現:
 - ⏳ ICT/SMC 策略引擎
@@ -118,6 +127,23 @@ src/
 - ⏳ Discord 通知系統
 - ⏳ 虛擬倉位追蹤
 - ⏳ ML 數據收集
+
+### 部署選項
+
+本系統支持兩種部署方式：
+
+#### 1. Replit (開發和測試)
+- 適合快速開發和測試
+- 內置 IDE 和調試工具
+- 免費額度充足
+- 參考: `docs/ENVIRONMENT_VARIABLES.md`
+
+#### 2. Railway (生產環境)
+- 24/7 穩定運行
+- 自動擴展和重啟
+- 更接近 Binance 服務器（低延遲）
+- 成本約 $10-15/月
+- 參考: `docs/RAILWAY_DEPLOYMENT.md`
 
 ### 注意事項
 
