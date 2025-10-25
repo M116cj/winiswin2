@@ -14,6 +14,7 @@ from src.config import Config
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.services.parallel_analyzer import ParallelAnalyzer
+from src.services.timeframe_scheduler import SmartDataManager
 from src.strategies.ict_strategy import ICTStrategy
 from src.managers.risk_manager import RiskManager
 from src.services.trading_service import TradingService
@@ -36,6 +37,7 @@ class TradingBot:
         
         self.binance_client: Optional[BinanceClient] = None
         self.data_service: Optional[DataService] = None
+        self.smart_data_manager: Optional[SmartDataManager] = None
         self.parallel_analyzer: Optional[ParallelAnalyzer] = None
         self.strategy: Optional[ICTStrategy] = None
         self.risk_manager: Optional[RiskManager] = None
@@ -85,6 +87,13 @@ class TradingBot:
         
         self.data_service = DataService(self.binance_client)
         await self.data_service.initialize()
+        
+        # 初始化智能數據管理器（差異化時間框架掃描）
+        self.smart_data_manager = SmartDataManager(self.data_service)
+        logger.info("✅ 智能數據管理器已就緒")
+        logger.info("   - 1h: 每小時掃描（趨勢確認）")
+        logger.info("   - 15m: 每15分鐘掃描（趨勢確認）")
+        logger.info("   - 5m/1m: 高頻掃描（入場信號）")
         
         # 初始化並行分析器（32 核心）
         self.parallel_analyzer = ParallelAnalyzer(max_workers=32)
@@ -146,6 +155,17 @@ class TradingBot:
         logger.info(f"🔄 交易週期開始: {cycle_start.strftime('%Y-%m-%d %H:%M:%S')}")
         logger.info(f"{'=' * 60}")
         
+        # 輸出時間框架調度狀態
+        scheduler_status = self.smart_data_manager.get_scheduler_status()
+        logger.info("⏰ 時間框架調度狀態:")
+        for tf, status in scheduler_status.items():
+            logger.info(
+                f"  {tf}: 間隔={status['interval']}, "
+                f"上次掃描={status['last_scan']}, "
+                f"下次掃描={status['next_scan']}, "
+                f"需掃描={'是' if status['should_scan'] else '否'}"
+            )
+        
         try:
             market_data = await self.data_service.scan_market()
             
@@ -163,7 +183,7 @@ class TradingBot:
             
             signals = await self.parallel_analyzer.analyze_batch(
                 symbols_to_analyze,
-                self.data_service
+                self.smart_data_manager  # 使用智能數據管理器
             )
             
             # 記錄性能指標

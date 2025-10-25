@@ -4,7 +4,7 @@
 """
 
 import asyncio
-from typing import List, Dict
+from typing import List, Dict, Optional
 import logging
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import multiprocessing as mp
@@ -37,14 +37,14 @@ class ParallelAnalyzer:
     async def analyze_batch(
         self,
         symbols_data: List[Dict],
-        data_service
+        data_manager
     ) -> List[Dict]:
         """
         批量並行分析多個交易對（優化支持全部 648 個幣種）
         
         Args:
             symbols_data: 交易對列表
-            data_service: 數據服務實例
+            data_manager: 數據管理器實例（DataService 或 SmartDataManager）
         
         Returns:
             List[Dict]: 生成的交易信號列表
@@ -71,9 +71,9 @@ class ParallelAnalyzer:
                 
                 logger.info(f"處理批次 {batch_idx + 1}/{total_batches} ({len(batch)} 個交易對)")
                 
-                # 並行獲取多時間框架數據
+                # 並行獲取多時間框架數據（智能調度）
                 tasks = [
-                    data_service.get_multi_timeframe_data(item['symbol'])
+                    data_manager.get_multi_timeframe_data(item['symbol'])
                     for item in batch
                 ]
                 
@@ -82,7 +82,7 @@ class ParallelAnalyzer:
                 # 並行分析信號
                 analysis_tasks = []
                 for j, multi_tf_data in enumerate(multi_tf_data_list):
-                    if isinstance(multi_tf_data, Exception):
+                    if isinstance(multi_tf_data, Exception) or multi_tf_data is None:
                         logger.debug(f"跳過 {batch[j]['symbol']}: 數據獲取失敗")
                         continue
                     
@@ -117,7 +117,7 @@ class ParallelAnalyzer:
             logger.error(f"批量分析失敗: {e}", exc_info=True)
             return []
     
-    async def _analyze_symbol(self, symbol: str, multi_tf_data: Dict) -> Dict:
+    async def _analyze_symbol(self, symbol: str, multi_tf_data: Dict) -> Optional[Dict]:
         """
         在線程池中分析單個交易對
         
@@ -126,7 +126,7 @@ class ParallelAnalyzer:
             multi_tf_data: 多時間框架數據
         
         Returns:
-            Dict: 交易信號
+            Optional[Dict]: 交易信號（可能為 None）
         """
         try:
             loop = asyncio.get_event_loop()
