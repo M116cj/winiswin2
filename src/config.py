@@ -44,9 +44,8 @@ class Config:
     IMMEDIATE_EXECUTION_RANK: int = 3
     
     # 掃描配置
-    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "300"))  # 掃描間隔（秒）
-    ANALYZE_ALL_SYMBOLS: bool = os.getenv("ANALYZE_ALL_SYMBOLS", "true").lower() == "true"  # 是否分析所有幣種
-    MAX_ANALYZE_SYMBOLS: int = int(os.getenv("MAX_ANALYZE_SYMBOLS", "0"))  # 0 = 全部
+    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))  # 掃描間隔（秒，默認60秒）
+    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_VOLATILITY_SYMBOLS", "200"))  # 監控波動率最高的前N個（默認200）
     
     # 技術指標配置
     EMA_FAST: int = 50

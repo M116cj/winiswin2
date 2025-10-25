@@ -171,15 +171,12 @@ class TradingBot:
             
             logger.info(f"📊 掃描到 {len(market_data)} 個交易對")
             
-            # 使用並行分析器處理（充分利用 32 核心）
-            # 根據配置決定分析數量
-            if Config.MAX_ANALYZE_SYMBOLS > 0:
-                symbols_to_analyze = market_data[:Config.MAX_ANALYZE_SYMBOLS]
-                logger.info(f"🔍 使用 32 核心並行分析前 {len(symbols_to_analyze)} 個交易對...")
-            else:
-                # 分析全部交易對
-                symbols_to_analyze = market_data
-                logger.info(f"🔍 使用 32 核心並行分析全部 {len(symbols_to_analyze)} 個交易對...")
+            # 使用並行分析器處理波動率最高的前200個標的（充分利用 32 核心）
+            symbols_to_analyze = market_data
+            logger.info(
+                f"🔍 使用 32 核心並行分析 {len(symbols_to_analyze)} 個高波動率交易對 "
+                f"(已按波動率排序)..."
+            )
             
             signals = await self.parallel_analyzer.analyze_batch(
                 symbols_to_analyze,

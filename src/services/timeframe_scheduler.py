@@ -15,35 +15,33 @@ class TimeframeScheduler:
     """
     時間框架調度器
     
-    策略：
+    策略（僅 3 個時間框架）：
     - 1h：每小時掃描一次（趨勢確認）
     - 15m：每15分鐘掃描一次（趨勢確認）
-    - 5m：高頻掃描（入場信號）
-    - 1m：高頻掃描（入場信號）
+    - 5m：每分鐘掃描（趨勢符合確認 + 入場信號）
     """
     
     def __init__(self):
         """初始化調度器"""
+        # 僅使用 1h/15m/5m（取消 1m 監控）
         self.last_scan_times: Dict[str, float] = {
             "1h": 0,
             "15m": 0,
-            "5m": 0,
-            "1m": 0
+            "5m": 0
         }
         
         # 掃描間隔（秒）
         self.scan_intervals = {
-            "1h": 3600,   # 每小時
-            "15m": 900,   # 每15分鐘
-            "5m": 60,     # 每1分鐘（高頻）
-            "1m": 60      # 每1分鐘（高頻）
+            "1h": 3600,   # 每小時（趨勢確認）
+            "15m": 900,   # 每15分鐘（趨勢確認）
+            "5m": 60      # 每1分鐘（趨勢符合確認 + 入場信號）
         }
         
         logger.info(
             f"時間框架調度器初始化: "
             f"1h={self.scan_intervals['1h']}s, "
             f"15m={self.scan_intervals['15m']}s, "
-            f"5m/1m={self.scan_intervals['5m']}s"
+            f"5m={self.scan_intervals['5m']}s"
         )
     
     def should_scan_timeframe(self, timeframe: str) -> bool:
@@ -51,7 +49,7 @@ class TimeframeScheduler:
         判斷是否應該掃描特定時間框架
         
         Args:
-            timeframe: 時間框架 (1h/15m/5m/1m)
+            timeframe: 時間框架 (1h/15m/5m)
         
         Returns:
             bool: 是否應該掃描
@@ -85,7 +83,7 @@ class TimeframeScheduler:
             List[str]: 需要掃描的時間框架
         """
         required = []
-        for tf in ["1h", "15m", "5m", "1m"]:
+        for tf in ["1h", "15m", "5m"]:  # 僅 3 個時間框架
             if self.should_scan_timeframe(tf):
                 required.append(tf)
         
@@ -193,7 +191,7 @@ class SmartDataManager:
         # 獲取需要更新的時間框架
         required_tfs = self.scheduler.get_required_timeframes()
         
-        # 1h - 趨勢確認（低頻）
+        # 1h - 趨勢確認（每小時更新一次）
         if force_refresh or "1h" in required_tfs or symbol not in self.cached_trend_data.get("1h", {}):
             result["1h"] = await self.data_service.get_klines(symbol, "1h", limit=100)
             if "1h" not in self.cached_trend_data:
@@ -205,7 +203,7 @@ class SmartDataManager:
             # 使用緩存
             result["1h"] = self.cached_trend_data["1h"].get(symbol)
         
-        # 15m - 趨勢確認（中頻）
+        # 15m - 趨勢確認（每15分鐘更新一次）
         if force_refresh or "15m" in required_tfs or symbol not in self.cached_trend_data.get("15m", {}):
             result["15m"] = await self.data_service.get_klines(symbol, "15m", limit=100)
             if "15m" not in self.cached_trend_data:
@@ -217,9 +215,8 @@ class SmartDataManager:
             # 使用緩存
             result["15m"] = self.cached_trend_data["15m"].get(symbol)
         
-        # 5m, 1m - 入場信號（高頻，始終獲取最新）
+        # 5m - 趨勢符合確認 + 入場信號（高頻，始終獲取最新）
         result["5m"] = await self.data_service.get_klines(symbol, "5m", limit=100)
-        result["1m"] = await self.data_service.get_klines(symbol, "1m", limit=100)
         
         return result
     
