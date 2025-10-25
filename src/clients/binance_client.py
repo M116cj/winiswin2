@@ -278,6 +278,33 @@ class BinanceClient:
         logger.info(f"創建訂單: {symbol} {side} {order_type} {quantity}")
         return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
     
+    async def place_order(
+        self,
+        symbol: str,
+        side: str,
+        order_type: str,
+        quantity: float,
+        price: Optional[float] = None,
+        stop_price: Optional[float] = None,
+        **kwargs
+    ) -> dict:
+        """
+        下單（create_order 的別名）
+        
+        Args:
+            symbol: 交易對
+            side: BUY / SELL
+            order_type: MARKET / LIMIT / STOP_MARKET / TAKE_PROFIT_MARKET
+            quantity: 數量
+            price: 限價單價格
+            stop_price: 止損/止盈價格
+            **kwargs: 其他參數
+        
+        Returns:
+            訂單信息
+        """
+        return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+    
     async def set_leverage(self, symbol: str, leverage: int) -> dict:
         """
         設置槓桿倍數
