@@ -21,6 +21,7 @@ from src.managers.virtual_position_manager import VirtualPositionManager
 from src.managers.trade_recorder import TradeRecorder
 from src.integrations.discord_bot import TradingDiscordBot
 from src.monitoring.health_monitor import HealthMonitor
+from src.monitoring.performance_monitor import PerformanceMonitor
 from src.ml.predictor import MLPredictor
 
 logger = logging.getLogger(__name__)
@@ -43,9 +44,11 @@ class TradingBot:
         self.trade_recorder: Optional[TradeRecorder] = None
         self.discord_bot: Optional[TradingDiscordBot] = None
         self.health_monitor: Optional[HealthMonitor] = None
+        self.performance_monitor: Optional[PerformanceMonitor] = None
         self.ml_predictor: Optional[MLPredictor] = None
         
         self.discord_task = None
+        self.monitoring_task = None
     
     async def initialize(self):
         """初始化系統"""
@@ -108,6 +111,12 @@ class TradingBot:
         await asyncio.sleep(2)
         
         self.health_monitor = HealthMonitor()
+        self.performance_monitor = PerformanceMonitor()
+        
+        # 啟動性能監控任務
+        self.monitoring_task = asyncio.create_task(
+            self.performance_monitor.start_monitoring(interval=300)
+        )
         
         if Config.BINANCE_API_KEY and Config.BINANCE_API_SECRET:
             try:
@@ -151,6 +160,9 @@ class TradingBot:
                 symbols_to_analyze,
                 self.data_service
             )
+            
+            # 記錄性能指標
+            self.performance_monitor.total_signals_generated += len(signals)
             
             if signals:
                 # ML 預測增強（如果可用）
@@ -329,6 +341,13 @@ class TradingBot:
         
         if self.trade_recorder:
             self.trade_recorder.force_flush()
+        
+        if self.monitoring_task:
+            self.monitoring_task.cancel()
+            try:
+                await self.monitoring_task
+            except asyncio.CancelledError:
+                pass
         
         if self.parallel_analyzer:
             await self.parallel_analyzer.close()
