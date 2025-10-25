@@ -7,11 +7,33 @@
 ### 核心特性
 
 - 📊 **全市場監控**: 監控全部 648 個 Binance USDT 永續合約
-- 🎯 **ICT/SMC 策略**: 多時間框架分析 (1h/15m/5m/1m)
-- ⚡ **非同步架構**: 使用 asyncio + aiohttp 實現高性能並發
+- ⚡ **差異化掃描**: 1h/15m 低頻緩存，5m/1m 高頻入場（NEW!）
+- 🎯 **ICT/SMC 策略**: 多時間框架分析，專注 1:1-1:2 盈虧比
+- 🚀 **32 核心並行**: 充分利用 Railway 32vCPU 資源
 - 🎲 **動態風險管理**: 槓桿 3-20x，倉位 3%-13%
 - 🤖 **Discord 通知**: 實時交易信號和狀態更新
-- 🧠 **ML 數據收集**: 38 個特徵的完整交易數據記錄
+- 🧠 **XGBoost ML**: 39 特徵預測，GPU 加速訓練
+
+### 最新更新（2025-10-25）
+
+#### ✨ 差異化時間框架掃描系統
+
+**問題**：傳統方法所有時間框架同頻掃描 → 浪費 API 配額
+
+**解決方案**：智能調度不同時間框架
+- **1h**：每小時掃描一次（趨勢確認）
+- **15m**：每15分鐘掃描一次（趨勢確認）
+- **5m/1m**：高頻掃描（入場信號）
+
+**效果**：
+- ✅ API 效率提升 5 倍（從 40 個 → 200 個交易對）
+- ✅ 真正超高頻交易（5m 每分鐘更新）
+- ✅ 智能緩存（1h/15m 緩存至下次更新時間）
+
+**詳細文檔**：
+- [完整監控指南](docs/FULL_MONITORING_GUIDE.md) - 多 API 配置與全幣種監控
+- [高頻交易指南](docs/HIGH_FREQUENCY_TRADING_GUIDE.md) - 差異化掃描策略詳解
+- [API 優化總結](docs/API_OPTIMIZATION_SUMMARY.md) - 性能優化對比
 
 ### 技術架構
 
@@ -44,6 +66,10 @@ src/
 - `BINANCE_API_SECRET`: Binance API 私鑰
 - `DISCORD_TOKEN`: Discord 機器人 Token
 
+**雙 API 配置（推薦）：**
+- `BINANCE_TRADING_API_KEY`: 交易專用 API 密鑰（可選）
+- `BINANCE_TRADING_API_SECRET`: 交易專用 API 私鑰（可選）
+
 **可選變量：**
 - `BINANCE_TESTNET`: 使用測試網（true/false，默認 false）
 - `TRADING_ENABLED`: 啟用實盤交易（true/false，默認 false）
@@ -51,6 +77,9 @@ src/
 - `CYCLE_INTERVAL`: 週期間隔秒數（默認 60）
 - `MIN_CONFIDENCE`: 最小信心度（默認 0.70）
 - `LOG_LEVEL`: 日誌級別（DEBUG/INFO/WARNING/ERROR，默認 INFO）
+- `MAX_ANALYZE_SYMBOLS`: 分析交易對數量（0=全部，默認 0）
+- `SCAN_INTERVAL`: 掃描間隔秒數（默認 300）
+- `RATE_LIMIT_REQUESTS`: API 限流請求數（默認 1920）
 
 ### 快速開始
 
@@ -109,24 +138,25 @@ src/
 
 ### 開發狀態
 
-當前版本: v1.0.0 (基礎框架)
+當前版本: v2.0.0 (完整系統 + 高頻優化)
 
 已完成:
-- ✅ 項目結構和模組化設計
-- ✅ 配置管理系統（環境變量驗證）
-- ✅ Binance API 客戶端（完整封裝）
-- ✅ 核心基礎設施（緩存、限流、熔斷器）
-- ✅ 技術指標計算（EMA, MACD, RSI, ATR, Order Blocks）
-- ✅ 主程序框架和生命週期管理
+- ✅ 完整 6 層架構（策略/服務/監控/業務/集成/ML）
+- ✅ ICT/SMC 策略引擎（Order Blocks, Fair Value Gaps, Liquidity Zones）
+- ✅ XGBoost ML 預測器（39 特徵，GPU 加速）
+- ✅ 32 核心並行分析器（充分利用 Railway 資源）
+- ✅ 動態風險管理器（槓桿 3-20x，倉位 3%-13%）
+- ✅ Discord 通知系統（信號/交易/狀態）
+- ✅ 虛擬倉位管理（ML 數據收集）
+- ✅ 差異化時間框架掃描（API 優化）
+- ✅ 健康監控和性能報告
 - ✅ Railway 部署配置
 
-待實現:
-- ⏳ ICT/SMC 策略引擎
-- ⏳ 風險管理器
-- ⏳ 交易執行服務
-- ⏳ Discord 通知系統
-- ⏳ 虛擬倉位追蹤
-- ⏳ ML 數據收集
+最新優化:
+- ⚡ 差異化掃描系統（1h每小時，15m每15分鐘，5m/1m高頻）
+- ⚡ 智能數據管理器（緩存優化）
+- ⚡ API 效率提升 5 倍
+- ⚡ 支持監控全部 648 個交易對
 
 ### 部署選項
 
