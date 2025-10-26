@@ -3,6 +3,7 @@ ML 預測服務
 職責：實時預測、信心度校準、預測結果集成
 """
 
+import os
 import numpy as np
 import pandas as pd
 from typing import Dict, Optional
