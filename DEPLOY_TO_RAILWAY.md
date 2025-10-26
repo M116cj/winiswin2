@@ -1,189 +1,255 @@
-# 🚀 部署 v3.0.2 到 Railway - 完整步骤
+# 🚀 Railway 部署指南 - v3.2.5
 
-**问题**: Railway 上运行的是旧代码，需要重新部署！
-
-**版本**: v3.0.2 - 超简化趋势识别
+**重要**：此系统**只能**在Railway上运行，Replit会封锁Binance API（451错误）。
 
 ---
 
-## 📋 部署前检查清单
+## ⚡ 快速部署（推荐）
 
-- ✅ 代码已修复（超简化 EMA 交叉策略）
-- ✅ 添加诊断日志（显示每个交易对的趋势值）
-- ✅ 编译测试通过
-- ⏳ **待执行：推送到 Railway**
+### 1️⃣ 准备Railway项目
+
+```bash
+# 确保你在Railway上已经创建了项目
+# 项目地址: https://railway.app/
+```
+
+### 2️⃣ 连接Git仓库
+
+1. 在Railway dashboard点击 **"New Project"**
+2. 选择 **"Deploy from GitHub repo"**
+3. 选择你的仓库
+4. Railway会自动检测Python项目
+
+### 3️⃣ 配置环境变量
+
+在Railway项目设置中添加以下环境变量：
+
+```bash
+# Binance API（必需）
+BINANCE_API_KEY=你的API密钥
+BINANCE_API_SECRET=你的API密钥
+
+# 交易配置
+TRADING_ENABLED=False          # 设为True开启真实交易
+BINANCE_TESTNET=False         # 正式网络
+MAX_POSITIONS=1               # 小账户建议设为1
+
+# Discord通知（可选）
+DISCORD_TOKEN=你的Discord_Token
+DISCORD_CHANNEL_ID=你的频道ID
+
+# 日志级别
+LOG_LEVEL=INFO
+```
+
+### 4️⃣ 部署
+
+Railway会自动：
+1. ✅ 检测 `requirements.txt`
+2. ✅ 安装Python依赖
+3. ✅ 使用 `nixpacks.toml` 配置
+4. ✅ 运行 `python -m src.main`
+
+### 5️⃣ 验证部署
+
+查看Railway日志，确认系统正常运行：
+
+```
+✅ 成功标志：
+🚀 高頻交易系統 v3.0 啟動中...
+✅ Binance API 連接成功
+🔄 交易週期開始
+📊 分析完成，生成 XX 個信號
+```
 
 ---
 
-## 🔧 方法 1: 使用 Railway CLI（推荐）
+## 🔄 如何更新到最新版本
 
-### 步骤 1: 确认 Railway 项目连接
+### **重要**：v3.2.5包含关键修复
 
-```bash
-railway status
-```
+**v3.2.5新功能**：
+- ✅ 自动补足小于5 USDT的订单到最低要求
+- ✅ 修复所有LSP类型错误
+- ✅ 代码库完全清理
 
-**预期输出**:
-```
-Project: your-trading-bot
-Environment: production
-```
-
-### 步骤 2: 直接部署
+### 方法1：Git推送（推荐）
 
 ```bash
-railway up
-```
-
-或者推送到 git：
-
-```bash
+# 1. 提交最新代码
 git add .
-git commit -m "🔧 v3.0.2: 修复趋势识别 - 超简化EMA交叉策略"
-railway up
+git commit -m "Update to v3.2.5 - Auto topup orders"
+git push origin main
+
+# 2. Railway会自动重新部署
 ```
 
-### 步骤 3: 监控部署
+### 方法2：手动重新部署
+
+1. 在Railway dashboard找到你的项目
+2. 点击 **"Deployments"** 标签
+3. 点击 **"Redeploy"** 按钮
+
+---
+
+## 📋 检查Railway上的代码版本
+
+查看Railway日志中的版本号：
+
+```
+✅ v3.2.5版本标志：
+準備開倉: SOLUSDT LONG 數量: 0.03 槓桿: 4x 信心度: 70.00% 訂單價值: 5.00 USDT
+                                                              ↑
+                                                          显示订单价值
+```
+
+```
+❌ 旧版本标志：
+準備開倉: SOLUSDT LONG 數量: 0.02 槓桿: 4x 信心度: 70.00%
+                                                 ↑
+                                            缺少订单价值显示
+```
+
+如果看到旧版本标志，说明Railway上的代码未更新，需要重新部署。
+
+---
+
+## 🐛 常见问题
+
+### 1. 订单被拒绝：-4164错误
+
+**错误信息**：
+```
+code=-4164, msg=Order's notional must be no smaller than 5
+```
+
+**原因**：Railway上运行的是旧版本代码
+
+**解决**：
+```bash
+# 重新部署最新代码
+git push origin main
+```
+
+### 2. Railway日志显示451错误
+
+**错误**：这是Replit的错误，不是Railway的
+
+**解决**：确保你在Railway上部署，不是Replit
+
+### 3. 账户余额43 USDT，所有订单都失败
+
+**原因**：
+- 旧版本：每个订单只有3-4 USDT（小于5 USDT最低要求）
+- 新版本：自动补足到5 USDT
+
+**解决**：
+1. 部署v3.2.5最新代码
+2. 设置 `MAX_POSITIONS=1`（小账户建议）
+
+---
+
+## 🎯 小账户配置建议（< 50 USDT）
 
 ```bash
-railway logs --follow
+# 环境变量配置
+MAX_POSITIONS=1              # 只开1个仓位
+TRADING_ENABLED=False        # 先观察，确认无误后开启
+MIN_CONFIDENCE=0.60          # 提高信心度阈值
+
+# 结果
+# 账户43 USDT → 单仓位约36 USDT → 自动补足到5 USDT ✅
 ```
 
 ---
 
-## 🔧 方法 2: 通过 Git 推送
+## 📊 v3.2.5更新内容
 
-### 如果你有 Railway 的 Git remote
+### 核心修复
 
-```bash
-# 查看 remote
-git remote -v
+1. **自动订单补足**
+   - 检测订单价值 < 5 USDT
+   - 自动补足到最低要求
+   - 防止-4164错误
 
-# 如果有 railway remote
-git add .
-git commit -m "🔧 v3.0.2: 修复趋势识别"
-git push railway main
+2. **LSP错误修复**
+   - risk_manager.py：4个类型错误
+   - model_trainer.py：3个sklearn参数错误
 
-# 如果没有 railway remote，添加它
-railway link
-git push railway main
-```
+3. **代码库清理**
+   - 归档26个旧文档到 `docs/archive/`
+   - 删除4个临时脚本
+   - 清理所有Python缓存
 
----
+### 代码示例
 
-## 🔧 方法 3: 通过 Railway Dashboard
-
-1. 访问 Railway Dashboard
-2. 进入你的项目
-3. 点击 **Settings** → **Service** → **Deploy**
-4. 手动触发重新部署
-
-或者：
-1. 连接 GitHub repository
-2. 推送代码到 GitHub
-3. Railway 自动检测并部署
-
----
-
-## 📊 部署后验证（重要！）
-
-### 预期日志输出（成功）
-
-```bash
-railway logs --follow
-```
-
-**应该看到**:
-```
-🔍 開始掃描市場...
-
-BTCUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
-✅ 生成交易信號: BTCUSDT LONG 信心度 78.5%
-
-ETHUSDT: 趨勢檢測 - 1h:bullish, 15m:neutral, 5m:bullish
-✅ 生成交易信號: ETHUSDT LONG 信心度 72.3%
-
-BNBUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
-✅ 生成交易信號: BNBUSDT SHORT 信心度 69.1%
-
-...
-
-🎯 本週期共生成 18 個交易信號
-```
-
-### ❌ 如果还是看到（失败）
-
-```
-拒絕 - 1h 和 15m 都是 neutral  ← 这个消息应该消失了
-```
-
-**解决方案**:
-1. 确认代码已推送
-2. 检查 Railway 是否重新构建
-3. 强制重新部署
-
----
-
-## 🔍 故障排除
-
-### 问题 1: Railway 没有检测到更改
-
-```bash
-# 强制重新部署
-railway redeploy
-```
-
-### 问题 2: 缓存问题
-
-在 Railway Dashboard:
-1. Settings → Service
-2. 找到 "Clear Build Cache"
-3. 重新部署
-
-### 问题 3: 环境变量丢失
-
-确认 Railway 中设置了：
-- `BINANCE_API_KEY`
-- `BINANCE_API_SECRET`
-
----
-
-## 🎯 关键变化对比
-
-### v3.0.1（失败）
 ```python
-# 三重条件，太严格
-if 价格 > 快线 AND 价格 > 慢线 AND 快线 > 慢线:
-    return "bullish"
+# src/services/trading_service.py (第73-84行)
+notional_value = quantity * entry_price
+if notional_value < 5.0:
+    logger.info(
+        f"💰 訂單價值不足5 USDT，自動補足 {symbol}: "
+        f"{notional_value:.2f} USDT → 5.0 USDT"
+    )
+    quantity = 5.0 / entry_price
+    quantity = await self._round_quantity(symbol, quantity)
+    notional_value = quantity * entry_price
 ```
 
-### v3.0.2（成功）
-```python
-# 标准 EMA 交叉
-if 快线 > 慢线:
-    return "bullish"
+---
+
+## ✅ 部署验证清单
+
+部署后检查Railway日志：
+
+- [ ] ✅ 显示版本号 v3.0
+- [ ] ✅ Binance API连接成功
+- [ ] ✅ 生成交易信号（每周期约60个）
+- [ ] ✅ 日志显示"訂單價值: XX USDT"
+- [ ] ✅ 无-4164错误
+- [ ] ✅ 订单成功创建或进入虚拟仓位
+
+---
+
+## 🚨 紧急回滚
+
+如果新版本有问题：
+
+```bash
+# 回滚到之前的版本
+git revert HEAD
+git push origin main
 ```
 
----
-
-## 📈 预期改进
-
-| 指标 | 修复前 | 修复后 |
-|-----|-------|-------|
-| 趋势识别率 | ~5% | ~95% |
-| 每周期信号数 | 0-1 个 | 10-30 个 |
-| 日志消息 | "拒絕 neutral" | "趨勢檢測" |
+Railway会自动部署回滚版本。
 
 ---
 
-## ✅ 最终确认
+## 📞 获取帮助
 
-部署成功后，在 Railway 日志中查找：
+**查看日志**：
+1. 登录Railway dashboard
+2. 选择你的项目
+3. 点击 "Deployments"
+4. 查看实时日志
 
-1. ✅ **新日志格式**: `趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish`
-2. ✅ **生成信号**: `生成交易信號: BTCUSDT LONG`
-3. ✅ **信号统计**: `本週期共生成 XX 個交易信號` (XX > 5)
+**关键日志位置**：
+- 启动日志：系统初始化
+- 周期日志：每60秒一次
+- 错误日志：红色ERROR标记
 
 ---
 
-**⚠️ 重要**: 部署后请立即在这里回报日志输出，确认修复生效！
+## 🎉 部署完成
+
+部署成功后，系统会：
+
+1. ⏰ 每60秒扫描一次市场
+2. 📊 分析600+交易对，生成60个信号
+3. 🎯 选择排名前N的信号（根据MAX_POSITIONS）
+4. 💰 自动补足小订单到5 USDT最低要求
+5. 📝 记录所有数据到 `ml_data/`
+
+**系统状态查看**：Railway日志会显示每个周期的完整信息。
+
+祝交易顺利！🚀
