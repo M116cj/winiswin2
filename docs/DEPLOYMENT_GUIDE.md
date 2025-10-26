@@ -1,320 +1,419 @@
-# Railway 部署指南
+# 🚀 V3.0 系統部署指南
 
-## 系統要求
-- **CPU**: 32 vCPU
-- **內存**: 32 GB RAM
+## 部署前檢查清單
+
+### 環境準備
+
+#### 1. 系統要求
 - **Python**: 3.11+
-- **平台**: Railway / Docker / Linux
+- **CPU**: 建議 32 vCPU（最低 8 vCPU）
+- **記憶體**: 建議 32GB（最低 8GB）
+- **磁盤空間**: 至少 10GB（用於日誌和數據歸檔）
+
+#### 2. 必需的環境變量
+```bash
+# Binance API（必需）
+export BINANCE_API_KEY="your_api_key_here"
+export BINANCE_API_SECRET="your_api_secret_here"
+
+# Discord 通知（可選）
+export DISCORD_TOKEN="your_discord_token_here"
+export DISCORD_CHANNEL_ID="your_channel_id_here"
+
+# 交易模式
+export BINANCE_TESTNET="false"  # true=測試網，false=主網
+export TRADING_ENABLED="false"  # true=實盤交易，false=模擬模式
+
+# 系統配置（可選）
+export MAX_POSITIONS="3"
+export CYCLE_INTERVAL="60"
+export LOG_LEVEL="INFO"  # DEBUG, INFO, WARNING, ERROR
+```
+
+#### 3. 創建必要的目錄
+```bash
+mkdir -p data/logs
+mkdir -p ml_data
+mkdir -p data
+```
 
 ---
 
 ## Railway 部署步驟
 
-### 1. 創建 Railway 項目
-1. 登錄 [Railway.app](https://railway.app)
-2. 點擊 "New Project"
-3. 選擇 "Deploy from GitHub repo"
-4. 連接此 Git 倉庫
-
-### 2. 配置環境變量
-
-在 Railway 項目設置中添加以下環境變量：
-
-#### **必需變量**
-
+### 步驟 1: 創建新項目
 ```bash
-# Binance API 配置
-BINANCE_API_KEY=你的_Binance_API_Key
-BINANCE_API_SECRET=你的_Binance_API_Secret
+# 初始化 Railway 項目
+railway init
 
-# Discord 通知配置
-DISCORD_TOKEN=你的_Discord_Bot_Token
-
-# 可選：是否使用測試網
-BINANCE_TESTNET=false  # 生產環境設為 false
+# 鏈接到現有項目
+railway link
 ```
 
-#### **可選變量**
+### 步驟 2: 設置環境變量
+在 Railway Dashboard 中設置：
+- `BINANCE_API_KEY`
+- `BINANCE_API_SECRET`
+- `DISCORD_TOKEN`（可選）
+- `DISCORD_CHANNEL_ID`（可選）
+- `BINANCE_TESTNET=false`
+- `TRADING_ENABLED=false`（首次部署建議先使用模擬模式）
+- `LOG_LEVEL=INFO`
 
+### 步驟 3: 配置資源
+推薦配置：
+- **vCPU**: 32 vCPU
+- **記憶體**: 32GB
+- **磁盤**: 10GB
+
+### 步驟 4: 部署
 ```bash
-# 最大信號數（每週期）
-MAX_SIGNALS=5
+# 推送代碼
+git push origin main
 
-# 掃描間隔（秒）
-SCAN_INTERVAL=300
-
-# 限流配置
-RATE_LIMIT_REQUESTS=2400
-RATE_LIMIT_PERIOD=60
-
-# 熔斷器配置
-CIRCUIT_BREAKER_THRESHOLD=5
-CIRCUIT_BREAKER_TIMEOUT=60
+# 或使用 Railway CLI
+railway up
 ```
 
-### 3. 配置資源
+### 步驟 5: 監控啟動
+```bash
+# 查看日誌
+railway logs
 
-在 Railway 項目設置中：
-- **CPU**: 設置為 32 vCPU
-- **Memory**: 設置為 32 GB
-- **Restart Policy**: Always
-
-### 4. 部署
-
-Railway 會自動：
-1. 檢測 `requirements.txt`
-2. 安裝 Python 依賴
-3. 運行啟動命令：`python -m src.main`
-
----
-
-## Binance API 配置
-
-### 獲取 API 密鑰
-
-1. 登錄 [Binance](https://www.binance.com)
-2. 進入 "API Management"
-3. 創建新的 API Key
-4. 設置權限：
-   - ✅ Enable Reading
-   - ✅ Enable Spot & Margin Trading
-   - ✅ Enable Futures（**必需**）
-5. 記錄 API Key 和 Secret
-
-### API 安全設置
-
-1. **IP 白名單**（推薦）
-   - 添加 Railway 服務器 IP
-   - 限制訪問來源
-
-2. **權限限制**
-   - 不啟用 "Enable Withdrawals"
-   - 不啟用 "Enable Internal Transfer"
-
----
-
-## Discord Bot 配置
-
-### 創建 Discord Bot
-
-1. 訪問 [Discord Developer Portal](https://discord.com/developers/applications)
-2. 創建新應用程序
-3. 進入 "Bot" 標籤
-4. 點擊 "Add Bot"
-5. 複製 Bot Token
-
-### Bot 權限設置
-
-需要的權限：
-- Send Messages
-- Embed Links
-- Read Message History
-
-### 邀請 Bot 到服務器
-
-1. 進入 "OAuth2" → "URL Generator"
-2. 選擇 Scopes: `bot`
-3. 選擇 Bot Permissions:
-   - Send Messages
-   - Embed Links
-4. 複製生成的 URL
-5. 在瀏覽器中打開 URL 並選擇服務器
-
----
-
-## 驗證部署
-
-### 檢查日誌
-
-在 Railway 控制台查看日誌，應該看到：
-
+# 或
+railway run python -m src.main
 ```
-============================================================
-🚀 Winiswin2 v1 Enhanced 啟動中...
-============================================================
 
+---
+
+## 啟動順序與預期輸出
+
+### 正常啟動流程
+
+#### 1. 初始化階段（約 5-10 秒）
+```
+🚀 高頻交易系統 v3.0 啟動中...
+📌 代碼版本: 2025-10-25-v3.0 (期望值驅動+五維評分系統)
 ✅ 配置驗證通過
-🔧 初始化核心組件...
-✅ Binance API 連接成功
-✅ 數據服務初始化完成
+✅ Binance 連接成功
+✅ 數據服務已就緒
+✅ 智能數據管理器已就緒
+✅ 期望值計算器已就緒 (窗口大小: 30 筆交易)
+✅ 數據歸檔器已就緒 (目錄: ml_data)
 ✅ ML 預測器已就緒
-✅ 系統初始化成功
-============================================================
-🎯 開始市場掃描循環...
-============================================================
-```
-
-### 常見啟動日誌
-
-**正常啟動**:
-```
-✅ Binance API 連接成功
-✅ ML 預測器已就緒（或 ⚠️ ML 預測器未就緒，使用傳統策略）
 ✅ Discord Bot 已連接
-📊 掃描到 648 個交易對
-🔍 使用 32 核心並行分析...
+✅ 系統初始化完成
 ```
 
-**環境變量缺失**:
+#### 2. 首次掃描（約 10-30 秒）
 ```
-❌ 配置驗證失敗:
-  - 缺少 BINANCE_API_SECRET 環境變量
-  - 缺少 DISCORD_TOKEN 環境變量
+🔄 交易週期開始
+⏰ 時間框架調度狀態:
+  1h: 需掃描=是
+  15m: 需掃描=是
+  5m: 需掃描=是
+🔍 開始掃描市場，目標選擇前 200 個高流動性交易對...
+📊 ✅ 已選擇 200 個高流動性交易對
+📈 流動性最高的前10個交易對:
+  #1 BTCUSDT: 65000.0000 USDT (24h交易額: $50,000,000,000)
+  ...
+🔍 使用 32 核心並行分析 200 個高流動性交易對...
+```
+
+#### 3. 信號生成（若有信號）
+```
+🎯 生成 3 個交易信號
+  #1 BTCUSDT LONG 信心度 78.50%
+  #2 ETHUSDT LONG 信心度 72.30%
+  #3 SOLUSDT SHORT 信心度 68.90%
+```
+
+#### 4. 期望值檢查（首次運行）
+```
+✅ 期望值檢查通過 - 期望值: 1.25%, 盈虧比: 1.80, 建議槓桿: 12x
+```
+或（交易記錄不足時）
+```
+⚠️  交易記錄不足（0/30），使用勝率驅動模式
+```
+
+#### 5. 週期完成
+```
+✅ 數據已刷新到磁盤
+✅ 週期完成，耗時: 25.34 秒
+⏳ 等待 60 秒...
 ```
 
 ---
 
-## 性能監控
+## 驗證部署成功
 
-### 系統指標
+### 檢查清單
 
-每 5 分鐘自動輸出性能報告：
+#### 1. 日誌檢查
+```bash
+# Railway
+railway logs
 
-```
-============================================================
-📊 性能監控報告
-============================================================
-CPU: 45.2% (32 核心)
-內存: 12.50/32.00 GB (39.1%)
-運行時間: 2.50 小時
-信號生成: 45 個
-交易執行: 12 筆
-API 調用: 1254 次
-信號速率: 18.00 個/小時
-============================================================
+# 本地
+tail -f data/logs/trading_bot.log
 ```
 
-### Discord 通知
+**預期看到**：
+- ✅ "系統初始化完成"
+- ✅ "已選擇 200 個高流動性交易對"
+- ✅ "週期完成"
+- ❌ 無 "ERROR" 或 "CRITICAL" 級別錯誤
 
-系統會發送以下通知：
-- 🚀 系統啟動
-- 🎯 交易信號（包含 ML 預測）
-- ✅ 交易執行成功
-- ❌ 交易執行失敗
-- ⚠️  系統警報
-- 👋 系統停止
+#### 2. Discord 通知檢查
+- ✅ 收到 "🚀 交易系統已啟動" 消息
+- ✅ 收到交易信號通知（若有信號）
+
+#### 3. 數據歸檔檢查
+```bash
+# Railway
+railway run ls -la ml_data/
+
+# 本地
+ls -la ml_data/
+```
+
+**預期看到**：
+- `signals.csv` - 信號記錄
+- `positions.csv` - 倉位記錄（若有交易）
+
+#### 4. 性能指標檢查
+```bash
+# 查看系統資源使用
+railway ps
+
+# 或本地
+htop
+```
+
+**預期**：
+- CPU 使用率：分析時 ~80-100%（32 核心並行），待機時 <10%
+- 記憶體使用：~2-4GB
+- 網絡：正常 API 請求
 
 ---
 
-## ML 模型訓練
+## 常見問題排查
 
-### 自動訓練
+### 問題 1: "無法連接到 Binance API"
 
-系統會在累積 100+ 交易記錄後自動訓練 ML 模型。
+**可能原因**：
+1. API Key 錯誤
+2. IP 限制
+3. 網絡問題
 
-### 手動訓練
+**解決方案**：
+```bash
+# 驗證 API Key
+railway run python -c "import os; print(os.getenv('BINANCE_API_KEY'))"
 
-如需手動訓練模型：
+# 測試 Binance 連接
+railway run python -c "
+from src.clients.binance_client import BinanceClient
+import asyncio
+async def test():
+    client = BinanceClient()
+    result = await client.test_connection()
+    print('連接成功' if result else '連接失敗')
+asyncio.run(test())
+"
+```
 
+### 問題 2: "Discord Bot 連接失敗"
+
+**可能原因**：
+1. Discord Token 錯誤
+2. Bot 權限不足
+
+**解決方案**：
+1. 檢查 Token 是否正確
+2. 確保 Bot 有 "Send Messages" 權限
+3. 檢查 Channel ID 是否正確
+
+### 問題 3: "未生成交易信號"
+
+**正常情況**：
+- 市場無明確趨勢
+- 信心度不足（< 55%）
+- 期望值檢查未通過
+
+**調試方法**：
+```bash
+# 設置 DEBUG 級別日誌
+export LOG_LEVEL=DEBUG
+railway restart
+
+# 查看詳細拒絕原因
+railway logs | grep "拒絕"
+```
+
+### 問題 4: "期望值為負，禁止開倉"
+
+**原因**：
+- 最近 30 筆交易期望值為負
+- 策略需要優化
+
+**解決方案**：
+1. 查看交易記錄
+2. 分析虧損原因
+3. 調整策略參數或暫停交易
+
+---
+
+## 配置調優指南
+
+### 降低信號門檻（增加信號數量）
 ```python
-from src.ml.model_trainer import XGBoostTrainer
-
-trainer = XGBoostTrainer()
-model, metrics = trainer.train()
-trainer.save_model(model, metrics)
+# src/config.py
+MIN_CONFIDENCE = 0.50  # 從 0.55 降至 0.50
 ```
 
-### 模型文件位置
+### 增加監控對象數量
+```python
+# src/config.py
+TOP_VOLATILITY_SYMBOLS = 300  # 從 200 增至 300
+```
 
-- 模型: `data/models/xgboost_model.pkl`
-- 指標: `data/models/model_metrics.json`
-- 訓練數據: `data/trades/trades.jsonl`
+### 調整期望值窗口
+```python
+# src/config.py
+EXPECTANCY_WINDOW = 20  # 從 30 減至 20（更快適應市場）
+```
 
----
-
-## 故障排除
-
-### 問題：系統無法連接 Binance API
-
-**解決方案**:
-1. 檢查 API Key 和 Secret 是否正確
-2. 確認 API Key 已啟用 Futures 權限
-3. 檢查 IP 白名單設置
-4. 驗證網絡連接
-
-### 問題：Discord 通知未發送
-
-**解決方案**:
-1. 確認 DISCORD_TOKEN 正確
-2. 檢查 Bot 是否在服務器中
-3. 驗證 Bot 權限
-4. 查看日誌中的錯誤信息
-
-### 問題：ML 模型未就緒
-
-**解決方案**:
-- 這是正常的，系統會使用傳統策略
-- 累積 100+ 交易後會自動訓練模型
-- 可以手動上傳已訓練的模型到 `data/models/`
-
-### 問題：CPU 使用率低
-
-**檢查**:
-1. 確認 Railway 配置為 32 vCPU
-2. 查看日誌中的並行分析線程數
-3. 檢查是否有網絡瓶頸
+### 調整熔斷參數
+```python
+# src/config.py
+CONSECUTIVE_LOSS_LIMIT = 3  # 從 5 減至 3（更保守）
+DAILY_LOSS_LIMIT_PCT = 0.02  # 從 0.03 減至 0.02（2% 日虧損上限）
+```
 
 ---
 
-## 數據備份
+## 安全建議
 
-### 重要文件
+### 1. API Key 安全
+- ✅ 使用環境變量，不要硬編碼
+- ✅ 限制 API Key IP 白名單
+- ✅ 設置 API Key 只有交易權限，無提現權限
 
-定期備份以下文件：
-- `data/trades/trades.jsonl` - 交易歷史
-- `data/models/xgboost_model.pkl` - ML 模型
-- `logs/trading_bot.log` - 日誌文件
+### 2. 風險控制
+- ✅ **首次部署使用測試網**（BINANCE_TESTNET=true）
+- ✅ **測試通過後使用模擬模式**（TRADING_ENABLED=false）
+- ✅ **觀察 1 週後再啟用實盤交易**
 
-### 自動備份（推薦）
-
-在 Railway 中設置定期備份：
-1. 使用 Railway Volumes
-2. 配置 Cron 任務
-3. 上傳到雲存儲（S3/GCS）
-
----
-
-## 生產環境建議
-
-### 安全性
-- ✅ 啟用 IP 白名單
-- ✅ 使用只讀 API Key（測試階段）
-- ✅ 定期輪換密鑰
-- ✅ 監控異常登錄
-
-### 性能
-- ✅ 調整 SCAN_INTERVAL 適應市場活躍度
-- ✅ 監控 API 限流情況
-- ✅ 定期檢查內存使用
-
-### 監控
-- ✅ 設置性能告警
-- ✅ 監控錯誤率
-- ✅ 追蹤交易成功率
-- ✅ 定期審查 ML 模型性能
+### 3. 監控設置
+- ✅ 設置 Discord 通知
+- ✅ 定期查看日誌
+- ✅ 監控數據歸檔文件
+- ✅ 設置異常告警
 
 ---
 
-## 聯繫支援
+## 漸進式部署策略
 
-遇到問題？
-- 📧 Email: support@example.com
-- 💬 Discord: [加入服務器]
-- 📖 文檔: [查看完整文檔]
+### 階段 1: 測試網驗證（1-3 天）
+```bash
+export BINANCE_TESTNET="true"
+export TRADING_ENABLED="true"
+export MAX_POSITIONS="1"
+```
+
+**驗證**：
+- 系統穩定性
+- 信號質量
+- 期望值計算正確性
+
+### 階段 2: 主網模擬（1 週）
+```bash
+export BINANCE_TESTNET="false"
+export TRADING_ENABLED="false"  # 模擬模式
+export MAX_POSITIONS="3"
+```
+
+**驗證**：
+- 真實市場數據表現
+- 數據歸檔完整性
+- 期望值指標變化
+
+### 階段 3: 小規模實盤（2 週）
+```bash
+export BINANCE_TESTNET="false"
+export TRADING_ENABLED="true"
+export MAX_POSITIONS="1"  # 限制 1 個倉位
+```
+
+**驗證**：
+- 實際交易執行
+- 盈虧表現
+- 熔斷機制是否觸發
+
+### 階段 4: 全規模生產
+```bash
+export BINANCE_TESTNET="false"
+export TRADING_ENABLED="true"
+export MAX_POSITIONS="3"  # 完整倉位
+```
+
+**持續監控**：
+- 每日查看期望值指標
+- 每週查看盈虧報告
+- 每月優化策略參數
 
 ---
 
-**部署檢查清單**
+## 回滾計劃
 
-- [ ] Railway 項目已創建
-- [ ] 32 vCPU / 32 GB 資源已配置
-- [ ] BINANCE_API_KEY 已設置
-- [ ] BINANCE_API_SECRET 已設置
-- [ ] DISCORD_TOKEN 已設置
-- [ ] API 權限已確認（Futures）
-- [ ] Discord Bot 已邀請到服務器
-- [ ] 日誌顯示系統正常啟動
-- [ ] 性能監控正常運行
-- [ ] Discord 通知正常接收
+### 如需回滾到 v2.3
 
-**準備就緒！** 🚀
+```bash
+# 1. 切換到 v2.3 分支
+git checkout v2.3
+
+# 2. 重新部署
+railway up
+
+# 3. 驗證
+railway logs
+```
+
+### 數據遷移
+
+v3.0 向後兼容 v2.3 的數據格式，無需特殊遷移。
+
+---
+
+## 支持與聯絡
+
+- **日誌位置**: `data/logs/trading_bot.log`
+- **數據歸檔**: `ml_data/signals.csv`, `ml_data/positions.csv`
+- **系統文檔**: `SYSTEM_V3_README.md`
+- **升級摘要**: `UPGRADE_V3_SUMMARY.md`
+
+---
+
+## 最後檢查
+
+部署前請確認：
+
+- [ ] 環境變量已正確設置
+- [ ] 目錄已創建（data/logs, ml_data）
+- [ ] Python 依賴已安裝
+- [ ] 測試網測試通過
+- [ ] Discord 通知正常
+- [ ] 日誌輸出正常
+- [ ] 數據歸檔功能正常
+- [ ] 已閱讀並理解風險控制機制
+
+**✅ 全部確認後，可以開始部署！**
+
+---
+
+部署日期: _____________  
+部署人員: _____________  
+環境: [ ] 測試網 [ ] 主網  
+模式: [ ] 模擬 [ ] 實盤  

@@ -117,9 +117,9 @@ class XGBoostTrainer:
             # 評估指標
             metrics = {
                 'accuracy': float(accuracy_score(y_test, y_pred)),
-                'precision': float(precision_score(y_test, y_pred, zero_division=0)),
-                'recall': float(recall_score(y_test, y_pred, zero_division=0)),
-                'f1_score': float(f1_score(y_test, y_pred, zero_division=0)),
+                'precision': float(precision_score(y_test, y_pred, zero_division='warn')),
+                'recall': float(recall_score(y_test, y_pred, zero_division='warn')),
+                'f1_score': float(f1_score(y_test, y_pred, zero_division='warn')),
                 'roc_auc': float(roc_auc_score(y_test, y_pred_proba)),
                 'training_samples': len(X_train),
                 'test_samples': len(X_test),

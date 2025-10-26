@@ -3,7 +3,7 @@
 職責：動態槓桿計算、倉位大小計算、止損止盈設置
 """
 
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Optional
 import logging
 from datetime import datetime, timedelta
 
@@ -68,9 +68,9 @@ class RiskManager:
     
     def calculate_leverage(
         self,
-        expectancy: float = None,
-        profit_factor: float = None,
-        win_rate: float = None,
+        expectancy: Optional[float] = None,
+        profit_factor: Optional[float] = None,
+        win_rate: Optional[float] = None,
         consecutive_losses: int = 0,
         current_drawdown: float = 0.0
     ) -> int:
@@ -210,7 +210,7 @@ class RiskManager:
         entry_price: float,
         direction: str,
         atr: float,
-        risk_reward_ratio: float = None
+        risk_reward_ratio: Optional[float] = None
     ) -> Tuple[float, float]:
         """
         計算止損和止盈價格
