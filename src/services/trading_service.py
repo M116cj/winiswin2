@@ -100,7 +100,8 @@ class TradingService:
                 symbol=symbol,
                 side="BUY" if direction == "LONG" else "SELL",
                 quantity=quantity,
-                expected_price=entry_price
+                expected_price=entry_price,
+                direction=direction
             )
             
             if not order:
@@ -159,11 +160,13 @@ class TradingService:
             trade = self.active_orders[symbol]
             
             side = "SELL" if trade['direction'] == "LONG" else "BUY"
+            direction = trade['direction']
             
             order = await self._place_market_order(
                 symbol=symbol,
                 side=side,
-                quantity=trade['quantity']
+                quantity=trade['quantity'],
+                direction=direction
             )
             
             if not order:
@@ -210,7 +213,8 @@ class TradingService:
         symbol: str,
         side: str,
         quantity: float,
-        expected_price: float
+        expected_price: float,
+        direction: Optional[str] = None
     ) -> Optional[Dict]:
         """
         智能下單：自動選擇市價單或限價單
@@ -226,6 +230,7 @@ class TradingService:
             side: BUY / SELL
             quantity: 數量
             expected_price: 預期價格
+            direction: 方向 (LONG/SHORT) - 用於雙向持倉模式
         
         Returns:
             訂單信息
@@ -246,7 +251,7 @@ class TradingService:
             # 如果滑點可接受，使用市價單（最快）
             if slippage_pct < self.config.MAX_SLIPPAGE_PCT or not self.config.AUTO_ORDER_TYPE:
                 logger.info(f"✅ 滑點可接受，使用市價單: {symbol}")
-                return await self._place_market_order(symbol, side, quantity)
+                return await self._place_market_order(symbol, side, quantity, direction)
             
             # 滑點過大，使用限價單保護
             if self.config.USE_LIMIT_ORDERS:
@@ -254,7 +259,7 @@ class TradingService:
                     f"⚠️  滑點過大 ({slippage_pct:.2%}), 使用限價單保護: {symbol}"
                 )
                 return await self._place_limit_order_with_fallback(
-                    symbol, side, quantity, expected_price  # 傳入預期價格，非當前價
+                    symbol, side, quantity, expected_price, direction  # 傳入預期價格和方向
                 )
             else:
                 # 配置禁用限價單，直接拒絕
@@ -272,15 +277,26 @@ class TradingService:
         self,
         symbol: str,
         side: str,
-        quantity: float
+        quantity: float,
+        direction: Optional[str] = None
     ) -> Optional[Dict]:
         """下市價單"""
         try:
+            # 添加 positionSide 參數支持雙向持倉模式
+            position_side = None
+            if direction:
+                position_side = "LONG" if direction == "LONG" else "SHORT"
+            
+            params = {}
+            if position_side:
+                params['positionSide'] = position_side
+            
             order = await self.client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
-                quantity=quantity
+                quantity=quantity,
+                **params
             )
             logger.info(f"✅ 市價單成交: {symbol} {side} {quantity}")
             return order
@@ -293,7 +309,8 @@ class TradingService:
         symbol: str,
         side: str,
         quantity: float,
-        expected_price: float
+        expected_price: float,
+        direction: Optional[str] = None
     ) -> Optional[Dict]:
         """
         下限價單，超時後降級為市價單
@@ -303,6 +320,7 @@ class TradingService:
             side: BUY / SELL  
             quantity: 數量
             expected_price: 預期價格（來自信號）
+            direction: 方向 (LONG/SHORT) - 用於雙向持倉模式
         
         Returns:
             訂單信息
@@ -327,6 +345,17 @@ class TradingService:
                 f"(保護範圍 ±{self.config.MAX_SLIPPAGE_PCT:.2%})"
             )
             
+            # 添加 positionSide 參數支持雙向持倉模式
+            position_side = None
+            if direction:
+                position_side = "LONG" if direction == "LONG" else "SHORT"
+            
+            params = {
+                "timeInForce": "GTC"  # Good Till Cancel
+            }
+            if position_side:
+                params['positionSide'] = position_side
+            
             # 下限價單
             order = await self.client.place_order(
                 symbol=symbol,
@@ -334,7 +363,7 @@ class TradingService:
                 order_type="LIMIT",
                 quantity=quantity,
                 price=limit_price,
-                timeInForce="GTC"  # Good Till Cancel
+                **params
             )
             
             order_id = order.get('orderId')
@@ -396,7 +425,7 @@ class TradingService:
             
             # 滑點已回落到可接受範圍，安全降級為市價單
             logger.info(f"✅ 滑點已回落，安全降級為市價單: {symbol}")
-            return await self._place_market_order(symbol, side, quantity)
+            return await self._place_market_order(symbol, side, quantity, direction)
             
         except Exception as e:
             logger.error(f"限價單失敗 {symbol}: {e}")
@@ -414,13 +443,15 @@ class TradingService:
         """設置止損單"""
         try:
             side = "SELL" if direction == "LONG" else "BUY"
+            position_side = "LONG" if direction == "LONG" else "SHORT"
             
             await self.client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="STOP_MARKET",
                 quantity=quantity,
-                stop_price=stop_price
+                stop_price=stop_price,
+                positionSide=position_side
             )
             
             logger.info(f"設置止損: {symbol} @ {stop_price}")
@@ -438,13 +469,15 @@ class TradingService:
         """設置止盈單"""
         try:
             side = "SELL" if direction == "LONG" else "BUY"
+            position_side = "LONG" if direction == "LONG" else "SHORT"
             
             await self.client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="TAKE_PROFIT_MARKET",
                 quantity=quantity,
-                stop_price=take_profit_price
+                stop_price=take_profit_price,
+                positionSide=position_side
             )
             
             logger.info(f"設置止盈: {symbol} @ {take_profit_price}")
