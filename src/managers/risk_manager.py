@@ -70,12 +70,15 @@ class RiskManager:
             position_margin = max_position_margin
             position_value = position_margin * current_leverage
         
+        # ✅ 使用最終的保證金計算風險百分比（修復Architect建議）
+        final_risk_pct = position_margin / account_balance
+        
         return {
             'position_margin': position_margin,
             'position_value': position_value,
             'leverage': current_leverage,
-            'margin_pct': position_margin / account_balance,
-            'risk_pct': risk_per_trade / account_balance
+            'margin_pct': final_risk_pct,
+            'risk_pct': final_risk_pct
         }
     
     def calculate_leverage(
