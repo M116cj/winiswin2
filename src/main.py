@@ -309,13 +309,15 @@ class TradingBot:
     async def _process_signal(self, signal: Dict, rank: int):
         """處理交易信號（期望值驅動版本）"""
         try:
-            expectancy_metrics = self.expectancy_calculator.calculate_expectancy(self.all_trades)
+            # 使用TradeRecorder的完成交易（包含pnl）而不是all_trades
+            completed_trades = self.trade_recorder.get_all_completed_trades()
+            expectancy_metrics = self.expectancy_calculator.calculate_expectancy(completed_trades)
             
             can_trade, rejection_reason = self.expectancy_calculator.should_trade(
                 expectancy=expectancy_metrics['expectancy'],
                 profit_factor=expectancy_metrics['profit_factor'],
                 consecutive_losses=expectancy_metrics['consecutive_losses'],
-                daily_loss_pct=self.expectancy_calculator.get_daily_loss(self.all_trades),
+                daily_loss_pct=self.expectancy_calculator.get_daily_loss(completed_trades),
                 total_trades=expectancy_metrics['total_trades']  # 傳入總交易數用於冷啟動判斷
             )
             

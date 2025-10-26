@@ -229,7 +229,7 @@ class TradingService:
             # 記錄平倉到TradeRecorder
             if self.trade_recorder:
                 try:
-                    self.trade_recorder.record_exit(symbol, close_result)
+                    self.trade_recorder.record_exit(close_result)
                     logger.debug(f"📝 已記錄平倉到TradeRecorder: {symbol}")
                 except Exception as e:
                     logger.error(f"記錄平倉失敗: {e}")

@@ -243,6 +243,30 @@ class TradeRecorder:
             'in_memory': len(self.completed_trades)
         }
     
+    def get_all_completed_trades(self) -> List[Dict]:
+        """
+        獲取所有完成的交易記錄（內存+磁盤）
+        
+        Returns:
+            List[Dict]: 所有完成的交易記錄
+        """
+        all_trades = []
+        
+        # 從文件讀取
+        if os.path.exists(self.trades_file):
+            try:
+                with open(self.trades_file, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        if line.strip():
+                            all_trades.append(json.loads(line))
+            except Exception as e:
+                logger.error(f"讀取交易記錄失敗: {e}")
+        
+        # 添加內存中的記錄
+        all_trades.extend(self.completed_trades)
+        
+        return all_trades
+    
     def force_flush(self):
         """強制保存所有數據"""
         if self.completed_trades:
