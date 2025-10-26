@@ -23,6 +23,8 @@ class MLPredictor:
         self.data_processor = MLDataProcessor()
         self.model = None
         self.is_ready = False
+        self.last_training_samples = 0  # 上次訓練時的樣本數
+        self.retrain_threshold = 50  # 累積50筆新交易後重訓練
     
     def initialize(self) -> bool:
         """
@@ -46,7 +48,9 @@ class MLPredictor:
             
             if self.model is not None:
                 self.is_ready = True
-                logger.info("✅ ML 預測器已就緒")
+                # 記錄初始訓練時的樣本數（從metrics讀取或當前數據）
+                self.last_training_samples = self._load_last_training_samples()
+                logger.info(f"✅ ML 預測器已就緒 (訓練樣本: {self.last_training_samples})")
                 return True
             else:
                 logger.warning("⚠️  ML 模型未就緒，將使用傳統策略")
@@ -173,7 +177,88 @@ class MLPredictor:
             calibrated = traditional_confidence * 0.6 + ml_confidence * 0.4
             
             return min(1.0, max(0.0, calibrated))
+    
+    def check_and_retrain_if_needed(self) -> bool:
+        """
+        檢查是否需要重訓練（基於新增數據量）
+        
+        Returns:
+            bool: 是否成功重訓練
+        """
+        try:
+            # 加載當前數據
+            df = self.data_processor.load_training_data()
+            current_samples = len(df)
+            
+            # 計算新增樣本數
+            new_samples = current_samples - self.last_training_samples
+            
+            # ⚠️ 防禦：如果檢測到數據減少（例如數據清理），重置計數器
+            if new_samples < 0:
+                logger.warning(
+                    f"檢測到數據減少: {current_samples} < {self.last_training_samples}，"
+                    f"重置計數器"
+                )
+                self.last_training_samples = current_samples
+                return False
+            
+            if new_samples < self.retrain_threshold:
+                logger.debug(
+                    f"新增樣本數不足: {new_samples}/{self.retrain_threshold} "
+                    f"(總樣本: {current_samples})"
+                )
+                return False
+            
+            # 觸發重訓練
+            logger.info(
+                f"🔄 檢測到 {new_samples} 筆新交易數據，開始重訓練模型... "
+                f"(總樣本: {current_samples})"
+            )
+            
+            model, metrics = self.trainer.train()
+            
+            if model is not None:
+                self.trainer.save_model(model, metrics)
+                self.model = model
+                self.last_training_samples = current_samples
+                
+                logger.info(
+                    f"✅ 模型重訓練完成！"
+                    f"準確率: {metrics.get('accuracy', 0):.2%}, "
+                    f"AUC: {metrics.get('roc_auc', 0):.3f}"
+                )
+                return True
+            
+            return False
             
         except Exception as e:
-            logger.error(f"校準信心度失敗: {e}")
-            return traditional_confidence
+            logger.error(f"重訓練檢查失敗: {e}")
+            return False
+    
+    def _load_last_training_samples(self) -> int:
+        """
+        從metrics文件加載上次訓練的樣本數
+        
+        Returns:
+            int: 上次訓練時的樣本數
+        """
+        try:
+            import json
+            metrics_path = 'data/models/model_metrics.json'
+            
+            if os.path.exists(metrics_path):
+                with open(metrics_path, 'r', encoding='utf-8') as f:
+                    metrics = json.load(f)
+                    samples = metrics.get('training_samples', 0)
+                    if samples > 0:
+                        logger.debug(f"從metrics加載上次訓練樣本數: {samples}")
+                        return samples
+            
+            # 如果沒有metrics，使用當前數據量
+            df = self.data_processor.load_training_data()
+            return len(df)
+            
+        except Exception as e:
+            logger.warning(f"加載訓練樣本數失敗: {e}，使用當前數據量")
+            df = self.data_processor.load_training_data()
+            return len(df)

@@ -116,6 +116,7 @@ class XGBoostTrainer:
             
             # 評估指標
             metrics = {
+                'training_samples': len(df),  # ✨ 保存訓練樣本數（用於持續訓練）
                 'accuracy': float(accuracy_score(y_test, y_pred)),
                 'precision': float(precision_score(y_test, y_pred, zero_division='warn')),
                 'recall': float(recall_score(y_test, y_pred, zero_division='warn')),

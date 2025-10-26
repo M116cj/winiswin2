@@ -446,6 +446,18 @@ class TradingBot:
                 if closed_count > 0:
                     logger.info(f"🎮 本週期模擬平倉: {closed_count} 筆")
             
+            # 🔄 檢查是否需要重訓練XGBoost模型（每累積50筆新交易）
+            if self.ml_predictor and self.ml_predictor.is_ready:
+                retrained = await asyncio.to_thread(
+                    self.ml_predictor.check_and_retrain_if_needed
+                )
+                if retrained:
+                    await self.discord_bot.send_alert(
+                        "🎯 XGBoost模型已完成重訓練\n"
+                        "使用最新交易數據更新模型",
+                        "success"
+                    )
+            
         except Exception as e:
             logger.error(f"更新持倉失敗: {e}")
     
