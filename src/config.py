@@ -71,6 +71,12 @@ class Config:
     OB_VOLUME_MULTIPLIER: float = 1.5
     OB_LOOKBACK: int = 20
     
+    # 訂單配置
+    MAX_SLIPPAGE_PCT: float = 0.002  # 最大滑點容忍度 0.2% （也用作限價單保護範圍）
+    ORDER_TIMEOUT_SECONDS: int = 30  # 限價單超時時間（秒）
+    USE_LIMIT_ORDERS: bool = True  # 是否使用限價單（滑點過大時）
+    AUTO_ORDER_TYPE: bool = True  # 自動選擇訂單類型
+    
     # Liquidity Zones 配置
     LZ_LOOKBACK: int = 20
     LZ_STRENGTH_THRESHOLD: float = 0.5

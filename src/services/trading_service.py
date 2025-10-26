@@ -81,10 +81,12 @@ class TradingService:
                     signal, position_info, quantity
                 )
             
-            order = await self._place_market_order(
+            # 智能下單：根據配置自動選擇訂單類型
+            order = await self._place_smart_order(
                 symbol=symbol,
                 side="BUY" if direction == "LONG" else "SELL",
-                quantity=quantity
+                quantity=quantity,
+                expected_price=entry_price
             )
             
             if not order:
@@ -189,6 +191,69 @@ class TradingService:
             logger.error(f"平倉失敗: {e}")
             return None
     
+    async def _place_smart_order(
+        self,
+        symbol: str,
+        side: str,
+        quantity: float,
+        expected_price: float
+    ) -> Optional[Dict]:
+        """
+        智能下單：自動選擇市價單或限價單
+        
+        策略：
+        1. 獲取當前市價
+        2. 計算滑點
+        3. 如果滑點 < MAX_SLIPPAGE_PCT: 使用市價單
+        4. 如果滑點 >= MAX_SLIPPAGE_PCT: 使用限價單（超時後轉市價單）
+        
+        Args:
+            symbol: 交易對
+            side: BUY / SELL
+            quantity: 數量
+            expected_price: 預期價格
+        
+        Returns:
+            訂單信息
+        """
+        try:
+            # 獲取當前市價
+            ticker = await self.client.get_ticker_price(symbol)
+            current_price = float(ticker['price'])
+            
+            # 計算滑點
+            slippage_pct = abs(current_price - expected_price) / expected_price
+            
+            logger.info(
+                f"價格檢查: {symbol} 預期={expected_price:.6f} "
+                f"當前={current_price:.6f} 滑點={slippage_pct:.2%}"
+            )
+            
+            # 如果滑點可接受，使用市價單（最快）
+            if slippage_pct < self.config.MAX_SLIPPAGE_PCT or not self.config.AUTO_ORDER_TYPE:
+                logger.info(f"✅ 滑點可接受，使用市價單: {symbol}")
+                return await self._place_market_order(symbol, side, quantity)
+            
+            # 滑點過大，使用限價單保護
+            if self.config.USE_LIMIT_ORDERS:
+                logger.warning(
+                    f"⚠️  滑點過大 ({slippage_pct:.2%}), 使用限價單保護: {symbol}"
+                )
+                return await self._place_limit_order_with_fallback(
+                    symbol, side, quantity, expected_price  # 傳入預期價格，非當前價
+                )
+            else:
+                # 配置禁用限價單，直接拒絕
+                logger.error(
+                    f"❌ 滑點過大且禁用限價單，拒絕下單: {symbol} "
+                    f"(滑點 {slippage_pct:.2%} > {self.config.MAX_SLIPPAGE_PCT:.2%})"
+                )
+                return None
+                
+        except Exception as e:
+            logger.error(f"智能下單失敗 {symbol}: {e}")
+            return None
+    
     async def _place_market_order(
         self,
         symbol: str,
@@ -203,9 +268,126 @@ class TradingService:
                 order_type="MARKET",
                 quantity=quantity
             )
+            logger.info(f"✅ 市價單成交: {symbol} {side} {quantity}")
             return order
         except Exception as e:
-            logger.error(f"下單失敗 {symbol} {side} {quantity}: {e}")
+            logger.error(f"市價單失敗 {symbol} {side} {quantity}: {e}")
+            return None
+    
+    async def _place_limit_order_with_fallback(
+        self,
+        symbol: str,
+        side: str,
+        quantity: float,
+        expected_price: float
+    ) -> Optional[Dict]:
+        """
+        下限價單，超時後降級為市價單
+        
+        Args:
+            symbol: 交易對
+            side: BUY / SELL  
+            quantity: 數量
+            expected_price: 預期價格（來自信號）
+        
+        Returns:
+            訂單信息
+        """
+        try:
+            # 🔧 修復：基於預期價格計算限價單，而非當前市價
+            # 這樣才能真正限制滑點在MAX_SLIPPAGE_PCT範圍內
+            if side == "BUY":
+                # 買入：最高不超過預期價 + MAX_SLIPPAGE
+                # 這確保成交價不會比信號價格高出0.2%以上
+                limit_price = expected_price * (1 + self.config.MAX_SLIPPAGE_PCT)
+            else:
+                # 賣出：最低不低於預期價 - MAX_SLIPPAGE
+                # 這確保成交價不會比信號價格低出0.2%以上
+                limit_price = expected_price * (1 - self.config.MAX_SLIPPAGE_PCT)
+            
+            # 四捨五入到合適精度
+            limit_price = round(limit_price, 6)
+            
+            logger.info(
+                f"📝 下限價單: {symbol} {side} @ {limit_price} "
+                f"(保護範圍 ±{self.config.MAX_SLIPPAGE_PCT:.2%})"
+            )
+            
+            # 下限價單
+            order = await self.client.place_order(
+                symbol=symbol,
+                side=side,
+                order_type="LIMIT",
+                quantity=quantity,
+                price=limit_price,
+                timeInForce="GTC"  # Good Till Cancel
+            )
+            
+            order_id = order.get('orderId')
+            
+            if not order_id:
+                logger.error(f"限價單未返回訂單ID，拒絕下單: {symbol}")
+                # 不降級為不受限制的市價單，保護滑點
+                return None
+            
+            # 等待訂單成交或超時
+            import asyncio
+            timeout = self.config.ORDER_TIMEOUT_SECONDS
+            elapsed = 0
+            check_interval = 2  # 每2秒檢查一次
+            
+            while elapsed < timeout:
+                await asyncio.sleep(check_interval)
+                elapsed += check_interval
+                
+                # 檢查訂單狀態
+                order_status = await self.client.get_order(symbol, int(order_id))
+                status = order_status.get('status')
+                
+                if status == 'FILLED':
+                    logger.info(f"✅ 限價單成交: {symbol}")
+                    return order_status
+                elif status in ['CANCELED', 'REJECTED', 'EXPIRED']:
+                    logger.warning(f"⚠️  限價單失敗: {symbol} 狀態={status}")
+                    break
+            
+            # 超時：重新檢查滑點，決定是否降級為市價單
+            logger.warning(
+                f"⏰ 限價單超時 ({timeout}秒): {symbol}"
+            )
+            
+            try:
+                await self.client.cancel_order(symbol, int(order_id))
+            except:
+                pass  # 忽略取消錯誤
+            
+            # 重新檢查當前滑點
+            ticker = await self.client.get_ticker_price(symbol)
+            current_price = float(ticker['price'])
+            slippage_pct = abs(current_price - expected_price) / expected_price
+            
+            logger.info(
+                f"限價單超時後價格檢查: {symbol} "
+                f"預期={expected_price:.6f} 當前={current_price:.6f} "
+                f"滑點={slippage_pct:.2%}"
+            )
+            
+            # 如果滑點仍然過大，拒絕降級為市價單
+            if slippage_pct >= self.config.MAX_SLIPPAGE_PCT:
+                logger.error(
+                    f"❌ 限價單超時且滑點仍超標，拒絕下單: {symbol} "
+                    f"(滑點 {slippage_pct:.2%} >= {self.config.MAX_SLIPPAGE_PCT:.2%})"
+                )
+                return None
+            
+            # 滑點已回落到可接受範圍，安全降級為市價單
+            logger.info(f"✅ 滑點已回落，安全降級為市價單: {symbol}")
+            return await self._place_market_order(symbol, side, quantity)
+            
+        except Exception as e:
+            logger.error(f"限價單失敗 {symbol}: {e}")
+            # 異常情況下不降級為不受限制的市價單，保護滑點
+            # 返回None表示下單失敗
             return None
     
     async def _set_stop_loss(

@@ -315,6 +315,34 @@ class BinanceClient:
         """
         return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
     
+    async def get_order(self, symbol: str, order_id: int) -> dict:
+        """
+        查詢訂單狀態
+        
+        Args:
+            symbol: 交易對
+            order_id: 訂單ID
+        
+        Returns:
+            訂單信息
+        """
+        params = {"symbol": symbol, "orderId": order_id}
+        return await self._request("GET", "/fapi/v1/order", params=params, signed=True)
+    
+    async def cancel_order(self, symbol: str, order_id: int) -> dict:
+        """
+        取消訂單
+        
+        Args:
+            symbol: 交易對
+            order_id: 訂單ID
+        
+        Returns:
+            取消結果
+        """
+        params = {"symbol": symbol, "orderId": order_id}
+        return await self._request("DELETE", "/fapi/v1/order", params=params, signed=True)
+    
     async def set_leverage(self, symbol: str, leverage: int) -> dict:
         """
         設置槓桿倍數
