@@ -33,6 +33,7 @@ class TradingService:
         self.risk_manager = risk_manager
         self.config = Config
         self.active_orders: Dict[str, dict] = {}
+        self.symbol_filters: Dict[str, dict] = {}  # 交易對過濾器緩存
     
     async def execute_signal(
         self,
@@ -67,7 +68,7 @@ class TradingService:
             
             quantity = position_info['position_value'] / entry_price
             
-            quantity = self._round_quantity(symbol, quantity)
+            quantity = await self._round_quantity(symbol, quantity)
             
             logger.info(
                 f"準備開倉: {symbol} {direction} "
@@ -438,23 +439,86 @@ class TradingService:
         except Exception as e:
             logger.error(f"設置止盈失敗: {e}")
     
-    def _round_quantity(self, symbol: str, quantity: float) -> float:
+    async def _round_quantity(self, symbol: str, quantity: float) -> float:
         """
-        四捨五入數量到合適精度
+        根據交易所的 LOT_SIZE 過濾器四捨五入數量
         
         Args:
             symbol: 交易對
             quantity: 原始數量
         
         Returns:
-            float: 四捨五入後的數量
+            float: 符合交易所規則的數量
         """
-        if quantity >= 1:
-            return round(quantity, 3)
-        elif quantity >= 0.1:
-            return round(quantity, 4)
-        else:
-            return round(quantity, 5)
+        try:
+            # 獲取交易對過濾器（帶緩存）
+            if symbol not in self.symbol_filters:
+                exchange_info = await self.client.get_exchange_info()
+                for s in exchange_info.get('symbols', []):
+                    if s['symbol'] == symbol:
+                        # 提取 LOT_SIZE 過濾器
+                        for f in s.get('filters', []):
+                            if f['filterType'] == 'LOT_SIZE':
+                                self.symbol_filters[symbol] = {
+                                    'stepSize': float(f['stepSize']),
+                                    'minQty': float(f['minQty']),
+                                    'maxQty': float(f['maxQty'])
+                                }
+                                break
+                        break
+            
+            # 如果沒有找到過濾器，使用默認精度
+            if symbol not in self.symbol_filters:
+                logger.warning(f"未找到 {symbol} 的 LOT_SIZE 過濾器，使用默認精度")
+                if quantity >= 1:
+                    return round(quantity, 3)
+                elif quantity >= 0.1:
+                    return round(quantity, 4)
+                else:
+                    return round(quantity, 5)
+            
+            filters = self.symbol_filters[symbol]
+            step_size = filters['stepSize']
+            min_qty = filters['minQty']
+            max_qty = filters['maxQty']
+            
+            # 根據 stepSize 計算精度（小數位數）
+            import math
+            if step_size >= 1:
+                precision = 0
+            else:
+                precision = abs(int(math.log10(step_size)))
+            
+            # 調整數量為 stepSize 的倍數
+            adjusted_qty = round(quantity / step_size) * step_size
+            
+            # 四捨五入到正確精度
+            adjusted_qty = round(adjusted_qty, precision)
+            
+            # 檢查最小/最大限制
+            if adjusted_qty < min_qty:
+                logger.warning(f"{symbol} 數量 {adjusted_qty} < 最小值 {min_qty}，調整為最小值")
+                adjusted_qty = min_qty
+            elif adjusted_qty > max_qty:
+                logger.warning(f"{symbol} 數量 {adjusted_qty} > 最大值 {max_qty}，調整為最大值")
+                adjusted_qty = max_qty
+            
+            logger.debug(
+                f"{symbol} 數量調整: {quantity:.8f} -> {adjusted_qty} "
+                f"(stepSize={step_size}, precision={precision})"
+            )
+            
+            return adjusted_qty
+            
+        except Exception as e:
+            logger.error(f"調整數量失敗: {e}，使用默認舍入")
+            # 降級處理
+            if quantity >= 1:
+                return round(quantity, 3)
+            elif quantity >= 0.1:
+                return round(quantity, 4)
+            else:
+                return round(quantity, 5)
     
     def _create_simulated_trade(
         self,
