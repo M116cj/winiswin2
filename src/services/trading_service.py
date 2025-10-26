@@ -118,8 +118,27 @@ class TradingService:
                 logger.error(f"開倉失敗: {symbol}")
                 return None
             
-            await self._set_stop_loss(symbol, direction, quantity, stop_loss)
-            await self._set_take_profit(symbol, direction, quantity, take_profit)
+            # 設置止損止盈（如果失敗則回滾）
+            try:
+                await self._set_stop_loss(symbol, direction, quantity, stop_loss)
+                await self._set_take_profit(symbol, direction, quantity, take_profit)
+            except Exception as e:
+                logger.error(f"❌ 止損止盈設置失敗: {e}")
+                logger.error(f"⚠️ 嘗試平倉以避免無保護持倉...")
+                try:
+                    # 立即平倉，避免無保護持倉
+                    await self.client.place_order(
+                        symbol=symbol,
+                        side="SELL" if direction == "LONG" else "BUY",
+                        order_type="MARKET",
+                        quantity=quantity,
+                        positionSide="LONG" if direction == "LONG" else "SHORT"
+                    )
+                    logger.warning(f"✅ 已平倉無保護持倉: {symbol}")
+                except Exception as close_error:
+                    logger.error(f"❌ 平倉失敗: {close_error}")
+                    logger.critical(f"🚨 警告：{symbol} 持倉無止損止盈保護！請手動處理！")
+                return None
             
             trade_result = {
                 'symbol': symbol,
@@ -450,24 +469,29 @@ class TradingService:
         quantity: float,
         stop_price: float
     ):
-        """設置止損單"""
-        try:
-            side = "SELL" if direction == "LONG" else "BUY"
-            position_side = "LONG" if direction == "LONG" else "SHORT"
-            
-            await self.client.place_order(
-                symbol=symbol,
-                side=side,
-                order_type="STOP_MARKET",
-                quantity=quantity,
-                stop_price=stop_price,
-                positionSide=position_side
-            )
-            
-            logger.info(f"設置止損: {symbol} @ {stop_price}")
-            
-        except Exception as e:
-            logger.error(f"設置止損失敗: {e}")
+        """
+        設置止損單
+        
+        Raises:
+            Exception: 如果止損設置失敗
+        """
+        side = "SELL" if direction == "LONG" else "BUY"
+        position_side = "LONG" if direction == "LONG" else "SHORT"
+        
+        order = await self.client.place_order(
+            symbol=symbol,
+            side=side,
+            order_type="STOP_MARKET",
+            quantity=quantity,
+            stop_price=stop_price,
+            positionSide=position_side
+        )
+        
+        if not order:
+            raise Exception(f"止損訂單返回空結果")
+        
+        logger.info(f"✅ 設置止損: {symbol} @ {stop_price} (訂單ID: {order.get('orderId')})")
+        return order
     
     async def _set_take_profit(
         self,
@@ -476,24 +500,29 @@ class TradingService:
         quantity: float,
         take_profit_price: float
     ):
-        """設置止盈單"""
-        try:
-            side = "SELL" if direction == "LONG" else "BUY"
-            position_side = "LONG" if direction == "LONG" else "SHORT"
-            
-            await self.client.place_order(
-                symbol=symbol,
-                side=side,
-                order_type="TAKE_PROFIT_MARKET",
-                quantity=quantity,
-                stop_price=take_profit_price,
-                positionSide=position_side
-            )
-            
-            logger.info(f"設置止盈: {symbol} @ {take_profit_price}")
-            
-        except Exception as e:
-            logger.error(f"設置止盈失敗: {e}")
+        """
+        設置止盈單
+        
+        Raises:
+            Exception: 如果止盈設置失敗
+        """
+        side = "SELL" if direction == "LONG" else "BUY"
+        position_side = "LONG" if direction == "LONG" else "SHORT"
+        
+        order = await self.client.place_order(
+            symbol=symbol,
+            side=side,
+            order_type="TAKE_PROFIT_MARKET",
+            quantity=quantity,
+            stop_price=take_profit_price,
+            positionSide=position_side
+        )
+        
+        if not order:
+            raise Exception(f"止盈訂單返回空結果")
+        
+        logger.info(f"✅ 設置止盈: {symbol} @ {take_profit_price} (訂單ID: {order.get('orderId')})")
+        return order
     
     async def _round_quantity(self, symbol: str, quantity: float, round_up: bool = False) -> float:
         """
