@@ -288,7 +288,8 @@ class TradingBot:
                 expectancy=expectancy_metrics['expectancy'],
                 profit_factor=expectancy_metrics['profit_factor'],
                 consecutive_losses=expectancy_metrics['consecutive_losses'],
-                daily_loss_pct=self.expectancy_calculator.get_daily_loss(self.all_trades)
+                daily_loss_pct=self.expectancy_calculator.get_daily_loss(self.all_trades),
+                total_trades=expectancy_metrics['total_trades']  # 傳入總交易數用於冷啟動判斷
             )
             
             if not can_trade:

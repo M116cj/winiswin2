@@ -138,7 +138,8 @@ class ExpectancyCalculator:
         expectancy: float,
         profit_factor: float,
         consecutive_losses: int = 0,
-        daily_loss_pct: float = 0
+        daily_loss_pct: float = 0,
+        total_trades: int = 0
     ) -> Tuple[bool, str]:
         """
         判断是否应该开仓
@@ -148,10 +149,24 @@ class ExpectancyCalculator:
             profit_factor: 盈亏比
             consecutive_losses: 连续亏损数
             daily_loss_pct: 今日亏损百分比
+            total_trades: 总交易数（用于冷启动判断）
         
         Returns:
             Tuple[bool, str]: (是否允许交易, 原因)
         """
+        # 🆕 冷启动学习模式：前30笔交易跳过期望值检查，用于收集初始数据
+        if total_trades < 30:
+            logger.info(
+                f"🎓 学习模式 ({total_trades}/30)：跳过期望值检查，收集初始交易数据"
+            )
+            # 仅检查日亏损上限和极端连续亏损
+            if daily_loss_pct >= 3.0:
+                return False, f"触发日亏损上限 ({daily_loss_pct:.1f}% >= 3%)"
+            if consecutive_losses >= 5:
+                return False, f"连续亏损 {consecutive_losses} 次，暂停学习"
+            return True, f"学习模式允许交易 ({total_trades}/30)"
+        
+        # 正常模式：完整期望值检查
         if daily_loss_pct >= 3.0:
             return False, f"触发日亏损上限 ({daily_loss_pct:.1f}% >= 3%)"
         
