@@ -478,6 +478,9 @@ class TradingService:
         side = "SELL" if direction == "LONG" else "BUY"
         position_side = "LONG" if direction == "LONG" else "SHORT"
         
+        # 四捨五入止損價格到交易所精度
+        stop_price = await self._round_price(symbol, stop_price)
+        
         order = await self.client.place_order(
             symbol=symbol,
             side=side,
@@ -508,6 +511,9 @@ class TradingService:
         """
         side = "SELL" if direction == "LONG" else "BUY"
         position_side = "LONG" if direction == "LONG" else "SHORT"
+        
+        # 四捨五入止盈價格到交易所精度
+        take_profit_price = await self._round_price(symbol, take_profit_price)
         
         order = await self.client.place_order(
             symbol=symbol,
