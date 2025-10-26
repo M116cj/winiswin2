@@ -428,6 +428,21 @@ class BinanceClient:
         params = {"symbol": symbol, "orderId": order_id}
         return await self._request("DELETE", "/fapi/v1/order", params=params, signed=True)
     
+    async def get_open_orders(self, symbol: Optional[str] = None) -> list:
+        """
+        獲取所有未成交訂單
+        
+        Args:
+            symbol: 交易對（可選，不提供則返回所有交易對的未成交訂單）
+        
+        Returns:
+            未成交訂單列表
+        """
+        params = {}
+        if symbol:
+            params["symbol"] = symbol
+        return await self._request("GET", "/fapi/v1/openOrders", params=params, signed=True)
+    
     async def set_leverage(self, symbol: str, leverage: int) -> dict:
         """
         設置槓桿倍數

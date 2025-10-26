@@ -237,6 +237,14 @@ class TradingService:
                 except Exception as e:
                     logger.error(f"記錄平倉失敗: {e}")
             
+            # 清理止損止盈訂單（避免僵尸訂單）
+            try:
+                cancelled_count = await self._cancel_all_open_orders(symbol)
+                if cancelled_count > 0:
+                    logger.info(f"🧹 已清理 {cancelled_count} 個止損止盈訂單: {symbol}")
+            except Exception as e:
+                logger.warning(f"清理訂單失敗: {e}")
+            
             del self.active_orders[symbol]
             
             logger.info(
@@ -695,6 +703,41 @@ class TradingService:
         except Exception as e:
             logger.error(f"調整價格失敗: {e}，使用默認舍入")
             return round(price, 6)
+    
+    async def _cancel_all_open_orders(self, symbol: str) -> int:
+        """
+        取消指定交易對的所有未成交訂單（止損止盈等）
+        
+        Args:
+            symbol: 交易對
+        
+        Returns:
+            int: 取消的訂單數量
+        """
+        try:
+            # 獲取所有未成交訂單
+            open_orders = await self.client.get_open_orders(symbol)
+            
+            if not open_orders:
+                return 0
+            
+            cancelled_count = 0
+            for order in open_orders:
+                try:
+                    await self.client.cancel_order(
+                        symbol=symbol,
+                        order_id=order['orderId']
+                    )
+                    cancelled_count += 1
+                    logger.debug(f"已取消訂單: {order['orderId']} ({order.get('type', 'UNKNOWN')})")
+                except Exception as e:
+                    logger.warning(f"取消訂單失敗 {order['orderId']}: {e}")
+            
+            return cancelled_count
+            
+        except Exception as e:
+            logger.error(f"獲取未成交訂單失敗: {e}")
+            return 0
     
     def _create_simulated_trade(
         self,
