@@ -1,0 +1,112 @@
+2025-10-26T14:25:33.000000000Z [inf]  Starting Container
+2025-10-26T14:25:34.300272210Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:34.300280744Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:34.300289083Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:34.300295460Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:34.300302297Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:34.300309759Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:34.300315664Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:34.300321400Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:34.300327264Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:34.300333356Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:35.000000000Z [inf]  Stopping Container
+2025-10-26T14:25:35.706668849Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:35.706673762Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:35.706680116Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:35.706683482Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:35.706686879Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:35.706692424Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:35.706694208Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:35.706697908Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:35.706705158Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:35.706710522Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:37.454456739Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:37.454468041Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:37.454474821Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:37.454481486Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:37.454490095Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:37.454496261Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:37.454503201Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:37.454509680Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:37.454515877Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:37.454522407Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:39.332084533Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:39.332096162Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:39.332105159Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:39.332114310Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:39.332124774Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:39.332133153Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:39.332141019Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:39.332150064Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:39.332158394Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:39.332168886Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:40.828966907Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:40.828972416Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:40.828978170Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:40.828982980Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:40.828988695Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:40.828993910Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:40.828999506Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:40.829004960Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:40.829011050Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:40.829017635Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:42.697246411Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:42.697253466Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:42.697257928Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:42.697262218Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:42.697267072Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:42.697273127Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:42.697277851Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:42.697283385Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:42.697288053Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:42.697292763Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:44.600868330Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:44.600875480Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:44.600885399Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:44.600889933Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:44.600896343Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:44.600898837Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:44.600906460Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:44.600908588Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:44.600910330Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:44.600915514Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:46.437572309Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:46.437580247Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:46.437587442Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:46.437600708Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:46.437606384Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:46.437612799Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:46.437620375Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:46.437626849Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:46.437635182Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:46.437641389Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:47.837911228Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:47.837919344Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:47.837927442Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:47.837937624Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:47.837944351Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:47.837950923Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:47.837957512Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:47.837963243Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:47.837969706Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:47.837975529Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:49.509536362Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:49.509548184Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:49.509556242Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:49.509562434Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:49.509569065Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:49.509575419Z [err]  SyntaxError: expected 'except' or 'finally' block
+2025-10-26T14:25:49.509583999Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:49.509594397Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:49.509599372Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:49.509603834Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:51.264088133Z [err]  Traceback (most recent call last):
+2025-10-26T14:25:51.264100523Z [err]    File "<frozen runpy>", line 198, in _run_module_as_main
+2025-10-26T14:25:51.264109071Z [err]    File "<frozen runpy>", line 88, in _run_code
+2025-10-26T14:25:51.264117050Z [err]    File "/app/src/main.py", line 27, in <module>
+2025-10-26T14:25:51.264124699Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:51.264132483Z [err]    File "/app/src/ml/__init__.py", line 8, in <module>
+2025-10-26T14:25:51.264139325Z [err]      from src.ml.predictor import MLPredictor
+2025-10-26T14:25:51.264146152Z [err]    File "/app/src/ml/predictor.py", line 182
+2025-10-26T14:25:51.264152783Z [err]      def check_and_retrain_if_needed(self) -> bool:
+2025-10-26T14:25:51.264160323Z [err]  SyntaxError: expected 'except' or 'finally' block

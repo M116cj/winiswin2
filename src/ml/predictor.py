@@ -178,6 +178,9 @@ class MLPredictor:
             calibrated = traditional_confidence * 0.6 + ml_confidence * 0.4
             
             return min(1.0, max(0.0, calibrated))
+        except Exception as e:
+            logger.error(f"校準信心度失敗: {e}")
+            return traditional_confidence
     
     def check_and_retrain_if_needed(self) -> bool:
         """
