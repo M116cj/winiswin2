@@ -20,7 +20,8 @@ class TradingService:
     def __init__(
         self,
         binance_client: BinanceClient,
-        risk_manager: RiskManager
+        risk_manager: RiskManager,
+        trade_recorder=None
     ):
         """
         初始化交易服務
@@ -28,9 +29,11 @@ class TradingService:
         Args:
             binance_client: Binance 客戶端
             risk_manager: 風險管理器
+            trade_recorder: 交易記錄器（可選）
         """
         self.client = binance_client
         self.risk_manager = risk_manager
+        self.trade_recorder = trade_recorder
         self.config = Config
         self.active_orders: Dict[str, dict] = {}
         self.symbol_filters: Dict[str, dict] = {}  # 交易對過濾器緩存
@@ -222,6 +225,14 @@ class TradingService:
             }
             
             self.risk_manager.update_trade_result(close_result)
+            
+            # 記錄平倉到TradeRecorder
+            if self.trade_recorder:
+                try:
+                    self.trade_recorder.record_exit(symbol, close_result)
+                    logger.debug(f"📝 已記錄平倉到TradeRecorder: {symbol}")
+                except Exception as e:
+                    logger.error(f"記錄平倉失敗: {e}")
             
             del self.active_orders[symbol]
             

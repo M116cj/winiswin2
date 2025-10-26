@@ -114,12 +114,15 @@ class TradingBot:
         logger.info(f"✅ 期望值計算器已就緒 (窗口大小: {Config.EXPECTANCY_WINDOW} 筆交易)")
         logger.info(f"✅ 數據歸檔器已就緒 (目錄: {Config.ML_DATA_DIR})")
         
-        self.trading_service = TradingService(
-            self.binance_client,
-            self.risk_manager
-        )
         self.virtual_position_manager = VirtualPositionManager()
         self.trade_recorder = TradeRecorder()
+        
+        # 初始化交易服務（傳入trade_recorder）
+        self.trading_service = TradingService(
+            self.binance_client,
+            self.risk_manager,
+            self.trade_recorder
+        )
         
         # 初始化持仓监控器（动态止损止盈）
         self.position_monitor = PositionMonitor(
