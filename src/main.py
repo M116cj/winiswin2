@@ -26,6 +26,7 @@ from src.monitoring.health_monitor import HealthMonitor
 from src.monitoring.performance_monitor import PerformanceMonitor
 from src.ml.predictor import MLPredictor
 from src.ml.data_archiver import DataArchiver
+from src.services.position_monitor import PositionMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,7 @@ class TradingBot:
         self.health_monitor: Optional[HealthMonitor] = None
         self.performance_monitor: Optional[PerformanceMonitor] = None
         self.ml_predictor: Optional[MLPredictor] = None
+        self.position_monitor: Optional[PositionMonitor] = None
         
         self.discord_task = None
         self.monitoring_task = None
@@ -119,6 +121,13 @@ class TradingBot:
         self.virtual_position_manager = VirtualPositionManager()
         self.trade_recorder = TradeRecorder()
         
+        # 初始化持仓监控器（动态止损止盈）
+        self.position_monitor = PositionMonitor(
+            self.binance_client,
+            self.trading_service,
+            self.data_archiver
+        )
+        
         # 初始化 ML 預測器
         self.ml_predictor = MLPredictor()
         ml_ready = await asyncio.to_thread(self.ml_predictor.initialize)
@@ -179,6 +188,21 @@ class TradingBot:
             )
         
         try:
+            # === 持仓监控：动态调整止损止盈 ===
+            logger.info("👁️  監控活躍持倉...")
+            position_stats = await self.position_monitor.monitor_all_positions()
+            if position_stats['total'] > 0:
+                logger.info(
+                    f"📊 持倉統計: 總計={position_stats['total']}, "
+                    f"盈利={position_stats['in_profit']}, "
+                    f"虧損={position_stats['in_loss']}, "
+                    f"已調整={position_stats['adjusted']}"
+                )
+                if position_stats['adjusted'] > 0:
+                    logger.info(f"🔄 本週期調整了 {position_stats['adjusted']} 個持倉的止損止盈")
+            else:
+                logger.debug("當前無活躍持倉")
+            
             # 掃描市場（流動性優先排序，返回前N個）
             logger.info(f"🔍 開始掃描市場，目標選擇前 {Config.TOP_VOLATILITY_SYMBOLS} 個高流動性交易對...")
             

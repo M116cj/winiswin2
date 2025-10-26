@@ -38,6 +38,7 @@ class DataArchiver:
         
         self.signals_buffer: List[Dict] = []
         self.positions_buffer: List[Dict] = []
+        self.adjustments_buffer: List[Dict] = []  # 新增：止损止盈调整记录
         self.lock = Lock()
         
         self.buffer_size = 100
@@ -200,6 +201,31 @@ class DataArchiver:
             if len(self.positions_buffer) >= self.buffer_size:
                 self._flush_positions()
     
+    def archive_adjustment(
+        self,
+        adjustment_data: Dict
+    ):
+        """
+        归档止损止盈调整记录（用于XGBoost特征学习）
+        
+        Args:
+            adjustment_data: 调整数据字典，包含：
+                - timestamp: 调整时间
+                - symbol: 交易对
+                - direction: 方向
+                - current_pnl_pct: 当前盈亏
+                - max_profit_pct: 最大盈利
+                - new_stop_loss: 新止损价
+                - new_take_profit: 新止盈价
+                - trailing_stop_active: 追踪止损是否激活
+                - adjustment_count: 调整次数
+        """
+        with self.lock:
+            self.adjustments_buffer.append(adjustment_data)
+            
+            if len(self.adjustments_buffer) >= self.buffer_size:
+                self._flush_adjustments()
+    
     def _flush_signals(self):
         """刷新信号缓冲区到磁盘"""
         if not self.signals_buffer:
@@ -244,11 +270,34 @@ class DataArchiver:
         except Exception as e:
             logger.error(f"刷新仓位缓冲区失败: {e}", exc_info=True)
     
+    def _flush_adjustments(self):
+        """刷新止损止盈调整缓冲区到磁盘"""
+        if not self.adjustments_buffer:
+            return
+        
+        try:
+            df = pd.DataFrame(self.adjustments_buffer)
+            
+            adjustments_file = self.data_dir / 'adjustments.csv'
+            
+            if adjustments_file.exists():
+                df.to_csv(adjustments_file, mode='a', header=False, index=False)
+            else:
+                df.to_csv(adjustments_file, index=False)
+            
+            logger.info(f"已归档 {len(self.adjustments_buffer)} 条调整记录到 {adjustments_file}")
+            
+            self.adjustments_buffer.clear()
+            
+        except Exception as e:
+            logger.error(f"刷新调整缓冲区失败: {e}", exc_info=True)
+    
     def flush_all(self):
         """强制刷新所有缓冲区"""
         with self.lock:
             self._flush_signals()
             self._flush_positions()
+            self._flush_adjustments()
             logger.info("所有缓冲区已刷新")
     
     def get_training_data(
