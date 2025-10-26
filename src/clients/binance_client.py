@@ -103,7 +103,10 @@ class BinanceClient:
             
             # Binance API要求：GET請求用params（URL），POST請求用data（body）
             if method.upper() == "POST":
-                async with session.request(method, url, data=_params, headers=headers) as response:
+                # POST請求：將參數編碼為字符串以保持排序（與簽名一致）
+                query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
+                headers['Content-Type'] = 'application/x-www-form-urlencoded'
+                async with session.request(method, url, data=query_string, headers=headers) as response:
                     if response.status != 200:
                         # 獲取錯誤響應體
                         error_text = await response.text()
