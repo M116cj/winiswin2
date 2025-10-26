@@ -102,12 +102,29 @@ class BinanceClient:
             session = await self._get_session()
             
             async with session.request(method, url, params=_params, headers=headers) as response:
-                response.raise_for_status()
+                if response.status != 200:
+                    # 獲取錯誤響應體
+                    error_text = await response.text()
+                    try:
+                        error_json = await response.json()
+                        error_msg = error_json.get('msg', error_text)
+                        error_code = error_json.get('code', 'N/A')
+                        logger.error(
+                            f"Binance API 錯誤 {response.status}: "
+                            f"code={error_code}, msg={error_msg}, "
+                            f"endpoint={endpoint}, params={_params}"
+                        )
+                    except:
+                        logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
+                    response.raise_for_status()
                 return await response.json()
         
         try:
             result = await self.circuit_breaker.call_async(_do_request)
             return result
+        except aiohttp.ClientResponseError as e:
+            logger.error(f"API 請求失敗: {endpoint} - HTTP {e.status}: {e.message}")
+            raise
         except Exception as e:
             logger.error(f"API 請求失敗: {endpoint} - {str(e)}")
             raise
