@@ -70,10 +70,21 @@ class TradingService:
             
             quantity = await self._round_quantity(symbol, quantity)
             
+            # Binance最小訂單價值檢查（5 USDT）
+            notional_value = quantity * entry_price
+            if notional_value < 5.0:
+                logger.warning(
+                    f"⚠️ 訂單價值太小，跳過 {symbol}: "
+                    f"{notional_value:.2f} USDT < 5 USDT最低要求 "
+                    f"(數量: {quantity}, 價格: {entry_price})"
+                )
+                return None
+            
             logger.info(
                 f"準備開倉: {symbol} {direction} "
                 f"數量: {quantity} 槓桿: {current_leverage}x "
-                f"信心度: {confidence:.2%}"
+                f"信心度: {confidence:.2%} "
+                f"訂單價值: {notional_value:.2f} USDT"
             )
             
             if not self.config.TRADING_ENABLED:
