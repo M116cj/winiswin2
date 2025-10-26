@@ -306,8 +306,8 @@ class TradingService:
                 # 這確保成交價不會比信號價格低出0.2%以上
                 limit_price = expected_price * (1 - self.config.MAX_SLIPPAGE_PCT)
             
-            # 四捨五入到合適精度
-            limit_price = round(limit_price, 6)
+            # 根據交易所規則四捨五入價格
+            limit_price = await self._round_price(symbol, limit_price)
             
             logger.info(
                 f"📝 下限價單: {symbol} {side} @ {limit_price} "
@@ -456,15 +456,22 @@ class TradingService:
                 exchange_info = await self.client.get_exchange_info()
                 for s in exchange_info.get('symbols', []):
                     if s['symbol'] == symbol:
-                        # 提取 LOT_SIZE 過濾器
+                        # 提取 LOT_SIZE 和 PRICE_FILTER 過濾器
+                        filters_data = {}
                         for f in s.get('filters', []):
                             if f['filterType'] == 'LOT_SIZE':
-                                self.symbol_filters[symbol] = {
+                                filters_data.update({
                                     'stepSize': float(f['stepSize']),
                                     'minQty': float(f['minQty']),
                                     'maxQty': float(f['maxQty'])
-                                }
-                                break
+                                })
+                            elif f['filterType'] == 'PRICE_FILTER':
+                                filters_data.update({
+                                    'tickSize': float(f['tickSize']),
+                                    'minPrice': float(f['minPrice']),
+                                    'maxPrice': float(f['maxPrice'])
+                                })
+                        self.symbol_filters[symbol] = filters_data
                         break
             
             # 如果沒有找到過濾器，使用默認精度
@@ -519,6 +526,64 @@ class TradingService:
                 return round(quantity, 4)
             else:
                 return round(quantity, 5)
+    
+    async def _round_price(self, symbol: str, price: float) -> float:
+        """
+        根據交易所的 PRICE_FILTER 過濾器四捨五入價格
+        
+        Args:
+            symbol: 交易對
+            price: 原始價格
+        
+        Returns:
+            float: 符合交易所規則的價格
+        """
+        try:
+            # 如果過濾器中沒有價格信息，先獲取
+            if symbol not in self.symbol_filters or 'tickSize' not in self.symbol_filters[symbol]:
+                await self._round_quantity(symbol, 1.0)  # 這會觸發獲取過濾器
+            
+            # 如果仍然沒有找到價格過濾器，使用默認精度
+            if symbol not in self.symbol_filters or 'tickSize' not in self.symbol_filters[symbol]:
+                logger.warning(f"未找到 {symbol} 的 PRICE_FILTER，使用默認精度")
+                return round(price, 6)
+            
+            filters = self.symbol_filters[symbol]
+            tick_size = filters['tickSize']
+            min_price = filters['minPrice']
+            max_price = filters['maxPrice']
+            
+            # 根據 tickSize 計算精度
+            import math
+            if tick_size >= 1:
+                precision = 0
+            else:
+                precision = abs(int(math.log10(tick_size)))
+            
+            # 調整價格為 tickSize 的倍數
+            adjusted_price = round(price / tick_size) * tick_size
+            
+            # 四捨五入到正確精度
+            adjusted_price = round(adjusted_price, precision)
+            
+            # 檢查最小/最大限制
+            if adjusted_price < min_price:
+                logger.warning(f"{symbol} 價格 {adjusted_price} < 最小值 {min_price}，調整為最小值")
+                adjusted_price = min_price
+            elif adjusted_price > max_price:
+                logger.warning(f"{symbol} 價格 {adjusted_price} > 最大值 {max_price}，調整為最大值")
+                adjusted_price = max_price
+            
+            logger.debug(
+                f"{symbol} 價格調整: {price:.8f} -> {adjusted_price} "
+                f"(tickSize={tick_size}, precision={precision})"
+            )
+            
+            return adjusted_price
+            
+        except Exception as e:
+            logger.error(f"調整價格失敗: {e}，使用默認舍入")
+            return round(price, 6)
     
     def _create_simulated_trade(
         self,
