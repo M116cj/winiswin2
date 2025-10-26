@@ -264,6 +264,51 @@ class BinanceClient:
         ]
         return positions
     
+    async def get_account_balance(self) -> dict:
+        """
+        獲取 U 本位合約賬戶餘額
+        
+        Returns:
+            dict: {
+                'total_balance': float,  # 總餘額（USDT）
+                'available_balance': float,  # 可用餘額（USDT）
+                'total_margin': float,  # 總保證金
+                'unrealized_pnl': float,  # 未實現盈虧
+                'total_wallet_balance': float  # 總錢包餘額（含未實現盈虧）
+            }
+        """
+        account_info = await self.get_account_info()
+        
+        # 提取 USDT 資產信息
+        total_balance = 0.0
+        available_balance = 0.0
+        
+        for asset in account_info.get('assets', []):
+            if asset.get('asset') == 'USDT':
+                total_balance = float(asset.get('walletBalance', 0))
+                available_balance = float(asset.get('availableBalance', 0))
+                break
+        
+        total_margin = total_balance - available_balance
+        unrealized_pnl = float(account_info.get('totalUnrealizedProfit', 0))
+        
+        result = {
+            'total_balance': total_balance,
+            'available_balance': available_balance,
+            'total_margin': total_margin,
+            'unrealized_pnl': unrealized_pnl,
+            'total_wallet_balance': total_balance + unrealized_pnl
+        }
+        
+        logger.info(
+            f"💰 賬戶餘額: 總額 {total_balance:.2f} USDT, "
+            f"可用 {available_balance:.2f} USDT, "
+            f"保證金 {total_margin:.2f} USDT, "
+            f"未實現盈虧 {unrealized_pnl:+.2f} USDT"
+        )
+        
+        return result
+    
     async def create_order(
         self,
         symbol: str,

@@ -302,7 +302,17 @@ class TradingBot:
                 return
             
             if rank <= Config.IMMEDIATE_EXECUTION_RANK:
-                account_balance = 10000.0
+                # 自動從 Binance 獲取 U 本位合約餘額
+                try:
+                    balance_info = await self.binance_client.get_account_balance()
+                    account_balance = balance_info['total_balance']
+                    logger.info(
+                        f"💰 使用實時餘額: {account_balance:.2f} USDT "
+                        f"(可用: {balance_info['available_balance']:.2f} USDT)"
+                    )
+                except Exception as e:
+                    logger.error(f"獲取賬戶餘額失敗: {e}，使用默認值")
+                    account_balance = 10000.0  # 降級為默認值
                 
                 can_trade_risk, reason = self.risk_manager.should_trade(
                     account_balance,
