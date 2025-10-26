@@ -70,17 +70,27 @@ class TradingService:
             
             quantity = await self._round_quantity(symbol, quantity)
             
-            # Binance最小訂單價值檢查（5 USDT）- 不足則補足
+            # Binance最小訂單價值檢查（不同交易對有不同要求：5-20 USDT）
+            # 使用20 USDT作為安全值，確保所有交易對都能通過
+            MIN_NOTIONAL = 20.0
             notional_value = quantity * entry_price
-            if notional_value < 5.0:
+            if notional_value < MIN_NOTIONAL:
                 logger.info(
-                    f"💰 訂單價值不足5 USDT，自動補足 {symbol}: "
-                    f"{notional_value:.2f} USDT → 5.0 USDT"
+                    f"💰 訂單價值不足{MIN_NOTIONAL} USDT，自動補足 {symbol}: "
+                    f"{notional_value:.2f} USDT → {MIN_NOTIONAL} USDT"
                 )
-                # 根據最低要求重新計算數量
-                quantity = 5.0 / entry_price
-                quantity = await self._round_quantity(symbol, quantity)
+                # 根據最低要求重新計算數量，並向上舍入確保滿足最小值
+                quantity = MIN_NOTIONAL / entry_price
+                quantity = await self._round_quantity(symbol, quantity, round_up=True)
                 notional_value = quantity * entry_price
+                
+                # 二次檢查：如果舍入後仍然不足，增加一個最小單位
+                if notional_value < MIN_NOTIONAL:
+                    filters = self.symbol_filters.get(symbol, {})
+                    step_size = filters.get('stepSize', 0.001)
+                    quantity += step_size
+                    notional_value = quantity * entry_price
+                    logger.info(f"📈 增加最小單位後: 數量={quantity}, 訂單價值={notional_value:.2f} USDT")
             
             logger.info(
                 f"準備開倉: {symbol} {direction} "
@@ -485,13 +495,14 @@ class TradingService:
         except Exception as e:
             logger.error(f"設置止盈失敗: {e}")
     
-    async def _round_quantity(self, symbol: str, quantity: float) -> float:
+    async def _round_quantity(self, symbol: str, quantity: float, round_up: bool = False) -> float:
         """
         根據交易所的 LOT_SIZE 過濾器四捨五入數量
         
         Args:
             symbol: 交易對
             quantity: 原始數量
+            round_up: 是否向上舍入（用於確保滿足最小訂單價值）
         
         Returns:
             float: 符合交易所規則的數量
@@ -543,7 +554,12 @@ class TradingService:
                 precision = abs(int(math.log10(step_size)))
             
             # 調整數量為 stepSize 的倍數
-            adjusted_qty = round(quantity / step_size) * step_size
+            if round_up:
+                # 向上舍入到下一個stepSize倍數
+                adjusted_qty = math.ceil(quantity / step_size) * step_size
+            else:
+                # 四捨五入
+                adjusted_qty = round(quantity / step_size) * step_size
             
             # 四捨五入到正確精度
             adjusted_qty = round(adjusted_qty, precision)
