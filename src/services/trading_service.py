@@ -70,15 +70,17 @@ class TradingService:
             
             quantity = await self._round_quantity(symbol, quantity)
             
-            # Binance最小訂單價值檢查（5 USDT）
+            # Binance最小訂單價值檢查（5 USDT）- 不足則補足
             notional_value = quantity * entry_price
             if notional_value < 5.0:
-                logger.warning(
-                    f"⚠️ 訂單價值太小，跳過 {symbol}: "
-                    f"{notional_value:.2f} USDT < 5 USDT最低要求 "
-                    f"(數量: {quantity}, 價格: {entry_price})"
+                logger.info(
+                    f"💰 訂單價值不足5 USDT，自動補足 {symbol}: "
+                    f"{notional_value:.2f} USDT → 5.0 USDT"
                 )
-                return None
+                # 根據最低要求重新計算數量
+                quantity = 5.0 / entry_price
+                quantity = await self._round_quantity(symbol, quantity)
+                notional_value = quantity * entry_price
             
             logger.info(
                 f"準備開倉: {symbol} {direction} "
