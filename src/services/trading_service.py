@@ -129,15 +129,18 @@ class TradingService:
                 logger.error(f"❌ 止損止盈設置失敗: {e}")
                 logger.error(f"⚠️ 嘗試平倉以避免無保護持倉...")
                 try:
-                    # 立即平倉，避免無保護持倉
-                    await self.client.place_order(
+                    # 使用_place_market_order來處理positionSide（支持單向和對衝模式）
+                    close_order = await self._place_market_order(
                         symbol=symbol,
                         side="SELL" if direction == "LONG" else "BUY",
-                        order_type="MARKET",
                         quantity=quantity,
-                        positionSide="LONG" if direction == "LONG" else "SHORT"
+                        direction=direction
                     )
-                    logger.warning(f"✅ 已平倉無保護持倉: {symbol}")
+                    if close_order:
+                        logger.warning(f"✅ 已平倉無保護持倉: {symbol}")
+                    else:
+                        logger.error(f"❌ 平倉失敗: 訂單返回空結果")
+                        logger.critical(f"🚨 警告：{symbol} 持倉無止損止盈保護！請手動處理！")
                 except Exception as close_error:
                     logger.error(f"❌ 平倉失敗: {close_error}")
                     logger.critical(f"🚨 警告：{symbol} 持倉無止損止盈保護！請手動處理！")
