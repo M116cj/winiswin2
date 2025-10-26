@@ -7,6 +7,9 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 import json
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_timestamp() -> int:
     """獲取當前 UTC 時間戳（毫秒）"""
@@ -94,7 +97,7 @@ def load_json_file(filepath: str, default: Any = None) -> Any:
         with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
-        print(f"加載 JSON 文件失敗 {filepath}: {e}")
+        logger.error(f"加載 JSON 文件失敗 {filepath}: {e}")
         return default if default is not None else []
 
 def save_json_file(filepath: str, data: Any):

@@ -57,8 +57,6 @@ class TradingBot:
         
         self.discord_task = None
         self.monitoring_task = None
-        
-        self.all_trades: List[Dict] = []
     
     async def initialize(self):
         """初始化系統"""
@@ -403,15 +401,6 @@ class TradingBot:
                         position_data=position_info,
                         is_virtual=False
                     )
-                    
-                    self.all_trades.append({
-                        'timestamp': datetime.now(),
-                        'symbol': signal['symbol'],
-                        'direction': signal['direction'],
-                        'entry_price': signal['entry_price'],
-                        'leverage': leverage,
-                        'status': 'open'
-                    })
             
             else:
                 self.data_archiver.archive_signal(signal_data=signal, accepted=True)
