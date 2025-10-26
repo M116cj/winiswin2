@@ -301,22 +301,36 @@ class RiskManager:
         else:
             self.current_drawdown = max(0, self.current_drawdown - pnl * 0.5)
     
-    def should_trade(self, account_balance: float, current_positions: int) -> Tuple[bool, str]:
+    def should_trade(
+        self, 
+        account_balance: float, 
+        current_positions: int,
+        is_real_trading: bool = True
+    ) -> Tuple[bool, str]:
         """
         判斷是否應該交易
         
         Args:
             account_balance: 賬戶餘額
             current_positions: 當前持倉數
+            is_real_trading: 是否為真實交易（False=模擬/虛擬倉位，不受MAX_POSITIONS限制）
         
         Returns:
             Tuple[bool, str]: (是否可以交易, 原因)
         """
-        if not self.config.TRADING_ENABLED:
-            return False, "交易功能未啟用"
+        # 🎯 關鍵修復：區分真實交易和模擬交易
+        # - 真實交易（TRADING_ENABLED=true）：檢查TRADING_ENABLED + MAX_POSITIONS
+        # - 模擬交易（TRADING_ENABLED=false）：允許通過，不受MAX_POSITIONS限制
         
-        if current_positions >= self.config.MAX_POSITIONS:
-            return False, f"已達到最大持倉數 {self.config.MAX_POSITIONS}"
+        if is_real_trading:
+            # 真實交易模式：必須啟用交易功能
+            if not self.config.TRADING_ENABLED:
+                return False, "交易功能未啟用"
+            
+            # 真實交易模式：檢查倉位限制
+            if current_positions >= self.config.MAX_POSITIONS:
+                return False, f"已達到最大持倉數 {self.config.MAX_POSITIONS}"
+        # else: 模擬/虛擬倉位模式，不檢查TRADING_ENABLED和MAX_POSITIONS
         
         if self.consecutive_losses >= 5:
             return False, f"連續虧損 {self.consecutive_losses} 次，暫停交易"

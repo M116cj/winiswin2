@@ -341,9 +341,13 @@ class TradingBot:
                     logger.error(f"獲取賬戶餘額失敗: {e}，使用默認值")
                     account_balance = 10000.0  # 降級為默認值
                 
+                # 🎯 關鍵修復：虛擬倉位不占據實際倉位限制
+                # - 實際倉位上限：3個（只在TRADING_ENABLED=true時檢查）
+                # - 虛擬倉位：無限制（供XGBoost學習）
                 can_trade_risk, reason = self.risk_manager.should_trade(
                     account_balance,
-                    self.trading_service.get_active_positions_count()
+                    self.trading_service.get_active_positions_count(),
+                    is_real_trading=Config.TRADING_ENABLED  # 只有真實交易才檢查倉位限制
                 )
                 
                 if not can_trade_risk:
