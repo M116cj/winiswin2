@@ -390,12 +390,14 @@ class TradingBot:
                 if trade_result:
                     await self.discord_bot.send_trade_notification(trade_result, 'open')
                     
+                    # 注意：record_entry已在trading_service.execute_signal中調用
+                    # 不需要重複調用
+                    
                     position_info = {
                         'leverage': leverage,
                         'position_value': trade_result.get('position_value', 0),
                         **signal
                     }
-                    self.trade_recorder.record_entry(signal, position_info)
                     
                     self.data_archiver.archive_position_open(
                         position_data=position_info,
@@ -437,6 +439,12 @@ class TradingBot:
             }
             
             self.virtual_position_manager.update_virtual_positions(market_prices)
+            
+            # ✨ 檢查模擬持倉並自動平倉（修復學習模式）
+            if not Config.TRADING_ENABLED:
+                closed_count = await self.trading_service.check_simulated_positions_for_close()
+                if closed_count > 0:
+                    logger.info(f"🎮 本週期模擬平倉: {closed_count} 筆")
             
         except Exception as e:
             logger.error(f"更新持倉失敗: {e}")

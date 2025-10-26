@@ -103,10 +103,23 @@ class TradingService:
             )
             
             if not self.config.TRADING_ENABLED:
-                logger.warning("交易功能未啟用，跳過實際下單")
-                return self._create_simulated_trade(
+                logger.warning("🎮 交易功能未啟用，創建模擬交易（用於學習模式）")
+                simulated_trade = self._create_simulated_trade(
                     signal, position_info, quantity
                 )
+                
+                # 添加到active_orders以便追踪
+                self.active_orders[symbol] = simulated_trade
+                
+                # ✨ 記錄模擬開倉到TradeRecorder（修復學習模式0/30問題）
+                if self.trade_recorder:
+                    try:
+                        self.trade_recorder.record_entry(signal, simulated_trade)
+                        logger.info(f"📝 已記錄模擬開倉: {symbol} (學習模式)")
+                    except Exception as e:
+                        logger.error(f"記錄模擬開倉失敗: {e}")
+                
+                return simulated_trade
             
             # 智能下單：根據配置自動選擇訂單類型
             order = await self._place_smart_order(
@@ -164,6 +177,14 @@ class TradingService:
             
             self.active_orders[symbol] = trade_result
             
+            # 記錄開倉到TradeRecorder（用於學習模式）
+            if self.trade_recorder:
+                try:
+                    self.trade_recorder.record_entry(signal, trade_result)
+                    logger.debug(f"📝 已記錄開倉到TradeRecorder: {symbol}")
+                except Exception as e:
+                    logger.error(f"記錄開倉失敗: {e}")
+            
             logger.info(f"✅ 開倉成功: {symbol} {direction} @ {trade_result['entry_price']}")
             
             return trade_result
@@ -197,25 +218,52 @@ class TradingService:
             side = "SELL" if trade['direction'] == "LONG" else "BUY"
             direction = trade['direction']
             
-            order = await self._place_market_order(
-                symbol=symbol,
-                side=side,
-                quantity=trade['quantity'],
-                direction=direction
-            )
-            
-            if not order:
-                logger.error(f"平倉失敗: {symbol}")
-                return None
-            
-            exit_price = float(order.get('avgPrice', 0))
+            # 模擬交易模式：使用市場價格模擬平倉
+            if trade.get('simulated', False) or not self.config.TRADING_ENABLED:
+                logger.info(f"🎮 模擬平倉: {symbol} (原因: {reason})")
+                # 獲取當前市場價格
+                try:
+                    ticker = await self.client.get_ticker_price(symbol)
+                    exit_price = float(ticker['price'])
+                except Exception as e:
+                    logger.error(f"獲取市場價格失敗: {e}，使用入場價")
+                    exit_price = trade['entry_price']
+            else:
+                # 真實交易：執行市價平倉
+                order = await self._place_market_order(
+                    symbol=symbol,
+                    side=side,
+                    quantity=trade['quantity'],
+                    direction=direction
+                )
+                
+                if not order:
+                    logger.error(f"平倉失敗: {symbol}")
+                    return None
+                
+                exit_price = float(order.get('avgPrice', 0))
             
             if trade['direction'] == "LONG":
                 pnl = (exit_price - trade['entry_price']) * trade['quantity']
             else:
                 pnl = (trade['entry_price'] - exit_price) * trade['quantity']
             
+            # 計算收益率（相對於保證金）
+            # ⚠️ 防止除零錯誤
+            if trade['margin'] <= 0:
+                logger.error(f"異常保證金: {trade['margin']}, 設置為默認值1.0")
+                trade['margin'] = 1.0
+            
             pnl_pct = pnl / trade['margin']
+            
+            # ⚠️ 限制收益率最低為-100%（不能虧損超過本金）
+            # 修復：避免出現-225%等異常收益率
+            if pnl_pct < -1.0:
+                logger.warning(
+                    f"⚠️ 檢測到異常收益率 {pnl_pct:.2%}，限制為-100%。"
+                    f"PnL: {pnl:.2f}, Margin: {trade['margin']:.2f}"
+                )
+                pnl_pct = -1.0
             
             close_result = {
                 **trade,
@@ -769,3 +817,57 @@ class TradingService:
     def get_active_positions(self) -> list:
         """獲取所有活躍持倉"""
         return list(self.active_orders.values())
+    
+    async def check_simulated_positions_for_close(self) -> int:
+        """
+        檢查模擬持倉並自動平倉（達到止損/止盈時）
+        
+        Returns:
+            int: 平倉數量
+        """
+        if not self.active_orders:
+            return 0
+        
+        closed_count = 0
+        
+        for symbol in list(self.active_orders.keys()):
+            trade = self.active_orders[symbol]
+            
+            # 只處理模擬交易
+            if not trade.get('simulated', False):
+                continue
+            
+            try:
+                # 獲取當前市場價
+                ticker = await self.client.get_ticker_price(symbol)
+                current_price = float(ticker['price'])
+                
+                should_close = False
+                close_reason = ""
+                
+                # 檢查止損
+                if trade['direction'] == "LONG":
+                    if current_price <= trade['stop_loss']:
+                        should_close = True
+                        close_reason = "simulated_stop_loss"
+                    elif current_price >= trade['take_profit']:
+                        should_close = True
+                        close_reason = "simulated_take_profit"
+                else:  # SHORT
+                    if current_price >= trade['stop_loss']:
+                        should_close = True
+                        close_reason = "simulated_stop_loss"
+                    elif current_price <= trade['take_profit']:
+                        should_close = True
+                        close_reason = "simulated_take_profit"
+                
+                if should_close:
+                    result = await self.close_position(symbol, reason=close_reason)
+                    if result:
+                        closed_count += 1
+                        logger.info(f"✅ 模擬平倉觸發: {symbol} @ {current_price} ({close_reason})")
+            
+            except Exception as e:
+                logger.error(f"檢查模擬持倉失敗 {symbol}: {e}")
+        
+        return closed_count
