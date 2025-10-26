@@ -227,10 +227,16 @@ class ExpectancyCalculator:
         
         today = datetime.now().date()
         
-        today_trades = [
-            t for t in trades
-            if datetime.fromisoformat(t.get('timestamp', '')).date() == today
-        ]
+        today_trades = []
+        for t in trades:
+            timestamp = t.get('timestamp')
+            if timestamp and isinstance(timestamp, str):
+                try:
+                    trade_date = datetime.fromisoformat(timestamp).date()
+                    if trade_date == today:
+                        today_trades.append(t)
+                except (ValueError, TypeError):
+                    continue
         
         if not today_trades:
             return 0.0
