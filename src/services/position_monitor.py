@@ -146,7 +146,9 @@ class PositionMonitor:
                     'trailing_stop_active': False,
                     'trailing_profit_active': False,
                     'adjustment_count': 0,
-                    'last_adjustment_time': None
+                    'last_adjustment_time': None,
+                    'current_stop_loss': None,  # 当前止损价格
+                    'current_take_profit': None  # 当前止盈价格
                 }
             
             state = self.position_states[symbol]
@@ -180,17 +182,21 @@ class PositionMonitor:
                     calculated_stop = current_price * (1 - self.trailing_distance_pct / 100)
                     # 确保新止损高于入场价（保护利润）
                     if calculated_stop > entry_price:
-                        new_stop_loss = calculated_stop
-                        adjustment_reason.append(f"追踪止损(LONG)至{calculated_stop:.6f}")
-                        adjustment_made = True
+                        # 【重要】只有当新止损比当前止损更高时才更新（只向上移动）
+                        if state['current_stop_loss'] is None or calculated_stop > state['current_stop_loss']:
+                            new_stop_loss = calculated_stop
+                            adjustment_reason.append(f"追踪止损(LONG)至{calculated_stop:.6f}")
+                            adjustment_made = True
                 else:  # SHORT
                     # SHORT: 止损=当前价 + 追踪距离
                     calculated_stop = current_price * (1 + self.trailing_distance_pct / 100)
                     # 确保新止损低于入场价（保护利润）
                     if calculated_stop < entry_price:
-                        new_stop_loss = calculated_stop
-                        adjustment_reason.append(f"追踪止损(SHORT)至{calculated_stop:.6f}")
-                        adjustment_made = True
+                        # 【重要】只有当新止损比当前止损更低时才更新（只向下移动）
+                        if state['current_stop_loss'] is None or calculated_stop < state['current_stop_loss']:
+                            new_stop_loss = calculated_stop
+                            adjustment_reason.append(f"追踪止损(SHORT)至{calculated_stop:.6f}")
+                            adjustment_made = True
             
             # === 2. 追踪止盈逻辑 ===
             if pnl_pct > self.trailing_profit_trigger_pct:
@@ -204,44 +210,65 @@ class PositionMonitor:
                     peak_price = state['highest_price']
                     calculated_tp = peak_price * (1 - self.trailing_profit_distance_pct / 100)
                     if calculated_tp > current_price * 1.005:  # 确保止盈仍有至少0.5%空间
-                        new_take_profit = calculated_tp
-                        adjustment_reason.append(f"追踪止盈(LONG)至{calculated_tp:.6f}")
-                        adjustment_made = True
+                        # 【重要】只有当新止盈比当前止盈更高时才更新（允许利润增长）
+                        if state['current_take_profit'] is None or calculated_tp > state['current_take_profit']:
+                            new_take_profit = calculated_tp
+                            adjustment_reason.append(f"追踪止盈(LONG)至{calculated_tp:.6f}")
+                            adjustment_made = True
                 else:  # SHORT
                     # SHORT: 止盈=谷值 + 回撤距离
                     valley_price = state['lowest_price']
                     calculated_tp = valley_price * (1 + self.trailing_profit_distance_pct / 100)
                     if calculated_tp < current_price * 0.995:  # 确保止盈仍有至少0.5%空间
-                        new_take_profit = calculated_tp
-                        adjustment_reason.append(f"追踪止盈(SHORT)至{calculated_tp:.6f}")
-                        adjustment_made = True
+                        # 【重要】只有当新止盈比当前止盈更低时才更新（允许利润增长）
+                        if state['current_take_profit'] is None or calculated_tp < state['current_take_profit']:
+                            new_take_profit = calculated_tp
+                            adjustment_reason.append(f"追踪止盈(SHORT)至{calculated_tp:.6f}")
+                            adjustment_made = True
             
             # === 3. 执行调整并记录特征 ===
             if adjustment_made:
+                # 【重要】在更新状态之前记录旧值
+                old_stop_loss = state['current_stop_loss']
+                old_take_profit = state['current_take_profit']
+                
                 state['adjustment_count'] += 1
                 state['last_adjustment_time'] = datetime.now()
                 
-                # 取消旧的止损止盈订单
+                # 【重要】取消并重新设置止损止盈订单
+                # 必须同时设置两者，确保不会遗漏任何保护订单
                 await self._cancel_existing_sl_tp_orders(symbol)
                 
-                # 设置新的止损止盈
-                if new_stop_loss:
+                # 确定最终的止损价格（新的或保持旧的）
+                final_stop_loss = new_stop_loss if new_stop_loss else state['current_stop_loss']
+                final_take_profit = new_take_profit if new_take_profit else state['current_take_profit']
+                
+                # 设置止损（如果有的话）
+                if final_stop_loss:
                     await self.trading_service._set_stop_loss(
                         symbol=symbol,
                         direction=direction,
                         quantity=quantity,
-                        stop_price=new_stop_loss
+                        stop_price=final_stop_loss
                     )
+                    # 更新状态中的当前止损
+                    if new_stop_loss:
+                        state['current_stop_loss'] = new_stop_loss
                 
-                if new_take_profit:
+                # 设置止盈（如果有的话）
+                if final_take_profit:
                     await self.trading_service._set_take_profit(
                         symbol=symbol,
                         direction=direction,
                         quantity=quantity,
-                        take_profit_price=new_take_profit
+                        take_profit_price=final_take_profit
                     )
+                    # 更新状态中的当前止盈
+                    if new_take_profit:
+                        state['current_take_profit'] = new_take_profit
                 
                 # === 记录XGBoost特征 ===
+                
                 adjustment_record = {
                     'timestamp': datetime.now().isoformat(),
                     'symbol': symbol,
@@ -255,9 +282,9 @@ class PositionMonitor:
                     'lowest_price': state['lowest_price'],
                     
                     # 止损止盈调整
-                    'old_stop_loss': None,  # 可以从订单历史获取
+                    'old_stop_loss': old_stop_loss,
                     'new_stop_loss': new_stop_loss,
-                    'old_take_profit': None,
+                    'old_take_profit': old_take_profit,
                     'new_take_profit': new_take_profit,
                     
                     # 盈亏指标
