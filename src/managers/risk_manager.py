@@ -58,6 +58,18 @@ class RiskManager:
             position_margin = max_risk
             position_value = position_margin * current_leverage
         
+        # 🛡️ 硬性限制：單個倉位保證金不得超過可用資金50%
+        # 無論信心指數、勝率、槓桿如何，這是絕對上限
+        max_position_margin = account_balance * 0.5
+        if position_margin > max_position_margin:
+            logger.warning(
+                f"⚠️  倉位保證金超過50%上限: "
+                f"{position_margin:.2f} USDT ({position_margin/account_balance:.1%}) "
+                f"→ 強制限制為 {max_position_margin:.2f} USDT (50%)"
+            )
+            position_margin = max_position_margin
+            position_value = position_margin * current_leverage
+        
         return {
             'position_margin': position_margin,
             'position_value': position_value,
