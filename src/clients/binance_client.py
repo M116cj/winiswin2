@@ -101,23 +101,43 @@ class BinanceClient:
             
             session = await self._get_session()
             
-            async with session.request(method, url, params=_params, headers=headers) as response:
-                if response.status != 200:
-                    # 獲取錯誤響應體
-                    error_text = await response.text()
-                    try:
-                        error_json = await response.json()
-                        error_msg = error_json.get('msg', error_text)
-                        error_code = error_json.get('code', 'N/A')
-                        logger.error(
-                            f"Binance API 錯誤 {response.status}: "
-                            f"code={error_code}, msg={error_msg}, "
-                            f"endpoint={endpoint}, params={_params}"
-                        )
-                    except:
-                        logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
-                    response.raise_for_status()
-                return await response.json()
+            # Binance API要求：GET請求用params（URL），POST請求用data（body）
+            if method.upper() == "POST":
+                async with session.request(method, url, data=_params, headers=headers) as response:
+                    if response.status != 200:
+                        # 獲取錯誤響應體
+                        error_text = await response.text()
+                        try:
+                            error_json = await response.json()
+                            error_msg = error_json.get('msg', error_text)
+                            error_code = error_json.get('code', 'N/A')
+                            logger.error(
+                                f"Binance API 錯誤 {response.status}: "
+                                f"code={error_code}, msg={error_msg}, "
+                                f"endpoint={endpoint}, params={_params}"
+                            )
+                        except:
+                            logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
+                        response.raise_for_status()
+                    return await response.json()
+            else:
+                async with session.request(method, url, params=_params, headers=headers) as response:
+                    if response.status != 200:
+                        # 獲取錯誤響應體
+                        error_text = await response.text()
+                        try:
+                            error_json = await response.json()
+                            error_msg = error_json.get('msg', error_text)
+                            error_code = error_json.get('code', 'N/A')
+                            logger.error(
+                                f"Binance API 錯誤 {response.status}: "
+                                f"code={error_code}, msg={error_msg}, "
+                                f"endpoint={endpoint}, params={_params}"
+                            )
+                        except:
+                            logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
+                        response.raise_for_status()
+                    return await response.json()
         
         try:
             result = await self.circuit_breaker.call_async(_do_request)
