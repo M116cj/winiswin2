@@ -52,6 +52,7 @@ class DataService:
                 if symbol['symbol'].endswith('USDT') 
                 and symbol['status'] == 'TRADING'
                 and symbol.get('contractType') == 'PERPETUAL'
+                and symbol['symbol'].isascii()  # 排除中文等非ASCII交易對（避免簽名錯誤）
             ]
             
             logger.info(f"成功加載 {len(self.all_symbols)} 個交易對")
