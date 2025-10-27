@@ -226,6 +226,17 @@ class TradingService:
             
             # ✨ 重要：使用實際成交數量（處理部分成交情況）
             actual_quantity = float(order.get('executedQty', quantity))
+            
+            # 🎯 v3.9.2.8.5: 檢查實際成交數量，如果為0則訂單失敗
+            if actual_quantity <= 0:
+                logger.error(
+                    f"❌ 訂單失敗：實際成交數量為0 {symbol} "
+                    f"(計劃={quantity}, 實際={actual_quantity})"
+                )
+                logger.error(f"   訂單狀態: {order.get('status', 'UNKNOWN')}")
+                logger.error(f"   可能原因: 保證金不足、訂單被拒絕、或交易所限制")
+                return None
+            
             if abs(actual_quantity - quantity) > 0.001:  # 數量不同
                 logger.warning(
                     f"⚠️  實際成交數量與計劃不同: {symbol} "
