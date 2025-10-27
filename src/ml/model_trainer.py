@@ -287,6 +287,28 @@ class XGBoostTrainer:
             # 預測
             y_pred = model.predict(X_test)
             
+            # ✨ v3.9.2.2：特徵重要性分析
+            feature_importance_df = self._analyze_feature_importance(model, X_train)
+            
+            # ✨ v3.9.2.2：綜合評估（僅分類模式）
+            if is_classification:
+                y_pred_proba = model.predict_proba(X_test)[:, 1]
+                
+                # 計算額外評估指標
+                from sklearn.metrics import average_precision_score
+                avg_precision = average_precision_score(y_test, y_pred_proba)
+                
+                logger.info(f"\n📊 綜合評估：")
+                logger.info(f"Average Precision: {avg_precision:.4f}")
+                
+                # 不同閾值表現
+                logger.info(f"\n🎯 不同閾值下的表現：")
+                for threshold in [0.3, 0.4, 0.5, 0.6, 0.7]:
+                    y_pred_thresh = (y_pred_proba >= threshold).astype(int)
+                    prec = precision_score(y_test, y_pred_thresh, zero_division=0)
+                    rec = recall_score(y_test, y_pred_thresh, zero_division=0)
+                    logger.info(f"  閾值{threshold:.1f}: Precision={prec:.3f}, Recall={rec:.3f}")
+            
             # 🎯 v3.9.1：根據目標類型評估
             metrics = {
                 'training_samples': len(df),
@@ -529,3 +551,38 @@ class XGBoostTrainer:
         except Exception as e:
             logger.error(f"集成模型訓練失敗: {e}", exc_info=True)
             return None, {}
+
+    
+    def _analyze_feature_importance(self, model, X: pd.DataFrame) -> pd.DataFrame:
+        """分析特徵重要性（v3.9.2.2新增）"""
+        try:
+            importance = model.feature_importances_
+            feature_importance = pd.DataFrame({
+                "feature": X.columns,
+                "importance": importance
+            }).sort_values("importance", ascending=False)
+            
+            top_3_sum = feature_importance.head(3)["importance"].sum()
+            top_5_sum = feature_importance.head(5)["importance"].sum()
+            
+            logger.info("\n" + "=" * 60)
+            logger.info("📊 特徵重要性分析（v3.9.2.2）")
+            logger.info("=" * 60)
+            logger.info(f"前3個特徵重要性：{top_3_sum:.1%}")
+            logger.info(f"前5個特徵重要性：{top_5_sum:.1%}")
+            
+            if top_3_sum > 0.7:
+                logger.warning(f"⚠️  特徵過度集中：前3個特徵占{top_3_sum:.1%}")
+            else:
+                logger.info("✅ 特徵重要性分布合理")
+            
+            logger.info("\n前10重要特徵：")
+            for idx, row in feature_importance.head(10).iterrows():
+                logger.info(f"  {row['feature']:30s}: {row['importance']:.4f}")
+            logger.info("=" * 60 + "\n")
+            
+            return feature_importance
+        except Exception as e:
+            logger.error(f"特徵重要性分析失敗: {e}")
+            return pd.DataFrame()
+

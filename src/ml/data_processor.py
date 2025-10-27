@@ -23,10 +23,11 @@ class MLDataProcessor:
         """初始化數據處理器"""
         self.config = Config
         
-        # 基礎特徵（21個）
+        # 基礎特徵（20個 - 移除hold_duration_hours避免數據泄漏）
         self.basic_features = [
             'confidence_score', 'leverage', 'position_value',
-            'hold_duration_hours', 'risk_reward_ratio',
+            # 'hold_duration_hours',  # ❌ 移除：這是交易結束後才知道的信息，會導致數據泄漏
+            'risk_reward_ratio',
             'order_blocks_count', 'liquidity_zones_count',
             'rsi_entry', 'macd_entry', 'macd_signal_entry', 'macd_histogram_entry',
             'atr_entry', 'bb_width_pct', 'volume_sma_ratio',
@@ -35,11 +36,27 @@ class MLDataProcessor:
             'market_structure_encoded', 'direction_encoded'
         ]
         
-        # 增強特徵（只包含推理時可用的特徵，移除目標泄漏）
+        # 增強特徵（推理時可用 + 更多交叉特徵）
         self.enhanced_features = [
+            # 時間特徵
             'hour_of_day', 'day_of_week', 'is_weekend',
+            # 價格距離特徵
             'stop_distance_pct', 'tp_distance_pct',
-            'confidence_x_leverage', 'rsi_x_trend', 'atr_x_bb_width'
+            # 交叉特徵（原有）
+            'confidence_x_leverage', 'rsi_x_trend', 'atr_x_bb_width',
+            # 交叉特徵（新增）
+            'price_momentum_strength',    # EMA50與EMA200的距離
+            'volatility_x_confidence',    # 波動率 × 信心度
+            'rsi_distance_from_neutral',  # RSI距離50的距離
+            'macd_strength_ratio',        # MACD histogram相對強度
+            'trend_alignment_score'       # 三時間框架趨勢對齊度
+        ]
+        
+        # 禁用特徵（不應該出現在特徵中）
+        self.forbidden_features = [
+            'symbol', 'timestamp', 'entry_timestamp', 'exit_timestamp',
+            'order_id', 'trade_id', 'signal_id', 'hold_duration',
+            'pnl', 'pnl_pct', 'exit_price', 'is_winner'  # 目標變量和結果相關
         ]
         
         self.feature_columns = self.basic_features + self.enhanced_features
@@ -207,6 +224,11 @@ class MLDataProcessor:
             available_features = [col for col in self.feature_columns if col in df_processed.columns]
             X = df_processed[available_features]
             
+            # 4.5 ✨ v3.9.2.2：特徵驗證（防止數據泄漏）
+            if not self.validate_features(X):
+                logger.error("特徵驗證失敗，停止處理")
+                return pd.DataFrame(), pd.Series()
+            
             # 5. 提取標籤
             y = df_processed[self.target_column].astype(int)
             
@@ -222,9 +244,36 @@ class MLDataProcessor:
             logger.error(f"準備特徵失敗: {e}", exc_info=True)
             return pd.DataFrame(), pd.Series()
     
+    def validate_features(self, df: pd.DataFrame) -> bool:
+        """
+        驗證特徵是否包含禁用字段
+        
+        Args:
+            df: 數據框
+        
+        Returns:
+            bool: 是否通過驗證
+        """
+        invalid_features = []
+        
+        for col in df.columns:
+            # 檢查是否包含禁用關鍵字
+            col_lower = col.lower()
+            for forbidden in self.forbidden_features:
+                if forbidden.lower() in col_lower:
+                    invalid_features.append(col)
+                    break
+        
+        if invalid_features:
+            logger.error(f"❌ 特徵驗證失敗：包含禁用字段 {invalid_features}")
+            return False
+        
+        logger.info(f"✅ 特徵驗證通過：無禁用字段")
+        return True
+    
     def _add_enhanced_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        添加增強特徵（v3.3.7）
+        添加增強特徵（v3.9.2.2 - 更多交叉特徵）
         
         Args:
             df: 數據框
@@ -253,7 +302,7 @@ class MLDataProcessor:
         else:
             df['tp_distance_pct'] = 0
         
-        # 交互特徵
+        # 交互特徵（原有）
         if 'confidence_score' in df.columns and 'leverage' in df.columns:
             df['confidence_x_leverage'] = df['confidence_score'] * df['leverage']
         else:
@@ -268,6 +317,43 @@ class MLDataProcessor:
             df['atr_x_bb_width'] = df['atr_entry'] * df['bb_width_pct']
         else:
             df['atr_x_bb_width'] = 0
+        
+        # 交叉特徵（新增 v3.9.2.2）
+        # 1. 價格動量強度（EMA50與EMA200的相對距離）
+        if 'price_vs_ema50' in df.columns and 'price_vs_ema200' in df.columns:
+            df['price_momentum_strength'] = df['price_vs_ema50'] - df['price_vs_ema200']
+        else:
+            df['price_momentum_strength'] = 0
+        
+        # 2. 波動率 × 信心度（高波動高信心 vs 低波動低信心）
+        if 'bb_width_pct' in df.columns and 'confidence_score' in df.columns:
+            df['volatility_x_confidence'] = df['bb_width_pct'] * df['confidence_score']
+        else:
+            df['volatility_x_confidence'] = 0
+        
+        # 3. RSI距離中線的距離（衡量超買超賣程度）
+        if 'rsi_entry' in df.columns:
+            df['rsi_distance_from_neutral'] = abs(df['rsi_entry'] - 50)
+        else:
+            df['rsi_distance_from_neutral'] = 0
+        
+        # 4. MACD強度比率（histogram相對於signal的強度）
+        if 'macd_histogram_entry' in df.columns and 'macd_signal_entry' in df.columns:
+            # 避免除以零
+            df['macd_strength_ratio'] = df['macd_histogram_entry'] / (abs(df['macd_signal_entry']) + 1e-6)
+        else:
+            df['macd_strength_ratio'] = 0
+        
+        # 5. 趨勢對齊度（三時間框架趨勢一致性）
+        if all(col in df.columns for col in ['trend_1h_encoded', 'trend_15m_encoded', 'trend_5m_encoded']):
+            # 計算趨勢一致性：如果三個都是1或都是-1，則為3；否則為各自絕對值之和
+            df['trend_alignment_score'] = (
+                df['trend_1h_encoded'] + 
+                df['trend_15m_encoded'] + 
+                df['trend_5m_encoded']
+            )
+        else:
+            df['trend_alignment_score'] = 0
         
         return df
     
