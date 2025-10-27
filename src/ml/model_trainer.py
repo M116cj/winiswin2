@@ -187,6 +187,12 @@ class XGBoostTrainer:
                     params, _ = self.tuner.quick_tune(X_train, y_train, use_gpu)
                 else:
                     # 🎯 v3.9.1：根據目標類型設置默認參數
+                    # 🎯 v3.9.2.9: 動態檢測CPU核心數（提升可移植性）
+                    import multiprocessing
+                    available_cores = multiprocessing.cpu_count()
+                    n_jobs = min(available_cores, 32)  # 最多使用32核心
+                    logger.info(f"💻 檢測到{available_cores}個CPU核心，使用{n_jobs}個進行訓練")
+                    
                     base_params = {
                         'max_depth': 6,
                         'learning_rate': 0.1,
@@ -198,7 +204,7 @@ class XGBoostTrainer:
                         'reg_alpha': 0.1,
                         'reg_lambda': 1.0,
                         'random_state': 42,
-                        'n_jobs': 32  # 使用 32 核心
+                        'n_jobs': n_jobs  # 動態設置
                     }
                     
                     # 根據目標類型調整objective和eval_metric
@@ -290,13 +296,14 @@ class XGBoostTrainer:
                             verbose=False
                         )
             finally:
-                # 清理臨時文件（確保即使訓練失敗也會清理）
+                # 🎯 v3.9.2.9: 強化臨時文件清理日誌（避免累積臨時文件）
                 if xgb_model_file and os.path.exists(temp_model_path):
                     try:
                         os.remove(temp_model_path)
-                        logger.debug("臨時模型文件已清理")
-                    except:
-                        pass
+                        logger.debug("✅ 臨時模型文件已清理")
+                    except Exception as cleanup_error:
+                        logger.warning(f"⚠️ 臨時模型文件清理失敗: {cleanup_error}")
+                        logger.warning(f"   請手動刪除: {temp_model_path}")
             
             # 預測
             y_pred = model.predict(X_test)
@@ -315,7 +322,7 @@ class XGBoostTrainer:
                 logger.info(f"\n📊 綜合評估：")
                 logger.info(f"Average Precision: {avg_precision:.4f}")
                 
-                # 不同閾值表現
+                # 🎯 v3.9.2.9: 不同閾值表現（zero_division=0更可預測）
                 logger.info(f"\n🎯 不同閾值下的表現：")
                 for threshold in [0.3, 0.4, 0.5, 0.6, 0.7]:
                     y_pred_thresh = (y_pred_proba >= threshold).astype(int)
@@ -336,11 +343,12 @@ class XGBoostTrainer:
                 # 分類評估
                 y_pred_proba = model.predict_proba(X_test)[:, 1]
                 
+                # 🎯 v3.9.2.9: zero_division=0更可預測（避免警告噪音）
                 metrics.update({
                     'accuracy': float(accuracy_score(y_test, y_pred)),
-                    'precision': float(precision_score(y_test, y_pred, zero_division='warn')),
-                    'recall': float(recall_score(y_test, y_pred, zero_division='warn')),
-                    'f1_score': float(f1_score(y_test, y_pred, zero_division='warn')),
+                    'precision': float(precision_score(y_test, y_pred, zero_division=0)),
+                    'recall': float(recall_score(y_test, y_pred, zero_division=0)),
+                    'f1_score': float(f1_score(y_test, y_pred, zero_division=0)),
                     'roc_auc': float(roc_auc_score(y_test, y_pred_proba))
                 })
                 
@@ -587,7 +595,8 @@ class XGBoostTrainer:
                         quality_weights[idx] = 0.5
                 
                 except Exception as e:
-                    logger.debug(f"計算第{idx}個樣本質量權重失敗: {e}")
+                    # 🎯 v3.9.2.9: 提升錯誤日誌級別（發現數據質量問題）
+                    logger.warning(f"⚠️ 計算第{idx}個樣本質量權重失敗: {e}，使用默認權重1.0")
                     quality_weights[idx] = 1.0
             
             # 統計質量權重分布
