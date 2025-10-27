@@ -142,47 +142,34 @@ class ExpectancyCalculator:
         total_trades: int = 0
     ) -> Tuple[bool, str]:
         """
-        判断是否应该开仓
+        判断是否应该开仓（永久学习模式）
         
         Args:
-            expectancy: 期望值
-            profit_factor: 盈亏比
+            expectancy: 期望值（仅用于日志记录）
+            profit_factor: 盈亏比（仅用于日志记录）
             consecutive_losses: 连续亏损数
             daily_loss_pct: 今日亏损百分比
-            total_trades: 总交易数（用于冷启动判断）
+            total_trades: 总交易数（仅用于日志记录）
         
         Returns:
             Tuple[bool, str]: (是否允许交易, 原因)
         """
-        # 🆕 冷启动学习模式：前30笔交易跳过期望值检查，用于收集初始数据
-        if total_trades < 30:
-            logger.info(
-                f"🎓 学习模式 ({total_trades}/30)：跳过期望值检查，收集初始交易数据"
-            )
-            # 仅检查日亏损上限和极端连续亏损
-            if daily_loss_pct >= 3.0:
-                return False, f"触发日亏损上限 ({daily_loss_pct:.1f}% >= 3%)"
-            if consecutive_losses >= 5:
-                return False, f"连续亏损 {consecutive_losses} 次，暂停学习"
-            return True, f"学习模式允许交易 ({total_trades}/30)"
+        # 🎓 永久学习模式：始终允许交易，仅检查关键安全限制
+        # 目的：持续收集数据，让系统自主学习和优化
+        logger.info(
+            f"🎓 永久学习模式 (已完成 {total_trades} 笔交易)：允许交易，"
+            f"期望值 {expectancy:.2f}%, 盈亏比 {profit_factor:.2f}"
+        )
         
-        # 正常模式：完整期望值检查
+        # 仅检查关键安全限制
         if daily_loss_pct >= 3.0:
             return False, f"触发日亏损上限 ({daily_loss_pct:.1f}% >= 3%)"
         
         if consecutive_losses >= 5:
-            return False, f"连续亏损 {consecutive_losses} 次，需要策略回测检讨"
+            return False, f"连续亏损 {consecutive_losses} 次，暂停交易24小时"
         
-        if expectancy < 0:
-            return False, f"期望值为负 ({expectancy:.2f}%)，禁止开仓"
-        
-        if consecutive_losses >= 3 and expectancy < 1.0:
-            return False, f"连续亏损 {consecutive_losses} 次且期望值 < 1.0%，进入冷却期"
-        
-        if profit_factor < 0.5:
-            return False, f"盈亏比过低 ({profit_factor:.2f} < 0.5)"
-        
-        return True, "允许交易"
+        # ✅ 允许交易（即使期望值为负）
+        return True, f"学习模式允许交易 (已完成 {total_trades} 笔)"
     
     def _count_consecutive_losses(self, pnl_values: List[float]) -> int:
         """计算当前连续亏损次数"""

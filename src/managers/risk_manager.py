@@ -114,9 +114,10 @@ class RiskManager:
         
         # 優先級1：使用期望值（有或沒有盈亏比）
         if expectancy is not None:
+            # 🎓 永久學習模式：期望值為負也允許交易，使用保守槓桿
             if expectancy < 0:
-                logger.warning(f"期望值為負 ({expectancy:.2f}%)，禁止開倉")
-                return 0
+                logger.info(f"🎓 學習模式：期望值為負 ({expectancy:.2f}%)，使用基礎槓桿 {self.config.BASE_LEVERAGE}x")
+                return self.config.BASE_LEVERAGE  # 返回3x而非0
             
             # 根據期望值和盈亏比動態調整槓桿
             if profit_factor is not None:
