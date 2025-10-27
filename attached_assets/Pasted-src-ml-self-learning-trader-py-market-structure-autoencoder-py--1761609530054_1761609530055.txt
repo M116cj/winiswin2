@@ -1,0 +1,253 @@
+src/ml/
+├── self_learning_trader.py       # 自我學習交易員（核心）
+├── market_structure_autoencoder.py  # 市場結構自動編碼器
+├── feature_discovery_network.py  # 特徵發現網絡
+├── liquidity_prediction_model.py # 流動性預測模型
+└── adaptive_strategy_evolver.py  # 策略進化器
+### 🔄 **修改現有架構**
+
+#### 1. **替換 ICTStrategy 為 SelfLearningTrader**
+```python
+# src/strategies/ict_strategy.py → src/strategies/self_learning_trader.py
+class SelfLearningTrader:
+    def __init__(self, config):
+        self.config = config
+        # 🔥 核心：三個自主學習模型
+        self.structure_model = MarketStructureAutoencoder()  # 學習市場結構
+        self.feature_model = FeatureDiscoveryNetwork()       # 發現有效特徵  
+        self.liquidity_model = LiquidityPredictionModel()    # 預測流動性
+        
+    def analyze(self, symbol, multi_tf_data):
+        """完全自主的信號生成"""
+        # 1. 從原始價格學習市場結構
+        market_structure = self.structure_model.encode_structure(
+            multi_tf_data['5m']['close'].values
+        )
+        
+        # 2. 自動發現當前最有效的特徵
+        dynamic_features = self.feature_model.discover_features(
+            market_structure,
+            multi_tf_data['5m'].tail(50)  # 最近50根K線
+        )
+        
+        # 3. 預測流動性聚集點
+        liquidity_prediction = self.liquidity_model.predict_liquidity(
+            symbol,
+            multi_tf_data['5m'].tail(20)
+        )
+        
+        # 4. 生成交易信號
+        signal = self._generate_signal_from_learned_patterns(
+            market_structure,
+            dynamic_features, 
+            liquidity_prediction
+        )
+        
+        return signal
+```
+
+#### 2. **升級 MLPredictor 為端到端預測**
+```python
+# src/ml/predictor.py
+class SelfLearningPredictor:
+    def __init__(self, config):
+        self.config = config
+        # 🔥 端到端模型：輸入原始價格 → 輸出交易決策
+        self.end_to_end_model = self._build_end_to_end_model()
+        
+    def _build_end_to_end_model(self):
+        """構建端到端交易模型"""
+        model = Sequential([
+            # 輸入：多時間框架價格序列
+            Input(shape=(3, 50, 1)),  # [1h, 15m, 5m] × 50根K線
+            
+            # 特徵提取層
+            TimeDistributed(Conv1D(32, 3, activation='relu')),
+            TimeDistributed(GlobalMaxPooling1D()),
+            
+            # 市場狀態識別
+            LSTM(64, return_sequences=True),
+            Attention(),  # 注意力機制
+            
+            # 交易決策層
+            Dense(32, activation='relu'),
+            Dense(3, activation='softmax')  # [做多, 做空, 觀望]
+        ])
+        return model
+    
+    def predict_trading_decision(self, multi_tf_data):
+        """端到端交易決策"""
+        # 預處理數據
+        X = self._preprocess_multitimeframe_data(multi_tf_data)
+        
+        # 預測
+        decision_probs = self.end_to_end_model.predict(X)
+        decision = np.argmax(decision_probs)
+        confidence = np.max(decision_probs)
+        
+        return decision, confidence
+```
+
+#### 3. **整合到主循環**
+```python
+# src/async_core/async_main_loop.py
+async def _analyze_market_pipeline(self, symbols):
+    """升級為自主學習分析"""
+    signals = []
+    
+    for symbol in symbols:
+        multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
+        
+        # 🔥 使用自我學習交易員
+        if self.config.ENABLE_SELF_LEARNING:
+            signal = self.self_learning_trader.analyze(symbol, multi_tf_data)
+        else:
+            signal = self.ict_strategy.analyze(symbol, multi_tf_data)
+        
+        if signal and self.risk_manager.should_accept_trade(signal):
+            signals.append(signal)
+    
+    return signals
+```
+
+---
+
+## 🧪 **訓練數據自動生成**
+
+### 📊 **無監督市場結構學習**
+```python
+# src/ml/market_structure_autoencoder.py
+class MarketStructureAutoencoder:
+    def __init__(self):
+        self.encoder = self._build_encoder()
+        self.decoder = self._build_decoder()
+        
+    def _build_encoder(self):
+        """編碼器：壓縮價格序列到市場結構向量"""
+        return Sequential([
+            Conv1D(64, 5, activation='relu', input_shape=(50, 1)),
+            Conv1D(32, 3, activation='relu'),
+            GlobalMaxPooling1D(),
+            Dense(16, activation='tanh')  # 16維市場結構向量
+        ])
+    
+    def encode_structure(self, price_series):
+        """將價格序列編碼為市場結構"""
+        # 標準化
+        normalized_prices = (price_series - np.mean(price_series)) / np.std(price_series)
+        normalized_prices = normalized_prices.reshape(1, -1, 1)
+        
+        structure_vector = self.encoder.predict(normalized_prices)
+        return structure_vector[0]
+```
+
+### 🎯 **強化學習交易策略**
+```python
+# src/ml/adaptive_strategy_evolver.py
+class AdaptiveStrategyEvolver:
+    def __init__(self):
+        self.agent = self._build_dqn_agent()  # 深度Q網絡
+        self.memory = deque(maxlen=10000)    # 經驗回放
+        
+    def _build_dqn_agent(self):
+        """構建深度Q學習代理"""
+        model = Sequential([
+            Dense(128, activation='relu', input_shape=(20,)),  # 狀態向量
+            Dense(64, activation='relu'),
+            Dense(3, activation='linear')  # 動作：[做多, 做空, 觀望]
+        ])
+        return model
+    
+    def evolve_strategy(self, state, reward, next_state, done):
+        """基於交易結果進化策略"""
+        # 存儲經驗
+        self.memory.append((state, reward, next_state, done))
+        
+        # 訓練代理
+        if len(self.memory) > 1000:
+            self._train_agent()
+    
+    def get_trading_action(self, state):
+        """獲取交易動作"""
+        q_values = self.agent.predict(state.reshape(1, -1))
+        return np.argmax(q_values)
+```
+
+---
+
+## 📈 **自動評估與進化**
+
+### 📊 **策略表現監控**
+```python
+# src/managers/performance_manager.py - 新增方法
+def evaluate_strategy_performance(self, strategy_name, trades):
+    """評估策略表現"""
+    metrics = {
+        'sharpe_ratio': self._calculate_sharpe(trades),
+        'win_rate': self._calculate_win_rate(trades),
+        'expectancy': self._calculate_expectancy(trades),
+        'max_drawdown': self._calculate_max_drawdown(trades),
+        'profit_factor': self._calculate_profit_factor(trades)
+    }
+    
+    # 如果表現優秀，保存為新基準
+    if metrics['sharpe_ratio'] > self.best_sharpe_ratio:
+        self.best_sharpe_ratio = metrics['sharpe_ratio']
+        self.save_best_strategy(strategy_name, metrics)
+    
+    return metrics
+```
+
+### 🧬 **自動策略進化**
+```python
+# src/ml/adaptive_strategy_evolver.py
+def auto_evolve_strategies(self):
+    """自動進化交易策略"""
+    # 1. 生成策略變體
+    strategy_variants = self._generate_strategy_variants()
+    
+    # 2. 並行測試所有變體
+    results = self._parallel_test_strategies(strategy_variants)
+    
+    # 3. 選擇最佳策略
+    best_strategy = max(results, key=lambda x: x['sharpe_ratio'])
+    
+    # 4. 部署最佳策略
+    self.deploy_strategy(best_strategy)
+    
+    # 5. 淘汰表現差的策略
+    self._prune_poor_strategies()
+```
+
+---
+
+## 🚀 **部署配置**
+
+### 📁 **新增配置選項**
+```python
+# src/config.py
+# ===== 自我學習配置 =====
+ENABLE_SELF_LEARNING = True
+SELF_LEARNING_MODE = "end_to_end"  # or "modular"
+STRUCTURE_VECTOR_DIM = 16
+FEATURE_DISCOVERY_RATE = 0.1  # 每10%交易進化特徵
+STRATEGY_EVOLUTION_INTERVAL = 3600  # 每小時進化策略
+
+# ===== 訓練配置 =====
+REINFORCEMENT_LEARNING_ENABLED = True
+AUTOENCODER_TRAINING_ENABLED = True
+FEATURE_DISCOVERY_ENABLED = True
+```
+
+### 🔄 **漸進式啟用**
+```python
+# src/main.py
+def initialize_learning_components(self):
+    """初始化學習組件"""
+    if self.config.ENABLE_SELF_LEARNING:
+        self.self_learning_trader = SelfLearningTrader(self.config)
+        self.adaptive_evolver = AdaptiveStrategyEvolver()
+        
+        # 開始自動進化循環
+        asyncio.create_task(self._strategy_evolution_loop())
+```
