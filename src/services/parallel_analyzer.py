@@ -180,14 +180,17 @@ class ParallelAnalyzer:
                     f"⚡ 批次耗時: {batch_time:.2f}s"
                 )
                 
-                # 内存优化：每个批次后清理内存
+                # 🎯 v3.9.2.7性能优化：简化内存管理
+                # 删除批量信号引用，让Python自动垃圾回收
                 del batch_signals
-                import gc
-                gc.collect()
+                # 移除频繁手动gc.collect()，避免性能损耗
                 
-                # 小延遲避免過載（僅在大量交易對時）
-                if total_symbols > 300 and batch_idx < total_batches - 1:
-                    await asyncio.sleep(0.1)
+                # 🎯 v3.9.2.7优化：仅在极大量交易对且高负载时才延迟
+                if total_symbols > 500 and batch_idx < total_batches - 1:
+                    # 检查系统负载，仅在高负载时延迟
+                    cpu_usage = psutil.cpu_percent(interval=0)
+                    if cpu_usage > 80:
+                        await asyncio.sleep(0.05)  # 减少延迟时间从0.1到0.05
             
             # ✨ v3.3.7：性能統計
             total_duration = time.time() - start_time
