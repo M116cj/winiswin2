@@ -3,9 +3,10 @@
 職責：開倉、平倉、止損止盈設置、訂單管理
 """
 
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Tuple
 import logging
 from datetime import datetime
+import asyncio
 
 from src.clients.binance_client import BinanceClient
 from src.managers.risk_manager import RiskManager
@@ -37,6 +38,52 @@ class TradingService:
         self.config = Config
         self.active_orders: Dict[str, dict] = {}
         self.symbol_filters: Dict[str, dict] = {}  # 交易對過濾器緩存
+        self._price_cache: Dict[str, Tuple[float, float]] = {}  # (價格, 時間戳) 緩存
+        self._filters_loaded = False  # 過濾器是否已預加載
+    
+    async def preload_symbol_filters(self, symbols: Optional[List[str]] = None):
+        """
+        預加載交易對過濾器（v3.5.0優化）
+        
+        Args:
+            symbols: 交易對列表（None表示加載所有）
+        """
+        if self._filters_loaded and not symbols:
+            return  # 已加載且不需要特定符號
+        
+        try:
+            logger.info(f"⏳ 預加載交易對過濾器...")
+            exchange_info = await self.client.get_exchange_info()
+            
+            loaded_count = 0
+            for s in exchange_info.get('symbols', []):
+                symbol = s['symbol']
+                
+                # 如果指定了symbols，只加載這些
+                if symbols and symbol not in symbols:
+                    continue
+                
+                # 提取過濾器
+                filters_data = {}
+                for f in s.get('filters', []):
+                    if f['filterType'] == 'LOT_SIZE':
+                        filters_data['stepSize'] = float(f['stepSize'])
+                        filters_data['minQty'] = float(f['minQty'])
+                        filters_data['maxQty'] = float(f['maxQty'])
+                    elif f['filterType'] == 'PRICE_FILTER':
+                        filters_data['tickSize'] = float(f['tickSize'])
+                        filters_data['minPrice'] = float(f['minPrice'])
+                        filters_data['maxPrice'] = float(f['maxPrice'])
+                
+                if filters_data:
+                    self.symbol_filters[symbol] = filters_data
+                    loaded_count += 1
+            
+            self._filters_loaded = True
+            logger.info(f"✅ 已預加載 {loaded_count} 個交易對過濾器")
+            
+        except Exception as e:
+            logger.error(f"預加載過濾器失敗: {e}")
     
     async def execute_signal(
         self,
@@ -134,10 +181,20 @@ class TradingService:
                 logger.error(f"開倉失敗: {symbol}")
                 return None
             
-            # 設置止損止盈（如果失敗則回滾）
+            # ✨ 重要：使用實際成交數量（處理部分成交情況）
+            actual_quantity = float(order.get('executedQty', quantity))
+            if abs(actual_quantity - quantity) > 0.001:  # 數量不同
+                logger.warning(
+                    f"⚠️  實際成交數量與計劃不同: {symbol} "
+                    f"計劃={quantity} 實際={actual_quantity}"
+                )
+                quantity = actual_quantity
+            
+            # ✨ 優化：並行設置止損止盈（使用實際成交數量）
             try:
-                await self._set_stop_loss(symbol, direction, quantity, stop_loss)
-                await self._set_take_profit(symbol, direction, quantity, take_profit)
+                await self._set_stop_loss_take_profit_parallel(
+                    symbol, direction, quantity, stop_loss, take_profit
+                )
             except Exception as e:
                 logger.error(f"❌ 止損止盈設置失敗: {e}")
                 logger.error(f"⚠️ 嘗試平倉以避免無保護持倉...")
@@ -307,6 +364,35 @@ class TradingService:
             logger.error(f"平倉失敗: {e}")
             return None
     
+    async def _get_current_price_cached(self, symbol: str, cache_ttl: float = 1.0) -> float:
+        """
+        獲取當前價格（帶緩存優化）
+        
+        Args:
+            symbol: 交易對
+            cache_ttl: 緩存有效期（秒）
+        
+        Returns:
+            float: 當前價格
+        """
+        import time
+        now = time.time()
+        
+        # 檢查緩存
+        if symbol in self._price_cache:
+            price, timestamp = self._price_cache[symbol]
+            if now - timestamp < cache_ttl:
+                return price
+        
+        # 獲取新價格
+        ticker = await self.client.get_ticker_price(symbol)
+        current_price = float(ticker['price'])
+        
+        # 更新緩存
+        self._price_cache[symbol] = (current_price, now)
+        
+        return current_price
+    
     async def _place_smart_order(
         self,
         symbol: str,
@@ -316,10 +402,10 @@ class TradingService:
         direction: Optional[str] = None
     ) -> Optional[Dict]:
         """
-        智能下單：自動選擇市價單或限價單
+        智能下單：自動選擇市價單或限價單（v3.5.0優化）
         
         策略：
-        1. 獲取當前市價
+        1. 獲取當前市價（帶緩存）
         2. 計算滑點
         3. 如果滑點 < MAX_SLIPPAGE_PCT: 使用市價單
         4. 如果滑點 >= MAX_SLIPPAGE_PCT: 使用限價單（超時後轉市價單）
@@ -335,9 +421,8 @@ class TradingService:
             訂單信息
         """
         try:
-            # 獲取當前市價
-            ticker = await self.client.get_ticker_price(symbol)
-            current_price = float(ticker['price'])
+            # ✨ 優化：使用帶緩存的價格獲取（減少API調用）
+            current_price = await self._get_current_price_cached(symbol, cache_ttl=0.5)
             
             # 計算滑點
             slippage_pct = abs(current_price - expected_price) / expected_price
@@ -472,32 +557,37 @@ class TradingService:
                 # 不降級為不受限制的市價單，保護滑點
                 return None
             
-            # 等待訂單成交或超時
-            import asyncio
+            # ✨ 優化：使用快速訂單確認（0.5秒間隔，支持部分成交檢測）
             timeout = self.config.ORDER_TIMEOUT_SECONDS
-            elapsed = 0
-            check_interval = 2  # 每2秒檢查一次
+            filled, order_status = await self._confirm_order_filled(
+                symbol=symbol,
+                order_id=str(order_id),
+                timeout=timeout,
+                check_interval=0.5  # 4倍提升：2秒 → 0.5秒
+            )
             
-            while elapsed < timeout:
-                await asyncio.sleep(check_interval)
-                elapsed += check_interval
+            if filled and order_status:
+                logger.info(f"✅ 限價單成交: {symbol}")
+                return order_status
+            
+            # 未完全成交：檢查部分成交情況
+            executed_qty = 0.0
+            if order_status:
+                executed_qty = float(order_status.get('executedQty', 0))
+                status = order_status.get('status', '')
                 
-                # 檢查訂單狀態
-                order_status = await self.client.get_order(symbol, int(order_id))
-                status = order_status.get('status')
-                
-                if status == 'FILLED':
-                    logger.info(f"✅ 限價單成交: {symbol}")
-                    return order_status
-                elif status in ['CANCELED', 'REJECTED', 'EXPIRED']:
-                    logger.warning(f"⚠️  限價單失敗: {symbol} 狀態={status}")
-                    break
+                if executed_qty > 0:
+                    logger.info(
+                        f"📊 限價單部分成交: {symbol} "
+                        f"已成交={executed_qty}/{quantity} ({executed_qty/quantity:.1%})"
+                    )
             
             # 超時：重新檢查滑點，決定是否降級為市價單
             logger.warning(
                 f"⏰ 限價單超時 ({timeout}秒): {symbol}"
             )
             
+            # 取消未成交部分
             try:
                 await self.client.cancel_order(symbol, int(order_id))
             except:
@@ -520,11 +610,68 @@ class TradingService:
                     f"❌ 限價單超時且滑點仍超標，拒絕下單: {symbol} "
                     f"(滑點 {slippage_pct:.2%} >= {self.config.MAX_SLIPPAGE_PCT:.2%})"
                 )
+                # 如果有部分成交，返回部分成交結果
+                if executed_qty > 0 and order_status:
+                    logger.warning(
+                        f"⚠️  保留部分成交結果: {symbol} "
+                        f"已成交={executed_qty}/{quantity}"
+                    )
+                    return order_status
                 return None
             
-            # 滑點已回落到可接受範圍，安全降級為市價單
-            logger.info(f"✅ 滑點已回落，安全降級為市價單: {symbol}")
-            return await self._place_market_order(symbol, side, quantity, direction)
+            # ✨ 重要：只對未成交部分下市價單，避免重複暴露
+            remaining_qty = quantity - executed_qty
+            
+            if remaining_qty <= 0:
+                # 已完全成交或超量成交
+                logger.info(f"✅ 限價單已完全成交: {symbol}")
+                return order_status
+            
+            # 四捨五入剩餘數量
+            remaining_qty = await self._round_quantity(symbol, remaining_qty)
+            
+            # 滑點已回落，安全降級為市價單（僅剩餘部分）
+            logger.info(
+                f"✅ 滑點已回落，對剩餘部分降級為市價單: {symbol} "
+                f"剩餘={remaining_qty}/{quantity} ({remaining_qty/quantity:.1%})"
+            )
+            
+            # 下市價單補足剩餘部分
+            market_order = await self._place_market_order(symbol, side, remaining_qty, direction)
+            
+            # ✨ 關鍵：合併部分成交和市價單結果，使用實際成交總量
+            if executed_qty > 0 and market_order and order_status:
+                # 獲取市價單實際成交數量（可能因舍入與remaining_qty不同）
+                market_executed_qty = float(market_order.get('executedQty', remaining_qty))
+                
+                # 計算實際總成交數量
+                total_executed_qty = executed_qty + market_executed_qty
+                
+                # 計算加權平均價格（使用實際成交數量）
+                limit_price = float(order_status.get('avgPrice', expected_price))
+                market_price = float(market_order.get('avgPrice', current_price))
+                avg_price = (limit_price * executed_qty + market_price * market_executed_qty) / total_executed_qty
+                
+                # 合併訂單信息
+                merged_order = {
+                    **market_order,
+                    'executedQty': str(total_executed_qty),  # ✨ 使用實際總成交量
+                    'avgPrice': str(avg_price),               # 加權平均價
+                    'mixed_fill': True,                       # 標記為混合成交
+                    'limit_qty': executed_qty,
+                    'market_qty': market_executed_qty
+                }
+                
+                logger.info(
+                    f"📊 訂單混合成交: {symbol} "
+                    f"限價={executed_qty}@{limit_price:.6f} + "
+                    f"市價={market_executed_qty}@{market_price:.6f} = "
+                    f"{total_executed_qty}@{avg_price:.6f}"
+                )
+                
+                return merged_order
+            
+            return market_order
             
         except Exception as e:
             logger.error(f"限價單失敗 {symbol}: {e}")
@@ -600,6 +747,147 @@ class TradingService:
         logger.info(f"✅ 設置止盈: {symbol} @ {take_profit_price} (訂單ID: {order.get('orderId')})")
         return order
     
+    async def _set_stop_loss_take_profit_parallel(
+        self,
+        symbol: str,
+        direction: str,
+        quantity: float,
+        stop_loss: float,
+        take_profit: float,
+        max_retries: int = 3
+    ):
+        """
+        並行設置止損止盈（v3.5.0優化）
+        
+        優化點：
+        1. 並行執行止損和止盈訂單（2倍速度提升）
+        2. 失敗自動重試機制（max_retries次）
+        3. 部分成功處理（一個成功一個失敗的情況）
+        
+        Args:
+            symbol: 交易對
+            direction: 方向 (LONG/SHORT)
+            quantity: 數量
+            stop_loss: 止損價格
+            take_profit: 止盈價格
+            max_retries: 最大重試次數
+        
+        Raises:
+            Exception: 如果止損止盈設置失敗
+        """
+        for attempt in range(max_retries):
+            try:
+                # ✨ 並行執行止損和止盈訂單
+                sl_task = self._set_stop_loss(symbol, direction, quantity, stop_loss)
+                tp_task = self._set_take_profit(symbol, direction, quantity, take_profit)
+                
+                # 並行等待兩個訂單完成
+                sl_result, tp_result = await asyncio.gather(
+                    sl_task, tp_task,
+                    return_exceptions=True
+                )
+                
+                # 檢查結果
+                sl_success = not isinstance(sl_result, Exception) and sl_result is not None
+                tp_success = not isinstance(tp_result, Exception) and tp_result is not None
+                
+                if sl_success and tp_success:
+                    logger.info(f"✅ 止損止盈並行設置成功: {symbol}")
+                    return
+                
+                # 部分失敗處理
+                if sl_success and not tp_success:
+                    logger.warning(f"⚠️  止損成功但止盈失敗 (第{attempt+1}次嘗試): {symbol}")
+                    if attempt < max_retries - 1:
+                        logger.info(f"🔄 重試止盈設置...")
+                        tp_retry = await self._set_take_profit(symbol, direction, quantity, take_profit)
+                        if tp_retry:
+                            logger.info(f"✅ 止盈重試成功: {symbol}")
+                            return
+                    else:
+                        raise Exception(f"止盈設置失敗（已重試{max_retries}次）: {tp_result}")
+                
+                if tp_success and not sl_success:
+                    logger.warning(f"⚠️  止盈成功但止損失敗 (第{attempt+1}次嘗試): {symbol}")
+                    if attempt < max_retries - 1:
+                        logger.info(f"🔄 重試止損設置...")
+                        sl_retry = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
+                        if sl_retry:
+                            logger.info(f"✅ 止損重試成功: {symbol}")
+                            return
+                    else:
+                        raise Exception(f"止損設置失敗（已重試{max_retries}次）: {sl_result}")
+                
+                # 兩者都失敗
+                if not sl_success and not tp_success:
+                    if attempt < max_retries - 1:
+                        logger.warning(
+                            f"⚠️  止損止盈都失敗 (第{attempt+1}次嘗試)，{1}秒後重試..."
+                        )
+                        await asyncio.sleep(1)
+                        continue
+                    else:
+                        raise Exception(
+                            f"止損止盈都設置失敗（已重試{max_retries}次）: "
+                            f"SL={sl_result}, TP={tp_result}"
+                        )
+                        
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"⚠️  止損止盈設置異常 (第{attempt+1}次嘗試): {e}，重試中...")
+                    await asyncio.sleep(1)
+                    continue
+                else:
+                    raise Exception(f"止損止盈設置異常（已重試{max_retries}次）: {e}")
+        
+        raise Exception(f"止損止盈設置失敗（已用完{max_retries}次重試）")
+    
+    async def _confirm_order_filled(
+        self,
+        symbol: str,
+        order_id: str,
+        timeout: int = 5,
+        check_interval: float = 0.5
+    ) -> Tuple[bool, Optional[Dict]]:
+        """
+        確認訂單是否成交（v3.5.0優化，支持部分成交檢測）
+        
+        Args:
+            symbol: 交易對
+            order_id: 訂單ID
+            timeout: 超時時間（秒）
+            check_interval: 檢查間隔（秒）
+        
+        Returns:
+            Tuple[bool, Optional[Dict]]: (是否完全成交, 訂單狀態)
+        """
+        elapsed = 0.0
+        last_status = None
+        
+        while elapsed < timeout:
+            try:
+                order_status = await self.client.get_order(symbol, int(order_id))
+                status = order_status.get('status')
+                last_status = order_status
+                
+                if status == 'FILLED':
+                    return True, order_status
+                elif status in ['CANCELED', 'REJECTED', 'EXPIRED']:
+                    return False, order_status
+                elif status == 'PARTIALLY_FILLED':
+                    # 繼續等待，但記錄狀態
+                    last_status = order_status
+                    
+                await asyncio.sleep(check_interval)
+                elapsed += check_interval
+                
+            except Exception as e:
+                logger.warning(f"檢查訂單狀態失敗: {e}")
+                return False, None
+        
+        # 超時：返回最後狀態（可能是部分成交）
+        return False, last_status
+    
     async def _round_quantity(self, symbol: str, quantity: float, round_up: bool = False) -> float:
         """
         根據交易所的 LOT_SIZE 過濾器四捨五入數量
@@ -613,8 +901,9 @@ class TradingService:
             float: 符合交易所規則的數量
         """
         try:
-            # 獲取交易對過濾器（帶緩存）
+            # ✨ 優化：獲取交易對過濾器（帶緩存，支持預加載）
             if symbol not in self.symbol_filters:
+                # 如果沒有預加載，按需加載單個symbol
                 exchange_info = await self.client.get_exchange_info()
                 for s in exchange_info.get('symbols', []):
                     if s['symbol'] == symbol:
