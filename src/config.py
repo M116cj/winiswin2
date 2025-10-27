@@ -173,6 +173,41 @@ class Config:
     ML_FLUSH_INTERVAL: int = 300
     ML_DATA_DIR: str = "ml_data"
     
+    # v3.13.0 策略2：配置驱动市场状态规则
+    MARKET_STATE_RULES = {
+        "strong_trending": {
+            "adx_min": 25.0,
+            "bb_width_quantile": 0.6,
+            "volatility_min": 0.015,
+            "allowed": True,
+            "risk_multiplier": 1.2,  # 强趋势加仓
+            "description": "强趋势市场"
+        },
+        "trending": {
+            "adx_min": 20.0,
+            "adx_max": 25.0,
+            "bb_width_quantile": 0.4,
+            "allowed": True,
+            "risk_multiplier": 1.0,
+            "description": "正常趋势市场"
+        },
+        "ranging": {
+            "adx_max": 20.0,
+            "bb_width_quantile": 0.3,
+            "volatility_max": 0.01,
+            "allowed": False,  # 震荡市场不交易
+            "risk_multiplier": 0.0,
+            "description": "震荡市场（禁止交易）"
+        },
+        "choppy": {
+            "adx_max": 15.0,
+            "volatility_max": 0.005,
+            "allowed": False,
+            "risk_multiplier": 0.0,
+            "description": "混乱市场（禁止交易）"
+        }
+    }
+    
     # 期望值計算配置
     EXPECTANCY_WINDOW: int = 30
     MIN_EXPECTANCY_PCT: float = 0.3
