@@ -50,11 +50,47 @@ class PositionMonitor:
         监控所有活跃持仓（真实 + 虚拟）
         
         🎯 v3.9.2.7增强：同时监控真实仓位和虚拟仓位
+        🎯 v3.9.2.8性能优化：添加per-cycle指标缓存，避免重复获取
         
         Returns:
             Dict: 监控统计信息
         """
         try:
+            # 🎯 v3.9.2.8.1: 指标缓存（带时间戳验证）
+            indicators_cache = {}  # {symbol: {'indicators': Dict, 'timestamp': datetime}}
+            
+            async def get_indicators_cached(symbol: str, max_age_seconds: int = 30):
+                """
+                获取指标（带新鲜度验证）
+                
+                🚨 v3.9.2.8.1: 添加缓存时间验证，避免使用过期指标导致错误决策
+                
+                Args:
+                    symbol: 交易对
+                    max_age_seconds: 最大缓存时间（秒），默认30秒
+                
+                Returns:
+                    Dict: 技术指标
+                """
+                now = datetime.now()
+                
+                if symbol in indicators_cache:
+                    cache_age = (now - indicators_cache[symbol]['timestamp']).total_seconds()
+                    if cache_age < max_age_seconds:
+                        logger.debug(f"✅ 使用缓存指标 {symbol} (年龄:{cache_age:.1f}s)")
+                        return indicators_cache[symbol]['indicators']
+                    else:
+                        logger.debug(f"⚠️ 缓存过期 {symbol} (年龄:{cache_age:.1f}s > {max_age_seconds}s)")
+                
+                # 缓存不存在或已过期，获取新指标
+                indicators = await self._get_current_indicators(symbol)
+                indicators_cache[symbol] = {
+                    'indicators': indicators,
+                    'timestamp': now
+                }
+                logger.debug(f"🔄 获取新指标 {symbol}")
+                return indicators
+            
             # === 1. 监控真实持仓 ===
             positions = await self.client.get_positions()
             active_positions = [p for p in positions if float(p.get('positionAmt', 0)) != 0]
@@ -62,7 +98,8 @@ class PositionMonitor:
             # === 2. 🎯 v3.9.2.7新增：监控虚拟持仓 ===
             virtual_stats = {'total': 0, 'ml_analyzed': 0}
             if self.virtual_position_manager:
-                virtual_stats = await self.monitor_virtual_positions()
+                # 🎯 v3.9.2.8: 传递缓存函数给虚拟持仓监控
+                virtual_stats = await self.monitor_virtual_positions(get_indicators_cached)
             
             if not active_positions:
                 if virtual_stats['total'] > 0:
@@ -150,57 +187,171 @@ class PositionMonitor:
                 }
                 stats['positions'].append(position_info)
                 
-                # 🤖 v3.9.2.7.1增强：ML主动分析和执行
+                # 🎯 v3.9.2.8：获取ML信心值（从position_states或使用默认值）
+                signal_confidence = 0.5  # 默认值
+                if symbol in self.position_states:
+                    signal_confidence = self.position_states[symbol].get('ml_confidence', 0.5)
+                
+                # 🤖 v3.9.2.8增强：ML智能决策系统（亏损分析 + 止盈分析）
                 ml_suggestion = ""
                 ml_executed = False
-                if self.ml_predictor:
+                
+                # === 1. 亏损处理智能决策（仅当亏损>2%时） ===
+                if self.ml_predictor and pnl_pct < -2.0:
                     try:
+                        # 🚨 v3.9.2.8.3: ML决策前强制刷新指标（不使用缓存）
+                        logger.debug(f"🔄 重新获取最新指标用于ML亏损分析 {symbol}")
                         indicators = await self._get_current_indicators(symbol)
-                        rebound_pred = await self.ml_predictor.predict_rebound(
+                        
+                        # 🎯 v3.9.2.8: 使用新的evaluate_loss_position方法
+                        ml_analysis = await self.ml_predictor.evaluate_loss_position(
                             symbol=symbol,
                             direction=direction,
                             entry_price=entry_price,
                             current_price=current_price,
                             pnl_pct=pnl_pct,
+                            ml_confidence=signal_confidence,
                             indicators=indicators
                         )
                         
-                        if rebound_pred:
-                            action = rebound_pred['recommended_action']
-                            action_emoji = {
-                                'wait_and_monitor': '⏳',
-                                'adjust_strategy': '🔧',
-                                'close_immediately': '❌'
-                            }.get(action, '❓')
+                        action = ml_analysis['action']
+                        action_emoji = {
+                            'hold_and_monitor': '⏳',
+                            'adjust_stop_loss': '🔧',
+                            'close_immediately': '❌'
+                        }.get(action, '❓')
+                        
+                        ml_suggestion = f" | ML:{action_emoji}{action[:4]} 风险:{ml_analysis['risk_level']}"
+                        
+                        # 根据ML建议执行
+                        if action == 'close_immediately':
+                            # 🚨 v3.9.2.8.1: 执行前重新验证（使用fresh指标）
+                            logger.info(f"⚠️ 执行平仓前重新验证 {symbol}")
                             
-                            ml_suggestion = f" | ML建议:{action_emoji}{action[:4]} 反弹:{rebound_pred['rebound_probability']:.0%}"
+                            # 获取最新价格（不使用缓存）
+                            fresh_ticker = await self.client.get_ticker_price(symbol)
+                            fresh_price = float(fresh_ticker['price'])
                             
-                            # 🎯 v3.9.2.7.1：真正执行ML建议（仅当亏损时）
-                            if pnl_pct < -2.0:  # 亏损超过2%时才执行ML建议
-                                if action == 'close_immediately':
-                                    logger.warning(f"🚨 ML建议立即平仓 {symbol} (PnL:{pnl_pct:.2f}%)")
-                                    await self._force_close_position(symbol, direction, abs(position_amt), "ml_suggested_close")
-                                    ml_executed = True
-                                    ml_suggestion += " ✅已执行"
-                                    continue  # 跳过后续检查
-                                    
-                                elif action == 'adjust_strategy' and pnl_pct < -5.0:
-                                    # 只有亏损>5%时才执行调整
-                                    new_stop_loss_pct = abs(pnl_pct) * 1.05
-                                    if direction == "LONG":
-                                        new_stop_price = entry_price * (1 - new_stop_loss_pct / 100)
-                                    else:
-                                        new_stop_price = entry_price * (1 + new_stop_loss_pct / 100)
-                                    
-                                    try:
-                                        await self._update_stop_loss(symbol, direction, new_stop_price)
-                                        logger.info(f"🔧 ML调整止损 {symbol}: {new_stop_price:.4f}")
-                                        ml_executed = True
-                                        ml_suggestion += " ✅已执行"
-                                    except Exception as e:
-                                        logger.error(f"ML调整止损失败 {symbol}: {e}")
+                            # 重新计算PnL确认
+                            if direction == 'LONG':
+                                fresh_pnl_pct = ((fresh_price - entry_price) / entry_price) * 100
+                            else:
+                                fresh_pnl_pct = ((entry_price - fresh_price) / entry_price) * 100
+                            
+                            # 如果情况显著改善，取消平仓
+                            if fresh_pnl_pct > -2.0:  # 亏损已经缓解到-2%以内
+                                logger.info(
+                                    f"✅ 情况改善，取消平仓 {symbol} "
+                                    f"(原PnL:{pnl_pct:.2f}% -> 新PnL:{fresh_pnl_pct:.2f}%)"
+                                )
+                                ml_suggestion += " ⏸️已取消(情况改善)"
+                                continue
+                            
+                            # 确认仍需平仓
+                            logger.warning(
+                                f"🚨 ML建议立即平仓 {symbol} (验证后PnL:{fresh_pnl_pct:.2f}%): "
+                                f"{ml_analysis['reason']}"
+                            )
+                            await self._force_close_position(symbol, direction, abs(position_amt), "ml_suggested_close")
+                            ml_suggestion += " ✅已执行"
+                            continue  # 跳过后续检查
+                            
+                        elif action == 'adjust_stop_loss' and pnl_pct < -5.0:
+                            # 🚨 v3.9.2.8.2: 执行前重新验证价格
+                            logger.info(f"⚠️ 执行调整止损前重新验证 {symbol}")
+                            fresh_ticker = await self.client.get_ticker_price(symbol)
+                            fresh_price = float(fresh_ticker['price'])
+                            
+                            # 重新计算PnL
+                            if direction == 'LONG':
+                                fresh_pnl_pct = ((fresh_price - entry_price) / entry_price) * 100
+                            else:
+                                fresh_pnl_pct = ((entry_price - fresh_price) / entry_price) * 100
+                            
+                            # 如果情况改善，取消调整
+                            if fresh_pnl_pct > -5.0:
+                                logger.info(f"✅ 情况改善，取消调整 {symbol} (PnL:{fresh_pnl_pct:.2f}%)")
+                                ml_suggestion += " ⏸️已取消(情况改善)"
+                                continue
+                            
+                            # 确认仍需调整，执行止损调整
+                            new_stop_loss_pct = abs(fresh_pnl_pct) * 1.05
+                            if direction == "LONG":
+                                new_stop_price = entry_price * (1 - new_stop_loss_pct / 100)
+                            else:
+                                new_stop_price = entry_price * (1 + new_stop_loss_pct / 100)
+                            
+                            try:
+                                await self._update_stop_loss(symbol, direction, new_stop_price)
+                                logger.info(f"🔧 ML调整止损 {symbol}: {new_stop_price:.4f} (验证后PnL:{fresh_pnl_pct:.2f}%)")
+                                ml_suggestion += " ✅已执行"
+                            except Exception as e:
+                                logger.error(f"ML调整止损失败 {symbol}: {e}")
+                        # 'hold_and_monitor' - 继续正常监控
+                        
                     except Exception as e:
-                        logger.debug(f"ML分析失败 {symbol}: {e}")
+                        logger.debug(f"ML亏损分析失败 {symbol}: {e}")
+                
+                # === 2. 🎯 v3.9.2.8: 止盈智能决策（仅当盈利且有止盈目标时） ===
+                if self.ml_predictor and pnl_pct > 0 and current_tp and current_tp > 0:
+                    try:
+                        # 计算止盈进度
+                        if direction == 'LONG':
+                            tp_progress = (current_price - entry_price) / (current_tp - entry_price) if current_tp > entry_price else 0
+                        else:  # SHORT
+                            tp_progress = (entry_price - current_price) / (entry_price - current_tp) if entry_price > current_tp else 0
+                        
+                        # 如果接近止盈（>75%），咨询ML
+                        if tp_progress >= 0.75:
+                            # 🚨 v3.9.2.8.3: ML决策前强制刷新指标（不使用缓存）
+                            logger.debug(f"🔄 重新获取最新指标用于ML止盈分析 {symbol}")
+                            indicators = await self._get_current_indicators(symbol)
+                            
+                            tp_analysis = await self.ml_predictor.evaluate_take_profit_opportunity(
+                                symbol=symbol,
+                                direction=direction,
+                                entry_price=entry_price,
+                                current_price=current_price,
+                                take_profit_price=current_tp,
+                                pnl_pct=pnl_pct,
+                                ml_confidence=signal_confidence,
+                                indicators=indicators
+                            )
+                            
+                            logger.info(
+                                f"💰 止盈决策 {symbol}: {tp_analysis['action']} "
+                                f"(进度:{tp_progress:.1%}, 原因:{tp_analysis['reason']})"
+                            )
+                            
+                            # 根据ML建议执行
+                            if tp_analysis['action'] == 'take_profit_now':
+                                # 🚨 v3.9.2.8.2: 执行前重新验证止盈进度
+                                logger.info(f"⚠️ 执行提前止盈前重新验证 {symbol}")
+                                fresh_ticker = await self.client.get_ticker_price(symbol)
+                                fresh_price = float(fresh_ticker['price'])
+                                
+                                # 重新计算止盈进度
+                                if direction == 'LONG':
+                                    fresh_tp_progress = (fresh_price - entry_price) / (current_tp - entry_price) if current_tp > entry_price else 0
+                                else:
+                                    fresh_tp_progress = (entry_price - fresh_price) / (entry_price - current_tp) if entry_price > current_tp else 0
+                                
+                                # 如果进度下降，取消提前止盈
+                                if fresh_tp_progress < 0.70:
+                                    logger.info(f"✅ 止盈进度下降，取消提前止盈 {symbol} (进度:{fresh_tp_progress:.1%})")
+                                    ml_suggestion += " ⏸️已取消(进度下降)"
+                                    continue
+                                
+                                # 确认仍需止盈，执行平仓
+                                logger.info(f"✅ ML建议提前止盈 {symbol} (验证后进度:{fresh_tp_progress:.1%}, PnL:{pnl_pct:.2f}%)")
+                                await self._force_close_position(symbol, direction, abs(position_amt), "ml_take_profit")
+                                ml_suggestion += " 💰提前止盈"
+                                continue  # 跳过后续检查
+                            # 🚨 v3.9.2.8.2: scale_in已完全删除
+                            # 'hold_for_more' - 继续持有，不需要额外操作
+                            
+                    except Exception as e:
+                        logger.debug(f"ML止盈分析失败 {symbol}: {e}")
                 
                 # 📊 日志输出每个持仓
                 pnl_emoji = "🟢" if pnl_pct > 0 else "🔴"
@@ -215,6 +366,9 @@ class PositionMonitor:
                     f"持仓:{holding_hours:.1f}h{ml_suggestion}"
                 )
                 
+                # 🎯 v3.9.2.8: 预先获取indicators（使用缓存）
+                indicators_for_adjust = await get_indicators_cached(symbol)
+                
                 # 检查是否需要调整止损止盈
                 adjustment = await self._check_and_adjust_position(
                     symbol=symbol,
@@ -223,7 +377,8 @@ class PositionMonitor:
                     current_price=current_price,
                     quantity=abs(position_amt),
                     pnl_pct=pnl_pct,
-                    unrealized_pnl_pct=unrealized_pnl_pct
+                    unrealized_pnl_pct=unrealized_pnl_pct,
+                    indicators=indicators_for_adjust  # 🎯 v3.9.2.8: 传递缓存的indicators
                 )
                 
                 if adjustment:
@@ -255,12 +410,17 @@ class PositionMonitor:
         current_price: float,
         quantity: float,
         pnl_pct: float,
-        unrealized_pnl_pct: float
+        unrealized_pnl_pct: float,
+        indicators: Optional[Dict] = None  # 🎯 v3.9.2.8: 性能优化 - 接受预先获取的indicators
     ) -> Optional[Dict]:
         """
         检查并调整单个持仓的止损止盈
         
         🚨 v3.9.2.3紧急修复：添加主动止损检查和强制平仓保护
+        🎯 v3.9.2.8性能优化：接受预先获取的indicators，避免重复获取
+        
+        Args:
+            indicators: 预先获取的技术指标（可选），如果未提供则内部获取
         
         Returns:
             Optional[Dict]: 调整记录（用于XGBoost特征）
@@ -280,49 +440,57 @@ class PositionMonitor:
                 await self._force_close_position(symbol, direction, quantity, "critical_loss")
                 return None
             
-            # === 紧急亏损：-50%到-80%之间，询问ML是否可能反弹 ===
+            # === 紧急亏损：-50%到-80%之间，询问ML智能决策 ===
             if pnl_pct <= EMERGENCY_STOP_LOSS_PCT:
                 logger.warning(
                     f"⚠️  检测到紧急亏损 {symbol} {pnl_pct:.2f}% ≤ {EMERGENCY_STOP_LOSS_PCT}%"
                 )
                 
-                # 🎯 v3.9.2.5：询问ML模型是否可能反弹
+                # 🎯 v3.9.2.8：使用新的evaluate_loss_position方法
                 if self.ml_predictor:
                     try:
-                        # 获取当前市场指标（如果可用）
-                        indicators = await self._get_current_indicators(symbol)
+                        # 🚨 v3.9.2.8.3: 强制刷新指标用于紧急止损ML分析（不使用缓存）
+                        logger.debug(f"🔄 重新获取最新指标用于紧急止损分析 {symbol}")
+                        current_indicators = await self._get_current_indicators(symbol)
                         
-                        rebound_pred = await self.ml_predictor.predict_rebound(
+                        # 获取ML信心值（从position_states或使用默认值）
+                        signal_confidence = 0.5
+                        if symbol in self.position_states:
+                            signal_confidence = self.position_states[symbol].get('ml_confidence', 0.5)
+                        
+                        # 使用新的智能平仓决策方法
+                        ml_analysis = await self.ml_predictor.evaluate_loss_position(
                             symbol=symbol,
                             direction=direction,
                             entry_price=entry_price,
                             current_price=current_price,
                             pnl_pct=pnl_pct,
-                            indicators=indicators
+                            ml_confidence=signal_confidence,
+                            indicators=current_indicators
                         )
-                        
-                        # 检查ML是否返回有效预测（ML可能未就绪）
-                        if rebound_pred is None:
-                            logger.warning(f"⚠️  ML模型未就绪，执行默认强制平仓 {symbol}")
-                            await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
-                            return None
                         
                         logger.info(
-                            f"🔮 ML反弹预测 {symbol}: {rebound_pred['reason']}"
+                            f"🎯 ML智能决策 {symbol}: {ml_analysis['reason']}"
                         )
                         
-                        # 🎯 v3.9.2.7增强：真正执行ML建议
-                        if rebound_pred['recommended_action'] == 'wait_and_monitor':
-                            logger.info(
-                                f"📊 ML建议等待观察 {symbol} (反弹概率{rebound_pred['rebound_probability']:.1%})"
+                        # 根据ML建议执行
+                        if ml_analysis['action'] == 'close_immediately':
+                            logger.warning(
+                                f"🚨 ML强烈建议平仓 {symbol}: {ml_analysis['reason']}"
                             )
-                            # 不平仓，继续监控
+                            await self._force_close_position(symbol, direction, quantity, "ml_emergency_stop")
+                            return None
+                        elif ml_analysis['action'] == 'hold_and_monitor':
+                            logger.info(
+                                f"💡 ML建议继续持有 {symbol}: {ml_analysis['reason']}"
+                            )
+                            # 不执行强制平仓，让后续逻辑处理
                             pass
-                        elif rebound_pred['recommended_action'] == 'adjust_strategy':
+                        elif ml_analysis['action'] == 'adjust_stop_loss':
                             logger.info(
-                                f"🔧 ML建议调整策略 {symbol} - 收紧止损到-{abs(pnl_pct)*1.05:.1f}%"
+                                f"🔧 ML建议调整止损 {symbol} - 收紧止损到-{abs(pnl_pct)*1.05:.1f}%"
                             )
-                            # 🎯 v3.9.2.7：真正执行止损调整
+                            # 执行止损调整
                             new_stop_loss_pct = abs(pnl_pct) * 1.05  # 收紧5%
                             if direction == "LONG":
                                 new_stop_price = entry_price * (1 - new_stop_loss_pct / 100)
@@ -335,14 +503,9 @@ class PositionMonitor:
                                 logger.info(f"✅ 已调整{symbol}止损至{new_stop_price:.4f}")
                             except Exception as e:
                                 logger.error(f"调整止损失败 {symbol}: {e}")
-                        else:  # close_immediately
-                            logger.warning(
-                                f"🚨 ML建议立即平仓 {symbol} (反弹概率低)"
-                            )
-                            await self._force_close_position(symbol, direction, quantity, "ml_recommended_close")
-                            return None
+                        
                     except Exception as e:
-                        logger.error(f"ML反弹预测失败 {symbol}: {e}，执行默认强制平仓")
+                        logger.error(f"ML智能决策失败 {symbol}: {e}，执行默认强制平仓")
                         await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
                         return None
                 else:
@@ -353,20 +516,30 @@ class PositionMonitor:
             # === 预警亏损：-30%到-50%之间，询问ML并可能调整策略 ===
             if pnl_pct <= ML_REBOUND_CHECK_THRESHOLD and self.ml_predictor:
                 try:
-                    indicators = await self._get_current_indicators(symbol)
-                    rebound_pred = await self.ml_predictor.predict_rebound(
+                    # 🚨 v3.9.2.8.3: 强制刷新指标用于预警ML分析（不使用缓存）
+                    logger.debug(f"🔄 重新获取最新指标用于预警止损分析 {symbol}")
+                    current_indicators = await self._get_current_indicators(symbol)
+                    
+                    # 获取ML信心值
+                    signal_confidence = 0.5
+                    if symbol in self.position_states:
+                        signal_confidence = self.position_states[symbol].get('ml_confidence', 0.5)
+                    
+                    # 🎯 v3.9.2.8：使用新的evaluate_loss_position方法
+                    ml_analysis = await self.ml_predictor.evaluate_loss_position(
                         symbol=symbol,
                         direction=direction,
                         entry_price=entry_price,
                         current_price=current_price,
                         pnl_pct=pnl_pct,
-                        indicators=indicators
+                        ml_confidence=signal_confidence,
+                        indicators=current_indicators
                     )
                     
                     # 只记录日志，不强制平仓
-                    if rebound_pred['recommended_action'] == 'close_immediately':
+                    if ml_analysis['action'] == 'close_immediately':
                         logger.warning(
-                            f"⚠️  ML预警 {symbol}: {rebound_pred['reason']} - 建议关注"
+                            f"⚠️  ML预警 {symbol}: {ml_analysis['reason']} - 建议关注"
                         )
                 except Exception as e:
                     logger.debug(f"ML预警检查失败 {symbol}: {e}")
@@ -677,9 +850,13 @@ class PositionMonitor:
             'total_adjustments': sum(s['adjustment_count'] for s in self.position_states.values()),
         }
     
-    async def monitor_virtual_positions(self) -> Dict:
+    async def monitor_virtual_positions(self, get_indicators_fn=None) -> Dict:
         """
         🎯 v3.9.2.7新增：监控虚拟持仓，让ML模型分析
+        🎯 v3.9.2.8性能优化：接受缓存函数，避免重复获取指标
+        
+        Args:
+            get_indicators_fn: 获取指标的函数（可选），用于缓存优化
         
         Returns:
             Dict: 虚拟持仓统计信息
@@ -709,7 +886,11 @@ class PositionMonitor:
                     # 🎯 关键：让ML模型分析虚拟仓位
                     if self.ml_predictor and pnl_pct < -10:  # 亏损超过10%才询问ML
                         try:
-                            indicators = await self._get_current_indicators(symbol)
+                            # 🎯 v3.9.2.8: 使用缓存函数获取指标（如果提供）
+                            if get_indicators_fn:
+                                indicators = await get_indicators_fn(symbol)
+                            else:
+                                indicators = await self._get_current_indicators(symbol)
                             rebound_pred = await self.ml_predictor.predict_rebound(
                                 symbol=symbol,
                                 direction=direction,
@@ -766,11 +947,13 @@ class PositionMonitor:
             
             # 转换为DataFrame
             import pandas as pd
-            df = pd.DataFrame(klines, columns=[
+            # 🔧 显式定义列名以避免LSP类型推断问题
+            column_names = [
                 'timestamp', 'open', 'high', 'low', 'close', 'volume',
                 'close_time', 'quote_volume', 'trades', 'taker_buy_base',
                 'taker_buy_quote', 'ignore'
-            ])
+            ]
+            df = pd.DataFrame(data=klines, columns=column_names)
             
             # 转换数据类型
             for col in ['open', 'high', 'low', 'close', 'volume']:

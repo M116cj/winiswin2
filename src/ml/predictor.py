@@ -60,6 +60,10 @@ class MLPredictor:
         # 🎯 v3.9.2.7: 实际胜率跟踪
         self.trade_recorder = trade_recorder  # 获取历史胜率数据
         self.actual_win_rate = 0.5  # 初始默认胜率50%
+        
+        # 🎯 v3.9.2.8: 性能优化 - 胜率缓存
+        self._last_win_rate_update = None  # 上次更新胜率的时间
+        self._win_rate_cache_duration = 300  # 5分钟缓存（秒）
     
     def initialize(self) -> bool:
         """
@@ -254,6 +258,285 @@ class MLPredictor:
             logger.error(f"準備特徵失敗: {e}", exc_info=True)
             return None
     
+    async def evaluate_loss_position(
+        self,
+        symbol: str,
+        direction: str,
+        entry_price: float,
+        current_price: float,
+        pnl_pct: float,
+        ml_confidence: float,
+        indicators: Optional[Dict] = None
+    ) -> Dict:
+        """
+        评估亏损持仓的智能平仓决策
+        
+        🎯 v3.9.2.8新增：基于胜率和信心值的智能决策引擎
+        🚨 v3.9.2.8.1: 安全防护栏强化 - 添加-40%绝对止损保护
+        
+        决策逻辑：
+        1. 高胜率(>55%) + 高ML信心(>0.7): 容忍更大亏损
+           - -15%以内: hold_and_monitor
+           - -25%以内: adjust_stop_loss
+           - >-25%: close_immediately
+        
+        2. 中等胜率(45-55%) + 中等信心(0.5-0.7): 标准策略
+           - -10%以内: hold_and_monitor
+           - -20%以内: adjust_stop_loss
+           - >-20%: close_immediately
+        
+        3. 低胜率(<45%) + 低信心(<0.5): 激进止损
+           - -5%以内: hold_and_monitor
+           - -10%以内: adjust_stop_loss
+           - >-10%: close_immediately
+        
+        4. 技术指标调整：
+           - RSI超卖/超买：延缓平仓1个级别
+           - MACD金叉/死叉：延缓平仓1个级别
+           - 布林带极值：延缓平仓1个级别
+        
+        Args:
+            symbol: 交易对
+            direction: 方向（LONG/SHORT）
+            entry_price: 入场价格
+            current_price: 当前价格
+            pnl_pct: 当前盈亏百分比
+            ml_confidence: 开仓时的ML信心值
+            indicators: 当前技术指标
+        
+        Returns:
+            Dict: {
+                'action': 'close_immediately' | 'adjust_stop_loss' | 'hold_and_monitor',
+                'confidence': float,  # 决策信心度0-1
+                'reason': str,  # 人类可读的原因
+                'actual_win_rate': float,  # 当前系统胜率
+                'ml_confidence': float,  # ML模型信心值
+                'risk_level': 'low' | 'medium' | 'high' | 'critical'
+            }
+        """
+        try:
+            # 1. 更新实际胜率
+            self._update_actual_win_rate()
+            
+            # 🚨 v3.9.2.8.2 CRITICAL: 多层绝对止损保护（从-40%收紧到-30%）
+            if pnl_pct <= -30.0:  # -30%绝对红线（从-40%收紧）
+                return {
+                    'action': 'close_immediately',
+                    'confidence': 1.0,
+                    'reason': f'🔴 绝对止损保护：亏损{pnl_pct:.1f}%已达危险阈值（忽略ML建议）',
+                    'actual_win_rate': self.actual_win_rate,
+                    'ml_confidence': ml_confidence,
+                    'risk_level': 'critical',
+                    'strategy_level': 'emergency',
+                    'hold_threshold': -30.0,
+                    'adjust_threshold': -30.0,
+                    'technical_signals': [],
+                    'postpone_levels': 0
+                }
+            
+            # 🚨 v3.9.2.8.2: 阶段性防护 - 匹配旧系统行为（-25%强制调整止损）
+            if pnl_pct <= -25.0:  # -25%强制调整止损
+                return {
+                    'action': 'adjust_stop_loss',
+                    'confidence': 0.9,
+                    'reason': f'⚠️ 阶段性保护：亏损{pnl_pct:.1f}%需强制收紧止损',
+                    'actual_win_rate': self.actual_win_rate,
+                    'ml_confidence': ml_confidence,
+                    'risk_level': 'high',
+                    'strategy_level': 'staged_protection',
+                    'hold_threshold': -25.0,
+                    'adjust_threshold': -25.0,
+                    'technical_signals': [],
+                    'postpone_levels': 0
+                }
+            
+            # 如果indicators未提供，使用空字典
+            if indicators is None:
+                indicators = {}
+            
+            # 2. 确定策略级别（基于胜率和ML信心值）
+            # 🚨 v3.9.2.8.1: 策略调整 - 确保不会超过-35%仍建议hold
+            if self.actual_win_rate > 0.55 and ml_confidence > 0.7:
+                strategy_level = 'aggressive_hold'
+                hold_threshold = min(-12.0, -15.0)  # 最多容忍-12%
+                adjust_threshold = min(-22.0, -25.0)  # 最多-22%调整
+            elif self.actual_win_rate >= 0.45 and ml_confidence >= 0.5:
+                strategy_level = 'standard'
+                hold_threshold = min(-10.0, -10.0)  # 保持-10%
+                adjust_threshold = min(-18.0, -20.0)  # 最多-18%调整
+            else:
+                strategy_level = 'aggressive_cut'
+                hold_threshold = -5.0  # 保持不变，已经很激进
+                adjust_threshold = -10.0  # 保持不变
+            
+            # 3. 技术指标分析（延缓平仓因素）
+            postpone_levels = 0
+            technical_signals = []
+            
+            # RSI超卖/超买信号
+            rsi = indicators.get('rsi', 50)
+            if direction == "LONG" and rsi < 30:
+                postpone_levels += 1
+                technical_signals.append("RSI超卖(<30)")
+            elif direction == "SHORT" and rsi > 70:
+                postpone_levels += 1
+                technical_signals.append("RSI超买(>70)")
+            
+            # MACD趋势反转信号
+            macd = indicators.get('macd', 0)
+            macd_signal = indicators.get('macd_signal', 0)
+            macd_histogram = indicators.get('macd_histogram', 0)
+            
+            if direction == "LONG":
+                if macd > macd_signal and macd_histogram > 0:
+                    postpone_levels += 1
+                    technical_signals.append("MACD金叉")
+            else:
+                if macd < macd_signal and macd_histogram < 0:
+                    postpone_levels += 1
+                    technical_signals.append("MACD死叉")
+            
+            # 布林带极值信号
+            price_vs_bb = indicators.get('price_vs_bb', 0.5)
+            if direction == "LONG" and price_vs_bb < 0.2:
+                postpone_levels += 1
+                technical_signals.append("价格接近布林下轨")
+            elif direction == "SHORT" and price_vs_bb > 0.8:
+                postpone_levels += 1
+                technical_signals.append("价格接近布林上轨")
+            
+            # 4. 应用技术指标调整（每个延缓因素放宽5%容忍度）
+            adjusted_hold_threshold = hold_threshold - (postpone_levels * 5.0)
+            adjusted_adjust_threshold = adjust_threshold - (postpone_levels * 5.0)
+            
+            # 🚨 v3.9.2.8.2: 硬性上限 - hold永远不超过-20%
+            if adjusted_hold_threshold < -20.0:
+                logger.warning(
+                    f"⚠️ hold阈值{adjusted_hold_threshold:.1f}%超过-20%红线，强制收紧到-20%"
+                )
+                adjusted_hold_threshold = -20.0
+            
+            # 🚨 v3.9.2.8.2: adjust永远不超过-28%（留2%空间到-30%红线）
+            if adjusted_adjust_threshold < -28.0:
+                logger.warning(
+                    f"⚠️ adjust阈值{adjusted_adjust_threshold:.1f}%超过-28%红线，强制收紧到-28%"
+                )
+                adjusted_adjust_threshold = -28.0
+            
+            # 5. 确定风险等级
+            if pnl_pct <= -30:
+                risk_level = 'critical'
+            elif pnl_pct <= -20:
+                risk_level = 'high'
+            elif pnl_pct <= -10:
+                risk_level = 'medium'
+            else:
+                risk_level = 'low'
+            
+            # 6. 做出决策
+            if pnl_pct >= adjusted_hold_threshold:
+                action = 'hold_and_monitor'
+                decision_confidence = 0.8 if postpone_levels > 0 else 0.6
+                reason_parts = [
+                    f"亏损{pnl_pct:.1f}%在容忍范围内({adjusted_hold_threshold:.1f}%)",
+                    f"策略:{strategy_level}",
+                    f"胜率{self.actual_win_rate:.1%}",
+                    f"ML信心{ml_confidence:.1%}"
+                ]
+                if technical_signals:
+                    reason_parts.append(f"技术支持: {', '.join(technical_signals)}")
+                reason = " | ".join(reason_parts)
+            
+            elif pnl_pct >= adjusted_adjust_threshold:
+                action = 'adjust_stop_loss'
+                decision_confidence = 0.7 if postpone_levels > 0 else 0.5
+                reason_parts = [
+                    f"亏损{pnl_pct:.1f}%超过持有阈值但未达平仓线",
+                    f"建议收紧止损至{adjusted_adjust_threshold:.1f}%附近",
+                    f"胜率{self.actual_win_rate:.1%}",
+                    f"ML信心{ml_confidence:.1%}"
+                ]
+                if technical_signals:
+                    reason_parts.append(f"技术支持: {', '.join(technical_signals)}")
+                reason = " | ".join(reason_parts)
+            
+            else:
+                action = 'close_immediately'
+                decision_confidence = 0.9
+                reason_parts = [
+                    f"亏损{pnl_pct:.1f}%超过平仓阈值({adjusted_adjust_threshold:.1f}%)",
+                    f"强烈建议立即平仓止损",
+                    f"策略:{strategy_level}",
+                    f"胜率{self.actual_win_rate:.1%}"
+                ]
+                if strategy_level == 'aggressive_cut':
+                    reason_parts.append("⚠️系统处于激进止损模式")
+                reason = " | ".join(reason_parts)
+            
+            result = {
+                'action': action,
+                'confidence': decision_confidence,
+                'reason': reason,
+                'actual_win_rate': self.actual_win_rate,
+                'ml_confidence': ml_confidence,
+                'risk_level': risk_level,
+                'strategy_level': strategy_level,
+                'hold_threshold': adjusted_hold_threshold,
+                'adjust_threshold': adjusted_adjust_threshold,
+                'technical_signals': technical_signals,
+                'postpone_levels': postpone_levels
+            }
+            
+            # 🚨 v3.9.2.8.3: 强制执行pnl_pct与action的一致性（最后防线）
+            # 永远不允许在pnl_pct ≤ -20%时返回hold_and_monitor
+            recommended_action = result['action']
+            if pnl_pct <= -20.0 and recommended_action == 'hold_and_monitor':
+                logger.critical(
+                    f"🚨 检测到风险：pnl_pct={pnl_pct:.2f}%已达-20%红线，"
+                    f"但ML建议hold（可能由于postponement累加），强制改为adjust"
+                )
+                result['action'] = 'adjust_stop_loss'
+                result['reason'] = f"强制收紧：亏损{pnl_pct:.1f}%已达-20%红线（覆盖ML的hold建议）"
+                result['confidence'] = 1.0
+                result['risk_level'] = 'critical'
+            
+            # 永远不允许在pnl_pct ≤ -28%时返回hold_and_monitor或adjust
+            if pnl_pct <= -28.0 and result['action'] != 'close_immediately':
+                logger.critical(
+                    f"🚨 检测到危险：pnl_pct={pnl_pct:.2f}%已达-28%红线，"
+                    f"但建议{result['action']}，强制平仓"
+                )
+                result['action'] = 'close_immediately'
+                result['reason'] = f"强制平仓：亏损{pnl_pct:.1f}%已达-28%危险阈值（覆盖所有其他建议）"
+                result['confidence'] = 1.0
+                result['risk_level'] = 'critical'
+            
+            # 🚨 v3.9.2.8.3: 安全断言（开发验证用）
+            assert not (pnl_pct <= -20.0 and result['action'] == 'hold_and_monitor'), \
+                f"Safety violation: pnl={pnl_pct:.2f}% but action=hold_and_monitor"
+            assert not (pnl_pct <= -28.0 and result['action'] != 'close_immediately'), \
+                f"Safety violation: pnl={pnl_pct:.2f}% but action={result['action']}"
+            
+            logger.info(
+                f"🎯 智能平仓决策 {symbol} {direction}: "
+                f"动作={result['action']} | 风险={result['risk_level']} | "
+                f"亏损={pnl_pct:.1f}% | 胜率={self.actual_win_rate:.1%} | "
+                f"ML信心={ml_confidence:.1%} | 策略={strategy_level}"
+            )
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"评估亏损持仓失败: {e}", exc_info=True)
+            return {
+                'action': 'close_immediately',
+                'confidence': 0.5,
+                'reason': f"评估失败，建议保守止损: {str(e)}",
+                'actual_win_rate': self.actual_win_rate,
+                'ml_confidence': ml_confidence,
+                'risk_level': 'high'
+            }
+    
     async def predict_rebound(
         self,
         symbol: str,
@@ -298,19 +581,19 @@ class MLPredictor:
                 'reason': str  # 判斷原因
             }
         """
+        # 默認返回值（保守策略：建議平倉）
+        default_result = {
+            'rebound_probability': 0.0,
+            'should_wait': False,
+            'recommended_action': 'close_immediately',
+            'confidence': 0.5,
+            'reason': 'ML模型未就緒或數據不足',
+            'actual_win_rate': self.actual_win_rate  # 🎯 v3.9.2.7新增
+        }
+        
         try:
             # 🎯 v3.9.2.7: 更新实际胜率
             self._update_actual_win_rate()
-            
-            # 默認返回值（保守策略：建議平倉）
-            default_result = {
-                'rebound_probability': 0.0,
-                'should_wait': False,
-                'recommended_action': 'close_immediately',
-                'confidence': 0.5,
-                'reason': 'ML模型未就緒或數據不足',
-                'actual_win_rate': self.actual_win_rate  # 🎯 v3.9.2.7新增
-            }
             
             # 如果indicators未提供，嘗試獲取實時數據
             if indicators is None:
@@ -490,6 +773,305 @@ class MLPredictor:
             logger.error(f"預測反彈失敗: {e}", exc_info=True)
             return default_result
     
+    async def evaluate_take_profit_opportunity(
+        self,
+        symbol: str,
+        direction: str,
+        entry_price: float,
+        current_price: float,
+        take_profit_price: float,
+        pnl_pct: float,
+        ml_confidence: float,
+        indicators: Optional[Dict] = None
+    ) -> Dict:
+        """
+        评估止盈机会的智能决策
+        
+        🎯 v3.9.2.8新增：临近止盈时的ML智能决策系统
+        
+        当价格接近止盈目标时（如已达到95%+），ML决定是否：
+        1. 提前平仓获利了结（take_profit_now）
+        2. 继续持有追求更高收益（hold_for_more）
+        3. 部分加仓（scale_in - 非常谨慎）
+        
+        决策逻辑：
+        a) 高胜率(>55%) + 高信心(>0.7) + 强势动量：
+           - tp_proximity < 0.90: hold_for_more
+           - 0.90 <= tp_proximity < 0.98: 检查动量
+           - tp_proximity >= 0.98: hold_for_more（除非反转）
+           - tp_proximity >= 1.05: 考虑scale_in
+        
+        b) 中等胜率(45-55%) + 中等信心(0.5-0.7)：
+           - tp_proximity < 0.85: hold_for_more
+           - 0.85 <= tp_proximity < 0.95: hold_for_more（监控）
+           - tp_proximity >= 0.95: take_profit_now
+        
+        c) 低胜率(<45%) + 低信心(<0.5)：
+           - tp_proximity < 0.80: hold_for_more
+           - tp_proximity >= 0.80: take_profit_now
+        
+        Args:
+            symbol: 交易对
+            direction: 方向（LONG/SHORT）
+            entry_price: 入场价格
+            current_price: 当前价格
+            take_profit_price: 止盈目标价格
+            pnl_pct: 当前盈利百分比
+            ml_confidence: 开仓时的ML信心值
+            indicators: 当前技术指标
+        
+        Returns:
+            Dict: {
+                'action': 'take_profit_now' | 'hold_for_more' | 'scale_in',
+                'confidence': float,  # 决策信心度0-1
+                'reason': str,  # 决策原因
+                'tp_proximity_pct': float,  # 距离止盈目标的百分比
+                'actual_win_rate': float,  # 当前系统胜率
+                'ml_confidence': float,  # ML信心值
+                'momentum_signals': List[str]  # 动量信号列表
+            }
+        """
+        # 初始化变量（防止异常时未定义）
+        tp_proximity = 0.0
+        
+        try:
+            # 1. 更新实际胜率
+            self._update_actual_win_rate()
+            
+            # 如果indicators未提供，使用空字典
+            if indicators is None:
+                indicators = {}
+            
+            # 2. 计算距离止盈目标的百分比
+            # tp_proximity = (current_price - entry_price) / (take_profit_price - entry_price)
+            if direction == "LONG":
+                price_movement = current_price - entry_price
+                target_movement = take_profit_price - entry_price
+            else:  # SHORT
+                price_movement = entry_price - current_price
+                target_movement = entry_price - take_profit_price
+            
+            if target_movement != 0:
+                tp_proximity = price_movement / target_movement
+            else:
+                # 防御性编程：如果止盈目标等于入场价格
+                tp_proximity = 0.0
+            
+            # 3. 分析动量信号
+            momentum_signals = []
+            strong_momentum_count = 0  # 强势信号计数
+            weak_momentum_count = 0  # 转弱信号计数
+            
+            # 3.1 RSI分析
+            rsi = indicators.get('rsi', 50)
+            if direction == "LONG":
+                if rsi > 70:
+                    # 可能过热，但如果还在上升则仍强势
+                    rsi_prev = indicators.get('rsi_prev', rsi)
+                    if rsi > rsi_prev:
+                        momentum_signals.append("RSI强势(>70且上升)")
+                        strong_momentum_count += 1
+                    else:
+                        momentum_signals.append("⚠️RSI过热(>70且下降)")
+                        weak_momentum_count += 1
+                elif rsi > 60:
+                    momentum_signals.append("RSI健康(60-70)")
+                    strong_momentum_count += 0.5
+                elif rsi < 40:
+                    momentum_signals.append("⚠️RSI转弱(<40)")
+                    weak_momentum_count += 1
+            else:  # SHORT
+                if rsi < 30:
+                    rsi_prev = indicators.get('rsi_prev', rsi)
+                    if rsi < rsi_prev:
+                        momentum_signals.append("RSI强势(<30且下降)")
+                        strong_momentum_count += 1
+                    else:
+                        momentum_signals.append("⚠️RSI过热(<30且上升)")
+                        weak_momentum_count += 1
+                elif rsi < 40:
+                    momentum_signals.append("RSI健康(30-40)")
+                    strong_momentum_count += 0.5
+                elif rsi > 60:
+                    momentum_signals.append("⚠️RSI转弱(>60)")
+                    weak_momentum_count += 1
+            
+            # 3.2 MACD分析
+            macd = indicators.get('macd', 0)
+            macd_signal = indicators.get('macd_signal', 0)
+            macd_histogram = indicators.get('macd_histogram', 0)
+            macd_histogram_prev = indicators.get('macd_histogram_prev', macd_histogram)
+            
+            if direction == "LONG":
+                if macd > macd_signal and macd_histogram > 0:
+                    if macd_histogram > macd_histogram_prev:
+                        momentum_signals.append("MACD强势(金叉且柱扩大)")
+                        strong_momentum_count += 1
+                    else:
+                        momentum_signals.append("MACD金叉但柱收缩")
+                        strong_momentum_count += 0.5
+                elif macd < macd_signal:
+                    momentum_signals.append("⚠️MACD死叉")
+                    weak_momentum_count += 1
+            else:  # SHORT
+                if macd < macd_signal and macd_histogram < 0:
+                    if abs(macd_histogram) > abs(macd_histogram_prev):
+                        momentum_signals.append("MACD强势(死叉且柱扩大)")
+                        strong_momentum_count += 1
+                    else:
+                        momentum_signals.append("MACD死叉但柱收缩")
+                        strong_momentum_count += 0.5
+                elif macd > macd_signal:
+                    momentum_signals.append("⚠️MACD金叉")
+                    weak_momentum_count += 1
+            
+            # 3.3 价格vs EMA50分析（过热检测）
+            price_vs_ema50 = indicators.get('price_vs_ema50', 0)
+            if direction == "LONG":
+                if price_vs_ema50 > 0.05:  # 价格超过EMA50 5%以上
+                    momentum_signals.append("⚠️价格远离EMA50(可能过热)")
+                    weak_momentum_count += 0.5
+                elif price_vs_ema50 > 0.02:
+                    momentum_signals.append("价格略高于EMA50(健康)")
+                    strong_momentum_count += 0.3
+            else:  # SHORT
+                if price_vs_ema50 < -0.05:
+                    momentum_signals.append("⚠️价格远离EMA50(可能过热)")
+                    weak_momentum_count += 0.5
+                elif price_vs_ema50 < -0.02:
+                    momentum_signals.append("价格略低于EMA50(健康)")
+                    strong_momentum_count += 0.3
+            
+            # 3.4 布林带分析（极值检测）
+            price_vs_bb = indicators.get('price_vs_bb', 0.5)
+            if direction == "LONG":
+                if price_vs_bb > 0.9:  # 触及上轨
+                    momentum_signals.append("⚠️触及布林上轨(可能反转)")
+                    weak_momentum_count += 1
+                elif price_vs_bb > 0.7:
+                    momentum_signals.append("接近布林上轨")
+                    strong_momentum_count += 0.3
+                elif 0.4 <= price_vs_bb <= 0.6:
+                    momentum_signals.append("布林中轨附近(健康)")
+                    strong_momentum_count += 0.5
+            else:  # SHORT
+                if price_vs_bb < 0.1:
+                    momentum_signals.append("⚠️触及布林下轨(可能反转)")
+                    weak_momentum_count += 1
+                elif price_vs_bb < 0.3:
+                    momentum_signals.append("接近布林下轨")
+                    strong_momentum_count += 0.3
+                elif 0.4 <= price_vs_bb <= 0.6:
+                    momentum_signals.append("布林中轨附近(健康)")
+                    strong_momentum_count += 0.5
+            
+            # 4. 确定策略级别（基于胜率和ML信心值）
+            if self.actual_win_rate > 0.55 and ml_confidence > 0.7:
+                strategy_level = 'aggressive_hold'
+                # 高胜率高信心策略
+                if tp_proximity < 0.90:
+                    base_action = 'hold_for_more'
+                    base_confidence = 0.8
+                    base_reason = f"止盈进度{tp_proximity:.1%}(<90%)，继续持有"
+                elif tp_proximity < 0.98:
+                    # 检查动量
+                    if strong_momentum_count > weak_momentum_count:
+                        base_action = 'hold_for_more'
+                        base_confidence = 0.7
+                        base_reason = f"止盈进度{tp_proximity:.1%}(90-98%)且动量强势，继续持有"
+                    else:
+                        base_action = 'take_profit_now'
+                        base_confidence = 0.6
+                        base_reason = f"止盈进度{tp_proximity:.1%}(90-98%)但动量转弱，建议止盈"
+                elif tp_proximity < 1.05:
+                    # 接近或达到止盈目标
+                    if weak_momentum_count > 1:
+                        base_action = 'take_profit_now'
+                        base_confidence = 0.7
+                        base_reason = f"止盈进度{tp_proximity:.1%}且出现反转信号，建议止盈"
+                    else:
+                        base_action = 'hold_for_more'
+                        base_confidence = 0.75
+                        base_reason = f"止盈进度{tp_proximity:.1%}且动量仍强，继续持有"
+                else:
+                    # 🚨 v3.9.2.8.2: 完全移除加仓逻辑，超额止盈直接获利了结
+                    base_action = 'take_profit_now'
+                    base_confidence = 0.8
+                    base_reason = f"超额完成止盈{tp_proximity:.1%}，建议获利了结"
+            
+            elif self.actual_win_rate >= 0.45 and ml_confidence >= 0.5:
+                strategy_level = 'standard'
+                # 中等胜率中等信心策略
+                if tp_proximity < 0.85:
+                    base_action = 'hold_for_more'
+                    base_confidence = 0.7
+                    base_reason = f"止盈进度{tp_proximity:.1%}(<85%)，继续持有"
+                elif tp_proximity < 0.95:
+                    # 监控动量
+                    if weak_momentum_count > 1:
+                        base_action = 'take_profit_now'
+                        base_confidence = 0.65
+                        base_reason = f"止盈进度{tp_proximity:.1%}(85-95%)且动量转弱，建议止盈"
+                    else:
+                        base_action = 'hold_for_more'
+                        base_confidence = 0.6
+                        base_reason = f"止盈进度{tp_proximity:.1%}(85-95%)，继续监控"
+                else:
+                    base_action = 'take_profit_now'
+                    base_confidence = 0.75
+                    base_reason = f"止盈进度{tp_proximity:.1%}(>=95%)，建议获利了结"
+            
+            else:
+                strategy_level = 'conservative'
+                # 低胜率低信心策略
+                if tp_proximity < 0.80:
+                    base_action = 'hold_for_more'
+                    base_confidence = 0.6
+                    base_reason = f"止盈进度{tp_proximity:.1%}(<80%)，还有空间"
+                else:
+                    base_action = 'take_profit_now'
+                    base_confidence = 0.7
+                    base_reason = f"止盈进度{tp_proximity:.1%}(>=80%)，尽快获利了结"
+            
+            # 🚨 v3.9.2.8.2: 完全移除加仓验证逻辑（5.加仓决策已删除）
+            
+            # 5. 构造返回结果（只返回 take_profit_now 或 hold_for_more）
+            result = {
+                'action': base_action,  # 只能是 'take_profit_now' 或 'hold_for_more'
+                'confidence': base_confidence,
+                'reason': base_reason,
+                'tp_proximity_pct': tp_proximity * 100,  # 转换为百分比
+                'actual_win_rate': self.actual_win_rate,
+                'ml_confidence': ml_confidence,
+                'momentum_signals': momentum_signals,
+                'strategy_level': strategy_level,
+                'strong_momentum_count': strong_momentum_count,
+                'weak_momentum_count': weak_momentum_count
+                # 🚨 v3.9.2.8.2: 完全删除 'scale_in_suggestion' 和 'scale_in_disabled' 字段
+            }
+            
+            logger.info(
+                f"🎯 止盈决策 {symbol} {direction}: "
+                f"动作={base_action} | 进度={tp_proximity:.1%} | "
+                f"盈利={pnl_pct:.1f}% | 胜率={self.actual_win_rate:.1%} | "
+                f"ML信心={ml_confidence:.1%} | 策略={strategy_level} | "
+                f"动量=强{strong_momentum_count}/弱{weak_momentum_count}"
+            )
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"评估止盈机会失败: {e}", exc_info=True)
+            return {
+                'action': 'take_profit_now',
+                'confidence': 0.5,
+                'reason': f"评估失败，建议保守止盈: {str(e)}",
+                'tp_proximity_pct': tp_proximity * 100,
+                'actual_win_rate': self.actual_win_rate,
+                'ml_confidence': ml_confidence,
+                'momentum_signals': []
+            }
+    
     def calibrate_confidence(
         self,
         traditional_confidence: float,
@@ -524,10 +1106,21 @@ class MLPredictor:
     def _update_actual_win_rate(self) -> None:
         """
         🎯 v3.9.2.7新增：更新实际历史胜率
+        🎯 v3.9.2.8优化：添加5分钟缓存，避免频繁调用
         
         从trade_recorder获取最新的实际胜率数据，用于智能决策
         """
         try:
+            # 🎯 v3.9.2.8: 检查缓存是否有效
+            now = datetime.now()
+            if self._last_win_rate_update:
+                time_since_update = (now - self._last_win_rate_update).total_seconds()
+                if time_since_update < self._win_rate_cache_duration:
+                    # 缓存仍然有效，无需重新获取
+                    logger.debug(f"使用缓存的胜率: {self.actual_win_rate:.1%} (缓存{time_since_update:.0f}s)")
+                    return
+            
+            # 缓存失效或首次调用，重新获取
             if self.trade_recorder is None:
                 # 如果没有trade_recorder，保持默认胜率50%
                 return
@@ -538,8 +1131,9 @@ class MLPredictor:
             # 更新实际胜率
             if stats['total_trades'] >= 10:  # 至少10笔交易才有统计意义
                 self.actual_win_rate = stats['win_rate']
+                self._last_win_rate_update = now  # 🎯 v3.9.2.8: 更新缓存时间
                 logger.debug(
-                    f"📊 实际胜率更新: {self.actual_win_rate:.1%} "
+                    f"📊 实际胜率已更新: {self.actual_win_rate:.1%} "
                     f"({stats['winning_trades']}/{stats['total_trades']})"
                 )
             else:
