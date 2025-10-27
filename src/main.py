@@ -114,20 +114,20 @@ class TradingBot:
         
         self.trade_recorder = TradeRecorder()
         
-        def on_virtual_position_close(position_data: Dict, close_data: Dict):
-            """虛擬倉位關閉回調：記錄平倉數據到 TradeRecorder 和 DataArchiver"""
+        def on_virtual_position_open(signal: Dict, position: Dict, rank: int):
+            """虛擬倉位開倉回調：記錄開倉數據到 TradeRecorder"""
             try:
                 signal_format = {
-                    'symbol': position_data['symbol'],
-                    'direction': position_data['direction'],
-                    'entry_price': position_data['entry_price'],
-                    'confidence': position_data['confidence'],
-                    'timestamp': datetime.fromisoformat(position_data['entry_timestamp']),
-                    'timeframes': {},
-                    'market_structure': 'neutral',
-                    'order_blocks': 0,
-                    'liquidity_zones': 0,
-                    'indicators': {}
+                    'symbol': signal['symbol'],
+                    'direction': signal['direction'],
+                    'entry_price': signal['entry_price'],
+                    'confidence': signal['confidence'],
+                    'timestamp': datetime.fromisoformat(position['entry_timestamp']),
+                    'timeframes': position.get('timeframes', {}),
+                    'market_structure': position.get('market_structure', 'neutral'),
+                    'order_blocks': position.get('order_blocks', 0),
+                    'liquidity_zones': position.get('liquidity_zones', 0),
+                    'indicators': position.get('indicators', {})
                 }
                 
                 position_info = {
@@ -136,14 +136,21 @@ class TradingBot:
                 }
                 
                 self.trade_recorder.record_entry(signal_format, position_info)
+                logger.debug(f"📝 已記錄虛擬倉位開倉: {signal['symbol']}")
                 
+            except Exception as e:
+                logger.error(f"虛擬倉位開倉回調失敗: {e}", exc_info=True)
+        
+        def on_virtual_position_close(position_data: Dict, close_data: Dict):
+            """虛擬倉位關閉回調：記錄平倉數據到 TradeRecorder 和 DataArchiver"""
+            try:
                 trade_result = {
                     'symbol': close_data['symbol'],
                     'exit_price': close_data['exit_price'],
                     'pnl': close_data['pnl'],
                     'pnl_pct': close_data['pnl_pct'],
                     'close_reason': close_data['close_reason'],
-                    'close_timestamp': close_data['timestamp'],
+                    'close_timestamp': close_data['close_timestamp'],
                 }
                 
                 ml_record = self.trade_recorder.record_exit(trade_result)
@@ -159,7 +166,10 @@ class TradingBot:
             except Exception as e:
                 logger.error(f"虛擬倉位關閉回調失敗: {e}", exc_info=True)
         
-        self.virtual_position_manager = VirtualPositionManager(on_close_callback=on_virtual_position_close)
+        self.virtual_position_manager = VirtualPositionManager(
+            on_open_callback=on_virtual_position_open,
+            on_close_callback=on_virtual_position_close
+        )
         
         # 初始化交易服務（傳入trade_recorder）
         self.trading_service = TradingService(

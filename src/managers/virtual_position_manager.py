@@ -17,16 +17,18 @@ logger = logging.getLogger(__name__)
 class VirtualPositionManager:
     """虛擬倉位管理器"""
     
-    def __init__(self, on_close_callback=None):
+    def __init__(self, on_open_callback=None, on_close_callback=None):
         """
         初始化虛擬倉位管理器
         
         Args:
+            on_open_callback: 虛擬倉位開倉時的回調函數 (signal, rank) -> None
             on_close_callback: 虛擬倉位關閉時的回調函數 (position_data, close_data) -> None
         """
         self.config = Config
         self.virtual_positions: Dict[str, Dict] = {}
         self.positions_file = self.config.VIRTUAL_POSITIONS_FILE
+        self.on_open_callback = on_open_callback
         self.on_close_callback = on_close_callback
         self._load_positions()
     
@@ -43,6 +45,12 @@ class VirtualPositionManager:
         
         symbol = signal['symbol']
         
+        if symbol in self.virtual_positions and self.virtual_positions[symbol]['status'] == 'active':
+            logger.warning(
+                f"⚠️  {symbol} 已存在活躍虛擬倉位，先關閉舊倉位"
+            )
+            self._close_virtual_position(symbol, "replaced_by_new_signal")
+        
         position = {
             'symbol': symbol,
             'direction': signal['direction'],
@@ -54,9 +62,15 @@ class VirtualPositionManager:
             'entry_timestamp': datetime.now().isoformat(),
             'expiry': (datetime.now() + timedelta(hours=self.config.VIRTUAL_POSITION_EXPIRY)).isoformat(),
             'status': 'active',
+            'current_price': signal['entry_price'],
             'current_pnl': 0.0,
             'max_pnl': 0.0,
-            'min_pnl': 0.0
+            'min_pnl': 0.0,
+            'timeframes': signal.get('timeframes', {}),
+            'market_structure': signal.get('market_structure', 'neutral'),
+            'order_blocks': signal.get('order_blocks', 0),
+            'liquidity_zones': signal.get('liquidity_zones', 0),
+            'indicators': signal.get('indicators', {}),
         }
         
         self.virtual_positions[symbol] = position
@@ -66,6 +80,13 @@ class VirtualPositionManager:
             f"➕ 添加虛擬倉位: {symbol} {signal['direction']} "
             f"Rank {rank} 信心度 {signal['confidence']:.2%}"
         )
+        
+        if self.on_open_callback:
+            try:
+                self.on_open_callback(signal, position, rank)
+                logger.debug(f"📝 已記錄虛擬倉位開倉: {symbol}")
+            except Exception as e:
+                logger.error(f"虛擬倉位開倉回調失敗: {e}", exc_info=True)
     
     def update_virtual_positions(self, market_data: Dict[str, float]):
         """
@@ -91,6 +112,8 @@ class VirtualPositionManager:
             
             entry_price = position['entry_price']
             direction = position['direction']
+            
+            position['current_price'] = current_price
             
             if direction == "LONG":
                 pnl_pct = (current_price - entry_price) / entry_price
@@ -167,14 +190,17 @@ class VirtualPositionManager:
         
         if self.on_close_callback:
             try:
+                current_price = position.get('current_price', position['entry_price'])
+                
                 close_data = {
                     'symbol': symbol,
-                    'exit_price': position.get('current_price', position['entry_price'] * (1 + final_pnl)),
+                    'close_price': current_price,
+                    'exit_price': current_price,
                     'pnl': final_pnl,
                     'pnl_pct': final_pnl,
                     'close_reason': reason,
                     'timestamp': close_timestamp,
-                    'entry_id': f"virtual_{symbol}_{position['entry_timestamp']}",
+                    'close_timestamp': close_timestamp,
                     'is_virtual': True
                 }
                 
