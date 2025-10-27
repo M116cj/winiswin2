@@ -92,7 +92,7 @@ class TradingService:
         current_leverage: int
     ) -> Optional[Dict]:
         """
-        執行交易信號
+        執行交易信號（v3.9.1 添加賬戶保護檢查）
         
         Args:
             signal: 交易信號
@@ -103,12 +103,22 @@ class TradingService:
             Optional[Dict]: 交易結果
         """
         try:
+            # 🛡️ v3.9.1: 賬戶保護檢查（最高優先級）
+            if not self.risk_manager.check_account_protection(account_balance):
+                logger.error("🔴 賬戶保護觸發，拒絕交易")
+                return None
+            
             symbol = signal['symbol']
             direction = signal['direction']
             entry_price = signal['entry_price']
             stop_loss = signal['stop_loss']
             take_profit = signal['take_profit']
             confidence = signal['confidence']
+            
+            # 🛡️ v3.9.1: 檢查槓桿為0（期望值為負/回撤過大）
+            if current_leverage == 0:
+                logger.warning(f"⚠️  槓桿為0，拒絕交易 {symbol}")
+                return None
             
             position_info = self.risk_manager.calculate_position_size(
                 account_balance=account_balance,
