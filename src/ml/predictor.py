@@ -241,6 +241,199 @@ class MLPredictor:
             logger.error(f"準備特徵失敗: {e}", exc_info=True)
             return None
     
+    async def predict_rebound(
+        self,
+        symbol: str,
+        direction: str,
+        entry_price: float,
+        current_price: float,
+        pnl_pct: float,
+        indicators: Optional[Dict] = None
+    ) -> Dict:
+        """
+        預測市場反彈概率（用於平倉決策）
+        
+        🎯 v3.9.2.5新增：ML輔助持倉監控
+        
+        分析當前虧損倉位是否有可能反彈，幫助決定：
+        - 立即平倉（反彈概率低）
+        - 等待觀察（反彈概率高）
+        - 調整策略（反彈概率中等）
+        
+        Args:
+            symbol: 交易對
+            direction: 方向（LONG/SHORT）
+            entry_price: 入場價格
+            current_price: 當前價格
+            pnl_pct: 當前盈虧百分比
+            indicators: 當前技術指標（可選）
+        
+        Returns:
+            Dict: {
+                'rebound_probability': float,  # 反彈概率 0-1
+                'should_wait': bool,  # 是否應該等待
+                'recommended_action': str,  # 建議操作
+                'confidence': float,  # 預測信心度
+                'reason': str  # 判斷原因
+            }
+        """
+        try:
+            # 默認返回值（保守策略：建議平倉）
+            default_result = {
+                'rebound_probability': 0.0,
+                'should_wait': False,
+                'recommended_action': 'close_immediately',
+                'confidence': 0.5,
+                'reason': 'ML模型未就緒或數據不足'
+            }
+            
+            # 如果indicators未提供，嘗試獲取實時數據
+            if indicators is None:
+                logger.debug(f"未提供技術指標，使用基礎分析預測反彈 {symbol}")
+                indicators = {}
+            
+            # === 1. 基於技術指標的反彈分析 ===
+            rebound_signals = []
+            rebound_score = 0.0
+            
+            # RSI超賣/超買信號
+            rsi = indicators.get('rsi', 50)
+            if direction == "LONG":
+                if rsi < 30:  # 超賣，可能反彈
+                    rebound_signals.append("RSI超賣(<30)")
+                    rebound_score += 0.3
+                elif rsi < 40:
+                    rebound_signals.append("RSI偏低(<40)")
+                    rebound_score += 0.15
+            else:  # SHORT
+                if rsi > 70:  # 超買，可能反彈
+                    rebound_signals.append("RSI超買(>70)")
+                    rebound_score += 0.3
+                elif rsi > 60:
+                    rebound_signals.append("RSI偏高(>60)")
+                    rebound_score += 0.15
+            
+            # MACD趨勢反轉信號
+            macd = indicators.get('macd', 0)
+            macd_signal = indicators.get('macd_signal', 0)
+            macd_histogram = indicators.get('macd_histogram', 0)
+            
+            if direction == "LONG":
+                # LONG: 尋找向上反轉信號
+                if macd > macd_signal and macd_histogram > 0:
+                    rebound_signals.append("MACD金叉")
+                    rebound_score += 0.25
+                elif macd_histogram > 0:  # histogram轉正
+                    rebound_signals.append("MACD柱轉正")
+                    rebound_score += 0.1
+            else:  # SHORT
+                # SHORT: 尋找向下反轉信號
+                if macd < macd_signal and macd_histogram < 0:
+                    rebound_signals.append("MACD死叉")
+                    rebound_score += 0.25
+                elif macd_histogram < 0:  # histogram轉負
+                    rebound_signals.append("MACD柱轉負")
+                    rebound_score += 0.1
+            
+            # 布林帶位置
+            bb_width = indicators.get('bb_width_pct', 0)
+            price_vs_bb = indicators.get('price_vs_bb', 0)  # 相對布林帶位置
+            
+            if direction == "LONG":
+                if price_vs_bb < 0.2:  # 接近下軌
+                    rebound_signals.append("價格接近布林下軌")
+                    rebound_score += 0.2
+            else:  # SHORT
+                if price_vs_bb > 0.8:  # 接近上軌
+                    rebound_signals.append("價格接近布林上軌")
+                    rebound_score += 0.2
+            
+            # === 2. 基於虧損程度的風險評估 ===
+            # 虧損越嚴重，反彈要求越高
+            risk_factor = 1.0
+            if pnl_pct < -40:  # 超過-40%，非常危險
+                risk_factor = 0.5  # 降低反彈判斷的權重
+                rebound_signals.append("⚠️虧損嚴重(< -40%)")
+            elif pnl_pct < -30:
+                risk_factor = 0.7
+                rebound_signals.append("⚠️虧損較大(< -30%)")
+            elif pnl_pct < -20:
+                risk_factor = 0.85
+            
+            # 應用風險因子
+            adjusted_rebound_score = rebound_score * risk_factor
+            
+            # === 3. ML模型預測（如果可用）===
+            ml_boost = 0.0
+            if self.is_ready and self.model is not None:
+                try:
+                    # 構造一個假設的反向信號來預測反彈
+                    reverse_direction = "SHORT" if direction == "LONG" else "LONG"
+                    hypothetical_signal = {
+                        'symbol': symbol,
+                        'direction': reverse_direction,
+                        'entry_price': current_price,
+                        'stop_loss': entry_price if direction == "LONG" else current_price * 1.02,
+                        'take_profit': current_price * 1.02 if direction == "LONG" else entry_price,
+                        'confidence': 0.5,
+                        'indicators': indicators,
+                        'timeframes': {},
+                        'timestamp': datetime.now()
+                    }
+                    
+                    ml_pred = self.predict(hypothetical_signal)
+                    if ml_pred:
+                        ml_rebound_prob = ml_pred.get('win_probability', 0)
+                        if ml_rebound_prob > 0.55:  # ML認為反向交易有>55%勝率
+                            ml_boost = 0.15
+                            rebound_signals.append(f"ML反向信號勝率{ml_rebound_prob:.1%}")
+                        elif ml_rebound_prob > 0.50:
+                            ml_boost = 0.08
+                except Exception as e:
+                    logger.debug(f"ML反彈預測失敗: {e}")
+            
+            # === 4. 綜合判斷 ===
+            final_rebound_prob = min(1.0, adjusted_rebound_score + ml_boost)
+            
+            # 決策閾值
+            WAIT_THRESHOLD = 0.50  # 反彈概率>50%才建議等待
+            ADJUST_THRESHOLD = 0.35  # 反彈概率35-50%建議調整策略
+            
+            if final_rebound_prob >= WAIT_THRESHOLD:
+                recommended_action = 'wait_and_monitor'
+                should_wait = True
+                reason = f"反彈概率高({final_rebound_prob:.1%})，建議等待: {', '.join(rebound_signals)}"
+            elif final_rebound_prob >= ADJUST_THRESHOLD:
+                recommended_action = 'adjust_strategy'
+                should_wait = True
+                reason = f"反彈概率中等({final_rebound_prob:.1%})，建議收緊止損: {', '.join(rebound_signals)}"
+            else:
+                recommended_action = 'close_immediately'
+                should_wait = False
+                reason = f"反彈概率低({final_rebound_prob:.1%})，建議立即平倉"
+            
+            result = {
+                'rebound_probability': final_rebound_prob,
+                'should_wait': should_wait,
+                'recommended_action': recommended_action,
+                'confidence': 0.7 if self.is_ready else 0.5,
+                'reason': reason,
+                'signals': rebound_signals
+            }
+            
+            logger.info(
+                f"🔮 反彈預測 {symbol} {direction}: "
+                f"概率={final_rebound_prob:.1%} | "
+                f"建議={recommended_action} | "
+                f"信號: {', '.join(rebound_signals[:3])}"
+            )
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"預測反彈失敗: {e}", exc_info=True)
+            return default_result
+    
     def calibrate_confidence(
         self,
         traditional_confidence: float,
