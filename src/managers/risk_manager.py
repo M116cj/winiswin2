@@ -67,14 +67,7 @@ class RiskManager:
         
         position_value = position_margin * current_leverage
         
-        risk_per_trade = position_margin
-        max_risk = account_balance * 0.02
-        
-        if risk_per_trade > max_risk:
-            position_margin = max_risk
-            position_value = position_margin * current_leverage
-        
-        # ✅ 智能保證金限制：根據信心度動態調整（移除硬性10%限制）
+        # ✅ 智能保證金限制：根據信心度動態調整（移除硬性2%限制）
         # 信心度越高，允許使用更多保證金
         # 信心度範圍 0.45-1.0 映射到保證金上限 5%-50%
         if confidence_score >= 0.90:
