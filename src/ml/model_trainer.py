@@ -1,6 +1,6 @@
 """
-XGBoost 模型訓練器
-職責：模型訓練、超參數優化、模型評估
+XGBoost 模型訓練器（v3.4.0優化版）
+職責：模型訓練、超參數優化、模型評估、增量學習、模型集成
 """
 
 import numpy as np
@@ -10,37 +10,56 @@ import pickle
 import os
 import logging
 from datetime import datetime
+import time
 
 from src.config import Config
 from src.ml.data_processor import MLDataProcessor
+from src.ml.hyperparameter_tuner import HyperparameterTuner
+from src.ml.adaptive_learner import AdaptiveLearner
+from src.ml.ensemble_model import EnsembleModel
 
 logger = logging.getLogger(__name__)
 
 
 class XGBoostTrainer:
-    """XGBoost 模型訓練器"""
+    """XGBoost 模型訓練器（v3.4.0增強版）"""
     
-    def __init__(self):
-        """初始化訓練器"""
+    def __init__(self, use_tuning: bool = False, use_ensemble: bool = False):
+        """
+        初始化訓練器
+        
+        Args:
+            use_tuning: 是否使用超參數調優
+            use_ensemble: 是否使用模型集成
+        """
         self.config = Config
         self.data_processor = MLDataProcessor()
         self.model = None
         self.model_path = "data/models/xgboost_model.pkl"
         self.metrics_path = "data/models/model_metrics.json"
         
+        # ✨ v3.4.0新增：高級功能
+        self.use_tuning = use_tuning
+        self.use_ensemble = use_ensemble
+        self.tuner = HyperparameterTuner() if use_tuning else None
+        self.adaptive_learner = AdaptiveLearner()
+        self.ensemble = EnsembleModel() if use_ensemble else None
+        
         os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
     
     def train(
         self,
         params: Optional[Dict] = None,
-        use_gpu: bool = True
+        use_gpu: bool = True,
+        incremental: bool = False
     ) -> Tuple[object, Dict]:
         """
-        訓練 XGBoost 模型
+        訓練 XGBoost 模型（v3.4.0增強版）
         
         Args:
             params: 模型參數
             use_gpu: 是否使用 GPU
+            incremental: 是否使用增量學習
         
         Returns:
             Tuple[object, Dict]: (模型, 評估指標)
@@ -51,6 +70,9 @@ class XGBoostTrainer:
                 accuracy_score, precision_score, recall_score,
                 f1_score, roc_auc_score, confusion_matrix
             )
+            
+            # ✨ v3.4.0：開始性能追蹤
+            start_time = time.time()
             
             # 加載數據
             df = self.data_processor.load_training_data()
@@ -70,46 +92,90 @@ class XGBoostTrainer:
             # 分割數據
             X_train, X_test, y_train, y_test = self.data_processor.split_data(X, y)
             
-            # 默認參數
+            # ✨ v3.4.0：超參數調優
             if params is None:
-                params = {
-                    'max_depth': 6,
-                    'learning_rate': 0.1,
-                    'n_estimators': 200,
-                    'objective': 'binary:logistic',
-                    'eval_metric': 'auc',
-                    'subsample': 0.8,
-                    'colsample_bytree': 0.8,
-                    'min_child_weight': 1,
-                    'gamma': 0.1,
-                    'reg_alpha': 0.1,
-                    'reg_lambda': 1.0,
-                    'random_state': 42,
-                    'n_jobs': 32  # 使用 32 核心
-                }
-                
-                # GPU 加速
-                if use_gpu:
-                    try:
-                        params['tree_method'] = 'gpu_hist'
-                        params['predictor'] = 'gpu_predictor'
-                        logger.info("使用 GPU 加速訓練")
-                    except:
-                        logger.warning("GPU 不可用，使用 CPU 訓練")
+                if self.use_tuning and self.tuner:
+                    logger.info("啟動超參數自動調優...")
+                    params, _ = self.tuner.quick_tune(X_train, y_train, use_gpu)
+                else:
+                    # 默認參數
+                    params = {
+                        'max_depth': 6,
+                        'learning_rate': 0.1,
+                        'n_estimators': 200,
+                        'objective': 'binary:logistic',
+                        'eval_metric': 'auc',
+                        'subsample': 0.8,
+                        'colsample_bytree': 0.8,
+                        'min_child_weight': 1,
+                        'gamma': 0.1,
+                        'reg_alpha': 0.1,
+                        'reg_lambda': 1.0,
+                        'random_state': 42,
+                        'n_jobs': 32  # 使用 32 核心
+                    }
+                    
+                    # GPU 加速
+                    if use_gpu:
+                        if self._detect_gpu():
+                            params['tree_method'] = 'gpu_hist'
+                            params['predictor'] = 'gpu_predictor'
+                            logger.info("✅ 使用 GPU 加速訓練")
+                        else:
+                            logger.warning("GPU 不可用，使用 CPU 訓練")
+                            params['tree_method'] = 'hist'
+                    else:
                         params['tree_method'] = 'hist'
             
-            # 訓練模型
+            # ✨ v3.4.0：增量學習支持
             logger.info("開始訓練 XGBoost 模型...")
             logger.info(f"訓練集大小: {X_train.shape}, 測試集大小: {X_test.shape}")
             
             model = xgb.XGBClassifier(**params)
             
-            model.fit(
-                X_train, y_train,
-                eval_set=[(X_train, y_train), (X_test, y_test)],
-                early_stopping_rounds=20,
-                verbose=False
-            )
+            # 增量學習：加載舊模型繼續訓練
+            xgb_model_file = None
+            temp_model_path = 'data/models/temp_xgb_model.json'
+            
+            if incremental and os.path.exists(self.model_path):
+                try:
+                    with open(self.model_path, 'rb') as f:
+                        old_model = pickle.load(f)
+                    
+                    # 保存舊模型為JSON格式（XGBoost增量學習需要）
+                    old_model.save_model(temp_model_path)
+                    xgb_model_file = temp_model_path
+                    
+                    logger.info(f"✅ 增量學習啟用：基於舊模型繼續訓練")
+                except Exception as e:
+                    logger.warning(f"加載舊模型失敗，執行完整訓練: {e}")
+                    xgb_model_file = None
+            
+            # 訓練（增量或完整）- 使用try-finally確保臨時文件清理
+            try:
+                if xgb_model_file:
+                    model.fit(
+                        X_train, y_train,
+                        eval_set=[(X_train, y_train), (X_test, y_test)],
+                        early_stopping_rounds=20,
+                        verbose=False,
+                        xgb_model=xgb_model_file  # ✨ 增量學習關鍵參數
+                    )
+                else:
+                    model.fit(
+                        X_train, y_train,
+                        eval_set=[(X_train, y_train), (X_test, y_test)],
+                        early_stopping_rounds=20,
+                        verbose=False
+                    )
+            finally:
+                # 清理臨時文件（確保即使訓練失敗也會清理）
+                if xgb_model_file and os.path.exists(temp_model_path):
+                    try:
+                        os.remove(temp_model_path)
+                        logger.debug("臨時模型文件已清理")
+                    except:
+                        pass
             
             # 預測
             y_pred = model.predict(X_test)
@@ -146,6 +212,19 @@ class XGBoostTrainer:
             logger.info(f"召回率: {metrics['recall']:.4f}")
             logger.info(f"F1 分數: {metrics['f1_score']:.4f}")
             logger.info(f"ROC-AUC: {metrics['roc_auc']:.4f}")
+            
+            # ✨ v3.4.0：訓練性能追蹤
+            training_time = time.time() - start_time
+            metrics['training_time_seconds'] = training_time
+            metrics['incremental'] = incremental
+            logger.info(f"訓練耗時: {training_time:.2f}秒")
+            
+            # ✨ v3.4.0：自適應學習更新
+            self.adaptive_learner.update_performance(
+                metrics['accuracy'],
+                datetime.now()
+            )
+            
             logger.info("=" * 60)
             
             self.model = model
@@ -236,3 +315,54 @@ class XGBoostTrainer:
         except Exception as e:
             logger.error(f"自動訓練失敗: {e}")
             return False
+    
+    def _detect_gpu(self) -> bool:
+        """
+        檢測GPU是否可用（v3.4.0新增）
+        
+        Returns:
+            bool: GPU是否可用
+        """
+        try:
+            import subprocess
+            subprocess.check_output(['nvidia-smi'])
+            return True
+        except:
+            return False
+    
+    def train_with_ensemble(self, use_gpu: bool = True) -> Tuple[Optional[object], Dict]:
+        """
+        使用模型集成訓練（v3.4.0新增）
+        
+        Args:
+            use_gpu: 是否使用GPU
+        
+        Returns:
+            Tuple[Optional[object], Dict]: (集成模型, 評估指標)
+        """
+        if not self.use_ensemble or not self.ensemble:
+            logger.warning("模型集成未啟用")
+            return None, {}
+        
+        try:
+            # 加載數據
+            df = self.data_processor.load_training_data()
+            X, y = self.data_processor.prepare_features(df)
+            X_train, X_test, y_train, y_test = self.data_processor.split_data(X, y)
+            
+            # 訓練集成模型
+            models, metrics = self.ensemble.train_ensemble(
+                X_train, y_train,
+                X_test, y_test,
+                use_gpu=use_gpu
+            )
+            
+            # 保存集成模型
+            if models:
+                self.ensemble.save()
+            
+            return self.ensemble, metrics
+            
+        except Exception as e:
+            logger.error(f"集成模型訓練失敗: {e}", exc_info=True)
+            return None, {}
