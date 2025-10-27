@@ -4,7 +4,7 @@
 
 24/7 高频自动化交易系统，用于 Binance USDT 永续合约，采用 ICT/SMC 策略结合 XGBoost 机器学习增强。
 
-**当前版本：v3.9.2.8.3 (2025-10-27) - 🧠 智能ML决策系统 + 极限安全防护**
+**当前版本：v3.9.2.8.4 (2025-10-27) - 🛡️ 分级熔断器系统 + Bypass机制**
 
 ## 🎯 核心功能
 
@@ -139,6 +139,104 @@ src/
 - 完整的 ML 管道集成
 
 ## 📝 最近更新
+
+### 2025-10-27 (v3.9.2.8.4) - 🛡️ 分级熔断器系统 + Bypass机制
+
+**重大升级**：实现分级熔断器，保护API的同时确保关键操作可bypass
+
+#### 核心新功能
+
+**1. 三级熔断系统（GradedCircuitBreaker）**
+- **WARNING级（1-2次失败）**：记录警告，全部通过
+- **THROTTLED级（3-4次失败）**：增加2秒延迟，HIGH/CRITICAL优先级可bypass
+- **BLOCKED级（5+次失败）**：完全阻断，仅CRITICAL+白名单可bypass
+
+**2. 优先级系统**
+- **CRITICAL**：平仓、紧急止损、查询持仓（可bypass所有级别）
+- **HIGH**：下单、设置止损止盈（可bypass限流级）
+- **NORMAL**：数据查询、市场信息
+- **LOW**：可选操作（统计、扫描）
+
+**3. Bypass白名单（关键操作保护）**
+```python
+close_position        # 平仓
+emergency_stop_loss   # 紧急止损
+adjust_stop_loss      # 调整止损
+adjust_take_profit    # 调整止盈
+get_positions         # 查询持仓
+cancel_order          # 取消订单
+```
+
+**4. 临时Bypass机制**
+- 允许手动启用临时bypass（如系统维护）
+- 有时间限制（可配置）
+- 自动过期管理
+
+**5. 审计日志**
+- 专用bypass日志记录器
+- 记录所有bypass使用（优先级、操作类型、原因）
+- 级别变化历史追踪
+- 统计信息（bypass率、限流次数、阻断次数）
+
+**6. 向后兼容**
+- 通过`GRADED_CIRCUIT_BREAKER_ENABLED`配置开关
+- 可回退到旧版CircuitBreaker
+- 运行时动态检测熔断器类型
+
+#### 集成点
+
+- **BinanceClient**：根据配置选择GradedCircuitBreaker或CircuitBreaker
+- **TradingService.execute_signal**：Priority.HIGH（下单）
+- **TradingService._emergency_close_position**：Priority.CRITICAL（平仓）
+- **TradingService._set_stop_loss_take_profit_parallel**：Priority.HIGH（保护订单）
+
+#### 配置参数（Config）
+
+```python
+GRADED_CIRCUIT_BREAKER_ENABLED = True      # 启用分级熔断
+CIRCUIT_BREAKER_WARNING_THRESHOLD = 2      # 警告级
+CIRCUIT_BREAKER_THROTTLED_THRESHOLD = 4    # 限流级
+CIRCUIT_BREAKER_BLOCKED_THRESHOLD = 5      # 阻断级
+CIRCUIT_BREAKER_THROTTLE_DELAY = 2.0       # 限流延迟（秒）
+CIRCUIT_BREAKER_BYPASS_OPERATIONS = [...]  # 白名单
+```
+
+#### 安全保障
+
+1. **关键操作永不阻断**：平仓、止损等操作即使在BLOCKED级也能执行
+2. **智能延迟**：限流级仅延迟，不阻断
+3. **自动恢复**：成功调用后逐渐降低失败计数
+4. **超时重置**：60秒后自动从BLOCKED/THROTTLED恢复到NORMAL
+5. **完整审计**：所有bypass行为都有日志记录
+
+#### 预期行为
+
+```
+正常情况：
+  失败0次 → NORMAL级 → 全部通过
+
+轻微故障：
+  失败2次 → WARNING级 → 记录警告，全部通过
+
+中度故障：
+  失败4次 → THROTTLED级 → 
+    - HIGH/CRITICAL优先级 → bypass（记录日志）
+    - LOW/NORMAL → 延迟2秒通过
+
+严重故障：
+  失败5+次 → BLOCKED级 →
+    - CRITICAL + 白名单 → bypass（记录日志）
+    - 其他 → 拒绝（返回retry_after时间）
+```
+
+**文件修改**：
+- `src/core/circuit_breaker.py`：新增GradedCircuitBreaker类、Priority枚举
+- `src/config.py`：新增分级熔断器配置
+- `src/clients/binance_client.py`：集成GradedCircuitBreaker
+- `src/services/trading_service.py`：添加Priority参数到关键操作
+- `src/main.py`：版本更新到v3.9.2.8.4
+
+---
 
 ### 2025-10-27 (v3.9.2.8.3) - 🧠 智能ML决策系统 + 极限安全防护
 
