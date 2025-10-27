@@ -190,16 +190,32 @@ class TradingService:
                 )
                 quantity = actual_quantity
             
-            # ✨ 優化：並行設置止損止盈（使用實際成交數量）
+            # ✨ 強化：同步設置止損止盈（建倉後立即設置，5次重試+訂單驗證）
             try:
-                await self._set_stop_loss_take_profit_parallel(
-                    symbol, direction, quantity, stop_loss, take_profit
+                sl_order_id, tp_order_id = await self._set_stop_loss_take_profit_parallel(
+                    symbol, direction, quantity, stop_loss, take_profit, max_retries=5
                 )
+                
+                # ✅ 驗證止損止盈訂單確實存在
+                logger.info(f"🔍 驗證止損止盈訂單...")
+                sl_verified = await self._verify_order_exists(symbol, sl_order_id)
+                tp_verified = await self._verify_order_exists(symbol, tp_order_id)
+                
+                if not sl_verified or not tp_verified:
+                    raise Exception(
+                        f"止損止盈訂單驗證失敗: "
+                        f"SL={'存在' if sl_verified else '不存在'}, "
+                        f"TP={'存在' if tp_verified else '不存在'}"
+                    )
+                
+                logger.info(f"✅ 止損止盈訂單已驗證: {symbol} (SL:{sl_order_id}, TP:{tp_order_id})")
+                
             except Exception as e:
-                logger.error(f"❌ 止損止盈設置失敗: {e}")
-                logger.error(f"⚠️ 嘗試平倉以避免無保護持倉...")
+                logger.error(f"❌ 止損止盈設置/驗證失敗: {e}")
+                logger.critical(f"🚨 建倉成功但無保護，必須立即平倉！{symbol}")
+                
+                # 🔴 強制平倉：避免無保護持倉
                 try:
-                    # 使用_place_market_order來處理positionSide（支持單向和對衝模式）
                     close_order = await self._place_market_order(
                         symbol=symbol,
                         side="SELL" if direction == "LONG" else "BUY",
@@ -207,13 +223,12 @@ class TradingService:
                         direction=direction
                     )
                     if close_order:
-                        logger.warning(f"✅ 已平倉無保護持倉: {symbol}")
+                        logger.warning(f"✅ 已緊急平倉無保護持倉: {symbol}")
                     else:
-                        logger.error(f"❌ 平倉失敗: 訂單返回空結果")
-                        logger.critical(f"🚨 警告：{symbol} 持倉無止損止盈保護！請手動處理！")
+                        logger.critical(f"🚨🚨 致命錯誤：{symbol} 平倉失敗！請立即手動處理！")
                 except Exception as close_error:
-                    logger.error(f"❌ 平倉失敗: {close_error}")
-                    logger.critical(f"🚨 警告：{symbol} 持倉無止損止盈保護！請手動處理！")
+                    logger.critical(f"🚨🚨 致命錯誤：{symbol} 平倉異常 {close_error}！請立即手動處理！")
+                
                 return None
             
             trade_result = {
@@ -754,15 +769,16 @@ class TradingService:
         quantity: float,
         stop_loss: float,
         take_profit: float,
-        max_retries: int = 3
-    ):
+        max_retries: int = 5
+    ) -> Tuple[int, int]:
         """
-        並行設置止損止盈（v3.5.0優化）
+        並行設置止損止盈（v3.6.0強化：5次重試+訂單ID返回）
         
         優化點：
         1. 並行執行止損和止盈訂單（2倍速度提升）
-        2. 失敗自動重試機制（max_retries次）
+        2. 失敗自動重試機制（默認5次重試）
         3. 部分成功處理（一個成功一個失敗的情況）
+        4. 返回訂單ID用於驗證
         
         Args:
             symbol: 交易對
@@ -770,7 +786,10 @@ class TradingService:
             quantity: 數量
             stop_loss: 止損價格
             take_profit: 止盈價格
-            max_retries: 最大重試次數
+            max_retries: 最大重試次數（默認5次）
+        
+        Returns:
+            Tuple[int, int]: (止損訂單ID, 止盈訂單ID)
         
         Raises:
             Exception: 如果止損止盈設置失敗
@@ -792,8 +811,10 @@ class TradingService:
                 tp_success = not isinstance(tp_result, Exception) and tp_result is not None
                 
                 if sl_success and tp_success:
-                    logger.info(f"✅ 止損止盈並行設置成功: {symbol}")
-                    return
+                    sl_order_id = sl_result.get('orderId')
+                    tp_order_id = tp_result.get('orderId')
+                    logger.info(f"✅ 止損止盈並行設置成功: {symbol} (SL:{sl_order_id}, TP:{tp_order_id})")
+                    return (sl_order_id, tp_order_id)
                 
                 # 部分失敗處理
                 if sl_success and not tp_success:
@@ -802,8 +823,10 @@ class TradingService:
                         logger.info(f"🔄 重試止盈設置...")
                         tp_retry = await self._set_take_profit(symbol, direction, quantity, take_profit)
                         if tp_retry:
+                            sl_order_id = sl_result.get('orderId')
+                            tp_order_id = tp_retry.get('orderId')
                             logger.info(f"✅ 止盈重試成功: {symbol}")
-                            return
+                            return (sl_order_id, tp_order_id)
                     else:
                         raise Exception(f"止盈設置失敗（已重試{max_retries}次）: {tp_result}")
                 
@@ -813,8 +836,10 @@ class TradingService:
                         logger.info(f"🔄 重試止損設置...")
                         sl_retry = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
                         if sl_retry:
+                            sl_order_id = sl_retry.get('orderId')
+                            tp_order_id = tp_result.get('orderId')
                             logger.info(f"✅ 止損重試成功: {symbol}")
-                            return
+                            return (sl_order_id, tp_order_id)
                     else:
                         raise Exception(f"止損設置失敗（已重試{max_retries}次）: {sl_result}")
                 
@@ -841,6 +866,44 @@ class TradingService:
                     raise Exception(f"止損止盈設置異常（已重試{max_retries}次）: {e}")
         
         raise Exception(f"止損止盈設置失敗（已用完{max_retries}次重試）")
+    
+    async def _verify_order_exists(
+        self,
+        symbol: str,
+        order_id: int,
+        max_retries: int = 3
+    ) -> bool:
+        """
+        驗證訂單是否存在（v3.6.0新增）
+        
+        Args:
+            symbol: 交易對
+            order_id: 訂單ID
+            max_retries: 最大重試次數
+        
+        Returns:
+            bool: 訂單是否存在
+        """
+        for attempt in range(max_retries):
+            try:
+                order = await self.client.get_order(symbol, order_id)
+                if order and order.get('orderId') == order_id:
+                    status = order.get('status', 'UNKNOWN')
+                    logger.debug(f"✅ 訂單驗證成功: {symbol} 訂單ID {order_id} 狀態 {status}")
+                    return True
+                else:
+                    logger.warning(f"⚠️  訂單驗證失敗: {symbol} 訂單ID {order_id} 不匹配")
+                    return False
+            except Exception as e:
+                logger.warning(f"⚠️  訂單驗證異常 (第{attempt+1}次嘗試): {e}")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(0.5)
+                    continue
+                else:
+                    logger.error(f"❌ 訂單驗證失敗（已重試{max_retries}次）: {symbol} 訂單ID {order_id}")
+                    return False
+        
+        return False
     
     async def _confirm_order_filled(
         self,
