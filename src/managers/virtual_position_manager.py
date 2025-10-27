@@ -20,6 +20,9 @@ import os
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 import logging
+import asyncio
+import aiofiles
+import threading
 
 from src.config import Config
 from src.core.data_models import VirtualPosition
@@ -28,7 +31,13 @@ logger = logging.getLogger(__name__)
 
 
 class VirtualPositionManager:
-    """虛擬倉位管理器（v3.12.0：纯 __slots__ 可变对象）"""
+    """
+    虛擬倉位管理器（v3.13.0：异步批量更新+并发保护）
+    
+    使用方式：
+    - 同步模式：update_virtual_positions(market_data)
+    - 异步模式：await update_all_prices_async(binance_client)
+    """
     
     def __init__(self, on_open_callback=None, on_close_callback=None):
         """
@@ -44,6 +53,10 @@ class VirtualPositionManager:
         self.positions_file = self.config.VIRTUAL_POSITIONS_FILE
         self.on_open_callback = on_open_callback
         self.on_close_callback = on_close_callback
+        
+        # v3.13.0修复：使用threading.Lock（兼容同步和异步上下文）
+        self._save_lock = threading.Lock()
+        
         self._load_positions()
     
     def add_virtual_position(self, signal: Dict, rank: int):
@@ -70,7 +83,7 @@ class VirtualPositionManager:
         virtual_pos = VirtualPosition.from_signal(signal, rank, expiry)
         
         self.virtual_positions[symbol] = virtual_pos  # 直接存储对象
-        self._save_positions()
+        self._save_positions_sync()  # v3.13.0：明确使用同步保存
         
         logger.info(
             f"➕ 添加虛擬倉位: {symbol} {signal['direction']} "
@@ -87,21 +100,16 @@ class VirtualPositionManager:
     
     def update_virtual_positions(self, market_data: Dict[str, float]):
         """
-        同步更新虛擬倉位（向后兼容，内部调用异步版本）
+        同步更新虛擬倉位（v3.13.0：始终使用同步版本以保持兼容性）
+        
+        异步版本请使用 update_all_prices_async(binance_client)
         
         Args:
             market_data: 市場價格數據 {symbol: price}
         """
-        import asyncio
-        
-        # 如果在异步上下文中，直接调用
-        try:
-            loop = asyncio.get_running_loop()
-            # 在运行的事件循环中，创建task
-            asyncio.create_task(self.update_all_prices_async(market_data))
-        except RuntimeError:
-            # 没有运行的事件循环，使用同步实现
-            self._update_virtual_positions_sync(market_data)
+        # v3.13.0修复：始终使用同步版本，避免异步调度混乱
+        # 异步批量更新应该通过VirtualPositionLoop直接调用update_all_prices_async
+        self._update_virtual_positions_sync(market_data)
     
     def _update_virtual_positions_sync(self, market_data: Dict[str, float]):
         """
@@ -141,7 +149,7 @@ class VirtualPositionManager:
                 closed_positions.append(symbol)
         
         if closed_positions:
-            self._save_positions()
+            self._save_positions_sync()
     
     async def update_all_prices_async(self, binance_client=None) -> List[VirtualPosition]:
         """
@@ -224,7 +232,7 @@ class VirtualPositionManager:
                 logger.error(f"更新倉位 {symbol} 价格时出错: {e}")
         
         if closed_positions:
-            self._save_positions()
+            await self._save_positions_async()
         
         return closed_positions
     
@@ -364,7 +372,16 @@ class VirtualPositionManager:
     
     def _load_positions(self):
         """
-        從文件加載虛擬倉位（v3.12.0：反序列化为 VirtualPosition 对象）
+        同步加载虚拟仓位（v3.13.0：始终使用同步版本）
+        
+        异步初始化请使用 await _load_positions_async()
+        """
+        # v3.13.0修复：构造函数中始终使用同步加载，确保初始化完成
+        self._load_positions_sync()
+    
+    def _load_positions_sync(self):
+        """
+        從文件加載虛擬倉位（同步版本）
         
         ✅ 加载流程：JSON dict → VirtualPosition object
         """
@@ -397,22 +414,107 @@ class VirtualPositionManager:
         else:
             self.virtual_positions = {}
     
+    async def _load_positions_async(self):
+        """
+        從文件加載虛擬倉位（v3.13.0异步版本）
+        
+        ✅ 加载流程：JSON dict → VirtualPosition object
+        """
+        if not os.path.exists(self.positions_file):
+            self.virtual_positions = {}
+            return
+        
+        try:
+            async with aiofiles.open(self.positions_file, 'r', encoding='utf-8') as f:
+                content = await f.read()
+                positions_dict = json.loads(content)
+            
+            # ✅ 将字典转换为 VirtualPosition 对象
+            self.virtual_positions = {}
+            for symbol, pos_data in positions_dict.items():
+                # 展平 timeframes 和 indicators（如果存在）
+                if 'timeframes' in pos_data:
+                    pos_data['h1_trend'] = pos_data['timeframes'].get('h1', 'neutral')
+                    pos_data['m15_trend'] = pos_data['timeframes'].get('m15', 'neutral')
+                    pos_data['m5_trend'] = pos_data['timeframes'].get('m5', 'neutral')
+                
+                if 'indicators' in pos_data:
+                    pos_data['rsi'] = pos_data['indicators'].get('rsi')
+                    pos_data['macd'] = pos_data['indicators'].get('macd')
+                    pos_data['atr'] = pos_data['indicators'].get('atr')
+                
+                # 创建 VirtualPosition 对象
+                self.virtual_positions[symbol] = VirtualPosition(**pos_data)
+            
+            logger.info(f"异步加载 {len(self.virtual_positions)} 個虛擬倉位")
+        except Exception as e:
+            logger.error(f"异步加载虛擬倉位失敗: {e}")
+            self.virtual_positions = {}
+    
     def _save_positions(self):
         """
-        保存虛擬倉位到文件（v3.12.0：序列化 VirtualPosition 对象）
+        同步保存虚拟仓位（v3.13.0：始终使用同步版本）
+        
+        异步保存请使用 await _save_positions_async()
+        """
+        # v3.13.0修复：始终使用同步保存，确保数据持久化完成
+        self._save_positions_sync()
+    
+    def _save_positions_sync(self):
+        """
+        保存虛擬倉位到文件（同步版本+并发保护）
         
         ✅ 保存流程：VirtualPosition object → JSON dict
         """
+        # v3.13.0：使用锁保护并发写入（与异步版本共享）
+        with self._save_lock:
+            try:
+                os.makedirs(os.path.dirname(self.positions_file), exist_ok=True)
+                
+                # ✅ 将 VirtualPosition 对象转换为字典
+                positions_dict = {
+                    symbol: pos.to_dict()
+                    for symbol, pos in self.virtual_positions.items()
+                }
+                
+                with open(self.positions_file, 'w', encoding='utf-8') as f:
+                    json.dump(positions_dict, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                logger.error(f"保存虛擬倉位失敗: {e}")
+    
+    async def _save_positions_async(self):
+        """
+        保存虛擬倉位到文件（v3.13.0异步版本+并发保护）
+        
+        ✅ 保存流程：VirtualPosition object → JSON dict
+        """
+        # v3.13.0修复：异步安全地获取threading锁
+        # 在asyncio中运行阻塞的锁获取，避免阻塞事件循环
+        def _sync_save():
+            with self._save_lock:
+                try:
+                    os.makedirs(os.path.dirname(self.positions_file), exist_ok=True)
+                    
+                    # ✅ 将 VirtualPosition 对象转换为字典
+                    positions_dict = {
+                        symbol: pos.to_dict()
+                        for symbol, pos in self.virtual_positions.items()
+                    }
+                    
+                    return positions_dict
+                except Exception as e:
+                    logger.error(f"准备保存数据失败: {e}")
+                    return {}
+        
+        # 在线程池中执行锁保护的数据准备
+        positions_dict = await asyncio.to_thread(_sync_save)
+        
+        if not positions_dict:
+            return
+        
+        # 异步写入文件（无需锁，因为数据已准备好）
         try:
-            os.makedirs(os.path.dirname(self.positions_file), exist_ok=True)
-            
-            # ✅ v3.12.0：将 VirtualPosition 对象转换为字典
-            positions_dict = {
-                symbol: pos.to_dict()
-                for symbol, pos in self.virtual_positions.items()
-            }
-            
-            with open(self.positions_file, 'w', encoding='utf-8') as f:
-                json.dump(positions_dict, f, ensure_ascii=False, indent=2)
+            async with aiofiles.open(self.positions_file, 'w', encoding='utf-8') as f:
+                await f.write(json.dumps(positions_dict, ensure_ascii=False, indent=2))
         except Exception as e:
-            logger.error(f"保存虛擬倉位失敗: {e}")
+            logger.error(f"异步写入文件失敗: {e}")
