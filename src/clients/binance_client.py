@@ -13,7 +13,7 @@ import logging
 
 from src.config import Config
 from src.core.rate_limiter import RateLimiter
-from src.core.circuit_breaker import CircuitBreaker
+from src.core.circuit_breaker import CircuitBreaker, GradedCircuitBreaker, Priority
 from src.core.cache_manager import CacheManager
 from src.clients.binance_errors import BinanceRequestError
 
@@ -35,10 +35,24 @@ class BinanceClient:
             max_requests=Config.RATE_LIMIT_REQUESTS,
             time_window=Config.RATE_LIMIT_PERIOD
         )
-        self.circuit_breaker = CircuitBreaker(
-            failure_threshold=Config.CIRCUIT_BREAKER_THRESHOLD,
-            timeout=Config.CIRCUIT_BREAKER_TIMEOUT
-        )
+        
+        if Config.GRADED_CIRCUIT_BREAKER_ENABLED:
+            self.circuit_breaker = GradedCircuitBreaker(
+                warning_threshold=Config.CIRCUIT_BREAKER_WARNING_THRESHOLD,
+                throttled_threshold=Config.CIRCUIT_BREAKER_THROTTLED_THRESHOLD,
+                blocked_threshold=Config.CIRCUIT_BREAKER_BLOCKED_THRESHOLD,
+                timeout=Config.CIRCUIT_BREAKER_TIMEOUT,
+                throttle_delay=Config.CIRCUIT_BREAKER_THROTTLE_DELAY,
+                bypass_whitelist=Config.CIRCUIT_BREAKER_BYPASS_OPERATIONS
+            )
+            logger.info("✅ 使用分級熔斷器 (GradedCircuitBreaker)")
+        else:
+            self.circuit_breaker = CircuitBreaker(
+                failure_threshold=Config.CIRCUIT_BREAKER_THRESHOLD,
+                timeout=Config.CIRCUIT_BREAKER_TIMEOUT
+            )
+            logger.info("✅ 使用傳統熔斷器 (CircuitBreaker)")
+        
         self.cache = CacheManager()
         self.session: Optional[aiohttp.ClientSession] = None
     

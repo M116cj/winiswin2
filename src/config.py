@@ -111,9 +111,26 @@ class Config:
     CACHE_TTL_TICKER: int = 5
     CACHE_TTL_ACCOUNT: int = 10
     
-    # 熔斷器配置
-    CIRCUIT_BREAKER_THRESHOLD: int = 5
+    # 熔斷器配置（v3.9.2.8.4：分級熔斷）
+    CIRCUIT_BREAKER_THRESHOLD: int = 5  # 舊版閾值（向後兼容）
     CIRCUIT_BREAKER_TIMEOUT: int = 60
+    
+    # 分級熔斷器配置（v3.9.2.8.4新增）
+    GRADED_CIRCUIT_BREAKER_ENABLED: bool = True  # 啟用分級熔斷器
+    CIRCUIT_BREAKER_WARNING_THRESHOLD: int = 2   # 警告級閾值
+    CIRCUIT_BREAKER_THROTTLED_THRESHOLD: int = 4  # 限流級閾值
+    CIRCUIT_BREAKER_BLOCKED_THRESHOLD: int = 5   # 阻斷級閾值
+    CIRCUIT_BREAKER_THROTTLE_DELAY: float = 2.0  # 限流延遲（秒）
+    
+    # Bypass白名單（可繞過熔斷的關鍵操作）
+    CIRCUIT_BREAKER_BYPASS_OPERATIONS: list = [
+        "close_position",        # 平倉
+        "emergency_stop_loss",   # 緊急止損
+        "adjust_stop_loss",      # 調整止損
+        "adjust_take_profit",    # 調整止盈
+        "get_positions",         # 查詢持倉
+        "cancel_order"           # 取消訂單
+    ]
     
     # v3.9.2.2新增：訂單執行配置（防止熔斷器觸發導致無保護倉位）
     ORDER_INTER_DELAY: float = 1.5  # 訂單間延遲（秒）- 避免觸發熔斷器

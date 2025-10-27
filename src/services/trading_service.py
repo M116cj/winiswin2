@@ -7,10 +7,12 @@ from typing import Dict, Optional, List, Tuple
 import logging
 from datetime import datetime
 import asyncio
+import inspect
 
 from src.clients.binance_client import BinanceClient
 from src.managers.risk_manager import RiskManager
 from src.config import Config
+from src.core.circuit_breaker import Priority
 
 logger = logging.getLogger(__name__)
 
@@ -103,8 +105,20 @@ class TradingService:
             Optional[Dict]: 交易結果
         """
         try:
-            # 🛡️ v3.9.2.2: 熔斷器狀態檢查（最高優先級）
-            can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+            # 🛡️ v3.9.2.2+v3.9.2.8.4: 熔斷器狀態檢查（支持分級熔斷器）
+            if hasattr(self.client.circuit_breaker, 'can_proceed') and len(inspect.signature(self.client.circuit_breaker.can_proceed).parameters) > 0:
+                # 新版GradedCircuitBreaker
+                can_proceed, block_reason, info = self.client.circuit_breaker.can_proceed(
+                    priority=Priority.HIGH,
+                    operation_type="place_order"
+                )
+                if info.get("delay_seconds", 0) > 0:
+                    logger.info(f"⏱️  限流延遲{info['delay_seconds']}秒")
+                    await asyncio.sleep(info["delay_seconds"])
+            else:
+                # 舊版CircuitBreaker（向後兼容）
+                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+            
             if not can_proceed:
                 logger.warning(f"⚠️  {block_reason}，推遲交易信號")
                 return None
@@ -531,12 +545,25 @@ class TradingService:
         
         for attempt in range(max_attempts):
             try:
-                # 檢查熔斷器狀態
-                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                # 🛡️ v3.9.2.8.4: 檢查熔斷器狀態（CRITICAL優先級 + bypass支持）
+                if hasattr(self.client.circuit_breaker, 'can_proceed') and len(inspect.signature(self.client.circuit_breaker.can_proceed).parameters) > 0:
+                    # 新版GradedCircuitBreaker
+                    can_proceed, block_reason, info = self.client.circuit_breaker.can_proceed(
+                        priority=Priority.CRITICAL,
+                        operation_type="close_position"
+                    )
+                else:
+                    # 舊版CircuitBreaker
+                    can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
                 
                 if not can_proceed:
-                    retry_after = self.client.circuit_breaker.get_retry_after()
-                    wait_time = min(retry_after + 1, max_delay)  # +1秒安全邊際
+                    # 獲取重試時間
+                    if hasattr(self.client.circuit_breaker, 'get_retry_after'):
+                        retry_after = self.client.circuit_breaker.get_retry_after()
+                    else:
+                        retry_after = 0
+                    
+                    wait_time = min(retry_after + 1, max_delay)
                     logger.warning(
                         f"⏱️  熔斷器開啟，等待{wait_time:.0f}秒後重試平倉 "
                         f"(嘗試 {attempt + 1}/{max_attempts})"
@@ -923,8 +950,17 @@ class TradingService:
         
         for attempt in range(max_retries):
             try:
-                # 🛡️ v3.9.2.2: 檢查熔斷器 - 如果開啟立即失敗（不重試）
-                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                # 🛡️ v3.9.2.8.4: 檢查熔斷器（HIGH優先級 - 設置保護訂單）
+                if hasattr(self.client.circuit_breaker, 'can_proceed') and len(inspect.signature(self.client.circuit_breaker.can_proceed).parameters) > 0:
+                    # 新版GradedCircuitBreaker
+                    can_proceed, block_reason, info = self.client.circuit_breaker.can_proceed(
+                        priority=Priority.HIGH,
+                        operation_type="adjust_stop_loss"
+                    )
+                else:
+                    # 舊版CircuitBreaker
+                    can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                
                 if not can_proceed:
                     raise Exception(f"熔斷器開啟，無法設置保護訂單: {block_reason}")
                 
@@ -944,8 +980,17 @@ class TradingService:
                 else:
                     logger.debug(f"⏭️  跳過止損（已成功，ID: {sl_order_id}）")
                 
-                # 再次檢查熔斷器
-                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                # 🛡️ v3.9.2.8.4: 再次檢查熔斷器（止盈前）
+                if hasattr(self.client.circuit_breaker, 'can_proceed') and len(inspect.signature(self.client.circuit_breaker.can_proceed).parameters) > 0:
+                    # 新版GradedCircuitBreaker
+                    can_proceed, block_reason, info = self.client.circuit_breaker.can_proceed(
+                        priority=Priority.HIGH,
+                        operation_type="adjust_take_profit"
+                    )
+                else:
+                    # 舊版CircuitBreaker
+                    can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                
                 if not can_proceed:
                     raise Exception(f"止盈前熔斷器開啟: {block_reason}")
                 
