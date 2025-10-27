@@ -273,6 +273,36 @@ class TradingBot:
         logger.info(f"🔄 交易週期開始: {cycle_start.strftime('%Y-%m-%d %H:%M:%S')}")
         logger.info(f"{'=' * 60}")
         
+        # 📚 顯示訓練數據統計
+        if self.data_archiver:
+            try:
+                from pathlib import Path
+                import pandas as pd
+                
+                signals_file = Path('ml_data/signals.csv')
+                positions_file = Path('ml_data/positions.csv')
+                
+                total_positions = 0
+                virtual_positions = 0
+                real_positions = 0
+                
+                if positions_file.exists():
+                    positions_df = pd.read_csv(positions_file)
+                    total_positions = len(positions_df[positions_df['event'] == 'close'])
+                    # 根據is_simulated欄位區分虛擬和真實倉位
+                    if 'is_simulated' in positions_df.columns:
+                        virtual_positions = len(positions_df[(positions_df['event'] == 'close') & (positions_df['is_simulated'] == True)])
+                        real_positions = len(positions_df[(positions_df['event'] == 'close') & (positions_df['is_simulated'] == False)])
+                    else:
+                        virtual_positions = total_positions  # 如果沒有欄位，假設都是虛擬的
+                
+                logger.info(
+                    f"📚 模型訓練數據: {total_positions}筆 "
+                    f"(虛擬倉位: {virtual_positions}筆 | 真實倉位: {real_positions}筆)"
+                )
+            except Exception as e:
+                logger.debug(f"讀取訓練數據統計失敗: {e}")
+        
         # 📊 每个周期显示风险管理状态
         self.risk_manager.log_risk_status()
         
@@ -313,17 +343,9 @@ class TradingBot:
             if market_data:
                 avg_liquidity = sum(x.get('liquidity', 0) for x in market_data)/len(market_data)
                 logger.info(
-                    f"📊 ✅ 已選擇 {len(market_data)} 個高流動性交易對 "
+                    f"📊 已選擇 {len(market_data)} 個高流動性交易對 "
                     f"(平均24h交易額: ${avg_liquidity:,.0f} USDT)"
                 )
-                # 顯示前10個流動性最高的交易對
-                top_10 = market_data[:10]
-                logger.info("📈 流動性最高的前10個交易對:")
-                for i, data in enumerate(top_10, 1):
-                    logger.info(
-                        f"  #{i} {data['symbol']}: {data['price']:.4f} USDT "
-                        f"(24h交易額: ${data.get('liquidity', 0):,.0f})"
-                    )
             else:
                 logger.warning("未獲取到任何交易對數據")
             
@@ -373,29 +395,27 @@ class TradingBot:
                 avg_long_conf = sum(s['confidence'] for s in long_signals) / len(long_signals) if long_signals else 0
                 avg_short_conf = sum(s['confidence'] for s in short_signals) / len(short_signals) if short_signals else 0
                 
-                logger.info(f"\n🎯 生成 {len(signals)} 個交易信號")
+                # 計算系統評級（基於信號質量和方向平衡）
+                balance_score = 50 - abs(long_pct - short_pct)  # 最高50分：完全平衡
+                quality_score = avg_confidence * 50  # 最高50分：信心度100%
+                system_rating = int(balance_score + quality_score)
+                
+                logger.info(f"\n🎯 生成 {len(signals)} 個信號 | 目前交易評級: {system_rating}分")
                 logger.info(
-                    f"📊 方向分布: LONG {len(long_signals)}個({long_pct:.1f}%) | "
-                    f"SHORT {len(short_signals)}個({short_pct:.1f}%)"
-                )
-                logger.info(
-                    f"📈 平均信心度: 總體={avg_confidence:.1%} | "
-                    f"LONG={avg_long_conf:.1%} | SHORT={avg_short_conf:.1%}"
+                    f"   方向: LONG {len(long_signals)}個 | SHORT {len(short_signals)}個 | "
+                    f"平均信心度: {avg_confidence:.1%}"
                 )
                 
+                # 簡化信號列表顯示
+                signal_list = ", ".join([
+                    f"{s['symbol']}({s['direction'][0]}{s['confidence']:.0%})" 
+                    for s in signals[:Config.MAX_SIGNALS]
+                ])
+                logger.info(f"   信號列表: {signal_list}")
+                
+                # 處理每個信號
                 for rank, signal in enumerate(signals[:Config.MAX_SIGNALS], 1):
-                    ml_info = ""
-                    if 'ml_prediction' in signal:
-                        ml_pred = signal['ml_prediction']
-                        ml_info = f" [ML勝率: {ml_pred['win_probability']:.1%}]"
-                    
-                    logger.info(
-                        f"  #{rank} {signal['symbol']} {signal['direction']} "
-                        f"信心度 {signal['confidence']:.2%}{ml_info}"
-                    )
-                    
                     await self.discord_bot.send_signal_notification(signal, rank)
-                    
                     await self._process_signal(signal, rank)
             
             else:
