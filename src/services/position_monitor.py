@@ -139,9 +139,10 @@ class PositionMonitor:
             Optional[Dict]: 调整记录（用于XGBoost特征）
         """
         try:
-            # 🚨 紧急修复：强制止损保护（防止-100%亏损）
-            EMERGENCY_STOP_LOSS_PCT = -50.0  # 亏损超过-50%强制平仓
-            CRITICAL_STOP_LOSS_PCT = -80.0  # 亏损超过-80%立即强制平仓
+            # 🚨 v3.9.2.3紧急修复：强制止损保护（防止-100%亏损）
+            # 从配置读取或使用默认值
+            EMERGENCY_STOP_LOSS_PCT = getattr(self.trading_service.config, 'EMERGENCY_STOP_LOSS_PCT', -0.50) * 100  # -50%
+            CRITICAL_STOP_LOSS_PCT = getattr(self.trading_service.config, 'CRITICAL_STOP_LOSS_PCT', -0.80) * 100  # -80%
             
             if pnl_pct <= CRITICAL_STOP_LOSS_PCT:
                 logger.critical(
