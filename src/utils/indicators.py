@@ -7,6 +7,32 @@ import pandas as pd
 import numpy as np
 from typing import Optional
 
+
+class TechnicalIndicators:
+    """
+    技術指標計算類
+    
+    封裝所有技術指標計算方法，便於在position_monitor中使用
+    """
+    
+    def calculate_rsi(self, data, period=14):
+        """計算RSI指標"""
+        if isinstance(data, (list, np.ndarray)):
+            data = pd.Series(data)
+        return calculate_rsi(data, period)
+    
+    def calculate_macd(self, data, fast_period=12, slow_period=26, signal_period=9):
+        """計算MACD指標"""
+        if isinstance(data, (list, np.ndarray)):
+            data = pd.Series(data)
+        return calculate_macd(data, fast_period, slow_period, signal_period)
+    
+    def calculate_bollinger_bands(self, data, period=20, std_dev=2):
+        """計算布林帶"""
+        if isinstance(data, (list, np.ndarray)):
+            data = pd.Series(data)
+        return calculate_bollinger_bands(data, period, std_dev)
+
 def calculate_ema(data: pd.Series, period: int) -> pd.Series:
     """
     計算指數移動平均線 (EMA)
