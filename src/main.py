@@ -112,8 +112,54 @@ class TradingBot:
         logger.info(f"✅ 期望值計算器已就緒 (窗口大小: {Config.EXPECTANCY_WINDOW} 筆交易)")
         logger.info(f"✅ 數據歸檔器已就緒 (目錄: {Config.ML_DATA_DIR})")
         
-        self.virtual_position_manager = VirtualPositionManager()
         self.trade_recorder = TradeRecorder()
+        
+        def on_virtual_position_close(position_data: Dict, close_data: Dict):
+            """虛擬倉位關閉回調：記錄平倉數據到 TradeRecorder 和 DataArchiver"""
+            try:
+                signal_format = {
+                    'symbol': position_data['symbol'],
+                    'direction': position_data['direction'],
+                    'entry_price': position_data['entry_price'],
+                    'confidence': position_data['confidence'],
+                    'timestamp': datetime.fromisoformat(position_data['entry_timestamp']),
+                    'timeframes': {},
+                    'market_structure': 'neutral',
+                    'order_blocks': 0,
+                    'liquidity_zones': 0,
+                    'indicators': {}
+                }
+                
+                position_info = {
+                    'leverage': 1,
+                    'position_value': 0,
+                }
+                
+                self.trade_recorder.record_entry(signal_format, position_info)
+                
+                trade_result = {
+                    'symbol': close_data['symbol'],
+                    'exit_price': close_data['exit_price'],
+                    'pnl': close_data['pnl'],
+                    'pnl_pct': close_data['pnl_pct'],
+                    'close_reason': close_data['close_reason'],
+                    'close_timestamp': close_data['timestamp'],
+                }
+                
+                ml_record = self.trade_recorder.record_exit(trade_result)
+                
+                if ml_record:
+                    self.data_archiver.archive_position_close(
+                        position_data=position_data,
+                        close_data=close_data,
+                        is_virtual=True
+                    )
+                    logger.info(f"✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: {close_data['symbol']} PnL: {close_data['pnl']:+.2%}")
+                
+            except Exception as e:
+                logger.error(f"虛擬倉位關閉回調失敗: {e}", exc_info=True)
+        
+        self.virtual_position_manager = VirtualPositionManager(on_close_callback=on_virtual_position_close)
         
         # 初始化交易服務（傳入trade_recorder）
         self.trading_service = TradingService(
