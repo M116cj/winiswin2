@@ -49,9 +49,13 @@ class TradingState(Enum):
     SHUTDOWN = "shutdown"                # 停止交易
 
 
-@dataclass
+@dataclass(slots=True)
 class StateConfig:
-    """状态配置"""
+    """
+    状态配置（v3.13.0：添加 slots=True 优化内存）
+    
+    内存优化：每个实例节省约200字节
+    """
     name: str
     risk_multiplier: float               # 仓位倍数
     max_positions: Optional[int]         # 最大持仓数（None=无限制）

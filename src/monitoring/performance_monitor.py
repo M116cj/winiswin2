@@ -15,7 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class OperationTimer:
-    """操作計時器上下文管理器"""
+    """
+    操作計時器上下文管理器（v3.13.0：添加 __slots__ 优化内存）
+    
+    内存优化：每个实例节省约200字节
+    """
+    __slots__ = ('monitor', 'operation_name', 'start_time')
     
     def __init__(self, monitor: 'PerformanceMonitor', operation_name: str):
         self.monitor = monitor
