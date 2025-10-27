@@ -890,16 +890,16 @@ class TradingService:
         quantity: float,
         stop_loss: float,
         take_profit: float,
-        max_retries: int = 5
+        max_retries: int = 3
     ) -> Tuple[int, int]:
         """
-        並行設置止損止盈（v3.6.0強化：5次重試+訂單ID返回）
+        設置止損止盈（v3.9.2.2最終版：部分成功處理+熔斷器快速失敗）
         
-        優化點：
-        1. 並行執行止損和止盈訂單（2倍速度提升）
-        2. 失敗自動重試機制（默認5次重試）
-        3. 部分成功處理（一個成功一個失敗的情況）
-        4. 返回訂單ID用於驗證
+        核心改進：
+        1. 追踪部分成功狀態（止損成功，止盈失敗）
+        2. 避免重複創建已成功訂單
+        3. 熔斷器錯誤立即失敗（不重試）
+        4. Transient錯誤有限重試（3次）
         
         Args:
             symbol: 交易對
@@ -907,95 +907,103 @@ class TradingService:
             quantity: 數量
             stop_loss: 止損價格
             take_profit: 止盈價格
-            max_retries: 最大重試次數（默認5次）
+            max_retries: 最大重試次數（默認3次）
         
         Returns:
             Tuple[int, int]: (止損訂單ID, 止盈訂單ID)
         
         Raises:
-            Exception: 如果止損止盈設置失敗
+            Exception: 失敗後觸發緊急平倉
         """
+        from src.clients.binance_errors import BinanceRequestError
+        
+        # 🔄 追踪部分成功狀態
+        sl_order_id = None
+        tp_order_id = None
+        
         for attempt in range(max_retries):
             try:
-                # 🛡️ v3.9.2.2: 順序執行（非並行），避免熔斷器
-                # 檢查熔斷器狀態
+                # 🛡️ v3.9.2.2: 檢查熔斷器 - 如果開啟立即失敗（不重試）
                 can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
                 if not can_proceed:
-                    retry_after = self.client.circuit_breaker.get_retry_after()
-                    logger.warning(
-                        f"⏱️  熔斷器開啟，等待{retry_after:.0f}秒後重試止損止盈 "
-                        f"(嘗試 {attempt + 1}/{max_retries})"
-                    )
-                    await asyncio.sleep(retry_after + 1)  # +1秒安全邊際
-                    continue
+                    raise Exception(f"熔斷器開啟，無法設置保護訂單: {block_reason}")
                 
-                # 先設置止損
-                sl_result = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
-                sl_success = sl_result is not None
-                
-                # 🛡️ v3.9.2.2: 訂單間延遲，避免觸發熔斷器
-                if sl_success:
-                    logger.debug(f"⏱️  止損成功，等待{self.config.ORDER_INTER_DELAY}秒後設置止盈...")
-                    await asyncio.sleep(self.config.ORDER_INTER_DELAY)
-                
-                # 再設置止盈
-                tp_result = await self._set_take_profit(symbol, direction, quantity, take_profit)
-                tp_success = tp_result is not None
-                
-                if sl_success and tp_success:
+                # 📝 設置止損（僅當未成功時）
+                if sl_order_id is None:
+                    logger.info(f"📝 設置止損訂單: {symbol} @ {stop_loss} (嘗試 {attempt + 1}/{max_retries})")
+                    sl_result = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
+                    if not sl_result:
+                        raise Exception("止損訂單創建失敗")
+                    
                     sl_order_id = sl_result.get('orderId')
+                    logger.info(f"✅ 止損成功: {symbol} (SL:{sl_order_id})")
+                    
+                    # 🛡️ v3.9.2.2: 訂單間延遲
+                    logger.debug(f"⏱️  等待{self.config.ORDER_INTER_DELAY}秒...")
+                    await asyncio.sleep(self.config.ORDER_INTER_DELAY)
+                else:
+                    logger.debug(f"⏭️  跳過止損（已成功，ID: {sl_order_id}）")
+                
+                # 再次檢查熔斷器
+                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                if not can_proceed:
+                    raise Exception(f"止盈前熔斷器開啟: {block_reason}")
+                
+                # 📝 設置止盈（僅當未成功時）
+                if tp_order_id is None:
+                    logger.info(f"📝 設置止盈訂單: {symbol} @ {take_profit}")
+                    tp_result = await self._set_take_profit(symbol, direction, quantity, take_profit)
+                    if not tp_result:
+                        raise Exception("止盈訂單創建失敗")
+                    
                     tp_order_id = tp_result.get('orderId')
-                    logger.info(f"✅ 止損止盈並行設置成功: {symbol} (SL:{sl_order_id}, TP:{tp_order_id})")
-                    return (sl_order_id, tp_order_id)
+                    logger.info(f"✅ 止盈成功: {symbol} (TP:{tp_order_id})")
+                else:
+                    logger.debug(f"⏭️  跳過止盈（已成功，ID: {tp_order_id}）")
                 
-                # 部分失敗處理
-                if sl_success and not tp_success:
-                    logger.warning(f"⚠️  止損成功但止盈失敗 (第{attempt+1}次嘗試): {symbol}")
-                    if attempt < max_retries - 1:
-                        logger.info(f"🔄 重試止盈設置...")
-                        tp_retry = await self._set_take_profit(symbol, direction, quantity, take_profit)
-                        if tp_retry:
-                            sl_order_id = sl_result.get('orderId')
-                            tp_order_id = tp_retry.get('orderId')
-                            logger.info(f"✅ 止盈重試成功: {symbol}")
-                            return (sl_order_id, tp_order_id)
-                    else:
-                        raise Exception(f"止盈設置失敗（已重試{max_retries}次）: {tp_result}")
+                # ✅ 兩者都成功
+                return (sl_order_id, tp_order_id)
                 
-                if tp_success and not sl_success:
-                    logger.warning(f"⚠️  止盈成功但止損失敗 (第{attempt+1}次嘗試): {symbol}")
-                    if attempt < max_retries - 1:
-                        logger.info(f"🔄 重試止損設置...")
-                        sl_retry = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
-                        if sl_retry:
-                            sl_order_id = sl_retry.get('orderId')
-                            tp_order_id = tp_result.get('orderId')
-                            logger.info(f"✅ 止損重試成功: {symbol}")
-                            return (sl_order_id, tp_order_id)
-                    else:
-                        raise Exception(f"止損設置失敗（已重試{max_retries}次）: {sl_result}")
+            except BinanceRequestError as e:
+                # 🛡️ 熔斷器錯誤 → 立即失敗
+                if e.is_circuit_breaker_error:
+                    logger.error(f"❌ 熔斷器錯誤，立即觸發緊急平倉: {e.message}")
+                    raise
                 
-                # 兩者都失敗
-                if not sl_success and not tp_success:
-                    if attempt < max_retries - 1:
-                        logger.warning(
-                            f"⚠️  止損止盈都失敗 (第{attempt+1}次嘗試)，{1}秒後重試..."
-                        )
-                        await asyncio.sleep(1)
-                        continue
-                    else:
-                        raise Exception(
-                            f"止損止盈都設置失敗（已重試{max_retries}次）: "
-                            f"SL={sl_result}, TP={tp_result}"
-                        )
-                        
-            except Exception as e:
+                # 🔄 Transient錯誤 → 重試
                 if attempt < max_retries - 1:
-                    logger.warning(f"⚠️  止損止盈設置異常 (第{attempt+1}次嘗試): {e}，重試中...")
-                    await asyncio.sleep(1)
+                    wait_time = e.retry_after_seconds or (1.5 ** (attempt + 1))
+                    # 顯示部分成功狀態
+                    status = f"SL:{'✅' if sl_order_id else '❌'} TP:{'✅' if tp_order_id else '❌'}"
+                    logger.warning(
+                        f"⏱️  API錯誤 [{status}] (嘗試 {attempt + 1}/{max_retries})，"
+                        f"等待{wait_time:.1f}秒後重試: {e.message}"
+                    )
+                    await asyncio.sleep(wait_time)
                     continue
                 else:
-                    raise Exception(f"止損止盈設置異常（已重試{max_retries}次）: {e}")
+                    logger.error(f"❌ 保護訂單失敗（已重試{max_retries}次），觸發緊急平倉")
+                    raise
+                    
+            except Exception as e:
+                # 🛡️ 熔斷器相關錯誤 → 立即失敗
+                if "熔斷器" in str(e):
+                    logger.error(f"❌ 熔斷器錯誤，立即觸發緊急平倉: {e}")
+                    raise
+                
+                # 🔄 其他錯誤 → 重試
+                if attempt < max_retries - 1:
+                    wait_time = 1.5 ** (attempt + 1)
+                    status = f"SL:{'✅' if sl_order_id else '❌'} TP:{'✅' if tp_order_id else '❌'}"
+                    logger.warning(
+                        f"⏱️  保護訂單錯誤 [{status}] (嘗試 {attempt + 1}/{max_retries})，"
+                        f"等待{wait_time:.1f}秒後重試: {e}"
+                    )
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"❌ 保護訂單失敗（已重試{max_retries}次），觸發緊急平倉")
+                    raise
         
         raise Exception(f"止損止盈設置失敗（已用完{max_retries}次重試）")
     
