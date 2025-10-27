@@ -4,7 +4,7 @@
 
 24/7 高频自动化交易系统，用于 Binance USDT 永续合约，采用 ICT/SMC 策略结合 XGBoost 机器学习增强。
 
-**当前版本：v3.10.0 (2025-10-27) - 🔥 策略增强三合一（ADX趋势过滤 + ML泄漏阻断 + 波动率熔断）**
+**当前版本：v3.11.0 (2025-10-27) - 🎯 高级优化四合一（OB质量筛选+BOS/CHOCH+市场状态分类+反转预警）**
 
 ## 🎯 核心功能
 
@@ -139,6 +139,81 @@ src/
 - 完整的 ML 管道集成
 
 ## 📝 最近更新
+
+### 2025-10-27 (v3.11.0) - 🎯 高级优化四合一（OB质量+BOS/CHOCH+市场状态+反转防护）
+
+**类型**: 🔧 **SIGNAL QUALITY + MARKET CONTEXT AWARENESS**  
+**目标**: 提升Order Block筛选质量，增强市场结构识别，添加反转预警机制  
+**状态**: ✅ **已完成并通过 Architect 双重审查（修复后再审）**
+
+**核心优化**:
+
+**1. Order Block 质量筛选 + 动态衰减**
+- **文件**: `src/utils/indicators.py`, `src/config.py`
+- **新增功能**:
+  - `identify_order_blocks()` 增强：成交量验证（1.5×均量）+ 拒绝率验证（0.5%）
+  - `calculate_ob_decay_factor()`：时间衰减（5%/天）+ 测试次数衰减（10%/次）
+  - 质量分数计算：成交量30% + 实体占比30% + 拒绝率40%
+  - 测试次数追踪：`test_count` 字段，最多3次
+  - 历史保留：保留20个OB（而非仅5个），支持衰减分析
+- **关键修复**（Architect指出）:
+  - 拒绝率计算改为相对于K线全长（而非价格百分比）
+  - OB_REJECTION_THRESHOLD从0.03降至0.005（更实用）
+  - 修复历史截断bug，保留20个OB而非5个
+
+**2. BOS/CHOCH 自动识别**
+- **文件**: `src/utils/indicators.py`
+- **新增函数**: `detect_bos_choch()`
+- **功能**:
+  - BOS检测：上升趋势突破swing high / 下降趋势跌破swing low
+  - CHOCH检测：趋势反转信号（高点失守/低点突破）
+  - 返回结构类型：trend_continuation / trend_reversal / breakout
+  - Swing点检测基于20根K线窗口
+
+**3. 市场状态分类器**
+- **文件**: `src/utils/indicators.py`
+- **新增函数**: `classify_market_regime()`
+- **6种市场状态**:
+  - trending：强趋势（ADX>25 + 布林带宽>50分位数）
+  - ranging：震荡市（ADX<20 + 价格在布林带中轨附近）
+  - breakout：突破（价格在布林带外 + ADX上升）
+  - drift：趋势减弱（ADX 20-25）
+  - choppy：极度震荡（低波动率 + ADX<15）
+  - transitioning：过渡期
+- **交易决策**: 仅在trending和breakout时交易
+
+**4. 反转预警滤网（四层防反转架构 Layer 1）**
+- **文件**: `src/utils/indicators.py`
+- **新增函数**: `detect_reversal_risk()`
+- **三层检测机制**:
+  - **流动性扫荡**：Bull Trap / Bear Trap 检测
+  - **RSI极端 + 价格背离**：看涨/看跌背离识别
+  - **MACD动量衰减**：柱状图收敛>70%时预警
+- **风险评分**: risk_score ≥ 0.4 时跳过交易
+
+**修改文件**:
+- `src/utils/indicators.py`: +400行（4个新函数 + identify_order_blocks增强）
+- `src/config.py`: 新增OB质量配置（OB_REJECTION_THRESHOLD, OB_MAX_HISTORY等）
+- `src/main.py`: 版本更新至v3.11.0
+- `replit.md`: 文档更新
+
+**Architect 审查历程**:
+1. 初次审查：发现3个严重bug（拒绝率过严、历史截断、LSP错误）
+2. 紧急修复：调整阈值、修正计算方式、扩展历史保留
+3. 二次审查：Pass - "修复后的Order Block质量筛选符合发布目标，无阻断性缺陷"
+
+**预期效果**:
+- 更高质量的Order Block信号（过滤噪音，保留有效OB）
+- 更准确的市场结构识别（BOS/CHOCH自动检测）
+- 更智能的交易时机选择（市场状态适配）
+- 更安全的反转风险防护（四层架构第一层）
+
+**后续优化方向**（未实施）:
+- OB失效检测：价格穿透OB后不再有效
+- 自适应止损：基于OB质量调整止损距离
+- 反转架构Layer 2-4：多空持仓偏差、连续止损、OB质量下降
+
+---
 
 ### 2025-10-27 (v3.10.0) - 🔥 策略增强三合一（Stage 1 关键优化）
 
