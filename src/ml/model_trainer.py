@@ -170,7 +170,7 @@ class XGBoostTrainer:
             
             # 🎯 v3.9.2.8.5：應用質量權重（給完美交易更高權重）
             try:
-                quality_weights = self._calculate_quality_weights(df, X_train.index.values)
+                quality_weights = self._calculate_quality_weights(df, np.array(X_train.index.values))
                 sample_weights = sample_weights * quality_weights
                 logger.info(
                     f"✅ 已應用質量權重（完美交易3.0x，優秀交易2.0x，良好交易1.5x）"
