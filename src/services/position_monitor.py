@@ -593,7 +593,7 @@ class PositionMonitor:
         """
         try:
             # 尝试获取15m K线数据计算指标
-            from src.services.indicators import TechnicalIndicators
+            from src.utils.indicators import TechnicalIndicators
             
             # 获取最近50根15m K线
             klines = await self.client.get_klines(symbol, '15m', limit=50)
