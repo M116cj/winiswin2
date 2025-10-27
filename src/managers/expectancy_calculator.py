@@ -139,31 +139,55 @@ class ExpectancyCalculator:
         profit_factor: float,
         consecutive_losses: int = 0,
         daily_loss_pct: float = 0,
-        total_trades: int = 0
+        total_trades: int = 0,
+        signal_confidence: float = 0.0
     ) -> Tuple[bool, str]:
         """
-        判断是否应该开仓（完全无限制学习模式）
+        判断是否应该开仓（智能保护模式）
         
         Args:
             expectancy: 期望值（仅用于日志记录）
             profit_factor: 盈亏比（仅用于日志记录）
             consecutive_losses: 连续亏损数（仅用于日志记录）
-            daily_loss_pct: 今日亏损百分比（仅用于日志记录）
+            daily_loss_pct: 今日亏损百分比
             total_trades: 总交易数（仅用于日志记录）
+            signal_confidence: 信号信心度 (0-1)
         
         Returns:
             Tuple[bool, str]: (是否允许交易, 原因)
         """
-        # 🚀 完全无限制模式：始终允许交易，不设任何限制
-        # 目的：持续收集数据，让系统自主学习和优化，完全信任策略
+        # 🛡️ 智能保护模式：日亏损达3%后只执行高质量交易
         logger.info(
-            f"🚀 无限制学习模式 (已完成 {total_trades} 笔交易)：始终允许交易，"
+            f"🛡️ 智能保护模式 (已完成 {total_trades} 笔交易)："
             f"期望值 {expectancy:.2f}%, 盈亏比 {profit_factor:.2f}, "
-            f"连续亏损 {consecutive_losses}次, 日亏损 {daily_loss_pct:.1f}%"
+            f"连续亏损 {consecutive_losses}次, 日亏损 {daily_loss_pct:.1f}%, "
+            f"信号信心度 {signal_confidence:.2%}"
         )
         
-        # ✅ 始终允许交易（移除所有限制）
-        return True, f"无限制模式：始终允许交易 (已完成 {total_trades} 笔)"
+        # 🔍 日亏损检查：达到3%后进入高质量模式
+        if daily_loss_pct >= 3.0:
+            # 定义高质量标准：信心度 >= 0.8
+            HIGH_QUALITY_THRESHOLD = 0.8
+            
+            if signal_confidence >= HIGH_QUALITY_THRESHOLD:
+                logger.info(
+                    f"✅ 日亏损 {daily_loss_pct:.1f}% ≥ 3%，但信号质量优秀 "
+                    f"(信心度 {signal_confidence:.2%} ≥ {HIGH_QUALITY_THRESHOLD:.0%})，允许交易"
+                )
+                return True, f"高质量信号通过 (信心度 {signal_confidence:.2%})"
+            else:
+                logger.warning(
+                    f"🚫 日亏损 {daily_loss_pct:.1f}% ≥ 3%，且信号质量不足 "
+                    f"(信心度 {signal_confidence:.2%} < {HIGH_QUALITY_THRESHOLD:.0%})，拒绝交易"
+                )
+                return False, (
+                    f"日亏损达 {daily_loss_pct:.1f}% (≥3%)，"
+                    f"仅接受高信心信号 (≥{HIGH_QUALITY_THRESHOLD:.0%})，"
+                    f"当前信心度 {signal_confidence:.2%}"
+                )
+        
+        # ✅ 正常模式：日亏损<3%，允许所有交易
+        return True, f"正常模式：允许交易 (日亏损 {daily_loss_pct:.1f}% < 3%)"
     
     def _count_consecutive_losses(self, pnl_values: List[float]) -> int:
         """计算当前连续亏损次数"""
