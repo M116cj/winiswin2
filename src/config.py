@@ -134,6 +134,14 @@ class Config:
     DAILY_LOSS_LIMIT_PCT: float = 0.03
     COOLDOWN_HOURS: int = 24
     
+    # 性能優化配置
+    DEFAULT_ACCOUNT_BALANCE: float = float(os.getenv("DEFAULT_ACCOUNT_BALANCE", "10000"))
+    MIN_NOTIONAL_VALUE: float = 20.0  # Binance最小訂單價值
+    ML_MIN_TRAINING_SAMPLES: int = 100  # XGBoost最小訓練樣本數
+    INDICATOR_CACHE_TTL: int = 60  # 技術指標緩存時間（秒）
+    CACHE_TTL_KLINES_HISTORICAL: int = 86400  # 歷史K線緩存24小時（不會改變）
+    MAX_WORKERS: int = int(os.getenv("MAX_WORKERS", "32"))  # 並行分析工作線程數
+    
     # 日誌配置
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_FILE: str = "data/logs/trading_bot.log"

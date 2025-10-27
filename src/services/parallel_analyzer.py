@@ -23,19 +23,23 @@ class ParallelAnalyzer:
         初始化並行分析器
         
         Args:
-            max_workers: 最大工作線程數（None 表示自動檢測）
+            max_workers: 最大工作線程數（None 表示從配置讀取）
         """
+        self.config = Config
+        
+        # 從配置獲取默認值
+        default_workers = self.config.MAX_WORKERS
+        
         # 自動檢測 CPU 核心數
         cpu_count = mp.cpu_count()
         
-        # 如果未指定，使用所有可用核心；否則取較小值
+        # 如果未指定，使用配置值；否則取指定值
         if max_workers is None:
-            self.max_workers = min(cpu_count, 32)  # 最多 32 個
+            self.max_workers = min(default_workers, cpu_count)
         else:
-            self.max_workers = min(max_workers, cpu_count, 32)
+            self.max_workers = min(max_workers, cpu_count)
         
         self.strategy = ICTStrategy()
-        self.config = Config
         
         # 使用線程池處理 I/O 密集型任務
         self.thread_executor = ThreadPoolExecutor(max_workers=self.max_workers)

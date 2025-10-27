@@ -395,7 +395,7 @@ class TradingBot:
                     )
                 except Exception as e:
                     logger.error(f"獲取賬戶餘額失敗: {e}，使用默認值")
-                    account_balance = 10000.0  # 降級為默認值
+                    account_balance = Config.DEFAULT_ACCOUNT_BALANCE
                 
                 # 🎯 關鍵修復：虛擬倉位不占據實際倉位限制
                 # - 實際倉位上限：3個（只在TRADING_ENABLED=true時檢查）

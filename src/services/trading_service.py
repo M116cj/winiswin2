@@ -74,8 +74,8 @@ class TradingService:
             quantity = await self._round_quantity(symbol, quantity)
             
             # Binance最小訂單價值檢查（不同交易對有不同要求：5-20 USDT）
-            # 使用20 USDT作為安全值，確保所有交易對都能通過
-            MIN_NOTIONAL = 20.0
+            # 使用配置值作為安全值，確保所有交易對都能通過
+            MIN_NOTIONAL = self.config.MIN_NOTIONAL_VALUE
             notional_value = quantity * entry_price
             if notional_value < MIN_NOTIONAL:
                 logger.info(

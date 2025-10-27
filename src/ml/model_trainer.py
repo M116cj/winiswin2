@@ -55,8 +55,9 @@ class XGBoostTrainer:
             # 加載數據
             df = self.data_processor.load_training_data()
             
-            if df.empty or len(df) < 100:
-                logger.warning(f"訓練數據不足: {len(df)} 條記錄")
+            min_samples = self.config.ML_MIN_TRAINING_SAMPLES
+            if df.empty or len(df) < min_samples:
+                logger.warning(f"訓練數據不足: {len(df)} 條記錄 (最少需要 {min_samples})")
                 return None, {}
             
             # 準備特徵
@@ -219,7 +220,7 @@ class XGBoostTrainer:
             df = self.data_processor.load_training_data()
             
             if len(df) < min_samples:
-                logger.info(f"訓練數據不足: {len(df)}/{min_samples}")
+                logger.info(f"訓練數據不足: {len(df)}/{min_samples} (配置: ML_MIN_TRAINING_SAMPLES)")
                 return False
             
             logger.info(f"檢測到 {len(df)} 條訓練數據，開始自動訓練...")
