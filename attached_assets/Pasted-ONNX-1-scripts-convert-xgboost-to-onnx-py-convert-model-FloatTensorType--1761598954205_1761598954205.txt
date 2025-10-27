@@ -1,0 +1,75 @@
+ONNX 代碼檢查指令
+模型轉換檢查
+1. 確認 scripts/convert_xgboost_to_onnx.py 中的 convert_model() 函數使用 FloatTensorType(input_shape) 而不是 DoubleTensorType，且 input_shape 預設為 (1, 31)
+2. 驗證轉換腳本是否包含自動驗證功能：validate_conversion() 函數使用 np.random.uniform(0, 1, (10, n_features)).astype(np.float32) 生成測試數據，並比較 XGBoost 和 ONNX 輸出的差異
+3. 檢查 FEATURE_ORDER_PATH = "data/models/feature_order.txt" 是否正確保存特徵順序，且 save_feature_order() 函數將特徵寫入檔案
+
+MLPredictor 實現檢查
+4. 確認 src/ml/predictor.py 的 MLPredictor.__init__() 方法中，onnx_path = model_path.replace('.pkl', '.onnx') 正確替換副檔名
+5. 驗證 predict_batch() 方法中，X = np.vstack(features_list).astype(np.float32) 使用 float32 而不是 float64
+6. 檢查 ONNX 推理部分是否使用 ort_inputs = {self.session.get_inputs()[0].name: X} 構建輸入，而不是硬編碼輸入名稱
+7. 確認回退機制正確：當 ONNX 載入失敗時，self._load_xgboost_model(model_path) 被呼叫，且 self.use_onnx = False
+
+特徵提取檢查
+8. 確認 src/ml/data_processor.py 的 extract_features_for_prediction() 函數返回 np.array(features, dtype=np.float32).reshape(1, -1)
+9. 驗證特徵順序是否與 EXPECTED_FEATURES 列表完全一致，特別是第 20 個特徵是 'direction_encoded' 而不是其他
+
+主循環整合檢查
+10. 確認 src/main.py 的 scan_and_analyze() 方法中，使用 features_batch = [extract_features_for_prediction(signal) for signal in signals] 批量提取特徵
+11. 檢查是否呼叫 predictions = self.ml_predictor.predict_batch(features_batch) 而不是逐個預測
+
+測試與驗證檢查
+12. 確認 scripts/verify_feature_order.py 中的 EXPECTED_FEATURES 包含 33 個特徵（20 基礎 + 13 增強），且順序正確
+13. 驗證 scripts/check_onnx_compatibility.py 的 check_onnx_model() 函數使用 onnx.checker.check_model(model) 驗證 ONNX 格式
+14. 檢查相容性檢查工具是否測試動態 shape 處理：test_shape = [1 if isinstance(dim, int) and dim <= 0 else dim for dim in input_shape]
+15. 確認所有三個腳本（轉換、驗證、相容性）都能獨立執行且不依賴未安裝的套件
+
+
+
+🎯 Replit 執行指令
+將以下文字複製到 Replit AI 助手：
+
+「請嚴格檢查整個代碼庫，確認以下 15 項 ONNX 相關實作是否全部正確實現。如果任何一項未實現、實現錯誤、或與描述不符，請指出具體檔案、行號、錯誤內容，以及正確的實現方式：」
+
+[貼上上述 15 個檢查指令] 
+
+
+
+🔧 常見陷阱與驗證重點
+特徵順序陷阱
+* 問題: 訓練時特徵順序 vs 推理時特徵順序不一致
+* 驗證: 執行 python scripts/verify_feature_order.py 應顯示 "✅ 特徵順序完全匹配！"
+
+數據類型陷阱
+* 問題: XGBoost 使用 float64，ONNX 使用 float32，精度差異導致預測翻轉
+* 驗證: validate_conversion() 應顯示最大差異 < 1e-5
+
+輸入 shape 陷阱
+* 問題: ONNX 模型期望 (N, 31) 但傳入 (31,) 或 (1, 31, 1)
+* 驗證: check_onnx_compatibility.py 應通過推理測試
+
+回退機制陷阱
+* 問題: ONNX 載入失敗時沒有正確回退到 XGBoost
+* 驗證: 刪除 .onnx 檔案後，系統應正常運行並顯示 "⚠️ ONNX 載入失敗，回退到 XGBoost"
+
+✅ 完整驗證流程
+
+# 1. 安裝依賴
+pip install onnxruntime onnxmltools
+
+# 2. 轉換模型
+python scripts/convert_xgboost_to_onnx.py
+
+# 3. 驗證特徵順序
+python scripts/verify_feature_order.py
+
+# 4. 檢查相容性  
+python scripts/check_onnx_compatibility.py
+
+# 5. 測試回退機制
+mv data/models/model.onnx data/models/model.onnx.bak
+python -c "from src.ml.predictor import MLPredictor; p = MLPredictor('data/models/xgboost_model.pkl')"
+mv data/models/model.onnx.bak data/models/model.onnx
+
+# 6. 整合測試
+python tests/test_onnx_integration.py  # 需要創建此測試
