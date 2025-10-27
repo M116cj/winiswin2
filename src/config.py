@@ -56,7 +56,7 @@ class Config:
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))  # 掃描間隔（秒，默認60秒）
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))  # 監控流動性最高的前N個（默認200）
     
-    # 技術指標配置（優化版：更靈敏的趨勢判斷）
+    # 技術指標配置（v3.10.0：ADX趨勢過濾）
     EMA_FAST: int = 20   # 從50降到20，更快捕捉趨勢
     EMA_SLOW: int = 50   # 從200降到50，更靈敏
     RSI_PERIOD: int = 14
@@ -65,6 +65,18 @@ class Config:
     ATR_PERIOD: int = 14
     ATR_MULTIPLIER: float = 2.0
     RISK_REWARD_RATIO: float = 2.0
+    
+    # ADX趨勢強度過濾器（v3.10.0新增）
+    ADX_PERIOD: int = 14
+    ADX_TREND_THRESHOLD: float = 20.0  # ADX > 20 才視為有效趨勢
+    ADX_STRONG_TREND: float = 25.0     # ADX > 25 視為強趨勢
+    EMA_SLOPE_THRESHOLD: float = 0.01  # EMA斜率閾值（0.01% = 有效斜率）
+    
+    # 實時波動率熔斷器（v3.10.0新增）
+    VOLATILITY_CIRCUIT_BREAKER_ENABLED: bool = True
+    VOLATILITY_WINDOW_DAYS: int = 7    # 7日波動率參考窗口
+    VOLATILITY_SPIKE_MULTIPLIER: float = 2.0  # 當前ATR > 7日均值2倍 = 波動突變
+    VOLATILITY_SPIKE_MAX_LEVERAGE: int = 5    # 波動突變時最大槓桿
     
     # Order Blocks 配置
     OB_REJECTION_PCT: float = 0.03

@@ -108,10 +108,22 @@ class XGBoostTrainer:
                 logger.warning(f"訓練數據不足: {len(df)} 條記錄 (最少需要 {min_samples})")
                 return None, {}
             
-            # 🔍 v3.9.0：標籤泄漏驗證
+            # 🔍 v3.10.0：強化標籤泄漏驗證（檢測到泄漏時阻止訓練）
             leakage_report = self.leakage_validator.validate_training_data(df)
             if leakage_report['has_leakage']:
-                logger.warning(f"⚠️ 檢測到潛在標籤泄漏：{leakage_report['leakage_features']}")
+                logger.error(f"❌ 檢測到嚴重標籤泄漏，訓練終止！")
+                logger.error(f"   泄漏特徵：{leakage_report['leakage_features']}")
+                logger.error(f"   詳細報告：{leakage_report}")
+                logger.error(f"   建議：檢查特徵工程邏輯，確保所有特徵在開倉時刻已知")
+                return None, {'error': 'label_leakage_detected', 'report': leakage_report}
+            
+            # 檢查嚴重警告
+            if leakage_report.get('warnings'):
+                logger.warning(f"⚠️ 數據質量警告：{leakage_report['warnings']}")
+            
+            if leakage_report.get('high_correlation_features'):
+                logger.warning(f"⚠️ 高相關性特徵（潛在泄漏）：{leakage_report['high_correlation_features']}")
+                logger.warning(f"   如果模型表現異常好但實盤差，可能是此原因")
             
             # 📊 v3.9.1：應用動態滑動窗口（波動率自適應 500-2000）
             df = self.drift_detector.apply_sliding_window(df)  # 不傳window_size，使用動態計算

@@ -148,12 +148,15 @@ class RiskManager:
         profit_factor: Optional[float] = None,
         win_rate: Optional[float] = None,
         consecutive_losses: int = 0,
-        current_drawdown: float = 0.0
+        current_drawdown: float = 0.0,
+        current_atr: Optional[float] = None,
+        atr_7d_avg: Optional[float] = None
     ) -> int:
         """
-        計算動態槓桿（期望值驅動版本 - 無限制模式）
+        計算動態槓桿（v3.10.0：波動率感知版本）
         
         優先使用期望值和盈亏比，降級使用勝率
+        新增：實時波動率熔斷（ATR突變檢測）
         
         Args:
             expectancy: 期望值百分比 (如 1.5 表示 1.5%)
@@ -161,6 +164,8 @@ class RiskManager:
             win_rate: 勝率 (0-1) - 僅在期望值不可用時使用
             consecutive_losses: 連續虧損次數（僅用於日志）
             current_drawdown: 當前回撤 (0-1)
+            current_atr: 當前ATR值（v3.10.0新增）
+            atr_7d_avg: 7日平均ATR（v3.10.0新增）
         
         Returns:
             int: 槓桿倍數
@@ -251,13 +256,39 @@ class RiskManager:
         # 應用連續虧損懲罰
         base_leverage += leverage_penalty
         
-        # ✅ 移除硬性10x上限：允許根據期望值和盈亏比動態擴展至20x
+        # 🔥 v3.10.0：實時波動率熔斷（作為槓桿上限，不繞過期望值檢查）
+        volatility_leverage_cap = self.config.MAX_LEVERAGE
+        if (self.config.VOLATILITY_CIRCUIT_BREAKER_ENABLED and 
+            current_atr is not None and 
+            atr_7d_avg is not None and 
+            atr_7d_avg > 0):
+            
+            volatility_ratio = current_atr / atr_7d_avg
+            
+            if volatility_ratio >= self.config.VOLATILITY_SPIKE_MULTIPLIER:
+                # 波動突變：設置槓桿上限
+                volatility_leverage_cap = self.config.VOLATILITY_SPIKE_MAX_LEVERAGE
+                logger.warning(
+                    f"🔥 波動率熔斷觸發！當前ATR = {volatility_ratio:.2f}x 七日均值 "
+                    f"→ 槓桿上限 {volatility_leverage_cap}x"
+                )
+            elif volatility_ratio >= self.config.VOLATILITY_SPIKE_MULTIPLIER * 0.8:
+                # 波動率偏高：降低槓桿
+                base_leverage -= 3
+                logger.info(f"⚠️ 波動率偏高（{volatility_ratio:.2f}x），降低槓桿 3x")
+        
+        # ✅ 應用槓桿上限（考慮波動率熔斷）
         leverage = max(
             self.config.MIN_LEVERAGE,
-            min(base_leverage, self.config.MAX_LEVERAGE)  # 使用配置的MAX_LEVERAGE (20x)
+            min(base_leverage, volatility_leverage_cap)
         )
         
-        logger.info(f"📊 最終槓桿: {leverage}x (連續虧損: {leverage_penalty}x, 回撤調整已應用)")
+        volatility_note = f"波動率上限: {volatility_leverage_cap}x" if volatility_leverage_cap < self.config.MAX_LEVERAGE else ""
+        logger.info(
+            f"📊 最終槓桿: {leverage}x "
+            f"(連續虧損: {leverage_penalty}x, {volatility_note}, "
+            f"回撤調整已應用)"
+        )
         
         return leverage
     

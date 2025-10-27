@@ -385,3 +385,77 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
     
     # 確保返回Series類型
     return pd.Series(atr)
+
+
+def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple[pd.Series, pd.Series, pd.Series]:
+    """
+    計算平均方向指數 (ADX) + DMI
+    
+    用於判斷趨勢強度（v3.10.0新增）
+    
+    Args:
+        df: K線數據框（必須包含 high, low, close）
+        period: 周期（默認14）
+    
+    Returns:
+        tuple[ADX, +DI, -DI]
+    """
+    high = df['high']
+    low = df['low']
+    close = df['close']
+    
+    # 計算方向移動（Directional Movement）
+    up_move = high - high.shift(1)
+    down_move = low.shift(1) - low
+    
+    # +DM 和 -DM
+    plus_dm = pd.Series(0.0, index=df.index)
+    minus_dm = pd.Series(0.0, index=df.index)
+    
+    plus_dm[up_move > down_move] = up_move[up_move > down_move]
+    plus_dm[plus_dm < 0] = 0
+    
+    minus_dm[down_move > up_move] = down_move[down_move > up_move]
+    minus_dm[minus_dm < 0] = 0
+    
+    # 計算TR（True Range）
+    tr1 = high - low
+    tr2 = abs(high - close.shift())
+    tr3 = abs(low - close.shift())
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    
+    # 平滑DM和TR（Wilder's smoothing）
+    atr = tr.ewm(alpha=1/period, min_periods=period).mean()
+    plus_di = 100 * (plus_dm.ewm(alpha=1/period, min_periods=period).mean() / atr)
+    minus_di = 100 * (minus_dm.ewm(alpha=1/period, min_periods=period).mean() / atr)
+    
+    # 計算DX
+    dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di).replace(0, np.nan)
+    
+    # 計算ADX（DX的平滑）
+    adx = dx.ewm(alpha=1/period, min_periods=period).mean()
+    
+    return pd.Series(adx), pd.Series(plus_di), pd.Series(minus_di)
+
+
+def calculate_ema_slope(ema: pd.Series, lookback: int = 3) -> pd.Series:
+    """
+    計算EMA斜率（用於判斷趨勢強度）
+    
+    Args:
+        ema: EMA序列
+        lookback: 回溯期（默認3根K線）
+    
+    Returns:
+        EMA斜率（正數=上升，負數=下降）
+    """
+    if len(ema) < lookback + 1:
+        return pd.Series(0.0, index=ema.index)
+    
+    # 計算斜率：(當前值 - N根前值) / N
+    slope = (ema - ema.shift(lookback)) / lookback
+    
+    # 標準化為百分比變化
+    slope_pct = (slope / ema) * 100
+    
+    return pd.Series(slope_pct)

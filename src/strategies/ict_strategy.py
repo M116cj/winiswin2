@@ -15,6 +15,8 @@ from src.utils.indicators import (
     calculate_rsi,
     calculate_atr,
     calculate_bollinger_bands,
+    calculate_adx,
+    calculate_ema_slope,
     identify_order_blocks,
     identify_swing_points,
     determine_market_structure
@@ -174,7 +176,7 @@ class ICTStrategy:
     
     def _determine_trend(self, df: pd.DataFrame) -> str:
         """
-        判斷趨勢方向 - 使用簡化邏輯
+        判斷趨勢方向 - v3.10.0 增強版（ADX過濾 + EMA斜率）
         
         Args:
             df: K線數據
@@ -191,14 +193,46 @@ class ICTStrategy:
         if ema_fast.empty or ema_slow.empty:
             return "neutral"
         
-        # 簡化邏輯：只看快線和慢線的關係
         fast_val = float(ema_fast.iloc[-1])
         slow_val = float(ema_slow.iloc[-1])
         
-        # 快線 > 慢線 = 看漲
+        # ✨ v3.10.0: ADX趨勢強度過濾（避免震盪市假信號）
+        try:
+            adx, plus_di, minus_di = calculate_adx(df, self.config.ADX_PERIOD)
+            if not adx.empty:
+                adx_val = float(adx.iloc[-1])
+                
+                # ADX < 20：無趨勢（震盪市），拒絕信號
+                if adx_val < self.config.ADX_TREND_THRESHOLD:
+                    logger.debug(f"ADX過濾：{adx_val:.1f} < {self.config.ADX_TREND_THRESHOLD} （震盪市）")
+                    return "neutral"
+        except Exception as e:
+            logger.debug(f"ADX計算失敗（降級使用EMA）: {e}")
+        
+        # ✨ v3.10.0: EMA斜率確認（確保趨勢有動能）
+        try:
+            ema_fast_slope = calculate_ema_slope(ema_fast, lookback=3)
+            if not ema_fast_slope.empty:
+                slope_val = float(ema_fast_slope.iloc[-1])
+                slope_threshold = self.config.EMA_SLOPE_THRESHOLD
+                
+                # 快線 > 慢線 但斜率平坦 → 趨勢可能衰竭
+                if fast_val > slow_val:
+                    if slope_val < slope_threshold:
+                        logger.debug(f"EMA斜率過低：{slope_val:.3f}% （趨勢衰竭）")
+                        return "neutral"
+                    return "bullish"
+                elif fast_val < slow_val:
+                    if slope_val > -slope_threshold:
+                        logger.debug(f"EMA斜率過低：{slope_val:.3f}% （趨勢衰竭）")
+                        return "neutral"
+                    return "bearish"
+        except Exception as e:
+            logger.debug(f"EMA斜率計算失敗（降級使用簡單EMA）: {e}")
+        
+        # 降級邏輯：僅使用EMA交叉
         if fast_val > slow_val:
             return "bullish"
-        # 快線 < 慢線 = 看跌
         elif fast_val < slow_val:
             return "bearish"
         else:
