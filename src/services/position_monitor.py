@@ -115,6 +115,11 @@ class PositionMonitor:
                 else:
                     holding_hours = 0
                 
+                # 🎯 v3.9.2.5：正确计算未实现盈亏（USDT）
+                # unrealized_pnl_usdt = 仓位价值 * 盈亏百分比
+                position_value = abs(position_amt) * entry_price
+                unrealized_pnl_usdt = position_value * (pnl_pct / 100)
+                
                 # 记录详细持仓信息
                 position_info = {
                     'symbol': symbol,
@@ -123,13 +128,38 @@ class PositionMonitor:
                     'entry_price': entry_price,
                     'current_price': current_price,
                     'pnl_pct': pnl_pct,
-                    'unrealized_pnl': float(position.get('unRealizedProfit', 0)),
+                    'unrealized_pnl': unrealized_pnl_usdt,  # 使用计算值而非API值
                     'stop_loss': current_sl,
                     'take_profit': current_tp,
                     'holding_hours': holding_hours,
                     'leverage': float(position.get('leverage', 0))
                 }
                 stats['positions'].append(position_info)
+                
+                # 🤖 v3.9.2.5：ML主动分析和建议
+                ml_suggestion = ""
+                if self.ml_predictor:
+                    try:
+                        indicators = await self._get_current_indicators(symbol)
+                        rebound_pred = await self.ml_predictor.predict_rebound(
+                            symbol=symbol,
+                            direction=direction,
+                            entry_price=entry_price,
+                            current_price=current_price,
+                            pnl_pct=pnl_pct,
+                            indicators=indicators
+                        )
+                        
+                        if rebound_pred:
+                            action_emoji = {
+                                'wait_and_monitor': '⏳',
+                                'adjust_strategy': '🔧',
+                                'close_immediately': '❌'
+                            }.get(rebound_pred['recommended_action'], '❓')
+                            
+                            ml_suggestion = f" | ML建议:{action_emoji}{rebound_pred['recommended_action'][:4]} 反弹:{rebound_pred['rebound_probability']:.0%}"
+                    except Exception as e:
+                        logger.debug(f"ML分析失败 {symbol}: {e}")
                 
                 # 📊 日志输出每个持仓
                 pnl_emoji = "🟢" if pnl_pct > 0 else "🔴"
@@ -141,7 +171,7 @@ class PositionMonitor:
                     f"盈亏:{pnl_pct:+7.2f}% | "
                     f"入场:{entry_price:.6f} 当前:{current_price:.6f} | "
                     f"{sl_status} {tp_status} | "
-                    f"持仓:{holding_hours:.1f}h"
+                    f"持仓:{holding_hours:.1f}h{ml_suggestion}"
                 )
                 
                 # 检查是否需要调整止损止盈
