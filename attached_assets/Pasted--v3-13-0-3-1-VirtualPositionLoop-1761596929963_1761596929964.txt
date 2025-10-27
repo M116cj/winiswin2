@@ -1,0 +1,257 @@
+🛠️ v3.13.0 修復計畫任務清單
+根據你的完整檢查，以下是 3 項關鍵問題 的詳細修復計畫，按優先級排序並提供可執行步驟。
+
+
+
+🔴 優先級 1：修復 VirtualPositionLoop 同步路徑問題
+📌 問題定位
+* 檔案: src/main.py (line 635-677)
+* 問題代碼:
+# ❌ line 669 - 同步調用
+self.virtual_position_manager.update_virtual_positions(market_prices)
+* 影響: 虛擬倉位更新仍為同步，無法達到 <1秒效能提升
+
+✅ 修復步驟
+步驟 1: 移除舊的同步方法
+# src/managers/virtual_position_manager.py
+# 刪除或標記為 deprecated 的方法
+def update_virtual_positions(self, market_prices):  # 刪除此方法
+    ...
+步驟 2: 更新主循環調用
+
+# src/main.py - 修改 VirtualPositionLoop 部分
+# 找到類似這樣的代碼塊 (line 635-677)
+async def virtual_monitoring_cycle(self):
+    """虛擬監控循環 - v3.13.0 異步版本"""
+    try:
+        # ❌ 舊代碼
+        # self.virtual_position_manager.update_virtual_positions(market_prices)
+        
+        # ✅ 新代碼 - 使用異步批量更新
+        closed_positions = await self.virtual_position_manager.update_all_prices_async(
+            binance_client=self.binance_client
+        )
+        
+        # 處理關閉的倉位
+        if closed_positions:
+            for pos in closed_positions:
+                self.data_archiver.archive_position(pos.to_dict())
+                self.performance_manager.record_virtual_trade(pos.to_dict())
+                
+    except Exception as e:
+        logger.warning(f"虛擬循環錯誤: {e}")
+
+步驟 3: 驗證修復
+
+# tests/test_virtual_position_integration.py
+async def test_main_loop_integration():
+    """測試主循環正確調用異步方法"""
+    bot = TradingBot()
+    await bot.initialize()
+    
+    # Mock 虛擬倉位管理器
+    with patch.object(bot.virtual_position_manager, 'update_all_prices_async') as mock_update:
+        mock_update.return_value = []
+        await bot.virtual_monitoring_cycle()
+        
+    mock_update.assert_called_once()  # 確保調用異步方法
+集成 GlobalProcessPool 到 ParallelAnalyzer
+📌 問題定位
+* 檔案: src/core/global_pool.py (已實現)
+* 檔案: src/services/parallel_analyzer.py (未使用)
+* 影響: 每60秒重建進程池，浪費 0.8-1.2 秒/週期
+
+✅ 修復步驟
+步驟 1: 確認 GlobalProcessPool 實現
+# src/core/global_pool.py - 確保包含以下內容
+from concurrent.futures import ProcessPoolExecutor
+import multiprocessing as mp
+
+class GlobalProcessPool:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.executor = ProcessPoolExecutor(
+                max_workers=32,
+                initializer=init_worker,
+                initargs=("data/models/model.onnx",)  # ONNX 路徑
+            )
+        return cls._instance
+
+def init_worker(model_path):
+    global ml_model
+    # 預加載 ONNX 模型到子進程
+    import onnxruntime as ort
+    ml_model = ort.InferenceSession(model_path)
+步驟 2: 修改 ParallelAnalyzer
+
+# src/services/parallel_analyzer.py
+from src.core.global_pool import GlobalProcessPool
+
+class ParallelAnalyzer:
+    def __init__(self):
+        self.process_pool = GlobalProcessPool()._instance.executor
+    
+    async def analyze_async(self, symbols):
+        """異步並行分析 - 使用全局進程池"""
+        loop = asyncio.get_event_loop()
+        
+        # 提交任務到全局進程池
+        tasks = [
+            loop.run_in_executor(
+                self.process_pool, 
+                self._analyze_single_symbol, 
+                symbol
+            )
+            for symbol in symbols
+        ]
+        
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        return [r for r in results if not isinstance(r, Exception)]
+    
+    def _analyze_single_symbol(self, symbol):
+        """單一符號分析 - 在子進程中執行"""
+        # 這裡可以使用預加載的 ml_model
+        global ml_model
+        # ... 執行分析邏輯 ...
+        return signal
+實現增量 K 線緩存
+📌 問題定位
+* 需求: get_klines_incremental() 方法
+* 當前狀態: 未實現
+* 影響: API 請求浪費 60-80%，網路 I/O 延遲高
+
+✅ 修復步驟
+步驟 1: 實現增量 K 線獲取
+# src/services/data_service.py
+import time
+from typing import Optional, Dict
+import pandas as pd
+
+class DataService:
+    def __init__(self):
+        self._kline_cache: Dict[str, dict] = {}  # {cache_key: {'data': df, 'timestamp': float}}
+    
+    async def get_klines_incremental(self, symbol: str, interval: str, limit: int = 100):
+        """增量獲取 K 線數據"""
+        cache_key = f"{symbol}_{interval}"
+        current_time = time.time()
+        
+        # 檢查緩存
+        cached = self._kline_cache.get(cache_key)
+        if cached is None:
+            # 首次獲取完整數據
+            df = await self._fetch_full_klines(symbol, interval, limit)
+            self._kline_cache[cache_key] = {
+                'data': df,
+                'timestamp': current_time,
+                'last_close_time': df.iloc[-1]['close_time'] if not df.empty else 0
+            }
+            return df
+        
+        # 檢查是否需要更新（基於動態 TTL）
+        volatility = self._calculate_volatility(cached['data'])
+        dynamic_ttl = max(60, 300 * (1 - min(volatility, 0.1)))
+        
+        if current_time - cached['timestamp'] < dynamic_ttl:
+            return cached['data']
+        
+        # 增量更新：只獲取新 K 線
+        last_close_time = cached['last_close_time']
+        new_klines = await self._fetch_klines_since(symbol, interval, last_close_time)
+        
+        if new_klines.empty:
+            # 沒有新數據，更新時間戳
+            cached['timestamp'] = current_time
+            return cached['data']
+        
+        # 合併數據
+        updated_df = pd.concat([cached['data'], new_klines]).drop_duplicates(subset=['open_time']).tail(limit)
+        
+        # 更新緩存
+        self._kline_cache[cache_key] = {
+            'data': updated_df,
+            'timestamp': current_time,
+            'last_close_time': updated_df.iloc[-1]['close_time']
+        }
+        
+        return updated_df
+    
+    async def _fetch_full_klines(self, symbol: str, interval: str, limit: int):
+        """獲取完整 K 線數據"""
+        return await self.binance_client.get_klines(symbol, interval, limit)
+    
+    async def _fetch_klines_since(self, symbol: str, interval: str, since_time: float):
+        """獲取指定時間後的 K 線"""
+        # Binance API 支援 startTime 參數
+        return await self.binance_client.get_klines_since(symbol, interval, since_time)
+    
+    def _calculate_volatility(self, df: pd.DataFrame) -> float:
+        """計算波動率"""
+        if len(df) < 20:
+            return 0.0
+        return df['high'].rolling(20).std().iloc[-1] / df['close'].iloc[-1]
+步驟 2: 更新 BinanceClient 支援 startTime
+# src/clients/binance_client.py
+async def get_klines_since(self, symbol: str, interval: str, since_time: float):
+    """獲取指定時間後的 K 線"""
+    url = f"{self.base_url}/fapi/v1/klines"
+    params = {
+        'symbol': symbol,
+        'interval': interval,
+        'startTime': int(since_time * 1000),  # Binance 使用毫秒
+        'limit': 1000  # 最大限制
+    }
+    
+    async with self.session.get(url, params=params) as response:
+        if response.status == 200:
+            data = await response.json()
+            return self._parse_klines(data)
+        else:
+            raise BinanceAPIError(f"Status {response.status}")
+步驟 3: 在主循環中使用
+# src/services/data_service.py - 更新 scan_market
+async def get_multi_timeframe_data(self, symbol: str):
+    """獲取多時間框架數據 - 使用增量緩存"""
+    tasks = [
+        self.get_klines_incremental(symbol, '1h', 100),
+        self.get_klines_incremental(symbol, '15m', 100),
+        self.get_klines_incremental(symbol, '5m', 200)
+    ]
+    klines_1h, klines_15m, klines_5m = await asyncio.gather(*tasks)
+    return {'1h': klines_1h, '15m': klines_15m, '5m': klines_5m}
+
+slots 擴展任務
+需要添加 slots 的類別
+1. StateConfig
+# src/core/trading_state.py
+class StateConfig:
+    __slots__ = ('consecutive_losses', 'drawdown', 'circuit_breaker_level', 'win_rate')
+    
+    def __init__(self, **kwargs):
+        for slot in self.__slots__:
+            setattr(self, slot, kwargs.get(slot, 0))
+2. OperationTimer
+# src/utils/helpers.py
+class OperationTimer:
+    __slots__ = ('name', 'start_time', 'end_time', 'duration')
+    
+    def __init__(self, name: str):
+        self.name = name
+        self.start_time = None
+        self.end_time = None
+        self.duration = None
+    
+    def start(self):
+        self.start_time = time.perf_counter()
+    
+    def stop(self):
+        self.end_time = time.perf_counter()
+        self.duration = self.end_time - self.start_time
+驗證策略
+每項修復後執行：
+1. 單元測試: 確保功能正確
+2. 效能基準測試: 驗證性能提升
+3. 整合測試: 確保與其他模組相容
