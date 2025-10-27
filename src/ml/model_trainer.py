@@ -48,10 +48,24 @@ class XGBoostTrainer:
         self.adaptive_learner = AdaptiveLearner()
         self.ensemble = EnsembleModel() if use_ensemble else None
         
-        # 🚀 v3.9.0新增：優化功能
+        # 🚀 v3.9.0新增：優化功能（默認全部啟用）
         self.leakage_validator = LabelLeakageValidator()
         self.imbalance_handler = ImbalanceHandler()
-        self.drift_detector = DriftDetector(window_size=1000, drift_threshold=0.05)
+        self.drift_detector = DriftDetector(
+            window_size=1000,
+            drift_threshold=0.05,
+            enable_dynamic_window=True,      # 動態窗口調整
+            enable_multivariate_drift=True   # 多變量漂移檢測（MMD）
+        )
+        
+        # 🎯 默認使用risk_adjusted目標（風險調整後收益）
+        from src.ml.target_optimizer import TargetOptimizer
+        from src.ml.uncertainty_quantifier import UncertaintyQuantifier
+        from src.ml.feature_importance_monitor import FeatureImportanceMonitor
+        
+        self.target_optimizer = TargetOptimizer(target_type='risk_adjusted')
+        self.uncertainty_quantifier = UncertaintyQuantifier()  # Quantile Regression
+        self.importance_monitor = FeatureImportanceMonitor()
         
         os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
     
@@ -95,18 +109,32 @@ class XGBoostTrainer:
             if leakage_report['has_leakage']:
                 logger.warning(f"⚠️ 檢測到潛在標籤泄漏：{leakage_report['leakage_features']}")
             
-            # 📊 v3.9.0：應用滑動窗口（防止舊數據影響過大）
-            df = self.drift_detector.apply_sliding_window(df, window_size=1000)
+            # 📊 v3.9.1：應用動態滑動窗口（波動率自適應 500-2000）
+            df = self.drift_detector.apply_sliding_window(df)  # 不傳window_size，使用動態計算
             
-            # 準備特徵
-            X, y = self.data_processor.prepare_features(df)
+            # 🎯 v3.9.1：準備risk_adjusted目標變量（替代二分類）
+            y, target_meta = self.target_optimizer.prepare_target(df)
+            logger.info(f"📊 目標類型：{target_meta.get('target_type', 'unknown')}")
+            
+            # 準備特徵（不包含目標）
+            X, _ = self.data_processor.prepare_features(df)
+            
+            # 只保留數值特徵（與目標對齊）
+            X = X.loc[y.index]
             
             if X.empty or y.empty:
                 logger.error("特徵準備失敗")
                 return None, {}
             
-            # 📊 v3.9.0：類別平衡分析
-            balance_report = self.imbalance_handler.analyze_class_balance(y, X)
+            # 📊 v3.9.1：類別平衡分析（僅二分類模式）
+            balance_report = {}
+            is_classification = self.target_optimizer.target_type == 'binary'
+            
+            if is_classification:
+                balance_report = self.imbalance_handler.analyze_class_balance(y, X)
+            else:
+                # 回歸模式：跳過類別平衡檢查
+                balance_report = {'needs_balancing': False, 'class_distribution': {}}
             
             # 🔍 v3.9.0：特徵分布漂移檢測
             drift_report = self.drift_detector.detect_feature_drift(
@@ -118,21 +146,25 @@ class XGBoostTrainer:
             # 分割數據
             X_train, X_test, y_train, y_test = self.data_processor.split_data(X, y)
             
-            # 🛡️ v3.9.0：計算樣本權重（處理類別不平衡）
+            # 🛡️ v3.9.1：計算樣本權重（分類：類別權重，回歸：時間權重）
             sample_weights = None
-            if balance_report.get('needs_balancing', False):
-                logger.info("📊 檢測到類別不平衡，計算動態樣本權重...")
+            
+            if is_classification and balance_report.get('needs_balancing', False):
+                logger.info("📊 分類模式：計算類別平衡權重...")
                 sample_weights = self.imbalance_handler.calculate_sample_weight(y_train, method='balanced')
-                
-                # 同時結合時間衰減權重
-                time_weights = self.drift_detector.calculate_sample_weights(
-                    pd.DataFrame({'y': y_train}),
-                    decay_factor=0.95
-                )
-                
-                # 組合權重
-                if sample_weights is not None:
-                    sample_weights = sample_weights * time_weights
+            
+            # 所有模式：應用時間衰減權重（新數據權重更高）
+            time_weights = self.drift_detector.calculate_sample_weights(
+                pd.DataFrame({'y': y_train}),
+                decay_factor=0.95
+            )
+            
+            if sample_weights is not None:
+                sample_weights = sample_weights * time_weights
+            else:
+                sample_weights = time_weights
+            
+            logger.info(f"📊 樣本權重：min={sample_weights.min():.3f}, max={sample_weights.max():.3f}, mean={sample_weights.mean():.3f}")
             
             # ✨ v3.4.0：超參數調優
             if params is None:
@@ -140,13 +172,11 @@ class XGBoostTrainer:
                     logger.info("啟動超參數自動調優...")
                     params, _ = self.tuner.quick_tune(X_train, y_train, use_gpu)
                 else:
-                    # 默認參數
-                    params = {
+                    # 🎯 v3.9.1：根據目標類型設置默認參數
+                    base_params = {
                         'max_depth': 6,
                         'learning_rate': 0.1,
                         'n_estimators': 200,
-                        'objective': 'binary:logistic',
-                        'eval_metric': 'auc',
                         'subsample': 0.8,
                         'colsample_bytree': 0.8,
                         'min_child_weight': 1,
@@ -157,8 +187,12 @@ class XGBoostTrainer:
                         'n_jobs': 32  # 使用 32 核心
                     }
                     
-                    # 🛡️ v3.9.0：添加成本感知參數（處理不平衡）
-                    if balance_report.get('needs_balancing', False):
+                    # 根據目標類型調整objective和eval_metric
+                    params = self.target_optimizer.get_model_params(base_params)
+                    logger.info(f"📊 模型參數：objective={params['objective']}, eval_metric={params['eval_metric']}")
+                    
+                    # 🛡️ v3.9.1：分類模式才添加成本感知參數
+                    if is_classification and balance_report.get('needs_balancing', False):
                         scale_pos_weight = self.imbalance_handler.get_scale_pos_weight(y_train)
                         params['scale_pos_weight'] = scale_pos_weight
                         logger.info(f"📊 啟用成本感知學習：scale_pos_weight = {scale_pos_weight:.2f}")
@@ -175,11 +209,15 @@ class XGBoostTrainer:
                     else:
                         params['tree_method'] = 'hist'
             
-            # ✨ v3.4.0：增量學習支持
+            # ✨ v3.9.1：根據目標類型選擇模型
             logger.info("開始訓練 XGBoost 模型...")
             logger.info(f"訓練集大小: {X_train.shape}, 測試集大小: {X_test.shape}")
             
-            model = xgb.XGBClassifier(**params)
+            if is_classification:
+                model = xgb.XGBClassifier(**params)
+            else:
+                # 回歸模型（用於risk_adjusted和pnl_pct）
+                model = xgb.XGBRegressor(**params)
             
             # 增量學習：加載舊模型繼續訓練
             xgb_model_file = None
@@ -248,32 +286,58 @@ class XGBoostTrainer:
             
             # 預測
             y_pred = model.predict(X_test)
-            y_pred_proba = model.predict_proba(X_test)[:, 1]
             
-            # 評估指標
+            # 🎯 v3.9.1：根據目標類型評估
             metrics = {
-                'training_samples': len(df),  # ✨ 保存總訓練樣本數（用於持續訓練）
-                'accuracy': float(accuracy_score(y_test, y_pred)),
-                'precision': float(precision_score(y_test, y_pred, zero_division='warn')),
-                'recall': float(recall_score(y_test, y_pred, zero_division='warn')),
-                'f1_score': float(f1_score(y_test, y_pred, zero_division='warn')),
-                'roc_auc': float(roc_auc_score(y_test, y_pred_proba)),
+                'training_samples': len(df),
                 'train_set_size': len(X_train),
                 'test_set_size': len(X_test),
-                'trained_at': datetime.now().isoformat()
+                'trained_at': datetime.now().isoformat(),
+                'target_type': self.target_optimizer.target_type
             }
             
-            # 📊 v3.9.0：詳細混淆矩陣報告（包含分方向評估）
-            confusion_report = self.imbalance_handler.generate_confusion_matrix_report(
-                y_test.values,
-                y_pred,
-                X_test
-            )
-            metrics['confusion_matrix_detailed'] = confusion_report
-            
-            # 保留原有混淆矩陣格式（向後兼容）
-            cm = confusion_matrix(y_test, y_pred)
-            metrics['confusion_matrix'] = cm.tolist()
+            if is_classification:
+                # 分類評估
+                y_pred_proba = model.predict_proba(X_test)[:, 1]
+                
+                metrics.update({
+                    'accuracy': float(accuracy_score(y_test, y_pred)),
+                    'precision': float(precision_score(y_test, y_pred, zero_division=0)),
+                    'recall': float(recall_score(y_test, y_pred, zero_division=0)),
+                    'f1_score': float(f1_score(y_test, y_pred, zero_division=0)),
+                    'roc_auc': float(roc_auc_score(y_test, y_pred_proba))
+                })
+                
+                # 混淆矩陣報告
+                confusion_report = self.imbalance_handler.generate_confusion_matrix_report(
+                    y_test.values,
+                    y_pred,
+                    X_test
+                )
+                metrics['confusion_matrix_detailed'] = confusion_report
+                
+                cm = confusion_matrix(y_test, y_pred)
+                metrics['confusion_matrix'] = cm.tolist()
+            else:
+                # 回歸評估（risk_adjusted / pnl_pct）
+                from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+                import numpy as np
+                
+                mae = mean_absolute_error(y_test, y_pred)
+                mse = mean_squared_error(y_test, y_pred)
+                rmse = np.sqrt(mse)
+                r2 = r2_score(y_test, y_pred)
+                
+                # 方向準確率（預測符號是否正確）
+                direction_accuracy = np.mean(np.sign(y_test) == np.sign(y_pred))
+                
+                metrics.update({
+                    'mae': float(mae),
+                    'mse': float(mse),
+                    'rmse': float(rmse),
+                    'r2_score': float(r2),
+                    'direction_accuracy': float(direction_accuracy)
+                })
             
             # 📊 v3.9.0：添加優化報告
             metrics['optimization_reports'] = {
@@ -290,12 +354,19 @@ class XGBoostTrainer:
             metrics['feature_importance'] = feature_importance
             
             logger.info("=" * 60)
-            logger.info("模型訓練完成")
-            logger.info(f"準確率: {metrics['accuracy']:.4f}")
-            logger.info(f"精確率: {metrics['precision']:.4f}")
-            logger.info(f"召回率: {metrics['recall']:.4f}")
-            logger.info(f"F1 分數: {metrics['f1_score']:.4f}")
-            logger.info(f"ROC-AUC: {metrics['roc_auc']:.4f}")
+            logger.info(f"模型訓練完成（目標類型：{self.target_optimizer.target_type}）")
+            
+            if is_classification:
+                logger.info(f"準確率: {metrics['accuracy']:.4f}")
+                logger.info(f"精確率: {metrics['precision']:.4f}")
+                logger.info(f"召回率: {metrics['recall']:.4f}")
+                logger.info(f"F1 分數: {metrics['f1_score']:.4f}")
+                logger.info(f"ROC-AUC: {metrics['roc_auc']:.4f}")
+            else:
+                logger.info(f"MAE: {metrics['mae']:.4f}")
+                logger.info(f"RMSE: {metrics['rmse']:.4f}")
+                logger.info(f"R² Score: {metrics['r2_score']:.4f}")
+                logger.info(f"方向準確率: {metrics['direction_accuracy']:.4f} ({metrics['direction_accuracy']*100:.1f}%)")
             
             # ✨ v3.4.0：訓練性能追蹤
             training_time = time.time() - start_time

@@ -12,28 +12,101 @@ from scipy import stats
 import json
 import os
 
+try:
+    from src.ml.multivariate_drift import MultivariateDriftDetector
+    MULTIVARIATE_DRIFT_AVAILABLE = True
+except ImportError:
+    MULTIVARIATE_DRIFT_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
 class DriftDetector:
-    """模型漂移检测器"""
+    """模型漂移检测器（动态窗口 + 多变量漂移检测）"""
     
-    def __init__(self, window_size: int = 1000, drift_threshold: float = 0.05):
+    def __init__(
+        self,
+        window_size: int = 1000,
+        drift_threshold: float = 0.05,
+        enable_dynamic_window: bool = True,
+        enable_multivariate_drift: bool = True
+    ):
         """
         初始化漂移检测器
         
         Args:
-            window_size: 滑动窗口大小（保留最近N笔数据）
+            window_size: 滑动窗口基础大小（保留最近N笔数据）
             drift_threshold: KS检验p值阈值（<threshold则认为漂移）
+            enable_dynamic_window: 是否启用动态窗口调整
+            enable_multivariate_drift: 是否启用多变量漂移检测（MMD）
         """
+        self.base_window_size = window_size
         self.window_size = window_size
         self.drift_threshold = drift_threshold
+        self.enable_dynamic_window = enable_dynamic_window
+        self.enable_multivariate_drift = enable_multivariate_drift
+        
         self.baseline_stats = {}  # 基准特征统计
         self.drift_history = []  # 漂移历史记录
         self.stats_path = "data/models/baseline_stats.json"
         
         os.makedirs(os.path.dirname(self.stats_path), exist_ok=True)
         self._load_baseline_stats()
+        
+        # 初始化多变量漂移检测器
+        if enable_multivariate_drift and MULTIVARIATE_DRIFT_AVAILABLE:
+            self.multivariate_detector = MultivariateDriftDetector(
+                n_components=10,
+                mmd_threshold=0.1
+            )
+        else:
+            self.multivariate_detector = None
+        
+        logger.info(
+            f"🔄 漂移检测器初始化：动态窗口={enable_dynamic_window}, "
+            f"多变量检测={enable_multivariate_drift and MULTIVARIATE_DRIFT_AVAILABLE}"
+        )
+    
+    def calculate_dynamic_window_size(self, df: pd.DataFrame) -> int:
+        """
+        根据市场波动率动态调整窗口大小
+        
+        公式：window_size = max(500, min(2000, volatility_adapted))
+        
+        Args:
+            df: 数据集
+        
+        Returns:
+            int: 调整后的窗口大小
+        """
+        if not self.enable_dynamic_window:
+            return self.base_window_size
+        
+        # 计算波动率（使用ATR或收益率标准差）
+        if 'atr_entry' in df.columns:
+            volatility = df['atr_entry'].tail(100).mean()
+            # 归一化到0-1（假设ATR范围0-5%）
+            volatility_normalized = min(volatility / 0.05, 1.0)
+        elif 'pnl_pct' in df.columns:
+            volatility = df['pnl_pct'].tail(100).std()
+            volatility_normalized = min(volatility / 10.0, 1.0)
+        else:
+            # 无波动率数据，使用基础窗口
+            return self.base_window_size
+        
+        # 动态调整：高波动率→小窗口（更快适应），低波动率→大窗口（更稳定）
+        # 反向关系：波动率高→窗口小
+        volatility_factor = 1.0 - volatility_normalized
+        
+        # 计算窗口大小：500 - 2000
+        dynamic_size = int(500 + (2000 - 500) * volatility_factor)
+        
+        logger.info(
+            f"📊 动态窗口调整：波动率={volatility_normalized:.2%}, "
+            f"窗口大小={dynamic_size} (基础={self.base_window_size})"
+        )
+        
+        return dynamic_size
     
     def apply_sliding_window(
         self,
@@ -43,15 +116,19 @@ class DriftDetector:
         """
         应用滑动窗口（只保留最近N笔数据）
         
+        支持动态窗口调整（根据波动率）
+        
         Args:
             df: 完整数据集
-            window_size: 窗口大小（默认使用self.window_size）
+            window_size: 窗口大小（默认使用动态计算）
         
         Returns:
             pd.DataFrame: 窗口内数据
         """
         if window_size is None:
-            window_size = self.window_size
+            # 动态计算窗口大小
+            window_size = self.calculate_dynamic_window_size(df)
+            self.window_size = window_size  # 更新当前窗口大小
         
         original_size = len(df)
         
@@ -127,7 +204,7 @@ class DriftDetector:
         update_baseline: bool = False
     ) -> Dict:
         """
-        检测特征分布漂移（使用KS检验）
+        检测特征分布漂移（KS检验 + 多变量MMD检测）
         
         Args:
             current_data: 当前数据
@@ -140,6 +217,12 @@ class DriftDetector:
         if not self.baseline_stats:
             logger.info("📊 首次检测，建立基准统计")
             self._build_baseline_stats(current_data, feature_columns)
+            
+            # 建立多变量基准
+            if self.multivariate_detector is not None:
+                X = current_data[feature_columns].select_dtypes(include=[np.number])
+                self.multivariate_detector.fit_baseline(X)
+            
             return {
                 'has_drift': False,
                 'reason': '首次建立基准',
@@ -184,11 +267,21 @@ class DriftDetector:
                     'current_std': float(np.std(current_values))
                 }
         
+        # 🚀 多变量漂移检测（MMD）
+        multivariate_report = {}
+        if self.multivariate_detector is not None:
+            X_current = current_data[feature_columns].select_dtypes(include=[np.number])
+            multivariate_report = self.multivariate_detector.detect_drift(X_current)
+        
         report = {
             'timestamp': datetime.now().isoformat(),
-            'has_drift': len(drifted_features) > 0,
-            'drifted_features': drifted_features,
-            'drift_details': drift_details,
+            'has_drift': len(drifted_features) > 0 or multivariate_report.get('has_drift', False),
+            'univariate_drift': {
+                'has_drift': len(drifted_features) > 0,
+                'drifted_features': drifted_features,
+                'drift_details': drift_details
+            },
+            'multivariate_drift': multivariate_report,
             'total_features_checked': len(feature_columns),
             'drift_threshold': self.drift_threshold
         }
