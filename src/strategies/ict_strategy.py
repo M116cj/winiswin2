@@ -146,23 +146,28 @@ class ICTStrategy:
                 'indicators': indicators_data
             }
             
-            # 📊 详细的评分breakdown日志
-            logger.info(
-                f"✅ 生成交易信號: {symbol} {signal_direction} "
-                f"信心度 {confidence_score:.2%}"
-            )
-            logger.info(
-                f"   📊 評分詳情: "
-                f"趨勢對齊={sub_scores.get('trend_alignment', 0):.2f}/1.0 | "
-                f"市場結構={sub_scores.get('market_structure', 0):.2f}/1.0 | "
-                f"價格位置={sub_scores.get('price_position', 0):.2f}/1.0 | "
-                f"動量={sub_scores.get('momentum', 0):.2f}/1.0 | "
-                f"波動率={sub_scores.get('volatility', 0):.2f}/1.0"
-            )
-            logger.info(
-                f"   📈 趨勢狀態: 1h={h1_trend} | 15m={m15_trend} | 5m={m5_trend} | "
-                f"結構={market_structure}"
-            )
+            # ✨ v3.9.2.2：增强评级显示格式（Railway日志清晰可见）
+            logger.info("=" * 70)
+            logger.info(f"✅ 【交易信號】{symbol} {signal_direction} | 總信心度: {confidence_score:.1%}")
+            logger.info("=" * 70)
+            logger.info("📊 【五維ICT評分明細】")
+            logger.info(f"   1️⃣  趨勢對齊 (權重40%): {sub_scores.get('trend_alignment', 0):.3f} "
+                       f"→ 貢獻 {sub_scores.get('trend_alignment', 0) * 40:.1f}%")
+            logger.info(f"   2️⃣  市場結構 (權重20%): {sub_scores.get('market_structure', 0):.3f} "
+                       f"→ 貢獻 {sub_scores.get('market_structure', 0) * 20:.1f}%")
+            logger.info(f"   3️⃣  價格位置 (權重20%): {sub_scores.get('price_position', 0):.3f} "
+                       f"→ 貢獻 {sub_scores.get('price_position', 0) * 20:.1f}%")
+            logger.info(f"   4️⃣  動量指標 (權重10%): {sub_scores.get('momentum', 0):.3f} "
+                       f"→ 貢獻 {sub_scores.get('momentum', 0) * 10:.1f}%")
+            logger.info(f"   5️⃣  波動率   (權重10%): {sub_scores.get('volatility', 0):.3f} "
+                       f"→ 貢獻 {sub_scores.get('volatility', 0) * 10:.1f}%")
+            logger.info("-" * 70)
+            logger.info(f"📈 【三時間框架趨勢】")
+            logger.info(f"   • 1小時圖:  {h1_trend.upper()}")
+            logger.info(f"   • 15分鐘圖: {m15_trend.upper()}")
+            logger.info(f"   • 5分鐘圖:  {m5_trend.upper()}")
+            logger.info(f"   • 市場結構: {market_structure.upper()}")
+            logger.info("=" * 70)
             
             return signal
             
