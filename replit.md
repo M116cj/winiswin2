@@ -140,6 +140,34 @@ src/
 
 ## 📝 最近更新
 
+### 2025-10-27 (v3.9.2.7.1) - 🎯 ML主动控制仓位 + 虚拟仓位监控
+
+**目标**: ML不仅分析仓位，还真正执行操作（调整止损/平仓），同时监控虚拟仓位
+
+**核心修改**:
+1. ✅ **ML建议真正执行**:
+   - `adjust_strategy`: 新增`_update_stop_loss`方法，ML建议收紧止损时真正更新订单
+   - `close_immediately`: 调用`_force_close_position`立即平仓
+   - 订单管理：先取消旧止损订单，再下新STOP_MARKET订单
+
+2. ✅ **虚拟仓位监控**:
+   - `PositionMonitor`新增`virtual_position_manager`参数
+   - `monitor_virtual_positions`方法：监控虚拟仓位，亏损>10%触发ML分析
+   - `monitor_all_positions`现在同时监控真实+虚拟仓位
+
+3. ✅ **完整ML学习闭环**:
+   - 真实仓位 → ML分析 → 执行调整 → 更新订单
+   - 虚拟仓位 → ML分析 → 记录统计 → 学习反馈
+   - 所有仓位变化通过callback传给TradeRecorder和DataArchiver
+
+**文件修改**: 
+- `src/services/position_monitor.py`：新增`_update_stop_loss`和`monitor_virtual_positions`方法
+- `src/main.py`：PositionMonitor初始化时传入virtual_position_manager
+
+**Architect审查**: ✅ 通过（无阻断性问题）
+
+---
+
 ### 2025-10-27 (v3.9.2.6) - 🤖 ML主动分析 + 正确PnL计算
 
 **用户反馈**：
