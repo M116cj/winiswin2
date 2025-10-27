@@ -16,7 +16,7 @@ EMERGENCY_STOP_ACTIVE = False
 
 
 class RiskManager:
-    """風險管理器（v3.9.1緊急保護版）"""
+    """風險管理器（v3.9.2智能風險管理版）"""
     
     def __init__(self):
         """初始化風險管理器"""
@@ -38,6 +38,47 @@ class RiskManager:
         self.MAX_DAILY_LOSS_PCT = 0.15  # 單日最大虧損15%：當日停止
         self.MAX_TOTAL_LOSS_PCT = 0.30  # 總最大虧損30%
         self.CIRCUIT_BREAKER_LOSS_PCT = 0.20  # 斷路器：虧損20%立即停止
+    
+    def log_risk_status(self):
+        """输出当前风险管理状态到日志"""
+        logger.info("\n" + "=" * 60)
+        logger.info("📊 風險管理狀態")
+        logger.info("=" * 60)
+        
+        # 连续亏损状态
+        if self.consecutive_losses > 0:
+            logger.info(f"⚠️  連續虧損: {self.consecutive_losses} 單")
+        else:
+            logger.info(f"✅ 連續虧損: 0 單（良好）")
+        
+        # 回撤状态
+        if self.current_drawdown > 0:
+            logger.warning(f"📉 當前回撤: {self.current_drawdown:.1%}")
+            logger.info(f"   最大回撤: {self.max_drawdown:.1%}")
+        else:
+            logger.info(f"✅ 當前回撤: 0% （無回撤）")
+        
+        # 谨慎模式状态
+        if self.high_quality_only_mode:
+            logger.warning(f"🛡️  謹慎模式：啟動（只允許高品質信號）")
+            logger.info(f"   觸發條件：連續虧損≥6單 或 單日虧損≥3%")
+            logger.info(f"   高品質標準：信心度≥70% 且 歷史勝率≥60%")
+        else:
+            logger.info(f"✅ 謹慎模式：未啟動（正常交易）")
+        
+        # 紧急停止状态
+        if self.emergency_stop_triggered:
+            logger.error(f"🔴 緊急停止：已觸發（停止所有交易）")
+        else:
+            logger.info(f"✅ 緊急停止：未觸發")
+        
+        # 保护阈值提醒
+        logger.info(f"\n🛡️  保護閾值設置：")
+        logger.info(f"   • 單日虧損警戒線：{self.DAILY_LOSS_CAUTION_PCT:.1%} → 謹慎模式")
+        logger.info(f"   • 單日虧損上限：{self.MAX_DAILY_LOSS_PCT:.1%} → 當日停止")
+        logger.info(f"   • 總虧損斷路器：{self.CIRCUIT_BREAKER_LOSS_PCT:.1%} → 立即停止")
+        logger.info(f"   • 總虧損上限：{self.MAX_TOTAL_LOSS_PCT:.1%} → 永久停止")
+        logger.info("=" * 60 + "\n")
     
     def calculate_position_size(
         self,

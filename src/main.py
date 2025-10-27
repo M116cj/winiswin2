@@ -61,9 +61,26 @@ class TradingBot:
     async def initialize(self):
         """初始化系統"""
         logger.info("=" * 60)
-        logger.info("🚀 高頻交易系統 v3.0 啟動中...")
-        logger.info("📌 代碼版本: 2025-10-25-v3.0 (期望值驅動+五維評分系統)")
+        logger.info("🚀 高頻交易系統 v3.9.2.1 啟動中...")
+        logger.info("📌 代碼版本: v3.9.2.1 (LONG/SHORT對稱性修復)")
         logger.info("=" * 60)
+        
+        # 📊 显示评分系统说明
+        logger.info("\n📊 五維ICT評分系統（v3.9.2.1）：")
+        logger.info("  1️⃣ 趨勢對齊 (40%) - 三時間框架EMA對齊")
+        logger.info("     LONG: price > EMA | SHORT: price < EMA ✅ 對稱")
+        logger.info("  2️⃣ 市場結構 (20%) - 結構與趨勢匹配度")
+        logger.info("     bullish+bullish | bearish+bearish ✅ 對稱")
+        logger.info("  3️⃣ 價格位置 (20%) - 距離Order Block的ATR距離")
+        logger.info("     LONG/SHORT使用對稱的ATR距離評分 ✅ 對稱")
+        logger.info("  4️⃣ 動量指標 (10%) - RSI + MACD同向確認")
+        logger.info("     RSI: 50-70 (LONG) | 30-50 (SHORT) ✅ 對稱於50中線")
+        logger.info("  5️⃣ 波動率 (10%) - 布林帶寬度分位數")
+        logger.info("     LONG/SHORT使用相同的波動率標準 ✅ 對稱")
+        logger.info("\n🎯 評分系統特點：")
+        logger.info("  ✅ LONG/SHORT完全對稱，無方向偏向")
+        logger.info("  ✅ 信心度範圍：45%-100%（MIN_CONFIDENCE=45%）")
+        logger.info("  ✅ 五大維度綜合評分，確保信號品質\n")
         
         is_valid, errors = Config.validate()
         if not is_valid:
@@ -107,6 +124,10 @@ class TradingBot:
         
         self.strategy = ICTStrategy()
         self.risk_manager = RiskManager()
+        
+        # 📊 输出风险管理状态
+        self.risk_manager.log_risk_status()
+        
         self.expectancy_calculator = ExpectancyCalculator(window_size=Config.EXPECTANCY_WINDOW)
         self.data_archiver = DataArchiver(data_dir=Config.ML_DATA_DIR)
         logger.info(f"✅ 期望值計算器已就緒 (窗口大小: {Config.EXPECTANCY_WINDOW} 筆交易)")
@@ -233,6 +254,9 @@ class TradingBot:
         logger.info(f"🔄 交易週期開始: {cycle_start.strftime('%Y-%m-%d %H:%M:%S')}")
         logger.info(f"{'=' * 60}")
         
+        # 📊 每个周期显示风险管理状态
+        self.risk_manager.log_risk_status()
+        
         # 輸出時間框架調度狀態
         scheduler_status = self.smart_data_manager.get_scheduler_status()
         logger.info("⏰ 時間框架調度狀態:")
@@ -320,7 +344,25 @@ class TradingBot:
                 
                 signals.sort(key=lambda x: x['confidence'], reverse=True)
                 
+                # 📊 统计信号方向分布
+                long_signals = [s for s in signals if s['direction'] == 'LONG']
+                short_signals = [s for s in signals if s['direction'] == 'SHORT']
+                long_pct = len(long_signals) / len(signals) * 100 if signals else 0
+                short_pct = len(short_signals) / len(signals) * 100 if signals else 0
+                
+                avg_confidence = sum(s['confidence'] for s in signals) / len(signals) if signals else 0
+                avg_long_conf = sum(s['confidence'] for s in long_signals) / len(long_signals) if long_signals else 0
+                avg_short_conf = sum(s['confidence'] for s in short_signals) / len(short_signals) if short_signals else 0
+                
                 logger.info(f"\n🎯 生成 {len(signals)} 個交易信號")
+                logger.info(
+                    f"📊 方向分布: LONG {len(long_signals)}個({long_pct:.1f}%) | "
+                    f"SHORT {len(short_signals)}個({short_pct:.1f}%)"
+                )
+                logger.info(
+                    f"📈 平均信心度: 總體={avg_confidence:.1%} | "
+                    f"LONG={avg_long_conf:.1%} | SHORT={avg_short_conf:.1%}"
+                )
                 
                 for rank, signal in enumerate(signals[:Config.MAX_SIGNALS], 1):
                     ml_info = ""

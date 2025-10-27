@@ -146,7 +146,23 @@ class ICTStrategy:
                 'indicators': indicators_data
             }
             
-            logger.info(f"✅ 生成交易信號: {symbol} {signal_direction} 信心度 {confidence_score:.2%}")
+            # 📊 详细的评分breakdown日志
+            logger.info(
+                f"✅ 生成交易信號: {symbol} {signal_direction} "
+                f"信心度 {confidence_score:.2%}"
+            )
+            logger.info(
+                f"   📊 評分詳情: "
+                f"趨勢對齊={sub_scores.get('trend_alignment', 0):.2f}/1.0 | "
+                f"市場結構={sub_scores.get('market_structure', 0):.2f}/1.0 | "
+                f"價格位置={sub_scores.get('price_position', 0):.2f}/1.0 | "
+                f"動量={sub_scores.get('momentum', 0):.2f}/1.0 | "
+                f"波動率={sub_scores.get('volatility', 0):.2f}/1.0"
+            )
+            logger.info(
+                f"   📈 趨勢狀態: 1h={h1_trend} | 15m={m15_trend} | 5m={m5_trend} | "
+                f"結構={market_structure}"
+            )
             
             return signal
             
