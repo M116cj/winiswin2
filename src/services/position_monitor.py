@@ -230,6 +230,12 @@ class PositionMonitor:
                             indicators=indicators
                         )
                         
+                        # 检查ML是否返回有效预测（ML可能未就绪）
+                        if rebound_pred is None:
+                            logger.warning(f"⚠️  ML模型未就绪，执行默认强制平仓 {symbol}")
+                            await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
+                            return None
+                        
                         logger.info(
                             f"🔮 ML反弹预测 {symbol}: {rebound_pred['reason']}"
                         )
