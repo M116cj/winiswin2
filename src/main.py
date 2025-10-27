@@ -61,8 +61,8 @@ class TradingBot:
     async def initialize(self):
         """初始化系統"""
         logger.info("=" * 60)
-        logger.info("🚀 高頻交易系統 v3.11.0 啟動中...")
-        logger.info("📌 代碼版本: v3.11.0 (OB質量+BOS/CHOCH+市場分類+反轉防護)")
+        logger.info("🚀 高頻交易系統 v3.11.1 啟動中...")
+        logger.info("📌 代碼版本: v3.11.1 (移除持倉限制 - 無限倉位)")
         logger.info("=" * 60)
         
         # 📊 显示评分系统说明
@@ -89,7 +89,8 @@ class TradingBot:
         logger.info("  🎯 v3.9.2.8.5: 模型評分系統（加權評分算法 - PnL 50% + 置信度 30% + 胜率 20%）")
         logger.info("  ⚡ v3.9.2.9: 性能優化（動態CPU檢測 + 臨時文件清理 + zero_division標準化）")
         logger.info("  🔥 v3.10.0: 策略增強三合一（ADX趨勢過濾 + ML泄漏阻斷 + 波動率熔斷）")
-        logger.info("  🎯 v3.11.0: 高級優化（OB質量篩選+BOS/CHOCH+市場狀態分類+反轉預警）\n")
+        logger.info("  🎯 v3.11.0: 高級優化（OB質量篩選+BOS/CHOCH+市場狀態分類+反轉預警）")
+        logger.info("  🚀 v3.11.1: 移除持倉限制（允許無限同時持倉）\n")
         
         is_valid, errors = Config.validate()
         if not is_valid:

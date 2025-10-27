@@ -34,8 +34,8 @@ class Config:
     )
     DISCORD_CHANNEL_ID: Optional[str] = os.getenv("DISCORD_CHANNEL_ID")
     
-    # 交易配置
-    MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "3"))
+    # 交易配置（v3.11.1：移除持仓限制）
+    MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))  # 默认999（实际无限制）
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "false").lower() == "true"
     
@@ -218,8 +218,9 @@ class Config:
         if not cls.DISCORD_TOKEN:
             warnings.append("未設置 DISCORD_TOKEN - Discord 通知將被禁用")
         
-        if cls.MAX_POSITIONS < 1 or cls.MAX_POSITIONS > 10:
-            errors.append(f"MAX_POSITIONS 必須在 1-10 之間，當前為 {cls.MAX_POSITIONS}")
+        # v3.11.1：移除MAX_POSITIONS上限检查（允许无限持仓）
+        if cls.MAX_POSITIONS < 1:
+            errors.append(f"MAX_POSITIONS 必須 >= 1，當前為 {cls.MAX_POSITIONS}")
         
         if cls.MIN_CONFIDENCE < 0 or cls.MIN_CONFIDENCE > 1:
             errors.append(f"MIN_CONFIDENCE 必須在 0-1 之間，當前為 {cls.MIN_CONFIDENCE}")

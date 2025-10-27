@@ -442,25 +442,25 @@ class RiskManager:
         
         Args:
             account_balance: 賬戶餘額
-            current_positions: 當前持倉數
-            is_real_trading: 是否為真實交易（False=模擬/虛擬倉位，不受MAX_POSITIONS限制）
+            current_positions: 當前持倉數（v3.11.1：此參數已廢棄）
+            is_real_trading: 是否為真實交易
         
         Returns:
             Tuple[bool, str]: (是否可以交易, 原因)
         """
-        # 🎯 關鍵修復：區分真實交易和模擬交易
-        # - 真實交易（TRADING_ENABLED=true）：檢查TRADING_ENABLED + MAX_POSITIONS
-        # - 模擬交易（TRADING_ENABLED=false）：允許通過，不受MAX_POSITIONS限制
+        # 🎯 v3.11.1：移除持仓数量限制
+        # - 真實交易（TRADING_ENABLED=true）：僅檢查TRADING_ENABLED
+        # - 模擬交易（TRADING_ENABLED=false）：允許通過
         
         if is_real_trading:
             # 真實交易模式：必須啟用交易功能
             if not self.config.TRADING_ENABLED:
                 return False, "交易功能未啟用"
             
-            # 真實交易模式：檢查倉位限制
-            if current_positions >= self.config.MAX_POSITIONS:
-                return False, f"已達到最大持倉數 {self.config.MAX_POSITIONS}"
-        # else: 模擬/虛擬倉位模式，不檢查TRADING_ENABLED和MAX_POSITIONS
+            # v3.11.1：移除持仓数量限制检查
+            # 旧代码：if current_positions >= self.config.MAX_POSITIONS:
+            #         return False, f"已達到最大持倉數 {self.config.MAX_POSITIONS}"
+        # else: 模擬/虛擬倉位模式，不檢查TRADING_ENABLED
         
         if self.consecutive_losses >= 5:
             return False, f"連續虧損 {self.consecutive_losses} 次，暫停交易"
