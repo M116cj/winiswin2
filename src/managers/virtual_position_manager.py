@@ -17,11 +17,17 @@ logger = logging.getLogger(__name__)
 class VirtualPositionManager:
     """虛擬倉位管理器"""
     
-    def __init__(self):
-        """初始化虛擬倉位管理器"""
+    def __init__(self, on_close_callback=None):
+        """
+        初始化虛擬倉位管理器
+        
+        Args:
+            on_close_callback: 虛擬倉位關閉時的回調函數 (position_data, close_data) -> None
+        """
         self.config = Config
         self.virtual_positions: Dict[str, Dict] = {}
         self.positions_file = self.config.VIRTUAL_POSITIONS_FILE
+        self.on_close_callback = on_close_callback
         self._load_positions()
     
     def add_virtual_position(self, signal: Dict, rank: int):
@@ -149,7 +155,8 @@ class VirtualPositionManager:
         position = self.virtual_positions[symbol]
         position['status'] = 'closed'
         position['close_reason'] = reason
-        position['close_timestamp'] = datetime.now().isoformat()
+        close_timestamp = datetime.now().isoformat()
+        position['close_timestamp'] = close_timestamp
         
         final_pnl = position['current_pnl']
         
@@ -157,6 +164,24 @@ class VirtualPositionManager:
             f"✅ 虛擬倉位關閉: {symbol} "
             f"PnL: {final_pnl:+.2%} 原因: {reason}"
         )
+        
+        if self.on_close_callback:
+            try:
+                close_data = {
+                    'symbol': symbol,
+                    'exit_price': position.get('current_price', position['entry_price'] * (1 + final_pnl)),
+                    'pnl': final_pnl,
+                    'pnl_pct': final_pnl,
+                    'close_reason': reason,
+                    'timestamp': close_timestamp,
+                    'entry_id': f"virtual_{symbol}_{position['entry_timestamp']}",
+                    'is_virtual': True
+                }
+                
+                self.on_close_callback(position, close_data)
+                logger.debug(f"📝 已記錄虛擬倉位平倉: {symbol}")
+            except Exception as e:
+                logger.error(f"虛擬倉位關閉回調失敗: {e}", exc_info=True)
     
     def get_active_virtual_positions(self) -> List[Dict]:
         """獲取所有活躍虛擬倉位"""
