@@ -419,7 +419,9 @@ class TradingBot:
                 leverage = self.risk_manager.calculate_leverage(
                     expectancy=expectancy_metrics['expectancy'],
                     profit_factor=expectancy_metrics['profit_factor'],
-                    consecutive_losses=expectancy_metrics['consecutive_losses']
+                    win_rate=expectancy_metrics.get('win_rate'),
+                    consecutive_losses=expectancy_metrics['consecutive_losses'],
+                    current_drawdown=self.risk_manager.current_drawdown / account_balance if account_balance > 0 else 0.0
                 )
                 
                 if leverage == 0:
