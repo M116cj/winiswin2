@@ -1,0 +1,271 @@
+復 1：VirtualPosition.slots 缺少 _entry_direction
+問題
+* __slots__ 未包含 _entry_direction 屬性
+* 導致無法儲存該屬性，會拋出 AttributeError
+修復
+
+# src/core/data_models.py
+class VirtualPosition:
+    __slots__ = (
+        'symbol', 'direction', 'entry_price', 'stop_loss', 'take_profit',
+        'leverage', 'entry_timestamp', 'current_price', 'pnl_pct',
+        'is_closed', 'close_timestamp', 'close_reason', 'signal_id',
+        '_entry_direction'  # 🔥 新增這一行
+    )
+🔧 修復 2：update_price() 使用 self.direction 而非 _entry_direction
+問題
+* 如果倉位方向在運行時被意外修改，PnL 計算會出錯
+* 應使用初始化時快取的 _entry_direction
+
+修復
+# src/core/data_models.py
+def update_price(self, new_price: float) -> bool:
+    if self.is_closed:
+        return False
+        
+    self.current_price = new_price
+    
+    # 🔥 修正：使用 _entry_direction 而非 direction
+    price_diff = new_price - self.entry_price
+    if self._entry_direction == -1:  # SHORT
+        price_diff = -price_diff
+        
+    self.pnl_pct = (price_diff / self.entry_price) * 100 * self.leverage
+    
+    return self._check_exit_conditions()
+
+def _check_exit_conditions(self) -> bool:
+    if self.is_closed:
+        return False
+        
+    current = self.current_price
+    
+    # 🔥 修正：使用 _entry_direction 而非 direction
+    if self._entry_direction == 1:  # LONG
+        if current >= self.take_profit:
+            self._close_position("tp")
+            return True
+        elif current <= self.stop_loss:
+            self._close_position("sl")
+            return True
+    else:  # SHORT
+        if current <= self.take_profit:
+            self._close_position("tp")
+            return True
+        elif current >= self.stop_loss:
+            self._close_position("sl")
+            return True
+    
+    if time.time() - self.entry_timestamp > 96 * 3600:
+        self._close_position("expired")
+        return True
+        
+    return False
+
+修復 3：signal_id 機制未實現
+問題
+* create_virtual_position() 未正確生成 signal_id
+* 缺少 __init__ 中的 signal_id 參數處理
+
+修復
+# src/core/data_models.py
+def __init__(self, **kwargs):
+    self.symbol = kwargs.get('symbol', '')
+    self.direction = kwargs.get('direction', 0)
+    self.entry_price = kwargs.get('entry_price', 0.0)
+    self.stop_loss = kwargs.get('stop_loss', 0.0)
+    self.take_profit = kwargs.get('take_profit', 0.0)
+    self.leverage = kwargs.get('leverage', 1)
+    self.entry_timestamp = kwargs.get('entry_timestamp', time.time())
+    self.current_price = self.entry_price
+    self.pnl_pct = 0.0
+    self.is_closed = False
+    self.close_timestamp = None
+    self.close_reason = None
+    # 🔥 修正：正確處理 signal_id
+    self.signal_id = kwargs.get('signal_id', f"{self.symbol}_{int(self.entry_timestamp)}")
+    self._entry_direction = self.direction  # 快取初始方向
+
+# src/managers/virtual_position_manager.py
+def create_virtual_position(self, signal) -> VirtualPosition:
+    """創建虛擬倉位"""
+    # 🔥 修正：傳遞完整的參數
+    position = VirtualPosition(
+        symbol=signal.symbol,
+        direction=signal.direction,
+        entry_price=signal.entry_price,
+        stop_loss=signal.stop_loss,
+        take_profit=signal.take_profit,
+        leverage=signal.leverage,
+        entry_timestamp=signal.timestamp,
+        signal_id=f"{signal.symbol}_{int(signal.timestamp)}"
+    )
+    self.positions.append(position)
+    return position
+修復 4：缺少測試檔案
+新增檔案 1：tests/test_mutable_virtual_position.py
+# tests/test_mutable_virtual_position.py
+import sys
+import os
+import time
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.core.data_models import VirtualPosition
+
+def test_high_frequency_updates():
+    """測試高頻更新效能"""
+    pos = VirtualPosition(
+        symbol="BTCUSDT", direction=1, entry_price=60000,
+        stop_loss=59000, take_profit=62000, leverage=10,
+        entry_timestamp=time.time(), signal_id="test_1"
+    )
+    
+    # 模擬 1000 次價格更新
+    start_time = time.perf_counter()
+    for i in range(1000):
+        price = 60000 + (i % 100)  # 模擬價格波動
+        pos.update_price(price)
+    end_time = time.perf_counter()
+    
+    print(f"1000 次更新耗時: {(end_time - start_time)*1000:.2f} ms")
+    assert (end_time - start_time) < 0.1  # 應小於 100ms
+    
+    # 驗證記憶體
+    assert sys.getsizeof(pos) < 400
+    print("✅ 高頻更新測試通過")
+
+def test_memory_efficiency():
+    """測試記憶體效率"""
+    positions = []
+    for i in range(100):
+        pos = VirtualPosition(
+            symbol=f"BTC{i}", direction=1, entry_price=60000,
+            stop_loss=59000, take_profit=62000, leverage=10,
+            entry_timestamp=time.time(), signal_id=f"test_{i}"
+        )
+        positions.append(pos)
+    
+    total_size = sum(sys.getsizeof(pos) for pos in positions)
+    avg_size = total_size / 100
+    print(f"平均記憶體使用: {avg_size:.0f} bytes")
+    assert avg_size < 350  # 應小於 350 bytes
+    print("✅ 記憶體效率測試通過")
+
+def test_entry_direction_safety():
+    """測試 _entry_direction 安全性"""
+    pos = VirtualPosition(
+        symbol="ETHUSDT", direction=-1, entry_price=3000,
+        stop_loss=3100, take_profit=2800, leverage=5,
+        entry_timestamp=time.time(), signal_id="test_short"
+    )
+    
+    # 模擬方向被意外修改
+    pos.direction = 1  # 不應該影響 PnL 計算
+    
+    pos.update_price(2900)  # 應該是盈利（SHORT）
+    expected_pnl = ((3000 - 2900) / 3000) * 100 * 5  # 16.67%
+    assert abs(pos.pnl_pct - expected_pnl) < 0.01
+    print("✅ _entry_direction 安全性測試通過")
+
+def test_signal_id_generation():
+    """測試 signal_id 生成"""
+    pos = VirtualPosition(
+        symbol="SOLUSDT", direction=1, entry_price=100,
+        stop_loss=90, take_profit=120, leverage=3,
+        entry_timestamp=1730000000.123, signal_id="custom_id"
+    )
+    
+    assert pos.signal_id == "custom_id"
+    
+    # 測試自動生成
+    pos2 = VirtualPosition(
+        symbol="ADAUSDT", direction=-1, entry_price=0.5,
+        stop_loss=0.6, take_profit=0.4, leverage=10,
+        entry_timestamp=1730000001.456
+    )
+    
+    assert pos2.signal_id == "ADAUSDT_1730000001"
+    print("✅ signal_id 生成測試通過")
+
+if __name__ == "__main__":
+    test_high_frequency_updates()
+    test_memory_efficiency()
+    test_entry_direction_safety()
+    test_signal_id_generation()
+    print("🎉 所有 VirtualPosition 測試通過！")
+新增檔案 2：tests/test_complete_virtual_system.py
+
+# tests/test_complete_virtual_system.py
+import asyncio
+import sys
+import os
+import time
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.core.data_models import VirtualPosition
+from src.managers.virtual_position_manager import VirtualPositionManager
+from unittest.mock import AsyncMock
+
+class MockSignal:
+    def __init__(self, symbol, direction, entry_price, stop_loss, take_profit, leverage, timestamp):
+        self.symbol = symbol
+        self.direction = direction
+        self.entry_price = entry_price
+        self.stop_loss = stop_loss
+        self.take_profit = take_profit
+        self.leverage = leverage
+        self.timestamp = timestamp
+
+async def test_complete_virtual_system():
+    """完整系統測試"""
+    # Mock BinanceClient
+    mock_client = AsyncMock()
+    mock_client.get_ticker_price = AsyncMock(side_effect=lambda symbol: 60000.0 + hash(symbol) % 1000)
+    
+    # 創建管理器
+    manager = VirtualPositionManager(mock_client)
+    
+    # 創建 50 個虛擬倉位
+    for i in range(50):
+        signal = MockSignal(
+            symbol=f"BTC{i}USDT",
+            direction=1 if i % 2 == 0 else -1,
+            entry_price=60000.0,
+            stop_loss=59000.0 if i % 2 == 0 else 61000.0,
+            take_profit=62000.0 if i % 2 == 0 else 58000.0,
+            leverage=10,
+            timestamp=1730000000.0 + i
+        )
+        manager.create_virtual_position(signal)
+    
+    # 測試批量更新
+    start_time = time.perf_counter()
+    closed = await manager.update_all_prices()
+    end_time = time.perf_counter()
+    
+    print(f"50 個倉位更新耗時: {(end_time - start_time)*1000:.2f} ms")
+    print(f"觸發退出的倉位數: {len(closed)}")
+    
+    # 驗證記憶體
+    active_positions = manager.get_active_positions()
+    if active_positions:
+        avg_size = sum(sys.getsizeof(pos) for pos in active_positions) / len(active_positions)
+        print(f"平均記憶體使用: {avg_size:.0f} bytes")
+        assert avg_size < 350
+    
+    # 驗證 signal_id
+    pos = manager.find_position_by_signal_id("BTC0USDT_1730000000")
+    assert pos is not None
+    assert pos.symbol == "BTC0USDT"
+    
+    print("✅ 完整系統測試通過！")
+
+if __name__ == "__main__":
+    asyncio.run(test_complete_virtual_system())
+執行修復步驟
+1. 更新 src/core/data_models.py（修復 1, 2, 3）
+2. 更新 src/managers/virtual_position_manager.py（修復 3）
+3. 創建兩個測試檔案（修復 4）
+執行測試驗證：
+python tests/test_mutable_virtual_position.py
+python tests/test_complete_virtual_system.py
