@@ -26,14 +26,16 @@ class RiskManager:
         self.max_drawdown = 0.0
         self.current_drawdown = 0.0
         
-        # 🛡️ v3.9.1 緊急保護機制
+        # 🛡️ v3.9.2 智能保護機制
         self.initial_balance: Optional[float] = None
         self.daily_start_balance: Optional[float] = None
         self.last_reset_date: Optional[str] = None
         self.emergency_stop_triggered = False
+        self.high_quality_only_mode = False  # 高品質模式標誌
         
         # 保護閾值
-        self.MAX_DAILY_LOSS_PCT = 0.15  # 單日最大虧損15%
+        self.DAILY_LOSS_CAUTION_PCT = 0.03  # 單日虧損3%：進入謹慎模式
+        self.MAX_DAILY_LOSS_PCT = 0.15  # 單日最大虧損15%：當日停止
         self.MAX_TOTAL_LOSS_PCT = 0.30  # 總最大虧損30%
         self.CIRCUIT_BREAKER_LOSS_PCT = 0.20  # 斷路器：虧損20%立即停止
     
@@ -72,14 +74,25 @@ class RiskManager:
             position_margin = max_risk
             position_value = position_margin * current_leverage
         
-        # 🛡️ 硬性限制：單個倉位保證金不得超過可用資金10%（緊急修復：50%→10%）
-        # 原50%上限配合20x槓桿可導致1000%風險暴露，已修復為10%上限
-        max_position_margin = account_balance * 0.10  # 🔒 緊急降低至10%
+        # ✅ 智能保證金限制：根據信心度動態調整（移除硬性10%限制）
+        # 信心度越高，允許使用更多保證金
+        # 信心度範圍 0.45-1.0 映射到保證金上限 5%-50%
+        if confidence_score >= 0.90:
+            max_position_margin = account_balance * 0.50  # 極高信心：50%
+        elif confidence_score >= 0.80:
+            max_position_margin = account_balance * 0.35  # 很高信心：35%
+        elif confidence_score >= 0.70:
+            max_position_margin = account_balance * 0.25  # 高信心：25%
+        elif confidence_score >= 0.60:
+            max_position_margin = account_balance * 0.15  # 中高信心：15%
+        else:
+            max_position_margin = account_balance * 0.08  # 普通信心：8%
+        
         if position_margin > max_position_margin:
-            logger.warning(
-                f"⚠️  倉位保證金超過10%上限: "
-                f"{position_margin:.2f} USDT ({position_margin/account_balance:.1%}) "
-                f"→ 強制限制為 {max_position_margin:.2f} USDT (10%)"
+            logger.info(
+                f"📊 保證金調整：{position_margin:.2f} USDT ({position_margin/account_balance:.1%}) "
+                f"→ 限制為 {max_position_margin:.2f} USDT ({max_position_margin/account_balance:.1%}) "
+                f"(信心度 {confidence_score:.1%})"
             )
             position_margin = max_position_margin
             position_value = position_margin * current_leverage
@@ -118,14 +131,14 @@ class RiskManager:
         Returns:
             int: 槓桿倍數
         """
-        # 🛡️ 保護模式：連續虧損強制降槓桿（緊急修復：移除"無限制模式"）
+        # ✅ 智能連續虧損保護：6單後降級，不完全禁止
         leverage_penalty = 0
-        if consecutive_losses >= 5:
-            leverage_penalty = -8
-            logger.warning(f"🔴 連續虧損 {consecutive_losses} 次 → 槓桿懲罰 {leverage_penalty}x")
-        elif consecutive_losses >= 3:
-            leverage_penalty = -4
-            logger.warning(f"⚠️  連續虧損 {consecutive_losses} 次 → 槓桿懲罰 {leverage_penalty}x")
+        if consecutive_losses >= 6:
+            leverage_penalty = -5  # 連續6單亏損：降低5x
+            logger.warning(f"⚠️  連續虧損 {consecutive_losses} 單 → 槓桿降低 5x")
+        elif consecutive_losses >= 4:
+            leverage_penalty = -3  # 連續4單虧損：降低3x
+            logger.info(f"📊 連續虧損 {consecutive_losses} 單 → 槓桿降低 3x")
         
         # 優先級1：使用期望值（有或沒有盈亏比）
         if expectancy is not None:
@@ -183,26 +196,34 @@ class RiskManager:
             base_leverage = self.config.BASE_LEVERAGE
             logger.info(f"無歷史數據 → 使用基礎槓桿 {base_leverage}x")
         
-        # 🛡️ 回撤保護
-        if current_drawdown > 0.20:
-            logger.error(f"🔴 緊急保護：回撤 {current_drawdown:.1%} > 20% → 暫停交易")
-            return 0
+        # ✅ 智能回撤保護：根據回撤程度動態降槓桿，不硬性停止
+        if current_drawdown > 0.25:
+            # 極端回撤：降至最低槓桿
+            base_leverage = self.config.MIN_LEVERAGE
+            logger.error(f"🔴 極端回撤 {current_drawdown:.1%} > 25% → 降至最低槓桿 {base_leverage}x")
+        elif current_drawdown > 0.20:
+            # 嚴重回撤：大幅降槓桿
+            base_leverage = max(self.config.BASE_LEVERAGE, base_leverage - 7)
+            logger.warning(f"⚠️  嚴重回撤 {current_drawdown:.1%} > 20% → 大幅降槓桿至 {base_leverage}x")
+        elif current_drawdown > 0.15:
+            # 中度回撤：中度降槓桿
+            base_leverage = max(self.config.BASE_LEVERAGE, base_leverage - 4)
+            logger.warning(f"⚠️  中度回撤 {current_drawdown:.1%} > 15% → 中度降槓桿至 {base_leverage}x")
         elif current_drawdown > 0.10:
-            base_leverage = self.config.BASE_LEVERAGE
-            logger.warning(f"⚠️  回撤 {current_drawdown:.1%} > 10% → 降至基礎槓桿 {base_leverage}x")
+            # 輕度回撤：輕微降槓桿
+            base_leverage = max(self.config.BASE_LEVERAGE, base_leverage - 2)
+            logger.info(f"📊 輕度回撤 {current_drawdown:.1%} > 10% → 輕微降槓桿至 {base_leverage}x")
         
         # 應用連續虧損懲罰
         base_leverage += leverage_penalty
         
-        # 🔒 緊急降低最大槓桿：20x → 10x
-        emergency_max_leverage = 10  # 降低風險
-        
+        # ✅ 移除硬性10x上限：允許根據期望值和盈亏比動態擴展至20x
         leverage = max(
             self.config.MIN_LEVERAGE,
-            min(base_leverage, emergency_max_leverage)
+            min(base_leverage, self.config.MAX_LEVERAGE)  # 使用配置的MAX_LEVERAGE (20x)
         )
         
-        logger.info(f"📊 最終槓桿: {leverage}x (連續虧損懲罰: {leverage_penalty}x)")
+        logger.info(f"📊 最終槓桿: {leverage}x (連續虧損: {leverage_penalty}x, 回撤調整已應用)")
         
         return leverage
     
@@ -386,7 +407,7 @@ class RiskManager:
     
     def check_account_protection(self, current_balance: float) -> bool:
         """
-        檢查賬戶級別保護（v3.9.1新增）
+        檢查賬戶級別保護（v3.9.2智能保護版）
         
         Args:
             current_balance: 當前賬戶餘額
@@ -406,6 +427,7 @@ class RiskManager:
         if self.last_reset_date != today:
             self.daily_start_balance = current_balance
             self.last_reset_date = today
+            self.high_quality_only_mode = False  # 每日重置謹慎模式
             logger.info(f"📅 每日重置: {today}, 起始餘額: {current_balance:.2f} USDT")
         
         # 1. 檢查總虧損
@@ -421,9 +443,22 @@ class RiskManager:
             self.emergency_stop_triggered = True
             return False
         
-        # 2. 檢查單日虧損
+        # 2. 檢查單日虧損（兩層保護）
         if self.daily_start_balance:
             daily_loss_pct = (self.daily_start_balance - current_balance) / self.daily_start_balance
+            
+            # 2a. 單日虧損3%：進入謹慎模式（只允許高信心高勝率倉位）
+            if daily_loss_pct >= self.DAILY_LOSS_CAUTION_PCT and not self.high_quality_only_mode:
+                self.high_quality_only_mode = True
+                logger.warning(
+                    f"⚠️  謹慎模式啟動：今日虧損 {daily_loss_pct:.1%} ≥ {self.DAILY_LOSS_CAUTION_PCT:.1%}\n"
+                    f"   今日開始: {self.daily_start_balance:.2f} USDT\n"
+                    f"   當前餘額: {current_balance:.2f} USDT\n"
+                    f"   今日虧損: {self.daily_start_balance - current_balance:.2f} USDT\n"
+                    f"   📋 只允許開立高信心(≥70%)和高勝率(≥60%)倉位"
+                )
+            
+            # 2b. 單日虧損15%：完全停止
             if daily_loss_pct > self.MAX_DAILY_LOSS_PCT:
                 logger.error(
                     f"🔴 單日虧損保護：今日虧損 {daily_loss_pct:.1%} > {self.MAX_DAILY_LOSS_PCT:.1%}\n"
@@ -454,10 +489,57 @@ class RiskManager:
         
         return True
     
+    def is_high_quality_signal(self, confidence: float, win_rate: Optional[float] = None) -> bool:
+        """
+        檢查是否為高品質信號（用於謹慎模式）
+        
+        Args:
+            confidence: 信心度 (0-1)
+            win_rate: 勝率 (0-1)，可選
+        
+        Returns:
+            bool: True=高品質信號, False=普通信號
+        """
+        # 高品質標準：信心度≥70% 且 勝率≥60%（如果有勝率數據）
+        if confidence >= 0.70:
+            if win_rate is None:
+                return True  # 只有信心度時，70%即可
+            elif win_rate >= 0.60:
+                return True  # 信心度70%且勝率60%
+        return False
+    
+    def can_trade_signal(self, confidence: float, win_rate: Optional[float] = None) -> Tuple[bool, str]:
+        """
+        檢查是否可以交易此信號（考慮謹慎模式）
+        
+        Args:
+            confidence: 信心度 (0-1)
+            win_rate: 勝率 (0-1)，可選
+        
+        Returns:
+            Tuple[bool, str]: (是否可交易, 原因)
+        """
+        # 檢查連續虧損（6單或以上）
+        if self.consecutive_losses >= 6:
+            if not self.is_high_quality_signal(confidence, win_rate):
+                return False, f"連續虧損 {self.consecutive_losses} 單，只允許高品質信號（信心≥70%，勝率≥60%）"
+            else:
+                logger.info(f"✅ 連續虧損 {self.consecutive_losses} 單，但信號為高品質，允許交易")
+        
+        # 檢查單日虧損謹慎模式
+        if self.high_quality_only_mode:
+            if not self.is_high_quality_signal(confidence, win_rate):
+                return False, "單日虧損≥3%，謹慎模式啟動，只允許高品質信號（信心≥70%，勝率≥60%）"
+            else:
+                logger.info(f"✅ 謹慎模式啟動，但信號為高品質，允許交易")
+        
+        return True, "信號符合交易條件"
+    
     def get_protection_status(self) -> Dict:
         """獲取保護狀態"""
         status = {
             'emergency_stop': self.emergency_stop_triggered or EMERGENCY_STOP_ACTIVE,
+            'high_quality_only_mode': self.high_quality_only_mode,
             'initial_balance': self.initial_balance,
             'daily_start_balance': self.daily_start_balance,
             'last_reset_date': self.last_reset_date,

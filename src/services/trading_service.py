@@ -103,7 +103,7 @@ class TradingService:
             Optional[Dict]: 交易結果
         """
         try:
-            # 🛡️ v3.9.1: 賬戶保護檢查（最高優先級）
+            # 🛡️ v3.9.2: 賬戶保護檢查（最高優先級）
             if not self.risk_manager.check_account_protection(account_balance):
                 logger.error("🔴 賬戶保護觸發，拒絕交易")
                 return None
@@ -115,9 +115,22 @@ class TradingService:
             take_profit = signal['take_profit']
             confidence = signal['confidence']
             
-            # 🛡️ v3.9.1: 檢查槓桿為0（期望值為負/回撤過大）
+            # 🛡️ v3.9.2: 檢查槓桿為0（期望值為負/回撤過大）
             if current_leverage == 0:
                 logger.warning(f"⚠️  槓桿為0，拒絕交易 {symbol}")
+                return None
+            
+            # 🛡️ v3.9.2: 檢查信號品質（謹慎模式/連續虧損保護）
+            # 獲取歷史勝率（如果可用）
+            win_rate = None
+            if hasattr(self.risk_manager, 'trade_history') and len(self.risk_manager.trade_history) >= 10:
+                stats = self.risk_manager.get_statistics()
+                win_rate = stats.get('win_rate')
+            
+            can_trade, reason = self.risk_manager.can_trade_signal(confidence, win_rate)
+            if not can_trade:
+                logger.warning(f"⚠️  信號品質不符合：{reason}")
+                logger.warning(f"   {symbol} 信心度 {confidence:.1%}, 勝率 {win_rate:.1% if win_rate else 'N/A'}")
                 return None
             
             position_info = self.risk_manager.calculate_position_size(
