@@ -115,6 +115,14 @@ class Config:
     CIRCUIT_BREAKER_THRESHOLD: int = 5
     CIRCUIT_BREAKER_TIMEOUT: int = 60
     
+    # v3.9.2.2新增：訂單執行配置（防止熔斷器觸發導致無保護倉位）
+    ORDER_INTER_DELAY: float = 1.5  # 訂單間延遲（秒）- 避免觸發熔斷器
+    ORDER_RETRY_MAX_ATTEMPTS: int = 5  # 訂單重試最大次數
+    ORDER_RETRY_BASE_DELAY: float = 1.0  # 重試基礎延遲（秒）
+    ORDER_RETRY_MAX_DELAY: float = 30.0  # 重試最大延遲（秒）
+    PROTECTION_GUARDIAN_INTERVAL: int = 30  # 保護監護任務檢查間隔（秒）
+    PROTECTION_GUARDIAN_MAX_ATTEMPTS: int = 10  # 保護監護最大嘗試次數
+    
     # 批量處理配置
     BATCH_SIZE: int = 50
     

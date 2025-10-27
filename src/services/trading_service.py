@@ -92,7 +92,7 @@ class TradingService:
         current_leverage: int
     ) -> Optional[Dict]:
         """
-        執行交易信號（v3.9.1 添加賬戶保護檢查）
+        執行交易信號（v3.9.2.2增強：熔斷器感知，防止無保護倉位）
         
         Args:
             signal: 交易信號
@@ -103,7 +103,13 @@ class TradingService:
             Optional[Dict]: 交易結果
         """
         try:
-            # 🛡️ v3.9.2: 賬戶保護檢查（最高優先級）
+            # 🛡️ v3.9.2.2: 熔斷器狀態檢查（最高優先級）
+            can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+            if not can_proceed:
+                logger.warning(f"⚠️  {block_reason}，推遲交易信號")
+                return None
+            
+            # 🛡️ v3.9.2: 賬戶保護檢查
             if not self.risk_manager.check_account_protection(account_balance):
                 logger.error("🔴 賬戶保護觸發，拒絕交易")
                 return None
@@ -213,7 +219,11 @@ class TradingService:
                 )
                 quantity = actual_quantity
             
-            # ✨ 強化：同步設置止損止盈（建倉後立即設置，5次重試+訂單驗證）
+            # 🛡️ v3.9.2.2: 訂單間延遲，避免觸發熔斷器
+            logger.debug(f"⏱️  等待{self.config.ORDER_INTER_DELAY}秒後設置止損止盈...")
+            await asyncio.sleep(self.config.ORDER_INTER_DELAY)
+            
+            # ✨ 強化：同步設置止損止盈（建倉後延遲設置，5次重試+訂單驗證）
             try:
                 sl_order_id, tp_order_id = await self._set_stop_loss_take_profit_parallel(
                     symbol, direction, quantity, stop_loss, take_profit, max_retries=5
@@ -237,20 +247,19 @@ class TradingService:
                 logger.error(f"❌ 止損止盈設置/驗證失敗: {e}")
                 logger.critical(f"🚨 建倉成功但無保護，必須立即平倉！{symbol}")
                 
-                # 🔴 強制平倉：避免無保護持倉
+                # 🔴 v3.9.2.2：智能平倉（熔斷器感知重試）
                 try:
-                    close_order = await self._place_market_order(
-                        symbol=symbol,
-                        side="SELL" if direction == "LONG" else "BUY",
-                        quantity=quantity,
-                        direction=direction
+                    close_success = await self._emergency_close_position(
+                        symbol, direction, quantity
                     )
-                    if close_order:
+                    if close_success:
                         logger.warning(f"✅ 已緊急平倉無保護持倉: {symbol}")
                     else:
                         logger.critical(f"🚨🚨 致命錯誤：{symbol} 平倉失敗！請立即手動處理！")
+                        logger.critical(f"⚠️  無保護倉位詳情: {symbol} {direction} {quantity}")
                 except Exception as close_error:
                     logger.critical(f"🚨🚨 致命錯誤：{symbol} 平倉異常 {close_error}！請立即手動處理！")
+                    logger.critical(f"⚠️  無保護倉位詳情: {symbol} {direction} {quantity}")
                 
                 return None
             
@@ -494,6 +503,95 @@ class TradingService:
         except Exception as e:
             logger.error(f"智能下單失敗 {symbol}: {e}")
             return None
+    
+    async def _emergency_close_position(
+        self,
+        symbol: str,
+        direction: str,
+        quantity: float
+    ) -> bool:
+        """
+        緊急平倉（v3.9.2.2新增：熔斷器感知智能重試）
+        
+        當止損止盈設置失敗時，智能地嘗試平倉以保護賬戶
+        
+        Args:
+            symbol: 交易對
+            direction: 方向
+            quantity: 數量
+        
+        Returns:
+            bool: 是否成功平倉
+        """
+        from src.clients.binance_errors import BinanceRequestError
+        
+        max_attempts = self.config.ORDER_RETRY_MAX_ATTEMPTS
+        base_delay = self.config.ORDER_RETRY_BASE_DELAY
+        max_delay = self.config.ORDER_RETRY_MAX_DELAY
+        
+        for attempt in range(max_attempts):
+            try:
+                # 檢查熔斷器狀態
+                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                
+                if not can_proceed:
+                    retry_after = self.client.circuit_breaker.get_retry_after()
+                    wait_time = min(retry_after + 1, max_delay)  # +1秒安全邊際
+                    logger.warning(
+                        f"⏱️  熔斷器開啟，等待{wait_time:.0f}秒後重試平倉 "
+                        f"(嘗試 {attempt + 1}/{max_attempts})"
+                    )
+                    await asyncio.sleep(wait_time)
+                    continue
+                
+                # 嘗試平倉
+                logger.info(f"🔄 嘗試緊急平倉 {symbol} (嘗試 {attempt + 1}/{max_attempts})")
+                
+                close_order = await self._place_market_order(
+                    symbol=symbol,
+                    side="SELL" if direction == "LONG" else "BUY",
+                    quantity=quantity,
+                    direction=direction
+                )
+                
+                if close_order:
+                    logger.info(f"✅ 緊急平倉成功: {symbol}")
+                    return True
+                
+                # 訂單失敗但沒有異常，等待後重試
+                wait_time = min(base_delay * (2 ** attempt), max_delay)
+                logger.warning(f"⏱️  平倉訂單失敗，等待{wait_time:.1f}秒後重試...")
+                await asyncio.sleep(wait_time)
+                
+            except BinanceRequestError as e:
+                # 結構化錯誤，包含重試信息
+                if e.retry_after_seconds:
+                    wait_time = min(e.retry_after_seconds + 1, max_delay)
+                    logger.warning(
+                        f"⏱️  API建議等待{wait_time:.0f}秒後重試平倉 "
+                        f"(嘗試 {attempt + 1}/{max_attempts})"
+                    )
+                    await asyncio.sleep(wait_time)
+                else:
+                    # 指數退避
+                    wait_time = min(base_delay * (2 ** attempt), max_delay)
+                    logger.warning(
+                        f"⏱️  平倉失敗({e.message})，等待{wait_time:.1f}秒後重試..."
+                    )
+                    await asyncio.sleep(wait_time)
+                
+            except Exception as e:
+                # 其他錯誤，指數退避
+                wait_time = min(base_delay * (2 ** attempt), max_delay)
+                logger.error(
+                    f"❌ 平倉異常: {e}, 等待{wait_time:.1f}秒後重試 "
+                    f"(嘗試 {attempt + 1}/{max_attempts})"
+                )
+                await asyncio.sleep(wait_time)
+        
+        # 所有嘗試都失敗
+        logger.critical(f"🚨 緊急平倉失敗（已嘗試{max_attempts}次）: {symbol}")
+        return False
     
     async def _place_market_order(
         self,
