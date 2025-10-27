@@ -18,7 +18,11 @@ def calculate_ema(data: pd.Series, period: int) -> pd.Series:
     Returns:
         EMA 值
     """
-    return data.ewm(span=period, adjust=False).mean()
+    result = data.ewm(span=period, adjust=False).mean()
+    # 確保返回Series，不是DataFrame
+    if isinstance(result, pd.DataFrame):
+        return result.iloc[:, 0]
+    return pd.Series(result)
 
 def calculate_macd(
     data: pd.Series,
@@ -44,7 +48,8 @@ def calculate_macd(
     signal_line = calculate_ema(macd_line, signal_period)
     histogram = macd_line - signal_line
     
-    return macd_line, signal_line, histogram
+    # 確保返回Series類型
+    return pd.Series(macd_line), pd.Series(signal_line), pd.Series(histogram)
 
 def calculate_rsi(data: pd.Series, period: int = 14) -> pd.Series:
     """
@@ -64,7 +69,8 @@ def calculate_rsi(data: pd.Series, period: int = 14) -> pd.Series:
     rs = gain / loss
     rsi = 100 - (100 / (1 + rs))
     
-    return rsi
+    # 確保返回Series類型
+    return pd.Series(rsi)
 
 def calculate_bollinger_bands(
     data: pd.Series,
@@ -100,7 +106,8 @@ def calculate_volume_sma(volume: pd.Series, period: int = 20) -> pd.Series:
     Returns:
         成交量 SMA
     """
-    return volume.rolling(window=period).mean()
+    result = volume.rolling(window=period).mean()
+    return pd.Series(result)
 
 def detect_price_rejection(
     open_price: pd.Series,
@@ -147,8 +154,10 @@ def find_swing_highs_lows(
     Returns:
         tuple[擺動高點, 擺動低點]
     """
-    swing_highs = high.rolling(window=lookback, center=True).max()
-    swing_lows = low.rolling(window=lookback, center=True).min()
+    swing_highs_raw = high.rolling(window=lookback, center=True).max()
+    swing_highs = pd.Series(swing_highs_raw)
+    swing_lows_raw = low.rolling(window=lookback, center=True).min()
+    swing_lows = pd.Series(swing_lows_raw)
     
     return swing_highs, swing_lows
 
@@ -348,4 +357,5 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
     atr = tr.rolling(window=period).mean()
     
-    return atr
+    # 確保返回Series類型
+    return pd.Series(atr)

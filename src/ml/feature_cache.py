@@ -17,18 +17,22 @@ logger = logging.getLogger(__name__)
 class FeatureCache:
     """特征缓存管理器"""
     
-    def __init__(self, cache_dir: str = 'data/feature_cache', ttl: int = 3600):
+    def __init__(self, cache_dir: str = 'data/feature_cache', ttl: int = 1800):
         """
         初始化特征缓存
         
         Args:
             cache_dir: 缓存目录
-            ttl: 缓存有效期（秒），默认1小时
+            ttl: 缓存有效期（秒），默认30分钟（内存优化：降低从3600）
         """
         self.cache_dir = cache_dir
         self.ttl = ttl
         self.hit_count = 0
         self.miss_count = 0
+        
+        # 内存缓存（内存优化：限制最大缓存数量）
+        self._memory_cache: Dict[str, Any] = {}
+        self._max_memory_cache_size = 100  # 最多缓存100个特征
         
         os.makedirs(cache_dir, exist_ok=True)
         

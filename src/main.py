@@ -245,6 +245,24 @@ class TradingBot:
             "info"
         )
         
+        # 類型檢查：確保所有核心組件已初始化（解決LSP Optional類型警告）
+        assert self.binance_client is not None
+        assert self.data_service is not None
+        assert self.smart_data_manager is not None
+        assert self.parallel_analyzer is not None
+        assert self.strategy is not None
+        assert self.risk_manager is not None
+        assert self.expectancy_calculator is not None
+        assert self.data_archiver is not None
+        assert self.trading_service is not None
+        assert self.virtual_position_manager is not None
+        assert self.trade_recorder is not None
+        assert self.discord_bot is not None
+        assert self.health_monitor is not None
+        assert self.performance_monitor is not None
+        assert self.ml_predictor is not None
+        assert self.position_monitor is not None
+        
         return True
     
     async def run_cycle(self):

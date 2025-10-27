@@ -44,15 +44,15 @@ class PerformanceMonitor:
         self.total_api_calls = 0
         self.total_errors = 0
         
-        # ✨ v3.3.7新增：詳細性能追踪
-        self.operation_times = deque(maxlen=1000)  # 最近1000次操作
+        # ✨ v3.3.7新增：詳細性能追踪（内存优化：减少历史记录）
+        self.operation_times = deque(maxlen=500)  # 最近500次操作（降低从1000）
         self.cache_hits = 0
         self.cache_misses = 0
         self.total_latency = 0.0
         self.operation_count = 0
         
-        # 操作類型統計
-        self.operation_stats = {}  # {operation_name: [durations]}
+        # 操作類型統計（内存优化：限制每种操作的历史记录）
+        self.operation_stats = {}  # {operation_name: deque(maxlen=100)}
     
     def get_system_metrics(self) -> Dict:
         """

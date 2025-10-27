@@ -73,14 +73,14 @@ class ParallelAnalyzer:
             # 基礎批次大小
             base_batch = self.max_workers * 2
             
-            # 根據系統負載動態調整
-            if cpu_usage < 50 and mem_usage < 60:
+            # 根據系統負載動態調整（内存优化：降低批次大小阈值）
+            if cpu_usage < 40 and mem_usage < 50:
                 # 系統空閒，增大批次
-                multiplier = 3
+                multiplier = 2  # 降低從3到2
                 logger.debug(f"系統負載低 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用大批次")
-            elif cpu_usage < 70 and mem_usage < 75:
+            elif cpu_usage < 60 and mem_usage < 65:
                 # 正常負載
-                multiplier = 2
+                multiplier = 1.5  # 降低從2到1.5
                 logger.debug(f"系統負載正常 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用標準批次")
             else:
                 # 高負載，減小批次
@@ -179,6 +179,11 @@ class ParallelAnalyzer:
                     f"累計 {len(signals)} 個 "
                     f"⚡ 批次耗時: {batch_time:.2f}s"
                 )
+                
+                # 内存优化：每个批次后清理内存
+                del batch_signals
+                import gc
+                gc.collect()
                 
                 # 小延遲避免過載（僅在大量交易對時）
                 if total_symbols > 300 and batch_idx < total_batches - 1:

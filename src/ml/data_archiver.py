@@ -41,7 +41,8 @@ class DataArchiver:
         self.adjustments_buffer: List[Dict] = []  # 新增：止损止盈调整记录
         self.lock = Lock()
         
-        self.buffer_size = 100
+        # 内存优化：减少缓冲区大小从100到50
+        self.buffer_size = 50
         
         logger.info(f"数据归档器已初始化，数据目录: {self.data_dir}")
     
