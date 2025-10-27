@@ -1,0 +1,28 @@
+請嚴格檢查整個 v3.13.0 代碼庫，確認以下 15 項是否全部正確實現。如果任何一項未實現、實現錯誤、或與架構文檔描述不符，請指出具體檔案、行號、錯誤內容，以及正確的實現方式：」
+代碼檢查指令（v3.13.0 完整版）
+核心架構檢查
+1. 確認 src/async_core/async_main_loop.py 中的 AsyncTradingLoop 和 VirtualPositionLoop 是兩個獨立的類別，且 DualLoopManager 使用 asyncio.create_task() 並發運行它們
+2. 驗證 src/services/data_service.py 的 get_klines_incremental() 方法中，動態 TTL 計算為 max(60, 300 * (1 - min(volatility, 0.1)))，且 volatility 是基於 20 根 K 線的標準差
+3. 檢查 src/core/data_models.py 的 VirtualPosition 類別中，__slots__ 包含 _entry_direction，且 update_price() 方法使用 self._entry_direction 而不是 self.direction
+
+效能優化檢查
+4. 確認 src/ml/predictor.py 的 predict_batch() 方法中，X = np.vstack(features_list).astype(np.float32) 使用 float32，且 ONNX 推理使用 ort_inputs = {self.session.get_inputs()[0].name: X}
+5. 驗證 src/services/parallel_analyzer.py 的 ParallelAnalyzer 在 __init__ 中使用 GlobalProcessPool()._instance.executor，且 analyze_async() 使用 loop.run_in_executor(executor, self._analyze_single_symbol, symbol)
+6. 檢查 src/utils/core_calculations.py 中的技術指標是否全部使用向量化實現（無 for 迴圈），特別是 calculate_adx() 和 identify_order_blocks()
+
+風險控制檢查
+7. 確認 src/core/trading_state_machine.py 的 TradingStateMachine 有 4 個狀態：NORMAL, CAUTIOUS, RISK_AVERSE, SHUTDOWN，且狀態轉換條件正確（3/5/8 次連續虧損）
+8. 驗證 src/managers/risk_manager.py 的 calculate_leverage() 方法中，波動率熔斷邏輯為 if current_atr > 2 * median_atr_7d: max_leverage = 5
+
+虛擬倉位檢查
+9. 確認 src/managers/virtual_position_manager.py 的 update_all_prices_async() 方法使用 asyncio.gather(*price_tasks, return_exceptions=True)，且錯誤處理使用 isinstance(result, Exception)
+10. 檢查 create_virtual_position() 方法中，signal_id=f"{signal.symbol}_{int(signal.timestamp)}" 使用 int(signal.timestamp) 而不是浮點數
+
+整合與測試檢查
+11. 確認 src/main.py 的主循環中，scan_and_analyze() 方法使用 features_batch = [extract_features_for_prediction(signal) for signal in signals] 和 predictions = self.ml_predictor.predict_batch(features_batch)
+12. 驗證 scripts/convert_xgboost_to_onnx.py 的 validate_conversion() 函數使用 np.random.uniform(0, 1, (10, n_features)).astype(np.float32) 生成測試數據，且容忍度為 1e-5
+13. 檢查 src/core/async_decorators.py 的 @handle_binance_errors 裝飾器是否正確處理 async 函數（使用 await func(*args, **kwargs) 而不是 func(*args, **kwargs)）
+
+記憶體優化檢查
+14. 確認所有資料類別（VirtualPosition, StateConfig, OperationTimer）都使用 __slots__，且沒有意外的 __dict__ 創建
+15. 驗證 src/utils/generator_support.py 的 LazyIterator 是否真正實現懶加載（使用 yield 而不是返回完整列表）
