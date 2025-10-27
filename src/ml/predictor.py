@@ -23,10 +23,19 @@ class MLPredictor:
     v3.9.1: 使用独立的binary分类模型用于实时预测
     - predictor_trainer: binary分类模型（快速预测，有predict_proba）
     - research_trainer: risk_adjusted回归模型（后台研究用）
+    
+    v3.9.2.7: 增强持仓监控决策
+    - 基于实际胜率数据进行智能决策
+    - 实时评估入场理由是否仍然有效
     """
     
-    def __init__(self):
-        """初始化預測器"""
+    def __init__(self, trade_recorder=None):
+        """
+        初始化預測器
+        
+        Args:
+            trade_recorder: 交易记录器（用于获取实际胜率）🎯 v3.9.2.7新增
+        """
         # 🎯 v3.9.1: 使用独立的binary分类模型用于实时预测
         from src.ml.model_trainer import XGBoostTrainer as BaseTrainer
         from src.ml.target_optimizer import TargetOptimizer
@@ -47,6 +56,10 @@ class MLPredictor:
         self.last_training_time: Optional[datetime] = None  # 上次訓練時間
         self.retrain_threshold = 50  # 累積50筆新交易後重訓練
         self.last_model_accuracy = 0.0  # 上次模型準確率
+        
+        # 🎯 v3.9.2.7: 实际胜率跟踪
+        self.trade_recorder = trade_recorder  # 获取历史胜率数据
+        self.actual_win_rate = 0.5  # 初始默认胜率50%
     
     def initialize(self) -> bool:
         """
@@ -254,11 +267,19 @@ class MLPredictor:
         預測市場反彈概率（用於平倉決策）
         
         🎯 v3.9.2.5新增：ML輔助持倉監控
+        🎯 v3.9.2.7增强：基于实际胜率的智能决策
         
         分析當前虧損倉位是否有可能反彈，幫助決定：
         - 立即平倉（反彈概率低）
         - 等待觀察（反彈概率高）
         - 調整策略（反彈概率中等）
+        
+        智能决策考虑因素：
+        1. 技术指标分析（RSI、MACD、布林带）
+        2. 亏损严重程度（风险因子）
+        3. ML模型预测（反向信号胜率）
+        4. 🎯 实际历史胜率（系统整体表现）
+        5. 🎯 当前市场状况vs入场理由有效性
         
         Args:
             symbol: 交易對
@@ -278,13 +299,17 @@ class MLPredictor:
             }
         """
         try:
+            # 🎯 v3.9.2.7: 更新实际胜率
+            self._update_actual_win_rate()
+            
             # 默認返回值（保守策略：建議平倉）
             default_result = {
                 'rebound_probability': 0.0,
                 'should_wait': False,
                 'recommended_action': 'close_immediately',
                 'confidence': 0.5,
-                'reason': 'ML模型未就緒或數據不足'
+                'reason': 'ML模型未就緒或數據不足',
+                'actual_win_rate': self.actual_win_rate  # 🎯 v3.9.2.7新增
             }
             
             # 如果indicators未提供，嘗試獲取實時數據
@@ -392,25 +417,54 @@ class MLPredictor:
                 except Exception as e:
                     logger.debug(f"ML反彈預測失敗: {e}")
             
-            # === 4. 綜合判斷 ===
-            final_rebound_prob = min(1.0, adjusted_rebound_score + ml_boost)
+            # === 4. 🎯 v3.9.2.7: 綜合判斷（含实际胜率因子）===
+            # 基础反弹分数
+            base_rebound_prob = adjusted_rebound_score + ml_boost
             
-            # 決策閾值
-            WAIT_THRESHOLD = 0.50  # 反彈概率>50%才建議等待
-            ADJUST_THRESHOLD = 0.35  # 反彈概率35-50%建議調整策略
+            # 🎯 实际胜率调整因子
+            # 如果系统历史胜率高，更倾向于等待反弹；如果胜率低，更倾向于及时止损
+            win_rate_factor = 1.0
+            if self.actual_win_rate >= 0.60:  # 胜率>60%，系统表现优秀
+                win_rate_factor = 1.15  # 提升反弹判断15%
+                rebound_signals.append(f"✅系统胜率优秀({self.actual_win_rate:.0%})")
+            elif self.actual_win_rate >= 0.50:  # 胜率50-60%，系统表现良好
+                win_rate_factor = 1.05  # 小幅提升5%
+            elif self.actual_win_rate < 0.40:  # 胜率<40%，系统表现不佳
+                win_rate_factor = 0.85  # 降低判断15%，更快止损
+                rebound_signals.append(f"⚠️系统胜率偏低({self.actual_win_rate:.0%})")
             
+            # 应用胜率因子
+            final_rebound_prob = min(1.0, base_rebound_prob * win_rate_factor)
+            
+            # 🎯 v3.9.2.7: 动态决策阈值（基于实际胜率）
+            # 胜率高时更激进（允许更多等待），胜率低时更保守（快速止损）
+            if self.actual_win_rate >= 0.55:
+                WAIT_THRESHOLD = 0.45  # 降低等待阈值（更容易等待）
+                ADJUST_THRESHOLD = 0.30  # 降低调整阈值
+            elif self.actual_win_rate < 0.45:
+                WAIT_THRESHOLD = 0.60  # 提高等待阈值（更谨慎）
+                ADJUST_THRESHOLD = 0.45  # 提高调整阈值
+            else:
+                WAIT_THRESHOLD = 0.50  # 默认阈值
+                ADJUST_THRESHOLD = 0.35
+            
+            # 最终决策
             if final_rebound_prob >= WAIT_THRESHOLD:
                 recommended_action = 'wait_and_monitor'
                 should_wait = True
-                reason = f"反彈概率高({final_rebound_prob:.1%})，建議等待: {', '.join(rebound_signals)}"
+                reason = f"反彈概率高({final_rebound_prob:.1%})，建議等待: {', '.join(rebound_signals[:4])}"
             elif final_rebound_prob >= ADJUST_THRESHOLD:
                 recommended_action = 'adjust_strategy'
                 should_wait = True
-                reason = f"反彈概率中等({final_rebound_prob:.1%})，建議收緊止損: {', '.join(rebound_signals)}"
+                reason = f"反彈概率中等({final_rebound_prob:.1%})，建議收緊止損: {', '.join(rebound_signals[:4])}"
             else:
                 recommended_action = 'close_immediately'
                 should_wait = False
-                reason = f"反彈概率低({final_rebound_prob:.1%})，建議立即平倉"
+                # 🎯 如果系统胜率低，额外提醒
+                if self.actual_win_rate < 0.45:
+                    reason = f"反彈概率低({final_rebound_prob:.1%})且系统胜率偏低，强烈建议止损"
+                else:
+                    reason = f"反彈概率低({final_rebound_prob:.1%})，建議立即平倉"
             
             result = {
                 'rebound_probability': final_rebound_prob,
@@ -418,7 +472,9 @@ class MLPredictor:
                 'recommended_action': recommended_action,
                 'confidence': 0.7 if self.is_ready else 0.5,
                 'reason': reason,
-                'signals': rebound_signals
+                'signals': rebound_signals,
+                'actual_win_rate': self.actual_win_rate,  # 🎯 v3.9.2.7
+                'win_rate_factor': win_rate_factor  # 🎯 v3.9.2.7
             }
             
             logger.info(
@@ -464,6 +520,35 @@ class MLPredictor:
         except Exception as e:
             logger.error(f"校準信心度失敗: {e}")
             return traditional_confidence
+    
+    def _update_actual_win_rate(self) -> None:
+        """
+        🎯 v3.9.2.7新增：更新实际历史胜率
+        
+        从trade_recorder获取最新的实际胜率数据，用于智能决策
+        """
+        try:
+            if self.trade_recorder is None:
+                # 如果没有trade_recorder，保持默认胜率50%
+                return
+            
+            # 获取交易统计数据
+            stats = self.trade_recorder.get_statistics()
+            
+            # 更新实际胜率
+            if stats['total_trades'] >= 10:  # 至少10笔交易才有统计意义
+                self.actual_win_rate = stats['win_rate']
+                logger.debug(
+                    f"📊 实际胜率更新: {self.actual_win_rate:.1%} "
+                    f"({stats['winning_trades']}/{stats['total_trades']})"
+                )
+            else:
+                # 交易数量不足，使用默认胜率
+                logger.debug(f"交易数量不足({stats['total_trades']}<10)，使用默认胜率50%")
+                
+        except Exception as e:
+            logger.debug(f"更新实际胜率失败: {e}")
+            # 保持默认胜率50%
     
     def check_and_retrain_if_needed(self) -> bool:
         """

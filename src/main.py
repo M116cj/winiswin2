@@ -203,10 +203,11 @@ class TradingBot:
         )
         
         # 初始化 ML 預測器（必須在position_monitor之前）🎯 v3.9.2.5
-        self.ml_predictor = MLPredictor()
+        # 🎯 v3.9.2.7: 传入trade_recorder以使用实际胜率
+        self.ml_predictor = MLPredictor(trade_recorder=self.trade_recorder)
         ml_ready = await asyncio.to_thread(self.ml_predictor.initialize)
         if ml_ready:
-            logger.info("✅ ML 預測器已就緒")
+            logger.info("✅ ML 預測器已就緒（含实际胜率监控）")
         else:
             logger.warning("⚠️  ML 預測器未就緒，使用傳統策略")
         
