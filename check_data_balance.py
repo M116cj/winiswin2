@@ -68,6 +68,7 @@ def check_data_balance():
     print(f"  SHORT: {short_count:4d} ({short_count/total*100:5.1f}%)")
     
     # 警告不平衡
+    ratio = 1.0
     if long_count > 0 and short_count > 0:
         ratio = max(long_count, short_count) / min(long_count, short_count)
         if ratio > 2.0:
