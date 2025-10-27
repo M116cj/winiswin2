@@ -54,6 +54,7 @@ class PositionMonitor:
             active_positions = [p for p in positions if float(p.get('positionAmt', 0)) != 0]
             
             if not active_positions:
+                logger.info("📊 当前无持仓")
                 return {
                     'total': 0,
                     'adjusted': 0,
@@ -61,12 +62,18 @@ class PositionMonitor:
                     'in_loss': 0
                 }
             
+            # 📊 记录详细持仓状态
+            logger.info(f"\n{'='*70}")
+            logger.info(f"📊 当前持仓状态 [{len(active_positions)}个]")
+            logger.info(f"{'='*70}")
+            
             stats = {
                 'total': len(active_positions),
                 'adjusted': 0,
                 'in_profit': 0,
                 'in_loss': 0,
-                'adjustments': []
+                'adjustments': [],
+                'positions': []  # 存储详细持仓信息
             }
             
             for position in active_positions:
@@ -92,6 +99,49 @@ class PositionMonitor:
                 else:
                     stats['in_loss'] += 1
                 
+                # 获取当前止损止盈价格
+                current_sl = self.position_states.get(symbol, {}).get('current_stop_loss')
+                current_tp = self.position_states.get(symbol, {}).get('current_take_profit')
+                
+                # 计算持仓时间
+                from datetime import datetime, timezone
+                # 尝试获取持仓开始时间（如果有updateTime）
+                update_time = position.get('updateTime', 0)
+                if update_time > 0:
+                    pos_time = datetime.fromtimestamp(update_time / 1000, tz=timezone.utc)
+                    holding_hours = (datetime.now(timezone.utc) - pos_time).total_seconds() / 3600
+                else:
+                    holding_hours = 0
+                
+                # 记录详细持仓信息
+                position_info = {
+                    'symbol': symbol,
+                    'direction': direction,
+                    'quantity': abs(position_amt),
+                    'entry_price': entry_price,
+                    'current_price': current_price,
+                    'pnl_pct': pnl_pct,
+                    'unrealized_pnl': float(position.get('unRealizedProfit', 0)),
+                    'stop_loss': current_sl,
+                    'take_profit': current_tp,
+                    'holding_hours': holding_hours,
+                    'leverage': float(position.get('leverage', 0))
+                }
+                stats['positions'].append(position_info)
+                
+                # 📊 日志输出每个持仓
+                pnl_emoji = "🟢" if pnl_pct > 0 else "🔴"
+                sl_status = f"止损:{current_sl:.6f}" if current_sl else "⚠️无止损"
+                tp_status = f"止盈:{current_tp:.6f}" if current_tp else "无止盈"
+                
+                logger.info(
+                    f"{pnl_emoji} {symbol:12s} {direction:5s} | "
+                    f"盈亏:{pnl_pct:+7.2f}% | "
+                    f"入场:{entry_price:.6f} 当前:{current_price:.6f} | "
+                    f"{sl_status} {tp_status} | "
+                    f"持仓:{holding_hours:.1f}h"
+                )
+                
                 # 检查是否需要调整止损止盈
                 adjustment = await self._check_and_adjust_position(
                     symbol=symbol,
@@ -108,11 +158,15 @@ class PositionMonitor:
                     stats['adjustments'].append(adjustment)
             
             # 记录监控摘要
+            logger.info(f"{'='*70}")
+            total_unrealized_pnl = sum(p['unrealized_pnl'] for p in stats['positions'])
             logger.info(
-                f"📊 持仓监控: 总数={stats['total']}, "
-                f"盈利={stats['in_profit']}, 亏损={stats['in_loss']}, "
-                f"调整={stats['adjusted']}"
+                f"💰 持仓汇总: 总数={stats['total']} | "
+                f"盈利={stats['in_profit']}个 亏损={stats['in_loss']}个 | "
+                f"未实现盈亏={total_unrealized_pnl:+.2f} USDT | "
+                f"本周期调整={stats['adjusted']}个"
             )
+            logger.info(f"{'='*70}\n")
             
             return stats
             
