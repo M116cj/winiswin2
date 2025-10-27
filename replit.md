@@ -200,7 +200,14 @@ src/
 - ✅ 所有5个评分维度完全对称
 - ✅ 信心度评分系统无偏向
 
-**文档**: `SYMMETRY_FIX_v3.9.2.1.md`
+**文档**: 
+- `SYMMETRY_FIX_v3.9.2.1.md` - 信心度评分修复详情
+- `FULL_SYSTEM_SYMMETRY_CHECK.md` - 完整系统对称性检查报告
+
+**全系统检查结果**:
+- ✅ 下单系统：无LONG偏向（开仓/平仓/止损/止盈完全对称）
+- ✅ 监控系统：无LONG偏向（PnL计算/触发检查完全对称）
+- ✅ XGBoost模型：有完整的平衡机制（sample_weight/scale_pos_weight/方向监控）
 
 **重要性**: 🔴 **立即部署** - 这是导致LONG偏向的根本原因
 
