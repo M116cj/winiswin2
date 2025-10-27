@@ -213,11 +213,13 @@ class TradingBot:
             logger.warning("⚠️  ML 預測器未就緒，使用傳統策略")
         
         # 初始化持仓监控器（动态止损止盈）🎯 v3.9.2.5：添加ML反弹预测
+        # 🎯 v3.9.2.7增强：添加虚拟仓位监控
         self.position_monitor = PositionMonitor(
             self.binance_client,
             self.trading_service,
             self.data_archiver,
-            self.ml_predictor  # 🎯 v3.9.2.5新增：ML辅助持仓监控
+            self.ml_predictor,  # 🎯 v3.9.2.5新增：ML辅助持仓监控
+            self.virtual_position_manager  # 🎯 v3.9.2.7新增：虚拟仓位监控
         )
         
         self.discord_bot = TradingDiscordBot()

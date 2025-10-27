@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class PositionMonitor:
     """持仓监控器 - 动态调整止损止盈"""
     
-    def __init__(self, binance_client, trading_service, data_archiver, ml_predictor=None):
+    def __init__(self, binance_client, trading_service, data_archiver, ml_predictor=None, virtual_position_manager=None):
         """
         初始化持仓监控器
         
@@ -22,11 +22,13 @@ class PositionMonitor:
             trading_service: 交易服务
             data_archiver: 数据归档器（记录XGBoost特征）
             ml_predictor: ML预测器（可选，用于反弹预测）🎯 v3.9.2.5新增
+            virtual_position_manager: 虚拟仓位管理器（可选）🎯 v3.9.2.7新增
         """
         self.client = binance_client
         self.trading_service = trading_service
         self.data_archiver = data_archiver
         self.ml_predictor = ml_predictor  # 🎯 v3.9.2.5新增
+        self.virtual_position_manager = virtual_position_manager  # 🎯 v3.9.2.7新增
         
         # 追踪止损配置
         self.trailing_stop_pct = 0.5  # 追踪止损触发阈值：盈利0.5%时启动
@@ -45,23 +47,35 @@ class PositionMonitor:
     
     async def monitor_all_positions(self) -> Dict:
         """
-        监控所有活跃持仓
+        监控所有活跃持仓（真实 + 虚拟）
+        
+        🎯 v3.9.2.7增强：同时监控真实仓位和虚拟仓位
         
         Returns:
             Dict: 监控统计信息
         """
         try:
-            # 获取所有活跃持仓
+            # === 1. 监控真实持仓 ===
             positions = await self.client.get_positions()
             active_positions = [p for p in positions if float(p.get('positionAmt', 0)) != 0]
             
+            # === 2. 🎯 v3.9.2.7新增：监控虚拟持仓 ===
+            virtual_stats = {'total': 0, 'ml_analyzed': 0}
+            if self.virtual_position_manager:
+                virtual_stats = await self.monitor_virtual_positions()
+            
             if not active_positions:
-                logger.info("📊 当前无持仓")
+                if virtual_stats['total'] > 0:
+                    logger.info(f"📊 真实持仓:0, 虚拟持仓:{virtual_stats['total']} (ML已分析:{virtual_stats['ml_analyzed']})")
+                else:
+                    logger.info("📊 当前无持仓")
                 return {
                     'total': 0,
                     'adjusted': 0,
                     'in_profit': 0,
-                    'in_loss': 0
+                    'in_loss': 0,
+                    'virtual_total': virtual_stats['total'],
+                    'virtual_ml_analyzed': virtual_stats['ml_analyzed']
                 }
             
             # 📊 记录详细持仓状态
@@ -270,19 +284,30 @@ class PositionMonitor:
                             f"🔮 ML反弹预测 {symbol}: {rebound_pred['reason']}"
                         )
                         
-                        # 根据ML建议决定
+                        # 🎯 v3.9.2.7增强：真正执行ML建议
                         if rebound_pred['recommended_action'] == 'wait_and_monitor':
                             logger.info(
                                 f"📊 ML建议等待观察 {symbol} (反弹概率{rebound_pred['rebound_probability']:.1%})"
                             )
-                            # 不平仓，但收紧止损（后续代码会处理）
+                            # 不平仓，继续监控
                             pass
                         elif rebound_pred['recommended_action'] == 'adjust_strategy':
                             logger.info(
                                 f"🔧 ML建议调整策略 {symbol} - 收紧止损到-{abs(pnl_pct)*1.05:.1f}%"
                             )
-                            # 收紧止损（在后续代码中处理）
-                            pass
+                            # 🎯 v3.9.2.7：真正执行止损调整
+                            new_stop_loss_pct = abs(pnl_pct) * 1.05  # 收紧5%
+                            if direction == "LONG":
+                                new_stop_price = entry_price * (1 - new_stop_loss_pct / 100)
+                            else:
+                                new_stop_price = entry_price * (1 + new_stop_loss_pct / 100)
+                            
+                            try:
+                                # 更新止损订单
+                                await self._update_stop_loss(symbol, direction, new_stop_price)
+                                logger.info(f"✅ 已调整{symbol}止损至{new_stop_price:.4f}")
+                            except Exception as e:
+                                logger.error(f"调整止损失败 {symbol}: {e}")
                         else:  # close_immediately
                             logger.warning(
                                 f"🚨 ML建议立即平仓 {symbol} (反弹概率低)"
@@ -543,6 +568,52 @@ class PositionMonitor:
         except Exception as e:
             logger.critical(f"❌ 强制平仓异常: {symbol} - {e} - 需要人工介入！")
     
+    async def _update_stop_loss(self, symbol: str, direction: str, new_stop_price: float):
+        """
+        更新止损价格
+        
+        🎯 v3.9.2.7新增：真正执行ML建议的止损调整
+        
+        Args:
+            symbol: 交易对
+            direction: 方向
+            new_stop_price: 新止损价格
+        """
+        try:
+            # 取消现有止损订单
+            await self._cancel_existing_sl_tp_orders(symbol)
+            
+            # 获取当前持仓数量
+            positions = await self.client.get_positions()
+            position = next((p for p in positions if p['symbol'] == symbol), None)
+            
+            if not position:
+                logger.warning(f"未找到持仓 {symbol}，无法更新止损")
+                return
+            
+            quantity = abs(float(position['positionAmt']))
+            
+            # 设置新的止损订单
+            side = "SELL" if direction == "LONG" else "BUY"
+            
+            await self.client.create_order(
+                symbol=symbol,
+                side=side,
+                order_type='STOP_MARKET',
+                quantity=quantity,
+                stop_price=new_stop_price
+            )
+            
+            # 更新持仓状态
+            if symbol in self.position_states:
+                self.position_states[symbol]['current_stop_loss'] = new_stop_price
+            
+            logger.info(f"✅ 更新止损成功 {symbol}: {new_stop_price:.4f}")
+            
+        except Exception as e:
+            logger.error(f"更新止损失败 {symbol}: {e}")
+            raise
+    
     async def _cancel_existing_sl_tp_orders(self, symbol: str):
         """取消现有的止损止盈订单"""
         try:
@@ -578,6 +649,70 @@ class PositionMonitor:
             'trailing_profit_active_count': sum(1 for s in self.position_states.values() if s['trailing_profit_active']),
             'total_adjustments': sum(s['adjustment_count'] for s in self.position_states.values()),
         }
+    
+    async def monitor_virtual_positions(self) -> Dict:
+        """
+        🎯 v3.9.2.7新增：监控虚拟持仓，让ML模型分析
+        
+        Returns:
+            Dict: 虚拟持仓统计信息
+        """
+        try:
+            if not self.virtual_position_manager:
+                return {'total': 0, 'ml_analyzed': 0}
+            
+            virtual_positions = self.virtual_position_manager.get_all_positions()
+            active_virtual = [p for p in virtual_positions.values() if p.get('status') == 'active']
+            
+            if not active_virtual:
+                return {'total': 0, 'ml_analyzed': 0}
+            
+            logger.info(f"\n🎯 虚拟持仓监控 [{len(active_virtual)}个]")
+            
+            ml_analyzed_count = 0
+            
+            for position in active_virtual:
+                try:
+                    symbol = position['symbol']
+                    direction = position['direction']
+                    entry_price = position['entry_price']
+                    current_price = position['current_price']
+                    pnl_pct = position['current_pnl']
+                    
+                    # 🎯 关键：让ML模型分析虚拟仓位
+                    if self.ml_predictor and pnl_pct < -10:  # 亏损超过10%才询问ML
+                        try:
+                            indicators = await self._get_current_indicators(symbol)
+                            rebound_pred = await self.ml_predictor.predict_rebound(
+                                symbol=symbol,
+                                direction=direction,
+                                entry_price=entry_price,
+                                current_price=current_price,
+                                pnl_pct=pnl_pct,
+                                indicators=indicators
+                            )
+                            
+                            if rebound_pred:
+                                ml_analyzed_count += 1
+                                logger.info(
+                                    f"🤖 虚拟仓位ML分析 {symbol}: "
+                                    f"{rebound_pred['recommended_action']} "
+                                    f"(反弹:{rebound_pred['rebound_probability']:.0%})"
+                                )
+                        except Exception as e:
+                            logger.debug(f"虚拟仓位ML分析失败 {symbol}: {e}")
+                    
+                except Exception as e:
+                    logger.error(f"监控虚拟仓位失败: {e}")
+            
+            return {
+                'total': len(active_virtual),
+                'ml_analyzed': ml_analyzed_count
+            }
+            
+        except Exception as e:
+            logger.error(f"虚拟持仓监控失败: {e}")
+            return {'total': 0, 'ml_analyzed': 0}
     
     async def _get_current_indicators(self, symbol: str) -> Optional[Dict]:
         """
