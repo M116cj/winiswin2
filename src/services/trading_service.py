@@ -704,19 +704,25 @@ class TradingService:
                 params['positionSide'] = position_side
             
             # 下限價單
-            order = await self.client.place_order(
-                symbol=symbol,
-                side=side,
-                order_type="LIMIT",
-                quantity=quantity,
-                price=limit_price,
-                **params
-            )
+            try:
+                order = await self.client.place_order(
+                    symbol=symbol,
+                    side=side,
+                    order_type="LIMIT",
+                    quantity=quantity,
+                    price=limit_price,
+                    **params
+                )
+            except Exception as e:
+                logger.error(f"下限價單失敗 {symbol}: {e}")
+                logger.error(f"  參數: side={side}, qty={quantity}, price={limit_price}, positionSide={params.get('positionSide')}")
+                return None
             
             order_id = order.get('orderId')
             
             if not order_id:
                 logger.error(f"限價單未返回訂單ID，拒絕下單: {symbol}")
+                logger.error(f"  訂單響應: {order}")
                 # 不降級為不受限制的市價單，保護滑點
                 return None
             
@@ -1109,12 +1115,19 @@ class TradingService:
         Returns:
             Tuple[bool, Optional[Dict]]: (是否完全成交, 訂單狀態)
         """
+        # 驗證order_id有效性
+        try:
+            order_id_int = int(order_id)
+        except (ValueError, TypeError) as e:
+            logger.error(f"無效的訂單ID: {order_id}, 錯誤: {e}")
+            return False, None
+        
         elapsed = 0.0
         last_status = None
         
         while elapsed < timeout:
             try:
-                order_status = await self.client.get_order(symbol, int(order_id))
+                order_status = await self.client.get_order(symbol, order_id_int)
                 status = order_status.get('status')
                 last_status = order_status
                 
@@ -1130,7 +1143,8 @@ class TradingService:
                 elapsed += check_interval
                 
             except Exception as e:
-                logger.warning(f"檢查訂單狀態失敗: {e}")
+                logger.warning(f"檢查訂單狀態失敗 {symbol} orderId={order_id}: {e}")
+                logger.debug(f"  詳細錯誤: {type(e).__name__}")
                 return False, None
         
         # 超時：返回最後狀態（可能是部分成交）
