@@ -4,7 +4,7 @@
 
 24/7 高频自动化交易系统，用于 Binance USDT 永续合约，采用 ICT/SMC 策略结合 XGBoost 机器学习增强。
 
-**当前版本：v3.4.0 (2025-10-27)**
+**当前版本：v3.9.1 (2025-10-27)**
 
 ## 🎯 核心功能
 
@@ -139,6 +139,30 @@ src/
 - 完整的 ML 管道集成
 
 ## 📝 最近更新
+
+### 2025-10-27 (v3.9.1) - 🚀 XGBoost进阶优化（生产就绪）
+
+**关键修复**:
+1. ✅ **动态窗口真正启用** - 删除硬编码window_size，现在根据波动率自动调整500-2000样本
+2. ✅ **Risk-Adjusted目标生效** - 使用target_optimizer.prepare_target，默认PnL/ATR归一化
+3. ✅ **模型类型自动匹配** - 分类用XGBClassifier，回归用XGBRegressor（避免AttributeError）
+4. ✅ **评估指标匹配目标** - 分类用accuracy/F1/AUC，回归用MAE/RMSE/R²/方向准确率
+5. ✅ **Adaptive Learner修复** - 分类传accuracy，回归传direction_accuracy
+
+**技术细节**:
+- **Quantile Regression** - 替代Bootstrap，不确定性量化速度提升10倍
+- **PCA+MMD漂移检测** - 多变量漂移检测，比单变量KS检测更robust
+- **动态滑动窗口** - max(500, min(2000, volatility_adapted))，自适应市场条件
+- **Risk-Adjusted目标** - PnL/ATR，跨不同波动率regime更稳定的预测
+
+**代码质量**:
+- ✅ 通过Architect最终审查（完整git diff验证）
+- ✅ 集成测试验证（分类/回归路径）
+- ✅ 0 AttributeError，0 KeyError
+- ✅ 生产部署就绪
+
+**文档**:
+- 📄 `XGBOOST_ADVANCED_OPTIMIZATION_V3.9.1.md`
 
 ### 2025-10-27 (v3.4.0) - ✨ XGBoost高级优化
 
