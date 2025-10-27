@@ -7,3 +7,5 @@ python-dotenv>=1.0.0
 psutil>=5.9.0
 xgboost>=2.0.0
 scikit-learn>=1.3.0
+onnxmltools>=1.11.0
+onnxruntime>=1.18.0

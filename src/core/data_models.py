@@ -2,25 +2,28 @@
 数据模型（v3.12.0 轻量化策略）
 
 使用 __slots__ + dataclass 优化内存占用和访问速度
-- 减少内存占用（避免 __dict__ 开销）
+- 减少内存占用（避免 __dict__ 开销，每个实例节省 200-300 字节）
 - 提高属性访问速度（直接槽位访问）
 - 防止动态添加属性（更安全）
+- frozen=True 确保不可变性
 
-适用于频繁创建的数据结构：信号、持仓、交易记录
+适用于频繁创建的数据结构：信号、持仓、交易记录、虚拟仓位
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import Optional, Dict
 from datetime import datetime
+import json
 
 
-@dataclass
+@dataclass(frozen=True)
 class SignalRecord:
     """
     信号记录数据类（使用 __slots__ 优化）
     
     内存优化：
     - 无 __dict__：每个实例节省约 200-300 字节
+    - frozen=True: 不可变，线程安全
     - 适用于高频信号生成场景
     """
     __slots__ = (
@@ -66,12 +69,16 @@ class SignalRecord:
     liquidity_zones_count: int
     
     def to_dict(self) -> Dict:
-        """转换为字典（用于序列化）"""
-        return {slot: getattr(self, slot) for slot in self.__slots__}
+        """转换为字典（用于序列化/兼容旧系统）"""
+        return asdict(self)
+    
+    def to_json(self) -> str:
+        """JSON 序列化"""
+        return json.dumps(self.to_dict())
     
     @classmethod
     def from_signal_data(cls, signal_data: Dict, accepted: bool, rejection_reason: Optional[str] = None):
-        """从信号数据创建记录"""
+        """从信号数据创建记录（兼容现有系统）"""
         return cls(
             timestamp=signal_data.get('timestamp', datetime.now().isoformat()),
             symbol=signal_data.get('symbol', ''),
@@ -106,13 +113,14 @@ class SignalRecord:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class PositionOpenRecord:
     """
     开仓记录数据类（使用 __slots__ 优化）
     
     内存优化：
     - 每个实例节省约 200-300 字节
+    - frozen=True: 不可变，确保数据完整性
     - 适用于高频持仓创建场景
     """
     __slots__ = (
@@ -150,7 +158,11 @@ class PositionOpenRecord:
     
     def to_dict(self) -> Dict:
         """转换为字典（用于序列化）"""
-        return {slot: getattr(self, slot) for slot in self.__slots__}
+        return asdict(self)
+    
+    def to_json(self) -> str:
+        """JSON 序列化"""
+        return json.dumps(self.to_dict())
     
     @classmethod
     def from_position_data(cls, position_data: Dict, is_virtual: bool = False):
@@ -182,13 +194,14 @@ class PositionOpenRecord:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class PositionCloseRecord:
     """
     平仓记录数据类（使用 __slots__ 优化）
     
     内存优化：
     - 每个实例节省约 200-300 字节
+    - frozen=True: 不可变
     - 适用于高频平仓记录场景
     """
     __slots__ = (
@@ -219,7 +232,11 @@ class PositionCloseRecord:
     
     def to_dict(self) -> Dict:
         """转换为字典（用于序列化）"""
-        return {slot: getattr(self, slot) for slot in self.__slots__}
+        return asdict(self)
+    
+    def to_json(self) -> str:
+        """JSON 序列化"""
+        return json.dumps(self.to_dict())
     
     @classmethod
     def from_position_and_close_data(
@@ -229,7 +246,6 @@ class PositionCloseRecord:
         is_virtual: bool = False
     ):
         """从持仓数据和平仓数据创建记录"""
-        # 计算持仓时长
         entry_time = position_data.get('entry_timestamp') or position_data.get('timestamp')
         close_time = close_data.get('timestamp', datetime.now().isoformat())
         
@@ -263,14 +279,17 @@ class PositionCloseRecord:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class VirtualPosition:
     """
     虚拟仓位数据类（使用 __slots__ 优化）
     
     内存优化：
     - 每个实例节省约 200-300 字节
+    - frozen=True: 不可变（更新时创建新实例）
     - 系统可能同时维护数十个虚拟仓位
+    
+    注意：由于 frozen=True，更新虚拟仓位时需要使用 replace() 或创建新实例
     """
     __slots__ = (
         'symbol', 'direction', 'entry_price', 'stop_loss', 'take_profit',
@@ -278,11 +297,11 @@ class VirtualPosition:
         'current_price', 'current_pnl', 'max_pnl', 'min_pnl',
         'h1_trend', 'm15_trend', 'm5_trend', 'market_structure',
         'order_blocks', 'liquidity_zones',
-        'rsi', 'macd', 'atr'
+        'rsi', 'macd', 'atr', 'close_timestamp', 'close_reason'
     )
     
     symbol: str
-    direction: str
+    direction: str  # "LONG" or "SHORT"
     entry_price: float
     stop_loss: float
     take_profit: float
@@ -307,18 +326,18 @@ class VirtualPosition:
     macd: Optional[float]
     atr: Optional[float]
     
+    close_timestamp: Optional[str]
+    close_reason: Optional[str]  # "tp", "sl", "expired", "replaced_by_new_signal"
+    
     def to_dict(self) -> Dict:
         """转换为字典（用于序列化/兼容性）"""
-        result = {}
-        for slot in self.__slots__:
-            value = getattr(self, slot)
-            result[slot] = value
+        result = asdict(self)
         
-        # 添加兼容字段
+        # 添加兼容字段（供旧系统使用）
         result['timeframes'] = {
-            '1h': self.h1_trend,
-            '15m': self.m15_trend,
-            '5m': self.m5_trend
+            'h1': self.h1_trend,
+            'm15': self.m15_trend,
+            'm5': self.m5_trend
         }
         result['indicators'] = {
             'rsi': self.rsi,
@@ -327,6 +346,10 @@ class VirtualPosition:
         }
         
         return result
+    
+    def to_json(self) -> str:
+        """JSON 序列化"""
+        return json.dumps(self.to_dict())
     
     @classmethod
     def from_signal(cls, signal: Dict, rank: int, expiry: str):
@@ -349,13 +372,86 @@ class VirtualPosition:
             current_pnl=0.0,
             max_pnl=0.0,
             min_pnl=0.0,
-            h1_trend=timeframes.get('1h', 'neutral'),
-            m15_trend=timeframes.get('15m', 'neutral'),
-            m5_trend=timeframes.get('5m', 'neutral'),
+            h1_trend=timeframes.get('h1', timeframes.get('1h', 'neutral')),
+            m15_trend=timeframes.get('m15', timeframes.get('15m', 'neutral')),
+            m5_trend=timeframes.get('m5', timeframes.get('5m', 'neutral')),
             market_structure=signal.get('market_structure', 'neutral'),
             order_blocks=signal.get('order_blocks', 0),
             liquidity_zones=signal.get('liquidity_zones', 0),
             rsi=indicators.get('rsi'),
             macd=indicators.get('macd'),
-            atr=indicators.get('atr')
+            atr=indicators.get('atr'),
+            close_timestamp=None,
+            close_reason=None
+        )
+    
+    def update_price(self, current_price: float) -> 'VirtualPosition':
+        """
+        更新当前价格和 PnL（返回新实例）
+        
+        由于 frozen=True，需要创建新实例
+        """
+        if self.direction == "LONG":
+            pnl_pct = (current_price - self.entry_price) / self.entry_price
+        else:  # SHORT
+            pnl_pct = (self.entry_price - current_price) / self.entry_price
+        
+        return VirtualPosition(
+            symbol=self.symbol,
+            direction=self.direction,
+            entry_price=self.entry_price,
+            stop_loss=self.stop_loss,
+            take_profit=self.take_profit,
+            confidence=self.confidence,
+            rank=self.rank,
+            entry_timestamp=self.entry_timestamp,
+            expiry=self.expiry,
+            status=self.status,
+            current_price=current_price,
+            current_pnl=pnl_pct,
+            max_pnl=max(self.max_pnl, pnl_pct),
+            min_pnl=min(self.min_pnl, pnl_pct),
+            h1_trend=self.h1_trend,
+            m15_trend=self.m15_trend,
+            m5_trend=self.m5_trend,
+            market_structure=self.market_structure,
+            order_blocks=self.order_blocks,
+            liquidity_zones=self.liquidity_zones,
+            rsi=self.rsi,
+            macd=self.macd,
+            atr=self.atr,
+            close_timestamp=self.close_timestamp,
+            close_reason=self.close_reason
+        )
+    
+    def close(self, reason: str) -> 'VirtualPosition':
+        """
+        关闭虚拟仓位（返回新实例）
+        """
+        return VirtualPosition(
+            symbol=self.symbol,
+            direction=self.direction,
+            entry_price=self.entry_price,
+            stop_loss=self.stop_loss,
+            take_profit=self.take_profit,
+            confidence=self.confidence,
+            rank=self.rank,
+            entry_timestamp=self.entry_timestamp,
+            expiry=self.expiry,
+            status='closed',
+            current_price=self.current_price,
+            current_pnl=self.current_pnl,
+            max_pnl=self.max_pnl,
+            min_pnl=self.min_pnl,
+            h1_trend=self.h1_trend,
+            m15_trend=self.m15_trend,
+            m5_trend=self.m5_trend,
+            market_structure=self.market_structure,
+            order_blocks=self.order_blocks,
+            liquidity_zones=self.liquidity_zones,
+            rsi=self.rsi,
+            macd=self.macd,
+            atr=self.atr,
+            close_timestamp=datetime.now().isoformat(),
+            close_reason=reason
         )

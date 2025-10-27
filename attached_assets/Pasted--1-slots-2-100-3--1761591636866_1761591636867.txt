@@ -1,0 +1,269 @@
+🎯 整合目標
+1. 全面替換舊字典結構 → 新 __slots__ 資料類別
+2. 確保零功能改變（輸出/行為 100% 一致）
+3. 逐步整合 + 自動驗證
+
+
+
+📁 第一步：定義標準化資料類別（src/core/data_models.py）
+# src/core/data_models.py
+from typing import Optional, List
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass(frozen=True)
+class TradingSignal:
+    """交易信號標準化資料類別"""
+    __slots__ = (
+        'symbol', 'direction', 'confidence_score', 'entry_price',
+        'stop_loss', 'take_profit', 'leverage', 'timestamp',
+        'rsi_entry', 'atr_entry', 'trend_5m_encoded', 'market_structure_encoded',
+        'order_blocks_count', 'liquidity_zones_count', 'risk_reward_ratio',
+        'ml_prediction', 'market_regime', 'is_backtest'
+    )
+    
+    symbol: str
+    direction: int  # 1=LONG, -1=SHORT
+    confidence_score: float
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    leverage: int
+    timestamp: float
+    rsi_entry: float
+    atr_entry: float
+    trend_5m_encoded: int
+    market_structure_encoded: int
+    order_blocks_count: int
+    liquidity_zones_count: int
+    risk_reward_ratio: float
+    ml_prediction: float
+    market_regime: str
+    is_backtest: bool = False
+    
+    def to_dict(self) -> dict:
+        """相容舊系統的字典輸出"""
+        return asdict(self)
+    
+    def to_json(self) -> str:
+        """JSON 序列化"""
+        return json.dumps(self.to_dict())
+
+@dataclass(frozen=True)
+class VirtualPosition:
+    """虛擬倉位標準化資料類別"""
+    __slots__ = (
+        'symbol', 'direction', 'entry_price', 'stop_loss', 'take_profit',
+        'leverage', 'entry_timestamp', 'current_price', 'pnl_pct',
+        'is_closed', 'close_timestamp', 'close_reason', 'signal_id'
+    )
+    
+    symbol: str
+    direction: int
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    leverage: int
+    entry_timestamp: float
+    current_price: float
+    pnl_pct: float
+    is_closed: bool
+    close_timestamp: Optional[float]
+    close_reason: Optional[str]  # "tp", "sl", "expired"
+    signal_id: str  # 關聯原始信號
+    
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+# 其他需要的資料類別...
+
+ 第二步：整合到 virtual_position_manager.py
+❌ 舊代碼（字典結構）
+# src/managers/virtual_position_manager.py (舊)
+def create_virtual_position(self, signal: dict):
+    position = {
+        'symbol': signal['symbol'],
+        'direction': signal['direction'],
+        'entry_price': signal['entry_price'],
+        # ... 20+ 行
+    }
+    self.positions.append(position)
+
+✅ 新代碼（使用資料類別）
+
+# src/managers/virtual_position_manager.py (新)
+from src.core.data_models import VirtualPosition, TradingSignal
+
+def create_virtual_position(self, signal: TradingSignal):
+    """創建虛擬倉位 - 使用標準化資料類別"""
+    position = VirtualPosition(
+        symbol=signal.symbol,
+        direction=signal.direction,
+        entry_price=signal.entry_price,
+        stop_loss=signal.stop_loss,
+        take_profit=signal.take_profit,
+        leverage=signal.leverage,
+        entry_timestamp=signal.timestamp,
+        current_price=signal.entry_price,  # 初始價格
+        pnl_pct=0.0,
+        is_closed=False,
+        close_timestamp=None,
+        close_reason=None,
+        signal_id=f"{signal.symbol}_{signal.timestamp}"
+    )
+    self.positions.append(position)
+    return position
+
+def _check_virtual_exit(self, position: VirtualPosition, current_price: float):
+    """檢查虛擬倉位是否觸發退出"""
+    # 使用 position.stop_loss 而非 position['stop_loss']
+    if position.direction == 1:  # LONG
+        if current_price >= position.take_profit:
+            return "tp"
+        elif current_price <= position.stop_loss:
+            return "sl"
+    else:  # SHORT
+        if current_price <= position.take_profit:
+            return "tp"
+        elif current_price >= position.stop_loss:
+            return "sl"
+    
+    # 檢查過期（96小時）
+    if time.time() - position.entry_timestamp > 96 * 3600:
+        return "expired"
+    
+    return None
+
+第三步：整合到 data_archiver.py（ML 資料歸檔）
+❌ 舊代碼
+# src/ml/data_archiver.py (舊)
+def archive_signal(self, signal: dict, result: dict):
+    training_data = {
+        'entry_price': signal['entry_price'],
+        'exit_price': result['exit_price'],
+        'pnl_pct': result['pnl_pct'],
+        'is_winner': 1 if result['pnl_pct'] > 0 else 0,
+        # ... 31 個特徵
+    }
+    self.save_to_file(training_data)
+✅ 新代碼
+# src/ml/data_archiver.py (新)
+from src.core.data_models import TradingSignal
+
+def archive_signal(self, signal: TradingSignal, result: dict):
+    """歸檔 ML 訓練資料 - 使用標準化信號"""
+    training_data = {
+        # 直接從 signal 物件提取，確保順序一致
+        'confidence_score': signal.confidence_score,
+        'leverage': signal.leverage,
+        'rsi_entry': signal.rsi_entry,
+        'atr_entry': signal.atr_entry,
+        'trend_5m_encoded': signal.trend_5m_encoded,
+        'market_structure_encoded': signal.market_structure_encoded,
+        'order_blocks_count': signal.order_blocks_count,
+        'liquidity_zones_count': signal.liquidity_zones_count,
+        'risk_reward_ratio': signal.risk_reward_ratio,
+        'hour_of_day': int(time.strftime('%H', time.localtime(signal.timestamp))),
+        'day_of_week': int(time.strftime('%w', time.localtime(signal.timestamp))),
+        'is_weekend': 1 if int(time.strftime('%w', time.localtime(signal.timestamp))) in [0, 6] else 0,
+        # ... 其他特徵
+        'pnl_pct': result['pnl_pct'],
+        'is_winner': 1 if result['pnl_pct'] > 0 else 0,
+        'risk_adjusted_return': result['pnl_pct'] / signal.atr_entry if signal.atr_entry > 0 else 0
+    }
+    self.save_to_file(training_data)
+🧪 第四步：建立驗證機制（關鍵！）
+1. 類型檢查腳本
+# tests/validate_data_models.py
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.core.data_models import TradingSignal, VirtualPosition
+
+def test_trading_signal_creation():
+    """測試 TradingSignal 創建"""
+    signal = TradingSignal(
+        symbol="BTCUSDT",
+        direction=1,
+        confidence_score=0.85,
+        entry_price=60000.0,
+        stop_loss=59000.0,
+        take_profit=62000.0,
+        leverage=10,
+        timestamp=1730000000.0,
+        rsi_entry=65.0,
+        atr_entry=500.0,
+        trend_5m_encoded=1,
+        market_structure_encoded=1,
+        order_blocks_count=3,
+        liquidity_zones_count=2,
+        risk_reward_ratio=2.0,
+        ml_prediction=0.82,
+        market_regime="trending",
+        is_backtest=False
+    )
+    
+    # 驗證屬性存取
+    assert signal.symbol == "BTCUSDT"
+    assert signal.confidence_score == 0.85
+    
+    # 驗證不可變性
+    try:
+        signal.symbol = "ETHUSDT"
+        assert False, "應該無法修改 frozen 物件"
+    except:
+        pass
+    
+    # 驗證記憶體使用
+    import sys
+    size = sys.getsizeof(signal)
+    print(f"TradingSignal 記憶體大小: {size} bytes (預期 < 400)")
+    assert size < 400  # 應比 dict 小很多
+    
+    print("✅ TradingSignal 測試通過")
+
+def test_virtual_position_creation():
+    """測試 VirtualPosition 創建"""
+    pos = VirtualPosition(
+        symbol="ETHUSDT",
+        direction=-1,
+        entry_price=3000.0,
+        stop_loss=3100.0,
+        take_profit=2800.0,
+        leverage=5,
+        entry_timestamp=1730000000.0,
+        current_price=2950.0,
+        pnl_pct=1.67,
+        is_closed=False,
+        close_timestamp=None,
+        close_reason=None,
+        signal_id="ETHUSDT_1730000000"
+    )
+    
+    assert pos.symbol == "ETHUSDT"
+    assert pos.pnl_pct == 1.67
+    
+    print("✅ VirtualPosition 測試通過")
+
+if __name__ == "__main__":
+    test_trading_signal_creation()
+    test_virtual_position_creation()
+    print("🎉 所有資料模型驗證通過！")
+2. 功能相容性測試
+# tests/compatibility_test.py
+def test_dict_compatibility():
+    """確保 to_dict() 與舊系統相容"""
+    signal = TradingSignal(...)  # 創建實例
+    old_dict = signal.to_dict()
+    
+    # 驗證所有必要欄位存在
+    required_fields = ['symbol', 'direction', 'confidence_score', 'entry_price']
+    for field in required_fields:
+        assert field in old_dict
+    
+    # 驗證數值正確
+    assert old_dict['symbol'] == signal.symbol
+    assert old_dict['confidence_score'] == signal.confidence_score
+    
+    print("✅ 字典相容性測試通過")

@@ -1,0 +1,557 @@
+ONNX推理加速
+完整實施步驟
+步驟 1：安裝依賴
+# requirements.txt 新增
+onnxruntime>=1.18.0
+onnxmltools>=1.11.0  # 用於 XGBoost → ONNX 轉換
+步驟 2：新增模型轉換腳本（一次性）
+# scripts/convert_xgboost_to_onnx.py
+import pickle
+import onnxruntime as ort
+from onnxmltools import convert_xgboost
+from onnxmltools.convert.common.data_types import FloatTensorType
+
+def convert_model(model_path: str, onnx_path: str, input_shape=(1, 31)):
+    """將 XGBoost 模型轉為 ONNX"""
+    # 載入現有模型
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    
+    # 定義輸入格式 (N, 31 特徵)
+    initial_type = [('float_input', FloatTensorType(input_shape))]
+    
+    # 轉換為 ONNX
+    onnx_model = convert_xgboost(model, initial_types=initial_type)
+    
+    # 保存
+    with open(onnx_path, 'wb') as f:
+        f.write(onnx_model.SerializeToString())
+    
+    print(f"✅ 模型已轉換: {onnx_path}")
+    return onnx_path
+
+if __name__ == "__main__":
+    convert_model(
+        model_path="data/models/xgboost_model.pkl",
+        onnx_path="data/models/model.onnx"
+    )
+📌 執行一次即可：python scripts/convert_xgboost_to_onnx.py 
+
+步驟 3：重寫 MLPredictor（支援 ONNX）
+
+# src/ml/predictor.py
+import numpy as np
+import onnxruntime as ort
+from typing import List, Union
+
+class MLPredictor:
+    def __init__(self, model_path: str):
+        # 優先載入 ONNX 模型（若存在）
+        onnx_path = model_path.replace('.pkl', '.onnx')
+        try:
+            self.session = ort.InferenceSession(onnx_path)
+            self.use_onnx = True
+            print("🚀 使用 ONNX 推理引擎")
+        except Exception as e:
+            print(f"⚠️ ONNX 載入失敗，回退到 XGBoost: {e}")
+            self._load_xgboost_model(model_path)
+            self.use_onnx = False
+
+    def _load_xgboost_model(self, model_path: str):
+        import pickle
+        with open(model_path, 'rb') as f:
+            self.model = pickle.load(f)
+
+    def predict_batch(self, features_list: List[np.ndarray]) -> np.ndarray:
+        """
+        批量預測 - 自動選擇 ONNX 或 XGBoost
+        """
+        # 合併為單一矩陣 (N, 31)
+        X = np.vstack(features_list).astype(np.float32)
+        
+        if self.use_onnx:
+            # ONNX 推理
+            ort_inputs = {self.session.get_inputs()[0].name: X}
+            ort_outs = self.session.run(None, ort_inputs)
+            return ort_outs[0].flatten()  # shape: (N,)
+        else:
+            # 回退到 XGBoost
+            return self.model.predict(X)
+步驟 4：修改特徵提取（確保 dtype 一致）
+
+# src/ml/data_processor.py
+def extract_features_for_prediction(signal) -> np.ndarray:
+    """提取 31 個特徵，返回 float32 陣列（ONNX 友好）"""
+    features = [
+        signal.confidence_score,
+        float(signal.leverage),
+        signal.rsi_entry,
+        signal.atr_entry,
+        # ... 其他 27 個特徵
+    ]
+    return np.array(features, dtype=np.float32).reshape(1, -1)  # (1, 31)
+
+步驟 5：在主循環中使用批量預測
+
+# src/main.py
+async def scan_and_analyze(self):
+    # ... 生成 signals ...
+    
+    # 批量提取特徵
+    features_batch = [
+        extract_features_for_prediction(signal) 
+        for signal in signals
+    ]
+    
+    # 單次批量預測
+    predictions = self.ml_predictor.predict_batch(features_batch)
+    
+    # 附加預測結果
+    for signal, pred in zip(signals, predictions):
+        signal.ml_score = float(pred)
+⚠️ 關鍵注意事項
+1. ONNX 轉換相容性
+* XGBoost ≥ 1.7 才支援完整 ONNX 轉換
+* 確保你的模型沒有自訂目標函數（你用 reg:squarederror，完全相容）
+
+2. 數值精度差異
+* ONNX 使用 float32，XGBoost 預設 float64
+* 差異 < 1e-6，對交易決策無影響
+* 若需更高精度，可改用 DoubleTensorType（但速度 ↓20%）
+
+3. 模型版本管理
+* 建議同時保存 .pkl 和 .onnx
+* ONNX 作為推理優化層，不取代原始模型
+
+動態回退機制
+MLPredictor 已內建回退機制：
+* ONNX 載入失敗 → 自動用 XGBoost
+* 確保永不中斷交易
+
+最終確認清單
+* 已安裝 onnxruntime 和 onnxmltools
+* 執行過 convert_xgboost_to_onnx.py
+* MLPredictor 支援 ONNX + 回退
+* 特徵提取使用 float32
+* 主循環使用 predict_batch
+
+📁 1. 完整 convert_xgboost_to_onnx.py 腳本
+# scripts/convert_xgboost_to_onnx.py
+"""
+XGBoost → ONNX 轉換腳本 (v1.0)
+- 支援回歸/分類模型
+- 自動驗證轉換正確性
+- 生成相容性報告
+"""
+
+import os
+import sys
+import pickle
+import numpy as np
+import pandas as pd
+from typing import Tuple, Optional
+
+# ONNX 相關
+try:
+    import onnxruntime as ort
+    from onnxmltools import convert_xgboost
+    from onnxmltools.convert.common.data_types import FloatTensorType
+    ONNX_AVAILABLE = True
+except ImportError as e:
+    print(f"❌ ONNX 依賴缺失: {e}")
+    print("請安裝: pip install onnxruntime onnxmltools")
+    ONNX_AVAILABLE = False
+
+# ===== 配置 =====
+MODEL_PATH = "data/models/xgboost_model.pkl"
+ONNX_PATH = "data/models/model.onnx"
+FEATURE_ORDER_PATH = "data/models/feature_order.txt"  # 用於驗證特徵順序
+
+def load_xgboost_model(model_path: str):
+    """安全載入 XGBoost 模型"""
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"模型不存在: {model_path}")
+    
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    
+    # 驗證是否為 XGBoost 模型
+    model_type = type(model).__name__
+    if "XGB" not in model_type:
+        raise ValueError(f"非 XGBoost 模型: {model_type}")
+    
+    print(f"✅ 載入模型: {model_type}")
+    return model
+
+def get_feature_order_from_model(model) -> list:
+    """從模型獲取特徵順序（若支援）"""
+    try:
+        # XGBoost 1.7+ 支援 feature_names
+        if hasattr(model, 'feature_names_in_'):
+            return model.feature_names_in_.tolist()
+        elif hasattr(model, 'feature_names'):
+            return model.feature_names
+    except Exception:
+        pass
+    return None
+
+def save_feature_order(features: list, path: str):
+    """保存特徵順序到檔案"""
+    with open(path, 'w') as f:
+        for feat in features:
+            f.write(f"{feat}\n")
+    print(f"📝 特徵順序已保存: {path}")
+
+def load_feature_order(path: str) -> Optional[list]:
+    """從檔案載入特徵順序"""
+    if not os.path.exists(path):
+        return None
+    with open(path, 'r') as f:
+        return [line.strip() for line in f.readlines()]
+
+def create_sample_input(n_features: int = 31) -> np.ndarray:
+    """創建標準化測試輸入"""
+    np.random.seed(42)  # 確保可重現
+    return np.random.uniform(0, 1, (10, n_features)).astype(np.float32)
+
+def validate_conversion(
+    xgb_model, 
+    onnx_session, 
+    sample_input: np.ndarray,
+    tolerance: float = 1e-5
+) -> bool:
+    """驗證 ONNX 與 XGBoost 輸出一致性"""
+    print("🔍 驗證轉換正確性...")
+    
+    # XGBoost 預測
+    xgb_pred = xgb_model.predict(sample_input.astype(np.float64))
+    
+    # ONNX 預測
+    ort_inputs = {onnx_session.get_inputs()[0].name: sample_input}
+    onnx_pred = onnx_session.run(None, ort_inputs)[0].flatten()
+    
+    # 比較
+    diff = np.abs(xgb_pred - onnx_pred)
+    max_diff = np.max(diff)
+    mean_diff = np.mean(diff)
+    
+    print(f"  最大差異: {max_diff:.2e}")
+    print(f"  平均差異: {mean_diff:.2e}")
+    print(f"  容忍度: {tolerance:.2e}")
+    
+    if max_diff <= tolerance:
+        print("✅ 轉換驗證通過！")
+        return True
+    else:
+        print("❌ 轉換驗證失敗！")
+        return False
+
+def convert_model(
+    model_path: str, 
+    onnx_path: str, 
+    input_shape: Tuple[int, int] = (1, 31)
+) -> bool:
+    """
+    主轉換函數
+    Returns: bool - 是否成功
+    """
+    if not ONNX_AVAILABLE:
+        return False
+    
+    try:
+        # 1. 載入模型
+        model = load_xgboost_model(model_path)
+        
+        # 2. 獲取/保存特徵順序
+        feature_order = get_feature_order_from_model(model)
+        if feature_order:
+            save_feature_order(feature_order, FEATURE_ORDER_PATH)
+        else:
+            print("⚠️ 無法獲取特徵順序，請手動驗證")
+        
+        # 3. 轉換為 ONNX
+        print("🔄 開始轉換為 ONNX...")
+        initial_type = [('float_input', FloatTensorType(input_shape))]
+        onnx_model = convert_xgboost(model, initial_types=initial_type)
+        
+        # 4. 保存 ONNX 模型
+        os.makedirs(os.path.dirname(onnx_path), exist_ok=True)
+        with open(onnx_path, 'wb') as f:
+            f.write(onnx_model.SerializeToString())
+        print(f"✅ ONNX 模型已保存: {onnx_path}")
+        
+        # 5. 驗證轉換
+        sample_input = create_sample_input(input_shape[1])
+        onnx_session = ort.InferenceSession(onnx_path)
+        is_valid = validate_conversion(model, onnx_session, sample_input)
+        
+        return is_valid
+        
+    except Exception as e:
+        print(f"❌ 轉換失敗: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def main():
+    """主函數"""
+    print("🚀 XGBoost → ONNX 轉換工具")
+    print(f"輸入模型: {MODEL_PATH}")
+    print(f"輸出模型: {ONNX_PATH}")
+    print("-" * 50)
+    
+    success = convert_model(MODEL_PATH, ONNX_PATH)
+    
+    if success:
+        print("\n🎉 轉換成功！")
+        print("下一步:")
+        print("1. 在 src/ml/predictor.py 中啟用 ONNX 支援")
+        print("2. 確保特徵提取順序與訓練時一致")
+    else:
+        print("\n💥 轉換失敗！請檢查錯誤訊息")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+📁 2. 特徵順序驗證工具
+# scripts/verify_feature_order.py
+"""
+特徵順序驗證工具
+確保訓練時與推理時的特徵順序完全一致
+"""
+
+import os
+import sys
+from typing import List
+
+# 你的特徵順序（必須與 training_data_processor.py 完全一致！）
+EXPECTED_FEATURES = [
+    # ===== 基礎特徵 (19) =====
+    'confidence_score',
+    'leverage',
+    'position_value',
+    'risk_reward_ratio',
+    'order_blocks_count',
+    'liquidity_zones_count',
+    'rsi_entry',
+    'macd_entry',
+    'macd_signal_entry',
+    'macd_histogram_entry',
+    'atr_entry',
+    'bb_width_pct',
+    'volume_sma_ratio',
+    'price_vs_ema50',
+    'price_vs_ema200',
+    'trend_1h_encoded',
+    'trend_15m_encoded',
+    'trend_5m_encoded',
+    'market_structure_encoded',
+    'direction_encoded',  # 注意：你原文有20個基礎特徵
+    
+    # ===== 增強特徵 (12) =====
+    'hour_of_day',
+    'day_of_week',
+    'is_weekend',
+    'stop_distance_pct',
+    'tp_distance_pct',
+    'confidence_x_leverage',
+    'rsi_x_trend',
+    'atr_x_bb_width',
+    'price_momentum_strength',
+    'volatility_x_confidence',
+    'rsi_distance_from_neutral',
+    'macd_strength_ratio',
+    'trend_alignment_score'
+]
+
+def load_feature_order_from_file(path: str) -> List[str]:
+    """從檔案載入特徵順序"""
+    if not os.path.exists(path):
+        return []
+    with open(path, 'r') as f:
+        return [line.strip() for line in f.readlines()]
+
+def verify_feature_order(actual_features: List[str]) -> bool:
+    """驗證特徵順序是否正確"""
+    if len(actual_features) != len(EXPECTED_FEATURES):
+        print(f"❌ 特徵數量不符: 期望 {len(EXPECTED_FEATURES)}, 實際 {len(actual_features)}")
+        return False
+    
+    mismatches = []
+    for i, (expected, actual) in enumerate(zip(EXPECTED_FEATURES, actual_features)):
+        if expected != actual:
+            mismatches.append(f"位置 {i}: 期望 '{expected}', 實際 '{actual}'")
+    
+    if mismatches:
+        print("❌ 特徵順序不匹配:")
+        for mismatch in mismatches[:5]:  # 只顯示前5個
+            print(f"  {mismatch}")
+        if len(mismatches) > 5:
+            print(f"  ... 還有 {len(mismatches)-5} 個不匹配")
+        return False
+    else:
+        print("✅ 特徵順序完全匹配！")
+        return True
+
+def main():
+    """主驗證函數"""
+    print("🔍 特徵順序驗證工具")
+    print("-" * 50)
+    
+    # 方法1: 從 feature_order.txt 驗證
+    feature_file = "data/models/feature_order.txt"
+    if os.path.exists(feature_file):
+        actual_features = load_feature_order_from_file(feature_file)
+        print(f"從 {feature_file} 載入特徵順序")
+        verify_feature_order(actual_features)
+    else:
+        print(f"⚠️ {feature_file} 不存在，使用預設順序")
+        verify_feature_order(EXPECTED_FEATURES)
+    
+    print("\n💡 重要提醒:")
+    print("確保 src/ml/data_processor.py 中的 extract_features()") 
+    print("返回的特徵順序與 EXPECTED_FEATURES 完全一致！")
+
+if __name__ == "__main__":
+    main()
+📁 3. ONNX 相容性檢查工具
+
+# scripts/check_onnx_compatibility.py
+"""
+ONNX 模型相容性檢查工具
+驗證模型是否能在目標環境正確運行
+"""
+
+import os
+import sys
+import numpy as np
+import onnx
+import onnxruntime as ort
+from onnx import version_converter
+
+def check_onnx_model(onnx_path: str):
+    """檢查 ONNX 模型基本相容性"""
+    print(f"🔍 檢查 ONNX 模型: {onnx_path}")
+    
+    if not os.path.exists(onnx_path):
+        print("❌ 模型檔案不存在")
+        return False
+    
+    try:
+        # 1. 驗證 ONNX 格式
+        model = onnx.load(onnx_path)
+        onnx.checker.check_model(model)
+        print("✅ ONNX 格式驗證通過")
+        
+        # 2. 檢查輸入輸出
+        inputs = model.graph.input
+        outputs = model.graph.output
+        
+        print(f"📊 輸入: {len(inputs)} 個")
+        for inp in inputs:
+            shape = [dim.dim_value for dim in inp.type.tensor_type.shape.dim]
+            print(f"  - {inp.name}: shape={shape}, type={inp.type.tensor_type.elem_type}")
+        
+        print(f"📊 輸出: {len(outputs)} 個")
+        for out in outputs:
+            shape = [dim.dim_value for dim in out.type.tensor_type.shape.dim]
+            print(f"  - {out.name}: shape={shape}, type={out.type.tensor_type.elem_type}")
+        
+        # 3. 測試推理
+        session = ort.InferenceSession(onnx_path)
+        input_name = session.get_inputs()[0].name
+        input_shape = session.get_inputs()[0].shape
+        
+        # 處理動態 shape (如 [1, 31] 中的 1 可能是 -1)
+        test_shape = []
+        for dim in input_shape:
+            if isinstance(dim, int) and dim > 0:
+                test_shape.append(dim)
+            else:
+                test_shape.append(1)  # 用 1 代替動態維度
+        
+        test_input = np.random.random(test_shape).astype(np.float32)
+        outputs = session.run(None, {input_name: test_input})
+        
+        print(f"✅ 推理測試通過: 輸出 shape = {outputs[0].shape}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ 相容性檢查失敗: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def check_onnx_runtime_compatibility():
+    """檢查 ONNX Runtime 相容性"""
+    print("\n🔍 檢查 ONNX Runtime 相容性")
+    
+    try:
+        # 獲取版本資訊
+        ort_version = ort.__version__
+        providers = ort.get_available_providers()
+        
+        print(f"✅ ONNX Runtime 版本: {ort_version}")
+        print(f"✅ 可用提供者: {providers}")
+        
+        # 檢查是否支援 CPU
+        if 'CPUExecutionProvider' not in providers:
+            print("⚠️ 警告: CPU 執行提供者不可用")
+            return False
+        
+        print("✅ ONNX Runtime 相容性檢查通過")
+        return True
+        
+    except Exception as e:
+        print(f"❌ ONNX Runtime 檢查失敗: {e}")
+        return False
+
+def main():
+    """主檢查函數"""
+    ONNX_PATH = "data/models/model.onnx"
+    
+    print("🚀 ONNX 相容性檢查工具")
+    print("-" * 50)
+    
+    success1 = check_onnx_model(ONNX_PATH)
+    success2 = check_onnx_runtime_compatibility()
+    
+    if success1 and success2:
+        print("\n🎉 所有相容性檢查通過！")
+        print("你的 ONNX 模型可以在生產環境安全使用")
+    else:
+        print("\n💥 相容性檢查失敗！")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+
+1. 首次轉換流程
+
+# 1. 安裝依賴
+pip install onnxruntime onnxmltools
+
+# 2. 轉換模型
+python scripts/convert_xgboost_to_onnx.py
+
+# 3. 驗證特徵順序
+python scripts/verify_feature_order.py
+
+# 4. 檢查相容性
+python scripts/check_onnx_compatibility.py
+
+2. 整合到系統
+* 將 MLPredictor 替換為 之前提供的 ONNX 版本
+* 確保 extract_features_for_prediction() 返回的特徵順序與 EXPECTED_FEATURES 一致
+
+3. 自動化流程（推薦）
+在模型訓練後自動轉換：
+python
+
+# 在 src/ml/model_trainer.py 的 save_model() 後加入
+if config.ENABLE_ONNX_CONVERSION:
+    subprocess.run([sys.executable, "scripts/convert_xgboost_to_onnx.py"])
+💡 關鍵提醒
+1. 特徵順序是生命線：任何不一致都會導致預測錯誤
+2. 保留 .pkl 模型：ONNX 僅用於推理，訓練仍用原始模型
+3. 定期驗證：每次模型更新後都執行這三個腳本

@@ -1,6 +1,11 @@
 """
-虛擬倉位管理器
+虛擬倉位管理器（v3.12.0 优化7：集成 VirtualPosition 数据类）
 職責：追蹤 Rank 4-10 信號、虛擬 PnL 計算、ML 數據收集
+
+v3.12.0 优化：
+- 使用 VirtualPosition 数据类进行创建和归档
+- 内存优化：创建/归档时使用 __slots__ 数据类
+- 内部仍使用字典（避免频繁创建新实例）
 """
 
 import json
@@ -10,6 +15,7 @@ from datetime import datetime, timedelta
 import logging
 
 from src.config import Config
+from src.core.data_models import VirtualPosition
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +40,7 @@ class VirtualPositionManager:
     
     def add_virtual_position(self, signal: Dict, rank: int):
         """
-        添加虛擬倉位
+        添加虛擬倉位（v3.12.0：使用 VirtualPosition 数据类）
         
         Args:
             signal: 交易信號
@@ -51,27 +57,12 @@ class VirtualPositionManager:
             )
             self._close_virtual_position(symbol, "replaced_by_new_signal")
         
-        position = {
-            'symbol': symbol,
-            'direction': signal['direction'],
-            'entry_price': signal['entry_price'],
-            'stop_loss': signal['stop_loss'],
-            'take_profit': signal['take_profit'],
-            'confidence': signal['confidence'],
-            'rank': rank,
-            'entry_timestamp': datetime.now().isoformat(),
-            'expiry': (datetime.now() + timedelta(hours=self.config.VIRTUAL_POSITION_EXPIRY)).isoformat(),
-            'status': 'active',
-            'current_price': signal['entry_price'],
-            'current_pnl': 0.0,
-            'max_pnl': 0.0,
-            'min_pnl': 0.0,
-            'timeframes': signal.get('timeframes', {}),
-            'market_structure': signal.get('market_structure', 'neutral'),
-            'order_blocks': signal.get('order_blocks', 0),
-            'liquidity_zones': signal.get('liquidity_zones', 0),
-            'indicators': signal.get('indicators', {}),
-        }
+        # v3.12.0 优化：使用 VirtualPosition 数据类创建（内存优化）
+        expiry = (datetime.now() + timedelta(hours=self.config.VIRTUAL_POSITION_EXPIRY)).isoformat()
+        virtual_pos = VirtualPosition.from_signal(signal, rank, expiry)
+        
+        # 转换为字典存储（内部仍用字典，避免频繁创建新实例）
+        position = virtual_pos.to_dict()
         
         self.virtual_positions[symbol] = position
         self._save_positions()
