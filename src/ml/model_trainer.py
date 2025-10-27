@@ -17,6 +17,9 @@ from src.ml.data_processor import MLDataProcessor
 from src.ml.hyperparameter_tuner import HyperparameterTuner
 from src.ml.adaptive_learner import AdaptiveLearner
 from src.ml.ensemble_model import EnsembleModel
+from src.ml.label_leakage_validator import LabelLeakageValidator
+from src.ml.imbalance_handler import ImbalanceHandler
+from src.ml.drift_detector import DriftDetector
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,11 @@ class XGBoostTrainer:
         self.tuner = HyperparameterTuner() if use_tuning else None
         self.adaptive_learner = AdaptiveLearner()
         self.ensemble = EnsembleModel() if use_ensemble else None
+        
+        # 🚀 v3.9.0新增：優化功能
+        self.leakage_validator = LabelLeakageValidator()
+        self.imbalance_handler = ImbalanceHandler()
+        self.drift_detector = DriftDetector(window_size=1000, drift_threshold=0.05)
         
         os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
     
@@ -82,6 +90,14 @@ class XGBoostTrainer:
                 logger.warning(f"訓練數據不足: {len(df)} 條記錄 (最少需要 {min_samples})")
                 return None, {}
             
+            # 🔍 v3.9.0：標籤泄漏驗證
+            leakage_report = self.leakage_validator.validate_training_data(df)
+            if leakage_report['has_leakage']:
+                logger.warning(f"⚠️ 檢測到潛在標籤泄漏：{leakage_report['leakage_features']}")
+            
+            # 📊 v3.9.0：應用滑動窗口（防止舊數據影響過大）
+            df = self.drift_detector.apply_sliding_window(df, window_size=1000)
+            
             # 準備特徵
             X, y = self.data_processor.prepare_features(df)
             
@@ -89,8 +105,34 @@ class XGBoostTrainer:
                 logger.error("特徵準備失敗")
                 return None, {}
             
+            # 📊 v3.9.0：類別平衡分析
+            balance_report = self.imbalance_handler.analyze_class_balance(y, X)
+            
+            # 🔍 v3.9.0：特徵分布漂移檢測
+            drift_report = self.drift_detector.detect_feature_drift(
+                X,
+                X.columns.tolist(),
+                update_baseline=True
+            )
+            
             # 分割數據
             X_train, X_test, y_train, y_test = self.data_processor.split_data(X, y)
+            
+            # 🛡️ v3.9.0：計算樣本權重（處理類別不平衡）
+            sample_weights = None
+            if balance_report.get('needs_balancing', False):
+                logger.info("📊 檢測到類別不平衡，計算動態樣本權重...")
+                sample_weights = self.imbalance_handler.calculate_sample_weight(y_train, method='balanced')
+                
+                # 同時結合時間衰減權重
+                time_weights = self.drift_detector.calculate_sample_weights(
+                    pd.DataFrame({'y': y_train}),
+                    decay_factor=0.95
+                )
+                
+                # 組合權重
+                if sample_weights is not None:
+                    sample_weights = sample_weights * time_weights
             
             # ✨ v3.4.0：超參數調優
             if params is None:
@@ -114,6 +156,12 @@ class XGBoostTrainer:
                         'random_state': 42,
                         'n_jobs': 32  # 使用 32 核心
                     }
+                    
+                    # 🛡️ v3.9.0：添加成本感知參數（處理不平衡）
+                    if balance_report.get('needs_balancing', False):
+                        scale_pos_weight = self.imbalance_handler.get_scale_pos_weight(y_train)
+                        params['scale_pos_weight'] = scale_pos_weight
+                        logger.info(f"📊 啟用成本感知學習：scale_pos_weight = {scale_pos_weight:.2f}")
                     
                     # GPU 加速
                     if use_gpu:
@@ -154,20 +202,41 @@ class XGBoostTrainer:
             # 訓練（增量或完整）- 使用try-finally確保臨時文件清理
             try:
                 if xgb_model_file:
-                    model.fit(
-                        X_train, y_train,
-                        eval_set=[(X_train, y_train), (X_test, y_test)],
-                        early_stopping_rounds=20,
-                        verbose=False,
-                        xgb_model=xgb_model_file  # ✨ 增量學習關鍵參數
-                    )
+                    # 增量學習（帶樣本權重）
+                    if sample_weights is not None:
+                        model.fit(
+                            X_train, y_train,
+                            sample_weight=sample_weights,
+                            eval_set=[(X_train, y_train), (X_test, y_test)],
+                            early_stopping_rounds=20,
+                            verbose=False,
+                            xgb_model=xgb_model_file  # ✨ 增量學習關鍵參數
+                        )
+                    else:
+                        model.fit(
+                            X_train, y_train,
+                            eval_set=[(X_train, y_train), (X_test, y_test)],
+                            early_stopping_rounds=20,
+                            verbose=False,
+                            xgb_model=xgb_model_file
+                        )
                 else:
-                    model.fit(
-                        X_train, y_train,
-                        eval_set=[(X_train, y_train), (X_test, y_test)],
-                        early_stopping_rounds=20,
-                        verbose=False
-                    )
+                    # 完整訓練（帶樣本權重）
+                    if sample_weights is not None:
+                        model.fit(
+                            X_train, y_train,
+                            sample_weight=sample_weights,
+                            eval_set=[(X_train, y_train), (X_test, y_test)],
+                            early_stopping_rounds=20,
+                            verbose=False
+                        )
+                    else:
+                        model.fit(
+                            X_train, y_train,
+                            eval_set=[(X_train, y_train), (X_test, y_test)],
+                            early_stopping_rounds=20,
+                            verbose=False
+                        )
             finally:
                 # 清理臨時文件（確保即使訓練失敗也會清理）
                 if xgb_model_file and os.path.exists(temp_model_path):
@@ -194,9 +263,24 @@ class XGBoostTrainer:
                 'trained_at': datetime.now().isoformat()
             }
             
-            # 混淆矩陣
+            # 📊 v3.9.0：詳細混淆矩陣報告（包含分方向評估）
+            confusion_report = self.imbalance_handler.generate_confusion_matrix_report(
+                y_test.values,
+                y_pred,
+                X_test
+            )
+            metrics['confusion_matrix_detailed'] = confusion_report
+            
+            # 保留原有混淆矩陣格式（向後兼容）
             cm = confusion_matrix(y_test, y_pred)
             metrics['confusion_matrix'] = cm.tolist()
+            
+            # 📊 v3.9.0：添加優化報告
+            metrics['optimization_reports'] = {
+                'label_leakage': leakage_report,
+                'class_balance': balance_report,
+                'feature_drift': drift_report
+            }
             
             # 特徵重要性
             feature_importance = self.data_processor.get_feature_importance(
