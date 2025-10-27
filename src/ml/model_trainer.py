@@ -67,6 +67,10 @@ class XGBoostTrainer:
         self.uncertainty_quantifier = UncertaintyQuantifier()  # Quantile Regression
         self.importance_monitor = FeatureImportanceMonitor()
         
+        # 🎯 v3.9.2.8.5: 質量權重計算器（給完美交易更高權重）
+        from src.managers.model_scorer import ModelScorer
+        self.model_scorer = ModelScorer(history_limit=100)
+        
         os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
     
     def train(
@@ -164,7 +168,17 @@ class XGBoostTrainer:
             else:
                 sample_weights = time_weights
             
-            logger.info(f"📊 樣本權重：min={sample_weights.min():.3f}, max={sample_weights.max():.3f}, mean={sample_weights.mean():.3f}")
+            # 🎯 v3.9.2.8.5：應用質量權重（給完美交易更高權重）
+            try:
+                quality_weights = self._calculate_quality_weights(df, X_train.index.values)
+                sample_weights = sample_weights * quality_weights
+                logger.info(
+                    f"✅ 已應用質量權重（完美交易3.0x，優秀交易2.0x，良好交易1.5x）"
+                )
+            except Exception as e:
+                logger.warning(f"質量權重計算失敗，繼續使用基礎權重: {e}")
+            
+            logger.info(f"📊 最終樣本權重：min={sample_weights.min():.3f}, max={sample_weights.max():.3f}, mean={sample_weights.mean():.3f}")
             
             # ✨ v3.4.0：超參數調優
             if params is None:
@@ -500,6 +514,98 @@ class XGBoostTrainer:
         except Exception as e:
             logger.error(f"自動訓練失敗: {e}")
             return False
+    
+    def _calculate_quality_weights(self, df: pd.DataFrame, train_indices: np.ndarray) -> np.ndarray:
+        """
+        🎯 v3.9.2.8.5: 計算基於模型評分的質量權重
+        給100分的完美交易（盈利+高置信度）更高的訓練權重
+        
+        Args:
+            df: 完整的訓練數據DataFrame
+            train_indices: 訓練集索引
+        
+        Returns:
+            np.ndarray: 質量權重數組（長度等於訓練集大小）
+        """
+        try:
+            # 只處理訓練集樣本
+            train_df = df.iloc[train_indices].copy()
+            
+            # 初始化權重為1.0
+            quality_weights = np.ones(len(train_df))
+            
+            # 檢查必需欄位是否存在
+            required_cols = ['pnl', 'confidence_score']
+            if not all(col in train_df.columns for col in required_cols):
+                logger.warning("缺少pnl或confidence_score欄位，無法計算質量權重")
+                return quality_weights
+            
+            # 計算每個樣本的模型評分
+            for idx, row in enumerate(train_df.itertuples()):
+                try:
+                    pnl_pct = row.pnl * 100  # 轉換為百分比
+                    confidence = row.confidence_score
+                    
+                    # 使用ModelScorer的評分邏輯（不需要胜率）
+                    # PnL分數（50%權重）
+                    if pnl_pct > 0:
+                        pnl_score = min(100, (pnl_pct / 10) * 100)  # 10%收益 = 100分
+                    else:
+                        pnl_score = max(0, 50 + pnl_pct * 5)  # -10%虧損 = 0分
+                    
+                    # 置信度準確性分數（30%權重）
+                    is_profit = pnl_pct > 0
+                    is_high_conf = confidence >= 0.7
+                    
+                    if is_profit and is_high_conf:
+                        conf_score = 100  # 完美預測
+                    elif is_profit and not is_high_conf:
+                        conf_score = 70   # 幸運
+                    elif not is_profit and is_high_conf:
+                        conf_score = 20   # 誤判
+                    else:
+                        conf_score = 50   # 符合預期
+                    
+                    # 計算總評分（不考慮胜率，因為訓練時胜率不穩定）
+                    score = (pnl_score * 0.5) + (conf_score * 0.5)
+                    
+                    # 🎯 根據評分調整權重
+                    if score >= 95:
+                        # 95-100分（完美交易）：3.0倍權重
+                        quality_weights[idx] = 3.0
+                    elif score >= 85:
+                        # 85-94分（優秀交易）：2.0倍權重
+                        quality_weights[idx] = 2.0
+                    elif score >= 70:
+                        # 70-84分（良好交易）：1.5倍權重
+                        quality_weights[idx] = 1.5
+                    elif score >= 50:
+                        # 50-69分（一般交易）：1.0倍權重
+                        quality_weights[idx] = 1.0
+                    else:
+                        # <50分（低質量交易）：0.5倍權重
+                        quality_weights[idx] = 0.5
+                
+                except Exception as e:
+                    logger.debug(f"計算第{idx}個樣本質量權重失敗: {e}")
+                    quality_weights[idx] = 1.0
+            
+            # 統計質量權重分布
+            perfect_count = np.sum(quality_weights >= 3.0)
+            excellent_count = np.sum((quality_weights >= 2.0) & (quality_weights < 3.0))
+            good_count = np.sum((quality_weights >= 1.5) & (quality_weights < 2.0))
+            
+            logger.info(
+                f"📊 質量權重分布：完美交易(3.0x)={perfect_count}, "
+                f"優秀交易(2.0x)={excellent_count}, "
+                f"良好交易(1.5x)={good_count}"
+            )
+            
+            return quality_weights
+            
+        except Exception as e:
+            logger.error(f"計算質量權重失敗: {e}", exc_info=True)
+            return np.ones(len(train_indices))
     
     def _detect_gpu(self) -> bool:
         """
