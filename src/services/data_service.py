@@ -305,11 +305,18 @@ class DataService:
         Returns:
             pd.DataFrame: 解析后的数据框
         """
-        df = pd.DataFrame(klines, columns=[
-            'timestamp', 'open', 'high', 'low', 'close', 'volume',
-            'close_time', 'quote_volume', 'trades', 'taker_buy_volume',
-            'taker_buy_quote_volume', 'ignore'
-        ])
+        if not klines:
+            return pd.DataFrame()
+        
+        # 构造DataFrame
+        df = pd.DataFrame(
+            data=klines,
+            columns=[
+                'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                'close_time', 'quote_volume', 'trades', 'taker_buy_volume',
+                'taker_buy_quote_volume', 'ignore'
+            ]
+        )
         
         df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
         
@@ -317,9 +324,9 @@ class DataService:
             df[col] = pd.to_numeric(df[col], errors='coerce')
         
         # 保留 close_time（用于增量更新）
-        df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time']]
+        result = df[['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time']].copy()
         
-        return df
+        return result
     
     async def get_batch_tickers(self, symbols: List[str]) -> Dict[str, dict]:
         """
