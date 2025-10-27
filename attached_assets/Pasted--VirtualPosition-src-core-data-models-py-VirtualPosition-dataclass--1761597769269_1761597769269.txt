@@ -1,0 +1,30 @@
+代碼完整性檢查指令
+VirtualPosition 實現檢查
+確認 src/core/data_models.py 中的 VirtualPosition 類別沒有 @dataclass 裝飾器，且有 __slots__ 定義包含 _entry_direction
+驗證 VirtualPosition.__init__() 方法手動初始化所有屬性，沒有使用 **kwargs 批量賦值
+檢查 VirtualPosition.to_dict() 方法是否手動返回字典，而不是呼叫 asdict()
+異步虛擬倉位循環檢查
+確認 src/main.py 第 669 行已從 self.virtual_position_manager.update_virtual_positions(market_prices) 改為 await self.virtual_position_manager.update_all_prices_async(binance_client=self.binance_client)
+驗證 src/managers/virtual_position_manager.py 中存在 async def update_all_prices_async(self, binance_client) 方法
+檢查該方法是否使用 asyncio.gather(*price_tasks, return_exceptions=True) 進行併發請求
+GlobalProcessPool 集成檢查
+確認 src/services/parallel_analyzer.py 的 ParallelAnalyzer 類別在 __init__ 中使用 GlobalProcessPool()._instance.executor
+驗證 analyze_async() 方法使用 loop.run_in_executor(self.process_pool, self._analyze_single_symbol, symbol)
+增量 K 線緩存檢查
+確認 src/services/data_service.py 存在 async def get_klines_incremental(self, symbol: str, interval: str, limit: int = 100) 方法
+檢查該方法是否使用 last_close_time = cached['last_close_time'] 和 self._fetch_klines_since() 進行增量更新
+驗證是否實現了動態 TTL：ttl = max(60, 300 * (1 - min(volatility, 0.1)))
+slots 應用檢查
+確認 src/core/trading_state.py 的 StateConfig 類別有 __slots__ = ('consecutive_losses', 'drawdown', 'circuit_breaker_level', 'win_rate')
+驗證 src/utils/helpers.py 的 OperationTimer 類別有 __slots__ = ('name', 'start_time', 'end_time', 'duration')
+ONNX 推理檢查
+確認 src/ml/predictor.py 的 predict_batch() 方法使用 X.astype(np.float32) 轉換數據類型
+檢查是否使用 ort_inputs = {self.model.get_inputs()[0].name: X.astype(np.float32)} 構建輸入
+異步主循環檢查
+確認 src/async_core/async_main_loop.py 存在 VirtualPositionLoop 類別，且 run() 方法使用 await self.vpm.update_all_prices_async(binance_client=self.client)
+驗證主循環使用 asyncio.to_thread(self._sync_save_closed_positions, closed_positions) 進行非阻塞文件操作
+鎖機制檢查
+確認 src/managers/virtual_position_manager.py 的 __init__ 中使用 self._lock = threading.Lock() 而不是 asyncio.Lock()
+檢查 _sync_save_closed_positions() 方法是否使用 with self._lock: 保護臨界區
+錯誤處理檢查
+確認所有 Binance API 方法（如 get_ticker_price）都使用 @handle_binance_errors 裝飾器，且該裝飾器在 src/core/decorators.py 中定義
