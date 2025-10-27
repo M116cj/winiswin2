@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class PositionMonitor:
     """持仓监控器 - 动态调整止损止盈"""
     
-    def __init__(self, binance_client, trading_service, data_archiver):
+    def __init__(self, binance_client, trading_service, data_archiver, ml_predictor=None):
         """
         初始化持仓监控器
         
@@ -21,10 +21,12 @@ class PositionMonitor:
             binance_client: Binance客户端
             trading_service: 交易服务
             data_archiver: 数据归档器（记录XGBoost特征）
+            ml_predictor: ML预测器（可选，用于反弹预测）🎯 v3.9.2.5新增
         """
         self.client = binance_client
         self.trading_service = trading_service
         self.data_archiver = data_archiver
+        self.ml_predictor = ml_predictor  # 🎯 v3.9.2.5新增
         
         # 追踪止损配置
         self.trailing_stop_pct = 0.5  # 追踪止损触发阈值：盈利0.5%时启动
@@ -193,11 +195,13 @@ class PositionMonitor:
             Optional[Dict]: 调整记录（用于XGBoost特征）
         """
         try:
-            # 🚨 v3.9.2.3紧急修复：强制止损保护（防止-100%亏损）
+            # 🚨 v3.9.2.5智能止损：ML辅助决策
             # 从配置读取或使用默认值
             EMERGENCY_STOP_LOSS_PCT = getattr(self.trading_service.config, 'EMERGENCY_STOP_LOSS_PCT', -0.50) * 100  # -50%
             CRITICAL_STOP_LOSS_PCT = getattr(self.trading_service.config, 'CRITICAL_STOP_LOSS_PCT', -0.80) * 100  # -80%
+            ML_REBOUND_CHECK_THRESHOLD = -0.30 * 100  # -30%开始询问ML
             
+            # === 严重亏损：-80%直接平仓（无ML判断） ===
             if pnl_pct <= CRITICAL_STOP_LOSS_PCT:
                 logger.critical(
                     f"🚨 检测到严重亏损 {symbol} {pnl_pct:.2f}% ≤ {CRITICAL_STOP_LOSS_PCT}% - 立即强制平仓！"
@@ -205,12 +209,79 @@ class PositionMonitor:
                 await self._force_close_position(symbol, direction, quantity, "critical_loss")
                 return None
             
+            # === 紧急亏损：-50%到-80%之间，询问ML是否可能反弹 ===
             if pnl_pct <= EMERGENCY_STOP_LOSS_PCT:
-                logger.error(
-                    f"⚠️  检测到紧急亏损 {symbol} {pnl_pct:.2f}% ≤ {EMERGENCY_STOP_LOSS_PCT}% - 强制平仓保护"
+                logger.warning(
+                    f"⚠️  检测到紧急亏损 {symbol} {pnl_pct:.2f}% ≤ {EMERGENCY_STOP_LOSS_PCT}%"
                 )
-                await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
-                return None
+                
+                # 🎯 v3.9.2.5：询问ML模型是否可能反弹
+                if self.ml_predictor:
+                    try:
+                        # 获取当前市场指标（如果可用）
+                        indicators = await self._get_current_indicators(symbol)
+                        
+                        rebound_pred = await self.ml_predictor.predict_rebound(
+                            symbol=symbol,
+                            direction=direction,
+                            entry_price=entry_price,
+                            current_price=current_price,
+                            pnl_pct=pnl_pct,
+                            indicators=indicators
+                        )
+                        
+                        logger.info(
+                            f"🔮 ML反弹预测 {symbol}: {rebound_pred['reason']}"
+                        )
+                        
+                        # 根据ML建议决定
+                        if rebound_pred['recommended_action'] == 'wait_and_monitor':
+                            logger.info(
+                                f"📊 ML建议等待观察 {symbol} (反弹概率{rebound_pred['rebound_probability']:.1%})"
+                            )
+                            # 不平仓，但收紧止损（后续代码会处理）
+                            pass
+                        elif rebound_pred['recommended_action'] == 'adjust_strategy':
+                            logger.info(
+                                f"🔧 ML建议调整策略 {symbol} - 收紧止损到-{abs(pnl_pct)*1.05:.1f}%"
+                            )
+                            # 收紧止损（在后续代码中处理）
+                            pass
+                        else:  # close_immediately
+                            logger.warning(
+                                f"🚨 ML建议立即平仓 {symbol} (反弹概率低)"
+                            )
+                            await self._force_close_position(symbol, direction, quantity, "ml_recommended_close")
+                            return None
+                    except Exception as e:
+                        logger.error(f"ML反弹预测失败 {symbol}: {e}，执行默认强制平仓")
+                        await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
+                        return None
+                else:
+                    # 没有ML模型，使用传统强制平仓
+                    await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
+                    return None
+            
+            # === 预警亏损：-30%到-50%之间，询问ML并可能调整策略 ===
+            if pnl_pct <= ML_REBOUND_CHECK_THRESHOLD and self.ml_predictor:
+                try:
+                    indicators = await self._get_current_indicators(symbol)
+                    rebound_pred = await self.ml_predictor.predict_rebound(
+                        symbol=symbol,
+                        direction=direction,
+                        entry_price=entry_price,
+                        current_price=current_price,
+                        pnl_pct=pnl_pct,
+                        indicators=indicators
+                    )
+                    
+                    # 只记录日志，不强制平仓
+                    if rebound_pred['recommended_action'] == 'close_immediately':
+                        logger.warning(
+                            f"⚠️  ML预警 {symbol}: {rebound_pred['reason']} - 建议关注"
+                        )
+                except Exception as e:
+                    logger.debug(f"ML预警检查失败 {symbol}: {e}")
             
             # 初始化持仓状态
             if symbol not in self.position_states:
@@ -471,3 +542,82 @@ class PositionMonitor:
             'trailing_profit_active_count': sum(1 for s in self.position_states.values() if s['trailing_profit_active']),
             'total_adjustments': sum(s['adjustment_count'] for s in self.position_states.values()),
         }
+    
+    async def _get_current_indicators(self, symbol: str) -> Optional[Dict]:
+        """
+        获取当前技术指标（用于ML反弹预测）
+        
+        🎯 v3.9.2.5新增：简化版指标获取
+        
+        Args:
+            symbol: 交易对
+        
+        Returns:
+            Optional[Dict]: 技术指标字典
+        """
+        try:
+            # 尝试获取15m K线数据计算指标
+            from src.services.indicators import TechnicalIndicators
+            
+            # 获取最近50根15m K线
+            klines = await self.client.get_klines(symbol, '15m', limit=50)
+            
+            if not klines or len(klines) < 20:
+                logger.debug(f"K线数据不足，无法计算指标 {symbol}")
+                return {}
+            
+            # 转换为DataFrame
+            import pandas as pd
+            df = pd.DataFrame(klines, columns=[
+                'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                'taker_buy_quote', 'ignore'
+            ])
+            
+            # 转换数据类型
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            
+            # 计算指标
+            indicators_calc = TechnicalIndicators()
+            close_prices = df['close'].values
+            high_prices = df['high'].values
+            low_prices = df['low'].values
+            volumes = df['volume'].values
+            
+            # RSI
+            rsi = indicators_calc.calculate_rsi(close_prices, period=14)
+            
+            # MACD
+            macd_line, signal_line, histogram = indicators_calc.calculate_macd(close_prices)
+            
+            # 布林带
+            bb_upper, bb_middle, bb_lower = indicators_calc.calculate_bollinger_bands(close_prices)
+            current_price = close_prices[-1]
+            bb_width_pct = (bb_upper[-1] - bb_lower[-1]) / bb_middle[-1] * 100 if bb_middle[-1] > 0 else 0
+            
+            # 价格相对布林带位置 (0=下轨, 1=上轨)
+            if bb_upper[-1] > bb_lower[-1]:
+                price_vs_bb = (current_price - bb_lower[-1]) / (bb_upper[-1] - bb_lower[-1])
+            else:
+                price_vs_bb = 0.5
+            
+            indicators = {
+                'rsi': rsi[-1] if len(rsi) > 0 else 50,
+                'macd': macd_line[-1] if len(macd_line) > 0 else 0,
+                'macd_signal': signal_line[-1] if len(signal_line) > 0 else 0,
+                'macd_histogram': histogram[-1] if len(histogram) > 0 else 0,
+                'bb_width_pct': bb_width_pct,
+                'price_vs_bb': price_vs_bb
+            }
+            
+            logger.debug(
+                f"获取指标 {symbol}: RSI={indicators['rsi']:.1f}, "
+                f"MACD={indicators['macd']:.6f}, BB宽度={indicators['bb_width_pct']:.2f}%"
+            )
+            
+            return indicators
+            
+        except Exception as e:
+            logger.warning(f"获取技术指标失败 {symbol}: {e}")
+            return {}

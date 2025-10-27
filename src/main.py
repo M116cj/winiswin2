@@ -200,11 +200,12 @@ class TradingBot:
             self.trade_recorder
         )
         
-        # 初始化持仓监控器（动态止损止盈）
+        # 初始化持仓监控器（动态止损止盈）🎯 v3.9.2.5：添加ML反弹预测
         self.position_monitor = PositionMonitor(
             self.binance_client,
             self.trading_service,
-            self.data_archiver
+            self.data_archiver,
+            self.ml_predictor  # 🎯 v3.9.2.5新增：ML辅助持仓监控
         )
         
         # 初始化 ML 預測器
