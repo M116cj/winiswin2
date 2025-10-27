@@ -87,7 +87,25 @@ class VirtualPositionManager:
     
     def update_virtual_positions(self, market_data: Dict[str, float]):
         """
-        更新虛擬倉位 PnL（v3.12.0：使用可变对象的 update_price）
+        同步更新虛擬倉位（向后兼容，内部调用异步版本）
+        
+        Args:
+            market_data: 市場價格數據 {symbol: price}
+        """
+        import asyncio
+        
+        # 如果在异步上下文中，直接调用
+        try:
+            loop = asyncio.get_running_loop()
+            # 在运行的事件循环中，创建task
+            asyncio.create_task(self.update_all_prices_async(market_data))
+        except RuntimeError:
+            # 没有运行的事件循环，使用同步实现
+            self._update_virtual_positions_sync(market_data)
+    
+    def _update_virtual_positions_sync(self, market_data: Dict[str, float]):
+        """
+        同步更新虛擬倉位 PnL（v3.12.0：使用可变对象的 update_price）
         
         ✅ 性能优势：
         - 直接调用 position.update_price() → 零额外内存分配
@@ -124,6 +142,104 @@ class VirtualPositionManager:
         
         if closed_positions:
             self._save_positions()
+    
+    async def update_all_prices_async(self, binance_client=None) -> List[VirtualPosition]:
+        """
+        v3.13.0 异步批量更新所有活跃倉位價格（文档完整实现）
+        
+        🔥 关键优化：使用 asyncio.gather 并发获取所有价格
+        - 200个交易对 → 同时发起200个请求（而不是串行）
+        - 总时间 ≈ 最慢的单一请求时间（而不是 200 × 单一请求时间）
+        
+        Args:
+            binance_client: Binance客户端实例（提供异步get_ticker_price方法）
+        
+        Returns:
+            List[VirtualPosition]: 已关闭的虚拟仓位列表
+        """
+        import asyncio
+        
+        if not self.virtual_positions:
+            return []
+        
+        # 获取所有活跃交易对
+        active_symbols = set()
+        for pos in self.virtual_positions.values():
+            if pos.status == 'active':
+                active_symbols.add(pos.symbol)
+        
+        if not active_symbols:
+            return []
+        
+        # 🔥 关键优化：使用 asyncio.gather 并发获取所有价格
+        if binance_client and hasattr(binance_client, 'get_ticker_price'):
+            price_tasks = [
+                self._get_price_safe(symbol, binance_client) 
+                for symbol in active_symbols
+            ]
+            price_results = await asyncio.gather(*price_tasks, return_exceptions=True)
+            
+            # 处理结果
+            prices = {}
+            for symbol, result in zip(active_symbols, price_results):
+                if isinstance(result, Exception):
+                    logger.warning(f"获取 {symbol} 价格失败: {result}")
+                else:
+                    prices[symbol] = result
+        else:
+            # 降级：如果没有异步客户端，返回空（调用者应使用同步版本）
+            logger.warning("未提供异步Binance客户端，无法批量更新价格")
+            return []
+        
+        if not prices:
+            logger.warning("未能获取任何价格，跳过更新")
+            return []
+        
+        # 高效更新每个倉位
+        closed_positions = []
+        for symbol, position in list(self.virtual_positions.items()):
+            if position.status != 'active':
+                continue
+            
+            # 检查过期
+            if datetime.fromisoformat(position.expiry) < datetime.now():
+                self._close_virtual_position(symbol, "expired")
+                closed_positions.append(position)
+                continue
+            
+            if symbol not in prices:
+                continue
+            
+            try:
+                # 更新价格
+                position.update_price(prices[symbol])
+                
+                # 检查是否应该关闭
+                if self._should_close_virtual(position, prices[symbol]):
+                    reason = self._get_close_reason(position, prices[symbol])
+                    self._close_virtual_position(symbol, reason)
+                    closed_positions.append(position)
+                    logger.debug(f"虚拟仓位触发退出: {position}")
+            except Exception as e:
+                logger.error(f"更新倉位 {symbol} 价格时出错: {e}")
+        
+        if closed_positions:
+            self._save_positions()
+        
+        return closed_positions
+    
+    async def _get_price_safe(self, symbol: str, binance_client) -> float:
+        """
+        安全获取单一价格（内部方法）
+        
+        Args:
+            symbol: 交易对
+            binance_client: Binance客户端实例
+        
+        Returns:
+            float: 价格
+        """
+        return await binance_client.get_ticker_price(symbol)
     
     def _should_close_virtual(self, position: VirtualPosition, current_price: float) -> bool:
         """判斷是否應該關閉虛擬倉位（v3.12.0：使用对象属性）"""
