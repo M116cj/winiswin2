@@ -102,28 +102,28 @@ class ExpectancyCalculator:
         consecutive_losses: int = 0
     ) -> Tuple[float, float]:
         """
-        根据期望值和盈亏比确定杠杆范围
+        根据期望值和盈亏比确定杠杆范围（無限制模式）
         
         Args:
             expectancy: 期望值（百分比，如 1.5 表示 1.5%）
             profit_factor: 盈亏比
-            consecutive_losses: 连续亏损数
+            consecutive_losses: 连续亏损数（僅用於日志）
         
         Returns:
             Tuple[float, float]: (最小杠杆, 最大杠杆)
         """
+        # 🚀 無限制模式：移除連續虧損限制
         if consecutive_losses >= 5:
-            logger.warning(f"连续亏损 {consecutive_losses} 次，强制降低杠杆")
-            return (1.0, 3.0)
+            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不降低槓桿）")
+        elif consecutive_losses >= 3:
+            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不降低槓桿）")
         
-        if consecutive_losses >= 3:
-            logger.warning(f"连续亏损 {consecutive_losses} 次，进入保守模式")
-            return (2.0, 5.0)
-        
+        # 🚀 無限制模式：期望值為負也使用正常槓桿範圍
         if expectancy < 0:
-            logger.warning(f"期望值为负 ({expectancy:.2f}%)，禁止开仓")
-            return (0.0, 0.0)
+            logger.info(f"🎓 期望值為負 ({expectancy:.2f}%)（無限制模式：使用基礎槓桿範圍）")
+            return (3.0, 5.0)  # 使用基礎槓桿而非0
         
+        # 正常槓桿範圍
         if expectancy > 1.5 and profit_factor > 1.5:
             return (15.0, 20.0)
         elif expectancy > 0.8 and profit_factor > 1.0:
@@ -142,34 +142,28 @@ class ExpectancyCalculator:
         total_trades: int = 0
     ) -> Tuple[bool, str]:
         """
-        判断是否应该开仓（永久学习模式）
+        判断是否应该开仓（完全无限制学习模式）
         
         Args:
             expectancy: 期望值（仅用于日志记录）
             profit_factor: 盈亏比（仅用于日志记录）
-            consecutive_losses: 连续亏损数
-            daily_loss_pct: 今日亏损百分比
+            consecutive_losses: 连续亏损数（仅用于日志记录）
+            daily_loss_pct: 今日亏损百分比（仅用于日志记录）
             total_trades: 总交易数（仅用于日志记录）
         
         Returns:
             Tuple[bool, str]: (是否允许交易, 原因)
         """
-        # 🎓 永久学习模式：始终允许交易，仅检查关键安全限制
-        # 目的：持续收集数据，让系统自主学习和优化
+        # 🚀 完全无限制模式：始终允许交易，不设任何限制
+        # 目的：持续收集数据，让系统自主学习和优化，完全信任策略
         logger.info(
-            f"🎓 永久学习模式 (已完成 {total_trades} 笔交易)：允许交易，"
-            f"期望值 {expectancy:.2f}%, 盈亏比 {profit_factor:.2f}"
+            f"🚀 无限制学习模式 (已完成 {total_trades} 笔交易)：始终允许交易，"
+            f"期望值 {expectancy:.2f}%, 盈亏比 {profit_factor:.2f}, "
+            f"连续亏损 {consecutive_losses}次, 日亏损 {daily_loss_pct:.1f}%"
         )
         
-        # 仅检查关键安全限制
-        if daily_loss_pct >= 3.0:
-            return False, f"触发日亏损上限 ({daily_loss_pct:.1f}% >= 3%)"
-        
-        if consecutive_losses >= 5:
-            return False, f"连续亏损 {consecutive_losses} 次，暂停交易24小时"
-        
-        # ✅ 允许交易（即使期望值为负）
-        return True, f"学习模式允许交易 (已完成 {total_trades} 笔)"
+        # ✅ 始终允许交易（移除所有限制）
+        return True, f"无限制模式：始终允许交易 (已完成 {total_trades} 笔)"
     
     def _count_consecutive_losses(self, pnl_values: List[float]) -> int:
         """计算当前连续亏损次数"""

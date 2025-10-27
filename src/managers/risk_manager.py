@@ -90,7 +90,7 @@ class RiskManager:
         current_drawdown: float = 0.0
     ) -> int:
         """
-        計算動態槓桿（期望值驅動版本）
+        計算動態槓桿（期望值驅動版本 - 無限制模式）
         
         優先使用期望值和盈亏比，降級使用勝率
         
@@ -98,19 +98,18 @@ class RiskManager:
             expectancy: 期望值百分比 (如 1.5 表示 1.5%)
             profit_factor: 盈亏比
             win_rate: 勝率 (0-1) - 僅在期望值不可用時使用
-            consecutive_losses: 連續虧損次數
+            consecutive_losses: 連續虧損次數（僅用於日志）
             current_drawdown: 當前回撤 (0-1)
         
         Returns:
             int: 槓桿倍數
         """
+        # 🚀 無限制模式：移除連續虧損對槓桿的限制
+        # 僅記錄日誌，不限制槓桿
         if consecutive_losses >= 5:
-            logger.warning(f"連續虧損 {consecutive_losses} 次，強制最低槓桿")
-            return self.config.MIN_LEVERAGE
-        
-        if consecutive_losses >= 3:
-            logger.warning(f"連續虧損 {consecutive_losses} 次，進入保守模式")
-            return min(5, self.config.BASE_LEVERAGE)
+            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不影響槓桿）")
+        elif consecutive_losses >= 3:
+            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不影響槓桿）")
         
         # 優先級1：使用期望值（有或沒有盈亏比）
         if expectancy is not None:
