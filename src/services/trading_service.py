@@ -917,19 +917,30 @@ class TradingService:
         """
         for attempt in range(max_retries):
             try:
-                # ✨ 並行執行止損和止盈訂單
-                sl_task = self._set_stop_loss(symbol, direction, quantity, stop_loss)
-                tp_task = self._set_take_profit(symbol, direction, quantity, take_profit)
+                # 🛡️ v3.9.2.2: 順序執行（非並行），避免熔斷器
+                # 檢查熔斷器狀態
+                can_proceed, block_reason = self.client.circuit_breaker.can_proceed()
+                if not can_proceed:
+                    retry_after = self.client.circuit_breaker.get_retry_after()
+                    logger.warning(
+                        f"⏱️  熔斷器開啟，等待{retry_after:.0f}秒後重試止損止盈 "
+                        f"(嘗試 {attempt + 1}/{max_retries})"
+                    )
+                    await asyncio.sleep(retry_after + 1)  # +1秒安全邊際
+                    continue
                 
-                # 並行等待兩個訂單完成
-                sl_result, tp_result = await asyncio.gather(
-                    sl_task, tp_task,
-                    return_exceptions=True
-                )
+                # 先設置止損
+                sl_result = await self._set_stop_loss(symbol, direction, quantity, stop_loss)
+                sl_success = sl_result is not None
                 
-                # 檢查結果
-                sl_success = not isinstance(sl_result, Exception) and sl_result is not None
-                tp_success = not isinstance(tp_result, Exception) and tp_result is not None
+                # 🛡️ v3.9.2.2: 訂單間延遲，避免觸發熔斷器
+                if sl_success:
+                    logger.debug(f"⏱️  止損成功，等待{self.config.ORDER_INTER_DELAY}秒後設置止盈...")
+                    await asyncio.sleep(self.config.ORDER_INTER_DELAY)
+                
+                # 再設置止盈
+                tp_result = await self._set_take_profit(symbol, direction, quantity, take_profit)
+                tp_success = tp_result is not None
                 
                 if sl_success and tp_success:
                     sl_order_id = sl_result.get('orderId')
