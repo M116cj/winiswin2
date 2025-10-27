@@ -97,8 +97,13 @@ class ParallelAnalyzer:
                 # 並行分析信號
                 analysis_tasks = []
                 for j, multi_tf_data in enumerate(multi_tf_data_list):
-                    if isinstance(multi_tf_data, Exception) or multi_tf_data is None:
-                        logger.debug(f"跳過 {batch[j]['symbol']}: 數據獲取失敗")
+                    # 明確檢查類型，確保是有效字典
+                    if isinstance(multi_tf_data, Exception):
+                        logger.debug(f"跳過 {batch[j]['symbol']}: 數據獲取異常 - {multi_tf_data}")
+                        continue
+                    
+                    if multi_tf_data is None or not isinstance(multi_tf_data, dict):
+                        logger.debug(f"跳過 {batch[j]['symbol']}: 數據無效")
                         continue
                     
                     symbol = batch[j]['symbol']
