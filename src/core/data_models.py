@@ -306,7 +306,8 @@ class VirtualPosition:
         'h1_trend', 'm15_trend', 'm5_trend', 'market_structure',
         'order_blocks', 'liquidity_zones',
         'rsi', 'macd', 'atr', 'close_timestamp', 'close_reason',
-        '_last_update', 'leverage'
+        '_last_update', 'leverage',
+        'signal_id', '_entry_direction'
     )
     
     def __init__(self, **kwargs):
@@ -347,6 +348,36 @@ class VirtualPosition:
         
         self._last_update = time.time()
         self.leverage = kwargs.get('leverage', 10)
+        
+        # 🔥 v3.13.0修复3：signal_id机制
+        # 自动生成signal_id（如果未提供）
+        if 'signal_id' in kwargs:
+            self.signal_id = kwargs['signal_id']
+        else:
+            # 从entry_timestamp生成唯一ID
+            if isinstance(self.entry_timestamp, str):
+                # ISO格式时间戳转换为Unix时间戳
+                try:
+                    ts = datetime.fromisoformat(self.entry_timestamp.replace('Z', '+00:00')).timestamp()
+                    self.signal_id = f"{self.symbol}_{int(ts)}"
+                except:
+                    self.signal_id = f"{self.symbol}_{int(time.time())}"
+            elif isinstance(self.entry_timestamp, (int, float)):
+                # 数值时间戳直接使用
+                self.signal_id = f"{self.symbol}_{int(self.entry_timestamp)}"
+            else:
+                # 默认使用当前时间
+                self.signal_id = f"{self.symbol}_{int(time.time())}"
+        
+        # 🔥 v3.13.0修复1+2：缓存初始方向，防止运行时修改影响PnL计算
+        # 将字符串方向转换为数值（1=LONG, -1=SHORT）
+        if self.direction == "LONG" or self.direction == 1:
+            self._entry_direction = 1
+        elif self.direction == "SHORT" or self.direction == -1:
+            self._entry_direction = -1
+        else:
+            # 默认LONG
+            self._entry_direction = 1
     
     def update_price(self, new_price: float) -> None:
         """
@@ -356,14 +387,20 @@ class VirtualPosition:
         - 直接内存更新，无需创建新对象
         - 比 frozen dataclass 快 10-50倍
         - 每次更新节省约 300 字节分配
+        
+        🔥 v3.13.0安全性增强：
+        - 使用 _entry_direction 而非 direction
+        - 防止方向被意外修改后PnL计算错误
         """
         self.current_price = new_price
         self._last_update = time.time()
         
-        if self.direction == "LONG":
-            pnl_pct = ((new_price - self.entry_price) / self.entry_price) * 100 * self.leverage
-        else:  # SHORT
-            pnl_pct = ((self.entry_price - new_price) / self.entry_price) * 100 * self.leverage
+        # 🔥 使用 _entry_direction 而非 self.direction（防止运行时修改）
+        price_diff = new_price - self.entry_price
+        if self._entry_direction == -1:  # SHORT
+            price_diff = -price_diff
+        
+        pnl_pct = (price_diff / self.entry_price) * 100 * self.leverage
         
         self.current_pnl = pnl_pct
         self.max_pnl = max(self.max_pnl, pnl_pct)
@@ -424,6 +461,7 @@ class VirtualPosition:
             
             'close_timestamp': self.close_timestamp,
             'close_reason': self.close_reason,
+            'signal_id': self.signal_id,
         }
     
     def to_json(self) -> str:
@@ -469,7 +507,8 @@ class VirtualPosition:
             macd=indicators.get('macd'),
             atr=indicators.get('atr'),
             close_timestamp=None,
-            close_reason=None
+            close_reason=None,
+            signal_id=signal.get('signal_id', f"{signal['symbol']}_{int(datetime.now().timestamp())}")
         )
     
     def __repr__(self):
