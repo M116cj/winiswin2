@@ -11,9 +11,12 @@ from src.config import Config
 
 logger = logging.getLogger(__name__)
 
+# 🛡️ 全局緊急停止標誌
+EMERGENCY_STOP_ACTIVE = False
+
 
 class RiskManager:
-    """風險管理器"""
+    """風險管理器（v3.9.1緊急保護版）"""
     
     def __init__(self):
         """初始化風險管理器"""
@@ -22,6 +25,17 @@ class RiskManager:
         self.consecutive_losses = 0
         self.max_drawdown = 0.0
         self.current_drawdown = 0.0
+        
+        # 🛡️ v3.9.1 緊急保護機制
+        self.initial_balance: Optional[float] = None
+        self.daily_start_balance: Optional[float] = None
+        self.last_reset_date: Optional[str] = None
+        self.emergency_stop_triggered = False
+        
+        # 保護閾值
+        self.MAX_DAILY_LOSS_PCT = 0.15  # 單日最大虧損15%
+        self.MAX_TOTAL_LOSS_PCT = 0.30  # 總最大虧損30%
+        self.CIRCUIT_BREAKER_LOSS_PCT = 0.20  # 斷路器：虧損20%立即停止
     
     def calculate_position_size(
         self,
@@ -58,14 +72,14 @@ class RiskManager:
             position_margin = max_risk
             position_value = position_margin * current_leverage
         
-        # 🛡️ 硬性限制：單個倉位保證金不得超過可用資金50%
-        # 無論信心指數、勝率、槓桿如何，這是絕對上限
-        max_position_margin = account_balance * 0.5
+        # 🛡️ 硬性限制：單個倉位保證金不得超過可用資金10%（緊急修復：50%→10%）
+        # 原50%上限配合20x槓桿可導致1000%風險暴露，已修復為10%上限
+        max_position_margin = account_balance * 0.10  # 🔒 緊急降低至10%
         if position_margin > max_position_margin:
             logger.warning(
-                f"⚠️  倉位保證金超過50%上限: "
+                f"⚠️  倉位保證金超過10%上限: "
                 f"{position_margin:.2f} USDT ({position_margin/account_balance:.1%}) "
-                f"→ 強制限制為 {max_position_margin:.2f} USDT (50%)"
+                f"→ 強制限制為 {max_position_margin:.2f} USDT (10%)"
             )
             position_margin = max_position_margin
             position_value = position_margin * current_leverage
@@ -104,19 +118,21 @@ class RiskManager:
         Returns:
             int: 槓桿倍數
         """
-        # 🚀 無限制模式：移除連續虧損對槓桿的限制
-        # 僅記錄日誌，不限制槓桿
+        # 🛡️ 保護模式：連續虧損強制降槓桿（緊急修復：移除"無限制模式"）
+        leverage_penalty = 0
         if consecutive_losses >= 5:
-            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不影響槓桿）")
+            leverage_penalty = -8
+            logger.warning(f"🔴 連續虧損 {consecutive_losses} 次 → 槓桿懲罰 {leverage_penalty}x")
         elif consecutive_losses >= 3:
-            logger.info(f"📊 連續虧損 {consecutive_losses} 次（無限制模式：不影響槓桿）")
+            leverage_penalty = -4
+            logger.warning(f"⚠️  連續虧損 {consecutive_losses} 次 → 槓桿懲罰 {leverage_penalty}x")
         
         # 優先級1：使用期望值（有或沒有盈亏比）
         if expectancy is not None:
-            # 🎓 永久學習模式：期望值為負也允許交易，使用保守槓桿
+            # 🛡️ 保護模式：期望值為負禁止交易（緊急修復：移除"永久學習模式"）
             if expectancy < 0:
-                logger.info(f"🎓 學習模式：期望值為負 ({expectancy:.2f}%)，使用基礎槓桿 {self.config.BASE_LEVERAGE}x")
-                return self.config.BASE_LEVERAGE  # 返回3x而非0
+                logger.error(f"🔴 期望值為負 ({expectancy:.2f}%) → 禁止交易，返回槓桿0")
+                return 0  # 期望值為負，拒絕交易
             
             # 根據期望值和盈亏比動態調整槓桿
             if profit_factor is not None:
@@ -167,13 +183,26 @@ class RiskManager:
             base_leverage = self.config.BASE_LEVERAGE
             logger.info(f"無歷史數據 → 使用基礎槓桿 {base_leverage}x")
         
-        if current_drawdown > 0.10:
+        # 🛡️ 回撤保護
+        if current_drawdown > 0.20:
+            logger.error(f"🔴 緊急保護：回撤 {current_drawdown:.1%} > 20% → 暫停交易")
+            return 0
+        elif current_drawdown > 0.10:
             base_leverage = self.config.BASE_LEVERAGE
+            logger.warning(f"⚠️  回撤 {current_drawdown:.1%} > 10% → 降至基礎槓桿 {base_leverage}x")
+        
+        # 應用連續虧損懲罰
+        base_leverage += leverage_penalty
+        
+        # 🔒 緊急降低最大槓桿：20x → 10x
+        emergency_max_leverage = 10  # 降低風險
         
         leverage = max(
             self.config.MIN_LEVERAGE,
-            min(base_leverage, self.config.MAX_LEVERAGE)
+            min(base_leverage, emergency_max_leverage)
         )
+        
+        logger.info(f"📊 最終槓桿: {leverage}x (連續虧損懲罰: {leverage_penalty}x)")
         
         return leverage
     
@@ -354,3 +383,86 @@ class RiskManager:
             return False, f"回撤過大 {self.current_drawdown/account_balance:.1%}，暫停交易"
         
         return True, "可以交易"
+    
+    def check_account_protection(self, current_balance: float) -> bool:
+        """
+        檢查賬戶級別保護（v3.9.1新增）
+        
+        Args:
+            current_balance: 當前賬戶餘額
+        
+        Returns:
+            bool: True=可以交易, False=禁止交易
+        """
+        global EMERGENCY_STOP_ACTIVE
+        
+        # 初始化餘額
+        if self.initial_balance is None:
+            self.initial_balance = current_balance
+            logger.info(f"🏦 初始化賬戶餘額: {current_balance:.2f} USDT")
+        
+        # 每日重置
+        today = datetime.now().strftime('%Y-%m-%d')
+        if self.last_reset_date != today:
+            self.daily_start_balance = current_balance
+            self.last_reset_date = today
+            logger.info(f"📅 每日重置: {today}, 起始餘額: {current_balance:.2f} USDT")
+        
+        # 1. 檢查總虧損
+        total_loss_pct = (self.initial_balance - current_balance) / self.initial_balance
+        if total_loss_pct > self.MAX_TOTAL_LOSS_PCT:
+            logger.error(
+                f"🔴 緊急停止：總虧損 {total_loss_pct:.1%} > {self.MAX_TOTAL_LOSS_PCT:.1%}\n"
+                f"   初始: {self.initial_balance:.2f} USDT\n"
+                f"   當前: {current_balance:.2f} USDT\n"
+                f"   虧損: {self.initial_balance - current_balance:.2f} USDT"
+            )
+            EMERGENCY_STOP_ACTIVE = True
+            self.emergency_stop_triggered = True
+            return False
+        
+        # 2. 檢查單日虧損
+        if self.daily_start_balance:
+            daily_loss_pct = (self.daily_start_balance - current_balance) / self.daily_start_balance
+            if daily_loss_pct > self.MAX_DAILY_LOSS_PCT:
+                logger.error(
+                    f"🔴 單日虧損保護：今日虧損 {daily_loss_pct:.1%} > {self.MAX_DAILY_LOSS_PCT:.1%}\n"
+                    f"   今日開始: {self.daily_start_balance:.2f} USDT\n"
+                    f"   當前餘額: {current_balance:.2f} USDT\n"
+                    f"   今日虧損: {self.daily_start_balance - current_balance:.2f} USDT"
+                )
+                return False
+        
+        # 3. 斷路器：急速虧損保護
+        if total_loss_pct > self.CIRCUIT_BREAKER_LOSS_PCT:
+            logger.error(
+                f"🔴 斷路器觸發：總虧損 {total_loss_pct:.1%} > {self.CIRCUIT_BREAKER_LOSS_PCT:.1%}\n"
+                f"   立即暫停所有交易！"
+            )
+            EMERGENCY_STOP_ACTIVE = True
+            self.emergency_stop_triggered = True
+            return False
+        
+        # 警告：接近限制
+        if total_loss_pct > 0.20:
+            logger.warning(f"⚠️  警告：總虧損已達 {total_loss_pct:.1%}，接近30%限制")
+        
+        if self.daily_start_balance:
+            daily_loss_pct = (self.daily_start_balance - current_balance) / self.daily_start_balance
+            if daily_loss_pct > 0.10:
+                logger.warning(f"⚠️  警告：今日虧損已達 {daily_loss_pct:.1%}，接近15%限制")
+        
+        return True
+    
+    def get_protection_status(self) -> Dict:
+        """獲取保護狀態"""
+        status = {
+            'emergency_stop': self.emergency_stop_triggered or EMERGENCY_STOP_ACTIVE,
+            'initial_balance': self.initial_balance,
+            'daily_start_balance': self.daily_start_balance,
+            'last_reset_date': self.last_reset_date,
+            'max_daily_loss_pct': self.MAX_DAILY_LOSS_PCT,
+            'max_total_loss_pct': self.MAX_TOTAL_LOSS_PCT,
+            'circuit_breaker_pct': self.CIRCUIT_BREAKER_LOSS_PCT
+        }
+        return status
