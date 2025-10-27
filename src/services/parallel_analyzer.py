@@ -87,13 +87,13 @@ class ParallelAnalyzer:
                 multiplier = 1
                 logger.warning(f"系統負載高 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用小批次")
             
-            batch_size = base_batch * multiplier
+            batch_size = int(base_batch * multiplier)
             
             # 針對大量交易對優化（避免過大批次）
             if total_symbols > 500:
                 batch_size = min(batch_size, 150)
             
-            return batch_size
+            return int(batch_size)
             
         except Exception as e:
             logger.warning(f"計算最優批次大小失敗，使用默認值: {e}")
