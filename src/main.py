@@ -200,6 +200,14 @@ class TradingBot:
             self.trade_recorder
         )
         
+        # 初始化 ML 預測器（必須在position_monitor之前）🎯 v3.9.2.5
+        self.ml_predictor = MLPredictor()
+        ml_ready = await asyncio.to_thread(self.ml_predictor.initialize)
+        if ml_ready:
+            logger.info("✅ ML 預測器已就緒")
+        else:
+            logger.warning("⚠️  ML 預測器未就緒，使用傳統策略")
+        
         # 初始化持仓监控器（动态止损止盈）🎯 v3.9.2.5：添加ML反弹预测
         self.position_monitor = PositionMonitor(
             self.binance_client,
@@ -207,14 +215,6 @@ class TradingBot:
             self.data_archiver,
             self.ml_predictor  # 🎯 v3.9.2.5新增：ML辅助持仓监控
         )
-        
-        # 初始化 ML 預測器
-        self.ml_predictor = MLPredictor()
-        ml_ready = await asyncio.to_thread(self.ml_predictor.initialize)
-        if ml_ready:
-            logger.info("✅ ML 預測器已就緒")
-        else:
-            logger.warning("⚠️  ML 預測器未就緒，使用傳統策略")
         
         self.discord_bot = TradingDiscordBot()
         self.discord_task = asyncio.create_task(self.discord_bot.start())
