@@ -6,8 +6,9 @@ ML 預測服務
 import os
 import numpy as np
 import pandas as pd
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 import logging
+from datetime import datetime, timedelta
 
 from src.ml.model_trainer import XGBoostTrainer
 from src.ml.data_processor import MLDataProcessor
@@ -22,10 +23,12 @@ class MLPredictor:
         """初始化預測器"""
         self.trainer = XGBoostTrainer()
         self.data_processor = MLDataProcessor()
-        self.model = None
+        self.model: Optional[Any] = None  # XGBoost模型
         self.is_ready = False
         self.last_training_samples = 0  # 上次訓練時的樣本數
+        self.last_training_time: Optional[datetime] = None  # 上次訓練時間
         self.retrain_threshold = 50  # 累積50筆新交易後重訓練
+        self.last_model_accuracy = 0.0  # 上次模型準確率
     
     def initialize(self) -> bool:
         """
@@ -49,9 +52,15 @@ class MLPredictor:
             
             if self.model is not None:
                 self.is_ready = True
-                # 記錄初始訓練時的樣本數（從metrics讀取或當前數據）
+                # 記錄初始訓練時的樣本數和時間
                 self.last_training_samples = self._load_last_training_samples()
-                logger.info(f"✅ ML 預測器已就緒 (訓練樣本: {self.last_training_samples})")
+                self.last_training_time = self._load_last_training_time()
+                self.last_model_accuracy = self._load_last_model_accuracy()
+                logger.info(
+                    f"✅ ML 預測器已就緒 "
+                    f"(訓練樣本: {self.last_training_samples}, "
+                    f"準確率: {self.last_model_accuracy:.2%})"
+                )
                 return True
             else:
                 logger.warning("⚠️  ML 模型未就緒，將使用傳統策略")
@@ -184,7 +193,12 @@ class MLPredictor:
     
     def check_and_retrain_if_needed(self) -> bool:
         """
-        檢查是否需要重訓練（基於新增數據量）
+        智能檢查是否需要重訓練（多觸發條件）
+        
+        觸發條件：
+        1. 數量觸發：累積>=50筆新交易
+        2. 時間觸發：距離上次訓練>=24小時
+        3. 性能觸發：檢測到準確率下降（未來實現）
         
         Returns:
             bool: 是否成功重訓練
@@ -204,19 +218,36 @@ class MLPredictor:
                     f"重置計數器"
                 )
                 self.last_training_samples = current_samples
+                self.last_training_time = datetime.now()
                 return False
             
-            if new_samples < self.retrain_threshold:
+            # 檢查各種觸發條件
+            should_retrain = False
+            trigger_reason = []
+            
+            # 1. 數量觸發
+            if new_samples >= self.retrain_threshold:
+                should_retrain = True
+                trigger_reason.append(f"新增{new_samples}筆數據")
+            
+            # 2. 時間觸發（24小時）
+            if self.last_training_time:
+                time_since_training = datetime.now() - self.last_training_time
+                if time_since_training > timedelta(hours=24) and new_samples >= 10:
+                    should_retrain = True
+                    trigger_reason.append(f"距離上次訓練{time_since_training.total_seconds()/3600:.1f}小時")
+            
+            if not should_retrain:
                 logger.debug(
-                    f"新增樣本數不足: {new_samples}/{self.retrain_threshold} "
+                    f"暫不重訓練: 新增{new_samples}/{self.retrain_threshold}筆 "
                     f"(總樣本: {current_samples})"
                 )
                 return False
             
             # 觸發重訓練
             logger.info(
-                f"🔄 檢測到 {new_samples} 筆新交易數據，開始重訓練模型... "
-                f"(總樣本: {current_samples})"
+                f"🔄 觸發重訓練 ({', '.join(trigger_reason)}), "
+                f"總樣本: {current_samples}"
             )
             
             model, metrics = self.trainer.train()
@@ -225,6 +256,8 @@ class MLPredictor:
                 self.trainer.save_model(model, metrics)
                 self.model = model
                 self.last_training_samples = current_samples
+                self.last_training_time = datetime.now()
+                self.last_model_accuracy = metrics.get('accuracy', 0)
                 
                 logger.info(
                     f"✅ 模型重訓練完成！"
@@ -240,12 +273,7 @@ class MLPredictor:
             return False
     
     def _load_last_training_samples(self) -> int:
-        """
-        從metrics文件加載上次訓練的樣本數
-        
-        Returns:
-            int: 上次訓練時的樣本數
-        """
+        """從metrics文件加載上次訓練的樣本數"""
         try:
             import json
             metrics_path = 'data/models/model_metrics.json'
@@ -255,7 +283,6 @@ class MLPredictor:
                     metrics = json.load(f)
                     samples = metrics.get('training_samples', 0)
                     if samples > 0:
-                        logger.debug(f"從metrics加載上次訓練樣本數: {samples}")
                         return samples
             
             # 如果沒有metrics，使用當前數據量
@@ -263,6 +290,42 @@ class MLPredictor:
             return len(df)
             
         except Exception as e:
-            logger.warning(f"加載訓練樣本數失敗: {e}，使用當前數據量")
+            logger.warning(f"加載訓練樣本數失敗: {e}")
             df = self.data_processor.load_training_data()
             return len(df)
+    
+    def _load_last_training_time(self) -> Optional[datetime]:
+        """從metrics文件加載上次訓練時間"""
+        try:
+            import json
+            metrics_path = 'data/models/model_metrics.json'
+            
+            if os.path.exists(metrics_path):
+                with open(metrics_path, 'r', encoding='utf-8') as f:
+                    metrics = json.load(f)
+                    trained_at = metrics.get('trained_at')
+                    if trained_at:
+                        return datetime.fromisoformat(trained_at)
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"加載訓練時間失敗: {e}")
+            return None
+    
+    def _load_last_model_accuracy(self) -> float:
+        """從metrics文件加載上次模型準確率"""
+        try:
+            import json
+            metrics_path = 'data/models/model_metrics.json'
+            
+            if os.path.exists(metrics_path):
+                with open(metrics_path, 'r', encoding='utf-8') as f:
+                    metrics = json.load(f)
+                    return metrics.get('accuracy', 0.0)
+            
+            return 0.0
+            
+        except Exception as e:
+            logger.warning(f"加載模型準確率失敗: {e}")
+            return 0.0
