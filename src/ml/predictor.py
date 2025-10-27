@@ -36,6 +36,10 @@ class MLPredictor:
         # 重置为binary目标
         self.trainer.target_optimizer = TargetOptimizer(target_type='binary')
         
+        # 🔒 v3.9.1: 使用独立的模型文件路径（避免与risk_adjusted模型冲突）
+        self.trainer.model_path = "data/models/xgboost_predictor_binary.pkl"
+        self.trainer.metrics_path = "data/models/predictor_metrics.json"
+        
         self.data_processor = MLDataProcessor()
         self.model: Optional[Any] = None  # XGBoost分类模型
         self.is_ready = False
@@ -48,6 +52,8 @@ class MLPredictor:
         """
         初始化預測器（加載模型）
         
+        v3.9.1: 添加模型类型检测，确保加载的是binary分类模型
+        
         Returns:
             bool: 是否成功初始化
         """
@@ -55,14 +61,29 @@ class MLPredictor:
             # 嘗試加載已有模型
             self.model = self.trainer.load_model()
             
+            # 🔍 v3.9.1: 验证模型类型（必须支持predict_proba）
+            if self.model is not None:
+                if not hasattr(self.model, 'predict_proba'):
+                    logger.warning(
+                        "⚠️  加载的模型不支持predict_proba（可能是回归模型），"
+                        "将重新训练binary分类模型..."
+                    )
+                    self.model = None
+            
             if self.model is None:
-                logger.info("未找到已訓練模型，嘗試自動訓練...")
+                logger.info("未找到已訓練的binary分类模型，嘗試自動訓練...")
                 
-                # 如果有足夠數據，自動訓練
+                # 如果有足夠數據，自動訓練binary分类模型
                 success = self.trainer.auto_train_if_needed(min_samples=100)
                 
                 if success:
                     self.model = self.trainer.model
+                    
+                    # 再次验证
+                    if self.model and not hasattr(self.model, 'predict_proba'):
+                        logger.error("❌ 训练的模型不是分类模型，初始化失败")
+                        self.model = None
+                        return False
             
             if self.model is not None:
                 self.is_ready = True
@@ -71,7 +92,7 @@ class MLPredictor:
                 self.last_training_time = self._load_last_training_time()
                 self.last_model_accuracy = self._load_last_model_accuracy()
                 logger.info(
-                    f"✅ ML 預測器已就緒 "
+                    f"✅ ML 預測器已就緒（binary分类模型）"
                     f"(訓練樣本: {self.last_training_samples}, "
                     f"準確率: {self.last_model_accuracy:.2%})"
                 )
