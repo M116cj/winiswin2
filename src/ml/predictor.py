@@ -111,13 +111,13 @@ class MLPredictor:
     
     def _prepare_signal_features(self, signal: Dict) -> Optional[list]:
         """
-        從信號準備特徵向量
+        從信號準備特徵向量（v3.3.7優化版 - 28個特徵）
         
         Args:
             signal: 交易信號
         
         Returns:
-            Optional[list]: 特徵向量
+            Optional[list]: 特徵向量（28個）
         """
         try:
             indicators = signal.get('indicators', {})
@@ -128,36 +128,79 @@ class MLPredictor:
             market_structure_encoding = {'bullish': 1, 'bearish': -1, 'neutral': 0}
             direction_encoding = {'LONG': 1, 'SHORT': -1}
             
-            features = [
-                signal.get('confidence', 0),
+            # 計算風險回報比
+            entry_price = signal.get('entry_price', 0)
+            stop_loss = signal.get('stop_loss', 0)
+            take_profit = signal.get('take_profit', 0)
+            
+            risk_reward_ratio = (
+                abs(take_profit - entry_price) / abs(entry_price - stop_loss)
+                if entry_price != stop_loss else 2.0
+            )
+            
+            # 基礎特徵（21個）
+            basic_features = [
+                signal.get('confidence', 0),  # confidence_score
                 0,  # leverage - 將在風險管理器中確定
                 0,  # position_value - 將在交易服務中確定
                 0,  # hold_duration_hours - 未知
-                abs(signal.get('take_profit', 0) - signal.get('entry_price', 0)) / 
-                    abs(signal.get('entry_price', 0) - signal.get('stop_loss', 0)) 
-                    if signal.get('entry_price', 0) != signal.get('stop_loss', 0) else 2.0,
-                signal.get('order_blocks', 0),
-                signal.get('liquidity_zones', 0),
-                indicators.get('rsi', 0),
-                indicators.get('macd', 0),
-                indicators.get('macd_signal', 0),
-                indicators.get('macd_histogram', 0),
-                indicators.get('atr', 0),
-                indicators.get('bb_width_pct', 0),
-                indicators.get('volume_sma_ratio', 0),
-                indicators.get('price_vs_ema50', 0),
-                indicators.get('price_vs_ema200', 0),
-                trend_encoding.get(timeframes.get('1h', 'neutral'), 0),
-                trend_encoding.get(timeframes.get('15m', 'neutral'), 0),
-                trend_encoding.get(timeframes.get('5m', 'neutral'), 0),
-                market_structure_encoding.get(signal.get('market_structure', 'neutral'), 0),
-                direction_encoding.get(signal.get('direction', 'LONG'), 1)
+                risk_reward_ratio,  # risk_reward_ratio
+                signal.get('order_blocks', 0),  # order_blocks_count
+                signal.get('liquidity_zones', 0),  # liquidity_zones_count
+                indicators.get('rsi', 0),  # rsi_entry
+                indicators.get('macd', 0),  # macd_entry
+                indicators.get('macd_signal', 0),  # macd_signal_entry
+                indicators.get('macd_histogram', 0),  # macd_histogram_entry
+                indicators.get('atr', 0),  # atr_entry
+                indicators.get('bb_width_pct', 0),  # bb_width_pct
+                indicators.get('volume_sma_ratio', 0),  # volume_sma_ratio
+                indicators.get('price_vs_ema50', 0),  # price_vs_ema50
+                indicators.get('price_vs_ema200', 0),  # price_vs_ema200
+                trend_encoding.get(timeframes.get('1h', 'neutral'), 0),  # trend_1h_encoded
+                trend_encoding.get(timeframes.get('15m', 'neutral'), 0),  # trend_15m_encoded
+                trend_encoding.get(timeframes.get('5m', 'neutral'), 0),  # trend_5m_encoded
+                market_structure_encoding.get(signal.get('market_structure', 'neutral'), 0),  # market_structure_encoded
+                direction_encoding.get(signal.get('direction', 'LONG'), 1)  # direction_encoded
             ]
+            
+            # ✨ 增強特徵（7個 - 修復版）
+            timestamp = signal.get('timestamp', datetime.now())
+            if isinstance(timestamp, str):
+                timestamp = datetime.fromisoformat(timestamp)
+            
+            hour_of_day = timestamp.hour
+            day_of_week = timestamp.weekday()
+            is_weekend = 1 if day_of_week in [5, 6] else 0
+            
+            # 止損止盈距離百分比
+            stop_distance_pct = abs(stop_loss - entry_price) / entry_price if entry_price > 0 else 0
+            tp_distance_pct = abs(take_profit - entry_price) / entry_price if entry_price > 0 else 0
+            
+            # 交互特徵
+            confidence = signal.get('confidence', 0)
+            rsi = indicators.get('rsi', 0)
+            atr = indicators.get('atr', 0)
+            bb_width = indicators.get('bb_width_pct', 0)
+            trend_15m = trend_encoding.get(timeframes.get('15m', 'neutral'), 0)
+            
+            enhanced_features = [
+                hour_of_day,  # hour_of_day
+                day_of_week,  # day_of_week
+                is_weekend,  # is_weekend
+                stop_distance_pct,  # stop_distance_pct
+                tp_distance_pct,  # tp_distance_pct
+                confidence * 0,  # confidence_x_leverage (leverage未知，用0替代)
+                rsi * trend_15m,  # rsi_x_trend
+                atr * bb_width  # atr_x_bb_width
+            ]
+            
+            # 組合成28個特徵
+            features = basic_features + enhanced_features
             
             return features
             
         except Exception as e:
-            logger.error(f"準備特徵失敗: {e}")
+            logger.error(f"準備特徵失敗: {e}", exc_info=True)
             return None
     
     def calibrate_confidence(

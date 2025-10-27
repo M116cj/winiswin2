@@ -35,10 +35,10 @@ class MLDataProcessor:
             'market_structure_encoded', 'direction_encoded'
         ]
         
-        # 增強特徵將在prepare_features中動態添加
+        # 增強特徵（只包含推理時可用的特徵，移除目標泄漏）
         self.enhanced_features = [
             'hour_of_day', 'day_of_week', 'is_weekend',
-            'price_move_pct', 'stop_distance_pct', 'tp_distance_pct',
+            'stop_distance_pct', 'tp_distance_pct',
             'confidence_x_leverage', 'rsi_x_trend', 'atr_x_bb_width'
         ]
         
@@ -242,12 +242,7 @@ class MLDataProcessor:
             df['day_of_week'] = 0
             df['is_weekend'] = 0
         
-        # 價格波動特徵
-        if 'entry_price' in df.columns and 'exit_price' in df.columns:
-            df['price_move_pct'] = (df['exit_price'] - df['entry_price']) / df['entry_price']
-        else:
-            df['price_move_pct'] = 0
-        
+        # 價格波動特徵（移除price_move_pct - 目標泄漏）
         if 'entry_price' in df.columns and 'stop_loss' in df.columns:
             df['stop_distance_pct'] = abs(df['stop_loss'] - df['entry_price']) / df['entry_price']
         else:
