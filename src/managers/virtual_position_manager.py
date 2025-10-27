@@ -209,6 +209,17 @@ class VirtualPositionManager:
             except Exception as e:
                 logger.error(f"虛擬倉位關閉回調失敗: {e}", exc_info=True)
     
+    def get_all_positions(self) -> Dict[str, Dict]:
+        """
+        獲取所有虛擬倉位（字典格式）
+        
+        🎯 v3.9.2.7.1新增：供PositionMonitor使用
+        
+        Returns:
+            Dict[str, Dict]: {symbol: position_data}
+        """
+        return self.virtual_positions
+    
     def get_active_virtual_positions(self) -> List[Dict]:
         """獲取所有活躍虛擬倉位"""
         return [

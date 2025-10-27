@@ -150,8 +150,9 @@ class PositionMonitor:
                 }
                 stats['positions'].append(position_info)
                 
-                # 🤖 v3.9.2.5：ML主动分析和建议
+                # 🤖 v3.9.2.7.1增强：ML主动分析和执行
                 ml_suggestion = ""
+                ml_executed = False
                 if self.ml_predictor:
                     try:
                         indicators = await self._get_current_indicators(symbol)
@@ -165,13 +166,39 @@ class PositionMonitor:
                         )
                         
                         if rebound_pred:
+                            action = rebound_pred['recommended_action']
                             action_emoji = {
                                 'wait_and_monitor': '⏳',
                                 'adjust_strategy': '🔧',
                                 'close_immediately': '❌'
-                            }.get(rebound_pred['recommended_action'], '❓')
+                            }.get(action, '❓')
                             
-                            ml_suggestion = f" | ML建议:{action_emoji}{rebound_pred['recommended_action'][:4]} 反弹:{rebound_pred['rebound_probability']:.0%}"
+                            ml_suggestion = f" | ML建议:{action_emoji}{action[:4]} 反弹:{rebound_pred['rebound_probability']:.0%}"
+                            
+                            # 🎯 v3.9.2.7.1：真正执行ML建议（仅当亏损时）
+                            if pnl_pct < -2.0:  # 亏损超过2%时才执行ML建议
+                                if action == 'close_immediately':
+                                    logger.warning(f"🚨 ML建议立即平仓 {symbol} (PnL:{pnl_pct:.2f}%)")
+                                    await self._force_close_position(symbol, direction, abs(position_amt), "ml_suggested_close")
+                                    ml_executed = True
+                                    ml_suggestion += " ✅已执行"
+                                    continue  # 跳过后续检查
+                                    
+                                elif action == 'adjust_strategy' and pnl_pct < -5.0:
+                                    # 只有亏损>5%时才执行调整
+                                    new_stop_loss_pct = abs(pnl_pct) * 1.05
+                                    if direction == "LONG":
+                                        new_stop_price = entry_price * (1 - new_stop_loss_pct / 100)
+                                    else:
+                                        new_stop_price = entry_price * (1 + new_stop_loss_pct / 100)
+                                    
+                                    try:
+                                        await self._update_stop_loss(symbol, direction, new_stop_price)
+                                        logger.info(f"🔧 ML调整止损 {symbol}: {new_stop_price:.4f}")
+                                        ml_executed = True
+                                        ml_suggestion += " ✅已执行"
+                                    except Exception as e:
+                                        logger.error(f"ML调整止损失败 {symbol}: {e}")
                     except Exception as e:
                         logger.debug(f"ML分析失败 {symbol}: {e}")
                 
