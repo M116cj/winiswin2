@@ -1,0 +1,1003 @@
+2025-10-27T13:52:31.913254027Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: RIVERUSDT 5m
+2025-10-27T13:52:31.913258372Z [inf]  2025-10-27 13:52:22,541 - src.strategies.ict_strategy - DEBUG - HUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.913261519Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913265665Z [inf]  2025-10-27 13:52:22,554 - src.strategies.ict_strategy - DEBUG - XPLUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913268659Z [inf]  2025-10-27 13:52:22,525 - src.strategies.ict_strategy - DEBUG - ENAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913269620Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: CAKEUSDT 5m
+2025-10-27T13:52:31.913277247Z [inf]  2025-10-27 13:52:22,526 - src.strategies.ict_strategy - DEBUG - LINKUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913278391Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913279675Z [inf]  2025-10-27 13:52:22,555 - src.strategies.ict_strategy - DEBUG - AIXBTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913286155Z [inf]  2025-10-27 13:52:22,527 - src.strategies.ict_strategy - DEBUG - ✅ MAVIAUSDT LONG | 信心度: 60.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.913289258Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: EDUUSDT 5m
+2025-10-27T13:52:31.913289674Z [inf]  2025-10-27 13:52:22,612 - src.strategies.ict_strategy - DEBUG - LTCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913290613Z [inf]  2025-10-27 13:52:22,563 - src.strategies.ict_strategy - DEBUG - GIGGLEUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.913298658Z [inf]  2025-10-27 13:52:22,624 - src.strategies.ict_strategy - DEBUG - FARTCOINUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913298762Z [inf]  2025-10-27 13:52:22,531 - src.strategies.ict_strategy - DEBUG - DIAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.913298811Z [inf]  2025-10-27 13:52:22,713 - src.strategies.ict_strategy - DEBUG - LINKUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913301045Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913303434Z [inf]  2025-10-27 13:52:22,589 - src.strategies.ict_strategy - DEBUG - FFUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913304612Z [inf]  2025-10-27 13:52:22,613 - src.strategies.ict_strategy - DEBUG - ZENUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.913313287Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: EDENUSDT 5m
+2025-10-27T13:52:31.913316047Z [inf]  2025-10-27 13:52:22,835 - src.strategies.ict_strategy - DEBUG - AVAXUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913316931Z [inf]  2025-10-27 13:52:22,615 - src.strategies.ict_strategy - DEBUG - AVNTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913317307Z [inf]  2025-10-27 13:52:22,714 - src.strategies.ict_strategy - DEBUG - PENGUUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913318470Z [inf]  2025-10-27 13:52:22,589 - src.strategies.ict_strategy - DEBUG - DEGOUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.913323136Z [inf]  2025-10-27 13:52:22,625 - src.strategies.ict_strategy - DEBUG - APRUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913330186Z [inf]  2025-10-27 13:52:22,616 - src.strategies.ict_strategy - DEBUG - WLDUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913332753Z [inf]  2025-10-27 13:52:22,746 - src.strategies.ict_strategy - DEBUG - 1000PEPEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.913333233Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913338569Z [inf]  2025-10-27 13:52:23,027 - src.strategies.ict_strategy - DEBUG - BLUAIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913340346Z [inf]  2025-10-27 13:52:22,627 - src.strategies.ict_strategy - DEBUG - UBUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.913341469Z [inf]  2025-10-27 13:52:22,869 - src.strategies.ict_strategy - DEBUG - AIXBTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913345664Z [inf]  2025-10-27 13:52:22,620 - src.strategies.ict_strategy - DEBUG - VIRTUALUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:neutral)
+2025-10-27T13:52:31.913345863Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: ONUSDT 5m
+2025-10-27T13:52:31.913346654Z [inf]  2025-10-27 13:52:22,756 - src.strategies.ict_strategy - DEBUG - ✅ DIAUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:52:31.913353694Z [inf]  2025-10-27 13:52:23,035 - src.strategies.ict_strategy - DEBUG - ✅ ZENUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.913357214Z [inf]  2025-10-27 13:52:22,870 - src.strategies.ict_strategy - DEBUG - ✅ HUSDT LONG | 信心度: 66.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.913360094Z [inf]  2025-10-27 13:52:22,628 - src.strategies.ict_strategy - DEBUG - TURTLEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913360256Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913360369Z [inf]  2025-10-27 13:52:22,622 - src.strategies.ict_strategy - DEBUG - MEUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.913362436Z [inf]  2025-10-27 13:52:22,773 - src.strategies.ict_strategy - DEBUG - PUMPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913370386Z [inf]  2025-10-27 13:52:23,150 - src.strategies.ict_strategy - DEBUG - WLFIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913371088Z [inf]  2025-10-27 13:52:23,040 - src.strategies.ict_strategy - DEBUG - AVNTUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:52:31.913372057Z [inf]  2025-10-27 13:52:22,910 - src.strategies.ict_strategy - DEBUG - FFUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.913374781Z [inf]  2025-10-27 13:52:22,877 - src.strategies.ict_strategy - DEBUG - DASHUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.913376652Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: RVVUSDT 5m
+2025-10-27T13:52:31.913377635Z [inf]  2025-10-27 13:52:22,671 - src.strategies.ict_strategy - DEBUG - ✅ COAIUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.913379306Z [inf]  2025-10-27 13:52:22,793 - src.strategies.ict_strategy - DEBUG - ADAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913381401Z [inf]  2025-10-27 13:52:22,596 - src.strategies.ict_strategy - DEBUG - HYPEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:52:31.913392136Z [inf]  2025-10-27 13:52:22,336 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913392476Z [inf]  2025-10-27 13:52:22,882 - src.strategies.ict_strategy - DEBUG - ✅ XPLUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.913392582Z [inf]  2025-10-27 13:52:23,099 - src.strategies.ict_strategy - DEBUG - ✅ MEUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.913392674Z [inf]  2025-10-27 13:52:23,150 - src.strategies.ict_strategy - DEBUG - 1000CHEEMSUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.913393106Z [inf]  2025-10-27 13:52:22,911 - src.strategies.ict_strategy - DEBUG - 4USDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913394468Z [inf]  2025-10-27 13:52:22,689 - src.strategies.ict_strategy - DEBUG - SUIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.913395356Z [inf]  2025-10-27 13:52:22,823 - src.strategies.ict_strategy - DEBUG - TAOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.913398328Z [inf]  2025-10-27 13:52:22,608 - src.strategies.ict_strategy - DEBUG - PAXGUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913405339Z [inf]  2025-10-27 13:52:22,336 - src.services.data_service - DEBUG - ✅ 緩存命中: FETUSDT 5m
+2025-10-27T13:52:31.913408146Z [inf]  2025-10-27 13:52:22,913 - src.strategies.ict_strategy - DEBUG - DEGOUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.913409371Z [inf]  2025-10-27 13:52:22,689 - src.strategies.ict_strategy - DEBUG - EVAAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913409827Z [inf]  2025-10-27 13:52:23,152 - src.strategies.ict_strategy - DEBUG - NEARUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913409923Z [inf]  2025-10-27 13:52:22,610 - src.strategies.ict_strategy - DEBUG - BCHUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.913410984Z [inf]  2025-10-27 13:52:23,132 - src.strategies.ict_strategy - DEBUG - ✅ APRUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.913417513Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913420798Z [inf]  2025-10-27 13:52:23,056 - src.strategies.ict_strategy - DEBUG - WLDUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913422363Z [inf]  2025-10-27 13:52:23,148 - src.strategies.ict_strategy - DEBUG - APTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913424682Z [inf]  2025-10-27 13:52:22,922 - src.strategies.ict_strategy - DEBUG - AAVEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.913426798Z [inf]  2025-10-27 13:52:23,144 - src.strategies.ict_strategy - DEBUG - TURTLEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913426879Z [inf]  2025-10-27 13:52:22,701 - src.strategies.ict_strategy - DEBUG - ENAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913431803Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: LDOUSDT 5m
+2025-10-27T13:52:31.913435002Z [inf]  2025-10-27 13:52:23,089 - src.strategies.ict_strategy - DEBUG - FARTCOINUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.913439675Z [inf]  2025-10-27 13:52:23,146 - src.strategies.ict_strategy - DEBUG - UBUSDT: 拒絕 - 信心度不足 (33.3% < 35.0%)
+2025-10-27T13:52:31.913440352Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913441539Z [inf]  2025-10-27 13:52:22,949 - src.strategies.ict_strategy - DEBUG - ✅ PAXGUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.913450501Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: USELESSUSDT 5m
+2025-10-27T13:52:31.913450700Z [inf]  2025-10-27 13:52:22,986 - src.strategies.ict_strategy - DEBUG - ✅ BCHUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.913460807Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913462157Z [inf]  2025-10-27 13:52:22,993 - src.strategies.ict_strategy - DEBUG - LTCUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.913468539Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: JUPUSDT 5m
+2025-10-27T13:52:31.913473496Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913478488Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: MERLUSDT 5m
+2025-10-27T13:52:31.913483682Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913489283Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: INJUSDT 5m
+2025-10-27T13:52:31.913495284Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913500523Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: BASUSDT 5m
+2025-10-27T13:52:31.913504639Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913508926Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: BIOUSDT 5m
+2025-10-27T13:52:31.913512686Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913517344Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: LIGHTUSDT 5m
+2025-10-27T13:52:31.913521161Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913526257Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: SPXUSDT 5m
+2025-10-27T13:52:31.913530766Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913569181Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: CLOUSDT 5m
+2025-10-27T13:52:31.913574860Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913578951Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: HOLOUSDT 5m
+2025-10-27T13:52:31.913583391Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913588239Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: LINEAUSDT 5m
+2025-10-27T13:52:31.913597171Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913604635Z [inf]  2025-10-27 13:52:22,337 - src.services.data_service - DEBUG - ✅ 緩存命中: OGUSDT 5m
+2025-10-27T13:52:31.913609780Z [inf]  2025-10-27 13:52:22,337 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913614647Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000FLOKIUSDT 5m
+2025-10-27T13:52:31.913620108Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913624882Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: YALAUSDT 5m
+2025-10-27T13:52:31.913629870Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913634844Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: AI16ZUSDT 5m
+2025-10-27T13:52:31.913639006Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913643523Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: PENDLEUSDT 5m
+2025-10-27T13:52:31.913647915Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913652804Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: SEIUSDT 5m
+2025-10-27T13:52:31.913656807Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913662043Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: ZKCUSDT 5m
+2025-10-27T13:52:31.913666955Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913672178Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: KDAUSDT 5m
+2025-10-27T13:52:31.913677102Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913681751Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: BRETTUSDT 5m
+2025-10-27T13:52:31.913686703Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913691131Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: TONUSDT 5m
+2025-10-27T13:52:31.913695490Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913700934Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: SOMIUSDT 5m
+2025-10-27T13:52:31.913705818Z [inf]  2025-10-27 13:52:22,338 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.913710835Z [inf]  2025-10-27 13:52:22,338 - src.services.data_service - DEBUG - ✅ 緩存命中: NXPCUSDT 5m
+2025-10-27T13:52:31.916228602Z [inf]  2025-10-27 13:52:23,164 - src.strategies.ict_strategy - DEBUG - FILUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916240350Z [inf]  2025-10-27 13:52:23,165 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916248230Z [inf]  2025-10-27 13:52:23,170 - src.strategies.ict_strategy - DEBUG - PENGUUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.916254677Z [inf]  2025-10-27 13:52:23,171 - src.strategies.ict_strategy - DEBUG - MYROUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.916261818Z [inf]  2025-10-27 13:52:23,173 - src.strategies.ict_strategy - DEBUG - YBUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916268990Z [inf]  2025-10-27 13:52:23,175 - src.strategies.ict_strategy - DEBUG - WIFUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916276386Z [inf]  2025-10-27 13:52:23,176 - src.strategies.ict_strategy - DEBUG - ETHFIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916284139Z [inf]  2025-10-27 13:52:23,177 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916290978Z [inf]  2025-10-27 13:52:23,179 - src.strategies.ict_strategy - DEBUG - FUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.916298309Z [inf]  2025-10-27 13:52:23,180 - src.strategies.ict_strategy - DEBUG - UNIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916306034Z [inf]  2025-10-27 13:52:23,203 - src.strategies.ict_strategy - DEBUG - ✅ DASHUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.916312860Z [inf]  2025-10-27 13:52:23,205 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916752320Z [inf]  2025-10-27 13:52:23,207 - src.strategies.ict_strategy - DEBUG - BDXNUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916761255Z [inf]  2025-10-27 13:52:23,220 - src.strategies.ict_strategy - DEBUG - 4USDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.916769050Z [inf]  2025-10-27 13:52:23,223 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916775185Z [inf]  2025-10-27 13:52:23,242 - src.strategies.ict_strategy - DEBUG - TRXUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916781464Z [inf]  2025-10-27 13:52:23,243 - src.strategies.ict_strategy - DEBUG - ENSOUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.916788252Z [inf]  2025-10-27 13:52:23,244 - src.strategies.ict_strategy - DEBUG - AAVEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.916794070Z [inf]  2025-10-27 13:52:23,246 - src.strategies.ict_strategy - DEBUG - VANAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.916798779Z [inf]  2025-10-27 13:52:23,270 - src.strategies.ict_strategy - DEBUG - ✅ BLUAIUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.916803889Z [inf]  2025-10-27 13:52:23,271 - src.strategies.ict_strategy - DEBUG - RECALLUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.916809880Z [inf]  2025-10-27 13:52:23,272 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916816754Z [inf]  2025-10-27 13:52:23,274 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.916822689Z [inf]  2025-10-27 13:52:23,276 - src.strategies.ict_strategy - DEBUG - XLMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.918936028Z [inf]  2025-10-27 13:52:23,279 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.918942954Z [inf]  2025-10-27 13:52:23,280 - src.strategies.ict_strategy - DEBUG - AIAUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.918949189Z [inf]  2025-10-27 13:52:23,281 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.918956868Z [inf]  2025-10-27 13:52:23,283 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.918961946Z [inf]  2025-10-27 13:52:23,309 - src.strategies.ict_strategy - DEBUG - APTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.918967427Z [inf]  2025-10-27 13:52:23,324 - src.strategies.ict_strategy - DEBUG - WLFIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.918973689Z [inf]  2025-10-27 13:52:23,343 - src.strategies.ict_strategy - DEBUG - NEARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.918978846Z [inf]  2025-10-27 13:52:23,380 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.918984143Z [inf]  2025-10-27 13:52:23,392 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.918988915Z [inf]  2025-10-27 13:52:23,397 - src.strategies.ict_strategy - DEBUG - FILUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.918993760Z [inf]  2025-10-27 13:52:23,424 - src.strategies.ict_strategy - DEBUG - ✅ 1000CHEEMSUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:52:31.918998565Z [inf]  2025-10-27 13:52:23,441 - src.strategies.ict_strategy - DEBUG - ✅ MYROUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:52:31.921196981Z [inf]  2025-10-27 13:52:23,460 - src.strategies.ict_strategy - DEBUG - WIFUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.921209245Z [inf]  2025-10-27 13:52:23,497 - src.strategies.ict_strategy - DEBUG - ✅ ETHFIUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.921217574Z [inf]  2025-10-27 13:52:23,526 - src.strategies.ict_strategy - DEBUG - ✅ YBUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.921224608Z [inf]  2025-10-27 13:52:23,530 - src.strategies.ict_strategy - DEBUG - UNIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.921231763Z [inf]  2025-10-27 13:52:23,530 - src.strategies.ict_strategy - DEBUG - FUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.921240607Z [inf]  2025-10-27 13:52:23,535 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.921247681Z [inf]  2025-10-27 13:52:23,553 - src.strategies.ict_strategy - DEBUG - METUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.921256882Z [inf]  2025-10-27 13:52:23,554 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.921264735Z [inf]  2025-10-27 13:52:23,567 - src.strategies.ict_strategy - DEBUG - BDXNUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.921272342Z [inf]  2025-10-27 13:52:23,571 - src.strategies.ict_strategy - DEBUG - OPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.921279290Z [inf]  2025-10-27 13:52:23,591 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.923298194Z [inf]  2025-10-27 13:52:23,616 - src.strategies.ict_strategy - DEBUG - XPINUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.923306695Z [inf]  2025-10-27 13:52:23,640 - src.strategies.ict_strategy - DEBUG - ✅ TRXUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.923313065Z [inf]  2025-10-27 13:52:23,648 - src.strategies.ict_strategy - DEBUG - VANAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.923319617Z [inf]  2025-10-27 13:52:23,650 - src.strategies.ict_strategy - DEBUG - ✅ ENSOUSDT LONG | 信心度: 52.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.923327867Z [inf]  2025-10-27 13:52:23,652 - src.strategies.ict_strategy - DEBUG - KGENUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.923333979Z [inf]  2025-10-27 13:52:23,680 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:52:31.923340367Z [inf]  2025-10-27 13:52:23,712 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.923346754Z [inf]  2025-10-27 13:52:23,731 - src.strategies.ict_strategy - DEBUG - XLMUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.923353371Z [inf]  2025-10-27 13:52:23,735 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.923359339Z [inf]  2025-10-27 13:52:23,740 - src.strategies.ict_strategy - DEBUG - ✅ RECALLUSDT LONG | 信心度: 60.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:52:31.923365109Z [inf]  2025-10-27 13:52:23,752 - src.strategies.ict_strategy - DEBUG - AIAUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.925132459Z [inf]  2025-10-27 13:52:23,806 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925142351Z [inf]  2025-10-27 13:52:23,765 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.925149612Z [inf]  2025-10-27 13:52:23,799 - src.strategies.ict_strategy - DEBUG - B2USDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925158332Z [inf]  2025-10-27 13:52:23,778 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.925164622Z [inf]  2025-10-27 13:52:23,801 - src.strategies.ict_strategy - DEBUG - IPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925171430Z [inf]  2025-10-27 13:52:23,779 - src.strategies.ict_strategy - DEBUG - ZBTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925176546Z [inf]  2025-10-27 13:52:23,803 - src.strategies.ict_strategy - DEBUG - AKTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925185584Z [inf]  2025-10-27 13:52:23,782 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925186940Z [inf]  2025-10-27 13:52:23,804 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.925196531Z [inf]  2025-10-27 13:52:23,793 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.925205218Z [inf]  2025-10-27 13:52:23,795 - src.strategies.ict_strategy - DEBUG - BLESSUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.925212130Z [inf]  2025-10-27 13:52:23,797 - src.strategies.ict_strategy - DEBUG - PIPPINUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.927128427Z [inf]  2025-10-27 13:52:23,807 - src.strategies.ict_strategy - DEBUG - SNXUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927138014Z [inf]  2025-10-27 13:52:23,809 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927145126Z [inf]  2025-10-27 13:52:23,810 - src.strategies.ict_strategy - DEBUG - RIVERUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.927152338Z [inf]  2025-10-27 13:52:23,811 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927159064Z [inf]  2025-10-27 13:52:23,840 - src.strategies.ict_strategy - DEBUG - ✅ METUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.927165096Z [inf]  2025-10-27 13:52:23,841 - src.strategies.ict_strategy - DEBUG - EDUUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927171045Z [inf]  2025-10-27 13:52:23,843 - src.strategies.ict_strategy - DEBUG - EDENUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.927177987Z [inf]  2025-10-27 13:52:23,856 - src.strategies.ict_strategy - DEBUG - OPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.927184956Z [inf]  2025-10-27 13:52:23,858 - src.strategies.ict_strategy - DEBUG - ONUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927192079Z [inf]  2025-10-27 13:52:23,871 - src.strategies.ict_strategy - DEBUG - XPINUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.927198008Z [inf]  2025-10-27 13:52:23,873 - src.strategies.ict_strategy - DEBUG - RVVUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.927204636Z [inf]  2025-10-27 13:52:23,874 - src.strategies.ict_strategy - DEBUG - FETUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929003454Z [inf]  2025-10-27 13:52:23,876 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929012759Z [inf]  2025-10-27 13:52:23,899 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929020701Z [inf]  2025-10-27 13:52:23,902 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.929026793Z [inf]  2025-10-27 13:52:23,904 - src.strategies.ict_strategy - DEBUG - ✅ KGENUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.929033457Z [inf]  2025-10-27 13:52:23,905 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929040595Z [inf]  2025-10-27 13:52:23,907 - src.strategies.ict_strategy - DEBUG - INJUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929046432Z [inf]  2025-10-27 13:52:23,908 - src.strategies.ict_strategy - DEBUG - BASUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.929055960Z [inf]  2025-10-27 13:52:23,910 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929062152Z [inf]  2025-10-27 13:52:23,912 - src.strategies.ict_strategy - DEBUG - LIGHTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:52:31.929068835Z [inf]  2025-10-27 13:52:23,937 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.929075673Z [inf]  2025-10-27 13:52:23,944 - src.strategies.ict_strategy - DEBUG - SPXUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.929081908Z [inf]  2025-10-27 13:52:23,949 - src.strategies.ict_strategy - DEBUG - CLOUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.931277037Z [inf]  2025-10-27 13:52:23,979 - src.strategies.ict_strategy - DEBUG - PIPPINUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.931287425Z [inf]  2025-10-27 13:52:23,989 - src.strategies.ict_strategy - DEBUG - ✅ ZBTUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.931295025Z [inf]  2025-10-27 13:52:24,017 - src.strategies.ict_strategy - DEBUG - IPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.931304657Z [inf]  2025-10-27 13:52:24,051 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.931311956Z [inf]  2025-10-27 13:52:24,069 - src.strategies.ict_strategy - DEBUG - ✅ BLESSUSDT SHORT | 信心度: 56.7% | 趨勢: bearish/bearish/bullish
+2025-10-27T13:52:31.931319338Z [inf]  2025-10-27 13:52:24,080 - src.strategies.ict_strategy - DEBUG - ✅ B2USDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.931325321Z [inf]  2025-10-27 13:52:24,095 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.931331853Z [inf]  2025-10-27 13:52:24,108 - src.strategies.ict_strategy - DEBUG - ✅ SNXUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.931338737Z [inf]  2025-10-27 13:52:24,109 - src.strategies.ict_strategy - DEBUG - AKTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.931344989Z [inf]  2025-10-27 13:52:24,122 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.931351915Z [inf]  2025-10-27 13:52:24,147 - src.strategies.ict_strategy - DEBUG - RIVERUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.933902546Z [inf]  2025-10-27 13:52:24,151 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.933921371Z [inf]  2025-10-27 13:52:24,162 - src.strategies.ict_strategy - DEBUG - HOLOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.933930898Z [inf]  2025-10-27 13:52:24,166 - src.strategies.ict_strategy - DEBUG - EDUUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.933938747Z [inf]  2025-10-27 13:52:24,178 - src.strategies.ict_strategy - DEBUG - LINEAUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.933945668Z [inf]  2025-10-27 13:52:24,183 - src.strategies.ict_strategy - DEBUG - EDENUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.933954776Z [inf]  2025-10-27 13:52:24,200 - src.strategies.ict_strategy - DEBUG - OGUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.933968903Z [inf]  2025-10-27 13:52:24,230 - src.strategies.ict_strategy - DEBUG - ✅ ONUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.933976669Z [inf]  2025-10-27 13:52:24,238 - src.strategies.ict_strategy - DEBUG - FETUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.933984565Z [inf]  2025-10-27 13:52:24,254 - src.strategies.ict_strategy - DEBUG - ✅ RVVUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.933992150Z [inf]  2025-10-27 13:52:24,270 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.934000730Z [inf]  2025-10-27 13:52:24,276 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.935947726Z [inf]  2025-10-27 13:52:24,295 - src.strategies.ict_strategy - DEBUG - 1000FLOKIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.935962579Z [inf]  2025-10-27 13:52:24,309 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.935975256Z [inf]  2025-10-27 13:52:24,322 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 拒絕 - 信心度不足 (33.3% < 35.0%)
+2025-10-27T13:52:31.935986109Z [inf]  2025-10-27 13:52:24,333 - src.strategies.ict_strategy - DEBUG - INJUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.935994708Z [inf]  2025-10-27 13:52:24,338 - src.strategies.ict_strategy - DEBUG - BASUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.936004264Z [inf]  2025-10-27 13:52:24,364 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.936013442Z [inf]  2025-10-27 13:52:24,367 - src.strategies.ict_strategy - DEBUG - YALAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.936022739Z [inf]  2025-10-27 13:52:24,384 - src.strategies.ict_strategy - DEBUG - ✅ LIGHTUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bullish
+2025-10-27T13:52:31.936032470Z [inf]  2025-10-27 13:52:24,403 - src.strategies.ict_strategy - DEBUG - SPXUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.936041678Z [inf]  2025-10-27 13:52:24,418 - src.strategies.ict_strategy - DEBUG - AI16ZUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.936050831Z [inf]  2025-10-27 13:52:24,419 - src.strategies.ict_strategy - DEBUG - ✅ CLOUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.936060690Z [inf]  2025-10-27 13:52:24,420 - src.strategies.ict_strategy - DEBUG - PENDLEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937788196Z [inf]  2025-10-27 13:52:24,422 - src.strategies.ict_strategy - DEBUG - SEIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937800335Z [inf]  2025-10-27 13:52:24,423 - src.strategies.ict_strategy - DEBUG - ZKCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937807962Z [inf]  2025-10-27 13:52:24,425 - src.strategies.ict_strategy - DEBUG - KDAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937817217Z [inf]  2025-10-27 13:52:24,427 - src.strategies.ict_strategy - DEBUG - BRETTUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.937823894Z [inf]  2025-10-27 13:52:24,429 - src.strategies.ict_strategy - DEBUG - TONUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937830306Z [inf]  2025-10-27 13:52:24,431 - src.strategies.ict_strategy - DEBUG - SOMIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937836257Z [inf]  2025-10-27 13:52:24,432 - src.strategies.ict_strategy - DEBUG - NXPCUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:52:31.937842567Z [inf]  2025-10-27 13:52:24,434 - src.strategies.ict_strategy - DEBUG - BANANAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937848621Z [inf]  2025-10-27 13:52:24,437 - src.strategies.ict_strategy - DEBUG - ATOMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937854561Z [inf]  2025-10-27 13:52:24,444 - src.strategies.ict_strategy - DEBUG - GALAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.937861114Z [inf]  2025-10-27 13:52:24,446 - src.strategies.ict_strategy - DEBUG - OPENUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.939722615Z [inf]  2025-10-27 13:52:24,488 - src.strategies.ict_strategy - DEBUG - OGUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:52:31.941857878Z [inf]  2025-10-27 13:52:24,615 - src.strategies.ict_strategy - DEBUG - KDAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:52:31.943541161Z [inf]  2025-10-27 13:52:24,830 - src.strategies.ict_strategy - DEBUG - ✅ APEUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.945148739Z [inf]  2025-10-27 13:52:24,864 - src.services.data_service - DEBUG - ✅ 緩存命中: DYDXUSDT 5m
+2025-10-27T13:52:31.947750914Z [inf]  2025-10-27 13:52:24,864 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.952194135Z [inf]  2025-10-27 13:52:24,865 - src.services.data_service - DEBUG - ✅ 緩存命中: TRBUSDT 5m
+2025-10-27T13:52:31.952202277Z [inf]  2025-10-27 13:52:24,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.955658080Z [inf]  2025-10-27 13:52:24,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.955668599Z [inf]  2025-10-27 13:52:24,865 - src.services.data_service - DEBUG - ✅ 緩存命中: FISUSDT 5m
+2025-10-27T13:52:31.958972968Z [inf]  2025-10-27 13:52:24,865 - src.services.data_service - DEBUG - ✅ 緩存命中: JTOUSDT 5m
+2025-10-27T13:52:31.958986125Z [inf]  2025-10-27 13:52:24,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.961108932Z [inf]  2025-10-27 13:52:24,866 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.963277509Z [inf]  2025-10-27 13:52:24,866 - src.services.data_service - DEBUG - ✅ 緩存命中: ARUSDT 5m
+2025-10-27T13:52:31.965479260Z [inf]  2025-10-27 13:52:24,867 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:52:31.967516828Z [inf]  2025-10-27 13:52:24,867 - src.services.data_service - DEBUG - ✅ 緩存命中: IMXUSDT 5m
+2025-10-27T13:52:31.969582607Z [inf]  2025-10-27 13:52:24,871 - src.strategies.ict_strategy - DEBUG - XMRUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.973197080Z [inf]  2025-10-27 13:52:24,921 - src.strategies.ict_strategy - DEBUG - ✅ PROVEUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.973215123Z [inf]  2025-10-27 13:52:24,941 - src.strategies.ict_strategy - DEBUG - PNUTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.975339293Z [inf]  2025-10-27 13:52:25,022 - src.strategies.ict_strategy - DEBUG - BATUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:52:31.977125900Z [inf]  2025-10-27 13:52:25,064 - src.strategies.ict_strategy - DEBUG - EULUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.980246305Z [inf]  2025-10-27 13:52:25,175 - src.strategies.ict_strategy - DEBUG - ✅ OMUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.982529889Z [inf]  2025-10-27 13:52:25,341 - src.strategies.ict_strategy - DEBUG - AEROUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.982543635Z [inf]  2025-10-27 13:52:25,347 - src.strategies.ict_strategy - DEBUG - TURBOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.984584774Z [inf]  2025-10-27 13:52:25,526 - src.strategies.ict_strategy - DEBUG - VVVUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.987292743Z [inf]  2025-10-27 13:52:25,607 - src.strategies.ict_strategy - DEBUG - POLUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.989684167Z [inf]  2025-10-27 13:52:25,680 - src.strategies.ict_strategy - DEBUG - TAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.992114804Z [inf]  2025-10-27 13:52:25,771 - src.strategies.ict_strategy - DEBUG - HEMIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:52:31.994147337Z [inf]  2025-10-27 13:52:25,925 - src.strategies.ict_strategy - DEBUG - ARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:31.996155810Z [inf]  2025-10-27 13:52:26,145 - src.strategies.ict_strategy - DEBUG - ✅ TRUTHUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.998605811Z [inf]  2025-10-27 13:52:26,298 - src.strategies.ict_strategy - DEBUG - ✅ BANKUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:52:31.998615249Z [inf]  2025-10-27 13:52:26,314 - src.strategies.ict_strategy - DEBUG - API3USDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:52:32.001201801Z [inf]  2025-10-27 13:52:26,367 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.26, 连续亏损 5次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:52:32.004587934Z [inf]  2025-10-27 13:52:26,371 - __main__ - WARNING - 🚫 期望值為負，禁止開倉
+2025-10-27T13:52:32.004597690Z [inf]  2025-10-27 13:52:26,371 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:52:32.007442339Z [inf]  2025-10-27 13:52:26,376 - src.managers.trade_recorder - INFO - 📝 記錄交易: METUSDT PnL: -0.82%
+2025-10-27T13:52:32.012267390Z [inf]  2025-10-27 13:52:26,384 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: B2USDT SHORT Rank 5 信心度 70.00%
+2025-10-27T13:52:32.012279543Z [inf]  2025-10-27 13:52:26,384 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: B2USDT
+2025-10-27T13:52:32.021253588Z [inf]  2025-10-27 13:52:26,390 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:52:32.021261734Z [inf]  2025-10-27 13:52:26,392 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.37, 连续亏损 1次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:52:32.021269697Z [inf]  2025-10-27 13:52:26,392 - src.managers.virtual_position_manager - WARNING - ⚠️  SOMIUSDT 已存在活躍虛擬倉位，先關閉舊倉位
+2025-10-27T13:52:32.021277834Z [inf]  2025-10-27 13:52:26,392 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: SOMIUSDT PnL: -0.49% 原因: replaced_by_new_signal
+2025-10-27T13:52:32.021287863Z [inf]  2025-10-27 13:52:26,392 - src.managers.trade_recorder - INFO - 📝 記錄交易: SOMIUSDT PnL: -0.49%
+2025-10-27T13:52:32.024627668Z [inf]  2025-10-27 13:52:26,397 - src.managers.virtual_position_manager - WARNING - ⚠️  0GUSDT 已存在活躍虛擬倉位，先關閉舊倉位
+2025-10-27T13:52:32.024643385Z [inf]  2025-10-27 13:52:26,397 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: 0GUSDT PnL: -0.41% 原因: replaced_by_new_signal
+2025-10-27T13:52:32.027274485Z [inf]  2025-10-27 13:52:26,402 - src.managers.trade_recorder - INFO - 📝 記錄交易: APEUSDT PnL: -0.35%
+2025-10-27T13:52:32.032529552Z [inf]  2025-10-27 13:52:26,410 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: MIRAUSDT SHORT Rank 10 信心度 70.00%
+2025-10-27T13:52:32.032540616Z [inf]  2025-10-27 13:52:26,410 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: MIRAUSDT
+2025-10-27T13:52:32.032541921Z [inf]  2025-10-27 13:52:26,493 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: APEUSDT PnL: -0.72% 原因: stop_loss
+2025-10-27T13:52:32.034613620Z [inf]  2025-10-27 13:52:26,493 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: WALUSDT PnL: -0.96%
+2025-10-27T13:52:32.037308536Z [inf]  2025-10-27 13:52:26,494 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: METUSDT
+2025-10-27T13:52:51.183079811Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 403
+2025-10-27T13:53:12.199536329Z [inf]  2025-10-27 13:53:06,112 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-27T13:53:12.199542918Z [inf]  2025-10-27 13:53:06,355 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2025-10-27T13:53:32.340778720Z [inf]  ============================================================
+2025-10-27T13:53:32.340787069Z [inf]  2025-10-27 13:53:27,622 - __main__ - INFO - 🔄 交易週期開始: 2025-10-27 13:53:27
+2025-10-27T13:53:32.340793819Z [inf]  2025-10-27 13:53:27,622 - __main__ - INFO - ============================================================
+2025-10-27T13:53:32.340799824Z [inf]  2025-10-27 13:53:27,623 - __main__ - DEBUG - 讀取訓練數據統計失敗: Error tokenizing data. C error: Expected 21 fields in line 9, saw 27
+2025-10-27T13:53:32.340804668Z [inf]  
+2025-10-27T13:53:32.340816915Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - 
+2025-10-27T13:53:32.340819855Z [inf]  2025-10-27 13:53:27,622 - __main__ - INFO - 
+2025-10-27T13:53:32.340826569Z [inf]  🔢 週期 #12
+2025-10-27T13:53:32.340827935Z [inf]  ============================================================
+2025-10-27T13:53:32.340834254Z [inf]  2025-10-27 13:53:27,622 - __main__ - INFO - 
+2025-10-27T13:53:32.340840065Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - 📊 風險管理狀態
+2025-10-27T13:53:32.340848104Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ============================================================
+2025-10-27T13:53:32.340855618Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ✅ 連續虧損: 0 單（良好）
+2025-10-27T13:53:32.340861015Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ✅ 當前回撤: 0% （無回撤）
+2025-10-27T13:53:32.340866372Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ✅ 謹慎模式：未啟動（正常交易）
+2025-10-27T13:53:32.340872510Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ✅ 緊急停止：未觸發
+2025-10-27T13:53:32.340878503Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - 
+2025-10-27T13:53:32.340884612Z [inf]  🛡️  保護閾值設置：
+2025-10-27T13:53:32.343749186Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO -    • 單日虧損警戒線：3.0% → 謹慎模式
+2025-10-27T13:53:32.343762493Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO -    • 單日虧損上限：15.0% → 當日停止
+2025-10-27T13:53:32.343770828Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO -    • 總虧損斷路器：20.0% → 立即停止
+2025-10-27T13:53:32.343778344Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO -    • 總虧損上限：30.0% → 永久停止
+2025-10-27T13:53:32.343786818Z [inf]  2025-10-27 13:53:27,623 - src.managers.risk_manager - INFO - ============================================================
+2025-10-27T13:53:32.343794721Z [inf]  
+2025-10-27T13:53:32.343803366Z [inf]  2025-10-27 13:53:27,623 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.343812907Z [inf]  2025-10-27 13:53:27,624 - __main__ - INFO - ⏰ 時間框架調度狀態:
+2025-10-27T13:53:32.343823293Z [inf]  2025-10-27 13:53:27,624 - __main__ - INFO -   1h: 間隔=3600秒, 上次掃描=802秒前, 下次掃描=2797秒, 需掃描=否
+2025-10-27T13:53:32.343832539Z [inf]  2025-10-27 13:53:27,624 - __main__ - INFO -   15m: 間隔=900秒, 上次掃描=802秒前, 下次掃描=97秒, 需掃描=否
+2025-10-27T13:53:32.343841051Z [inf]  2025-10-27 13:53:27,624 - __main__ - INFO -   5m: 間隔=60秒, 上次掃描=從未掃描, 下次掃描=立即, 需掃描=是
+2025-10-27T13:53:32.343849859Z [inf]  2025-10-27 13:53:27,624 - __main__ - INFO - 👁️  監控活躍持倉...
+2025-10-27T13:53:32.343858050Z [inf]  2025-10-27 13:53:27,734 - src.services.position_monitor - INFO - 
+2025-10-27T13:53:32.343867983Z [inf]  🎯 虚拟持仓监控 [5个]
+2025-10-27T13:53:32.343881255Z [inf]  2025-10-27 13:53:27,734 - src.services.position_monitor - INFO - 
+2025-10-27T13:53:32.343889706Z [inf]  ======================================================================
+2025-10-27T13:53:32.345494970Z [inf]  2025-10-27 13:53:27,734 - src.services.position_monitor - INFO - 📊 当前持仓状态 [4个]
+2025-10-27T13:53:32.345506331Z [inf]  2025-10-27 13:53:27,734 - src.services.position_monitor - INFO - ======================================================================
+2025-10-27T13:53:32.345514987Z [inf]  2025-10-27 13:53:27,809 - src.services.position_monitor - INFO - 🔴 TRXUSDT      SHORT | 盈亏:  -0.06% | 入场:0.298590 当前:0.298770 | ⚠️无止损 无止盈 | 持仓:0.3h
+2025-10-27T13:53:32.345520238Z [inf]  2025-10-27 13:53:27,813 - src.services.position_monitor - WARNING - 获取技术指标失败 TRXUSDT: -1
+2025-10-27T13:53:32.345525855Z [inf]  2025-10-27 13:53:27,813 - src.services.position_monitor - DEBUG - 🔄 获取新指标 TRXUSDT
+2025-10-27T13:53:32.345531353Z [inf]  2025-10-27 13:53:27,889 - src.services.position_monitor - INFO - 🔴 LINEAUSDT    SHORT | 盈亏:  -1.12% | 入场:0.014775 当前:0.014940 | ⚠️无止损 无止盈 | 持仓:0.1h
+2025-10-27T13:53:32.345538297Z [inf]  2025-10-27 13:53:27,893 - src.services.position_monitor - WARNING - 获取技术指标失败 LINEAUSDT: -1
+2025-10-27T13:53:32.345544021Z [inf]  2025-10-27 13:53:27,893 - src.services.position_monitor - DEBUG - 🔄 获取新指标 LINEAUSDT
+2025-10-27T13:53:32.345580241Z [inf]  2025-10-27 13:53:27,968 - src.services.position_monitor - DEBUG - 🔄 重新获取最新指标用于ML亏损分析 COAIUSDT
+2025-10-27T13:53:32.345586295Z [inf]  2025-10-27 13:53:27,973 - src.services.position_monitor - WARNING - 获取技术指标失败 COAIUSDT: -1
+2025-10-27T13:53:32.345592502Z [inf]  2025-10-27 13:53:27,973 - src.ml.predictor - DEBUG - 使用缓存的胜率: 15.7% (缓存133s)
+2025-10-27T13:53:32.345600001Z [inf]  2025-10-27 13:53:27,973 - src.ml.predictor - INFO - 🎯 智能平仓决策 COAIUSDT SHORT: 动作=hold_and_monitor | 风险=low | 亏损=-2.9% | 胜率=15.7% | ML信心=50.0% | 策略=aggressive_cut
+2025-10-27T13:53:32.346885478Z [inf]  2025-10-27 13:53:27,973 - src.services.position_monitor - INFO - 🔴 COAIUSDT     SHORT | 盈亏:  -2.87% | 入场:5.364250 当前:5.518000 | ⚠️无止损 无止盈 | 持仓:0.1h | ML:⏳hold 风险:low
+2025-10-27T13:53:32.346897442Z [inf]  2025-10-27 13:53:27,977 - src.services.position_monitor - WARNING - 获取技术指标失败 COAIUSDT: -1
+2025-10-27T13:53:32.346906005Z [inf]  2025-10-27 13:53:27,977 - src.services.position_monitor - DEBUG - 🔄 获取新指标 COAIUSDT
+2025-10-27T13:53:32.346923159Z [inf]  2025-10-27 13:53:28,051 - src.services.position_monitor - INFO - 🟢 PAXGUSDT     SHORT | 盈亏:  +0.13% | 入场:4023.298571 当前:4018.120000 | ⚠️无止损 无止盈 | 持仓:0.1h
+2025-10-27T13:53:32.346931757Z [inf]  2025-10-27 13:53:28,056 - src.services.position_monitor - WARNING - 获取技术指标失败 PAXGUSDT: -1
+2025-10-27T13:53:32.346939442Z [inf]  2025-10-27 13:53:28,056 - src.services.position_monitor - DEBUG - 🔄 获取新指标 PAXGUSDT
+2025-10-27T13:53:32.346946102Z [inf]  2025-10-27 13:53:28,056 - src.services.position_monitor - INFO - ======================================================================
+2025-10-27T13:53:32.346952722Z [inf]  2025-10-27 13:53:28,056 - src.services.position_monitor - INFO - 💰 持仓汇总: 总数=4 | 盈利=1个 亏损=3个 | 未实现盈亏=-2.74 USDT | 本周期调整=0个
+2025-10-27T13:53:32.346959664Z [inf]  2025-10-27 13:53:28,056 - src.services.position_monitor - INFO - ======================================================================
+2025-10-27T13:53:32.346966215Z [inf]  
+2025-10-27T13:53:32.346971785Z [inf]  2025-10-27 13:53:28,056 - __main__ - INFO - 📊 持倉統計: 總計=4, 盈利=1, 虧損=3, 已調整=0
+2025-10-27T13:53:32.346978409Z [inf]  2025-10-27 13:53:28,056 - __main__ - INFO - 🔍 開始掃描市場，目標選擇前 200 個高流動性交易對...
+2025-10-27T13:53:32.346984919Z [inf]  2025-10-27 13:53:28,056 - src.services.data_service - INFO - 開始掃描 527 個交易對（流動性排序）...
+2025-10-27T13:53:32.348774089Z [inf]  2025-10-27 13:53:28,151 - src.services.data_service - INFO - ✅ 市場掃描完成: 從 527 個交易對中選擇 流動性最高的前 200 個 (平均24h交易額: $286,023,683 USDT) ⚡ 耗時: 0.09s
+2025-10-27T13:53:32.348780293Z [inf]  2025-10-27 13:53:28,152 - __main__ - INFO - 📊 已選擇 200 個高流動性交易對 (平均24h交易額: $286,023,683 USDT)
+2025-10-27T13:53:32.348786654Z [inf]  2025-10-27 13:53:28,152 - __main__ - INFO - 🔍 使用 32 核心並行分析 200 個高流動性交易對 (已按流動性排序)...
+2025-10-27T13:53:32.348792853Z [inf]  2025-10-27 13:53:28,152 - src.services.parallel_analyzer - INFO - 開始批量分析 200 個交易對
+2025-10-27T13:53:32.348799297Z [inf]  2025-10-27 13:53:28,252 - src.services.parallel_analyzer - DEBUG - 系統負載低 (CPU: 9.5%, MEM: 43.4%)，使用大批次
+2025-10-27T13:53:32.348807624Z [inf]  2025-10-27 13:53:28,253 - src.services.parallel_analyzer - INFO - ⚡ 批次配置: 128 個/批次, 共 2 批次 (工作線程: 32)
+2025-10-27T13:53:32.348813526Z [inf]  2025-10-27 13:53:28,253 - src.services.parallel_analyzer - INFO - 處理批次 1/2 (128 個交易對)
+2025-10-27T13:53:32.348818357Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.348823055Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: ETHUSDT 5m
+2025-10-27T13:53:32.348827841Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.348832783Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: BTCUSDT 5m
+2025-10-27T13:53:32.348838906Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.348844971Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: SOLUSDT 5m
+2025-10-27T13:53:32.350568713Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350578270Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: ZECUSDT 5m
+2025-10-27T13:53:32.350584525Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350589901Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: BNBUSDT 5m
+2025-10-27T13:53:32.350595067Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350600588Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: XRPUSDT 5m
+2025-10-27T13:53:32.350605289Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350611157Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: DOGEUSDT 5m
+2025-10-27T13:53:32.350617097Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350622668Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: MAVIAUSDT 5m
+2025-10-27T13:53:32.350627367Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.350764809Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: GIGGLEUSDT 5m
+2025-10-27T13:53:32.352827652Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.352835487Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: HYPEUSDT 5m
+2025-10-27T13:53:32.352841928Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353102202Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: ASTERUSDT 5m
+2025-10-27T13:53:32.353106086Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353111111Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: VIRTUALUSDT 5m
+2025-10-27T13:53:32.353115169Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353120967Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: COAIUSDT 5m
+2025-10-27T13:53:32.353128949Z [inf]  2025-10-27 13:53:28,254 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353133986Z [inf]  2025-10-27 13:53:28,254 - src.services.data_service - DEBUG - ✅ 緩存命中: SUIUSDT 5m
+2025-10-27T13:53:32.353140109Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353145764Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: EVAAUSDT 5m
+2025-10-27T13:53:32.353151641Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353157015Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: ENAUSDT 5m
+2025-10-27T13:53:32.353162310Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353168833Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: LINKUSDT 5m
+2025-10-27T13:53:32.353175275Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.353181712Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: DIAUSDT 5m
+2025-10-27T13:53:32.354171210Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354177263Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000PEPEUSDT 5m
+2025-10-27T13:53:32.354182446Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354187119Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: PUMPUSDT 5m
+2025-10-27T13:53:32.354192920Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354197178Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: ADAUSDT 5m
+2025-10-27T13:53:32.354202728Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354206998Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: AVAXUSDT 5m
+2025-10-27T13:53:32.354211737Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354216547Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: TAOUSDT 5m
+2025-10-27T13:53:32.354221948Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354226330Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: HUSDT 5m
+2025-10-27T13:53:32.354231298Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.354236684Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: XPLUSDT 5m
+2025-10-27T13:53:32.354241164Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355527324Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: AIXBTUSDT 5m
+2025-10-27T13:53:32.355531880Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355536844Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: FFUSDT 5m
+2025-10-27T13:53:32.355541743Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355546699Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: DEGOUSDT 5m
+2025-10-27T13:53:32.355551730Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355556565Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: PAXGUSDT 5m
+2025-10-27T13:53:32.355560538Z [inf]  2025-10-27 13:53:28,255 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355564846Z [inf]  2025-10-27 13:53:28,255 - src.services.data_service - DEBUG - ✅ 緩存命中: BCHUSDT 5m
+2025-10-27T13:53:32.355569647Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355575119Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: LTCUSDT 5m
+2025-10-27T13:53:32.355580082Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355584622Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: ZENUSDT 5m
+2025-10-27T13:53:32.355588807Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.355593035Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: AVNTUSDT 5m
+2025-10-27T13:53:32.358426978Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358435518Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: WLDUSDT 5m
+2025-10-27T13:53:32.358443697Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358451260Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: 42USDT 5m
+2025-10-27T13:53:32.358458809Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358467205Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: MEUSDT 5m
+2025-10-27T13:53:32.358474157Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358481629Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: FARTCOINUSDT 5m
+2025-10-27T13:53:32.358491010Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358501670Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: APRUSDT 5m
+2025-10-27T13:53:32.358509254Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358516870Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: UBUSDT 5m
+2025-10-27T13:53:32.358524840Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358533553Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: TURTLEUSDT 5m
+2025-10-27T13:53:32.358541192Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358655932Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: PENGUUSDT 5m
+2025-10-27T13:53:32.358666143Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358674615Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: DASHUSDT 5m
+2025-10-27T13:53:32.358681840Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358689387Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: 4USDT 5m
+2025-10-27T13:53:32.358697116Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358705484Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: AAVEUSDT 5m
+2025-10-27T13:53:32.358712729Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358720790Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: BLUAIUSDT 5m
+2025-10-27T13:53:32.358727646Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358736270Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000CHEEMSUSDT 5m
+2025-10-27T13:53:32.358743515Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358752968Z [inf]  2025-10-27 13:53:28,256 - src.services.data_service - DEBUG - ✅ 緩存命中: APTUSDT 5m
+2025-10-27T13:53:32.358760853Z [inf]  2025-10-27 13:53:28,256 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.358768105Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: WLFIUSDT 5m
+2025-10-27T13:53:32.359202597Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359211247Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: NEARUSDT 5m
+2025-10-27T13:53:32.359218831Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359227896Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: FILUSDT 5m
+2025-10-27T13:53:32.359236205Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359249257Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: DOTUSDT 5m
+2025-10-27T13:53:32.359256491Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359263886Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: MYROUSDT 5m
+2025-10-27T13:53:32.359270611Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359278357Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: YBUSDT 5m
+2025-10-27T13:53:32.359285929Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359293926Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: WIFUSDT 5m
+2025-10-27T13:53:32.359303027Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.359312189Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: ETHFIUSDT 5m
+2025-10-27T13:53:32.359319076Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361039088Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: ARBUSDT 5m
+2025-10-27T13:53:32.361058546Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361069600Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: FUSDT 5m
+2025-10-27T13:53:32.361077923Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361088907Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: UNIUSDT 5m
+2025-10-27T13:53:32.361098129Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361106501Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: EIGENUSDT 5m
+2025-10-27T13:53:32.361115805Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361126475Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: BDXNUSDT 5m
+2025-10-27T13:53:32.361134192Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361140745Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: CRVUSDT 5m
+2025-10-27T13:53:32.361149858Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361156125Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: TRXUSDT 5m
+2025-10-27T13:53:32.361162336Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.361168376Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: ENSOUSDT 5m
+2025-10-27T13:53:32.368292820Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368305853Z [inf]  2025-10-27 13:53:28,257 - src.services.data_service - DEBUG - ✅ 緩存命中: RECALLUSDT 5m
+2025-10-27T13:53:32.368314118Z [inf]  2025-10-27 13:53:28,257 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368322973Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: VANAUSDT 5m
+2025-10-27T13:53:32.368330981Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368338553Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: COMMONUSDT 5m
+2025-10-27T13:53:32.368346645Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368353490Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: TRUMPUSDT 5m
+2025-10-27T13:53:32.368360557Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368367967Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000SHIBUSDT 5m
+2025-10-27T13:53:32.368375886Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368382877Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: XLMUSDT 5m
+2025-10-27T13:53:32.368390155Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.368395670Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: KAITOUSDT 5m
+2025-10-27T13:53:32.368401212Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373136773Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: KGENUSDT 5m
+2025-10-27T13:53:32.373152854Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: AIAUSDT 5m
+2025-10-27T13:53:32.373163407Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373172636Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000BONKUSDT 5m
+2025-10-27T13:53:32.373182150Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373190708Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: ONDOUSDT 5m
+2025-10-27T13:53:32.373198926Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373208298Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: FORMUSDT 5m
+2025-10-27T13:53:32.373217079Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373225319Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: OPUSDT 5m
+2025-10-27T13:53:32.373239275Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373247592Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: METUSDT 5m
+2025-10-27T13:53:32.373256106Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.373265297Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: XPINUSDT 5m
+2025-10-27T13:53:32.373273705Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375305442Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375318538Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: ZBTUSDT 5m
+2025-10-27T13:53:32.375327132Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375336670Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: TIAUSDT 5m
+2025-10-27T13:53:32.375344533Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375353331Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: BLESSUSDT 5m
+2025-10-27T13:53:32.375360820Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375368265Z [inf]  2025-10-27 13:53:28,258 - src.services.data_service - DEBUG - ✅ 緩存命中: PIPPINUSDT 5m
+2025-10-27T13:53:32.375375455Z [inf]  2025-10-27 13:53:28,258 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375381739Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: B2USDT 5m
+2025-10-27T13:53:32.375388958Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375396967Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: IPUSDT 5m
+2025-10-27T13:53:32.375404553Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.375411716Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: ETCUSDT 5m
+2025-10-27T13:53:32.375418762Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376844068Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: AKTUSDT 5m
+2025-10-27T13:53:32.376853390Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376861101Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: HBARUSDT 5m
+2025-10-27T13:53:32.376868238Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376875445Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: SNXUSDT 5m
+2025-10-27T13:53:32.376882342Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376889447Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: ZORAUSDT 5m
+2025-10-27T13:53:32.376896151Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376902625Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: RIVERUSDT 5m
+2025-10-27T13:53:32.376909447Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376915879Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: CAKEUSDT 5m
+2025-10-27T13:53:32.376922558Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376929126Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: EDENUSDT 5m
+2025-10-27T13:53:32.376936708Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.376943827Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: EDUUSDT 5m
+2025-10-27T13:53:32.379062204Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379075670Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: ONUSDT 5m
+2025-10-27T13:53:32.379084017Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379091032Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: RVVUSDT 5m
+2025-10-27T13:53:32.379099517Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379107571Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: LDOUSDT 5m
+2025-10-27T13:53:32.379114608Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379122451Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: FETUSDT 5m
+2025-10-27T13:53:32.379130178Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379140606Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: USELESSUSDT 5m
+2025-10-27T13:53:32.379148259Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379154986Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: JUPUSDT 5m
+2025-10-27T13:53:32.379162371Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.379170007Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: INJUSDT 5m
+2025-10-27T13:53:32.379176912Z [inf]  2025-10-27 13:53:28,259 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380691545Z [inf]  2025-10-27 13:53:28,259 - src.services.data_service - DEBUG - ✅ 緩存命中: MERLUSDT 5m
+2025-10-27T13:53:32.380703859Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380711852Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: BASUSDT 5m
+2025-10-27T13:53:32.380719007Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380727625Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: BIOUSDT 5m
+2025-10-27T13:53:32.380736357Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380744218Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: LIGHTUSDT 5m
+2025-10-27T13:53:32.380756947Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380764057Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: SPXUSDT 5m
+2025-10-27T13:53:32.380771159Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380777890Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: CLOUSDT 5m
+2025-10-27T13:53:32.380784529Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380791069Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: HOLOUSDT 5m
+2025-10-27T13:53:32.380798298Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.380804475Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: LINEAUSDT 5m
+2025-10-27T13:53:32.382544019Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382552472Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: OGUSDT 5m
+2025-10-27T13:53:32.382557778Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382563149Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: 1000FLOKIUSDT 5m
+2025-10-27T13:53:32.382568784Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382574209Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: YALAUSDT 5m
+2025-10-27T13:53:32.382579118Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382583122Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: AI16ZUSDT 5m
+2025-10-27T13:53:32.382587802Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382596017Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: PENDLEUSDT 5m
+2025-10-27T13:53:32.382601131Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382605583Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: SEIUSDT 5m
+2025-10-27T13:53:32.382610124Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.382614393Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: ZKCUSDT 5m
+2025-10-27T13:53:32.382619500Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384241884Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384246028Z [inf]  2025-10-27 13:53:28,260 - src.services.data_service - DEBUG - ✅ 緩存命中: KDAUSDT 5m
+2025-10-27T13:53:32.384249919Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: ATOMUSDT 5m
+2025-10-27T13:53:32.384255271Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384256772Z [inf]  2025-10-27 13:53:28,260 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384261734Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: BANANAUSDT 5m
+2025-10-27T13:53:32.384265227Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: BRETTUSDT 5m
+2025-10-27T13:53:32.384267617Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384272594Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384274792Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: GALAUSDT 5m
+2025-10-27T13:53:32.384280523Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: TONUSDT 5m
+2025-10-27T13:53:32.384288181Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384294413Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: SOMIUSDT 5m
+2025-10-27T13:53:32.384300987Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.384307320Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: NXPCUSDT 5m
+2025-10-27T13:53:32.385721176Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.385729352Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: OPENUSDT 5m
+2025-10-27T13:53:32.385735353Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.385745510Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: 0GUSDT 5m
+2025-10-27T13:53:32.385752553Z [inf]  2025-10-27 13:53:28,261 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.385760093Z [inf]  2025-10-27 13:53:28,261 - src.services.data_service - DEBUG - ✅ 緩存命中: SAPIENUSDT 5m
+2025-10-27T13:53:32.385765228Z [inf]  2025-10-27 13:53:28,262 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.385770394Z [inf]  2025-10-27 13:53:28,262 - src.services.data_service - DEBUG - ✅ 緩存命中: APEUSDT 5m
+2025-10-27T13:53:32.385775929Z [inf]  2025-10-27 13:53:28,262 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.385781235Z [inf]  2025-10-27 13:53:28,262 - src.services.data_service - DEBUG - ✅ 緩存命中: MIRAUSDT 5m
+2025-10-27T13:53:32.385785843Z [inf]  2025-10-27 13:53:28,267 - src.strategies.ict_strategy - DEBUG - ETHUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.385790580Z [inf]  2025-10-27 13:53:28,270 - src.strategies.ict_strategy - DEBUG - SOLUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.385795050Z [inf]  2025-10-27 13:53:28,271 - src.strategies.ict_strategy - DEBUG - BTCUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.385801129Z [inf]  2025-10-27 13:53:28,282 - src.strategies.ict_strategy - DEBUG - ZECUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.387938428Z [inf]  2025-10-27 13:53:28,284 - src.strategies.ict_strategy - DEBUG - BNBUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.387947704Z [inf]  2025-10-27 13:53:28,286 - src.strategies.ict_strategy - DEBUG - XRPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.387955119Z [inf]  2025-10-27 13:53:28,291 - src.strategies.ict_strategy - DEBUG - ETHUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.387962500Z [inf]  2025-10-27 13:53:28,294 - src.strategies.ict_strategy - DEBUG - DOGEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.387970257Z [inf]  2025-10-27 13:53:28,296 - src.strategies.ict_strategy - DEBUG - MAVIAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.387977802Z [inf]  2025-10-27 13:53:28,297 - src.strategies.ict_strategy - DEBUG - GIGGLEUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.387984116Z [inf]  2025-10-27 13:53:28,299 - src.strategies.ict_strategy - DEBUG - HYPEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.387991094Z [inf]  2025-10-27 13:53:28,300 - src.strategies.ict_strategy - DEBUG - ASTERUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.388001427Z [inf]  2025-10-27 13:53:28,314 - src.strategies.ict_strategy - DEBUG - SOLUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.388008768Z [inf]  2025-10-27 13:53:28,513 - src.strategies.ict_strategy - DEBUG - AVNTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.388015159Z [inf]  2025-10-27 13:53:28,315 - src.strategies.ict_strategy - DEBUG - VIRTUALUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.388023038Z [inf]  2025-10-27 13:53:28,329 - src.strategies.ict_strategy - DEBUG - SUIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389670667Z [inf]  2025-10-27 13:53:28,330 - src.strategies.ict_strategy - DEBUG - EVAAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.389676082Z [inf]  2025-10-27 13:53:28,332 - src.strategies.ict_strategy - DEBUG - ENAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389681157Z [inf]  2025-10-27 13:53:28,337 - src.strategies.ict_strategy - DEBUG - BTCUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.389686061Z [inf]  2025-10-27 13:53:28,350 - src.strategies.ict_strategy - DEBUG - LINKUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389691820Z [inf]  2025-10-27 13:53:28,364 - src.strategies.ict_strategy - DEBUG - DIAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.389696297Z [inf]  2025-10-27 13:53:28,377 - src.strategies.ict_strategy - DEBUG - 1000PEPEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389700339Z [inf]  2025-10-27 13:53:28,390 - src.strategies.ict_strategy - DEBUG - PUMPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389704616Z [inf]  2025-10-27 13:53:28,400 - src.strategies.ict_strategy - DEBUG - ✅ BNBUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.389708356Z [inf]  2025-10-27 13:53:28,407 - src.strategies.ict_strategy - DEBUG - ADAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389713069Z [inf]  2025-10-27 13:53:28,409 - src.strategies.ict_strategy - DEBUG - ✅ ZECUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.389716928Z [inf]  2025-10-27 13:53:28,421 - src.strategies.ict_strategy - DEBUG - AVAXUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.389722618Z [inf]  2025-10-27 13:53:28,423 - src.strategies.ict_strategy - DEBUG - TAOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.391342488Z [inf]  2025-10-27 13:53:28,424 - src.strategies.ict_strategy - DEBUG - HUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.391351248Z [inf]  2025-10-27 13:53:28,426 - src.strategies.ict_strategy - DEBUG - XPLUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.391356249Z [inf]  2025-10-27 13:53:28,430 - src.strategies.ict_strategy - DEBUG - XRPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:53:32.391361867Z [inf]  2025-10-27 13:53:28,432 - src.strategies.ict_strategy - DEBUG - AIXBTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.391366848Z [inf]  2025-10-27 13:53:28,434 - src.strategies.ict_strategy - DEBUG - FFUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.391373431Z [inf]  2025-10-27 13:53:28,435 - src.strategies.ict_strategy - DEBUG - DEGOUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.391379340Z [inf]  2025-10-27 13:53:28,451 - src.strategies.ict_strategy - DEBUG - PAXGUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.391384580Z [inf]  2025-10-27 13:53:28,458 - src.strategies.ict_strategy - DEBUG - BCHUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.391389023Z [inf]  2025-10-27 13:53:28,468 - src.strategies.ict_strategy - DEBUG - DOGEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.391393278Z [inf]  2025-10-27 13:53:28,475 - src.strategies.ict_strategy - DEBUG - LTCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.391398899Z [inf]  2025-10-27 13:53:28,477 - src.strategies.ict_strategy - DEBUG - ZENUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.391403758Z [inf]  2025-10-27 13:53:28,327 - src.strategies.ict_strategy - DEBUG - COAIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.393182019Z [inf]  2025-10-27 13:53:28,528 - src.strategies.ict_strategy - DEBUG - ✅ MAVIAUSDT LONG | 信心度: 60.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.393189916Z [inf]  2025-10-27 13:53:28,531 - src.strategies.ict_strategy - DEBUG - ASTERUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.393200238Z [inf]  2025-10-27 13:53:28,533 - src.strategies.ict_strategy - DEBUG - WLDUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.393207014Z [inf]  2025-10-27 13:53:28,535 - src.strategies.ict_strategy - DEBUG - HYPEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:53:32.393210998Z [inf]  2025-10-27 13:53:28,539 - src.strategies.ict_strategy - DEBUG - AVNTUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:53:32.393215414Z [inf]  2025-10-27 13:53:28,559 - src.strategies.ict_strategy - DEBUG - VIRTUALUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:neutral)
+2025-10-27T13:53:32.393221593Z [inf]  2025-10-27 13:53:28,560 - src.strategies.ict_strategy - DEBUG - GIGGLEUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.393226385Z [inf]  2025-10-27 13:53:28,589 - src.strategies.ict_strategy - DEBUG - SUIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.393232856Z [inf]  2025-10-27 13:53:28,593 - src.strategies.ict_strategy - DEBUG - EVAAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.393237686Z [inf]  2025-10-27 13:53:28,608 - src.strategies.ict_strategy - DEBUG - ENAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.393243931Z [inf]  2025-10-27 13:53:28,610 - src.strategies.ict_strategy - DEBUG - MEUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.395028665Z [inf]  2025-10-27 13:53:28,623 - src.strategies.ict_strategy - DEBUG - LINKUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.395040131Z [inf]  2025-10-27 13:53:28,663 - src.strategies.ict_strategy - DEBUG - PUMPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.395045569Z [inf]  2025-10-27 13:53:28,667 - src.strategies.ict_strategy - DEBUG - 1000PEPEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.395050651Z [inf]  2025-10-27 13:53:28,669 - src.strategies.ict_strategy - DEBUG - FARTCOINUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.395055147Z [inf]  2025-10-27 13:53:28,689 - src.strategies.ict_strategy - DEBUG - ADAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.395060730Z [inf]  2025-10-27 13:53:28,703 - src.strategies.ict_strategy - DEBUG - APRUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.395065844Z [inf]  2025-10-27 13:53:28,705 - src.strategies.ict_strategy - DEBUG - ✅ DIAUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:53:32.395071240Z [inf]  2025-10-27 13:53:28,743 - src.strategies.ict_strategy - DEBUG - AVAXUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.395076328Z [inf]  2025-10-27 13:53:28,749 - src.strategies.ict_strategy - DEBUG - TAOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.395081919Z [inf]  2025-10-27 13:53:28,771 - src.strategies.ict_strategy - DEBUG - ✅ HUSDT LONG | 信心度: 66.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.395087677Z [inf]  2025-10-27 13:53:28,790 - src.strategies.ict_strategy - DEBUG - ✅ XPLUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.397127610Z [inf]  2025-10-27 13:53:28,803 - src.strategies.ict_strategy - DEBUG - UBUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.397132672Z [inf]  2025-10-27 13:53:28,962 - src.strategies.ict_strategy - DEBUG - DASHUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.397137969Z [inf]  2025-10-27 13:53:28,827 - src.strategies.ict_strategy - DEBUG - AIXBTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.397146624Z [inf]  2025-10-27 13:53:28,837 - src.strategies.ict_strategy - DEBUG - FFUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.397154038Z [inf]  2025-10-27 13:53:28,874 - src.strategies.ict_strategy - DEBUG - DEGOUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.397160527Z [inf]  2025-10-27 13:53:28,887 - src.strategies.ict_strategy - DEBUG - ✅ PAXGUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.397168529Z [inf]  2025-10-27 13:53:28,898 - src.strategies.ict_strategy - DEBUG - TURTLEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.397172855Z [inf]  2025-10-27 13:53:28,901 - src.strategies.ict_strategy - DEBUG - LTCUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.397177707Z [inf]  2025-10-27 13:53:28,905 - src.strategies.ict_strategy - DEBUG - ✅ BCHUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.397182650Z [inf]  2025-10-27 13:53:28,929 - src.strategies.ict_strategy - DEBUG - ✅ ZENUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.397188085Z [inf]  2025-10-27 13:53:28,941 - src.strategies.ict_strategy - DEBUG - PENGUUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.397192301Z [inf]  2025-10-27 13:53:28,960 - src.strategies.ict_strategy - DEBUG - ✅ COAIUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.398445151Z [inf]  2025-10-27 13:53:28,978 - src.strategies.ict_strategy - DEBUG - WLDUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.398453793Z [inf]  2025-10-27 13:53:28,980 - src.strategies.ict_strategy - DEBUG - 4USDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398459600Z [inf]  2025-10-27 13:53:28,982 - src.strategies.ict_strategy - DEBUG - AAVEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398463948Z [inf]  2025-10-27 13:53:28,984 - src.strategies.ict_strategy - DEBUG - BLUAIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398469019Z [inf]  2025-10-27 13:53:28,986 - src.strategies.ict_strategy - DEBUG - 1000CHEEMSUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.398474944Z [inf]  2025-10-27 13:53:28,988 - src.strategies.ict_strategy - DEBUG - APTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398479448Z [inf]  2025-10-27 13:53:28,990 - src.strategies.ict_strategy - DEBUG - WLFIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398484218Z [inf]  2025-10-27 13:53:29,001 - src.strategies.ict_strategy - DEBUG - NEARUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398489248Z [inf]  2025-10-27 13:53:29,002 - src.strategies.ict_strategy - DEBUG - FILUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398494627Z [inf]  2025-10-27 13:53:29,009 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.398500615Z [inf]  2025-10-27 13:53:29,021 - src.strategies.ict_strategy - DEBUG - MYROUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.398505624Z [inf]  2025-10-27 13:53:29,033 - src.strategies.ict_strategy - DEBUG - YBUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400273740Z [inf]  2025-10-27 13:53:29,056 - src.strategies.ict_strategy - DEBUG - FARTCOINUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.400284802Z [inf]  2025-10-27 13:53:29,062 - src.strategies.ict_strategy - DEBUG - ✅ MEUSDT LONG | 信心度: 46.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.400290449Z [inf]  2025-10-27 13:53:29,072 - src.strategies.ict_strategy - DEBUG - ✅ APRUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.400294917Z [inf]  2025-10-27 13:53:29,074 - src.strategies.ict_strategy - DEBUG - WIFUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400301753Z [inf]  2025-10-27 13:53:29,076 - src.strategies.ict_strategy - DEBUG - ETHFIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400307917Z [inf]  2025-10-27 13:53:29,077 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400315325Z [inf]  2025-10-27 13:53:29,079 - src.strategies.ict_strategy - DEBUG - FUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.400320481Z [inf]  2025-10-27 13:53:29,081 - src.strategies.ict_strategy - DEBUG - UNIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400327086Z [inf]  2025-10-27 13:53:29,104 - src.strategies.ict_strategy - DEBUG - UBUSDT: 拒絕 - 信心度不足 (33.3% < 35.0%)
+2025-10-27T13:53:32.400332183Z [inf]  2025-10-27 13:53:29,105 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400337300Z [inf]  2025-10-27 13:53:29,107 - src.strategies.ict_strategy - DEBUG - BDXNUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.400342010Z [inf]  2025-10-27 13:53:29,109 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.402406634Z [inf]  2025-10-27 13:53:29,147 - src.strategies.ict_strategy - DEBUG - PENGUUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.402412773Z [inf]  2025-10-27 13:53:29,149 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.402417246Z [inf]  2025-10-27 13:53:29,169 - src.strategies.ict_strategy - DEBUG - ✅ DASHUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.402422534Z [inf]  2025-10-27 13:53:29,182 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.402427050Z [inf]  2025-10-27 13:53:29,203 - src.strategies.ict_strategy - DEBUG - AAVEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.402433759Z [inf]  2025-10-27 13:53:29,206 - src.strategies.ict_strategy - DEBUG - 4USDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.402439206Z [inf]  2025-10-27 13:53:29,246 - src.strategies.ict_strategy - DEBUG - ✅ BLUAIUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.402446826Z [inf]  2025-10-27 13:53:29,111 - src.strategies.ict_strategy - DEBUG - TRXUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.402455564Z [inf]  2025-10-27 13:53:29,125 - src.strategies.ict_strategy - DEBUG - TURTLEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.402463169Z [inf]  2025-10-27 13:53:29,127 - src.strategies.ict_strategy - DEBUG - ENSOUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.402470624Z [inf]  2025-10-27 13:53:29,128 - src.strategies.ict_strategy - DEBUG - RECALLUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.402477088Z [inf]  2025-10-27 13:53:29,142 - src.strategies.ict_strategy - DEBUG - VANAUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.405144695Z [inf]  2025-10-27 13:53:29,250 - src.strategies.ict_strategy - DEBUG - ✅ 1000CHEEMSUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:53:32.405159598Z [inf]  2025-10-27 13:53:29,273 - src.strategies.ict_strategy - DEBUG - APTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.405170151Z [inf]  2025-10-27 13:53:29,313 - src.strategies.ict_strategy - DEBUG - DOTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.405180695Z [inf]  2025-10-27 13:53:29,333 - src.strategies.ict_strategy - DEBUG - NEARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.405189833Z [inf]  2025-10-27 13:53:29,339 - src.strategies.ict_strategy - DEBUG - FILUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.405199853Z [inf]  2025-10-27 13:53:29,350 - src.strategies.ict_strategy - DEBUG - WLFIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.405208110Z [inf]  2025-10-27 13:53:29,379 - src.strategies.ict_strategy - DEBUG - XLMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.405217271Z [inf]  2025-10-27 13:53:29,381 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.405226281Z [inf]  2025-10-27 13:53:29,382 - src.strategies.ict_strategy - DEBUG - ✅ MYROUSDT LONG | 信心度: 36.7% | 趨勢: bullish/bullish/bearish
+2025-10-27T13:53:32.405235646Z [inf]  2025-10-27 13:53:29,389 - src.strategies.ict_strategy - DEBUG - ✅ YBUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.405246019Z [inf]  2025-10-27 13:53:29,391 - src.strategies.ict_strategy - DEBUG - AIAUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.405254410Z [inf]  2025-10-27 13:53:29,412 - src.strategies.ict_strategy - DEBUG - WIFUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409838005Z [inf]  2025-10-27 13:53:29,427 - src.strategies.ict_strategy - DEBUG - ARBUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409854873Z [inf]  2025-10-27 13:53:29,453 - src.strategies.ict_strategy - DEBUG - FUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.409864149Z [inf]  2025-10-27 13:53:29,457 - src.strategies.ict_strategy - DEBUG - UNIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409874263Z [inf]  2025-10-27 13:53:29,468 - src.strategies.ict_strategy - DEBUG - ✅ ETHFIUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.409882408Z [inf]  2025-10-27 13:53:29,470 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.409890548Z [inf]  2025-10-27 13:53:29,503 - src.strategies.ict_strategy - DEBUG - EIGENUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409898352Z [inf]  2025-10-27 13:53:29,517 - src.strategies.ict_strategy - DEBUG - CRVUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409905994Z [inf]  2025-10-27 13:53:29,534 - src.strategies.ict_strategy - DEBUG - BDXNUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.409915165Z [inf]  2025-10-27 13:53:29,536 - src.strategies.ict_strategy - DEBUG - ✅ TRXUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.409923158Z [inf]  2025-10-27 13:53:29,537 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.409930443Z [inf]  2025-10-27 13:53:29,571 - src.strategies.ict_strategy - DEBUG - ✅ ENSOUSDT LONG | 信心度: 52.7% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.411783103Z [inf]  2025-10-27 13:53:29,585 - src.strategies.ict_strategy - DEBUG - ✅ RECALLUSDT LONG | 信心度: 60.0% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.411793587Z [inf]  2025-10-27 13:53:29,598 - src.strategies.ict_strategy - DEBUG - VANAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.411799347Z [inf]  2025-10-27 13:53:29,623 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411805766Z [inf]  2025-10-27 13:53:29,625 - src.strategies.ict_strategy - DEBUG - TRUMPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bullish)
+2025-10-27T13:53:32.411811787Z [inf]  2025-10-27 13:53:29,639 - src.strategies.ict_strategy - DEBUG - 1000SHIBUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.411817591Z [inf]  2025-10-27 13:53:29,641 - src.strategies.ict_strategy - DEBUG - OPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411823864Z [inf]  2025-10-27 13:53:29,643 - src.strategies.ict_strategy - DEBUG - METUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411829895Z [inf]  2025-10-27 13:53:29,645 - src.strategies.ict_strategy - DEBUG - XPINUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.411835699Z [inf]  2025-10-27 13:53:29,647 - src.strategies.ict_strategy - DEBUG - KGENUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411845058Z [inf]  2025-10-27 13:53:29,649 - src.strategies.ict_strategy - DEBUG - ZBTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411849783Z [inf]  2025-10-27 13:53:29,651 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.411856255Z [inf]  2025-10-27 13:53:29,652 - src.strategies.ict_strategy - DEBUG - BLESSUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.413213195Z [inf]  2025-10-27 13:53:29,655 - src.strategies.ict_strategy - DEBUG - PIPPINUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.413221074Z [inf]  2025-10-27 13:53:29,656 - src.strategies.ict_strategy - DEBUG - B2USDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413227214Z [inf]  2025-10-27 13:53:29,658 - src.strategies.ict_strategy - DEBUG - IPUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413233286Z [inf]  2025-10-27 13:53:29,670 - src.strategies.ict_strategy - DEBUG - XLMUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.413238746Z [inf]  2025-10-27 13:53:29,685 - src.strategies.ict_strategy - DEBUG - KAITOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.413244587Z [inf]  2025-10-27 13:53:29,687 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413249853Z [inf]  2025-10-27 13:53:29,688 - src.strategies.ict_strategy - DEBUG - AKTUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413255618Z [inf]  2025-10-27 13:53:29,701 - src.strategies.ict_strategy - DEBUG - AIAUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.413261574Z [inf]  2025-10-27 13:53:29,703 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413268164Z [inf]  2025-10-27 13:53:29,704 - src.strategies.ict_strategy - DEBUG - SNXUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413273353Z [inf]  2025-10-27 13:53:29,706 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.413278117Z [inf]  2025-10-27 13:53:29,718 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414950571Z [inf]  2025-10-27 13:53:29,719 - src.strategies.ict_strategy - DEBUG - RIVERUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.414955128Z [inf]  2025-10-27 13:53:29,750 - src.strategies.ict_strategy - DEBUG - FETUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414960523Z [inf]  2025-10-27 13:53:29,726 - src.strategies.ict_strategy - DEBUG - 1000BONKUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.414966274Z [inf]  2025-10-27 13:53:29,752 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414967114Z [inf]  2025-10-27 13:53:29,727 - src.strategies.ict_strategy - DEBUG - EDENUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.414973690Z [inf]  2025-10-27 13:53:29,765 - src.strategies.ict_strategy - DEBUG - FORMUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.414974661Z [inf]  2025-10-27 13:53:29,729 - src.strategies.ict_strategy - DEBUG - EDUUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414980457Z [inf]  2025-10-27 13:53:29,767 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.414986520Z [inf]  2025-10-27 13:53:29,731 - src.strategies.ict_strategy - DEBUG - ONUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414991943Z [inf]  2025-10-27 13:53:29,732 - src.strategies.ict_strategy - DEBUG - RVVUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.414998111Z [inf]  2025-10-27 13:53:29,747 - src.strategies.ict_strategy - DEBUG - ONDOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.415002982Z [inf]  2025-10-27 13:53:29,748 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.416730565Z [inf]  2025-10-27 13:53:29,768 - src.strategies.ict_strategy - DEBUG - INJUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.416736961Z [inf]  2025-10-27 13:53:29,779 - src.strategies.ict_strategy - DEBUG - OPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.416742550Z [inf]  2025-10-27 13:53:29,830 - src.strategies.ict_strategy - DEBUG - ✅ METUSDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.416747857Z [inf]  2025-10-27 13:53:29,831 - src.strategies.ict_strategy - DEBUG - XPINUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.416752158Z [inf]  2025-10-27 13:53:29,880 - src.strategies.ict_strategy - DEBUG - TIAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.416758906Z [inf]  2025-10-27 13:53:29,891 - src.strategies.ict_strategy - DEBUG - ✅ ZBTUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.416763731Z [inf]  2025-10-27 13:53:29,905 - src.strategies.ict_strategy - DEBUG - ✅ BLESSUSDT SHORT | 信心度: 56.7% | 趨勢: bearish/bearish/bullish
+2025-10-27T13:53:32.416771088Z [inf]  2025-10-27 13:53:29,940 - src.strategies.ict_strategy - DEBUG - PIPPINUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.416777963Z [inf]  2025-10-27 13:53:29,963 - src.strategies.ict_strategy - DEBUG - IPUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.416784299Z [inf]  2025-10-27 13:53:29,964 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.416790751Z [inf]  2025-10-27 13:53:29,966 - src.strategies.ict_strategy - DEBUG - ✅ KGENUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.418562492Z [inf]  2025-10-27 13:53:29,969 - src.strategies.ict_strategy - DEBUG - BASUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.418569911Z [inf]  2025-10-27 13:53:29,987 - src.strategies.ict_strategy - DEBUG - ✅ B2USDT SHORT | 信心度: 70.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.418574583Z [inf]  2025-10-27 13:53:29,992 - src.strategies.ict_strategy - DEBUG - ETCUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.418578761Z [inf]  2025-10-27 13:53:30,008 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.418583541Z [inf]  2025-10-27 13:53:30,009 - src.strategies.ict_strategy - DEBUG - AKTUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.418589786Z [inf]  2025-10-27 13:53:30,031 - src.strategies.ict_strategy - DEBUG - HBARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.418597101Z [inf]  2025-10-27 13:53:30,066 - src.strategies.ict_strategy - DEBUG - ZORAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.418601657Z [inf]  2025-10-27 13:53:30,083 - src.strategies.ict_strategy - DEBUG - CAKEUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.418607204Z [inf]  2025-10-27 13:53:30,109 - src.strategies.ict_strategy - DEBUG - RIVERUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.418612307Z [inf]  2025-10-27 13:53:30,125 - src.strategies.ict_strategy - DEBUG - ✅ SNXUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.418616145Z [inf]  2025-10-27 13:53:30,126 - src.strategies.ict_strategy - DEBUG - LIGHTUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bullish
+2025-10-27T13:53:32.419998379Z [inf]  2025-10-27 13:53:30,127 - src.strategies.ict_strategy - DEBUG - EDENUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.420009313Z [inf]  2025-10-27 13:53:30,171 - src.strategies.ict_strategy - DEBUG - ✅ ONUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.420021432Z [inf]  2025-10-27 13:53:30,186 - src.strategies.ict_strategy - DEBUG - EDUUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.420026938Z [inf]  2025-10-27 13:53:30,218 - src.strategies.ict_strategy - DEBUG - LDOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.420032287Z [inf]  2025-10-27 13:53:30,228 - src.strategies.ict_strategy - DEBUG - SPXUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.420037703Z [inf]  2025-10-27 13:53:30,247 - src.strategies.ict_strategy - DEBUG - FETUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.420043173Z [inf]  2025-10-27 13:53:30,255 - src.strategies.ict_strategy - DEBUG - USELESSUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.420048725Z [inf]  2025-10-27 13:53:30,260 - src.strategies.ict_strategy - DEBUG - ✅ RVVUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.420053814Z [inf]  2025-10-27 13:53:30,262 - src.strategies.ict_strategy - DEBUG - CLOUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.420059176Z [inf]  2025-10-27 13:53:30,292 - src.strategies.ict_strategy - DEBUG - JUPUSDT: 拒絕 - 信心度不足 (33.3% < 35.0%)
+2025-10-27T13:53:32.420064436Z [inf]  2025-10-27 13:53:30,294 - src.strategies.ict_strategy - DEBUG - INJUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.421350959Z [inf]  2025-10-27 13:53:30,343 - src.strategies.ict_strategy - DEBUG - KDAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421359966Z [inf]  2025-10-27 13:53:30,343 - src.strategies.ict_strategy - DEBUG - BASUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.421368685Z [inf]  2025-10-27 13:53:30,296 - src.strategies.ict_strategy - DEBUG - HOLOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421380445Z [inf]  2025-10-27 13:53:30,300 - src.strategies.ict_strategy - DEBUG - OGUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.421386934Z [inf]  2025-10-27 13:53:30,301 - src.strategies.ict_strategy - DEBUG - LINEAUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421394071Z [inf]  2025-10-27 13:53:30,303 - src.strategies.ict_strategy - DEBUG - 1000FLOKIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421399708Z [inf]  2025-10-27 13:53:30,306 - src.strategies.ict_strategy - DEBUG - YALAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421406322Z [inf]  2025-10-27 13:53:30,308 - src.strategies.ict_strategy - DEBUG - AI16ZUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421431320Z [inf]  2025-10-27 13:53:30,309 - src.strategies.ict_strategy - DEBUG - PENDLEUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421437163Z [inf]  2025-10-27 13:53:30,310 - src.strategies.ict_strategy - DEBUG - SEIUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.421441941Z [inf]  2025-10-27 13:53:30,324 - src.strategies.ict_strategy - DEBUG - MERLUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.421447242Z [inf]  2025-10-27 13:53:30,326 - src.strategies.ict_strategy - DEBUG - ZKCUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.423355384Z [inf]  2025-10-27 13:53:30,355 - src.strategies.ict_strategy - DEBUG - BRETTUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.423365703Z [inf]  2025-10-27 13:53:30,362 - src.strategies.ict_strategy - DEBUG - BIOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.423373971Z [inf]  2025-10-27 13:53:30,365 - src.strategies.ict_strategy - DEBUG - TONUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.423382164Z [inf]  2025-10-27 13:53:30,366 - src.strategies.ict_strategy - DEBUG - SOMIUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.423388269Z [inf]  2025-10-27 13:53:30,368 - src.strategies.ict_strategy - DEBUG - NXPCUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bearish
+2025-10-27T13:53:32.424927265Z [inf]  2025-10-27 13:53:30,403 - src.strategies.ict_strategy - DEBUG - APEUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.426747937Z [inf]  2025-10-27 13:53:30,601 - src.strategies.ict_strategy - DEBUG - YALAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.430837257Z [inf]  2025-10-27 13:53:30,875 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.430857977Z [inf]  2025-10-27 13:53:30,875 - src.services.data_service - DEBUG - ✅ 緩存命中: DYDXUSDT 5m
+2025-10-27T13:53:32.433864461Z [inf]  2025-10-27 13:53:30,875 - src.services.data_service - DEBUG - ✅ 緩存命中: BERAUSDT 5m
+2025-10-27T13:53:32.436426328Z [inf]  2025-10-27 13:53:30,876 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.437994703Z [inf]  2025-10-27 13:53:30,876 - src.services.data_service - DEBUG - ✅ 緩存命中: CELOUSDT 5m
+2025-10-27T13:53:32.439748375Z [inf]  2025-10-27 13:53:30,877 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.440952184Z [inf]  2025-10-27 13:53:30,877 - src.services.data_service - DEBUG - ✅ 緩存命中: SANDUSDT 5m
+2025-10-27T13:53:32.443153866Z [inf]  2025-10-27 13:53:30,878 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.445701273Z [inf]  2025-10-27 13:53:30,878 - src.services.data_service - DEBUG - ✅ 緩存命中: TAUSDT 5m
+2025-10-27T13:53:32.447578328Z [inf]  2025-10-27 13:53:30,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-27T13:53:32.450146742Z [inf]  2025-10-27 13:53:30,879 - src.services.data_service - DEBUG - ✅ 緩存命中: NMRUSDT 5m
+2025-10-27T13:53:32.452257949Z [inf]  2025-10-27 13:53:31,222 - src.strategies.ict_strategy - DEBUG - HANAUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.453792053Z [inf]  2025-10-27 13:53:31,289 - src.strategies.ict_strategy - DEBUG - BATUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.456257716Z [inf]  2025-10-27 13:53:31,348 - src.strategies.ict_strategy - DEBUG - JELLYJELLYUSDT: 趨勢檢測 - 1h:bullish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.458428021Z [inf]  2025-10-27 13:53:31,424 - src.strategies.ict_strategy - DEBUG - JTOUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.459872817Z [inf]  2025-10-27 13:53:31,599 - src.strategies.ict_strategy - DEBUG - ✅ BATUSDT LONG | 信心度: 39.3% | 趨勢: bullish/bullish/bullish
+2025-10-27T13:53:32.461995945Z [inf]  2025-10-27 13:53:31,737 - src.strategies.ict_strategy - DEBUG - MOODENGUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.463949437Z [inf]  2025-10-27 13:53:31,911 - src.strategies.ict_strategy - DEBUG - ✅ INUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.466310447Z [inf]  2025-10-27 13:53:31,979 - src.strategies.ict_strategy - DEBUG - SUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.472714230Z [inf]  2025-10-27 13:53:32,080 - src.strategies.ict_strategy - DEBUG - MANAUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.472723279Z [inf]  2025-10-27 13:53:32,081 - src.strategies.ict_strategy - DEBUG - KASUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.472728501Z [inf]  2025-10-27 13:53:32,083 - src.strategies.ict_strategy - DEBUG - ARKMUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.475261575Z [inf]  2025-10-27 13:53:32,099 - src.strategies.ict_strategy - DEBUG - ORDIUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.488647469Z [inf]  2025-10-27 13:53:32,101 - src.strategies.ict_strategy - DEBUG - GRIFFAINUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.511263341Z [inf]  2025-10-27 13:53:32,103 - src.strategies.ict_strategy - DEBUG - BANKUSDT: 趨勢檢測 - 1h:bearish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.520952489Z [inf]  2025-10-27 13:53:32,104 - src.strategies.ict_strategy - DEBUG - API3USDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.548691357Z [inf]  2025-10-27 13:53:32,118 - src.strategies.ict_strategy - DEBUG - ARUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.556147210Z [inf]  2025-10-27 13:53:32,132 - src.strategies.ict_strategy - DEBUG - PYTHUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.556164752Z [inf]  2025-10-27 13:53:32,163 - src.strategies.ict_strategy - DEBUG - POLUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.556174185Z [inf]  2025-10-27 13:53:32,184 - src.strategies.ict_strategy - DEBUG - SIGNUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.562977906Z [inf]  2025-10-27 13:53:32,192 - src.strategies.ict_strategy - DEBUG - ✅ LAUSDT SHORT | 信心度: 56.0% | 趨勢: bearish/bearish/bullish
+2025-10-27T13:53:32.569977975Z [inf]  2025-10-27 13:53:32,206 - src.strategies.ict_strategy - DEBUG - SOONUSDT: 趨勢檢測 - 1h:bearish, 15m:bullish, 5m:bullish
+2025-10-27T13:53:32.580543752Z [inf]  2025-10-27 13:53:32,249 - src.strategies.ict_strategy - DEBUG - POPCATUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.590969764Z [inf]  2025-10-27 13:53:32,266 - src.strategies.ict_strategy - DEBUG - ✅ ALICEUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.590983272Z [inf]  2025-10-27 13:53:32,286 - src.strategies.ict_strategy - DEBUG - ✅ LYNUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.590993303Z [inf]  2025-10-27 13:53:32,291 - src.strategies.ict_strategy - DEBUG - ✅ AUCTIONUSDT SHORT | 信心度: 56.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.591001585Z [inf]  2025-10-27 13:53:32,292 - src.strategies.ict_strategy - DEBUG - NMRUSDT: 趨勢檢測 - 1h:bullish, 15m:bearish, 5m:bearish
+2025-10-27T13:53:32.600621890Z [inf]  2025-10-27 13:53:32,298 - src.strategies.ict_strategy - DEBUG - SUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.600629501Z [inf]  2025-10-27 13:53:32,314 - src.strategies.ict_strategy - DEBUG - TAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.603144710Z [inf]  2025-10-27 13:53:32,321 - src.strategies.ict_strategy - DEBUG - ✅ DOODUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.603152337Z [inf]  2025-10-27 13:53:32,364 - src.strategies.ict_strategy - DEBUG - VETUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.603157349Z [inf]  2025-10-27 13:53:32,379 - src.strategies.ict_strategy - DEBUG - ✅ TRUTHUSDT SHORT | 信心度: 60.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.603162172Z [inf]  2025-10-27 13:53:32,386 - src.strategies.ict_strategy - DEBUG - FLOCKUSDT: 拒絕 - 信心度不足 (23.3% < 35.0%)
+2025-10-27T13:53:32.603166681Z [inf]  2025-10-27 13:53:32,404 - src.strategies.ict_strategy - DEBUG - MORPHOUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.603171404Z [inf]  2025-10-27 13:53:32,430 - src.strategies.ict_strategy - DEBUG - MANAUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.606059956Z [inf]  2025-10-27 13:53:32,435 - src.strategies.ict_strategy - DEBUG - KASUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.606137196Z [inf]  2025-10-27 13:53:32,448 - src.strategies.ict_strategy - DEBUG - ARKMUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.606151323Z [inf]  2025-10-27 13:53:32,462 - src.strategies.ict_strategy - DEBUG - IMXUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.606162240Z [inf]  2025-10-27 13:53:32,499 - src.strategies.ict_strategy - DEBUG - ✅ HEMIUSDT SHORT | 信心度: 66.0% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.606174145Z [inf]  2025-10-27 13:53:32,504 - src.strategies.ict_strategy - DEBUG - GRIFFAINUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.606187111Z [inf]  2025-10-27 13:53:32,548 - src.strategies.ict_strategy - DEBUG - ✅ BANKUSDT SHORT | 信心度: 46.7% | 趨勢: bearish/bearish/bearish
+2025-10-27T13:53:32.606194761Z [inf]  2025-10-27 13:53:32,550 - src.strategies.ict_strategy - DEBUG - API3USDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.606201892Z [inf]  2025-10-27 13:53:32,566 - src.strategies.ict_strategy - DEBUG - SIGNUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:bearish)
+2025-10-27T13:53:32.608740528Z [inf]  2025-10-27 13:53:32,606 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.608745723Z [inf]  2025-10-27 13:53:32,583 - src.strategies.ict_strategy - DEBUG - SOONUSDT: 拒絕 - 趨勢不對齊 (1h:bearish, 15m:bullish, 5m:bullish, structure:bullish)
+2025-10-27T13:53:32.608753969Z [inf]  2025-10-27 13:53:32,600 - src.strategies.ict_strategy - DEBUG - NMRUSDT: 拒絕 - 趨勢不對齊 (1h:bullish, 15m:bearish, 5m:bearish, structure:neutral)
+2025-10-27T13:53:32.608760313Z [inf]  2025-10-27 13:53:32,605 - src.services.parallel_analyzer - INFO - 批次 2/2 完成: 生成 22 個信號, 累計 60 個 ⚡ 批次耗時: 4.45s
+2025-10-27T13:53:32.608765319Z [inf]  2025-10-27 13:53:32,605 - src.services.parallel_analyzer - INFO - ✅ 批量分析完成: 分析 200 個交易對, 生成 60 個信號 ⚡ 總耗時: 4.45s (平均 22.3ms/交易對)
+2025-10-27T13:53:32.608780779Z [inf]  2025-10-27 13:53:32,605 - __main__ - INFO - 
+2025-10-27T13:53:32.608785826Z [inf]  🎯 生成 60 個信號 | 目前交易評級: 36分
+2025-10-27T13:53:32.608791736Z [inf]  2025-10-27 13:53:32,605 - __main__ - INFO -    方向: LONG 17個 | SHORT 43個 | 平均信心度: 59.2%
+2025-10-27T13:53:32.608796997Z [inf]  2025-10-27 13:53:32,605 - __main__ - INFO -    信號列表: COAIUSDT(S70%), PAXGUSDT(S70%), ETHFIUSDT(S70%), METUSDT(S70%), B2USDT(S70%), CLOUSDT(S70%), SOMIUSDT(S70%), 0GUSDT(S70%), APEUSDT(S70%), MIRAUSDT(S70%)
+2025-10-27T13:53:32.610944313Z [inf]  2025-10-27 13:53:32,608 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.17, 连续亏损 12次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.610954529Z [inf]  2025-10-27 13:53:32,608 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 37.63 USDT, 可用 16.62 USDT, 保證金 21.01 USDT, 未實現盈虧 -2.75 USDT
+2025-10-27T13:53:32.610961117Z [inf]  2025-10-27 13:53:32,608 - __main__ - INFO - 💰 使用實時餘額: 37.63 USDT (可用: 16.62 USDT)
+2025-10-27T13:53:32.610966664Z [inf]  2025-10-27 13:53:32,608 - src.managers.risk_manager - WARNING - ⚠️  連續虧損 12 單 → 槓桿降低 5x
+2025-10-27T13:53:32.610973235Z [inf]  2025-10-27 13:53:32,608 - src.managers.risk_manager - ERROR - 🔴 期望值為負 (-0.00%) → 禁止交易，返回槓桿0
+2025-10-27T13:53:32.610988400Z [inf]  2025-10-27 13:53:32,608 - __main__ - WARNING - 🚫 期望值為負，禁止開倉
+2025-10-27T13:53:32.610993733Z [inf]  2025-10-27 13:53:32,609 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.613492632Z [inf]  2025-10-27 13:53:32,611 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.17, 连续亏损 12次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.613506156Z [inf]  2025-10-27 13:53:32,611 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 37.63 USDT, 可用 16.62 USDT, 保證金 21.01 USDT, 未實現盈虧 -2.75 USDT
+2025-10-27T13:53:32.613514621Z [inf]  2025-10-27 13:53:32,612 - __main__ - INFO - 💰 使用實時餘額: 37.63 USDT (可用: 16.62 USDT)
+2025-10-27T13:53:32.613521642Z [inf]  2025-10-27 13:53:32,612 - src.managers.risk_manager - WARNING - ⚠️  連續虧損 12 單 → 槓桿降低 5x
+2025-10-27T13:53:32.613528404Z [inf]  2025-10-27 13:53:32,612 - src.managers.risk_manager - ERROR - 🔴 期望值為負 (-0.00%) → 禁止交易，返回槓桿0
+2025-10-27T13:53:32.613540400Z [inf]  2025-10-27 13:53:32,612 - __main__ - WARNING - 🚫 期望值為負，禁止開倉
+2025-10-27T13:53:32.613568296Z [inf]  2025-10-27 13:53:32,612 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.616208463Z [inf]  2025-10-27 13:53:32,614 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.17, 连续亏损 12次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.616216396Z [inf]  2025-10-27 13:53:32,614 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 37.63 USDT, 可用 16.62 USDT, 保證金 21.01 USDT, 未實現盈虧 -2.75 USDT
+2025-10-27T13:53:32.616221061Z [inf]  2025-10-27 13:53:32,614 - __main__ - INFO - 💰 使用實時餘額: 37.63 USDT (可用: 16.62 USDT)
+2025-10-27T13:53:32.616227409Z [inf]  2025-10-27 13:53:32,614 - src.managers.risk_manager - WARNING - ⚠️  連續虧損 12 單 → 槓桿降低 5x
+2025-10-27T13:53:32.616232445Z [inf]  2025-10-27 13:53:32,614 - src.managers.risk_manager - ERROR - 🔴 期望值為負 (-0.00%) → 禁止交易，返回槓桿0
+2025-10-27T13:53:32.616237093Z [inf]  2025-10-27 13:53:32,614 - __main__ - WARNING - 🚫 期望值為負，禁止開倉
+2025-10-27T13:53:32.616243281Z [inf]  2025-10-27 13:53:32,614 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.618888418Z [inf]  2025-10-27 13:53:32,617 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.17, 连续亏损 12次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.621129088Z [inf]  2025-10-27 13:53:32,620 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: METUSDT SHORT Rank 4 信心度 70.00%
+2025-10-27T13:53:32.621138415Z [inf]  2025-10-27 13:53:32,620 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: METUSDT
+2025-10-27T13:53:32.621144441Z [inf]  2025-10-27 13:53:32,620 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位開倉: METUSDT
+2025-10-27T13:53:32.623131053Z [inf]  2025-10-27 13:53:32,620 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.625427361Z [inf]  2025-10-27 13:53:32,623 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.17, 连续亏损 12次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.625437424Z [inf]  2025-10-27 13:53:32,623 - src.managers.virtual_position_manager - WARNING - ⚠️  B2USDT 已存在活躍虛擬倉位，先關閉舊倉位
+2025-10-27T13:53:32.625444387Z [inf]  2025-10-27 13:53:32,623 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: B2USDT PnL: +0.65% 原因: replaced_by_new_signal
+2025-10-27T13:53:32.625484315Z [inf]  2025-10-27 13:53:32,624 - src.managers.trade_recorder - INFO - 📝 記錄交易: B2USDT PnL: +0.65%
+2025-10-27T13:53:32.625491735Z [inf]  2025-10-27 13:53:32,624 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: B2USDT PnL: +0.65%
+2025-10-27T13:53:32.625498264Z [inf]  2025-10-27 13:53:32,624 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: B2USDT
+2025-10-27T13:53:32.628218409Z [inf]  2025-10-27 13:53:32,626 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: B2USDT SHORT Rank 5 信心度 70.00%
+2025-10-27T13:53:32.628225648Z [inf]  2025-10-27 13:53:32,626 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: B2USDT
+2025-10-27T13:53:32.628231410Z [inf]  2025-10-27 13:53:32,626 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位開倉: B2USDT
+2025-10-27T13:53:32.628236023Z [inf]  2025-10-27 13:53:32,626 - src.integrations.discord_bot - WARNING - 未找到頻道 ID: 1430538906629050500
+2025-10-27T13:53:32.630595631Z [inf]  2025-10-27 13:53:32,629 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.22, 连续亏损 0次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.630603734Z [inf]  2025-10-27 13:53:32,629 - src.managers.virtual_position_manager - WARNING - ⚠️  CLOUSDT 已存在活躍虛擬倉位，先關閉舊倉位
+2025-10-27T13:53:32.630609402Z [inf]  2025-10-27 13:53:32,629 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: CLOUSDT PnL: -0.47% 原因: replaced_by_new_signal
+2025-10-27T13:53:32.633611787Z [inf]  2025-10-27 13:53:32,631 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: CLOUSDT SHORT Rank 6 信心度 70.00%
+2025-10-27T13:53:32.633620994Z [inf]  2025-10-27 13:53:32,631 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: CLOUSDT
+2025-10-27T13:53:32.636136143Z [inf]  2025-10-27 13:53:32,634 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.21, 连续亏损 1次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.638039697Z [inf]  2025-10-27 13:53:32,636 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: SOMIUSDT SHORT Rank 7 信心度 70.00%
+2025-10-27T13:53:32.640029815Z [inf]  2025-10-27 13:53:32,639 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.21, 连续亏损 1次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.645218759Z [inf]  2025-10-27 13:53:32,641 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: 0GUSDT SHORT Rank 8 信心度 70.00%
+2025-10-27T13:53:32.645242073Z [inf]  2025-10-27 13:53:32,641 - __main__ - DEBUG - 📝 已記錄虛擬倉位開倉: 0GUSDT
+2025-10-27T13:53:32.645248725Z [inf]  2025-10-27 13:53:32,641 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位開倉: 0GUSDT
+2025-10-27T13:53:32.647956765Z [inf]  2025-10-27 13:53:32,646 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: APEUSDT SHORT Rank 9 信心度 70.00%
+2025-10-27T13:53:32.655318520Z [inf]  2025-10-27 13:53:32,649 - src.managers.expectancy_calculator - INFO - 🛡️ 智能保护模式 (已完成 30 笔交易)：期望值 -0.00%, 盈亏比 0.21, 连续亏损 1次, 日亏损 0.0%, 信号信心度 70.00%
+2025-10-27T13:53:32.655325167Z [inf]  2025-10-27 13:53:32,649 - src.managers.virtual_position_manager - WARNING - ⚠️  MIRAUSDT 已存在活躍虛擬倉位，先關閉舊倉位
+2025-10-27T13:53:32.655330919Z [inf]  2025-10-27 13:53:32,649 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: MIRAUSDT PnL: -0.72% 原因: replaced_by_new_signal
+2025-10-27T13:53:32.655335869Z [inf]  2025-10-27 13:53:32,649 - src.managers.trade_recorder - INFO - 📝 記錄交易: MIRAUSDT PnL: -0.72%
+2025-10-27T13:53:32.657640619Z [inf]  2025-10-27 13:53:32,654 - src.managers.virtual_position_manager - INFO - ➕ 添加虛擬倉位: MIRAUSDT SHORT Rank 10 信心度 70.00%
+2025-10-27T13:53:32.755154810Z [inf]  2025-10-27 13:53:32,743 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: SOMIUSDT PnL: -0.90% 原因: stop_loss
+2025-10-27T13:53:32.755164118Z [inf]  2025-10-27 13:53:32,743 - src.managers.trade_recorder - INFO - 📝 記錄交易: SOMIUSDT PnL: -0.90%
+2025-10-27T13:53:32.755173510Z [inf]  2025-10-27 13:53:32,743 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: SOMIUSDT PnL: -0.90%
+2025-10-27T13:53:32.755182660Z [inf]  2025-10-27 13:53:32,743 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: SOMIUSDT
+2025-10-27T13:53:32.755190838Z [inf]  2025-10-27 13:53:32,743 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: APEUSDT PnL: -0.81% 原因: stop_loss
+2025-10-27T13:53:32.755197708Z [inf]  2025-10-27 13:53:32,743 - src.managers.trade_recorder - INFO - 📝 記錄交易: APEUSDT PnL: -0.81%
+2025-10-27T13:53:32.755204967Z [inf]  2025-10-27 13:53:32,743 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: APEUSDT PnL: -0.81%
+2025-10-27T13:53:32.755215509Z [inf]  2025-10-27 13:53:32,743 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: APEUSDT
+2025-10-27T13:53:32.755223103Z [inf]  2025-10-27 13:53:32,743 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: OMUSDT PnL: -0.73% 原因: stop_loss
+2025-10-27T13:53:32.755231567Z [inf]  2025-10-27 13:53:32,744 - src.managers.trade_recorder - INFO - 📝 記錄交易: OMUSDT PnL: -0.73%
+2025-10-27T13:53:32.755240299Z [inf]  2025-10-27 13:53:32,744 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: OMUSDT PnL: -0.73%
+2025-10-27T13:53:32.755249112Z [inf]  2025-10-27 13:53:32,744 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: OMUSDT
+2025-10-27T13:53:32.755255618Z [inf]  2025-10-27 13:53:32,744 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: METUSDT PnL: -1.58% 原因: stop_loss
+2025-10-27T13:53:32.756748339Z [inf]  2025-10-27 13:53:32,744 - src.managers.trade_recorder - INFO - 📝 記錄交易: METUSDT PnL: -1.58%
+2025-10-27T13:53:32.756754205Z [inf]  2025-10-27 13:53:32,744 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: METUSDT PnL: -1.58%
+2025-10-27T13:53:32.756759448Z [inf]  2025-10-27 13:53:32,744 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: METUSDT
+2025-10-27T13:53:32.756765312Z [inf]  2025-10-27 13:53:32,744 - src.managers.virtual_position_manager - INFO - ✅ 虛擬倉位關閉: 0GUSDT PnL: -0.85% 原因: stop_loss
+2025-10-27T13:53:32.756772796Z [inf]  2025-10-27 13:53:32,744 - src.managers.trade_recorder - INFO - 📝 記錄交易: 0GUSDT PnL: -0.85%
+2025-10-27T13:53:32.756778418Z [inf]  2025-10-27 13:53:32,744 - __main__ - INFO - ✅ 虛擬倉位平倉數據已記錄到 ML 訓練集: 0GUSDT PnL: -0.85%
+2025-10-27T13:53:32.756783290Z [inf]  2025-10-27 13:53:32,744 - src.managers.virtual_position_manager - DEBUG - 📝 已記錄虛擬倉位平倉: 0GUSDT
+2025-10-27T13:53:33.850249289Z [inf]  2025-10-27 13:53:33,849 - __main__ - INFO - 📊 系統狀態: CPU 12.9% | 內存 43.4% | API 調用 11
+2025-10-27T13:53:33.853024768Z [inf]  2025-10-27 13:53:33,852 - src.ml.data_archiver - INFO - 已归档 10 条信号记录到 ml_data/signals.csv
+2025-10-27T13:53:33.859076613Z [inf]  2025-10-27 13:53:33,853 - src.ml.data_archiver - INFO - 已归档 15 条仓位记录到 ml_data/positions.csv
+2025-10-27T13:53:33.859083537Z [inf]  2025-10-27 13:53:33,854 - src.ml.data_archiver - INFO - 所有缓冲区已刷新
+2025-10-27T13:53:33.859088446Z [inf]  2025-10-27 13:53:33,854 - __main__ - DEBUG - ✅ 數據已刷新到磁盤
+2025-10-27T13:53:33.859093536Z [inf]  2025-10-27 13:53:33,854 - __main__ - INFO - 
+2025-10-27T13:53:33.859099076Z [inf]  ✅ 週期完成，耗時: 6.23 秒
+2025-10-27T13:53:33.859104149Z [inf]  2025-10-27 13:53:33,854 - __main__ - INFO - ============================================================
+2025-10-27T13:53:33.859108685Z [inf]  2025-10-27 13:53:33,854 - __main__ - INFO - 
+2025-10-27T13:53:33.859113722Z [inf]  ⏳ 等待 60 秒...
+2025-10-27T13:53:51.183481657Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 284
+2025-10-27T13:53:53.851389611Z [inf]  2025-10-27 13:53:47,363 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-27T13:53:53.851394966Z [inf]  2025-10-27 13:53:47,609 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
