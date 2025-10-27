@@ -206,9 +206,9 @@ class TargetOptimizer:
         
         return {
             'accuracy': float(accuracy_score(y_true, y_pred)),
-            'precision': float(precision_score(y_true, y_pred, zero_division=0)),
-            'recall': float(recall_score(y_true, y_pred, zero_division=0)),
-            'f1_score': float(f1_score(y_true, y_pred, zero_division=0))
+            'precision': float(precision_score(y_true, y_pred, zero_division='warn')),
+            'recall': float(recall_score(y_true, y_pred, zero_division='warn')),
+            'f1_score': float(f1_score(y_true, y_pred, zero_division='warn'))
         }
     
     def _evaluate_regression(self, y_true: np.ndarray, y_pred: np.ndarray) -> Dict:

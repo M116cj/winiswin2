@@ -17,13 +17,27 @@ logger = logging.getLogger(__name__)
 
 
 class MLPredictor:
-    """ML 預測服務"""
+    """
+    ML 預測服務
+    
+    v3.9.1: 使用独立的binary分类模型用于实时预测
+    - predictor_trainer: binary分类模型（快速预测，有predict_proba）
+    - research_trainer: risk_adjusted回归模型（后台研究用）
+    """
     
     def __init__(self):
         """初始化預測器"""
-        self.trainer = XGBoostTrainer()
+        # 🎯 v3.9.1: 使用独立的binary分类模型用于实时预测
+        from src.ml.model_trainer import XGBoostTrainer as BaseTrainer
+        from src.ml.target_optimizer import TargetOptimizer
+        
+        # 创建定制化的binary分类训练器（用于实时预测）
+        self.trainer = BaseTrainer()
+        # 重置为binary目标
+        self.trainer.target_optimizer = TargetOptimizer(target_type='binary')
+        
         self.data_processor = MLDataProcessor()
-        self.model: Optional[Any] = None  # XGBoost模型
+        self.model: Optional[Any] = None  # XGBoost分类模型
         self.is_ready = False
         self.last_training_samples = 0  # 上次訓練時的樣本數
         self.last_training_time: Optional[datetime] = None  # 上次訓練時間
@@ -111,13 +125,13 @@ class MLPredictor:
     
     def _prepare_signal_features(self, signal: Dict) -> Optional[list]:
         """
-        從信號準備特徵向量（v3.3.7優化版 - 28個特徵）
+        從信號準備特徵向量（v3.9.1優化版 - 29個特徵）
         
         Args:
             signal: 交易信號
         
         Returns:
-            Optional[list]: 特徵向量（28個）
+            Optional[list]: 特徵向量（29個）
         """
         try:
             indicators = signal.get('indicators', {})
@@ -163,7 +177,7 @@ class MLPredictor:
                 direction_encoding.get(signal.get('direction', 'LONG'), 1)  # direction_encoded
             ]
             
-            # ✨ 增強特徵（7個 - 修復版）
+            # ✨ 增強特徵（8個 - v3.9.1修復版）
             timestamp = signal.get('timestamp', datetime.now())
             if isinstance(timestamp, str):
                 timestamp = datetime.fromisoformat(timestamp)
@@ -183,18 +197,21 @@ class MLPredictor:
             bb_width = indicators.get('bb_width_pct', 0)
             trend_15m = trend_encoding.get(timeframes.get('15m', 'neutral'), 0)
             
+            # v3.9.1修复：使用默认杠杆估计值而非0
+            default_leverage = 10  # 中等杠杆（3-20范围内的中值）
+            
             enhanced_features = [
                 hour_of_day,  # hour_of_day
                 day_of_week,  # day_of_week
                 is_weekend,  # is_weekend
                 stop_distance_pct,  # stop_distance_pct
                 tp_distance_pct,  # tp_distance_pct
-                confidence * 0,  # confidence_x_leverage (leverage未知，用0替代)
+                confidence * default_leverage,  # confidence_x_leverage（使用估计值）
                 rsi * trend_15m,  # rsi_x_trend
                 atr * bb_width  # atr_x_bb_width
             ]
             
-            # 組合成28個特徵
+            # 組合成29個特徵（21基礎 + 8增強）
             features = basic_features + enhanced_features
             
             return features
