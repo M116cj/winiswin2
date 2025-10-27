@@ -1,0 +1,178 @@
+📁 1. 完整 convert_xgboost_to_onnx.py 腳本
+# scripts/convert_xgboost_to_onnx.py
+"""
+XGBoost → ONNX 轉換腳本 (v1.0)
+- 支援回歸/分類模型
+- 自動驗證轉換正確性
+- 生成相容性報告
+"""
+
+import os
+import sys
+import pickle
+import numpy as np
+import pandas as pd
+from typing import Tuple, Optional
+
+# ONNX 相關
+try:
+    import onnxruntime as ort
+    from onnxmltools import convert_xgboost
+    from onnxmltools.convert.common.data_types import FloatTensorType
+    ONNX_AVAILABLE = True
+except ImportError as e:
+    print(f"❌ ONNX 依賴缺失: {e}")
+    print("請安裝: pip install onnxruntime onnxmltools")
+    ONNX_AVAILABLE = False
+
+# ===== 配置 =====
+MODEL_PATH = "data/models/xgboost_model.pkl"
+ONNX_PATH = "data/models/model.onnx"
+FEATURE_ORDER_PATH = "data/models/feature_order.txt"  # 用於驗證特徵順序
+
+def load_xgboost_model(model_path: str):
+    """安全載入 XGBoost 模型"""
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"模型不存在: {model_path}")
+    
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    
+    # 驗證是否為 XGBoost 模型
+    model_type = type(model).__name__
+    if "XGB" not in model_type:
+        raise ValueError(f"非 XGBoost 模型: {model_type}")
+    
+    print(f"✅ 載入模型: {model_type}")
+    return model
+
+def get_feature_order_from_model(model) -> list:
+    """從模型獲取特徵順序（若支援）"""
+    try:
+        # XGBoost 1.7+ 支援 feature_names
+        if hasattr(model, 'feature_names_in_'):
+            return model.feature_names_in_.tolist()
+        elif hasattr(model, 'feature_names'):
+            return model.feature_names
+    except Exception:
+        pass
+    return None
+
+def save_feature_order(features: list, path: str):
+    """保存特徵順序到檔案"""
+    with open(path, 'w') as f:
+        for feat in features:
+            f.write(f"{feat}\n")
+    print(f"📝 特徵順序已保存: {path}")
+
+def load_feature_order(path: str) -> Optional[list]:
+    """從檔案載入特徵順序"""
+    if not os.path.exists(path):
+        return None
+    with open(path, 'r') as f:
+        return [line.strip() for line in f.readlines()]
+
+def create_sample_input(n_features: int = 31) -> np.ndarray:
+    """創建標準化測試輸入"""
+    np.random.seed(42)  # 確保可重現
+    return np.random.uniform(0, 1, (10, n_features)).astype(np.float32)
+
+def validate_conversion(
+    xgb_model, 
+    onnx_session, 
+    sample_input: np.ndarray,
+    tolerance: float = 1e-5
+) -> bool:
+    """驗證 ONNX 與 XGBoost 輸出一致性"""
+    print("🔍 驗證轉換正確性...")
+    
+    # XGBoost 預測
+    xgb_pred = xgb_model.predict(sample_input.astype(np.float64))
+    
+    # ONNX 預測
+    ort_inputs = {onnx_session.get_inputs()[0].name: sample_input}
+    onnx_pred = onnx_session.run(None, ort_inputs)[0].flatten()
+    
+    # 比較
+    diff = np.abs(xgb_pred - onnx_pred)
+    max_diff = np.max(diff)
+    mean_diff = np.mean(diff)
+    
+    print(f"  最大差異: {max_diff:.2e}")
+    print(f"  平均差異: {mean_diff:.2e}")
+    print(f"  容忍度: {tolerance:.2e}")
+    
+    if max_diff <= tolerance:
+        print("✅ 轉換驗證通過！")
+        return True
+    else:
+        print("❌ 轉換驗證失敗！")
+        return False
+
+def convert_model(
+    model_path: str, 
+    onnx_path: str, 
+    input_shape: Tuple[int, int] = (1, 31)
+) -> bool:
+    """
+    主轉換函數
+    Returns: bool - 是否成功
+    """
+    if not ONNX_AVAILABLE:
+        return False
+    
+    try:
+        # 1. 載入模型
+        model = load_xgboost_model(model_path)
+        
+        # 2. 獲取/保存特徵順序
+        feature_order = get_feature_order_from_model(model)
+        if feature_order:
+            save_feature_order(feature_order, FEATURE_ORDER_PATH)
+        else:
+            print("⚠️ 無法獲取特徵順序，請手動驗證")
+        
+        # 3. 轉換為 ONNX
+        print("🔄 開始轉換為 ONNX...")
+        initial_type = [('float_input', FloatTensorType(input_shape))]
+        onnx_model = convert_xgboost(model, initial_types=initial_type)
+        
+        # 4. 保存 ONNX 模型
+        os.makedirs(os.path.dirname(onnx_path), exist_ok=True)
+        with open(onnx_path, 'wb') as f:
+            f.write(onnx_model.SerializeToString())
+        print(f"✅ ONNX 模型已保存: {onnx_path}")
+        
+        # 5. 驗證轉換
+        sample_input = create_sample_input(input_shape[1])
+        onnx_session = ort.InferenceSession(onnx_path)
+        is_valid = validate_conversion(model, onnx_session, sample_input)
+        
+        return is_valid
+        
+    except Exception as e:
+        print(f"❌ 轉換失敗: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def main():
+    """主函數"""
+    print("🚀 XGBoost → ONNX 轉換工具")
+    print(f"輸入模型: {MODEL_PATH}")
+    print(f"輸出模型: {ONNX_PATH}")
+    print("-" * 50)
+    
+    success = convert_model(MODEL_PATH, ONNX_PATH)
+    
+    if success:
+        print("\n🎉 轉換成功！")
+        print("下一步:")
+        print("1. 在 src/ml/predictor.py 中啟用 ONNX 支援")
+        print("2. 確保特徵提取順序與訓練時一致")
+    else:
+        print("\n💥 轉換失敗！請檢查錯誤訊息")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

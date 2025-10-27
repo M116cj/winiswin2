@@ -1,6 +1,11 @@
 """
 主程序入口
 職責：系統協調器、主循環控制
+
+v3.12.0 优化5：双循环架构
+- 实盘交易循环（60秒）：扫描市场、分析信号、执行交易
+- 虚拟仓位循环（10秒）：更新虚拟仓位价格、检查止损止盈
+- 降低虚拟仓位检查延迟，提高ML训练数据质量
 """
 
 import asyncio
@@ -57,6 +62,9 @@ class TradingBot:
         
         self.discord_task = None
         self.monitoring_task = None
+        
+        # v3.12.0 优化5：双循环任务
+        self.virtual_loop_task = None  # 虚拟仓位循环任务
     
     async def initialize(self):
         """初始化系統"""
@@ -596,19 +604,12 @@ class TradingBot:
             logger.error(f"處理信號失敗: {e}", exc_info=True)
     
     async def _update_positions(self):
-        """更新所有持倉"""
+        """
+        更新所有持倉（v3.12.0优化：仅用于实盘持仓）
+        
+        虚拟仓位更新已迁移到独立的 virtual_position_loop()
+        """
         try:
-            tickers = await self.data_service.get_batch_tickers(
-                self.data_service.all_symbols
-            )
-            
-            market_prices = {
-                symbol: float(ticker.get('price', 0))
-                for symbol, ticker in tickers.items()
-            }
-            
-            self.virtual_position_manager.update_virtual_positions(market_prices)
-            
             # ✨ 檢查模擬持倉並自動平倉（修復學習模式）
             if not Config.TRADING_ENABLED:
                 closed_count = await self.trading_service.check_simulated_positions_for_close()
@@ -629,6 +630,52 @@ class TradingBot:
             
         except Exception as e:
             logger.error(f"更新持倉失敗: {e}")
+    
+    async def virtual_position_loop(self):
+        """
+        v3.12.0 优化5：独立的虚拟仓位循环
+        
+        优势：
+        - 更快响应（10秒 vs 60秒）
+        - 不阻塞实盘交易循环
+        - 提高ML训练数据时效性
+        - 减少虚拟仓位止损止盈延迟
+        """
+        logger.info(f"🔄 启动虚拟仓位循环（间隔: {Config.VIRTUAL_POSITION_CYCLE_INTERVAL}秒）")
+        cycle_count = 0
+        
+        while self.running:
+            try:
+                cycle_count += 1
+                
+                # 获取活跃虚拟仓位数量
+                active_virtual = len(self.virtual_position_manager.get_active_virtual_positions())
+                
+                if active_virtual > 0:
+                    logger.debug(f"📊 虚拟仓位循环 #{cycle_count} - {active_virtual} 个活跃虚拟仓位")
+                    
+                    # 批量获取市场价格
+                    tickers = await self.data_service.get_batch_tickers(
+                        self.data_service.all_symbols
+                    )
+                    
+                    market_prices = {
+                        symbol: float(ticker.get('price', 0))
+                        for symbol, ticker in tickers.items()
+                    }
+                    
+                    # 更新虚拟仓位
+                    self.virtual_position_manager.update_virtual_positions(market_prices)
+                
+                # 等待下一周期
+                await asyncio.sleep(Config.VIRTUAL_POSITION_CYCLE_INTERVAL)
+                
+            except asyncio.CancelledError:
+                logger.info("虚拟仓位循环被取消")
+                break
+            except Exception as e:
+                logger.error(f"虚拟仓位循环错误: {e}", exc_info=True)
+                await asyncio.sleep(5)
     
     async def _perform_health_check(self):
         """執行健康檢查"""
@@ -686,7 +733,7 @@ class TradingBot:
         await self.cleanup()
     
     async def cleanup(self):
-        """清理資源"""
+        """清理資源（v3.12.0：包含虚拟仓位循环清理）"""
         logger.info("\n🧹 清理資源...")
         
         if self.data_archiver:
@@ -695,6 +742,15 @@ class TradingBot:
         
         if self.trade_recorder:
             self.trade_recorder.force_flush()
+        
+        # v3.12.0 优化5：清理虚拟仓位循环任务
+        if self.virtual_loop_task:
+            logger.info("🔄 停止虚拟仓位循环...")
+            self.virtual_loop_task.cancel()
+            try:
+                await self.virtual_loop_task
+            except asyncio.CancelledError:
+                logger.info("✅ 虚拟仓位循环已停止")
         
         if self.monitoring_task:
             self.monitoring_task.cancel()
@@ -733,7 +789,13 @@ class TradingBot:
 
 
 async def main():
-    """主函數"""
+    """
+    主函數
+    
+    v3.12.0 优化5：启动双循环架构
+    - 实盘交易循环（main_loop）
+    - 虚拟仓位循环（virtual_position_loop）
+    """
     Config.setup_logging()
     
     bot = TradingBot()
@@ -742,6 +804,15 @@ async def main():
     signal.signal(signal.SIGTERM, bot.handle_signal)
     
     if await bot.initialize():
+        # v3.12.0 优化5：同时启动双循环
+        logger.info("🚀 启动双循环架构...")
+        logger.info(f"  📊 实盘交易循环间隔: {Config.CYCLE_INTERVAL}秒")
+        logger.info(f"  🔄 虚拟仓位循环间隔: {Config.VIRTUAL_POSITION_CYCLE_INTERVAL}秒")
+        
+        # 创建虚拟仓位循环任务
+        bot.virtual_loop_task = asyncio.create_task(bot.virtual_position_loop())
+        
+        # 启动主循环（会阻塞直到停止）
         await bot.main_loop()
     else:
         logger.error("初始化失敗，退出程序")

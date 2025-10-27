@@ -39,6 +39,9 @@ class Config:
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "false").lower() == "true"
     
+    # v3.12.0 优化5：双循环架构配置
+    VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))  # 虚拟仓位循环间隔（秒，默认10秒）
+    
     # 風險管理配置
     BASE_LEVERAGE: int = 3
     MAX_LEVERAGE: int = 20
