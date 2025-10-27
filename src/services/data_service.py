@@ -1,6 +1,6 @@
 """
-數據服務
-職責：市場數據獲取、批量處理、多時間框架數據對齊
+數據服務（v3.3.7性能優化版）
+職責：市場數據獲取、批量處理、多時間框架數據對齊、性能追蹤
 """
 
 import asyncio
@@ -8,6 +8,7 @@ from typing import List, Dict, Optional
 import pandas as pd
 from datetime import datetime, timedelta
 import logging
+import time
 
 from src.clients.binance_client import BinanceClient
 from src.core.cache_manager import CacheManager
@@ -17,14 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 class DataService:
-    """數據服務類"""
+    """數據服務類（v3.3.7性能優化版）"""
     
-    def __init__(self, binance_client: BinanceClient):
+    def __init__(self, binance_client: BinanceClient, perf_monitor=None):
         """
         初始化數據服務
         
         Args:
             binance_client: Binance 客戶端
+            perf_monitor: 性能監控器（v3.3.7新增）
         """
         self.client = binance_client
         self.cache = binance_client.cache
@@ -34,6 +36,9 @@ class DataService:
         # 5m: 趋势符合确认 + 入场信号
         self.timeframes = ["1h", "15m", "5m"]
         self.all_symbols: List[str] = []
+        
+        # ✨ v3.3.7新增：性能監控
+        self.perf_monitor = perf_monitor
     
     async def initialize(self):
         """初始化數據服務"""
@@ -105,7 +110,7 @@ class DataService:
         end_time: Optional[int] = None
     ) -> pd.DataFrame:
         """
-        獲取 K線數據（智能緩存）
+        獲取 K線數據（智能緩存 + 性能追蹤）v3.3.7優化版
         
         Args:
             symbol: 交易對
@@ -117,9 +122,21 @@ class DataService:
         Returns:
             pd.DataFrame: K線數據框
         """
-        # 簡化緩存策略：基於交易對和時間框架
-        # 同一個時間框架的數據在TTL內都會使用緩存
-        cache_key = f"klines_{symbol}_{interval}_{limit}"
+        # ✨ v3.3.7：啟動性能追蹤
+        start_perf = time.time()
+        
+        # 根據時間框架使用不同的 TTL
+        ttl_map = {
+            '1h': Config.CACHE_TTL_KLINES_1H,
+            '15m': Config.CACHE_TTL_KLINES_15M,
+            '5m': Config.CACHE_TTL_KLINES_5M
+        }
+        ttl = ttl_map.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+        
+        # ✨ v3.3.7優化：智能緩存鍵（包含時間窗口版本）
+        # 這樣可以確保數據新鮮度，同時提高緩存命中率
+        time_window = int(time.time() / ttl)  # 時間窗口版本號
+        cache_key = f"klines_v2_{symbol}_{interval}_{limit}_{time_window}"
         
         # 歷史請求或指定時間範圍時，不使用緩存
         if start_time is not None or end_time is not None:
@@ -129,8 +146,22 @@ class DataService:
         if cache_key:
             cached_data = self.cache.get(cache_key)
             if cached_data is not None:
-                logger.debug(f"緩存命中: {symbol} {interval}")
+                logger.debug(f"✅ 緩存命中: {symbol} {interval}")
+                
+                # ✨ v3.3.7：記錄緩存命中
+                if self.perf_monitor:
+                    self.perf_monitor.record_cache_hit()
+                    duration = time.time() - start_perf
+                    self.perf_monitor.record_operation(
+                        f"get_klines_{interval}_cached", 
+                        duration
+                    )
+                
                 return cached_data
+            else:
+                # ✨ v3.3.7：記錄緩存未命中
+                if self.perf_monitor:
+                    self.perf_monitor.record_cache_miss()
         
         try:
             klines = await self.client.get_klines(
@@ -157,16 +188,18 @@ class DataService:
             
             df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume']]
             
-            # 根據時間框架使用不同的 TTL
-            ttl_map = {
-                '1h': Config.CACHE_TTL_KLINES_1H,
-                '15m': Config.CACHE_TTL_KLINES_15M,
-                '5m': Config.CACHE_TTL_KLINES_5M
-            }
-            ttl = ttl_map.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+            # 緩存數據
+            if cache_key:
+                self.cache.set(cache_key, df, ttl=ttl)
+                logger.debug(f"💾 緩存 {symbol} {interval} 數據，TTL={ttl}秒")
             
-            self.cache.set(cache_key, df, ttl=ttl)
-            logger.debug(f"緩存 {symbol} {interval} 數據，TTL={ttl}秒")
+            # ✨ v3.3.7：記錄性能指標
+            if self.perf_monitor:
+                duration = time.time() - start_perf
+                self.perf_monitor.record_operation(
+                    f"get_klines_{interval}_fetch", 
+                    duration
+                )
             
             return df
             
@@ -251,7 +284,7 @@ class DataService:
     
     async def scan_market(self, top_n: int = 200) -> List[Dict]:
         """
-        掃描市場，按流動性排序，返回前N個交易對
+        掃描市場，按流動性排序，返回前N個交易對（v3.3.7性能優化版）
         
         策略：優先監控流動性最高的前200個標的
         - 流動性指標：24h 交易額（quoteVolume，以 USDT 計）
@@ -263,6 +296,9 @@ class DataService:
         Returns:
             List[Dict]: 按流動性排序的交易對列表
         """
+        # ✨ v3.3.7：性能追蹤
+        start_time = time.time()
+        
         logger.info(f"開始掃描 {len(self.all_symbols)} 個交易對（流動性排序）...")
         
         # 獲取24h ticker數據（包含交易量數據）
@@ -298,11 +334,18 @@ class DataService:
             
             avg_volume = sum(x['liquidity'] for x in top_liquidity) / len(top_liquidity) if top_liquidity else 0
             
+            # ✨ v3.3.7：性能日誌
+            duration = time.time() - start_time
             logger.info(
                 f"✅ 市場掃描完成: 從 {len(market_data)} 個交易對中選擇 "
                 f"流動性最高的前 {len(top_liquidity)} 個 "
-                f"(平均24h交易額: ${avg_volume:,.0f} USDT)"
+                f"(平均24h交易額: ${avg_volume:,.0f} USDT) "
+                f"⚡ 耗時: {duration:.2f}s"
             )
+            
+            # ✨ v3.3.7：記錄性能
+            if self.perf_monitor:
+                self.perf_monitor.record_operation("scan_market", duration)
             
             return top_liquidity
             
