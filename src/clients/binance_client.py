@@ -114,11 +114,26 @@ class BinanceClient:
                             error_json = await response.json()
                             error_msg = error_json.get('msg', error_text)
                             error_code = error_json.get('code', 'N/A')
-                            logger.error(
-                                f"Binance API 錯誤 {response.status}: "
-                                f"code={error_code}, msg={error_msg}, "
-                                f"endpoint={endpoint}, params={_params}"
-                            )
+                            
+                            # 特殊處理：HTTP 451 地理位置限制
+                            if response.status == 451:
+                                logger.error(
+                                    f"Binance API 錯誤 {response.status}: "
+                                    f"code={error_code}, msg={error_msg}, "
+                                    f"endpoint={endpoint}, params={_params}"
+                                )
+                                logger.error(
+                                    "❌ Binance API 地理位置限制 (HTTP 451)\n"
+                                    "📍 此錯誤表示當前IP地址被Binance限制\n"
+                                    "✅ 解決方案：請將系統部署到Railway或其他支持的雲平台\n"
+                                    "⚠️  Replit環境無法訪問Binance API"
+                                )
+                            else:
+                                logger.error(
+                                    f"Binance API 錯誤 {response.status}: "
+                                    f"code={error_code}, msg={error_msg}, "
+                                    f"endpoint={endpoint}, params={_params}"
+                                )
                         except:
                             logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
                         response.raise_for_status()
@@ -132,11 +147,26 @@ class BinanceClient:
                             error_json = await response.json()
                             error_msg = error_json.get('msg', error_text)
                             error_code = error_json.get('code', 'N/A')
-                            logger.error(
-                                f"Binance API 錯誤 {response.status}: "
-                                f"code={error_code}, msg={error_msg}, "
-                                f"endpoint={endpoint}, params={_params}"
-                            )
+                            
+                            # 特殊處理：HTTP 451 地理位置限制
+                            if response.status == 451:
+                                logger.error(
+                                    f"Binance API 錯誤 {response.status}: "
+                                    f"code={error_code}, msg={error_msg}, "
+                                    f"endpoint={endpoint}, params={_params}"
+                                )
+                                logger.error(
+                                    "❌ Binance API 地理位置限制 (HTTP 451)\n"
+                                    "📍 此錯誤表示當前IP地址被Binance限制\n"
+                                    "✅ 解決方案：請將系統部署到Railway或其他支持的雲平台\n"
+                                    "⚠️  Replit環境無法訪問Binance API"
+                                )
+                            else:
+                                logger.error(
+                                    f"Binance API 錯誤 {response.status}: "
+                                    f"code={error_code}, msg={error_msg}, "
+                                    f"endpoint={endpoint}, params={_params}"
+                                )
                         except:
                             logger.error(f"Binance API 錯誤 {response.status}: {error_text}")
                         response.raise_for_status()

@@ -22,7 +22,7 @@ class VirtualPositionManager:
         初始化虛擬倉位管理器
         
         Args:
-            on_open_callback: 虛擬倉位開倉時的回調函數 (signal, rank) -> None
+            on_open_callback: 虛擬倉位開倉時的回調函數 (signal, position, rank) -> None
             on_close_callback: 虛擬倉位關閉時的回調函數 (position_data, close_data) -> None
         """
         self.config = Config
