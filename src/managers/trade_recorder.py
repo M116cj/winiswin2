@@ -17,11 +17,17 @@ logger = logging.getLogger(__name__)
 class TradeRecorder:
     """交易記錄器"""
     
-    def __init__(self):
-        """初始化交易記錄器"""
+    def __init__(self, model_scorer=None):
+        """
+        初始化交易記錄器
+        
+        Args:
+            model_scorer: ModelScorer实例（可选）
+        """
         self.config = Config
         self.trades_file = self.config.TRADES_FILE
         self.ml_pending_file = self.config.ML_PENDING_FILE
+        self.model_scorer = model_scorer
         
         self.pending_entries: List[Dict] = []
         self.completed_trades: List[Dict] = []
@@ -56,12 +62,13 @@ class TradeRecorder:
         
         self._check_and_flush()
     
-    def record_exit(self, trade_result: Dict) -> Optional[Dict]:
+    def record_exit(self, trade_result: Dict, current_winrate: Optional[float] = None) -> Optional[Dict]:
         """
         記錄平倉並配對開倉數據
         
         Args:
             trade_result: 交易結果
+            current_winrate: 平仓时的当前胜率（0-100），可选
         
         Returns:
             Optional[Dict]: 完整的 ML 數據記錄
@@ -83,6 +90,21 @@ class TradeRecorder:
         self.completed_trades.append(ml_record)
         
         logger.info(f"📝 記錄交易: {symbol} PnL: {ml_record['pnl']:+.2%}")
+        
+        # 🎯 v3.9.2.8.5: 模型评分系统
+        if self.model_scorer:
+            try:
+                self.model_scorer.score_trade(
+                    pnl_pct=ml_record['pnl'] * 100,  # 转换为百分比
+                    confidence=entry_data['confidence'],
+                    winrate=current_winrate,
+                    symbol=symbol,
+                    direction=entry_data['direction'],
+                    entry_price=entry_data['entry_price'],
+                    exit_price=ml_record['exit_price']
+                )
+            except Exception as e:
+                logger.error(f"模型评分失败: {e}")
         
         self._check_and_flush()
         

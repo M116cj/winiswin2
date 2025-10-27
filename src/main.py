@@ -138,7 +138,11 @@ class TradingBot:
         logger.info(f"✅ 期望值計算器已就緒 (窗口大小: {Config.EXPECTANCY_WINDOW} 筆交易)")
         logger.info(f"✅ 數據歸檔器已就緒 (目錄: {Config.ML_DATA_DIR})")
         
-        self.trade_recorder = TradeRecorder()
+        # 🎯 v3.9.2.8.5: 初始化模型评分系统
+        from src.managers.model_scorer import ModelScorer
+        self.model_scorer = ModelScorer(history_limit=100)
+        
+        self.trade_recorder = TradeRecorder(model_scorer=self.model_scorer)
         
         def on_virtual_position_open(signal: Dict, position: Dict, rank: int):
             """虛擬倉位開倉回調：記錄開倉數據到 TradeRecorder"""
@@ -179,7 +183,18 @@ class TradingBot:
                     'close_timestamp': close_data['close_timestamp'],
                 }
                 
-                ml_record = self.trade_recorder.record_exit(trade_result)
+                # 获取当前胜率
+                current_winrate = None
+                if self.ml_predictor:
+                    try:
+                        from src.managers.risk_manager import RiskManager
+                        recent_stats = self.ml_predictor.get_recent_win_rate(window=30)
+                        if recent_stats:
+                            current_winrate = recent_stats.get('win_rate', 0) * 100  # 转换为百分比
+                    except:
+                        pass
+                
+                ml_record = self.trade_recorder.record_exit(trade_result, current_winrate=current_winrate)
                 
                 if ml_record:
                     self.data_archiver.archive_position_close(
@@ -439,6 +454,14 @@ class TradingBot:
             if self.data_archiver:
                 self.data_archiver.flush_all()
                 logger.debug("✅ 數據已刷新到磁盤")
+            
+            # 🎯 v3.9.2.8.5: 显示模型评分状态
+            if self.model_scorer and self.model_scorer.score_history:
+                try:
+                    stats = self.model_scorer.get_statistics()
+                    logger.info(f"\n🎯 模型評分: {stats['current_score']:.1f}/100 ({stats['trend']})")
+                except Exception as e:
+                    logger.debug(f"显示模型评分失败: {e}")
             
         except Exception as e:
             logger.error(f"❌ 週期執行錯誤: {e}", exc_info=True)
