@@ -223,6 +223,70 @@ class ParallelAnalyzer:
             logger.error(f"批量分析失敗: {e}", exc_info=True)
             return []
     
+    async def analyze_async(self, symbols: List[str], data_manager) -> List[Dict]:
+        """
+        异步并行分析多个符号（文档步骤2要求的简化接口）
+        
+        使用全局进程池并发分析，避免重复创建/销毁进程
+        
+        Args:
+            symbols: 交易对列表
+            data_manager: 数据管理器
+        
+        Returns:
+            List[Dict]: 分析结果列表
+        """
+        loop = asyncio.get_event_loop()
+        executor = self.global_pool.get_executor()
+        
+        # 为每个符号创建任务
+        tasks = []
+        for symbol in symbols:
+            # 获取多时间框架数据
+            multi_tf_data = await data_manager.get_multi_timeframe_data(symbol)
+            
+            if multi_tf_data is None:
+                continue
+            
+            # 提交到全局进程池
+            task = loop.run_in_executor(
+                executor,
+                self._analyze_single_symbol,
+                (symbol, multi_tf_data)
+            )
+            tasks.append(task)
+        
+        # 并发执行所有分析任务
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # 过滤异常结果
+        signals = [r for r in results if r is not None and not isinstance(r, Exception)]
+        
+        return signals
+    
+    def _analyze_single_symbol(self, args) -> Optional[Dict]:
+        """
+        单一符号分析 - 在子进程中执行（文档步骤2要求）
+        
+        这个方法在子进程中运行，可以使用预加载的 ml_model
+        
+        Args:
+            args: (symbol, multi_tf_data) 元组
+        
+        Returns:
+            Optional[Dict]: 分析信号
+        """
+        try:
+            symbol, multi_tf_data = args
+            
+            # 使用预加载的策略引擎（通过analyze_symbol_worker）
+            # 这个函数已经在global_pool中定义，可以访问_worker_strategy
+            return analyze_symbol_worker(args)
+            
+        except Exception as e:
+            logger.error(f"分析符号 {args[0] if args else 'unknown'} 失败: {e}")
+            return None
+    
     async def close(self):
         """
         關閉執行器

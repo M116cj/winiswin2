@@ -673,11 +673,30 @@ class TradingBot:
                     
                     cycle_duration = asyncio.get_event_loop().time() - cycle_start
                     
+                    # 处理关闭的虚拟仓位（文档步骤2要求）
                     if closed_positions:
                         logger.info(
                             f"✅ {len(closed_positions)} 个虚拟仓位已关闭 "
                             f"（异步批量更新耗时 {cycle_duration:.2f}秒）"
                         )
+                        
+                        # 存档和记录每个关闭的仓位
+                        for pos in closed_positions:
+                            try:
+                                # 存档到数据归档器（用于ML训练）
+                                if self.data_archiver:
+                                    self.data_archiver.archive_position(pos.to_dict())
+                                
+                                # 记录到性能监控器
+                                if self.performance_monitor:
+                                    self.performance_monitor.record_operation(
+                                        'virtual_position_closed',
+                                        1.0
+                                    )
+                                
+                                logger.debug(f"📦 虚拟仓位已存档: {pos.symbol} ({pos.side}) PnL={pos.pnl:.2f}")
+                            except Exception as e:
+                                logger.error(f"处理关闭虚拟仓位失败: {e}")
                     else:
                         logger.debug(
                             f"虚拟仓位更新完成 "

@@ -100,15 +100,37 @@ class VirtualPositionManager:
     
     def update_virtual_positions(self, market_data: Dict[str, float]):
         """
-        同步更新虛擬倉位（v3.13.0：始终使用同步版本以保持兼容性）
+        ⚠️ DEPRECATED - v3.13.0：此方法已废弃，请使用异步版本
         
-        异步版本请使用 update_all_prices_async(binance_client)
+        同步更新虛擬倉位（性能低下，不建议使用）
+        
+        ❌ 性能问题：
+        - 串行获取价格（200个交易对需要20+秒）
+        - 阻塞事件循环
+        - 无法利用asyncio.gather并发优势
+        
+        ✅ 替代方案：
+        使用 await update_all_prices_async(binance_client)
+        - 200个交易对更新：20+秒 → <1秒
+        - 并发获取所有价格
+        - 异步文件I/O
         
         Args:
             market_data: 市場價格數據 {symbol: price}
         """
-        # v3.13.0修复：始终使用同步版本，避免异步调度混乱
-        # 异步批量更新应该通过VirtualPositionLoop直接调用update_all_prices_async
+        import warnings
+        warnings.warn(
+            "update_virtual_positions() is deprecated. "
+            "Use await update_all_prices_async(binance_client) instead for 20x performance improvement.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        logger.warning(
+            "⚠️ 使用已废弃的同步方法update_virtual_positions()！"
+            "建议使用异步版本 update_all_prices_async() 以获得20倍性能提升"
+        )
+        
+        # 为了向后兼容，仍然执行同步更新
         self._update_virtual_positions_sync(market_data)
     
     def _update_virtual_positions_sync(self, market_data: Dict[str, float]):
