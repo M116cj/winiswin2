@@ -47,8 +47,8 @@ class Config:
     MIN_MARGIN_PCT: float = 0.03
     MAX_MARGIN_PCT: float = 0.13
     
-    # 策略配置
-    MIN_CONFIDENCE: float = 0.45  # 降低到 0.45 提高信號生成率（原0.70太嚴格）
+    # 策略配置（v3.9.2.3紧急修复）
+    MIN_CONFIDENCE: float = 0.35  # 🚨 降低到 0.35 进一步提高信号生成率
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
     

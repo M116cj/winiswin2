@@ -133,10 +133,30 @@ class PositionMonitor:
         """
         检查并调整单个持仓的止损止盈
         
+        🚨 v3.9.2.3紧急修复：添加主动止损检查和强制平仓保护
+        
         Returns:
             Optional[Dict]: 调整记录（用于XGBoost特征）
         """
         try:
+            # 🚨 紧急修复：强制止损保护（防止-100%亏损）
+            EMERGENCY_STOP_LOSS_PCT = -50.0  # 亏损超过-50%强制平仓
+            CRITICAL_STOP_LOSS_PCT = -80.0  # 亏损超过-80%立即强制平仓
+            
+            if pnl_pct <= CRITICAL_STOP_LOSS_PCT:
+                logger.critical(
+                    f"🚨 检测到严重亏损 {symbol} {pnl_pct:.2f}% ≤ {CRITICAL_STOP_LOSS_PCT}% - 立即强制平仓！"
+                )
+                await self._force_close_position(symbol, direction, quantity, "critical_loss")
+                return None
+            
+            if pnl_pct <= EMERGENCY_STOP_LOSS_PCT:
+                logger.error(
+                    f"⚠️  检测到紧急亏损 {symbol} {pnl_pct:.2f}% ≤ {EMERGENCY_STOP_LOSS_PCT}% - 强制平仓保护"
+                )
+                await self._force_close_position(symbol, direction, quantity, "emergency_stop_loss")
+                return None
+            
             # 初始化持仓状态
             if symbol not in self.position_states:
                 self.position_states[symbol] = {
@@ -323,6 +343,43 @@ class PositionMonitor:
         except Exception as e:
             logger.error(f"调整持仓失败 {symbol}: {e}")
             return None
+    
+    async def _force_close_position(
+        self,
+        symbol: str,
+        direction: str,
+        quantity: float,
+        reason: str
+    ):
+        """
+        强制平仓（紧急止损保护）
+        
+        Args:
+            symbol: 交易对
+            direction: 方向 (LONG/SHORT)
+            quantity: 数量
+            reason: 平仓原因
+        """
+        try:
+            logger.critical(f"🚨 执行强制平仓: {symbol} {direction} 数量={quantity} 原因={reason}")
+            
+            # 调用交易服务的紧急平仓方法
+            success = await self.trading_service._emergency_close_position(
+                symbol=symbol,
+                direction=direction,
+                quantity=quantity
+            )
+            
+            if success:
+                logger.info(f"✅ 强制平仓成功: {symbol}")
+                # 清理持仓状态
+                if symbol in self.position_states:
+                    del self.position_states[symbol]
+            else:
+                logger.critical(f"❌ 强制平仓失败: {symbol} - 需要人工介入！")
+        
+        except Exception as e:
+            logger.critical(f"❌ 强制平仓异常: {symbol} - {e} - 需要人工介入！")
     
     async def _cancel_existing_sl_tp_orders(self, symbol: str):
         """取消现有的止损止盈订单"""

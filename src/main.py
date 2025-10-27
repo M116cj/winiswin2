@@ -79,8 +79,9 @@ class TradingBot:
         logger.info("     LONG/SHORT使用相同的波動率標準 ✅ 對稱")
         logger.info("\n🎯 評分系統特點：")
         logger.info("  ✅ LONG/SHORT完全對稱，無方向偏向")
-        logger.info("  ✅ 信心度範圍：45%-100%（MIN_CONFIDENCE=45%）")
-        logger.info("  ✅ 五大維度綜合評分，確保信號品質\n")
+        logger.info("  ✅ 信心度範圍：35%-100%（MIN_CONFIDENCE=35%）🚨 已降低阈值")
+        logger.info("  ✅ 五大維度綜合評分，確保信號品質")
+        logger.info("  🚨 v3.9.2.3紧急修复：添加强制止损保护（-50%/-80%）\n")
         
         is_valid, errors = Config.validate()
         if not is_valid:
