@@ -1,6 +1,6 @@
 """
-Binance API 客戶端
-職責：API 調用、認證、錯誤處理、統一API管理
+Binance API 客戶端（v3.9.2.2增強版）
+職責：API 調用、認證、錯誤處理、統一API管理、重試元數據
 """
 
 import asyncio
@@ -15,6 +15,7 @@ from src.config import Config
 from src.core.rate_limiter import RateLimiter
 from src.core.circuit_breaker import CircuitBreaker
 from src.core.cache_manager import CacheManager
+from src.clients.binance_errors import BinanceRequestError
 
 logger = logging.getLogger(__name__)
 
@@ -177,10 +178,25 @@ class BinanceClient:
             return result
         except aiohttp.ClientResponseError as e:
             logger.error(f"API 請求失敗: {endpoint} - HTTP {e.status}: {e.message}")
-            raise
+            raise BinanceRequestError(
+                message=f"HTTP {e.status}: {e.message}",
+                endpoint=endpoint,
+                original_error=e
+            )
         except Exception as e:
-            logger.error(f"API 請求失敗: {endpoint} - {str(e)}")
-            raise
+            error_message = str(e)
+            logger.error(f"API 請求失敗: {endpoint} - {error_message}")
+            
+            retry_after = BinanceRequestError.parse_retry_after(error_message)
+            is_circuit_error = "熔斷器開啟" in error_message
+            
+            raise BinanceRequestError(
+                message=error_message,
+                endpoint=endpoint,
+                retry_after_seconds=retry_after,
+                is_circuit_breaker_error=is_circuit_error,
+                original_error=e
+            )
     
     async def get_exchange_info(self) -> dict:
         """獲取交易所信息"""

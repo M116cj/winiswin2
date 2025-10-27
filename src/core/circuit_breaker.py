@@ -1,11 +1,12 @@
 """
-熔斷器
-職責：失敗檢測、自動熔斷、自動恢復
+熔斷器（v3.9.2.2增強版）
+職責：失敗檢測、自動熔斷、自動恢復、狀態查詢
 """
 
 import time
 import logging
 from enum import Enum
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class CircuitState(Enum):
     HALF_OPEN = "half_open"
 
 class CircuitBreaker:
-    """API 調用熔斷器"""
+    """API 調用熔斷器（v3.9.2.2增強版：支持狀態查詢和手動控制）"""
     
     def __init__(self, failure_threshold: int = 5, timeout: int = 60):
         """
@@ -31,6 +32,7 @@ class CircuitBreaker:
         self.failure_count = 0
         self.last_failure_time: float = 0
         self.state = CircuitState.CLOSED
+        self.manual_open_reason: Optional[str] = None
     
     async def call_async(self, func, *args, **kwargs):
         """
@@ -122,5 +124,76 @@ class CircuitBreaker:
             "failure_count": self.failure_count,
             "failure_threshold": self.failure_threshold,
             "timeout": self.timeout,
-            "time_since_last_failure": int(time.time() - self.last_failure_time) if self.last_failure_time > 0 else None
+            "time_since_last_failure": int(time.time() - self.last_failure_time) if self.last_failure_time > 0 else None,
+            "manual_open_reason": self.manual_open_reason
         }
+    
+    def is_open(self) -> bool:
+        """
+        檢查熔斷器是否開啟（v3.9.2.2新增）
+        
+        Returns:
+            bool: True表示熔斷器開啟，不應發送新請求
+        """
+        if self.state == CircuitState.OPEN:
+            if time.time() - self.last_failure_time >= self.timeout:
+                return False
+            return True
+        return False
+    
+    def get_retry_after(self) -> float:
+        """
+        獲取剩餘等待時間（v3.9.2.2新增）
+        
+        Returns:
+            float: 剩餘秒數，0表示可以重試
+        """
+        if self.state != CircuitState.OPEN:
+            return 0.0
+        
+        elapsed = time.time() - self.last_failure_time
+        remaining = max(0, self.timeout - elapsed)
+        return remaining
+    
+    def manual_open(self, reason: str, cooldown: Optional[int] = None):
+        """
+        手動開啟熔斷器（v3.9.2.2新增）
+        
+        用於在檢測到系統級問題時主動暫停API調用
+        
+        Args:
+            reason: 開啟原因
+            cooldown: 冷卻時間（秒），None使用默認timeout
+        """
+        self.state = CircuitState.OPEN
+        self.last_failure_time = time.time()
+        self.manual_open_reason = reason
+        
+        if cooldown is not None:
+            original_timeout = self.timeout
+            self.timeout = cooldown
+            logger.warning(
+                f"⚠️  熔斷器已手動開啟: {reason} "
+                f"(冷卻{cooldown}秒)"
+            )
+            self.timeout = original_timeout
+        else:
+            logger.warning(
+                f"⚠️  熔斷器已手動開啟: {reason} "
+                f"(冷卻{self.timeout}秒)"
+            )
+    
+    def can_proceed(self) -> tuple[bool, Optional[str]]:
+        """
+        檢查是否可以繼續執行（v3.9.2.2新增）
+        
+        Returns:
+            tuple[bool, Optional[str]]: (是否可執行, 阻止原因)
+        """
+        if not self.is_open():
+            return True, None
+        
+        retry_after = self.get_retry_after()
+        reason = self.manual_open_reason or "連續失敗觸發"
+        
+        return False, f"熔斷器開啟({reason})，請{retry_after:.0f}秒後重試"
