@@ -370,13 +370,21 @@ class XGBoostTrainer:
             
             # ✨ v3.4.0：訓練性能追蹤
             training_time = time.time() - start_time
+            metrics['training_samples'] = len(df)
             metrics['training_time_seconds'] = training_time
             metrics['incremental'] = incremental
             logger.info(f"訓練耗時: {training_time:.2f}秒")
             
-            # ✨ v3.4.0：自適應學習更新
+            # ✨ v3.9.1：自適應學習更新（根據目標類型選擇指標）
+            if is_classification:
+                # 分類模式：使用準確率
+                performance_metric = metrics.get('accuracy', 0.0)
+            else:
+                # 回歸模式：使用方向準確率（0-1範圍）
+                performance_metric = metrics.get('direction_accuracy', 0.0)
+            
             self.adaptive_learner.update_performance(
-                metrics['accuracy'],
+                performance_metric,
                 datetime.now()
             )
             
