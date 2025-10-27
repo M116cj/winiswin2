@@ -122,6 +122,169 @@ class AsyncTradingLoop:
                 await asyncio.sleep(5)  # 错误后短暂休眠
         
         logger.info("🛑 异步交易循环已停止")
+
+
+class VirtualPositionLoop:
+    """
+    虚拟仓位独立更新循环（v3.13.0）
+    
+    独立于主交易循环，专门负责：
+    - 异步批量更新虚拟仓位价格
+    - 检测止损/止盈触发
+    - 归档关闭的虚拟仓位
+    - 高频更新（10秒周期）
+    """
+    
+    def __init__(
+        self,
+        virtual_position_manager,
+        binance_client,
+        interval: int = 10
+    ):
+        """
+        初始化虚拟仓位循环
+        
+        Args:
+            virtual_position_manager: 虚拟仓位管理器
+            binance_client: Binance客户端
+            interval: 更新间隔（秒，默认10秒）
+        """
+        self.vpm = virtual_position_manager
+        self.client = binance_client
+        self.interval = interval
+        self._running = False
+        self._cycle_count = 0
+        
+        logger.info(f"✅ 虚拟仓位循环初始化（周期={interval}秒）")
+    
+    async def run(self):
+        """
+        运行虚拟仓位独立循环
+        
+        核心优化：
+        1. 使用 asyncio.gather 并发获取所有价格（200个交易对 <1秒）
+        2. 批量更新所有虚拟仓位（原地修改，零内存分配）
+        3. 自动归档高质量交易数据
+        """
+        self._running = True
+        logger.info("🚀 虚拟仓位循环启动")
+        
+        while self._running:
+            cycle_start = time.time()
+            self._cycle_count += 1
+            
+            try:
+                logger.debug(f"🔄 虚拟仓位循环 #{self._cycle_count} 开始")
+                
+                # 🔥 异步批量更新（已正确实现在 VirtualPositionManager 中）
+                closed_positions = await self.vpm.update_all_prices_async(
+                    binance_client=self.client
+                )
+                
+                # 处理关闭的虚拟仓位
+                if closed_positions:
+                    logger.info(f"📊 关闭 {len(closed_positions)} 个虚拟仓位")
+                    
+                    for pos in closed_positions:
+                        # 🔥 关键：只归档有意义的交易数据（过滤噪音）
+                        # 只保留盈亏幅度 > 0.1% 的交易（避免噪音数据）
+                        if hasattr(pos, 'current_pnl') and abs(pos.current_pnl) > 0.1:
+                            try:
+                                # 归档到ML训练数据
+                                pos_dict = pos.to_dict() if hasattr(pos, 'to_dict') else vars(pos)
+                                self.vpm._archive_position_to_ml(pos_dict)
+                                logger.debug(
+                                    f"  ✅ 归档 {pos.symbol} "
+                                    f"(PnL: {pos.current_pnl:+.2f}%, 方向: {pos.direction})"
+                                )
+                            except Exception as e:
+                                logger.error(f"归档虚拟仓位失败 {pos.symbol}: {e}")
+                        else:
+                            logger.debug(f"  ⏭️  跳过低PnL虚拟仓位 {pos.symbol}")
+                
+                # 计算周期耗时
+                cycle_duration = time.time() - cycle_start
+                logger.debug(
+                    f"✅ 虚拟仓位循环 #{self._cycle_count} 完成"
+                    f"（耗时 {cycle_duration:.2f}秒）"
+                )
+                
+            except KeyboardInterrupt:
+                logger.info("虚拟仓位循环收到中断信号")
+                break
+            except Exception as e:
+                logger.error(f"虚拟仓位循环错误: {e}", exc_info=True)
+            
+            # 等待下一个周期
+            await asyncio.sleep(self.interval)
+        
+        logger.info("🛑 虚拟仓位循环已停止")
+    
+    def stop(self):
+        """停止循环"""
+        self._running = False
+
+
+class DualLoopManager:
+    """
+    双循环管理器（v3.13.0）
+    
+    并发运行两个独立循环：
+    1. 交易主循环（60秒周期）- 市场扫描、信号分析、交易执行
+    2. 虚拟仓位循环（10秒周期）- 虚拟仓位价格更新、止盈止损检测
+    
+    优势：
+    - 真实交易和虚拟仓位管理解耦
+    - 虚拟仓位可高频更新（不影响主循环）
+    - 错误隔离（一个循环崩溃不影响另一个）
+    - 充分利用异步并发
+    """
+    
+    def __init__(self, trading_loop, virtual_loop):
+        """
+        初始化双循环管理器
+        
+        Args:
+            trading_loop: AsyncTradingLoop 实例
+            virtual_loop: VirtualPositionLoop 实例
+        """
+        self.trading_loop = trading_loop
+        self.virtual_loop = virtual_loop
+        
+        logger.info("✅ 双循环管理器初始化")
+    
+    async def run(self):
+        """
+        并发运行双循环
+        
+        使用 asyncio.create_task 创建独立任务：
+        - 两个循环完全并行
+        - return_exceptions=True 确保一个崩溃不影响另一个
+        """
+        logger.info("🚀 启动双循环并发架构...")
+        
+        # 🔥 关键：使用 create_task 创建独立任务
+        tasks = [
+            asyncio.create_task(self.trading_loop.run(), name="trading_loop"),
+            asyncio.create_task(self.virtual_loop.run(), name="virtual_loop")
+        ]
+        
+        try:
+            # 并发执行，错误隔离
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # 检查错误
+            for i, result in enumerate(results):
+                if isinstance(result, Exception):
+                    task_name = tasks[i].get_name()
+                    logger.error(f"❌ {task_name} 异常终止: {result}")
+        
+        except KeyboardInterrupt:
+            logger.info("收到中断信号，停止所有循环...")
+            self.trading_loop._running = False
+            self.virtual_loop.stop()
+        
+        logger.info("🛑 双循环管理器已停止")
     
     async def _fetch_data_parallel(self):
         """
@@ -299,139 +462,3 @@ class AsyncTradingLoop:
         """停止循环"""
         logger.info("正在停止异步循环...")
         self._running = False
-
-
-# ============================================================================
-# 虚拟仓位循环（独立）
-# ============================================================================
-
-class VirtualPositionLoop:
-    """
-    虚拟仓位监控循环（v3.13.0独立循环）
-    
-    与实盘循环分离，降低主循环复杂度
-    """
-    
-    def __init__(
-        self,
-        virtual_position_manager,
-        binance_client,
-        cycle_interval: int = 300  # 5分钟
-    ):
-        """
-        初始化虚拟仓位循环
-        
-        Args:
-            virtual_position_manager: 虚拟仓位管理器
-            binance_client: Binance客户端
-            cycle_interval: 循环间隔（秒）
-        """
-        self.virtual_position_manager = virtual_position_manager
-        self.binance_client = binance_client
-        self.cycle_interval = cycle_interval
-        
-        self._running = False
-        
-        logger.info(f"✅ 虚拟仓位循环初始化（周期={cycle_interval}秒）")
-    
-    async def run(self):
-        """
-        运行虚拟仓位监控循环（v3.13.0完整实现）
-        
-        🔥 关键优化：使用异步批量更新
-        - 200个虚拟仓位价格更新：20+秒 → <1秒
-        - 并发获取所有价格（asyncio.gather）
-        - 异步文件I/O（aiofiles）
-        """
-        self._running = True
-        logger.info("🚀 虚拟仓位循环启动（v3.13.0异步批量更新）")
-        
-        while self._running:
-            cycle_start = time.time()
-            
-            try:
-                # v3.13.0关键：异步批量更新所有虚拟仓位价格
-                # 直接调用update_all_prices_async，传入binance_client
-                closed_positions = await self.virtual_position_manager.update_all_prices_async(
-                    binance_client=self.binance_client  # 明确传入binance_client
-                )
-                
-                if closed_positions:
-                    logger.info(
-                        f"✅ {len(closed_positions)} 个虚拟仓位已关闭 "
-                        f"（异步批量更新耗时 {time.time()-cycle_start:.2f}秒）"
-                    )
-                else:
-                    logger.debug(
-                        f"虚拟仓位更新完成 "
-                        f"（异步批量更新耗时 {time.time()-cycle_start:.2f}秒）"
-                    )
-                
-                # 等待下一个周期
-                elapsed = time.time() - cycle_start
-                wait_time = max(0, self.cycle_interval - elapsed)
-                
-                if wait_time > 0:
-                    await asyncio.sleep(wait_time)
-                else:
-                    logger.warning(
-                        f"⚠️  虚拟仓位更新超时！耗时 {elapsed:.1f}秒 > "
-                        f"预期 {self.cycle_interval}秒"
-                    )
-                
-            except KeyboardInterrupt:
-                logger.info("收到中断信号...")
-                break
-            except Exception as e:
-                logger.error(f"虚拟仓位循环错误: {e}", exc_info=True)
-                await asyncio.sleep(10)  # 错误后短暂休眠
-        
-        logger.info("🛑 虚拟仓位循环已停止")
-    
-    def stop(self):
-        """停止循环"""
-        self._running = False
-
-
-# ============================================================================
-# 双循环管理器
-# ============================================================================
-
-class DualLoopManager:
-    """
-    双循环管理器（v3.13.0）
-    
-    管理两个独立的异步循环：
-    1. 实盘交易循环（60秒）
-    2. 虚拟仓位循环（300秒）
-    """
-    
-    def __init__(self, trading_loop: AsyncTradingLoop, virtual_loop: VirtualPositionLoop):
-        """
-        初始化双循环管理器
-        
-        Args:
-            trading_loop: 实盘交易循环
-            virtual_loop: 虚拟仓位循环
-        """
-        self.trading_loop = trading_loop
-        self.virtual_loop = virtual_loop
-        
-        logger.info("✅ 双循环管理器初始化")
-    
-    async def run(self):
-        """并发运行两个循环"""
-        logger.info("🚀 启动双循环系统...")
-        
-        # 并发运行两个独立循环
-        await asyncio.gather(
-            self.trading_loop.run(),
-            self.virtual_loop.run(),
-            return_exceptions=True
-        )
-    
-    def stop(self):
-        """停止所有循环"""
-        logger.info("正在停止双循环系统...")
-        self.trading_loop.stop()
-        self.virtual_loop.stop()

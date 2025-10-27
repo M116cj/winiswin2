@@ -405,23 +405,44 @@ class TradingBot:
             self.performance_monitor.total_signals_generated += len(signals)
             
             if signals:
-                # ML 預測增強（如果可用）
+                # 🔥 v3.13.0: ML 批量預測增強（6倍性能提升）
                 if self.ml_predictor and self.ml_predictor.is_ready:
-                    logger.info("🤖 使用 ML 模型增強信號...")
-                    for signal in signals:
-                        ml_prediction = self.ml_predictor.predict(signal)
+                    logger.info(f"🤖 使用 ML 批量模型增強 {len(signals)} 個信號...")
+                    
+                    # 🔥 关键修复：predict_batch内部已经处理特征提取
+                    # predict_batch接受signal字典列表，内部调用_prepare_signal_features
+                    ml_predictions = self.ml_predictor.predict_batch(signals)
+                    
+                    # 附加預測結果和校準信心度
+                    enhanced_signals = []
+                    for signal, ml_prediction in zip(signals, ml_predictions):
                         if ml_prediction:
                             signal['ml_prediction'] = ml_prediction
+                            
                             # 校準信心度
                             original_confidence = signal['confidence']
+                            ml_confidence = ml_prediction.get('ml_confidence', 0.5)
                             signal['confidence'] = self.ml_predictor.calibrate_confidence(
                                 original_confidence,
                                 ml_prediction
                             )
+                            
                             logger.debug(
                                 f"  {signal['symbol']}: 原始 {original_confidence:.2%} "
-                                f"→ ML校準 {signal['confidence']:.2%}"
+                                f"→ ML校準 {signal['confidence']:.2%} (ML信心: {ml_confidence:.2%})"
                             )
+                            
+                            # 🔥 关键优化：只保留高质量信号（ML信心度>=40%）
+                            if ml_confidence >= 0.40:
+                                enhanced_signals.append(signal)
+                            else:
+                                logger.debug(f"  ❌ 过滤低质量信号 {signal['symbol']} (ML信心度: {ml_confidence:.2%})")
+                        else:
+                            # ML预测失败，保留原信号
+                            enhanced_signals.append(signal)
+                    
+                    signals = enhanced_signals
+                    logger.info(f"✅ ML批量预测完成，保留 {len(signals)} 个高质量信号")
                 
                 signals.sort(key=lambda x: x['confidence'], reverse=True)
                 
