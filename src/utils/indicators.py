@@ -5,7 +5,7 @@
 
 import pandas as pd
 import numpy as np
-from typing import Optional
+from typing import Optional, List, Dict, Tuple
 
 
 class TechnicalIndicators:
@@ -229,32 +229,53 @@ def calculate_market_structure(close: pd.Series, lookback: int = 10) -> dict:
     }
 
 
-def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
+def identify_order_blocks(
+    df: pd.DataFrame, 
+    lookback: int = 20,
+    volume_multiplier: float = 1.5,
+    rejection_threshold: float = 0.005,
+    max_history: int = 20
+) -> list:
     """
-    識別 Order Blocks（严格版本）
+    識別 Order Blocks（v3.11.0质量筛选增强版）
     
     定义：
     - 看涨 OB：下跌末期出现实体 ≥ 70% 全长的阳K，区间 = [Low, Open]
     - 看跌 OB：上涨末期出现实体 ≥ 70% 全长的阴K，区间 = [High, Open]
     - 需要后续 3 根 K 线确认方向延续
     
+    v3.11.0新增质量筛选：
+    - 成交量验证：OB K线成交量必须 >= volume_multiplier × 20根均量
+    - 拒绝率验证：OB区间高度 / K线全长 >= rejection_threshold
+    - 测试次数追踪：记录每个OB被价格触及的次数
+    - 历史保留：保留max_history个OB（而非仅5个）
+    
     Args:
         df: K線數據框
         lookback: 回溯周期
+        volume_multiplier: 成交量倍数阈值
+        rejection_threshold: 拒绝率阈值（相对于K线全长，如0.005=0.5%）
+        max_history: 最多保留的OB历史数量
     
     Returns:
-        Order Blocks 列表
+        Order Blocks 列表（包含质量分数）
     """
     if df.empty or len(df) < lookback + 4:
         return []
     
     order_blocks = []
     
+    # 计算20根K线平均成交量（用于质量筛选）
+    avg_volume_20 = None
+    if 'volume' in df.columns:
+        avg_volume_20 = df['volume'].rolling(20).mean()
+    
     for i in range(lookback, len(df) - 4):
         candle_high = df['high'].iloc[i]
         candle_low = df['low'].iloc[i]
         candle_open = df['open'].iloc[i]
         candle_close = df['close'].iloc[i]
+        candle_volume = df['volume'].iloc[i] if 'volume' in df.columns else 0
         
         full_length = candle_high - candle_low
         body_length = abs(candle_close - candle_open)
@@ -264,8 +285,24 @@ def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
         
         body_pct = body_length / full_length
         
+        # 基础验证：实体占比 >= 70%
         if body_pct < 0.70:
             continue
+        
+        # 🔍 v3.11.0：质量筛选 - 成交量验证
+        if 'volume' in df.columns and avg_volume_20 is not None and avg_volume_20.iloc[i] > 0:
+            volume_ratio = candle_volume / avg_volume_20.iloc[i]
+            if volume_ratio < volume_multiplier:
+                continue  # 成交量不足，跳过
+        else:
+            volume_ratio = 1.0  # 无成交量数据时默认通过
+        
+        # 🔍 v3.11.0：质量筛选 - 拒绝率验证（相对于K线全长）
+        zone_height = abs(candle_open - (candle_low if candle_close > candle_open else candle_high))
+        rejection_pct = zone_height / full_length if full_length > 0 else 0
+        
+        if rejection_pct < rejection_threshold:
+            continue  # OB区间太小，跳过
         
         is_bullish_candle = candle_close > candle_open
         is_bearish_candle = candle_close < candle_open
@@ -281,6 +318,14 @@ def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
             confirmed = (next_3_closes > candle_close).sum() >= 2
             
             if confirmed:
+                # 🎯 v3.11.0：计算质量分数（0-1）
+                # 成交量30% + 实体占比30% + 拒绝率40%
+                quality_score = (
+                    min(volume_ratio / 3.0, 1.0) * 0.3 +  # 成交量分（最高3倍=1.0）
+                    body_pct * 0.3 +                       # 实体占比分
+                    min(rejection_pct / 0.05, 1.0) * 0.4   # 拒绝率分（5%=1.0）
+                )
+                
                 order_blocks.append({
                     'type': 'bullish',
                     'price': float((candle_low + candle_open) / 2),
@@ -288,13 +333,26 @@ def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
                     'zone_high': float(candle_open),
                     'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
                     'body_pct': float(body_pct),
-                    'confirmed': True
+                    'confirmed': True,
+                    # v3.11.0新增字段
+                    'volume_ratio': float(volume_ratio),
+                    'rejection_pct': float(rejection_pct),
+                    'quality_score': float(quality_score),
+                    'test_count': 0,  # 初始测试次数为0
+                    'created_at': df.index[i] if hasattr(df.index[i], 'isoformat') else i
                 })
         
         elif is_bearish_candle:
             confirmed = (next_3_closes < candle_close).sum() >= 2
             
             if confirmed:
+                # 🎯 v3.11.0：计算质量分数（0-1）
+                quality_score = (
+                    min(volume_ratio / 3.0, 1.0) * 0.3 +
+                    body_pct * 0.3 +
+                    min(rejection_pct / 0.05, 1.0) * 0.4
+                )
+                
                 order_blocks.append({
                     'type': 'bearish',
                     'price': float((candle_high + candle_open) / 2),
@@ -302,10 +360,81 @@ def identify_order_blocks(df: pd.DataFrame, lookback: int = 20) -> list:
                     'zone_high': float(candle_high),
                     'timestamp': df.index[i] if hasattr(df.index[i], 'isoformat') else i,
                     'body_pct': float(body_pct),
-                    'confirmed': True
+                    'confirmed': True,
+                    # v3.11.0新增字段
+                    'volume_ratio': float(volume_ratio),
+                    'rejection_pct': float(rejection_pct),
+                    'quality_score': float(quality_score),
+                    'test_count': 0,
+                    'created_at': df.index[i] if hasattr(df.index[i], 'isoformat') else i
                 })
     
-    return order_blocks[-5:]
+    # v3.11.0修复：保留max_history个OB（而非仅5个），用于衰减追踪
+    return order_blocks[-max_history:] if order_blocks else []
+
+
+def calculate_ob_decay_factor(
+    ob: Dict,
+    current_time,
+    time_decay_hours: int = 48,
+    decay_rate: float = 0.1,
+    max_test_count: int = 3
+) -> float:
+    """
+    计算Order Block的动态衰减系数（v3.11.0）
+    
+    衰减因素：
+    1. 时间衰减：OB创建后每24小时衰减decay_rate
+    2. 测试次数衰减：每被测试一次衰减20%
+    
+    Args:
+        ob: Order Block字典
+        current_time: 当前时间戳
+        time_decay_hours: 开始衰减的小时数
+        decay_rate: 每24小时的衰减率
+        max_test_count: 最大测试次数（超过后失效）
+    
+    Returns:
+        float: 衰减系数 (0-1)，0表示完全失效
+    """
+    import pandas as pd
+    from datetime import datetime, timedelta
+    
+    # 测试次数衰减
+    test_count = ob.get('test_count', 0)
+    if test_count >= max_test_count:
+        return 0.0  # 完全失效
+    
+    test_decay = 1.0 - (test_count * 0.2)  # 每次测试衰减20%
+    
+    # 时间衰减
+    created_at = ob.get('created_at', current_time)
+    
+    try:
+        if isinstance(created_at, (int, float)):
+            # 假设是索引，转换为时间差
+            time_diff_hours = 0
+        elif isinstance(created_at, str):
+            created_dt = pd.to_datetime(created_at)
+            current_dt = pd.to_datetime(current_time)
+            time_diff_hours = (current_dt - created_dt).total_seconds() / 3600
+        else:
+            # pd.Timestamp
+            time_diff_hours = (current_time - created_at).total_seconds() / 3600
+    except:
+        time_diff_hours = 0
+    
+    if time_diff_hours < time_decay_hours:
+        time_decay = 1.0  # 未开始衰减
+    else:
+        # 每24小时衰减decay_rate
+        periods_elapsed = (time_diff_hours - time_decay_hours) / 24
+        time_decay = max(0, 1.0 - (periods_elapsed * decay_rate))
+    
+    # 综合衰减系数
+    total_decay = test_decay * time_decay
+    
+    return max(0.0, min(1.0, total_decay))
 
 
 def identify_swing_points(df: pd.DataFrame, lookback: int = 5) -> tuple:
@@ -342,6 +471,333 @@ def identify_swing_points(df: pd.DataFrame, lookback: int = 5) -> tuple:
             })
     
     return highs, lows
+
+
+def detect_bos_choch(
+    df: pd.DataFrame,
+    swing_highs: List[Dict],
+    swing_lows: List[Dict],
+    current_trend: str = 'neutral'
+) -> Dict:
+    """
+    检测BOS (Break of Structure) 和 CHOCH (Change of Character) v3.11.0
+    
+    定义：
+    - BOS: 突破同方向的swing点（趋势延续）
+      * 上升趋势BOS：价格突破前一个swing high
+      * 下降趋势BOS：价格跌破前一个swing low
+    
+    - CHOCH: 突破反方向的swing点（趋势转换）
+      * 上升趋势CHOCH：价格跌破前一个swing low
+      * 下降趋势CHOCH：价格突破前一个swing high
+    
+    Args:
+        df: K线数据框
+        swing_highs: Swing High列表
+        swing_lows: Swing Low列表
+        current_trend: 当前趋势 ('bullish', 'bearish', 'neutral')
+    
+    Returns:
+        Dict: 包含BOS/CHOCH事件信息
+    """
+    if df.empty or len(df) < 10:
+        return {'bos': None, 'choch': None, 'structure_type': 'unknown'}
+    
+    current_price = df['close'].iloc[-1]
+    current_high = df['high'].iloc[-1]
+    current_low = df['low'].iloc[-1]
+    
+    bos_event = None
+    choch_event = None
+    structure_type = 'unknown'
+    
+    # 获取最近的swing点
+    recent_swing_high = swing_highs[-1] if swing_highs else None
+    recent_swing_low = swing_lows[-1] if swing_lows else None
+    
+    # 检测BOS/CHOCH
+    if current_trend == 'bullish':
+        # 上升趋势：检测BOS (突破swing high) 或 CHOCH (跌破swing low)
+        if recent_swing_high and current_high > recent_swing_high['price']:
+            bos_event = {
+                'type': 'BOS',
+                'direction': 'bullish',
+                'price': recent_swing_high['price'],
+                'confirmed': True,
+                'strength': (current_high - recent_swing_high['price']) / recent_swing_high['price']
+            }
+            structure_type = 'trend_continuation'
+        
+        elif recent_swing_low and current_low < recent_swing_low['price']:
+            choch_event = {
+                'type': 'CHOCH',
+                'direction': 'bearish',  # 从bullish转向bearish
+                'price': recent_swing_low['price'],
+                'confirmed': True,
+                'strength': (recent_swing_low['price'] - current_low) / recent_swing_low['price']
+            }
+            structure_type = 'trend_reversal'
+    
+    elif current_trend == 'bearish':
+        # 下降趋势：检测BOS (跌破swing low) 或 CHOCH (突破swing high)
+        if recent_swing_low and current_low < recent_swing_low['price']:
+            bos_event = {
+                'type': 'BOS',
+                'direction': 'bearish',
+                'price': recent_swing_low['price'],
+                'confirmed': True,
+                'strength': (recent_swing_low['price'] - current_low) / recent_swing_low['price']
+            }
+            structure_type = 'trend_continuation'
+        
+        elif recent_swing_high and current_high > recent_swing_high['price']:
+            choch_event = {
+                'type': 'CHOCH',
+                'direction': 'bullish',  # 从bearish转向bullish
+                'price': recent_swing_high['price'],
+                'confirmed': True,
+                'strength': (current_high - recent_swing_high['price']) / recent_swing_high['price']
+            }
+            structure_type = 'trend_reversal'
+    
+    else:
+        # 中性趋势：检测首次结构突破
+        if recent_swing_high and current_high > recent_swing_high['price']:
+            bos_event = {
+                'type': 'BOS',
+                'direction': 'bullish',
+                'price': recent_swing_high['price'],
+                'confirmed': True,
+                'strength': (current_high - recent_swing_high['price']) / recent_swing_high['price']
+            }
+            structure_type = 'breakout'
+        
+        elif recent_swing_low and current_low < recent_swing_low['price']:
+            bos_event = {
+                'type': 'BOS',
+                'direction': 'bearish',
+                'price': recent_swing_low['price'],
+                'confirmed': True,
+                'strength': (recent_swing_low['price'] - current_low) / recent_swing_low['price']
+            }
+            structure_type = 'breakout'
+    
+    return {
+        'bos': bos_event,
+        'choch': choch_event,
+        'structure_type': structure_type,
+        'has_structure_break': bos_event is not None or choch_event is not None
+    }
+
+
+def classify_market_regime(
+    df: pd.DataFrame,
+    adx_threshold: float = 25.0,
+    bb_width_low: float = 0.02,
+    bb_width_high: float = 0.05
+) -> Dict:
+    """
+    市场状态分类器（v3.11.0）
+    
+    识别四种市场状态：
+    1. TRENDING（趋势市）: ADX > 25 + 布林带宽度适中
+    2. RANGING（震荡市）: ADX < 20 + 价格在布林带内频繁震荡
+    3. BREAKOUT（突破市）: 价格突破布林带 + ADX上升
+    4. DRIFT（漂移市）: ADX低 + 价格沿布林带边缘缓慢移动
+    
+    Args:
+        df: K线数据框
+        adx_threshold: ADX趋势阈值
+        bb_width_low: 布林带宽度下限（震荡判断）
+        bb_width_high: 布林带宽度上限（高波动判断）
+    
+    Returns:
+        Dict: 市场状态信息
+    """
+    if df.empty or len(df) < 50:
+        return {
+            'regime': 'unknown',
+            'confidence': 0.0,
+            'adx': 0,
+            'bb_width': 0,
+            'price_position': 'middle'
+        }
+    
+    # 计算ADX
+    adx_series = calculate_adx(df, period=14)
+    adx = adx_series.iloc[-1] if not adx_series.empty else 0
+    
+    # 计算布林带
+    bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(df, period=20)
+    current_price = df['close'].iloc[-1]
+    
+    # 布林带宽度（标准化）
+    bb_width = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1]
+    
+    # 价格相对布林带位置
+    if current_price > bb_upper.iloc[-1]:
+        price_position = 'above_upper'
+    elif current_price < bb_lower.iloc[-1]:
+        price_position = 'below_lower'
+    elif current_price > bb_middle.iloc[-1]:
+        price_position = 'upper_half'
+    else:
+        price_position = 'lower_half'
+    
+    # ADX变化率（判断趋势强度是否上升）
+    adx_change = 0
+    if len(adx_series) >= 5:
+        adx_change = (adx - adx_series.iloc[-5]) / adx_series.iloc[-5] if adx_series.iloc[-5] > 0 else 0
+    
+    # 分类逻辑
+    regime = 'unknown'
+    confidence = 0.0
+    
+    # 1. 突破市：价格突破布林带 + ADX上升
+    if price_position in ['above_upper', 'below_lower'] and adx > 20:
+        regime = 'breakout'
+        confidence = min(1.0, (adx / 40) + (abs(adx_change) * 2))
+    
+    # 2. 趋势市：ADX强 + 布林带宽度适中
+    elif adx >= adx_threshold and bb_width_low < bb_width < bb_width_high:
+        regime = 'trending'
+        confidence = min(1.0, adx / 40)
+    
+    # 3. 震荡市：ADX弱 + 布林带窄
+    elif adx < 20 and bb_width < bb_width_low:
+        regime = 'ranging'
+        confidence = min(1.0, (20 - adx) / 20)
+    
+    # 4. 漂移市：ADX弱 + 价格沿布林带边缘移动
+    elif adx < 20 and price_position in ['upper_half', 'lower_half']:
+        regime = 'drift'
+        confidence = 0.6  # 中等置信度
+    
+    # 5. 高波动震荡：ADX弱但布林带很宽
+    elif adx < 20 and bb_width >= bb_width_high:
+        regime = 'choppy'
+        confidence = 0.7
+    
+    # 6. 默认：趋势衰减中
+    else:
+        regime = 'transitioning'
+        confidence = 0.4
+    
+    return {
+        'regime': regime,
+        'confidence': float(confidence),
+        'adx': float(adx),
+        'adx_change': float(adx_change),
+        'bb_width': float(bb_width),
+        'price_position': price_position,
+        'should_trade': regime in ['trending', 'breakout'],  # 只在趋势和突破时交易
+        'risk_level': 'high' if regime in ['choppy', 'ranging'] else 'normal'
+    }
+
+
+def detect_reversal_risk(
+    df: pd.DataFrame,
+    liquidity_sweep_threshold: float = 0.01,
+    rsi_extreme_bull: float = 75,
+    rsi_extreme_bear: float = 25,
+    macd_convergence_ratio: float = 0.3
+) -> Dict:
+    """
+    反转预警滤网（v3.11.0 - 四层防反转架构 Layer 1）
+    
+    检测三种高反转风险情况：
+    1. 流动性扫荡（Liquidity Sweep）：价格突破后快速回撤
+    2. RSI极端 + 价格背离
+    3. MACD动量急剧衰减
+    
+    Args:
+        df: K线数据框
+        liquidity_sweep_threshold: 流动性扫荡阈值（1%）
+        rsi_extreme_bull: RSI看跌极端值
+        rsi_extreme_bear: RSI看涨极端值
+        macd_convergence_ratio: MACD收敛比例
+    
+    Returns:
+        Dict: 反转风险信息
+    """
+    if df.empty or len(df) < 20:
+        return {
+            'high_risk': False,
+            'risk_type': 'none',
+            'risk_score': 0.0,
+            'should_skip': False
+        }
+    
+    current_price = df['close'].iloc[-1]
+    risk_factors = []
+    risk_score = 0.0
+    
+    # 1. 检测流动性扫荡（Bull Trap / Bear Trap）
+    recent_high = df['high'].iloc[-20:].max()
+    recent_low = df['low'].iloc[-20:].min()
+    
+    # Bull Trap：价格突破高点后快速回撤
+    if (current_price > recent_high * (1 + liquidity_sweep_threshold) and
+        current_price < recent_high * 0.995):
+        risk_factors.append('bull_trap')
+        risk_score += 0.4
+    
+    # Bear Trap：价格跌破低点后快速反弹
+    if (current_price < recent_low * (1 - liquidity_sweep_threshold) and
+        current_price > recent_low * 1.005):
+        risk_factors.append('bear_trap')
+        risk_score += 0.4
+    
+    # 2. RSI极端 + 价格背离检测
+    rsi = calculate_rsi(df['close'], period=14)
+    current_rsi = rsi.iloc[-1] if not rsi.empty else 50
+    
+    # 检测看跌背离（价格创新高，RSI未创新高）
+    if current_rsi > rsi_extreme_bull:
+        price_high_recent = df['high'].iloc[-5:].max()
+        price_high_prev = df['high'].iloc[-15:-5].max()
+        rsi_high_recent = rsi.iloc[-5:].max()
+        rsi_high_prev = rsi.iloc[-15:-5].max()
+        
+        if price_high_recent > price_high_prev and rsi_high_recent < rsi_high_prev:
+            risk_factors.append('bearish_divergence')
+            risk_score += 0.3
+    
+    # 检测看涨背离（价格创新低，RSI未创新低）
+    if current_rsi < rsi_extreme_bear:
+        price_low_recent = df['low'].iloc[-5:].min()
+        price_low_prev = df['low'].iloc[-15:-5].min()
+        rsi_low_recent = rsi.iloc[-5:].min()
+        rsi_low_prev = rsi.iloc[-15:-5].min()
+        
+        if price_low_recent < price_low_prev and rsi_low_recent > rsi_low_prev:
+            risk_factors.append('bullish_divergence')
+            risk_score += 0.3
+    
+    # 3. MACD动量急剧衰减
+    macd_line, signal_line, macd_hist = calculate_macd(df['close'])
+    
+    if not macd_hist.empty and len(macd_hist) >= 5:
+        current_hist = abs(macd_hist.iloc[-1])
+        prev_hist = abs(macd_hist.iloc[-3])
+        
+        # MACD柱状图收敛超过70%
+        if prev_hist > 0 and current_hist < prev_hist * macd_convergence_ratio:
+            risk_factors.append('macd_convergence')
+            risk_score += 0.2
+    
+    # 综合判断
+    high_risk = risk_score >= 0.4  # 风险分数>=0.4视为高风险
+    risk_type = ','.join(risk_factors) if risk_factors else 'none'
+    should_skip = high_risk  # 高风险时跳过交易
+    
+    return {
+        'high_risk': high_risk,
+        'risk_type': risk_type,
+        'risk_score': float(risk_score),
+        'should_skip': should_skip,
+        'risk_factors': risk_factors
+    }
 
 
 def determine_market_structure(df: pd.DataFrame) -> str:

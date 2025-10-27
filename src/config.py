@@ -78,10 +78,17 @@ class Config:
     VOLATILITY_SPIKE_MULTIPLIER: float = 2.0  # 當前ATR > 7日均值2倍 = 波動突變
     VOLATILITY_SPIKE_MAX_LEVERAGE: int = 5    # 波動突變時最大槓桿
     
-    # Order Blocks 配置
+    # Order Blocks 配置（v3.11.0增强：质量筛选+动态衰减）
     OB_REJECTION_PCT: float = 0.03
-    OB_VOLUME_MULTIPLIER: float = 1.5
+    OB_VOLUME_MULTIPLIER: float = 1.5  # 成交量必须 >= 20根均量的1.5倍
     OB_LOOKBACK: int = 20
+    OB_MIN_VOLUME_RATIO: float = 1.5   # 最小成交量倍数（筛选低质量OB）
+    OB_REJECTION_THRESHOLD: float = 0.005  # 拒绝率阈值（0.5%体积 - 更实用）
+    OB_MAX_TEST_COUNT: int = 3         # OB最多被测试3次后失效
+    OB_MAX_HISTORY: int = 20           # 最多保留20个历史OB（用于衰减追踪）
+    OB_DECAY_ENABLED: bool = True      # 启用动态衰减
+    OB_TIME_DECAY_HOURS: int = 48      # 48小时后OB开始衰减
+    OB_DECAY_RATE: float = 0.1         # 每24小时衰减10%强度
     
     # 訂單配置
     MAX_SLIPPAGE_PCT: float = 0.002  # 最大滑點容忍度 0.2% （也用作限價單保護範圍）
