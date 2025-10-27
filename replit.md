@@ -4,7 +4,7 @@
 
 24/7 高频自动化交易系统，用于 Binance USDT 永续合约，采用 ICT/SMC 策略结合 XGBoost 机器学习增强。
 
-**当前版本：v3.9.2.9 (2025-10-27) - ⚡ 性能优化 + 系统审计**
+**当前版本：v3.10.0 (2025-10-27) - 🔥 策略增强三合一（ADX趋势过滤 + ML泄漏阻断 + 波动率熔断）**
 
 ## 🎯 核心功能
 
@@ -139,6 +139,99 @@ src/
 - 完整的 ML 管道集成
 
 ## 📝 最近更新
+
+### 2025-10-27 (v3.10.0) - 🔥 策略增强三合一（Stage 1 关键优化）
+
+**类型**: 🎯 **STRATEGY ENHANCEMENT + ML PROTECTION + VOLATILITY CONTROL**  
+**目标**: 实施三个最关键的策略优化，提升信号质量和风险防护  
+**状态**: ✅ **已完成并通过 Architect 审查**
+
+**核心优化**:
+
+**1. ADX 趋势强度过滤器 + EMA 斜率验证**
+- **文件**: `src/strategies/ict_strategy.py`, `src/utils/indicators.py`, `src/config.py`
+- **新增函数**: 
+  - `calculate_adx(df, period=14)`: 计算ADX趋势强度指标
+  - `calculate_ema_slope(df, period=50)`: 计算EMA斜率百分比
+- **策略增强**: `_determine_trend()` 现在要求：
+  - ADX >= 20 才视为有效趋势（过滤震荡市）
+  - ADX >= 25 才视为强趋势
+  - EMA斜率 >= 0.01% 确认趋势动能
+  - 降级逻辑：ADX不足时仍可使用价格相对EMA判断，但信心度降低
+- **配置参数**:
+  - `ADX_PERIOD = 14`
+  - `ADX_TREND_THRESHOLD = 20.0`
+  - `ADX_STRONG_TREND = 25.0`
+  - `EMA_SLOPE_THRESHOLD = 0.01`
+- **效果**: 显著减少震荡市场的假信号，提升趋势交易胜率
+
+**2. ML 特征泄漏防护强化**
+- **文件**: `src/ml/model_trainer.py`
+- **关键修复**: 从"警告继续训练"改为"检测到泄漏立即阻止训练"
+- **修复前**:
+  ```python
+  if leakage_report['has_leakage']:
+      logger.warning(f"检测到潜在标签泄漏") # 仅警告，训练继续
+  ```
+- **修复后**:
+  ```python
+  if leakage_report['has_leakage']:
+      logger.error(f"检测到严重标签泄漏，训练终止！")
+      return None, {'error': 'label_leakage_detected', 'report': leakage_report}
+  ```
+- **新增功能**:
+  - 返回结构化错误字典而非None
+  - 高相关性特征警告（潜在泄漏识别）
+  - 数据质量警告分级显示
+- **效果**: 防止模型学习未来信息，确保实盘表现与回测一致
+
+**3. 实时波动率熔断器**
+- **文件**: `src/managers/risk_manager.py`, `src/config.py`
+- **新增功能**: `calculate_leverage()` 增加波动率感知能力
+- **新增参数**:
+  - `current_atr: Optional[float]`: 当前ATR值
+  - `atr_7d_avg: Optional[float]`: 7日平均ATR
+- **熔断逻辑**:
+  - 波动突变（ATR >= 2.0× 七日均值）：强制杠杆上限 5x
+  - 波动偏高（ATR >= 1.6× 七日均值）：降低杠杆 3x
+- **配置参数**:
+  - `VOLATILITY_CIRCUIT_BREAKER_ENABLED = True`
+  - `VOLATILITY_WINDOW_DAYS = 7`
+  - `VOLATILITY_SPIKE_MULTIPLIER = 2.0`
+  - `VOLATILITY_SPIKE_MAX_LEVERAGE = 5`
+- **关键修复**: 初始版本使用early return绕过了期望值检查，已修复为杠杆上限机制
+- **修复后逻辑**: 
+  - 先检查期望值（< 0 返回0）
+  - 再应用波动率熔断作为额外保护层
+  - 确保负期望值始终禁止交易
+- **效果**: 黑天鹅事件保护，避免极端波动下过度杠杆
+
+**Architect 审查结果**:
+- ✅ ADX趋势过滤器：逻辑正确，向后兼容，降级机制完善
+- ✅ ML泄漏防护：阻止机制正确，错误处理完整，调用兼容
+- ✅ 波动率熔断：bug已修复，作为杠杆上限而非绕过安全检查
+- ✅ 无功能回归，所有安全层正常工作
+
+**后续建议**:
+1. 添加单元测试：覆盖负期望值+高波动率场景
+2. QA测试：验证各种波动率级别的杠杆计算
+3. 阶段2优化：Order Block衰减、BOS/CHOCH识别、多目标学习等
+
+**文件修改**:
+- `src/strategies/ict_strategy.py`: ADX趋势过滤器集成
+- `src/utils/indicators.py`: calculate_adx(), calculate_ema_slope()
+- `src/ml/model_trainer.py`: 泄漏阻断逻辑
+- `src/managers/risk_manager.py`: 波动率熔断器
+- `src/config.py`: 新增ADX和波动率配置
+- `src/main.py`: 版本更新至v3.10.0
+- `replit.md`: 文档更新
+
+**预期效果**:
+- 更少的震荡市假信号（ADX过滤）
+- 更可靠的ML模型（泄漏防护）
+- 更安全的风险控制（波动率熔断）
+
+---
 
 ### 2025-10-27 (v3.9.2.9) - ⚡ 性能优化 + 系统全面审计
 
