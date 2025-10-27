@@ -351,19 +351,36 @@ class ICTStrategy:
         weights = self.config.CONFIDENCE_WEIGHTS
         scores = {}
         
+        # ✅ 修复：根据趋势方向动态判断趋势对齐（移除LONG偏向）
         trend_alignment_count = 0
+        h1_lower = h1_trend.lower()
         
         ema20_5m = calculate_ema(m5_data['close'], 20)
-        if not ema20_5m.empty and m5_data['close'].iloc[-1] > ema20_5m.iloc[-1]:
-            trend_alignment_count += 1
+        if not ema20_5m.empty:
+            current_price = m5_data['close'].iloc[-1]
+            ema_val = ema20_5m.iloc[-1]
+            # LONG: 价格 > EMA，SHORT: 价格 < EMA
+            if (h1_lower == "bullish" and current_price > ema_val) or \
+               (h1_lower == "bearish" and current_price < ema_val):
+                trend_alignment_count += 1
         
         ema50_15m = calculate_ema(m15_data['close'], 50)
-        if not ema50_15m.empty and m15_data['close'].iloc[-1] > ema50_15m.iloc[-1]:
-            trend_alignment_count += 1
+        if not ema50_15m.empty:
+            current_price = m15_data['close'].iloc[-1]
+            ema_val = ema50_15m.iloc[-1]
+            # LONG: 价格 > EMA，SHORT: 价格 < EMA
+            if (h1_lower == "bullish" and current_price > ema_val) or \
+               (h1_lower == "bearish" and current_price < ema_val):
+                trend_alignment_count += 1
         
         ema100_1h = calculate_ema(h1_data['close'], 100)
-        if not ema100_1h.empty and h1_data['close'].iloc[-1] > ema100_1h.iloc[-1]:
-            trend_alignment_count += 1
+        if not ema100_1h.empty:
+            current_price = h1_data['close'].iloc[-1]
+            ema_val = ema100_1h.iloc[-1]
+            # LONG: 价格 > EMA，SHORT: 价格 < EMA
+            if (h1_lower == "bullish" and current_price > ema_val) or \
+               (h1_lower == "bearish" and current_price < ema_val):
+                trend_alignment_count += 1
         
         trend_score = trend_alignment_count / 3.0
         scores['trend_alignment'] = trend_score
@@ -434,8 +451,9 @@ class ICTStrategy:
             macd_val = macd_line.iloc[-1]
             signal_val = signal_line.iloc[-1]
             
-            rsi_bullish = 40 < rsi_val < 70
-            rsi_bearish = 30 < rsi_val < 60
+            # ✅ 修复：RSI范围对称于50中线
+            rsi_bullish = 50 < rsi_val < 70  # 看涨：RSI在50-70之间
+            rsi_bearish = 30 < rsi_val < 50  # 看跌：RSI在30-50之间
             macd_bullish = macd_val > signal_val
             macd_bearish = macd_val < signal_val
             
