@@ -70,7 +70,6 @@ class ConfigProfile:
     
     # ===== 系統配置 =====
     trading_enabled: bool = os.getenv("TRADING_ENABLED", "false").lower() == "true"
-    max_positions: int = int(os.getenv("MAX_POSITIONS", "999"))
     cycle_interval: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     
     # ===== ThreadPool 配置（避免 pickle 錯誤）=====

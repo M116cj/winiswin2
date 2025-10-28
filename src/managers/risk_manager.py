@@ -48,15 +48,7 @@ class RiskManager:
         if account_balance <= 0:
             return False, "賬戶餘額不足"
         
-        # v3.17+: 虛擬倉位無限制
-        if not is_real_trading:
-            return True, "虛擬交易無限制"
-        
-        # 真實交易：檢查倉位上限
-        from src.config import Config
-        if active_positions >= Config.MAX_POSITIONS:
-            return False, f"已達倉位上限 ({Config.MAX_POSITIONS})"
-        
+        # v3.17+: 無持倉上限限制
         return True, "風險檢查通過"
     
     def calculate_leverage(

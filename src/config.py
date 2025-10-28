@@ -29,7 +29,6 @@ class Config:
     DISCORD_CHANNEL_ID: Optional[str] = os.getenv("DISCORD_CHANNEL_ID")
     
     # ===== 交易配置 =====
-    MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))
     MAX_CONCURRENT_ORDERS: int = int(os.getenv("MAX_CONCURRENT_ORDERS", "5"))  # 每個週期最多同時開倉數量
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "true").lower() == "true"
@@ -256,7 +255,6 @@ class Config:
     binance_api_secret: str = BINANCE_API_SECRET
     binance_testnet: bool = BINANCE_TESTNET
     trading_enabled: bool = TRADING_ENABLED
-    max_positions: int = MAX_POSITIONS
     cycle_interval: int = CYCLE_INTERVAL
     
     # 槓桿計算參數（ConfigProfile 兼容）
@@ -301,9 +299,6 @@ class Config:
         if not cls.DISCORD_TOKEN:
             warnings.append("未設置 DISCORD_TOKEN - Discord 通知將被禁用")
         
-        if cls.MAX_POSITIONS < 1:
-            errors.append(f"MAX_POSITIONS 必須 >= 1，當前為 {cls.MAX_POSITIONS}")
-        
         if cls.MIN_CONFIDENCE < 0 or cls.MIN_CONFIDENCE > 1:
             errors.append(f"MIN_CONFIDENCE 必須在 0-1 之間，當前為 {cls.MIN_CONFIDENCE}")
         
@@ -336,7 +331,6 @@ class Config:
             "version": "v3.17+",
             "binance_testnet": cls.BINANCE_TESTNET,
             "trading_enabled": cls.TRADING_ENABLED,
-            "max_positions": cls.MAX_POSITIONS,
             "cycle_interval": cls.CYCLE_INTERVAL,
             "min_confidence": f"{cls.MIN_CONFIDENCE*100}%",
             "log_level": cls.LOG_LEVEL,

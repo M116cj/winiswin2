@@ -160,11 +160,10 @@ class SelfLearningTradingSystem:
         logger.info(f"  version: v3.17+")
         logger.info(f"  binance_testnet: {self.config.BINANCE_TESTNET}")
         logger.info(f"  trading_enabled: {self.config.TRADING_ENABLED}")
-        logger.info(f"  max_positions: {self.config.MAX_POSITIONS}")
         logger.info(f"  cycle_interval: {self.config.CYCLE_INTERVAL}")
         logger.info(f"  min_confidence: {self.config.MIN_CONFIDENCE * 100:.1f}%")
         logger.info(f"  log_level: {self.config.LOG_LEVEL}")
-        logger.info(f"  note: 使用 SelfLearningTrader 無限制槓桿控制")
+        logger.info(f"  note: 使用 SelfLearningTrader 無限制槓桿控制，無持倉上限")
         
         # 顯示 SelfLearningTrader 特性
         logger.info("\n🎯 SelfLearningTrader v3.17+ 特性:")

@@ -283,7 +283,7 @@ class TradingDiscordBot:
         
         embed.add_field(
             name="活躍持倉",
-            value=f"{stats.get('active_positions', 0)} / {self.config.MAX_POSITIONS}",
+            value=f"{stats.get('active_positions', 0)}",
             inline=True
         )
         
