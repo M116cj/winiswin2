@@ -27,6 +27,84 @@ from src.config import Config
 logger = logging.getLogger(__name__)
 
 
+# 🔥 v3.16.2 修復：模塊級別工作函數（避免序列化類時包含 thread.lock）
+def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], config_dict: Dict) -> Optional[Dict]:
+    """
+    單個交易對分析（工作進程函數）
+    
+    🔥 v3.16.2 關鍵修復：
+    - 必須是模塊級別函數（不能是類方法）
+    - 避免序列化類時包含模塊級 logger（含 thread.lock）
+    
+    Args:
+        symbol_data: {'symbol': str, 'data': Dict}
+        model_path: ML 模型路徑（可選）
+        config_dict: 配置字典（純數據）
+    
+    Returns:
+        Optional[Dict]: 交易信號
+    """
+    # 🔥 子進程內部創建獨立 logger
+    import logging
+    proc_logger = logging.getLogger(f"{__name__}.subprocess")
+    
+    try:
+        # 🔥 添加記憶體監控
+        process = None
+        try:
+            import psutil
+            process = psutil.Process()
+            initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+        except ImportError:
+            initial_memory = None
+        
+        # 重建配置
+        from src.config import Config
+        config = Config()
+        for key, value in config_dict.items():
+            if hasattr(config, key):
+                setattr(config, key, value)
+        
+        # 嘗試使用自我學習交易員
+        try:
+            from src.strategies.self_learning_trader import SelfLearningTrader
+            
+            trader = SelfLearningTrader(
+                config=config,
+                model_path=model_path
+            )
+            result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
+            
+        except Exception as e:
+            # 🔥 降級到 ICT 策略
+            proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
+            from src.strategies.ict_strategy import ICTStrategy
+            trader = ICTStrategy()
+            result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
+        
+        # 🔥 記憶體監控
+        if initial_memory is not None and process is not None:
+            try:
+                final_memory = process.memory_info().rss / 1024 / 1024  # MB
+                memory_increase = final_memory - initial_memory
+                
+                if memory_increase > 500:  # 記憶體增加超過 500MB
+                    proc_logger.warning(
+                        f"⚠️ 記憶體洩漏警告 {symbol_data['symbol']}: +{memory_increase:.1f}MB"
+                    )
+            except Exception:
+                pass
+        
+        return result
+        
+    except MemoryError:
+        proc_logger.error(f"❌ 記憶體不足 {symbol_data.get('symbol', 'UNKNOWN')}")
+        return None
+    except Exception as e:
+        proc_logger.error(f"❌ 分析失敗 {symbol_data.get('symbol', 'UNKNOWN')}: {e}")
+        return None
+
+
 class ParallelAnalyzer:
     """並行分析器 - v3.16.1 BrokenProcessPool 修復版"""
     
@@ -100,8 +178,9 @@ class ParallelAnalyzer:
                     if not key.startswith('_') and not callable(value)
                 }
                 
+                # 🔥 v3.16.2: 使用模塊級函數（避免序列化類）
                 future = self.global_pool.submit_safe(
-                    self._analyze_single_symbol,
+                    _analyze_single_symbol_worker,
                     symbol_data,
                     self._model_path,
                     config_dict
@@ -147,117 +226,6 @@ class ParallelAnalyzer:
         except Exception as e:
             logger.error(f"❌ 批量分析失敗: {e}", exc_info=True)
             return []
-    
-    @staticmethod
-    def _analyze_single_symbol(symbol_data: Dict, model_path: str, config_dict: Dict) -> Optional[Dict]:
-        """
-        單符號分析 - 子進程執行（v3.16.1 內存監控版本）
-        
-        Args:
-            symbol_data: 符號數據 {'symbol': str, 'data': dict}
-            model_path: 模型路徑
-            config_dict: 配置字典
-        
-        Returns:
-            Optional[Dict]: 交易信號
-        """
-        # 🔥 v3.16.2 修復：子進程內部創建 logger（避免序列化 thread.lock）
-        import logging
-        proc_logger = logging.getLogger(f"{__name__}.subprocess")
-        
-        try:
-            # 🔥 添加記憶體監控
-            process = None
-            try:
-                import psutil
-                process = psutil.Process()
-                initial_memory = process.memory_info().rss / 1024 / 1024  # MB
-            except ImportError:
-                initial_memory = None
-            
-            # 重建配置
-            from src.config import Config
-            config = Config()
-            for key, value in config_dict.items():
-                if hasattr(config, key):
-                    setattr(config, key, value)
-            
-            # 🔥 嘗試使用自我學習交易員
-            try:
-                from src.strategies.self_learning_trader import SelfLearningTrader
-                trader = SelfLearningTrader(config)
-                result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
-                
-            except (ImportError, MemoryError) as e:
-                # 🔥 降級到 ICT 策略
-                proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
-                result = ParallelAnalyzer._fallback_analysis(symbol_data, config)
-            
-            # 🔥 記憶體監控
-            if initial_memory is not None and process is not None:
-                try:
-                    final_memory = process.memory_info().rss / 1024 / 1024  # MB
-                    memory_increase = final_memory - initial_memory
-                    
-                    if memory_increase > 500:  # 記憶體增加超過 500MB
-                        proc_logger.warning(
-                            f"⚠️ 記憶體洩漏警告 {symbol_data['symbol']}: +{memory_increase:.1f}MB"
-                        )
-                except Exception:
-                    pass
-            
-            return result
-            
-        except MemoryError:
-            proc_logger.error(f"❌ 記憶體不足: {symbol_data['symbol']}")
-            return None
-        except ImportError as e:
-            proc_logger.warning(f"⚠️ 模組導入錯誤: {e}")
-            # 使用 fallback 策略
-            try:
-                return ParallelAnalyzer._fallback_analysis(symbol_data, config_dict)
-            except Exception:
-                return None
-        except Exception as e:
-            proc_logger.error(f"❌ 分析錯誤 {symbol_data['symbol']}: {e}")
-            return None
-    
-    @staticmethod
-    def _fallback_analysis(symbol_data: Dict, config_or_dict) -> Optional[Dict]:
-        """
-        降級分析策略（當深度學習不可用時）
-        
-        Args:
-            symbol_data: 符號數據
-            config_or_dict: 配置對象或字典
-        
-        Returns:
-            Optional[Dict]: 交易信號
-        """
-        # 🔥 v3.16.2 修復：子進程內部創建 logger（避免序列化 thread.lock）
-        import logging
-        proc_logger = logging.getLogger(f"{__name__}.fallback")
-        
-        try:
-            from src.strategies.ict_strategy import ICTStrategy
-            from src.config import Config
-            
-            # 處理配置
-            if isinstance(config_or_dict, dict):
-                config = Config()
-                for key, value in config_or_dict.items():
-                    if hasattr(config, key):
-                        setattr(config, key, value)
-            else:
-                config = config_or_dict
-            
-            trader = ICTStrategy()
-            result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
-            return result
-            
-        except Exception as e:
-            proc_logger.error(f"❌ 降級分析失敗: {e}")
-            return None
     
     async def close(self):
         """
