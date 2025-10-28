@@ -373,26 +373,118 @@ class UnifiedScheduler:
                 if float(p.get('positionAmt', 0)) != 0
             ]
             
+            # 顯示歷史統計
+            await self._display_historical_stats()
+            
             if not active_positions:
                 logger.info("📦 當前持倉: 無")
                 return []
             
-            logger.info(f"📦 當前持倉: {len(active_positions)} 個")
+            # 計算當前所有持倉總損益
+            total_unrealized_pnl = sum(float(p.get('unRealizedProfit', 0)) for p in active_positions)
+            
+            logger.info(f"📦 當前持倉: {len(active_positions)} 個 | 總未實現盈虧: ${total_unrealized_pnl:+.2f}")
+            logger.info("=" * 80)
+            
             for pos in active_positions:
                 symbol = pos['symbol']
                 amt = float(pos['positionAmt'])
                 direction = "LONG" if amt > 0 else "SHORT"
                 entry_price = float(pos.get('entryPrice', 0))
+                mark_price = float(pos.get('markPrice', 0))
                 unrealized_pnl = float(pos.get('unRealizedProfit', 0))
-                pnl_pct = (unrealized_pnl / (abs(amt) * entry_price) * 100) if entry_price > 0 else 0
+                leverage = int(pos.get('leverage', 1))
                 
-                logger.info(f"   • {symbol} {direction} | 盈虧: ${unrealized_pnl:+.2f} ({pnl_pct:+.2f}%)")
+                # 計算盈虧百分比
+                position_value = abs(amt) * entry_price
+                pnl_pct = (unrealized_pnl / position_value * 100) if position_value > 0 else 0
+                
+                # 獲取進場理由（從trade_recorder查詢）
+                entry_reason = await self._get_entry_reason(symbol, direction)
+                entry_reason_status = "✅ 有效" if entry_reason else "❌ 已失效"
+                
+                # 判斷趨勢狀態
+                trend_status = "📈 多頭" if mark_price > entry_price and direction == "LONG" else \
+                               "📉 空頭" if mark_price < entry_price and direction == "SHORT" else \
+                               "⚠️ 逆勢"
+                
+                logger.info(
+                    f"   • {symbol} {direction} @ ${entry_price:.4f} | "
+                    f"槓桿={leverage}x | "
+                    f"盈虧=${unrealized_pnl:+.2f} ({pnl_pct:+.2f}%) | "
+                    f"{trend_status} | "
+                    f"進場理由{entry_reason_status}"
+                )
             
+            logger.info("=" * 80)
             return active_positions
             
         except Exception as e:
             logger.error(f"❌ 獲取持倉失敗: {e}")
             return []
+    
+    async def _display_historical_stats(self):
+        """顯示歷史統計（歷史贏虧、歷史總報酬率、歷史總勝率）"""
+        try:
+            if not self.trade_recorder:
+                return
+            
+            # 獲取所有已平倉交易
+            all_trades = self.trade_recorder.get_trades()
+            closed_trades = [t for t in all_trades if t.get('status') == 'closed' and 'pnl' in t]
+            
+            if not closed_trades:
+                logger.info("📊 歷史統計: 暫無交易記錄")
+                return
+            
+            # 計算歷史贏虧
+            total_pnl = sum(t.get('pnl', 0) for t in closed_trades)
+            
+            # 計算歷史總勝率
+            winning_trades = [t for t in closed_trades if t.get('pnl', 0) > 0]
+            win_rate = (len(winning_trades) / len(closed_trades) * 100) if closed_trades else 0
+            
+            # 計算歷史總報酬率（假設初始資金為首次交易的帳戶餘額）
+            initial_balance = closed_trades[0].get('account_balance', 1000) if closed_trades else 1000
+            total_return_rate = (total_pnl / initial_balance * 100) if initial_balance > 0 else 0
+            
+            logger.info("=" * 80)
+            logger.info("📊 歷史統計摘要")
+            logger.info(f"   總交易次數: {len(closed_trades)} 筆")
+            logger.info(f"   歷史總盈虧: ${total_pnl:+.2f}")
+            logger.info(f"   歷史總報酬率: {total_return_rate:+.2f}%")
+            logger.info(f"   歷史總勝率: {win_rate:.2f}% ({len(winning_trades)}/{len(closed_trades)})")
+            logger.info("=" * 80)
+            
+        except Exception as e:
+            logger.error(f"❌ 顯示歷史統計失敗: {e}")
+    
+    async def _get_entry_reason(self, symbol: str, direction: str) -> str:
+        """獲取進場理由（查詢trade_recorder中的信號記錄）"""
+        try:
+            if not self.trade_recorder:
+                return ""
+            
+            # 獲取該交易對的未平倉交易記錄
+            all_trades = self.trade_recorder.get_trades()
+            open_trades = [
+                t for t in all_trades 
+                if t.get('symbol') == symbol 
+                and t.get('direction') == direction 
+                and t.get('status') == 'open'
+            ]
+            
+            if open_trades:
+                latest_trade = open_trades[-1]
+                # 獲取進場信號理由（可能包含在metadata中）
+                metadata = latest_trade.get('metadata', {})
+                return metadata.get('entry_reason', metadata.get('signal_type', ''))
+            
+            return ""
+            
+        except Exception as e:
+            logger.debug(f"獲取進場理由失敗: {e}")
+            return ""
     
     async def _display_model_rating(self):
         """顯示模型評分狀態"""
