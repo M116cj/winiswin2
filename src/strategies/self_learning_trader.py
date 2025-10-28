@@ -597,6 +597,11 @@ class SelfLearningTrader:
             倉位信息或 None
         """
         try:
+            # 確保 Binance 客戶端已初始化
+            if not self.binance_client:
+                logger.error("❌ Binance 客戶端未初始化")
+                return None
+            
             # 設置槓桿
             safe_leverage = min(int(signal['leverage']), 125)
             try:
@@ -613,6 +618,9 @@ class SelfLearningTrader:
                 quantity=size
             )
             
+            # 計算倉位價值
+            position_value = size * signal['entry_price']
+            
             # 構建倉位信息
             position = {
                 'symbol': signal['symbol'],
@@ -625,12 +633,29 @@ class SelfLearningTrader:
                 'confidence': signal['confidence'],
                 'win_probability': signal['win_probability'],
                 'order_id': order_result.get('orderId'),
-                'timestamp': time.time()
+                'timestamp': time.time(),
+                'position_value': position_value
             }
+            
+            # 記錄開倉信號（用於後續配對和 ML 訓練）
+            if self.trade_recorder:
+                try:
+                    self.trade_recorder.record_entry(
+                        signal=signal,
+                        position_info={
+                            'leverage': signal['leverage'],
+                            'position_value': position_value,
+                            'size': size
+                        }
+                    )
+                    logger.debug(f"📝 記錄開倉信號: {signal['symbol']}")
+                except Exception as e:
+                    logger.warning(f"⚠️ 記錄開倉信號失敗: {e}")
             
             logger.info(
                 f"✅ 下單成功: {signal['symbol']} {signal['direction']} | "
-                f"數量={size:.6f} | 槓桿={signal['leverage']:.1f}x"
+                f"數量={size:.6f} | 槓桿={signal['leverage']:.1f}x | "
+                f"價值=${position_value:.2f}"
             )
             
             return position
