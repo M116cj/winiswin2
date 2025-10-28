@@ -30,6 +30,7 @@ class Config:
     
     # ===== 交易配置 =====
     MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))
+    MAX_CONCURRENT_ORDERS: int = int(os.getenv("MAX_CONCURRENT_ORDERS", "5"))  # 每個週期最多同時開倉數量
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "true").lower() == "true"
     VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))

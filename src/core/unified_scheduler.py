@@ -208,12 +208,19 @@ class UnifiedScheduler:
             # 步驟 1：獲取並顯示持倉狀態
             positions = await self._get_and_display_positions()
             
-            # 步驟 2：獲取賬戶權益
-            account_info = await self.binance_client.get_account_info()
-            account_equity = float(account_info.get('totalWalletBalance', 0))
-            unrealized_pnl = float(account_info.get('totalUnrealizedProfit', 0))
+            # 步驟 2：獲取賬戶餘額信息
+            account_info = await self.binance_client.get_account_balance()
+            total_balance = account_info['total_balance']
+            available_balance = account_info['available_balance']
+            total_margin = account_info['total_margin']
+            unrealized_pnl = account_info['unrealized_pnl']
             
-            logger.info(f"💰 賬戶權益: ${account_equity:.2f} | 未實現盈虧: ${unrealized_pnl:+.2f}")
+            logger.info(
+                f"💰 賬戶餘額: 總額=${total_balance:.2f} | "
+                f"可用=${available_balance:.2f} | "
+                f"保證金=${total_margin:.2f} | "
+                f"未實現盈虧=${unrealized_pnl:+.2f}"
+            )
             
             # 步驟 3：顯示模型評分狀態
             await self._display_model_rating()
@@ -255,13 +262,35 @@ class UnifiedScheduler:
             # 步驟 6：執行信號（開倉）
             executed_count = 0
             if signals and self.config.TRADING_ENABLED:
-                for signal in signals:
+                # ✅ 保證金預算管理
+                max_concurrent_orders = getattr(self.config, 'MAX_CONCURRENT_ORDERS', 5)  # 默認最多同時5個倉位
+                available_for_trading = available_balance * 0.8  # 使用80%可用保證金
+                
+                logger.info(f"📊 保證金預算: 可用=${available_balance:.2f} | 可分配=${available_for_trading:.2f} | 最多同時={max_concurrent_orders}個倉位")
+                
+                # 限制信號數量
+                signals_to_execute = signals[:max_concurrent_orders]
+                if len(signals) > max_concurrent_orders:
+                    logger.warning(f"⚠️ 信號過多({len(signals)}個)，僅執行前{max_concurrent_orders}個")
+                
+                # 計算每個倉位的保證金預算
+                budget_per_position = available_for_trading / len(signals_to_execute) if signals_to_execute else 0
+                
+                for signal in signals_to_execute:
                     try:
-                        success = await self._execute_signal(signal, account_equity)
+                        # 使用保證金預算而不是總權益
+                        success = await self._execute_signal(signal, budget_per_position, available_balance)
                         if success:
                             executed_count += 1
                             self.stats['total_orders'] += 1
                             logger.info(f"   ✅ 成交: {signal['symbol']} {signal['direction']} | 槓桿: {signal.get('leverage', 1)}x")
+                            # 重新獲取可用保證金（已更新）
+                            try:
+                                updated_info = await self.binance_client.get_account_balance()
+                                available_balance = updated_info['available_balance']
+                                logger.debug(f"   💰 更新可用保證金: ${available_balance:.2f}")
+                            except:
+                                pass
                     except Exception as e:
                         logger.error(f"   ❌ 執行失敗 {signal['symbol']}: {e}")
             
@@ -355,13 +384,14 @@ class UnifiedScheduler:
         except Exception as e:
             logger.debug(f"模型評分跳過: {e}")
     
-    async def _execute_signal(self, signal: Dict, account_equity: float) -> bool:
+    async def _execute_signal(self, signal: Dict, margin_budget: float, available_balance: float) -> bool:
         """
         執行交易信號（開倉）
         
         Args:
             signal: 交易信號
-            account_equity: 賬戶權益
+            margin_budget: 此倉位的保證金預算（USDT）
+            available_balance: 當前可用保證金（用於日誌）
             
         Returns:
             成功返回 True，失敗返回 False
@@ -374,9 +404,10 @@ class UnifiedScheduler:
             take_profit = signal['adjusted_take_profit']
             leverage = signal['leverage']
             
-            # 計算倉位數量
+            # ✅ 使用保證金預算計算倉位數量（不是總權益）
+            # margin_budget 已經是可用保證金的一部分，可以直接使用
             position_size = await self.self_learning_trader.calculate_position_size(
-                account_equity=account_equity,
+                account_equity=margin_budget,  # ✅ 使用分配的保證金預算
                 entry_price=entry_price,
                 stop_loss=stop_loss,
                 leverage=leverage,
