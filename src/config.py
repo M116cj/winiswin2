@@ -264,7 +264,7 @@ class Config:
     leverage_win_scale: float = 0.15
     leverage_win_multiplier: float = 11.0
     leverage_conf_scale: float = 0.5
-    min_leverage: float = 0.5
+    min_leverage: float = 0.0  # 無限制：允許任意槓桿（包括低於 1x）
     
     # 模型評級權重（ConfigProfile 兼容）
     rating_rr_weight: float = 0.25

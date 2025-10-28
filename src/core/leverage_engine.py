@@ -35,8 +35,7 @@ class LeverageEngine:
         logger.info("✅ 槓桿引擎初始化完成（v3.17+ 無限制槓桿）")
         logger.info(f"   📊 勝率閾值: {self.config.min_win_probability:.1%}")
         logger.info(f"   📊 信心度閾值: {self.config.min_confidence:.1%}")
-        logger.info(f"   📊 最小槓桿: {self.config.min_leverage:.1f}x")
-        logger.info(f"   📊 最大槓桿: 無上限")
+        logger.info(f"   📊 槓桿範圍: 無限制（0x ~ ∞）")
     
     def calculate_leverage(
         self, 
@@ -45,7 +44,7 @@ class LeverageEngine:
         verbose: bool = False
     ) -> float:
         """
-        計算槓桿倍數
+        計算槓桿倍數（完全無限制）
         
         Args:
             win_probability: 勝率預測（0-1）
@@ -53,7 +52,7 @@ class LeverageEngine:
             verbose: 是否輸出詳細計算過程
             
         Returns:
-            槓桿倍數（>=0.5）
+            槓桿倍數（無限制，可以是任意正數或零）
         """
         # 基礎槓桿
         base = self.config.leverage_base
@@ -65,11 +64,8 @@ class LeverageEngine:
         # 信心度因子：信心度越高，槓桿放大越多
         conf_factor = max(1.0, confidence / self.config.leverage_conf_scale)
         
-        # 綜合槓桿
+        # 綜合槓桿（完全無限制，可以是任意正數或零）
         leverage = base * win_leverage * conf_factor
-        
-        # 最小值保護
-        leverage = max(self.config.min_leverage, leverage)
         
         if verbose:
             logger.debug(f"槓桿計算詳情:")
@@ -123,8 +119,7 @@ class LeverageEngine:
         return {
             "leverage_type": "unlimited",
             "formula": "base × (1 + (winrate-0.55)/0.15 × 11) × (confidence/0.5)",
-            "min_leverage": f"{self.config.min_leverage:.1f}x",
-            "max_leverage": "unlimited",
+            "leverage_range": "unlimited (0x ~ ∞)",
             "min_win_probability": f"{self.config.min_win_probability:.1%}",
             "min_confidence": f"{self.config.min_confidence:.1%}",
             "min_rr_ratio": f"{self.config.min_rr_ratio:.1f}",

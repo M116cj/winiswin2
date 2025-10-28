@@ -24,7 +24,7 @@ class ConfigProfile:
     leverage_win_scale: float = 0.15
     leverage_win_multiplier: float = 11.0
     leverage_conf_scale: float = 0.5
-    min_leverage: float = 0.5
+    min_leverage: float = 0.0  # 無限制：允許任意槓桿
     
     # 倉位計算參數
     equity_usage_ratio: float = 0.8
@@ -131,7 +131,7 @@ class ConfigProfile:
             "min_win_probability": f"{self.min_win_probability:.1%}",
             "min_confidence": f"{self.min_confidence:.1%}",
             "min_rr_ratio": f"{self.min_rr_ratio:.1f}",
-            "leverage_range": f"{self.min_leverage:.1f}x - 無上限",
+            "leverage_range": "無限制 (0x ~ ∞)",
             "position_monitor": "已啟用" if self.position_monitor_enabled else "已禁用",
             "model_rating": "已啟用" if self.model_rating_enabled else "已禁用",
             "trading_enabled": self.trading_enabled,
