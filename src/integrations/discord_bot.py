@@ -362,7 +362,7 @@ class TradingDiscordBot:
             if self.target_channel_id:
                 channel = self.client.get_channel(self.target_channel_id)
                 if channel:
-                    await channel.send(embed=embed)
+                    await channel.send(embed=embed)  # type: ignore
                 else:
                     logger.warning(f"未找到頻道 ID: {self.target_channel_id}")
             else:

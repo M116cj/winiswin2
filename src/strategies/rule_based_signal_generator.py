@@ -69,9 +69,14 @@ class RuleBasedSignalGenerator:
             if not self._validate_data(multi_tf_data):
                 return None
             
+            # 🔥 添加類型安全檢查 - 確保數據不為None
             h1_data = multi_tf_data.get('1h')
             m15_data = multi_tf_data.get('15m')
             m5_data = multi_tf_data.get('5m')
+            
+            if h1_data is None or m15_data is None or m5_data is None:
+                logger.warning(f"{symbol} 數據不完整，跳過信號生成")
+                return None
             
             # 計算所有指標
             indicators = self._calculate_all_indicators(h1_data, m15_data, m5_data)
@@ -248,8 +253,9 @@ class RuleBasedSignalGenerator:
     
     def _identify_liquidity_zones(self, df: pd.DataFrame) -> list:
         """識別流動性區域"""
-        highs = df['high'].values
-        lows = df['low'].values
+        # 🔥 轉換為numpy array確保類型安全
+        highs = np.asarray(df['high'].values)
+        lows = np.asarray(df['low'].values)
         
         zones = []
         window = 20
@@ -260,8 +266,8 @@ class RuleBasedSignalGenerator:
             
             # 識別高點聚集
             recent_highs = highs[i-window:i]
-            max_high = np.max(recent_highs)
-            high_cluster = np.sum(np.abs(recent_highs - max_high) / max_high < 0.002)
+            max_high = float(np.max(recent_highs))
+            high_cluster = int(np.sum(np.abs(recent_highs - max_high) / max_high < 0.002))
             
             if high_cluster >= 3:
                 zones.append({
@@ -272,8 +278,8 @@ class RuleBasedSignalGenerator:
             
             # 識別低點聚集
             recent_lows = lows[i-window:i]
-            min_low = np.min(recent_lows)
-            low_cluster = np.sum(np.abs(recent_lows - min_low) / min_low < 0.002)
+            min_low = float(np.min(recent_lows))
+            low_cluster = int(np.sum(np.abs(recent_lows - min_low) / min_low < 0.002))
             
             if low_cluster >= 3:
                 zones.append({
