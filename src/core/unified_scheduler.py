@@ -81,8 +81,8 @@ class UnifiedScheduler:
         )
         
         self.daily_reporter = DailyReporter(
-            config=config,
-            binance_client=binance_client
+            config_profile=config,  # type: ignore
+            model_rating_engine=self.model_evaluator
         )
         
         # 調度器狀態
@@ -201,24 +201,33 @@ class UnifiedScheduler:
             self.stats['total_cycles'] += 1
             cycle_start = datetime.now()
             
-            logger.info(f"🔄 交易週期 #{self.stats['total_cycles']} 開始")
+            logger.info("=" * 80)
+            logger.info(f"🔄 交易週期 #{self.stats['total_cycles']} | {cycle_start.strftime('%Y-%m-%d %H:%M:%S UTC')}")
+            logger.info("=" * 80)
             
-            # 步驟 1：獲取賬戶權益
+            # 步驟 1：獲取並顯示持倉狀態
+            positions = await self._get_and_display_positions()
+            
+            # 步驟 2：獲取賬戶權益
             account_info = await self.binance_client.get_account_info()
             account_equity = float(account_info.get('totalWalletBalance', 0))
+            unrealized_pnl = float(account_info.get('totalUnrealizedProfit', 0))
             
-            logger.info(f"   💰 賬戶權益: ${account_equity:.2f}")
+            logger.info(f"💰 賬戶權益: ${account_equity:.2f} | 未實現盈虧: ${unrealized_pnl:+.2f}")
             
-            # 步驟 2：獲取交易對列表
+            # 步驟 3：顯示模型評分狀態
+            await self._display_model_rating()
+            
+            # 步驟 4：獲取交易對列表
             symbols = await self._get_trading_symbols()
             
             if not symbols:
-                logger.warning("   ⚠️ 無可交易交易對")
+                logger.warning("⚠️  無可交易交易對")
                 return
             
-            logger.info(f"   📊 分析 {len(symbols)} 個交易對")
+            logger.info(f"📊 掃描 {len(symbols)} 個交易對中...")
             
-            # 步驟 3：批量分析並生成信號
+            # 步驟 5：批量分析並生成信號
             signals = []
             for symbol in symbols:
                 try:
@@ -236,22 +245,30 @@ class UnifiedScheduler:
                         self.stats['total_signals'] += 1
                     
                 except Exception as e:
-                    logger.error(f"   ❌ 分析 {symbol} 失敗: {e}")
+                    logger.debug(f"分析 {symbol} 跳過: {e}")
             
-            logger.info(f"   ✅ 生成 {len(signals)} 個信號")
+            if signals:
+                logger.info(f"✅ 發現 {len(signals)} 個交易信號")
+            else:
+                logger.info("⏸️  本週期無新信號")
             
-            # 步驟 4：執行信號（開倉）
+            # 步驟 6：執行信號（開倉）
+            executed_count = 0
             if signals and self.config.TRADING_ENABLED:
                 for signal in signals:
                     try:
-                        await self._execute_signal(signal, account_equity)
-                        self.stats['total_orders'] += 1
+                        success = await self._execute_signal(signal, account_equity)
+                        if success:
+                            executed_count += 1
+                            self.stats['total_orders'] += 1
+                            logger.info(f"   ✅ 成交: {signal['symbol']} {signal['direction']} | 槓桿: {signal.get('leverage', 1)}x")
                     except Exception as e:
-                        logger.error(f"   ❌ 執行信號失敗 ({signal['symbol']}): {e}")
+                        logger.error(f"   ❌ 執行失敗 {signal['symbol']}: {e}")
             
             # 週期統計
             cycle_duration = (datetime.now() - cycle_start).total_seconds()
-            logger.info(f"✅ 交易週期完成 | 耗時: {cycle_duration:.2f}s")
+            logger.info(f"✅ 週期完成 | 耗時: {cycle_duration:.1f}s | 新成交: {executed_count}")
+            logger.info("=" * 80)
             
         except Exception as e:
             logger.error(f"❌ 交易週期執行失敗: {e}", exc_info=True)
@@ -279,13 +296,75 @@ class UnifiedScheduler:
             logger.error(f"❌ 獲取交易對列表失敗: {e}")
             return []
     
-    async def _execute_signal(self, signal: Dict, account_equity: float):
+    async def _get_and_display_positions(self) -> List[Dict]:
+        """獲取並顯示當前持倉狀態"""
+        try:
+            positions = await self.binance_client.get_positions()
+            
+            # 過濾出有持倉的交易對
+            active_positions = [
+                p for p in positions 
+                if float(p.get('positionAmt', 0)) != 0
+            ]
+            
+            if not active_positions:
+                logger.info("📦 當前持倉: 無")
+                return []
+            
+            logger.info(f"📦 當前持倉: {len(active_positions)} 個")
+            for pos in active_positions:
+                symbol = pos['symbol']
+                amt = float(pos['positionAmt'])
+                direction = "LONG" if amt > 0 else "SHORT"
+                entry_price = float(pos.get('entryPrice', 0))
+                unrealized_pnl = float(pos.get('unRealizedProfit', 0))
+                pnl_pct = (unrealized_pnl / (abs(amt) * entry_price) * 100) if entry_price > 0 else 0
+                
+                logger.info(f"   • {symbol} {direction} | 盈虧: ${unrealized_pnl:+.2f} ({pnl_pct:+.2f}%)")
+            
+            return active_positions
+            
+        except Exception as e:
+            logger.error(f"❌ 獲取持倉失敗: {e}")
+            return []
+    
+    async def _display_model_rating(self):
+        """顯示模型評分狀態"""
+        try:
+            # 獲取交易記錄
+            if not self.trade_recorder:
+                return
+            
+            trades = self.trade_recorder.get_trades(days=1)
+            
+            if not trades:
+                logger.info("🎯 模型評分: 無交易記錄")
+                return
+            
+            # 評估模型
+            evaluation = self.model_evaluator.evaluate_model(trades, period_days=1)
+            
+            score = evaluation.get('final_score', 0)
+            grade = evaluation.get('grade', 'N/A')
+            action = evaluation.get('action', 'N/A')
+            total_trades = evaluation.get('total_trades', 0)
+            win_rate = evaluation.get('win_rate', 0) * 100
+            
+            logger.info(f"🎯 模型評分: {score:.1f}/100 ({grade} 級) | 勝率: {win_rate:.1f}% | 交易: {total_trades} 筆 | 建議: {action}")
+            
+        except Exception as e:
+            logger.debug(f"模型評分跳過: {e}")
+    
+    async def _execute_signal(self, signal: Dict, account_equity: float) -> bool:
         """
         執行交易信號（開倉）
         
         Args:
             signal: 交易信號
             account_equity: 賬戶權益
+            
+        Returns:
+            成功返回 True，失敗返回 False
         """
         try:
             symbol = signal['symbol']
@@ -318,16 +397,13 @@ class UnifiedScheduler:
                 quantity=position_size
             )
             
-            logger.info(
-                f"   ✅ 開倉成功: {symbol} {direction} | "
-                f"數量={position_size:.6f} | 槓桿={leverage:.1f}x | "
-                f"訂單 ID={order_result.get('orderId')}"
-            )
-            
             # TODO: 設置 SL/TP 訂單
+            
+            return True
             
         except Exception as e:
             logger.error(f"   ❌ 執行信號失敗: {e}", exc_info=True)
+            return False
     
     def _should_generate_report(self, now: datetime) -> bool:
         """檢查是否應該生成報告"""
@@ -357,8 +433,8 @@ class UnifiedScheduler:
                 save_markdown=True
             )
             
-            # 使用 DailyReporter 生成額外報告
-            daily_stats = await self.daily_reporter.generate_report()
+            # DailyReporter 報告已包含在 ModelEvaluator 中
+            # daily_stats = await self.daily_reporter.generate_report()
             
             logger.info("✅ 每日報告生成完成")
             
