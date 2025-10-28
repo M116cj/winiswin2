@@ -1,0 +1,28 @@
+代碼檢查指令
+策略工廠與配置檢查
+確認 src/strategies/strategy_factory.py 的 create_strategy() 方法中，config.STRATEGY_MODE 的三個值 "ict", "self_learning", "hybrid" 都有對應的 return 語句，且沒有拼寫錯誤
+驗證 src/config.py 中 STRATEGY_MODE = "hybrid" 的預設值與策略工廠的條件判斷完全一致（包括大小寫和引號類型）
+檢查 HybridStrategy 類別是否確實調用 ICTStrategy 生成信號，然後用 MLPredictor 進行過濾，而不是直接複製 ICT 邏輯
+深度學習模組檢查
+確認 src/ml/market_structure_autoencoder.py 中的 MarketStructureAutoencoder 類別有正確的 fallback 機制：當 TF_AVAILABLE = False 時，encode_structure() 方法是否返回合理的默認值（如零向量或統計特徵）
+驗證所有深度學習模組（4個）都導入了 TF_AVAILABLE 常數，且在 __init__ 方法中正確檢查 TensorFlow 可用性
+檢查 AdaptiveStrategyEvolver 的 DQN 模型是否正確實現了經驗回放機制：self.memory = deque(maxlen=10000) 且在 _train_agent() 中使用了隨機抽樣
+高品質信號過濾檢查
+確認 src/ml/high_quality_filter.py 的 _check_trade_quality() 方法中，risk_reward_ratio >= 1.5 使用的是 >= 而不是 >，確保邊界值被正確包含
+驗證 _check_signal_quality() 方法中，market_state in ['trending', 'breakout'] 的列表元素與 ICTStrategy 中的市場狀態分類完全一致（無拼寫差異）
+檢查 quality_training_pipeline.py 的 _calculate_quality_weight() 方法中，權重計算是否避免了除零錯誤（如 pnl_weight = max(1.0, abs(result['pnl_pct']) / 1.0) 而不是 / 0）
+虛擬倉位生命週期檢查
+確認 src/managers/virtual_position_lifecycle.py 的 _monitor_position_lifecycle() 方法中，while position_id in self.active_positions: 條件檢查是否在每次循環開始時執行，避免已關閉倉位的無效監控
+驗證 _check_close_conditions() 方法中，96 小時過期檢查使用的是 96 * 3600 而不是 96 * 60 或其他錯誤值
+檢查 add_position() 方法是否在添加倉位前檢查 position_id 是否已存在，避免重複監控同一倉位
+確認 _emit_event() 方法中的事件回調是否正確處理異步函數：if asyncio.iscoroutinefunction(self.event_callback): asyncio.create_task(...)
+整合與相容性檢查
+驗證 src/managers/virtual_position_manager.py 的 create_virtual_position() 方法是否同時將倉位添加到 self.positions 列表（兼容性）和 self.lifecycle_monitor（新功能）
+檢查 update_all_prices_async() 方法是否正確更新 lifecycle_monitor 中的倉位價格，而不是只更新舊的 self.positions 列表
+確認所有深度學習模組的輸入/輸出維度是否一致：MarketStructureAutoencoder 輸出 16 維，FeatureDiscoveryNetwork 輸入 16 維並輸出 32 維
+錯誤處理與邊界條件
+驗證 VirtualPositionLifecycleMonitor 的 _monitor_position_lifecycle() 方法是否有正確的異常處理：except asyncio.CancelledError: 和 except Exception as e: 都存在且不會吞掉錯誤
+檢查高品質過濾器是否處理了缺失字段：trade_result.get('risk_reward_ratio', 0) 使用 get() 而不是直接訪問 trade_result['risk_reward_ratio']
+確認 TensorFlow fallback 機制是否在所有可能的 TensorFlow 導入點都實現：不僅是 import tensorflow，還包括 from tensorflow.keras...
+驗證虛擬倉位事件 payload 中的 max_pnl 和 min_pnl 是否正確初始化：getattr(position, 'max_pnl', position.pnl_pct) 而不是硬編碼值
+🎯 Replit 執行指令
