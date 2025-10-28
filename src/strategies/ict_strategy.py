@@ -481,13 +481,13 @@ class ICTStrategy:
         scores['price_position'] = position_score
         
         rsi = calculate_rsi(m5_data['close'])
-        macd_line, signal_line, _ = calculate_macd(m5_data['close'])
+        macd_data = calculate_macd(m5_data['close'])
         
         momentum_score = 0.0
-        if not rsi.empty and not macd_line.empty:
+        if not rsi.empty and not macd_data['macd'].empty:
             rsi_val = rsi.iloc[-1]
-            macd_val = macd_line.iloc[-1]
-            signal_val = signal_line.iloc[-1]
+            macd_val = macd_data['macd'].iloc[-1]
+            signal_val = macd_data['signal'].iloc[-1]
             
             # ✅ 修复：RSI范围对称于50中线
             rsi_bullish = 50 < rsi_val < 70  # 看涨：RSI在50-70之间
@@ -508,7 +508,10 @@ class ICTStrategy:
         
         scores['momentum'] = momentum_score
         
-        bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(m15_data['close'])
+        bb_data = calculate_bollinger_bands(m15_data['close'])
+        bb_upper = bb_data['upper']
+        bb_middle = bb_data['middle']
+        bb_lower = bb_data['lower']
         
         volatility_score = 0.0
         if not bb_upper.empty and len(m15_data) >= 168:
@@ -588,22 +591,22 @@ class ICTStrategy:
             if not rsi.empty:
                 indicators['rsi'] = float(rsi.iloc[-1])
             
-            macd_line, signal_line, histogram = calculate_macd(m5_data['close'])
-            if not macd_line.empty:
-                indicators['macd'] = float(macd_line.iloc[-1])
-                indicators['macd_signal'] = float(signal_line.iloc[-1])
-                indicators['macd_histogram'] = float(histogram.iloc[-1])
+            macd_data = calculate_macd(m5_data['close'])
+            if not macd_data['macd'].empty:
+                indicators['macd'] = float(macd_data['macd'].iloc[-1])
+                indicators['macd_signal'] = float(macd_data['signal'].iloc[-1])
+                indicators['macd_histogram'] = float(macd_data['histogram'].iloc[-1])
             
             atr = calculate_atr(m15_data)
             if not atr.empty:
                 indicators['atr'] = float(atr.iloc[-1])
             
-            bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(m15_data['close'])
-            if not bb_upper.empty:
-                indicators['bb_upper'] = float(bb_upper.iloc[-1])
-                indicators['bb_middle'] = float(bb_middle.iloc[-1])
-                indicators['bb_lower'] = float(bb_lower.iloc[-1])
-                bb_width = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1]
+            bb_data = calculate_bollinger_bands(m15_data['close'])
+            if not bb_data['upper'].empty:
+                indicators['bb_upper'] = float(bb_data['upper'].iloc[-1])
+                indicators['bb_middle'] = float(bb_data['middle'].iloc[-1])
+                indicators['bb_lower'] = float(bb_data['lower'].iloc[-1])
+                bb_width = (bb_data['upper'].iloc[-1] - bb_data['lower'].iloc[-1]) / bb_data['middle'].iloc[-1]
                 indicators['bb_width_pct'] = float(bb_width)
             
             if len(m15_data) >= 20 and 'volume' in m15_data.columns:

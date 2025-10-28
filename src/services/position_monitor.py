@@ -966,12 +966,18 @@ class PositionMonitor:
             rsi = indicators_calc.calculate_rsi(close_prices, period=14)
             
             # MACD
-            macd_line, signal_line, histogram = indicators_calc.calculate_macd(close_prices)
+            macd_data = indicators_calc.calculate_macd(close_prices)
+            macd_line = macd_data['macd']
+            signal_line = macd_data['signal']
+            histogram = macd_data['histogram']
             
-            # 布林带
-            bb_upper, bb_middle, bb_lower = indicators_calc.calculate_bollinger_bands(close_prices)
+            # 布林帶
+            bb_data = indicators_calc.calculate_bollinger_bands(close_prices)
+            bb_upper = bb_data['upper']
+            bb_middle = bb_data['middle']
+            bb_lower = bb_data['lower']
             current_price = close_prices[-1]
-            bb_width_pct = (bb_upper[-1] - bb_lower[-1]) / bb_middle[-1] * 100 if bb_middle[-1] > 0 else 0
+            bb_width_pct = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1] * 100 if bb_middle.iloc[-1] > 0 else 0
             
             # 价格相对布林带位置 (0=下轨, 1=上轨)
             if bb_upper[-1] > bb_lower[-1]:
