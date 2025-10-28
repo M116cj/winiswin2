@@ -1,0 +1,40 @@
+
+2025-10-28 15:36:47,544 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗6次)，請3秒後重試
+  File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+Traceback (most recent call last):
+    account_info = await self.get_account_info()
+  File "/app/src/clients/binance_client.py", line 203, in _request
+    result = await self.circuit_breaker.call_async(_do_request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/core/circuit_breaker.py", line 327, in call_async
+    raise Exception(reason)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 455, in get_account_info
+    result = await self._request("GET", "/fapi/v2/account", signed=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 219, in _request
+    raise BinanceRequestError(
+src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗6次)，請3秒後重試
+    raw_positions = await self.binance_client.get_position_info_async()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+    account_info = await self.get_account_info()
+2025-10-28 15:36:49,547 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請1秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-28 15:36:49,547 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗6次)，請1秒後重試
+2025-10-28 15:36:49,547 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗6次)，請1秒後重試
+Traceback (most recent call last):
+  File "/app/src/clients/binance_client.py", line 203, in _request
+    result = await self.circuit_breaker.call_async(_do_request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/core/circuit_breaker.py", line 327, in call_async
+    raise Exception(reason)
+Exception: 熔斷器阻斷(失敗6次)，請1秒後重試
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/app/src/core/position_controller.py", line 135, in _fetch_all_positions
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 455, in get_account_info
+    result = await self._request("GET", "/fapi/v2/account", signed=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 219, in _request
+    raise BinanceRequestError(
