@@ -108,9 +108,9 @@ class TradingBot:
         
         # 🔥 v3.16.0 配置状态
         logger.info("\n🔥 v3.16.0 性能模块状态：")
-        logger.info(f"  🎯 市场状态预测器: {'✅ 启用' if Config.ENABLE_MARKET_REGIME_PREDICTION else '⚪ 禁用 (默认)'}")
-        logger.info(f"  🔧 动态特征生成器: {'✅ 启用' if Config.ENABLE_DYNAMIC_FEATURES else '⚪ 禁用 (默认)'}")
-        logger.info(f"  🎣 流动性狩猎器: {'✅ 启用' if Config.ENABLE_LIQUIDITY_HUNTING else '⚪ 禁用 (默认)'}")
+        logger.info(f"  🎯 市场状态预测器: {'✅ 启用' if getattr(Config, 'ENABLE_MARKET_REGIME_PREDICTION', False) else '⚪ 禁用 (默认)'}")
+        logger.info(f"  🔧 动态特征生成器: {'✅ 启用' if getattr(Config, 'ENABLE_DYNAMIC_FEATURES', False) else '⚪ 禁用 (默认)'}")
+        logger.info(f"  🎣 流动性狩猎器: {'✅ 启用' if getattr(Config, 'ENABLE_LIQUIDITY_HUNTING', False) else '⚪ 禁用 (默认)'}")
         logger.info("  💡 提示: 默认全部禁用，可通过环境变量启用新功能\n")
         
         is_valid, errors = Config.validate()
