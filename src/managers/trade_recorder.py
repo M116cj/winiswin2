@@ -315,6 +315,56 @@ class TradeRecorder:
         
         return all_trades
     
+    def get_trades(self, days: Optional[int] = None) -> List[Dict]:
+        """
+        獲取所有交易記錄（包括開倉pending和已平倉）
+        
+        Args:
+            days: 可選，過濾最近N天的交易（默認None=所有交易）
+        
+        Returns:
+            List[Dict]: 所有交易記錄，每條記錄包含 status 字段
+        """
+        all_trades = []
+        
+        # 🔥 步驟1：添加待配對的開倉記錄（status='open'）
+        for entry in self.pending_entries:
+            trade_record = entry.copy()
+            trade_record['status'] = 'open'  # 標記為未平倉
+            all_trades.append(trade_record)
+        
+        # 🔥 步驟2：添加已完成的交易記錄（status='closed'）
+        completed = self.get_all_completed_trades()
+        for trade in completed:
+            if 'status' not in trade:
+                trade['status'] = 'closed'  # 確保有status字段
+            all_trades.append(trade)
+        
+        # 🔥 步驟3：如果指定了days參數，過濾最近N天的交易
+        if days is not None:
+            from datetime import datetime, timedelta
+            cutoff_time = datetime.now() - timedelta(days=days)
+            
+            filtered_trades = []
+            for trade in all_trades:
+                # 檢查entry_timestamp或recorded_at字段
+                timestamp_str = trade.get('entry_timestamp') or trade.get('recorded_at')
+                if timestamp_str:
+                    try:
+                        trade_time = datetime.fromisoformat(timestamp_str)
+                        if trade_time >= cutoff_time:
+                            filtered_trades.append(trade)
+                    except:
+                        # 如果時間戳格式有問題，保留這條記錄
+                        filtered_trades.append(trade)
+                else:
+                    # 沒有時間戳的記錄也保留
+                    filtered_trades.append(trade)
+            
+            return filtered_trades
+        
+        return all_trades
+    
     def force_flush(self):
         """強制保存所有數據"""
         if self.completed_trades:
