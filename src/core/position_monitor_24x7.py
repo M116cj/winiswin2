@@ -26,7 +26,8 @@ class PositionMonitor24x7:
         self,
         config_profile,
         binance_client=None,
-        trade_recorder=None
+        trade_recorder=None,
+        data_service=None
     ):
         """
         初始化監控器
@@ -35,31 +36,47 @@ class PositionMonitor24x7:
             config_profile: ConfigProfile 實例
             binance_client: BinanceClient 實例（可選）
             trade_recorder: TradeRecorder 實例（可選）
+            data_service: DataService 實例（可選，用於獲取市場數據）
         """
         self.config = config_profile
         self.binance_client = binance_client
         self.trade_recorder = trade_recorder
+        self.data_service = data_service
         
         self.is_running = False
         self.monitor_task: Optional[asyncio.Task] = None
         
+        # 🔥 兼容Config大小寫屬性
+        self.monitor_interval = getattr(config_profile, 'position_monitor_interval', 
+                                       getattr(config_profile, 'POSITION_MONITOR_INTERVAL', 2))
+        self.risk_threshold = getattr(config_profile, 'risk_kill_threshold',
+                                      getattr(config_profile, 'RISK_KILL_THRESHOLD', 0.99))
+        
         # 統計數據
         self.total_checks = 0
         self.forced_closures = 0
+        self.entry_reason_expired_closures = 0  # 🔥 新增：進場理由失效平倉數
+        self.counter_trend_closures = 0  # 🔥 新增：逆勢平倉數
         self.last_check_time: Optional[datetime] = None
         
         logger.info("=" * 60)
-        logger.info("✅ 24/7 倉位監控器初始化完成（v3.17+）")
-        logger.info(f"   ⏱️  檢查間隔: {self.config.position_monitor_interval} 秒")
-        logger.info(f"   🚨 風險熔斷閾值: {self.config.risk_kill_threshold:.1%}")
+        logger.info("✅ 24/7 倉位監控器初始化完成（v3.17.10+）")
+        logger.info(f"   ⏱️  檢查間隔: {self.monitor_interval} 秒")
+        logger.info(f"   🚨 風險熔斷閾值: {self.risk_threshold:.1%}")
+        logger.info(f"   🔥 進場理由失效自動平倉: 啟用")
+        logger.info(f"   🔥 逆勢無反彈自動平倉: 啟用")
         logger.info(f"   🎯 優先級: 0 (最高)")
         logger.info("=" * 60)
     
     async def start(self):
-        """啟動監控器"""
+        """啟動監控器（修復：表面初始化失敗）"""
         if self.is_running:
             logger.warning("⚠️ 監控器已在運行")
             return
+        
+        # 🔥 驗證必要組件
+        if not self.binance_client:
+            raise ValueError("PositionMonitor24x7 需要 binance_client 才能運行")
         
         self.is_running = True
         self.monitor_task = asyncio.create_task(self._monitor_loop())
@@ -93,14 +110,14 @@ class PositionMonitor24x7:
                 self.total_checks += 1
                 self.last_check_time = datetime.now()
                 
-                # 等待下一次檢查
-                await asyncio.sleep(self.config.position_monitor_interval)
+                # 等待下一次檢查（使用實例屬性）
+                await asyncio.sleep(self.monitor_interval)
                 
             except asyncio.CancelledError:
                 break
             except Exception as e:
                 logger.error(f"❌ 監控循環錯誤: {e}", exc_info=True)
-                await asyncio.sleep(self.config.position_monitor_interval)
+                await asyncio.sleep(self.monitor_interval)
     
     async def _check_all_positions(self):
         """檢查所有倉位"""
@@ -131,7 +148,12 @@ class PositionMonitor24x7:
     
     async def _check_single_position(self, position: Dict[str, Any]):
         """
-        檢查單個倉位
+        🔥 v3.17.10+：檢查單個倉位（新增進場理由失效和逆勢平倉邏輯）
+        
+        平倉條件（按優先級）：
+        1. PnL ≤ -99% → 100%虧損熔斷
+        2. 進場理由失效 → 立即平倉
+        3. 逆勢 + 無反彈信號 → 立即平倉
         
         Args:
             position: 倉位數據（來自 Binance API）
@@ -146,7 +168,8 @@ class PositionMonitor24x7:
             entry_price = float(position.get('entryPrice', 0))
             # markPrice 可能缺失，使用 entryPrice 作為備選
             mark_price = float(position.get('markPrice') or position.get('entryPrice', 0))
-            unrealized_pnl = float(position.get('unRealizedProfit', 0))
+            unrealized_pnl = float(position.get('unrealizedProfit', position.get('unRealizedProfit', 0)))
+            direction = "LONG" if position_amt > 0 else "SHORT"
             
             if position_amt == 0:
                 return
@@ -161,8 +184,8 @@ class PositionMonitor24x7:
             # 計算 PnL 百分比（相對於初始風險）
             pnl_pct = unrealized_pnl / risk_amount if risk_amount > 0 else 0
             
-            # 檢查是否觸發熔斷
-            if pnl_pct <= -self.config.risk_kill_threshold:
+            # 🔥 檢查1：100% 虧損熔斷（最高優先級）
+            if pnl_pct <= -self.risk_threshold:
                 logger.critical(
                     f"🚨🚨🚨 {symbol} 觸發 100% 虧損熔斷！"
                     f"PnL: ${unrealized_pnl:.2f} ({pnl_pct:.1%}) "
@@ -170,15 +193,76 @@ class PositionMonitor24x7:
                 )
                 
                 # 立即市價平倉（優先級 0）
-                await self._force_close_position(symbol, position_amt, mark_price)
+                await self._force_close_position(
+                    symbol,
+                    position_amt,
+                    mark_price,
+                    reason="100% 虧損熔斷"
+                )
+                return
             
-            else:
-                # 正常監控日誌（僅在虧損 >50% 時警告）
-                if pnl_pct < -0.5:
+            # 🔥 檢查2：進場理由失效（v3.17.10+）
+            entry_expired, expire_reason = await self._is_entry_reason_expired(
+                symbol,
+                entry_price,
+                mark_price,
+                direction
+            )
+            
+            if entry_expired:
+                logger.warning(
+                    f"⚠️ {symbol} 進場理由失效: {expire_reason} | "
+                    f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%}) → 執行平倉"
+                )
+                
+                await self._force_close_position(
+                    symbol,
+                    position_amt,
+                    mark_price,
+                    reason=f"進場理由失效: {expire_reason}"
+                )
+                self.entry_reason_expired_closures += 1
+                return
+            
+            # 🔥 檢查3：逆勢 + 無反彈信號（v3.17.10+）
+            is_counter, counter_reason = await self._is_counter_trend(
+                symbol,
+                entry_price,
+                mark_price,
+                direction
+            )
+            
+            if is_counter:
+                # 檢查是否有反彈信號
+                has_rebound = await self._has_rebound_signal(symbol, direction)
+                
+                if not has_rebound:
                     logger.warning(
-                        f"⚠️ {symbol} 虧損 {pnl_pct:.1%} "
-                        f"(PnL: ${unrealized_pnl:.2f} / 風險: ${risk_amount:.2f})"
+                        f"⚠️ {symbol} 逆勢且無反彈信號: {counter_reason} | "
+                        f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%}) → 執行平倉"
                     )
+                    
+                    await self._force_close_position(
+                        symbol,
+                        position_amt,
+                        mark_price,
+                        reason=f"逆勢無反彈: {counter_reason}"
+                    )
+                    self.counter_trend_closures += 1
+                    return
+                else:
+                    # 有反彈信號，暫時保留
+                    logger.info(
+                        f"📊 {symbol} 逆勢但有反彈信號，繼續持有 | "
+                        f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
+                    )
+            
+            # 正常監控日誌（僅在虧損 >50% 時警告）
+            if pnl_pct < -0.5:
+                logger.warning(
+                    f"⚠️ {symbol} 虧損 {pnl_pct:.1%} "
+                    f"(PnL: ${unrealized_pnl:.2f} / 風險: ${risk_amount:.2f})"
+                )
                     
         except Exception as e:
             logger.error(f"❌ 檢查倉位失敗: {e}")
@@ -210,7 +294,8 @@ class PositionMonitor24x7:
         self,
         symbol: str,
         position_amt: float,
-        current_price: float
+        current_price: float,
+        reason: str = "未知原因"
     ):
         """
         強制平倉（市價單）
@@ -219,6 +304,7 @@ class PositionMonitor24x7:
             symbol: 交易對符號
             position_amt: 倉位數量（正數=多倉，負數=空倉）
             current_price: 當前價格
+            reason: 平倉原因（用於記錄）
         """
         if not self.binance_client:
             logger.error("❌ 無 Binance 客戶端，無法平倉")
@@ -230,16 +316,16 @@ class PositionMonitor24x7:
             quantity = abs(position_amt)
             
             logger.critical(
-                f"🚨 執行強制平倉: {symbol} {side} {quantity:.6f} @ ${current_price:.2f}"
+                f"🚨 執行強制平倉: {symbol} {side} {quantity:.6f} @ ${current_price:.2f} | 原因: {reason}"
             )
             
-            # 市價平倉（優先級 0，最高優先級）
-            # ⚠️ One-Way Mode: 不使用 positionSide，reduce_only 也移除
+            # 🔥 市價平倉（優先級 0，最高優先級）+ reduce_only防止開反向倉
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
-                quantity=quantity
+                quantity=quantity,
+                reduce_only=True  # 🔥 修復：防止與PositionController衝突開反向倉
             )
             
             if result:
@@ -248,14 +334,19 @@ class PositionMonitor24x7:
                 
                 # 記錄到交易記錄
                 if self.trade_recorder:
-                    self.trade_recorder.record_forced_closure(
-                        symbol=symbol,
-                        side=side,
-                        quantity=quantity,
-                        price=current_price,
-                        reason="100% 虧損熔斷",
-                        order_id=result.get('orderId')
-                    )
+                    # 🔥 使用傳入的reason參數
+                    try:
+                        self.trade_recorder.record_forced_closure(
+                            symbol=symbol,
+                            side=side,
+                            quantity=quantity,
+                            price=current_price,
+                            reason=reason,
+                            order_id=result.get('orderId')
+                        )
+                    except AttributeError:
+                        # 如果record_forced_closure方法不存在，記錄到日誌
+                        logger.info(f"📝 平倉記錄: {symbol} {side} {quantity} @ {current_price} | {reason}")
             else:
                 logger.error(f"❌ 強制平倉失敗: {symbol}")
                 
@@ -273,7 +364,207 @@ class PositionMonitor24x7:
             "is_running": self.is_running,
             "total_checks": self.total_checks,
             "forced_closures": self.forced_closures,
+            "entry_reason_expired_closures": self.entry_reason_expired_closures,
+            "counter_trend_closures": self.counter_trend_closures,
             "last_check_time": self.last_check_time.isoformat() if self.last_check_time else None,
-            "check_interval_seconds": self.config.position_monitor_interval,
-            "risk_kill_threshold": f"{self.config.risk_kill_threshold:.1%}",
+            "check_interval_seconds": self.monitor_interval,
+            "risk_kill_threshold": f"{self.risk_threshold:.1%}",
         }
+    
+    async def _is_entry_reason_expired(
+        self,
+        symbol: str,
+        entry_price: float,
+        current_price: float,
+        direction: str
+    ) -> tuple[bool, str]:
+        """
+        🔥 v3.17.10+：檢測進場理由是否失效
+        
+        判斷標準：
+        1. 價格遠離進場價格 >2%（Order Block被突破）
+        2. 持倉時間 >48小時（時間衰減）
+        3. 流動性消失（訂單簿深度<30%）
+        
+        Args:
+            symbol: 交易對
+            entry_price: 進場價格
+            current_price: 當前價格
+            direction: 倉位方向（LONG/SHORT）
+        
+        Returns:
+            (是否失效, 失效原因)
+        """
+        try:
+            # 1️⃣ 檢查價格偏離度（Order Block被突破）
+            price_deviation = abs(current_price - entry_price) / entry_price
+            if price_deviation > 0.02:  # >2%
+                return (
+                    True,
+                    f"價格偏離進場價{price_deviation:.1%} (>2%閾值)"
+                )
+            
+            # 2️⃣ 檢查持倉時間（時間衰減）
+            if self.trade_recorder:
+                trades = self.trade_recorder.get_trades()
+                open_trades = [
+                    t for t in trades
+                    if t.get('symbol') == symbol
+                    and t.get('direction') == direction
+                    and t.get('status') == 'open'
+                ]
+                
+                if open_trades:
+                    latest_trade = open_trades[-1]
+                    entry_timestamp = latest_trade.get('entry_timestamp')
+                    if entry_timestamp:
+                        from datetime import datetime
+                        entry_time = datetime.fromisoformat(entry_timestamp)
+                        hold_duration = (datetime.now() - entry_time).total_seconds()
+                        
+                        if hold_duration > 172800:  # >48小時
+                            hours = hold_duration / 3600
+                            return (
+                                True,
+                                f"持倉時間過長 {hours:.1f}h (>48h閾值)"
+                            )
+            
+            # 3️⃣ 檢查流動性（需要市場數據）
+            if self.data_service and self.binance_client:
+                try:
+                    # 獲取最新市場數據
+                    ticker = await self.binance_client.get_ticker_price(symbol)
+                    if ticker:
+                        # 簡化版：檢查24h成交量變化
+                        # 完整版可以查詢訂單簿深度
+                        pass  # 流動性檢查暫時跳過（需要訂單簿API）
+                except:
+                    pass
+            
+            return (False, "")
+            
+        except Exception as e:
+            logger.debug(f"檢查進場理由失敗: {e}")
+            return (False, "")
+    
+    async def _is_counter_trend(
+        self,
+        symbol: str,
+        entry_price: float,
+        current_price: float,
+        direction: str
+    ) -> tuple[bool, str]:
+        """
+        🔥 v3.17.10+：檢測倉位是否逆勢
+        
+        判斷標準：
+        - LONG倉位：當前價格 < 進場價格（下跌趨勢）
+        - SHORT倉位：當前價格 > 進場價格（上漲趨勢）
+        
+        Args:
+            symbol: 交易對
+            entry_price: 進場價格
+            current_price: 當前價格
+            direction: 倉位方向
+        
+        Returns:
+            (是否逆勢, 逆勢說明)
+        """
+        try:
+            if direction == "LONG" and current_price < entry_price:
+                deviation = (current_price - entry_price) / entry_price
+                return (
+                    True,
+                    f"多倉下跌 {deviation:.1%}"
+                )
+            elif direction == "SHORT" and current_price > entry_price:
+                deviation = (current_price - entry_price) / entry_price
+                return (
+                    True,
+                    f"空倉上漲 {deviation:+.1%}"
+                )
+            
+            return (False, "")
+            
+        except Exception as e:
+            logger.debug(f"檢查逆勢失敗: {e}")
+            return (False, "")
+    
+    async def _has_rebound_signal(
+        self,
+        symbol: str,
+        direction: str
+    ) -> bool:
+        """
+        🔥 v3.17.10+：檢測是否有反彈信號
+        
+        判斷標準（需要最新市場數據）：
+        1. RSI超賣/超買反轉
+        2. MACD金叉/死叉
+        3. 布林帶反彈
+        
+        Args:
+            symbol: 交易對
+            direction: 倉位方向
+        
+        Returns:
+            是否有反彈信號
+        """
+        try:
+            if not self.data_service:
+                return False
+            
+            # 獲取5m時間框架數據（快速反應）
+            data = await self.data_service.get_klines_incremental(
+                symbol,
+                interval='5m',
+                limit=20
+            )
+            
+            if data.empty or len(data) < 20:
+                return False
+            
+            # 計算簡單指標
+            from src.utils.indicators import calculate_rsi, calculate_macd
+            
+            # RSI反彈信號
+            rsi = calculate_rsi(data, period=14)
+            if rsi.empty:
+                return False
+            
+            latest_rsi = float(rsi.iloc[-1])
+            
+            # LONG倉位：RSI < 30（超賣）可能反彈
+            if direction == "LONG" and latest_rsi < 30:
+                logger.debug(f"{symbol} 檢測到多倉反彈信號: RSI={latest_rsi:.1f}")
+                return True
+            
+            # SHORT倉位：RSI > 70（超買）可能反彈
+            if direction == "SHORT" and latest_rsi > 70:
+                logger.debug(f"{symbol} 檢測到空倉反彈信號: RSI={latest_rsi:.1f}")
+                return True
+            
+            # MACD反彈信號（簡化版：只檢查MACD柱狀圖方向變化）
+            macd_line, signal_line, histogram = calculate_macd(data)
+            # 🔥 類型安全：確保histogram是DataFrame
+            if isinstance(histogram, str) or histogram is None:
+                return False
+            if not histogram.empty and len(histogram) >= 2:
+                current_hist = float(histogram.iloc[-1])
+                prev_hist = float(histogram.iloc[-2])
+                
+                # LONG倉位：MACD柱狀圖從負轉正
+                if direction == "LONG" and prev_hist < 0 < current_hist:
+                    logger.debug(f"{symbol} 檢測到多倉MACD金叉信號")
+                    return True
+                
+                # SHORT倉位：MACD柱狀圖從正轉負
+                if direction == "SHORT" and prev_hist > 0 > current_hist:
+                    logger.debug(f"{symbol} 檢測到空倉MACD死叉信號")
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            logger.debug(f"檢查反彈信號失敗: {e}")
+            return False

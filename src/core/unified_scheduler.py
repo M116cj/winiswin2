@@ -75,7 +75,9 @@ class UnifiedScheduler:
             binance_client=binance_client,
             self_learning_trader=self.self_learning_trader,
             monitor_interval=config.POSITION_MONITOR_INTERVAL,
-            config=config
+            config=config,
+            trade_recorder=trade_recorder,  # 🔥 v3.17.10+
+            data_service=data_service  # 🔥 v3.17.10+
         )
         
         self.model_evaluator = ModelEvaluator(

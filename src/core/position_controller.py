@@ -1,12 +1,15 @@
 """
-PositionController v3.17+ - 24/7 倉位全權控制
+PositionController v3.17.10+ - 24/7 倉位全權控制
 職責：監控所有持倉、執行平倉決策、調整 SL/TP
+整合：PositionMonitor24x7 處理進場失效和逆勢平倉
 """
 
 import asyncio
 from typing import List, Dict, Optional
 import logging
 from datetime import datetime
+
+from src.core.position_monitor_24x7 import PositionMonitor24x7
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +35,9 @@ class PositionController:
         binance_client,
         self_learning_trader,
         monitor_interval: int = 2,
-        config=None
+        config=None,
+        trade_recorder=None,
+        data_service=None
     ):
         """
         初始化 PositionController
@@ -42,11 +47,23 @@ class PositionController:
             self_learning_trader: SelfLearningTrader 實例
             monitor_interval: 監控間隔（秒），預設 2 秒
             config: 配置對象
+            trade_recorder: 交易記錄器（v3.17.10+）
+            data_service: 數據服務（v3.17.10+）
         """
         self.binance_client = binance_client
         self.trader = self_learning_trader
         self.monitor_interval = monitor_interval
         self.config = config
+        self.trade_recorder = trade_recorder
+        self.data_service = data_service
+        
+        # 🔥 v3.17.10+：整合 PositionMonitor24x7（進場失效 + 逆勢平倉）
+        self.monitor_24x7 = PositionMonitor24x7(
+            config_profile=config,
+            binance_client=binance_client,
+            trade_recorder=trade_recorder,
+            data_service=data_service
+        )
         
         # 控制器狀態
         self.is_running = False
@@ -61,16 +78,26 @@ class PositionController:
         }
         
         logger.info("=" * 80)
-        logger.info("✅ PositionController v3.17+ 初始化完成")
+        logger.info("✅ PositionController v3.17.10+ 初始化完成")
         logger.info(f"   ⏱️  監控間隔: {monitor_interval} 秒")
         logger.info("   🛡️  優先級: 0（最高優先級）")
         logger.info("   🚨 緊急平倉: PnL ≤ -99%")
+        logger.info("   🔥 整合 PositionMonitor24x7（進場失效 + 逆勢自動平倉）")
         logger.info("=" * 80)
     
     async def start_monitoring(self):
-        """啟動 24/7 倉位監控"""
+        """啟動 24/7 倉位監控（整合 PositionMonitor24x7）"""
         self.is_running = True
         logger.info("🚀 PositionController 24/7 監控已啟動")
+        
+        # 🔥 v3.17.10+：同時啟動 PositionMonitor24x7（捕獲啟動異常）
+        try:
+            await self.monitor_24x7.start()
+            logger.info("✅ PositionMonitor24x7 已啟動")
+        except Exception as e:
+            logger.error(f"❌ PositionMonitor24x7 啟動失敗: {e}")
+            self.is_running = False  # 🔥 重置狀態避免不一致
+            raise
         
         while self.is_running:
             try:
@@ -84,11 +111,20 @@ class PositionController:
     async def stop_monitoring(self):
         """停止監控"""
         self.is_running = False
+        
+        # 🔥 v3.17.10+：停止 PositionMonitor24x7
+        await self.monitor_24x7.stop()
+        
         logger.info("⏸️  PositionController 監控已停止")
         logger.info(f"   📊 統計: 檢查={self.stats['total_checks']}, "
                    f"平倉={self.stats['total_closes']}, "
                    f"調整={self.stats['total_adjustments']}, "
                    f"緊急平倉={self.stats['emergency_closes']}")
+        
+        # 🔥 顯示 PositionMonitor24x7 統計
+        monitor_stats = self.monitor_24x7.get_monitor_stats()
+        logger.info(f"   📊 監控器統計: 進場失效平倉={monitor_stats.get('entry_reason_expired_closures', 0)}, "
+                   f"逆勢平倉={monitor_stats.get('counter_trend_closures', 0)}")
     
     async def _monitoring_cycle(self):
         """單次監控週期"""
