@@ -1,24 +1,19 @@
 """
-並行分析器（v3.16.2 ThreadPool 修復版）
+並行分析器（v3.17+ ThreadPool 版本）
 職責：批量處理大量交易對分析
 
-v3.16.2 徹底修復（2025-10-28）：
-- 改用 ThreadPoolExecutor 替代 ProcessPoolExecutor
-- 完全解決序列化問題（'cannot pickle _thread.lock'）
-- 移除所有 pickle 驗證（不再需要）
-- ML 模型（ONNX）會釋放 GIL，線程池可並行
-
-v3.16.1 修復嘗試（已廢棄）：
-- 嘗試修復 ProcessPoolExecutor 序列化問題
+v3.17+ 優化：
+- 使用內建 ThreadPoolExecutor（無外部依賴）
+- 移除所有 ProcessPool 遺留代碼
+- 確保與 ICT 策略兼容
 """
 
 import asyncio
 from typing import List, Dict, Optional
 import logging
 import time
-from concurrent.futures import TimeoutError
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
-from src.core.global_pool import GlobalThreadPool
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -67,23 +62,15 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
             if hasattr(config, key):
                 setattr(config, key, value)
         
-        # 🔥 步驟3：創建策略實例並執行分析
+        # 🔥 步驟3：使用 ICT 策略執行分析
         result = None
         try:
-            from src.strategies.self_learning_trader import SelfLearningTrader
-            trader = SelfLearningTrader(config=config)
+            from src.strategies.ict_strategy import ICTStrategy
+            trader = ICTStrategy()
             result = trader.analyze(symbol, reconstructed_data)
-            
         except Exception as e:
-            # 🔥 降級到 ICT 策略
-            logger.warning(f"⚠️ {symbol} 自我學習交易員不可用，使用降級策略: {e}")
-            try:
-                from src.strategies.ict_strategy import ICTStrategy
-                trader = ICTStrategy()
-                result = trader.analyze(symbol, reconstructed_data)
-            except Exception as fallback_error:
-                logger.error(f"❌ {symbol} 降級策略也失敗: {fallback_error}")
-                result = None
+            logger.error(f"❌ {symbol} ICT 策略分析失敗: {e}")
+            result = None
         
         return result
         
@@ -96,24 +83,25 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
 
 
 class ParallelAnalyzer:
-    """並行分析器 - v3.16.2 ThreadPool 修復版"""
+    """並行分析器 - v3.17+ ThreadPool 版本"""
     
     def __init__(self, max_workers: Optional[int] = None, perf_monitor=None):
         """
         初始化並行分析器
         
         Args:
-            max_workers: 未使用（由 GlobalThreadPool 管理）
+            max_workers: 線程池工作線程數（預設使用 Config.MAX_WORKERS）
             perf_monitor: 性能監控器
         """
         self.config = Config()
-        self.global_pool = GlobalThreadPool()
+        self.max_workers = max_workers or Config.MAX_WORKERS
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
         
         # ✨ 性能監控
         self.perf_monitor = perf_monitor
         
-        logger.info("✅ 並行分析器初始化: 使用全局線程池（v3.16.2 ThreadPool 版本）")
-        logger.info(f"   線程池狀態: {self.global_pool.get_pool_health()}")
+        logger.info("✅ 並行分析器初始化（v3.17+ ThreadPool）")
+        logger.info(f"   線程池工作線程: {self.max_workers}")
     
     async def analyze_batch(
         self,
@@ -184,8 +172,8 @@ class ParallelAnalyzer:
                     'TRADING_ENABLED': bool(self.config.TRADING_ENABLED)
                 }
                 
-                # 🔥 v3.16.2: 使用線程池提交任務（無序列化問題）
-                future = self.global_pool.submit_safe(
+                # 🔥 v3.17+: 使用標準線程池提交任務
+                future = self.executor.submit(
                     _analyze_single_symbol_worker,
                     symbol,
                     market_data,
@@ -228,9 +216,7 @@ class ParallelAnalyzer:
             return []
     
     async def close(self):
-        """
-        關閉執行器
-        
-        注意：v3.16.1 不關閉全局進程池（由應用生命週期管理）
-        """
-        logger.info("並行分析器關閉（全局進程池繼續運行）")
+        """關閉執行器（v3.17+）"""
+        if self.executor:
+            self.executor.shutdown(wait=True)
+            logger.info("✅ 並行分析器線程池已關閉")
