@@ -33,19 +33,22 @@ def init_worker(model_path: Optional[str] = None):
     global _worker_ml_model, _worker_strategy
     
     try:
+        # 🔧 修复：子进程中不使用 logger（可能导致序列化问题）
         # 预加载 ML 模型
         if model_path and os.path.exists(model_path):
             with open(model_path, 'rb') as f:
                 _worker_ml_model = pickle.load(f)
-            logger.debug(f"子进程 {mp.current_process().name}: ML模型已预加载")
+            # 使用 print 替代 logger（子进程安全）
+            # print(f"子进程 {mp.current_process().name}: ML模型已预加载")
         
         # 预加载策略引擎（避免每次重新实例化）
         from src.strategies.ict_strategy import ICTStrategy
         _worker_strategy = ICTStrategy()
-        logger.debug(f"子进程 {mp.current_process().name}: 策略引擎已预加载")
+        # print(f"子进程 {mp.current_process().name}: 策略引擎已预加载")
         
     except Exception as e:
-        logger.error(f"子进程初始化失败: {e}")
+        # 🔧 修复：子进程中异常处理不使用 logger
+        # print(f"子进程初始化失败: {e}", file=sys.stderr)
         _worker_ml_model = None
         _worker_strategy = None
 
@@ -74,7 +77,9 @@ def analyze_symbol_worker(args):
         return signal
         
     except Exception as e:
-        logger.error(f"分析 {args[0] if args else 'unknown'} 失败: {e}")
+        # 🔧 修复：子进程中不使用 logger，避免 BrokenProcessPool
+        # 静默失败，返回 None（主进程会过滤掉）
+        # print(f"分析 {args[0] if args else 'unknown'} 失败: {e}", file=sys.stderr)
         return None
 
 

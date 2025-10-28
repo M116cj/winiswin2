@@ -148,7 +148,13 @@ class ParallelAnalyzer:
                 
                 # ✨ v3.12.0：使用全局进程池进行并行分析
                 loop = asyncio.get_event_loop()
-                executor = self.global_pool.get_executor()
+                
+                # 🔧 修复：添加 BrokenProcessPool 错误处理
+                try:
+                    executor = self.global_pool.get_executor()
+                except Exception as e:
+                    logger.error(f"获取进程池失败: {e}，降级为串行处理")
+                    executor = None
                 
                 # 准备进程池任务参数
                 process_tasks = []
@@ -167,16 +173,32 @@ class ParallelAnalyzer:
                     symbol = batch[j]['symbol']
                     symbol_indices.append(j)
                     
-                    # 提交到进程池
-                    future = loop.run_in_executor(
-                        executor,
-                        analyze_symbol_worker,
-                        (symbol, multi_tf_data)
-                    )
-                    process_tasks.append(future)
+                    # 🔧 修复：如果进程池不可用，降级为串行处理
+                    if executor is None:
+                        # 串行处理（不使用进程池）
+                        signal = self.strategy.analyze(symbol, multi_tf_data)
+                        if signal:
+                            signals.append(signal)
+                    else:
+                        # 提交到进程池
+                        try:
+                            future = loop.run_in_executor(
+                                executor,
+                                analyze_symbol_worker,
+                                (symbol, multi_tf_data)
+                            )
+                            process_tasks.append(future)
+                        except Exception as e:
+                            logger.warning(f"提交任务到进程池失败 {symbol}: {e}，使用串行处理")
+                            signal = self.strategy.analyze(symbol, multi_tf_data)
+                            if signal:
+                                signals.append(signal)
                 
-                # 等待所有进程任务完成
-                batch_signals = await asyncio.gather(*process_tasks, return_exceptions=True)
+                # 等待所有进程任务完成（仅当有进程池任务时）
+                if process_tasks:
+                    batch_signals = await asyncio.gather(*process_tasks, return_exceptions=True)
+                else:
+                    batch_signals = []
                 
                 # 收集有效信號
                 batch_signal_count = 0
