@@ -354,9 +354,10 @@ class VirtualPosition:
         # 🔥 v3.14.0：lifecycle monitor 属性初始化
         self.pnl_pct = kwargs.get('pnl_pct', 0.0)  # 百分比PnL
         self.is_closed = kwargs.get('is_closed', False)  # 是否已关闭
-        self._last_pnl = None  # 上次PnL（用于变化检测）
-        self._last_max_pnl = None  # 上次最大PnL（用于变化检测）
-        self._last_min_pnl = None  # 上次最小PnL（用于变化检测）
+        # 🔧 类型修复：使用 float 初始值而非 None，避免类型不兼容警告
+        self._last_pnl = kwargs.get('_last_pnl', 0.0)  # 上次PnL（用于变化检测）
+        self._last_max_pnl = kwargs.get('_last_max_pnl', 0.0)  # 上次最大PnL（用于变化检测）
+        self._last_min_pnl = kwargs.get('_last_min_pnl', 0.0)  # 上次最小PnL（用于变化检测）
         
         # 🔥 v3.13.0修复3：signal_id机制
         # 自动生成signal_id（如果未提供）

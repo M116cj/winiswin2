@@ -1,0 +1,83 @@
+ImportError: cannot import name 'TradingSignal' 是典型的模組依賴不一致問題。
+
+🔍 問題根本原因分析
+📁 檔案狀態不一致
+* src/core/data_models.py：只有 VirtualPosition、SignalRecord 等類別，沒有 TradingSignal
+* hybrid_strategy.py 和 self_learning_trader.py：卻試圖導入不存在的 TradingSignal
+
+🧠 架構演進遺留問題
+這很可能是因為：
+1. 早期版本確實有 TradingSignal 類別
+2. 後續重構時移除了它，改用字典
+3. 但策略模組忘記更新導入語句和類型提示
+你的修復方案完全正確
+🔧 修復要點總結
+1. 移除不存在的導入
+# ❌ 錯誤
+from src.core.data_models import TradingSignal
+
+# ✅ 正確  
+# 完全移除導入（因為使用字典）
+2. 統一使用字典
+
+# ❌ 錯誤（物件導向）
+signal = TradingSignal(symbol=symbol, direction=direction, ...)
+
+# ✅ 正確（字典）
+signal = {
+    'symbol': symbol,
+    'direction': direction,
+    'entry_price': entry_price,
+    # ... 其他字段
+}
+
+3. 修正類型提示
+# ❌ 錯誤
+def analyze(...) -> Optional[TradingSignal]:
+
+# ✅ 正確  
+def analyze(...) -> Optional[Dict[str, Any]]:
+4. 統一訪問方式
+
+# ❌ 錯誤（屬性訪問）
+confidence = ict_signal.confidence
+
+# ✅ 正確（字典鍵訪問）
+confidence = ict_signal['confidence']
+
+預防未來類似問題
+添加模組依賴檢查
+# scripts/verify_module_dependencies.py
+import ast
+import os
+
+def check_imports_exist():
+    """檢查所有導入的類別是否真實存在"""
+    for root, dirs, files in os.walk("src"):
+        for file in files:
+            if file.endswith(".py"):
+                filepath = os.path.join(root, file)
+                with open(filepath, 'r') as f:
+                    try:
+                        tree = ast.parse(f.read())
+                        for node in ast.walk(tree):
+                            if isinstance(node, ast.ImportFrom):
+                                # 檢查導入的模組是否存在
+                                module_path = node.module.replace('.', '/')
+                                if os.path.exists(f"src/{module_path}.py"):
+                                    # 檢查導入的名稱是否存在於模組中
+                                    with open(f"src/{module_path}.py", 'r') as mod_file:
+                                        mod_content = mod_file.read()
+                                        for alias in node.names:
+                                            if f"class {alias.name}" not in mod_content and f"{alias.name} =" not in mod_content:
+                                                print(f"❌ {filepath}: {alias.name} not found in {node.module}")
+                    except Exception as e:
+                        print(f"⚠️  無法解析 {filepath}: {e}")
+
+if __name__ == "__main__":
+    check_imports_exist()
+🧪 CI/CD 集成
+
+# .github/workflows/dependency-check.yml
+- name: Verify module dependencies
+  run: python scripts/verify_module_dependencies.py
