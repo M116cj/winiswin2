@@ -354,7 +354,7 @@ class DualLoopManager:
             
         except Exception as e:
             # 🔥 v3.16.1: BrokenProcessPool 错误处理
-            from concurrent.futures import BrokenProcessPool
+            from concurrent.futures.process import BrokenProcessPool
             if isinstance(e, BrokenProcessPool):
                 logger.error("❌ 進程池損壞，跳過本次分析")
             else:

@@ -12,7 +12,8 @@ v3.16.1 修复：
 import multiprocessing as mp
 import logging
 import os
-from concurrent.futures import ProcessPoolExecutor, BrokenProcessPool
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -42,10 +43,12 @@ class GlobalProcessPool:
         初始化进程池
         
         Args:
-            max_workers: 最大工作进程数
+            max_workers: 最大工作进程数（如果未指定，从 Config 读取）
         """
+        # 🔥 修复：从 Config 读取限制
         if max_workers is None:
-            max_workers = min(32, (os.cpu_count() or 1) + 4)
+            from src.config import Config
+            max_workers = Config.MAX_WORKERS
         
         self.max_workers = max_workers
         self.executor = ProcessPoolExecutor(

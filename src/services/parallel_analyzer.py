@@ -14,7 +14,8 @@ import asyncio
 from typing import List, Dict, Optional
 import logging
 import time
-from concurrent.futures import BrokenProcessPool, TimeoutError
+from concurrent.futures import TimeoutError
+from concurrent.futures.process import BrokenProcessPool
 
 from src.core.global_pool import GlobalProcessPool
 from src.config import Config
@@ -33,7 +34,7 @@ class ParallelAnalyzer:
             max_workers: 最大工作進程數（未使用，由 GlobalProcessPool 管理）
             perf_monitor: 性能監控器
         """
-        self.config = Config
+        self.config = Config()  # 🔥 修复：实例化 Config 对象
         self.global_pool = GlobalProcessPool()
         self._model_path = "data/models/model.onnx"
         
@@ -89,23 +90,30 @@ class ParallelAnalyzer:
                 }
                 
                 # 🔥 使用安全提交（自動處理 BrokenProcessPool）
+                # 创建可序列化的配置字典
+                config_dict = {
+                    key: value for key, value in vars(self.config).items()
+                    if not key.startswith('_') and not callable(value)
+                }
+                
                 future = self.global_pool.submit_safe(
                     self._analyze_single_symbol,
                     symbol_data,
                     self._model_path,
-                    self.config.__dict__
+                    config_dict
                 )
                 tasks.append((symbol, future))
             
             # 🔥 步驟3：收集結果（帶超時機制）
+            timeout_seconds = self.config.PROCESS_TIMEOUT_SECONDS
             for symbol, future in tasks:
                 try:
-                    # 30秒超時
-                    result = await loop.run_in_executor(None, future.result, 30)
+                    # 使用配置的超時時間
+                    result = await loop.run_in_executor(None, future.result, timeout_seconds)
                     if result:
                         signals.append(result)
                 except TimeoutError:
-                    logger.warning(f"⚠️ 分析 {symbol} 超時（30秒）")
+                    logger.warning(f"⚠️ 分析 {symbol} 超時（{timeout_seconds}秒）")
                 except BrokenProcessPool:
                     logger.error(f"❌ 進程池損壞（分析 {symbol}），跳過剩餘任務")
                     break
