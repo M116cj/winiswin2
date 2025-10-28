@@ -4,7 +4,9 @@
 
 混合智能交易系统，支持ICT/SMC策略、自我学习AI交易员、混合模式三种策略切换。集成XGBoost ML、ONNX推理加速、深度学习模型（TensorFlow + TFLite量化），监控Top 200高流动性交易对，跨3时间框架生成平衡LONG/SHORT信号。
 
-## 当前版本：v3.15.0 (2025-10-28)
+## 当前版本：v3.16.1 (2025-10-28)
+
+**最新修复：BrokenProcessPool 穩定性修復** ✅
 
 ### 核心特性
 - ✅ **三种策略模式**：ICT策略、自我学习AI、混合模式（可配置切换）
@@ -22,6 +24,49 @@
 5. **智能监控频率**：CPU使用率降低60-80%
 
 ## 最近更新
+
+### v3.16.1 (2025-10-28) - BrokenProcessPool 穩定性修復 ✅
+
+**类型**: 🔧 **BUG FIX / STABILITY**  
+**目标**: 解决进程池稳定性问题，防止 BrokenProcessPool 崩溃  
+**状态**: ✅ **已完成**
+
+**核心修复**：
+
+#### 1. GlobalProcessPool 增强 (src/core/global_pool.py)
+- ✅ 添加健康检查机制（自动检测进程池损坏）
+- ✅ submit_safe 方法（自动处理 BrokenProcessPool 异常）
+- ✅ 自动重建损坏的进程池
+- ✅ 从 Config 读取 MAX_WORKERS 限制（默认16，最多CPU+4）
+- ✅ 使用 spawn 模式避免 fork 问题
+
+#### 2. ParallelAnalyzer 修复 (src/services/parallel_analyzer.py)
+- ✅ 修复 Config 实例化问题（从类变量改为实例）
+- ✅ 创建可序列化配置字典（解决 mappingproxy 序列化错误）
+- ✅ 使用 Config.PROCESS_TIMEOUT_SECONDS（替代硬编码30秒）
+- ✅ 添加内存监控（>500MB 警告）
+- ✅ 完整 fallback 降级策略（降级到 ICT 策略）
+
+#### 3. 配置限制 (src/config.py)
+- ✅ MAX_WORKERS：默认16，最多 CPU+4
+- ✅ PROCESS_MEMORY_LIMIT_MB：每个子进程记忆体限制（1024MB）
+- ✅ PROCESS_TIMEOUT_SECONDS：子进程超时时间（30秒）
+
+#### 4. 主循环错误处理 (src/async_core/async_main_loop.py)
+- ✅ BrokenProcessPool 异常捕获
+- ✅ 自动跳过损坏的分析周期
+
+**运行验证**：
+- ✅ 系统正常启动，无 BrokenProcessPool 错误
+- ✅ v3.16.0 三大性能模块状态正确显示
+- ✅ Architect 审查通过
+
+**已知限制**：
+- ⚠️ PROCESS_MEMORY_LIMIT_MB 已定义但未强制执行（未来增强）
+- ⚠️ Replit 环境无法访问 Binance API（HTTP 451 地理限制）
+- ✅ 需要部署到 Railway/AWS/GCP 亚洲区域
+
+---
 
 ### v3.15.0 (2025-10-28) - 5大性能优化
 
