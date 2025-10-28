@@ -1,5 +1,34 @@
 # Binance USDT永續合約 24/7高頻自動交易系統
 
+## ⚠️ 重要：部署要求
+
+### ❌ **Replit 環境無法運行此系統**
+
+**原因**：Binance API 地理位置限制（HTTP 451 錯誤）
+- Replit 服務器位於被 Binance 限制的地區
+- 所有 API 請求都會被阻止，無法繞過
+- 熔斷器會在連續失敗後阻斷請求（這是正確的保護機制）
+
+### ✅ **唯一解決方案：部署到 Railway**
+
+Railway 服務器位於允許訪問 Binance API 的地區（歐洲/亞洲）。
+
+📖 **完整部署指南**：請查看 [`RAILWAY_DEPLOY.md`](./RAILWAY_DEPLOY.md)
+
+**快速部署**：
+```bash
+# 1. 推送代碼到 GitHub
+git add .
+git commit -m "Deploy to Railway"
+git push origin main
+
+# 2. 在 Railway 連接 GitHub 倉庫
+# 3. 配置環境變量（BINANCE_API_KEY, BINANCE_API_SECRET）
+# 4. 等待自動部署完成
+```
+
+---
+
 ## 項目概述
 
 混合智能交易系統，支持ICT/SMC策略、自我學習AI交易員、混合模式三種策略切換。集成XGBoost ML、ONNX推理加速、深度學習模型（TensorFlow + TFLite量化），監控Top 200高流動性交易對，跨3時間框架生成平衡LONG/SHORT信號。
