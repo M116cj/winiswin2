@@ -1,39 +1,29 @@
-# Binance USDT 永續合約自動化交易系統 v2.0 Enhanced
+# 🤖 SelfLearningTrader v3.17+
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)
 
-高性能 Binance USDT 永續合約自動化交易系統，採用 ICT/SMC 策略，集成 XGBoost 機器學習，充分利用 32vCPU 32GB 資源。
+**完全自主的 Binance U 本位合約 24/7 高頻交易系統**
+
+> 核心理念：「模型擁有無限制槓桿控制權，唯一準則是勝率 × 信心度」
 
 ## 🚀 快速部署
 
-### Railway 部署（生產環境）
+### Railway 部署（推薦）
 
-#### 1. 配置資源
-- **CPU**: 32 vCPU
-- **Memory**: 32 GB RAM
-- **啟動命令**: `python -m src.main`
+完整部署指南請查看 **[DEPLOYMENT.md](./DEPLOYMENT.md)**
 
-#### 2. 設置環境變量
-
-**必需**:
-```bash
-BINANCE_API_KEY=你的_API_Key
-BINANCE_API_SECRET=你的_API_Secret
-DISCORD_TOKEN=你的_Discord_Bot_Token
-```
-
-**可選**:
-```bash
-BINANCE_TESTNET=false  # 生產環境設為 false
-MAX_SIGNALS=5
-SCAN_INTERVAL=300
-```
-
-#### 3. 完整部署指南
-
-詳見: [`docs/DEPLOYMENT_GUIDE.md`](docs/DEPLOYMENT_GUIDE.md)
+#### 快速步驟：
+1. **創建 Railway 專案** → 連接 GitHub 倉庫
+2. **設置環境變量**：
+   ```bash
+   BINANCE_API_KEY=your_api_key
+   BINANCE_API_SECRET=your_api_secret
+   TRADING_ENABLED=true
+   TOP_LIQUIDITY_SYMBOLS=999  # 監控所有 USDT 合約
+   ```
+3. **點擊部署** → Railway 自動構建並運行
 
 ### 本地運行
 
@@ -66,12 +56,38 @@ python -m src.main
 
 ## ✨ 核心特性
 
-### 🎯 ICT/SMC 策略引擎
+### 🎯 無限制槓桿控制
+- **動態槓桿計算**：`leverage = (1 + (win_prob - 0.55) / 0.15 × 11) × (confidence / 0.5)`
+- **實例**：勝率 70% + 信心度 100% → 槓桿可達 **24x+**
+- **無上限**：模型可根據市場條件使用任意槓桿
+
+### 💰 智能倉位管理
+- ✅ **10 USDT 最小倉位**（符合 Binance 規格）
+- ✅ **動態 SL/TP**（高槓桿 → 自動放寬止損範圍）
+- ✅ **80% 權益使用率**（最大化資金效率）
+
+### 🛡️ 多層風險保護
+- ✅ **24/7 倉位監控**（每 2 秒檢查）
+- ✅ **100% 虧損熔斷**（PnL ≤ -99% 立即平倉）
+- ✅ **信心度過濾**（低於 50% 不開倉）
+- ✅ **勝率門檻**（低於 55% 預測勝率不開倉）
+
+### 📊 模型評級系統
+- **100 分制評分**：6 大維度（RR 比、勝率、期望值、MDD、Sharpe、頻率）
+- **評級等級**：S (90-100) | A (80-89) | B (70-79) | C (<70)
+- **懲罰機制**：每次 100% 虧損 → -15 分
+
+### 📈 每日自動報告
+- JSON 格式評級數據
+- Markdown 格式易讀報告
+- 自動生成到 `reports/daily/`
+
+### 🎯 規則驅動信號生成
 - ✅ **Order Block 識別** - 機構訂單區塊檢測
 - ✅ **Liquidity Zone 分析** - 流動性區域追蹤
 - ✅ **Fair Value Gap 檢測** - 價值缺口識別
 - ✅ **Market Structure 判斷** - 市場結構分析
-- ✅ **多時間框架確認** - 1h/15m/5m/1m 同步分析
+- ✅ **多時間框架確認** - 1h/15m/5m 同步分析
 - ✅ **12 種技術指標** - RSI, MACD, ATR, BB, EMA 等
 
 ### 🤖 XGBoost ML 增強

@@ -19,41 +19,44 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # Virtual Environment
 venv/
 ENV/
 env/
-.venv
 
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Data files
-data/*.json
-data/logs/*.log
-*.db
-*.sqlite
-
-# Environment
+# Environment variables
 .env
 .env.local
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+*.log
+data/logs/
+logs/
 
-# Railway
-.railway/
+# Data files
+data/
+ml_data/
+reports/
+*.json
+!package.json
+!.env.example
+
+# MacOS
+.DS_Store
 
 # Replit
 .replit
-.pythonlibs/
 replit.nix
-poetry.lock
-pyproject.toml
+.upm/
+
+# Temporary files
+*.tmp
+.cache/
