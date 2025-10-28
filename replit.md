@@ -162,12 +162,36 @@ leverage = base × (1 + (winrate-0.55)/0.15 × 11) × (confidence/0.5)
 - ✅ 槓桿設置錯誤處理完善
 - ✅ 所有異步調用正確
 
+#### **智能自動重試機制** ⭐
+
+如果遇到 -4061 錯誤（Position Side 不匹配），系統會自動：
+1. 檢測錯誤碼 -4061
+2. 反轉 Position Mode 猜測（Hedge ↔ One-Way）
+3. 重新調整 `positionSide` 參數
+4. 自動重試一次
+5. 成功後緩存正確的 Position Mode
+
+**代碼實現**:
+```python
+try:
+    return await self.create_order(...)
+except BinanceRequestError as e:
+    if '-4061' in str(e):
+        # 自動切換模式並重試
+        self._hedge_mode = not is_hedge_mode
+        # 調整參數
+        # 重試一次
+        return await self.create_order(...)
+```
+
 #### **部署狀態**
 ```
 ✅ 系統完全準備就緒
 ✅ 所有 Binance API 調用符合官方規範
 ✅ 完全兼容 Hedge Mode 和 One-Way Mode
+✅ 智能自動重試機制（遇到 -4061 自動切換）
 ✅ 無限制槓桿系統 (0.1x ~ 125x)
+✅ 所有 LSP 錯誤已修復
 ✅ 生產級代碼質量
 ✅ 可立即部署到 Railway 實盤交易
 ```
