@@ -200,6 +200,38 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
+### v3.17.3 (2025-10-28) - 修復 Binance API POST 請求
+
+**類型**: 🐛 **BUG FIX**  
+**問題**: 設置槓桿返回 HTTP 400 Bad Request  
+**狀態**: ✅ **已修復**
+
+#### **根本原因**
+- ❌ POST 請求錯誤地將參數放在 request body 中
+- ❌ Binance API 要求所有請求參數都在 query string 中（包括 POST/DELETE）
+- ❌ 導致 `set_leverage()` 無法正常工作
+
+#### **修復方案**
+```python
+# 修復前（錯誤）：
+if method.upper() == "POST":
+    async with session.request(method, url, data=query_string, headers=headers):
+        # 參數在 body 中 ❌
+
+# 修復後（正確）：
+if method.upper() in ["POST", "DELETE"]:
+    async with session.request(method, url, params=_params, headers=headers):
+        # 參數在 query string 中 ✅
+```
+
+#### **影響範圍**
+- ✅ `set_leverage()` - 可以正常設置槓桿
+- ✅ `create_order()` - 更穩定
+- ✅ `cancel_order()` - 更穩定
+- ✅ 所有 POST/DELETE 操作符合 Binance API 規範
+
+---
+
 ### v3.16.3 (2025-10-28) - 增量學習系統 🎓
 
 **類型**: ✨ **NEW FEATURE**  

@@ -113,16 +113,20 @@ class BinanceClient:
                 _params['signature'] = self._generate_signature(_params)
             
             headers = {'X-MBX-APIKEY': self.api_key} if self.api_key else {}
+            
+            # 構建排序後的 query string（與簽名計算保持一致）
+            query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
+            
+            # 將 query string 附加到 URL（所有請求類型都使用 query string）
             url = f"{self.base_url}{endpoint}"
+            if query_string:
+                url = f"{url}?{query_string}"
             
             session = await self._get_session()
             
-            # Binance API要求：GET請求用params（URL），POST請求用data（body）
-            if method.upper() == "POST":
-                # POST請求：將參數編碼為字符串以保持排序（與簽名一致）
-                query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
-                headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                async with session.request(method, url, data=query_string, headers=headers) as response:
+            # 所有請求都直接使用帶參數的 URL（確保順序與簽名一致）
+            if method.upper() in ["POST", "DELETE"]:
+                async with session.request(method, url, headers=headers) as response:
                     if response.status != 200:
                         # 獲取錯誤響應體
                         error_text = await response.text()
@@ -155,7 +159,8 @@ class BinanceClient:
                         response.raise_for_status()
                     return await response.json()
             else:
-                async with session.request(method, url, params=_params, headers=headers) as response:
+                # GET 請求也使用帶參數的 URL
+                async with session.request(method, url, headers=headers) as response:
                     if response.status != 200:
                         # 獲取錯誤響應體
                         error_text = await response.text()
