@@ -22,7 +22,7 @@ from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.services.parallel_analyzer import ParallelAnalyzer
 from src.services.timeframe_scheduler import SmartDataManager
-from src.strategies.ict_strategy import ICTStrategy
+from src.strategies.strategy_factory import StrategyFactory
 from src.managers.risk_manager import RiskManager
 from src.managers.expectancy_calculator import ExpectancyCalculator
 from src.services.trading_service import TradingService
@@ -144,7 +144,7 @@ class TradingBot:
         # 初始化並行分析器（32 核心）
         self.parallel_analyzer = ParallelAnalyzer(max_workers=32)
         
-        self.strategy = ICTStrategy()
+        self.strategy = StrategyFactory.create_strategy(Config)
         self.risk_manager = RiskManager()
         
         # 📊 输出风险管理状态

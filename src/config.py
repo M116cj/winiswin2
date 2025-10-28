@@ -124,6 +124,19 @@ class Config:
     RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "1920"))
     RATE_LIMIT_PERIOD: int = 60
     
+    # ===== 自我学习配置 (v3.14.0) =====
+    STRATEGY_MODE: str = os.getenv("STRATEGY_MODE", "hybrid")  # "ict", "self_learning", "hybrid"
+    ENABLE_SELF_LEARNING: bool = os.getenv("ENABLE_SELF_LEARNING", "true").lower() == "true"
+    SELF_LEARNING_MODE: str = os.getenv("SELF_LEARNING_MODE", "end_to_end")  # "end_to_end" or "modular"
+    STRUCTURE_VECTOR_DIM: int = 16
+    FEATURE_DISCOVERY_RATE: float = 0.1
+    STRATEGY_EVOLUTION_INTERVAL: int = 3600
+    
+    # ===== 训练配置 (v3.14.0) =====
+    REINFORCEMENT_LEARNING_ENABLED: bool = os.getenv("REINFORCEMENT_LEARNING_ENABLED", "true").lower() == "true"
+    AUTOENCODER_TRAINING_ENABLED: bool = os.getenv("AUTOENCODER_TRAINING_ENABLED", "true").lower() == "true"
+    FEATURE_DISCOVERY_ENABLED: bool = os.getenv("FEATURE_DISCOVERY_ENABLED", "true").lower() == "true"
+    
     # 緩存配置（根據時間框架優化）
     # K線緩存時間應該匹配時間框架的持續時間
     CACHE_TTL_KLINES_1H: int = 3600    # 1小時 K線緩存1小時
