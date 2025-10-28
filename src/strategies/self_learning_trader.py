@@ -12,7 +12,6 @@ from src.ml.market_structure_autoencoder import MarketStructureAutoencoder
 from src.ml.feature_discovery_network import FeatureDiscoveryNetwork
 from src.ml.liquidity_prediction_model import LiquidityPredictionModel
 from src.ml.model_quantizer import ModelQuantizer
-from src.core.data_models import TradingSignal
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,7 @@ class SelfLearningTrader:
         
         logger.info("✅ 自我学习交易员初始化完成")
     
-    def analyze(self, symbol: str, multi_tf_data: Dict[str, pd.DataFrame]) -> Optional[TradingSignal]:
+    def analyze(self, symbol: str, multi_tf_data: Dict[str, pd.DataFrame]) -> Optional[Dict]:
         """
         完全自主的信号生成
         
@@ -99,7 +98,7 @@ class SelfLearningTrader:
         dynamic_features: np.ndarray,
         liquidity_prediction: Dict[str, Any],
         df_5m: pd.DataFrame
-    ) -> Optional[TradingSignal]:
+    ) -> Optional[Dict]:
         """从学习到的模式生成交易信号"""
         
         structure_signal = np.mean(market_structure[:8])
@@ -131,18 +130,23 @@ class SelfLearningTrader:
         
         leverage = self._calculate_leverage(confidence)
         
-        signal = TradingSignal(
-            symbol=symbol,
-            direction=direction,
-            entry_price=entry_price,
-            stop_loss=stop_loss,
-            take_profit=take_profit,
-            confidence=confidence,
-            leverage=leverage,
-            reasoning=f"自我学习信号 (结构:{structure_signal:.3f}, 特征:{feature_signal:.3f})",
-            timeframe='5m',
-            strategy_name='self_learning'
-        )
+        signal = {
+            'symbol': symbol,
+            'direction': 'LONG' if direction == 1 else 'SHORT',
+            'entry_price': entry_price,
+            'stop_loss': stop_loss,
+            'take_profit': take_profit,
+            'confidence': confidence,
+            'leverage': leverage,
+            'reasoning': f"自我学习信号 (结构:{structure_signal:.3f}, 特征:{feature_signal:.3f})",
+            'timeframe': '5m',
+            'strategy_name': 'self_learning',
+            'scores': {
+                'structure_signal': float(structure_signal),
+                'feature_signal': float(feature_signal)
+            },
+            'liquidity_prediction': liquidity_prediction
+        }
         
         return signal
     
