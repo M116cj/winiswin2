@@ -33,17 +33,28 @@ class TechnicalIndicators:
             data = pd.Series(data)
         return calculate_bollinger_bands(data, period, std_dev)
 
-def calculate_ema(data: pd.Series, period: int) -> pd.Series:
+def calculate_ema(data, period: int) -> pd.Series:
     """
     計算指數移動平均線 (EMA)
     
     Args:
-        data: 價格數據
+        data: 價格數據（Series 或 DataFrame，如果是 DataFrame 會自動提取 'close' 列）
         period: 周期
     
     Returns:
         EMA 值
     """
+    # 自動提取 close 列（如果是 DataFrame）
+    if isinstance(data, pd.DataFrame):
+        if 'close' in data.columns:
+            data = data['close']
+        else:
+            raise ValueError("DataFrame must contain 'close' column")
+    
+    # 確保是 Series
+    if not isinstance(data, pd.Series):
+        data = pd.Series(data)
+    
     result = data.ewm(span=period, adjust=False).mean()
     # 確保返回Series，不是DataFrame
     if isinstance(result, pd.DataFrame):
@@ -51,43 +62,70 @@ def calculate_ema(data: pd.Series, period: int) -> pd.Series:
     return pd.Series(result)
 
 def calculate_macd(
-    data: pd.Series,
+    data,
     fast_period: int = 12,
     slow_period: int = 26,
     signal_period: int = 9
-) -> tuple[pd.Series, pd.Series, pd.Series]:
+):
     """
     計算 MACD 指標
     
     Args:
-        data: 價格數據
+        data: 價格數據（Series 或 DataFrame，如果是 DataFrame 會自動提取 'close' 列）
         fast_period: 快線周期
         slow_period: 慢線周期
         signal_period: 信號線周期
     
     Returns:
-        tuple[MACD線, 信號線, 柱狀圖]
+        Dict 包含 'macd', 'signal', 'histogram'
     """
+    # 自動提取 close 列（如果是 DataFrame）
+    if isinstance(data, pd.DataFrame):
+        if 'close' in data.columns:
+            data = data['close']
+        else:
+            raise ValueError("DataFrame must contain 'close' column")
+    
+    # 確保是 Series
+    if not isinstance(data, pd.Series):
+        data = pd.Series(data)
+    
     ema_fast = calculate_ema(data, fast_period)
     ema_slow = calculate_ema(data, slow_period)
     macd_line = ema_fast - ema_slow
     signal_line = calculate_ema(macd_line, signal_period)
     histogram = macd_line - signal_line
     
-    # 確保返回Series類型
-    return pd.Series(macd_line), pd.Series(signal_line), pd.Series(histogram)
+    # 返回字典格式以保持一致性
+    return {
+        'macd': pd.Series(macd_line),
+        'signal': pd.Series(signal_line),
+        'histogram': pd.Series(histogram)
+    }
 
-def calculate_rsi(data: pd.Series, period: int = 14) -> pd.Series:
+def calculate_rsi(data, period: int = 14) -> pd.Series:
     """
     計算相對強弱指標 (RSI)
     
     Args:
-        data: 價格數據
+        data: 價格數據（Series 或 DataFrame，如果是 DataFrame 會自動提取 'close' 列）
         period: 周期
     
     Returns:
         RSI 值
     """
+    # 自動提取 close 列（如果是 DataFrame）
+    if isinstance(data, pd.DataFrame):
+        if 'close' in data.columns:
+            data = data['close']
+        else:
+            raise ValueError("DataFrame must contain 'close' column")
+    
+    # 確保是 Series 且是數值類型
+    if not isinstance(data, pd.Series):
+        data = pd.Series(data)
+    
+    # 計算 RSI
     delta = data.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
@@ -99,27 +137,45 @@ def calculate_rsi(data: pd.Series, period: int = 14) -> pd.Series:
     return pd.Series(rsi)
 
 def calculate_bollinger_bands(
-    data: pd.Series,
+    data,
     period: int = 20,
     std_dev: float = 2.0
-) -> tuple[pd.Series, pd.Series, pd.Series]:
+):
     """
     計算布林帶
     
     Args:
-        data: 價格數據
+        data: 價格數據（Series 或 DataFrame，如果是 DataFrame 會自動提取 'close' 列）
         period: 周期
         std_dev: 標準差倍數
     
     Returns:
-        tuple[上軌, 中軌, 下軌]
+        Dict 包含 'upper', 'middle', 'lower', 'width'
     """
+    # 自動提取 close 列（如果是 DataFrame）
+    if isinstance(data, pd.DataFrame):
+        if 'close' in data.columns:
+            data = data['close']
+        else:
+            raise ValueError("DataFrame must contain 'close' column")
+    
+    # 確保是 Series
+    if not isinstance(data, pd.Series):
+        data = pd.Series(data)
+    
     middle_band = data.rolling(window=period).mean()
     std = data.rolling(window=period).std()
     upper_band = middle_band + (std * std_dev)
     lower_band = middle_band - (std * std_dev)
+    width = (upper_band - lower_band) / middle_band
     
-    return upper_band, middle_band, lower_band
+    # 返回字典格式
+    return {
+        'upper': upper_band,
+        'middle': middle_band,
+        'lower': lower_band,
+        'width': width
+    }
 
 def calculate_volume_sma(volume: pd.Series, period: int = 20) -> pd.Series:
     """
@@ -843,7 +899,7 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
     return pd.Series(atr)
 
 
-def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple[pd.Series, pd.Series, pd.Series]:
+def calculate_adx(df: pd.DataFrame, period: int = 14):
     """
     計算平均方向指數 (ADX) + DMI
     
@@ -854,7 +910,7 @@ def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple[pd.Series, pd.Ser
         period: 周期（默認14）
     
     Returns:
-        tuple[ADX, +DI, -DI]
+        Dict 包含 'adx', 'di_plus', 'di_minus'
     """
     high = df['high']
     low = df['low']
@@ -891,7 +947,12 @@ def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple[pd.Series, pd.Ser
     # 計算ADX（DX的平滑）
     adx = dx.ewm(alpha=1/period, min_periods=period).mean()
     
-    return pd.Series(adx), pd.Series(plus_di), pd.Series(minus_di)
+    # 返回字典格式
+    return {
+        'adx': pd.Series(adx),
+        'di_plus': pd.Series(plus_di),
+        'di_minus': pd.Series(minus_di)
+    }
 
 
 def calculate_ema_slope(ema: pd.Series, lookback: int = 3) -> pd.Series:
