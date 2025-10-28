@@ -167,6 +167,7 @@ class ParallelAnalyzer:
         
         try:
             # 🔥 添加記憶體監控
+            process = None
             try:
                 import psutil
                 process = psutil.Process()
@@ -193,7 +194,7 @@ class ParallelAnalyzer:
                 result = ParallelAnalyzer._fallback_analysis(symbol_data, config)
             
             # 🔥 記憶體監控
-            if initial_memory is not None:
+            if initial_memory is not None and process is not None:
                 try:
                     final_memory = process.memory_info().rss / 1024 / 1024  # MB
                     memory_increase = final_memory - initial_memory
@@ -250,7 +251,7 @@ class ParallelAnalyzer:
             else:
                 config = config_or_dict
             
-            trader = ICTStrategy(config)
+            trader = ICTStrategy()
             result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
             return result
             

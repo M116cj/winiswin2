@@ -135,9 +135,8 @@ class PositionMonitor:
                 entry_price = float(position['entryPrice'])
                 unrealized_pnl_pct = float(position.get('unRealizedProfit', 0)) / (abs(position_amt) * entry_price) * 100
                 
-                # 获取当前市场价
-                ticker = await self.client.get_ticker_price(symbol)
-                current_price = float(ticker['price'])
+                # 获取当前市场价（v3.16.2 修復：get_ticker_price 返回 float）
+                current_price = await self.client.get_ticker_price(symbol)
                 
                 # 计算盈亏百分比
                 direction = "LONG" if position_amt > 0 else "SHORT"
@@ -228,9 +227,8 @@ class PositionMonitor:
                             # 🚨 v3.9.2.8.1: 执行前重新验证（使用fresh指标）
                             logger.info(f"⚠️ 执行平仓前重新验证 {symbol}")
                             
-                            # 获取最新价格（不使用缓存）
-                            fresh_ticker = await self.client.get_ticker_price(symbol)
-                            fresh_price = float(fresh_ticker['price'])
+                            # 获取最新价格（不使用缓存）（v3.16.2 修復：返回 float）
+                            fresh_price = await self.client.get_ticker_price(symbol)
                             
                             # 重新计算PnL确认
                             if direction == 'LONG':
@@ -259,8 +257,7 @@ class PositionMonitor:
                         elif action == 'adjust_stop_loss' and pnl_pct < -5.0:
                             # 🚨 v3.9.2.8.2: 执行前重新验证价格
                             logger.info(f"⚠️ 执行调整止损前重新验证 {symbol}")
-                            fresh_ticker = await self.client.get_ticker_price(symbol)
-                            fresh_price = float(fresh_ticker['price'])
+                            fresh_price = await self.client.get_ticker_price(symbol)
                             
                             # 重新计算PnL
                             if direction == 'LONG':
@@ -327,8 +324,7 @@ class PositionMonitor:
                             if tp_analysis['action'] == 'take_profit_now':
                                 # 🚨 v3.9.2.8.2: 执行前重新验证止盈进度
                                 logger.info(f"⚠️ 执行提前止盈前重新验证 {symbol}")
-                                fresh_ticker = await self.client.get_ticker_price(symbol)
-                                fresh_price = float(fresh_ticker['price'])
+                                fresh_price = await self.client.get_ticker_price(symbol)
                                 
                                 # 重新计算止盈进度
                                 if direction == 'LONG':
