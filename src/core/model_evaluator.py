@@ -492,3 +492,105 @@ class ModelEvaluator:
         md.append(f"| **最終分數** | {report['final_score']:.1f} | - |\n")
         
         return "\n".join(md)
+    
+    def analyze_feature_importance(self, model, feature_engine=None):
+        """
+        分析特徵重要性並動態調整（v3.17.10+）
+        
+        解決「特徵漂移」問題：
+        - 市場變化導致某些特徵失效（如 RSI 在 trending 市失效）
+        - 模型自動聚焦於當前市場有效的特徵
+        
+        Args:
+            model: XGBoost 模型實例（必須有 feature_importances_ 屬性）
+            feature_engine: 特徵工程引擎（用於獲取特徵名稱）
+        
+        Returns:
+            特徵重要性字典
+        """
+        try:
+            # 檢查模型是否有特徵重要性屬性
+            if not hasattr(model, 'feature_importances_'):
+                logger.warning("⚠️ 模型沒有 feature_importances_ 屬性")
+                return {}
+            
+            importance = model.feature_importances_
+            
+            # 獲取特徵名稱
+            if feature_engine and hasattr(feature_engine, 'get_feature_names'):
+                feature_names = feature_engine.get_feature_names()
+            else:
+                # 使用默認特徵名稱（41個）
+                feature_names = [
+                    # 基本特徵 (8)
+                    'confidence', 'leverage', 'position_value', 'risk_reward_ratio',
+                    'order_blocks_count', 'liquidity_zones_count', 'entry_price', 'win_probability',
+                    
+                    # 技術指標 (10)
+                    'rsi', 'macd', 'macd_signal', 'macd_histogram', 'atr', 'bb_width',
+                    'volume_sma_ratio', 'ema50', 'ema200', 'volatility_24h',
+                    
+                    # 趨勢特徵 (6)
+                    'trend_1h', 'trend_15m', 'trend_5m', 'market_structure', 'direction', 'trend_alignment',
+                    
+                    # 其他特徵 (14)
+                    'ema50_slope', 'ema200_slope', 'higher_highs', 'lower_lows',
+                    'support_strength', 'resistance_strength', 'fvg_count',
+                    'swing_high_distance', 'swing_low_distance', 'volume_profile',
+                    'price_momentum', 'order_flow', 'liquidity_grab', 'institutional_candle',
+                    
+                    # 競價上下文特徵 (3) - v3.17.10+
+                    'competition_rank', 'score_gap_to_best', 'num_competing_signals'
+                ]
+            
+            # 確保特徵數量匹配
+            if len(feature_names) != len(importance):
+                logger.warning(
+                    f"⚠️ 特徵數量不匹配: feature_names={len(feature_names)} "
+                    f"vs importance={len(importance)}"
+                )
+                # 使用索引作為特徵名稱
+                feature_names = [f"feature_{i}" for i in range(len(importance))]
+            
+            # 記錄重要性到日誌（輸出到 Railway Logs）
+            logger.info("=" * 80)
+            logger.info("[FEATURE_IMPORTANCE] 📊 特徵重要性分析（v3.17.10+）")
+            logger.info("=" * 80)
+            
+            # 排序特徵（從高到低）
+            sorted_features = sorted(
+                zip(feature_names, importance),
+                key=lambda x: x[1],
+                reverse=True
+            )
+            
+            # 記錄前 15 名重要特徵
+            logger.info("🔝 TOP 15 重要特徵:")
+            for i, (name, imp) in enumerate(sorted_features[:15], 1):
+                logger.info(f"  {i:2d}. {name:25s}: {imp:.4f}")
+                print(f"[FEATURE_IMPORTANCE] {name}: {imp:.4f}")
+            
+            # 動態調整特徵權重（用於下輪訓練）
+            low_importance_features = [
+                name for name, imp in zip(feature_names, importance)
+                if imp < 0.01  # 低於 1% 重要性
+            ]
+            
+            if low_importance_features:
+                logger.warning("=" * 80)
+                logger.warning(f"⚠️ 低重要性特徵（<1%）: {len(low_importance_features)} 個")
+                logger.warning(f"⚠️ 建議考慮移除: {low_importance_features}")
+                logger.warning("=" * 80)
+            else:
+                logger.info("✅ 所有特徵都有顯著貢獻（>=1%）")
+            
+            logger.info("=" * 80)
+            
+            # 返回特徵重要性字典
+            feature_importance_dict = dict(zip(feature_names, importance.tolist()))
+            
+            return feature_importance_dict
+            
+        except Exception as e:
+            logger.error(f"❌ 分析特徵重要性失敗: {e}", exc_info=True)
+            return {}
