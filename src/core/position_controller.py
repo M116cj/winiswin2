@@ -249,14 +249,13 @@ class PositionController:
                 f"PnL={position['pnl']:.2f} USDT ({position['pnl_pct']:.2%})"
             )
             
-            # 使用市價單平倉（priority=0）
-            result = await self.binance_client.place_order_async(
+            # 使用市價單平倉
+            result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=close_side,
                 order_type='MARKET',
                 quantity=size,
-                reduce_only=True,
-                priority=0  # 最高優先級
+                reduce_only=True
             )
             
             logger.info(f"✅ 平倉成功: {symbol} | 訂單 ID={result.get('orderId')}")

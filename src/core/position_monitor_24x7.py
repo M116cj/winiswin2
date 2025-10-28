@@ -108,8 +108,8 @@ class PositionMonitor24x7:
             return
         
         try:
-            # 獲取所有倉位（優先級 0）
-            positions = await self.binance_client.get_all_positions(priority=0)
+            # 獲取所有倉位
+            positions = await self.binance_client.get_position_info_async()
             
             if not positions:
                 return
