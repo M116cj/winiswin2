@@ -138,9 +138,14 @@ class PositionMonitor24x7:
         """
         try:
             symbol = position.get('symbol')
+            if not symbol:
+                logger.warning("⚠️ 持倉數據缺少 symbol，跳過")
+                return
+                
             position_amt = float(position.get('positionAmt', 0))
             entry_price = float(position.get('entryPrice', 0))
-            mark_price = float(position.get('markPrice', 0))
+            # markPrice 可能缺失，使用 entryPrice 作為備選
+            mark_price = float(position.get('markPrice') or position.get('entryPrice', 0))
             unrealized_pnl = float(position.get('unRealizedProfit', 0))
             
             if position_amt == 0:

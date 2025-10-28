@@ -200,11 +200,51 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
+### v3.17.5 (2025-10-28) - 修復持倉數據解析錯誤
+
+**類型**: 🐛 **BUG FIX**  
+**問題**: 獲取持倉失敗 `'markPrice'` KeyError  
+**狀態**: ✅ **已修復**
+
+#### **問題診斷**
+用戶 Railway 日誌顯示：
+```
+2025-10-28 12:26:19,289 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 'markPrice'
+```
+
+這表明：
+- ✅ **簽名修復有效！** API 請求已經成功
+- ❌ 但數據解析時缺少 `markPrice` 字段
+
+#### **根本原因**
+Binance API 在某些情況下（剛開倉、數據延遲等）可能不返回 `markPrice` 字段，導致：
+```python
+current_price = float(pos['markPrice'])  # ❌ KeyError!
+```
+
+#### **修復方案**
+使用安全訪問並提供備選值：
+```python
+# 修復前：
+current_price = float(pos['markPrice'])  # ❌ 直接訪問
+
+# 修復後：
+current_price = float(pos.get('markPrice') or pos.get('entryPrice', 0))  # ✅ 安全訪問
+# 邏輯：markPrice → entryPrice → 0
+```
+
+#### **修復文件**
+- ✅ `src/core/position_controller.py` - 持倉控制器
+- ✅ `src/core/position_monitor_24x7.py` - 24/7 監控器
+- ✅ 添加 symbol 檢查（LSP 錯誤修復）
+
+---
+
 ### v3.17.4 (2025-10-28) - 修復 Binance API 簽名無效錯誤 ⚠️
 
 **類型**: 🐛 **CRITICAL BUG FIX**  
 **問題**: 所有簽名請求返回 -1022 錯誤（簽名無效）  
-**狀態**: ✅ **已修復**
+**狀態**: ✅ **已修復並驗證**
 
 #### **根本原因**
 Railway 日誌顯示：

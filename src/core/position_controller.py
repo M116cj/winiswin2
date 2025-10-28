@@ -141,10 +141,11 @@ class PositionController:
                 if abs(position_amt) < 0.0001:
                     continue
                 
-                symbol = pos['symbol']
-                entry_price = float(pos['entryPrice'])
-                current_price = float(pos['markPrice'])
-                leverage = float(pos['leverage'])
+                symbol = pos.get('symbol', 'UNKNOWN')
+                entry_price = float(pos.get('entryPrice', 0))
+                # markPrice 可能在某些情況下缺失，使用 entryPrice 作為備選
+                current_price = float(pos.get('markPrice') or pos.get('entryPrice', 0))
+                leverage = float(pos.get('leverage', 1))
                 
                 # 計算 PnL
                 if position_amt > 0:  # LONG
