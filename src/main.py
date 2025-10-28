@@ -808,8 +808,16 @@ class TradingBot:
         await self.cleanup()
     
     async def cleanup(self):
-        """清理資源（v3.12.0：包含虚拟仓位循环清理）"""
+        """清理資源（v3.16.3：包含模型持久化）"""
         logger.info("\n🧹 清理資源...")
+        
+        # 🔥 v3.16.3: 保存自我學習模型
+        if self.strategy and hasattr(self.strategy, 'shutdown'):
+            try:
+                logger.info("💾 保存自我學習模型...")
+                self.strategy.shutdown()
+            except Exception as e:
+                logger.error(f"保存模型失敗: {e}")
         
         if self.data_archiver:
             logger.info("💾 刷新所有數據到磁盤...")

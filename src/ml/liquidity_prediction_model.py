@@ -139,3 +139,43 @@ class LiquidityPredictionModel:
         self.model.fit(price_sequences, liquidity_targets, epochs=epochs, verbose=0)
         
         logger.info(f"流动性预测模型训练完成 ({epochs} epochs)")
+    
+    def update_incremental(self, symbol: str, recent_data: pd.DataFrame, actual_liquidity: Optional[Dict] = None):
+        """
+        增量学习：基于实际流动性位置更新模型
+        
+        Args:
+            symbol: 交易对符号
+            recent_data: 最近的K线数据
+            actual_liquidity: 实际观察到的流动性位置 (可选)
+        """
+        if not TF_AVAILABLE or self.model is None or len(recent_data) < self.sequence_length:
+            return
+        
+        try:
+            features = self._prepare_features(recent_data)
+            
+            if actual_liquidity:
+                target = np.array([[
+                    actual_liquidity.get('buy_liquidity_price', 0),
+                    actual_liquidity.get('sell_liquidity_price', 0)
+                ]], dtype=np.float32)
+            else:
+                prediction = self._fallback_predict(recent_data)
+                target = np.array([[
+                    prediction['buy_liquidity_price'],
+                    prediction['sell_liquidity_price']
+                ]], dtype=np.float32)
+            
+            self.model.compile(optimizer='adam', loss='mse')
+            self.model.fit(
+                features.reshape(1, -1, 5),
+                target,
+                epochs=1,
+                verbose=0
+            )
+            
+            logger.debug(f"增量更新：流动性预测模型 {symbol}")
+            
+        except Exception as e:
+            logger.debug(f"增量学习失败: {e}")

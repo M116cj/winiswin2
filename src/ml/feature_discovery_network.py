@@ -112,3 +112,37 @@ class FeatureDiscoveryNetwork:
         self.model.fit(market_structures, target_features, epochs=epochs, verbose=0)
         
         logger.info(f"特征发现网络训练完成 ({epochs} epochs)")
+    
+    def update_incremental(self, market_structure: np.ndarray, signal_quality: float):
+        """
+        增量学习：基于交易信号质量更新特征发现
+        
+        Args:
+            market_structure: 市场结构向量
+            signal_quality: 信号质量评分 (0-1)
+        """
+        if not TF_AVAILABLE or self.model is None:
+            return
+        
+        try:
+            discovered_features = self.model.predict(market_structure.reshape(1, -1), verbose=0)
+            
+            if signal_quality > 0.6:
+                target_features = discovered_features * 1.1
+            elif signal_quality < 0.4:
+                target_features = discovered_features * 0.9
+            else:
+                return
+            
+            self.model.compile(optimizer='adam', loss='mse')
+            self.model.fit(
+                market_structure.reshape(1, -1),
+                target_features,
+                epochs=1,
+                verbose=0
+            )
+            
+            logger.debug(f"增量更新：特征发现网络 (质量={signal_quality:.2f})")
+            
+        except Exception as e:
+            logger.debug(f"增量学习失败: {e}")

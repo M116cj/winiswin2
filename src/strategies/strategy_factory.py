@@ -28,7 +28,7 @@ class StrategyFactory:
         if strategy_mode == "ict":
             from src.strategies.ict_strategy import ICTStrategy
             logger.info("🎯 使用 ICT 策略")
-            return ICTStrategy(config)
+            return ICTStrategy()
             
         elif strategy_mode == "self_learning":
             from src.strategies.self_learning_trader import SelfLearningTrader
@@ -43,4 +43,4 @@ class StrategyFactory:
         else:
             logger.warning(f"未知策略模式: {strategy_mode}, 使用默认ICT策略")
             from src.strategies.ict_strategy import ICTStrategy
-            return ICTStrategy(config)
+            return ICTStrategy()

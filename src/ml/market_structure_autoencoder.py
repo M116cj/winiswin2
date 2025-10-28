@@ -128,3 +128,29 @@ class MarketStructureAutoencoder:
         full_model.fit(X, price_data_batch, epochs=epochs, verbose=0)
         
         logger.info(f"自动编码器训练完成 ({epochs} epochs)")
+    
+    def update_incremental(self, price_series: np.ndarray):
+        """
+        增量学习：基于新的价格序列更新模型
+        
+        Args:
+            price_series: 新的价格序列
+        """
+        if not TF_AVAILABLE or len(price_series) < 50:
+            return
+        
+        try:
+            if len(price_series) > 50:
+                price_series = price_series[-50:]
+            
+            normalized = (price_series - np.mean(price_series)) / (np.std(price_series) + 1e-8)
+            X = normalized.reshape(1, 50, 1)
+            
+            full_model = Sequential([self.encoder, self.decoder])
+            full_model.compile(optimizer='adam', loss='mse')
+            full_model.fit(X, price_series.reshape(1, 50), epochs=1, verbose=0)
+            
+            logger.debug("增量更新：市场结构编码器")
+            
+        except Exception as e:
+            logger.debug(f"增量学习失败: {e}")
