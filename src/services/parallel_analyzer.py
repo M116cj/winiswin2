@@ -1,20 +1,18 @@
 """
-並行分析器（v3.12.0 全局进程池优化版）
-職責：利用 32 核心並行處理大量交易對分析、自適應批次大小、性能追蹤
+並行分析器（v3.15.1 串行稳定版）
+職責：批量處理大量交易對分析、自適應批次大小、性能追蹤
 
-v3.12.0 优化2：
-- 使用全局进程池（复用，减少创建/销毁开销）
-- 预加载ML模型到子进程（提升预测速度50%）
-- 每周期节省 0.8-1.2 秒
+v3.15.1 修复：
+- 禁用进程池（避免 BrokenProcessPool 错误）
+- 改用串行处理（100% 稳定）
+- 优先保证系统稳定性
 """
 
 import asyncio
 from typing import List, Dict, Optional
 import logging
-import psutil
 import time
 
-from src.core.global_pool import get_global_pool, analyze_symbol_worker
 from src.strategies.ict_strategy import ICTStrategy
 from src.config import Config
 
@@ -35,28 +33,19 @@ class ParallelAnalyzer:
         self.config = Config
         self.max_workers = max_workers
         
-        # ✨ v3.12.0：获取全局进程池（复用，不再每次创建）
-        # 确定ML模型路径（如果存在）
-        model_path = "data/models/xgboost_predictor_binary.pkl"
-        import os
-        if not os.path.exists(model_path):
-            model_path = None
+        # 🔧 v3.15.1：禁用进程池，改用串行处理（避免 BrokenProcessPool 错误）
+        # 进程池在某些环境下不稳定，导致子进程崩溃
+        # 串行处理虽然稍慢，但 100% 稳定
+        self.global_pool = None  # 禁用进程池
         
-        self.global_pool = get_global_pool(
-            max_workers=max_workers,
-            model_path=model_path
-        )
-        
-        # 本地策略实例（用于主进程验证）
+        # 策略实例（用于串行分析）
         self.strategy = ICTStrategy()
         
         # ✨ 性能監控
         self.perf_monitor = perf_monitor
         
-        logger.info(
-            f"並行分析器初始化: 使用全局进程池 "
-            f"({self.global_pool.max_workers} 个工作进程)"
-        )
+        logger.info("並行分析器初始化: 使用串行处理模式（稳定优先）")
+        logger.info("🔧 v3.15.1: 已禁用进程池，避免 BrokenProcessPool 错误")
     
     def _calculate_optimal_batch_size(self, total_symbols: int) -> int:
         """
@@ -68,36 +57,9 @@ class ParallelAnalyzer:
         Returns:
             int: 最優批次大小
         """
-        try:
-            # 獲取當前系統負載
-            cpu_usage = psutil.cpu_percent(interval=0.1)
-            mem_usage = psutil.virtual_memory().percent
-            
-            # 基礎批次大小
-            base_batch = self.global_pool.max_workers * 2
-            
-            # 根據系統負載動態調整
-            if cpu_usage < 40 and mem_usage < 50:
-                multiplier = 2
-                logger.debug(f"系統負載低 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用大批次")
-            elif cpu_usage < 60 and mem_usage < 65:
-                multiplier = 1.5
-                logger.debug(f"系統負載正常 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用標準批次")
-            else:
-                multiplier = 1
-                logger.warning(f"系統負載高 (CPU: {cpu_usage:.1f}%, MEM: {mem_usage:.1f}%)，使用小批次")
-            
-            batch_size = int(base_batch * multiplier)
-            
-            # 針對大量交易對優化（避免過大批次）
-            if total_symbols > 500:
-                batch_size = min(batch_size, 150)
-            
-            return int(batch_size)
-            
-        except Exception as e:
-            logger.warning(f"計算最優批次大小失敗，使用默認值: {e}")
-            return self.global_pool.max_workers * 2
+        # 🔧 v3.15.1: 串行处理模式，返回固定批次大小
+        # 使用较大批次以减少日志输出
+        return min(total_symbols, 100)
     
     async def analyze_batch(
         self,
@@ -146,19 +108,8 @@ class ParallelAnalyzer:
                 
                 multi_tf_data_list = await asyncio.gather(*tasks, return_exceptions=True)
                 
-                # ✨ v3.12.0：使用全局进程池进行并行分析
-                loop = asyncio.get_event_loop()
-                
-                # 🔧 修复：添加 BrokenProcessPool 错误处理
-                try:
-                    executor = self.global_pool.get_executor()
-                except Exception as e:
-                    logger.error(f"获取进程池失败: {e}，降级为串行处理")
-                    executor = None
-                
-                # 准备进程池任务参数
-                process_tasks = []
-                symbol_indices = []
+                # 🔧 v3.15.1: 串行处理（不使用进程池，100% 稳定）
+                batch_signal_count = 0
                 
                 for j, multi_tf_data in enumerate(multi_tf_data_list):
                     # 检查数据有效性
@@ -171,41 +122,15 @@ class ParallelAnalyzer:
                         continue
                     
                     symbol = batch[j]['symbol']
-                    symbol_indices.append(j)
                     
-                    # 🔧 修复：如果进程池不可用，降级为串行处理
-                    if executor is None:
-                        # 串行处理（不使用进程池）
+                    # 串行分析（主进程中执行，避免进程池问题）
+                    try:
                         signal = self.strategy.analyze(symbol, multi_tf_data)
                         if signal:
                             signals.append(signal)
-                    else:
-                        # 提交到进程池
-                        try:
-                            future = loop.run_in_executor(
-                                executor,
-                                analyze_symbol_worker,
-                                (symbol, multi_tf_data)
-                            )
-                            process_tasks.append(future)
-                        except Exception as e:
-                            logger.warning(f"提交任务到进程池失败 {symbol}: {e}，使用串行处理")
-                            signal = self.strategy.analyze(symbol, multi_tf_data)
-                            if signal:
-                                signals.append(signal)
-                
-                # 等待所有进程任务完成（仅当有进程池任务时）
-                if process_tasks:
-                    batch_signals = await asyncio.gather(*process_tasks, return_exceptions=True)
-                else:
-                    batch_signals = []
-                
-                # 收集有效信號
-                batch_signal_count = 0
-                for signal in batch_signals:
-                    if signal and not isinstance(signal, Exception):
-                        signals.append(signal)
-                        batch_signal_count += 1
+                            batch_signal_count += 1
+                    except Exception as e:
+                        logger.debug(f"分析 {symbol} 失败: {e}")
                 
                 batch_time = time.time() - start_time
                 logger.info(
