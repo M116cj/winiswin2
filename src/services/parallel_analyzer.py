@@ -27,35 +27,36 @@ from src.config import Config
 logger = logging.getLogger(__name__)
 
 
-# 🔥 v3.16.2 修復：模塊級別工作函數（避免序列化類時包含 thread.lock）
-def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], config_dict: Dict) -> Optional[Dict]:
+# 🔥 v3.16.2 修復：模塊級別工作函數（完全無閉包設計）
+def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: dict) -> Optional[Dict]:
     """
-    單個交易對分析（工作進程函數）
+    單個交易對分析（獨立工作函數，無任何外部依賴）
     
-    🔥 v3.16.2 關鍵修復：
-    - 必須是模塊級別函數（不能是類方法）
-    - 避免序列化類時包含模塊級 logger（含 thread.lock）
-    - 輸入數據已轉換為純 Python 字典（無 DataFrame）
+    🔥 v3.16.2 嚴格修復（GlobalProcessPool 方案）：
+    - 完全獨立的模塊級函數（不依賴任何類或模塊狀態）
+    - 參數完全扁平化（symbol, market_data, config_dict）
+    - 所有參數都是基本類型（str, dict）
+    - 在子進程內部重建所有複雜對象（logger, DataFrame, Config, Strategy）
     
     Args:
-        symbol_data: {'symbol': str, 'data': Dict[str, Dict]}
-        model_path: ML 模型路徑（可選）
-        config_dict: 配置字典（純數據）
+        symbol: 交易對名稱（str）
+        market_data: 市場數據（Dict[str, Dict[str, Any]]），已轉換為純字典
+        config_dict: 配置參數（Dict[str, Union[int, float, str, bool]]），只包含基本類型
     
     Returns:
         Optional[Dict]: 交易信號
     """
-    # 🔥 子進程內部創建獨立 logger
+    # 🔥 步驟1：在子進程內部創建獨立 logger（避免序列化主進程 logger）
     import logging
     import pandas as pd
-    proc_logger = logging.getLogger(f"{__name__}.subprocess")
+    proc_logger = logging.getLogger(f"worker.{symbol}")
     
     try:
-        # 🔥 步驟1：重建 DataFrame（從純字典恢復）
+        # 🔥 步驟2：重建 DataFrame（從純字典恢復）
         reconstructed_data = {}
-        for tf_key, tf_dict in symbol_data['data'].items():
-            if tf_dict is not None and 'data' in tf_dict:
-                # 從字典重建 DataFrame
+        for tf_key, tf_dict in market_data.items():
+            if tf_dict is not None and isinstance(tf_dict, dict) and 'data' in tf_dict:
+                # 從純字典重建 DataFrame
                 df = pd.DataFrame(tf_dict['data'])
                 if 'index' in tf_dict:
                     df.index = tf_dict['index']
@@ -63,37 +64,43 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
             else:
                 reconstructed_data[tf_key] = None
         
-        # 🔥 步驟2：添加記憶體監控
+        # 🔥 步驟3：添加記憶體監控
         process = None
+        initial_memory = None
         try:
             import psutil
             process = psutil.Process()
             initial_memory = process.memory_info().rss / 1024 / 1024  # MB
         except ImportError:
-            initial_memory = None
+            pass
         
-        # 🔥 步驟3：重建配置
+        # 🔥 步驟4：在子進程內重建 Config 對象
         from src.config import Config
         config = Config()
+        # 只應用傳入的配置參數
         for key, value in config_dict.items():
             if hasattr(config, key):
                 setattr(config, key, value)
         
-        # 🔥 步驟4：嘗試使用自我學習交易員
+        # 🔥 步驟5：在子進程內創建策略實例並執行分析
+        result = None
         try:
             from src.strategies.self_learning_trader import SelfLearningTrader
-            
             trader = SelfLearningTrader(config=config)
-            result = trader.analyze(symbol_data['symbol'], reconstructed_data)
+            result = trader.analyze(symbol, reconstructed_data)
             
         except Exception as e:
             # 🔥 降級到 ICT 策略
             proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
-            from src.strategies.ict_strategy import ICTStrategy
-            trader = ICTStrategy()
-            result = trader.analyze(symbol_data['symbol'], reconstructed_data)
+            try:
+                from src.strategies.ict_strategy import ICTStrategy
+                trader = ICTStrategy()
+                result = trader.analyze(symbol, reconstructed_data)
+            except Exception as fallback_error:
+                proc_logger.error(f"❌ 降級策略也失敗: {fallback_error}")
+                result = None
         
-        # 🔥 記憶體監控
+        # 🔥 步驟6：記憶體監控
         if initial_memory is not None and process is not None:
             try:
                 final_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -101,7 +108,7 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
                 
                 if memory_increase > 500:  # 記憶體增加超過 500MB
                     proc_logger.warning(
-                        f"⚠️ 記憶體洩漏警告 {symbol_data['symbol']}: +{memory_increase:.1f}MB"
+                        f"⚠️ 記憶體洩漏警告 {symbol}: +{memory_increase:.1f}MB"
                     )
             except Exception:
                 pass
@@ -109,10 +116,10 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
         return result
         
     except MemoryError:
-        proc_logger.error(f"❌ 記憶體不足 {symbol_data.get('symbol', 'UNKNOWN')}")
+        proc_logger.error(f"❌ 記憶體不足 {symbol}")
         return None
     except Exception as e:
-        proc_logger.error(f"❌ 分析失敗 {symbol_data.get('symbol', 'UNKNOWN')}: {e}")
+        proc_logger.error(f"❌ 分析失敗 {symbol}: {e}")
         return None
 
 
@@ -170,7 +177,7 @@ class ParallelAnalyzer:
             
             multi_tf_data_list = await asyncio.gather(*data_tasks, return_exceptions=True)
             
-            # 🔥 步驟2：提交所有分析任務（使用安全提交）
+            # 🔥 步驟2：提交所有分析任務（使用完全無閉包設計）
             for i, multi_tf_data in enumerate(multi_tf_data_list):
                 # 檢查數據有效性
                 if isinstance(multi_tf_data, Exception) or multi_tf_data is None:
@@ -182,42 +189,53 @@ class ParallelAnalyzer:
                 
                 symbol = symbols_data[i]['symbol']
                 
-                # 🔥 v3.16.2 關鍵修復：將 DataFrame 轉換為純字典（避免序列化問題）
-                # DataFrame 在某些環境下序列化可能失敗，轉換為純 Python 類型最安全
-                serializable_data = {}
+                # 🔥 轉換 DataFrame 為純字典（100% 可序列化）
+                market_data = {}
                 for tf_key, df in multi_tf_data.items():
                     if df is not None and hasattr(df, 'to_dict'):
-                        # 轉換為純字典格式
-                        serializable_data[tf_key] = {
-                            'data': df.to_dict('list'),  # 轉換為列表字典
+                        # 轉換為純 Python 基本類型
+                        market_data[tf_key] = {
+                            'data': df.to_dict('list'),  # list of lists/dicts
                             'index': df.index.tolist() if hasattr(df.index, 'tolist') else list(df.index)
                         }
                     else:
-                        serializable_data[tf_key] = None
+                        market_data[tf_key] = None
                 
-                symbol_data = {
-                    'symbol': symbol,
-                    'data': serializable_data  # 純 Python 字典
-                }
-                
-                # 🔥 創建可序列化的配置字典（只包含基本類型）
+                # 🔥 創建配置字典（只包含基本類型：int, float, str, bool）
                 config_dict = {
-                    'MIN_CONFIDENCE': self.config.MIN_CONFIDENCE,
-                    'MAX_LEVERAGE': self.config.MAX_LEVERAGE,
-                    'MIN_LEVERAGE': self.config.MIN_LEVERAGE,
-                    'BASE_MARGIN_PCT': self.config.BASE_MARGIN_PCT,
-                    'MIN_MARGIN_PCT': self.config.MIN_MARGIN_PCT,
-                    'MAX_MARGIN_PCT': self.config.MAX_MARGIN_PCT,
-                    'RISK_REWARD_RATIO': self.config.RISK_REWARD_RATIO,
-                    'TRADING_ENABLED': self.config.TRADING_ENABLED
+                    'MIN_CONFIDENCE': float(self.config.MIN_CONFIDENCE),
+                    'MAX_LEVERAGE': int(self.config.MAX_LEVERAGE),
+                    'MIN_LEVERAGE': int(self.config.MIN_LEVERAGE),
+                    'BASE_MARGIN_PCT': float(self.config.BASE_MARGIN_PCT),
+                    'MIN_MARGIN_PCT': float(self.config.MIN_MARGIN_PCT),
+                    'MAX_MARGIN_PCT': float(self.config.MAX_MARGIN_PCT),
+                    'RISK_REWARD_RATIO': float(self.config.RISK_REWARD_RATIO),
+                    'TRADING_ENABLED': bool(self.config.TRADING_ENABLED)
                 }
                 
-                # 🔥 v3.16.2: 使用模塊級函數（避免序列化類）
+                # 🔥 v3.16.2 嚴格驗證：提交前檢查所有參數可序列化
+                try:
+                    import pickle
+                    # 驗證函數本身
+                    pickle.dumps(_analyze_single_symbol_worker)
+                    # 驗證所有參數
+                    pickle.dumps(symbol)  # str
+                    pickle.dumps(market_data)  # dict
+                    pickle.dumps(config_dict)  # dict
+                except Exception as pickle_error:
+                    logger.error(f"❌ 序列化驗證失敗 {symbol}: {pickle_error}")
+                    logger.error(f"   函數: _analyze_single_symbol_worker")
+                    logger.error(f"   symbol 類型: {type(symbol)}")
+                    logger.error(f"   market_data 類型: {type(market_data)}")
+                    logger.error(f"   config_dict 類型: {type(config_dict)}")
+                    continue  # 跳過無法序列化的任務
+                
+                # 🔥 使用完全扁平化的參數（無嵌套，無閉包）
                 future = self.global_pool.submit_safe(
-                    _analyze_single_symbol_worker,
-                    symbol_data,
-                    self._model_path,
-                    config_dict
+                    _analyze_single_symbol_worker,  # 模塊級函數
+                    symbol,                         # str (扁平參數1)
+                    market_data,                    # dict (扁平參數2)
+                    config_dict                     # dict (扁平參數3)
                 )
                 tasks.append((symbol, future))
             
