@@ -1,6 +1,6 @@
 """
-全局配置管理
-職責：環境變量、常量定義、配置驗證
+v3.17+ 精簡配置管理
+職責：環境變量、常量定義、配置驗證（移除所有固定槓桿參數）
 """
 
 import os
@@ -9,59 +9,43 @@ from typing import Optional
 import logging
 
 class Config:
-    """系統配置管理類"""
+    """系統配置管理類（v3.17+ 精簡版）"""
     
-    # Binance API 配置
-    # 主 API（數據收集）
-    # 支持多種命名方式以兼容不同配置
+    # ===== Binance API 配置 =====
     BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
     BINANCE_API_SECRET: str = (
         os.getenv("BINANCE_API_SECRET", "") or 
-        os.getenv("BINANCE_SECRET_KEY", "")  # 兼容舊命名
+        os.getenv("BINANCE_SECRET_KEY", "")
     )
-    
-    # 可選：交易專用 API（避免訂單限制影響數據收集）
     BINANCE_TRADING_API_KEY: str = os.getenv("BINANCE_TRADING_API_KEY", "") or BINANCE_API_KEY
     BINANCE_TRADING_API_SECRET: str = os.getenv("BINANCE_TRADING_API_SECRET", "") or BINANCE_API_SECRET
-    
     BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
     
-    # Discord 配置
-    # 支持多種命名方式以兼容不同配置
+    # ===== Discord 配置（可選）=====
     DISCORD_TOKEN: str = (
         os.getenv("DISCORD_TOKEN", "") or 
-        os.getenv("DISCORD_BOT_TOKEN", "")  # 兼容舊命名
+        os.getenv("DISCORD_BOT_TOKEN", "")
     )
     DISCORD_CHANNEL_ID: Optional[str] = os.getenv("DISCORD_CHANNEL_ID")
     
-    # 交易配置（v3.11.1：移除持仓限制）
-    MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))  # 默认999（实际无限制）
+    # ===== 交易配置 =====
+    MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "false").lower() == "true"
+    VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))
     
-    # v3.12.0 优化5：双循环架构配置
-    VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))  # 虚拟仓位循环间隔（秒，默认10秒）
-    
-    # 風險管理配置
-    BASE_LEVERAGE: int = 3
-    MAX_LEVERAGE: int = 20
-    MIN_LEVERAGE: int = 3
-    BASE_MARGIN_PCT: float = 0.10
-    MIN_MARGIN_PCT: float = 0.03
-    MAX_MARGIN_PCT: float = 0.13
-    
-    # 策略配置（v3.9.2.3紧急修复）
-    MIN_CONFIDENCE: float = 0.35  # 🚨 降低到 0.35 进一步提高信号生成率
+    # ===== v3.17+ 核心策略配置 =====
+    MIN_CONFIDENCE: float = float(os.getenv("MIN_CONFIDENCE", "0.50"))
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
     
-    # 掃描配置
-    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))  # 掃描間隔（秒，默認60秒）
-    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))  # 監控流動性最高的前N個（默認200）
+    # ===== 掃描配置 =====
+    SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
+    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))
     
-    # 技術指標配置（v3.10.0：ADX趨勢過濾）
-    EMA_FAST: int = 20   # 從50降到20，更快捕捉趨勢
-    EMA_SLOW: int = 50   # 從200降到50，更靈敏
+    # ===== 技術指標配置 =====
+    EMA_FAST: int = 20
+    EMA_SLOW: int = 50
     RSI_PERIOD: int = 14
     RSI_OVERBOUGHT: float = 70
     RSI_OVERSOLD: float = 30
@@ -69,41 +53,35 @@ class Config:
     ATR_MULTIPLIER: float = 2.0
     RISK_REWARD_RATIO: float = 2.0
     
-    # ADX趨勢強度過濾器（v3.10.0新增）
+    # ADX 趨勢過濾器
     ADX_PERIOD: int = 14
-    ADX_TREND_THRESHOLD: float = 20.0  # ADX > 20 才視為有效趨勢
-    ADX_STRONG_TREND: float = 25.0     # ADX > 25 視為強趨勢
-    EMA_SLOPE_THRESHOLD: float = 0.01  # EMA斜率閾值（0.01% = 有效斜率）
+    ADX_TREND_THRESHOLD: float = 20.0
+    ADX_STRONG_TREND: float = 25.0
+    EMA_SLOPE_THRESHOLD: float = 0.01
     
-    # 實時波動率熔斷器（v3.10.0新增）
-    VOLATILITY_CIRCUIT_BREAKER_ENABLED: bool = True
-    VOLATILITY_WINDOW_DAYS: int = 7    # 7日波動率參考窗口
-    VOLATILITY_SPIKE_MULTIPLIER: float = 2.0  # 當前ATR > 7日均值2倍 = 波動突變
-    VOLATILITY_SPIKE_MAX_LEVERAGE: int = 5    # 波動突變時最大槓桿
-    
-    # Order Blocks 配置（v3.11.0增强：质量筛选+动态衰减）
+    # Order Blocks 配置
     OB_REJECTION_PCT: float = 0.03
-    OB_VOLUME_MULTIPLIER: float = 1.5  # 成交量必须 >= 20根均量的1.5倍
+    OB_VOLUME_MULTIPLIER: float = 1.5
     OB_LOOKBACK: int = 20
-    OB_MIN_VOLUME_RATIO: float = 1.5   # 最小成交量倍数（筛选低质量OB）
-    OB_REJECTION_THRESHOLD: float = 0.005  # 拒绝率阈值（0.5%体积 - 更实用）
-    OB_MAX_TEST_COUNT: int = 3         # OB最多被测试3次后失效
-    OB_MAX_HISTORY: int = 20           # 最多保留20个历史OB（用于衰减追踪）
-    OB_DECAY_ENABLED: bool = True      # 启用动态衰减
-    OB_TIME_DECAY_HOURS: int = 48      # 48小时后OB开始衰减
-    OB_DECAY_RATE: float = 0.1         # 每24小时衰减10%强度
+    OB_MIN_VOLUME_RATIO: float = 1.5
+    OB_REJECTION_THRESHOLD: float = 0.005
+    OB_MAX_TEST_COUNT: int = 3
+    OB_MAX_HISTORY: int = 20
+    OB_DECAY_ENABLED: bool = True
+    OB_TIME_DECAY_HOURS: int = 48
+    OB_DECAY_RATE: float = 0.1
     
-    # 訂單配置
-    MAX_SLIPPAGE_PCT: float = 0.002  # 最大滑點容忍度 0.2% （也用作限價單保護範圍）
-    ORDER_TIMEOUT_SECONDS: int = 30  # 限價單超時時間（秒）
-    USE_LIMIT_ORDERS: bool = True  # 是否使用限價單（滑點過大時）
-    AUTO_ORDER_TYPE: bool = True  # 自動選擇訂單類型
+    # ===== 訂單配置 =====
+    MAX_SLIPPAGE_PCT: float = 0.002
+    ORDER_TIMEOUT_SECONDS: int = 30
+    USE_LIMIT_ORDERS: bool = True
+    AUTO_ORDER_TYPE: bool = True
     
     # Liquidity Zones 配置
     LZ_LOOKBACK: int = 20
     LZ_STRENGTH_THRESHOLD: float = 0.5
     
-    # 信心度評分權重
+    # ===== 信心度評分權重 =====
     CONFIDENCE_WEIGHTS = {
         "trend_alignment": 0.40,
         "market_structure": 0.20,
@@ -112,126 +90,74 @@ class Config:
         "volatility": 0.10
     }
     
-    # 勝率門檻（用於槓桿調整）
+    # ===== 勝率門檻（用於 v3.17+ 槓桿計算）=====
     WINRATE_THRESHOLDS = {
         "good": 0.60,
         "great": 0.70,
         "excellent": 0.80
     }
     
-    # API 限流配置
-    # 使用 80% 官方限額（2400 * 0.8 = 1920）留 20% 安全邊際
+    # ===== API 限流配置 =====
     RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "1920"))
     RATE_LIMIT_PERIOD: int = 60
     
-    # ===== 自我学习配置 (v3.14.0) =====
-    STRATEGY_MODE: str = os.getenv("STRATEGY_MODE", "hybrid")  # "ict", "self_learning", "hybrid"
-    ENABLE_SELF_LEARNING: bool = os.getenv("ENABLE_SELF_LEARNING", "true").lower() == "true"
-    SELF_LEARNING_MODE: str = os.getenv("SELF_LEARNING_MODE", "end_to_end")  # "end_to_end" or "modular"
-    STRUCTURE_VECTOR_DIM: int = 16
-    FEATURE_DISCOVERY_RATE: float = 0.1
-    STRATEGY_EVOLUTION_INTERVAL: int = 3600
-    
-    # ===== 训练配置 (v3.14.0) =====
-    REINFORCEMENT_LEARNING_ENABLED: bool = os.getenv("REINFORCEMENT_LEARNING_ENABLED", "true").lower() == "true"
-    AUTOENCODER_TRAINING_ENABLED: bool = os.getenv("AUTOENCODER_TRAINING_ENABLED", "true").lower() == "true"
-    FEATURE_DISCOVERY_ENABLED: bool = os.getenv("FEATURE_DISCOVERY_ENABLED", "true").lower() == "true"
-    
-    # ===== v3.16.0 性能模块配置 =====
-    # 市场状态转换预测器
-    ENABLE_MARKET_REGIME_PREDICTION: bool = os.getenv('ENABLE_MARKET_REGIME_PREDICTION', 'false').lower() == 'true'
-    REGIME_PREDICTION_THRESHOLD: float = float(os.getenv('REGIME_PREDICTION_THRESHOLD', '0.65'))
-    REGIME_PREDICTION_LOOKBACK: int = int(os.getenv('REGIME_PREDICTION_LOOKBACK', '10'))
-    
-    # 动态特征生成器
-    ENABLE_DYNAMIC_FEATURES: bool = os.getenv('ENABLE_DYNAMIC_FEATURES', 'false').lower() == 'true'
-    DYNAMIC_FEATURE_MIN_SHARPE: float = float(os.getenv('DYNAMIC_FEATURE_MIN_SHARPE', '0.3'))
-    DYNAMIC_FEATURE_MAX_COUNT: int = int(os.getenv('DYNAMIC_FEATURE_MAX_COUNT', '15'))
-    
-    # 流动性狩猎器
-    ENABLE_LIQUIDITY_HUNTING: bool = os.getenv('ENABLE_LIQUIDITY_HUNTING', 'false').lower() == 'true'
-    LIQUIDITY_HUNT_CONFIDENCE_THRESHOLD: float = float(os.getenv('LIQUIDITY_HUNT_CONFIDENCE_THRESHOLD', '0.7'))
-    LIQUIDITY_SLIPPAGE_TOLERANCE: float = float(os.getenv('LIQUIDITY_SLIPPAGE_TOLERANCE', '0.0015'))
-    
-    # 緩存配置（根據時間框架優化）
-    # K線緩存時間應該匹配時間框架的持續時間
-    CACHE_TTL_KLINES_1H: int = 3600    # 1小時 K線緩存1小時
-    CACHE_TTL_KLINES_15M: int = 900    # 15分鐘 K線緩存15分鐘
-    CACHE_TTL_KLINES_5M: int = 300     # 5分鐘 K線緩存5分鐘
-    CACHE_TTL_KLINES_DEFAULT: int = 300  # 其他默認5分鐘
+    # ===== 緩存配置 =====
+    CACHE_TTL_KLINES_1H: int = 3600
+    CACHE_TTL_KLINES_15M: int = 900
+    CACHE_TTL_KLINES_5M: int = 300
+    CACHE_TTL_KLINES_DEFAULT: int = 300
     CACHE_TTL_TICKER: int = 5
     CACHE_TTL_ACCOUNT: int = 10
+    CACHE_TTL_KLINES_HISTORICAL: int = 86400
+    INDICATOR_CACHE_TTL: int = 60
     
-    # 熔斷器配置（v3.9.2.8.4：分級熔斷）
-    CIRCUIT_BREAKER_THRESHOLD: int = 5  # 舊版閾值（向後兼容）
+    # ===== 熔斷器配置 =====
+    CIRCUIT_BREAKER_THRESHOLD: int = 5
     CIRCUIT_BREAKER_TIMEOUT: int = 60
+    GRADED_CIRCUIT_BREAKER_ENABLED: bool = True
+    CIRCUIT_BREAKER_WARNING_THRESHOLD: int = 2
+    CIRCUIT_BREAKER_THROTTLED_THRESHOLD: int = 4
+    CIRCUIT_BREAKER_BLOCKED_THRESHOLD: int = 5
+    CIRCUIT_BREAKER_THROTTLE_DELAY: float = 2.0
     
-    # 分級熔斷器配置（v3.9.2.8.4新增）
-    GRADED_CIRCUIT_BREAKER_ENABLED: bool = True  # 啟用分級熔斷器
-    CIRCUIT_BREAKER_WARNING_THRESHOLD: int = 2   # 警告級閾值
-    CIRCUIT_BREAKER_THROTTLED_THRESHOLD: int = 4  # 限流級閾值
-    CIRCUIT_BREAKER_BLOCKED_THRESHOLD: int = 5   # 阻斷級閾值
-    CIRCUIT_BREAKER_THROTTLE_DELAY: float = 2.0  # 限流延遲（秒）
-    
-    # Bypass白名單（可繞過熔斷的關鍵操作）
     CIRCUIT_BREAKER_BYPASS_OPERATIONS: list = [
-        "close_position",        # 平倉
-        "emergency_stop_loss",   # 緊急止損
-        "adjust_stop_loss",      # 調整止損
-        "adjust_take_profit",    # 調整止盈
-        "get_positions",         # 查詢持倉
-        "cancel_order"           # 取消訂單
+        "close_position",
+        "emergency_stop_loss",
+        "adjust_stop_loss",
+        "adjust_take_profit",
+        "get_positions",
+        "cancel_order"
     ]
     
-    # v3.9.2.2新增：訂單執行配置（防止熔斷器觸發導致無保護倉位）
-    ORDER_INTER_DELAY: float = 1.5  # 訂單間延遲（秒）- 避免觸發熔斷器
-    ORDER_RETRY_MAX_ATTEMPTS: int = 5  # 訂單重試最大次數
-    ORDER_RETRY_BASE_DELAY: float = 1.0  # 重試基礎延遲（秒）
-    ORDER_RETRY_MAX_DELAY: float = 30.0  # 重試最大延遲（秒）
-    PROTECTION_GUARDIAN_INTERVAL: int = 30  # 保護監護任務檢查間隔（秒）
-    PROTECTION_GUARDIAN_MAX_ATTEMPTS: int = 10  # 保護監護最大嘗試次數
+    # ===== 訂單執行配置 =====
+    ORDER_INTER_DELAY: float = 1.5
+    ORDER_RETRY_MAX_ATTEMPTS: int = 5
+    ORDER_RETRY_BASE_DELAY: float = 1.0
+    ORDER_RETRY_MAX_DELAY: float = 30.0
+    PROTECTION_GUARDIAN_INTERVAL: int = 30
+    PROTECTION_GUARDIAN_MAX_ATTEMPTS: int = 10
     
-    # 批量處理配置
+    # ===== 批量處理配置 =====
     BATCH_SIZE: int = 50
     
-    # 虛擬倉位配置
+    # ===== 虛擬倉位配置 =====
     VIRTUAL_POSITION_EXPIRY: int = 96
     
-    # ===== v3.15.0: 性能优化配置 =====
-    # 优化1: TensorFlow Lite 量化
-    ENABLE_QUANTIZATION: bool = os.getenv("ENABLE_QUANTIZATION", "false").lower() == "true"
-    QUANTIZED_MODEL_PATH: str = os.getenv("QUANTIZED_MODEL_PATH", "models/")
-    
-    # 优化2: 特征快取
-    ENABLE_INCREMENTAL_CACHE: bool = os.getenv("ENABLE_INCREMENTAL_CACHE", "true").lower() == "true"
-    
-    # 优化3: 异步批量预测
-    ENABLE_BATCH_PREDICTION: bool = os.getenv("ENABLE_BATCH_PREDICTION", "true").lower() == "true"
-    BATCH_PREDICTION_SIZE: int = int(os.getenv("BATCH_PREDICTION_SIZE", "32"))
-    BATCH_MAX_DELAY: float = float(os.getenv("BATCH_MAX_DELAY", "0.1"))
-    
-    # 优化4: 记忆体映射存储
-    ENABLE_MEMORY_MAPPED_STORAGE: bool = os.getenv("ENABLE_MEMORY_MAPPED_STORAGE", "true").lower() == "true"
-    MAX_MEMORY_MAPPED_POSITIONS: int = int(os.getenv("MAX_MEMORY_MAPPED_POSITIONS", "1000"))
-    FEATURE_DIMENSION: int = int(os.getenv("FEATURE_DIMENSION", "32"))
-    
-    # 优化5: 智能监控频率
-    ENABLE_SMART_MONITORING: bool = os.getenv("ENABLE_SMART_MONITORING", "true").lower() == "true"
-    
-    # ML 數據收集配置
+    # ===== ML 數據收集配置 =====
     ML_FLUSH_COUNT: int = 25
     ML_FLUSH_INTERVAL: int = 300
     ML_DATA_DIR: str = "ml_data"
+    ML_MIN_TRAINING_SAMPLES: int = 100
     
-    # v3.13.0 策略2：配置驱动市场状态规则
+    # ===== 市場狀態規則 =====
     MARKET_STATE_RULES = {
         "strong_trending": {
             "adx_min": 25.0,
             "bb_width_quantile": 0.6,
             "volatility_min": 0.015,
             "allowed": True,
-            "risk_multiplier": 1.2,  # 强趋势加仓
-            "description": "强趋势市场"
+            "risk_multiplier": 1.2,
+            "description": "強趨勢市場"
         },
         "trending": {
             "adx_min": 20.0,
@@ -239,26 +165,26 @@ class Config:
             "bb_width_quantile": 0.4,
             "allowed": True,
             "risk_multiplier": 1.0,
-            "description": "正常趋势市场"
+            "description": "正常趨勢市場"
         },
         "ranging": {
             "adx_max": 20.0,
             "bb_width_quantile": 0.3,
             "volatility_max": 0.01,
-            "allowed": False,  # 震荡市场不交易
+            "allowed": False,
             "risk_multiplier": 0.0,
-            "description": "震荡市场（禁止交易）"
+            "description": "震盪市場（禁止交易）"
         },
         "choppy": {
             "adx_max": 15.0,
             "volatility_max": 0.005,
             "allowed": False,
             "risk_multiplier": 0.0,
-            "description": "混乱市场（禁止交易）"
+            "description": "混亂市場（禁止交易）"
         }
     }
     
-    # 期望值計算配置
+    # ===== 期望值計算配置 =====
     EXPECTANCY_WINDOW: int = 30
     MIN_EXPECTANCY_PCT: float = 0.3
     MIN_PROFIT_FACTOR: float = 0.8
@@ -266,26 +192,21 @@ class Config:
     DAILY_LOSS_LIMIT_PCT: float = 0.03
     COOLDOWN_HOURS: int = 24
     
-    # 性能優化配置
+    # ===== 性能優化配置 =====
     DEFAULT_ACCOUNT_BALANCE: float = float(os.getenv("DEFAULT_ACCOUNT_BALANCE", "10000"))
-    MIN_NOTIONAL_VALUE: float = 20.0  # Binance最小訂單價值
-    ML_MIN_TRAINING_SAMPLES: int = 100  # XGBoost最小訓練樣本數
-    INDICATOR_CACHE_TTL: int = 60  # 技術指標緩存時間（秒）
-    CACHE_TTL_KLINES_HISTORICAL: int = 86400  # 歷史K線緩存24小時（不會改變）
+    MIN_NOTIONAL_VALUE: float = 20.0
     
-    # 🔥 v3.16.1: 進程池配置（BrokenProcessPool 修復）
+    # ===== v3.17+: ThreadPool 配置（避免序列化錯誤）=====
     MAX_WORKERS: int = min(
-        int(os.getenv("MAX_WORKERS", "16")), 
+        int(os.getenv("MAX_WORKERS", "4")), 
         (os.cpu_count() or 1) + 4
-    )  # 減少 worker 數量避免記憶體不足（默認16，最多CPU+4）
-    PROCESS_MEMORY_LIMIT_MB: int = int(os.getenv("PROCESS_MEMORY_LIMIT_MB", "1024"))  # 每個子進程記憶體限制（MB）
-    PROCESS_TIMEOUT_SECONDS: int = int(os.getenv("PROCESS_TIMEOUT_SECONDS", "30"))  # 子進程超時時間（秒）
+    )
     
-    # 日誌配置
+    # ===== 日誌配置 =====
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_FILE: str = "data/logs/trading_bot.log"
     
-    # 數據文件路徑
+    # ===== 數據文件路徑 =====
     DATA_DIR: str = "data"
     TRADES_FILE: str = f"{DATA_DIR}/trades.json"
     ML_PENDING_FILE: str = f"{DATA_DIR}/ml_pending_entries.json"
@@ -302,25 +223,21 @@ class Config:
         errors = []
         warnings = []
         
-        # 必需的配置
         if not cls.BINANCE_API_KEY:
             errors.append("缺少 BINANCE_API_KEY 環境變量")
         
         if not cls.BINANCE_API_SECRET:
             errors.append("缺少 BINANCE_API_SECRET 環境變量")
         
-        # 可選的配置（僅警告）
         if not cls.DISCORD_TOKEN:
             warnings.append("未設置 DISCORD_TOKEN - Discord 通知將被禁用")
         
-        # v3.11.1：移除MAX_POSITIONS上限检查（允许无限持仓）
         if cls.MAX_POSITIONS < 1:
             errors.append(f"MAX_POSITIONS 必須 >= 1，當前為 {cls.MAX_POSITIONS}")
         
         if cls.MIN_CONFIDENCE < 0 or cls.MIN_CONFIDENCE > 1:
             errors.append(f"MIN_CONFIDENCE 必須在 0-1 之間，當前為 {cls.MIN_CONFIDENCE}")
         
-        # 如果有警告，記錄但不阻止啟動
         if warnings:
             import logging
             logger = logging.getLogger(__name__)
@@ -331,7 +248,7 @@ class Config:
     
     @classmethod
     def setup_logging(cls):
-        """設置日誌系統（輸出到 stdout 避免 Railway [err] 標籤）"""
+        """設置日誌系統"""
         os.makedirs(os.path.dirname(cls.LOG_FILE), exist_ok=True)
         
         logging.basicConfig(
@@ -339,20 +256,20 @@ class Config:
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             handlers=[
                 logging.FileHandler(cls.LOG_FILE),
-                logging.StreamHandler(sys.stdout)  # 輸出到 stdout 而非 stderr
+                logging.StreamHandler(sys.stdout)
             ]
         )
     
     @classmethod
     def get_summary(cls) -> dict:
-        """獲取配置摘要"""
+        """獲取配置摘要（v3.17+ 版本）"""
         return {
+            "version": "v3.17+",
             "binance_testnet": cls.BINANCE_TESTNET,
             "trading_enabled": cls.TRADING_ENABLED,
             "max_positions": cls.MAX_POSITIONS,
             "cycle_interval": cls.CYCLE_INTERVAL,
-            "leverage_range": f"{cls.MIN_LEVERAGE}x - {cls.MAX_LEVERAGE}x",
-            "margin_range": f"{cls.MIN_MARGIN_PCT*100}% - {cls.MAX_MARGIN_PCT*100}%",
             "min_confidence": f"{cls.MIN_CONFIDENCE*100}%",
-            "log_level": cls.LOG_LEVEL
+            "log_level": cls.LOG_LEVEL,
+            "note": "使用 ConfigProfile 進行 v3.17+ 槓桿控制"
         }
