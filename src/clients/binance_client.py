@@ -273,33 +273,40 @@ class BinanceClient:
     
     def _format_quantity(self, quantity: float, step_size: float) -> float:
         """
-        根據 stepSize 格式化數量（避免精度錯誤）
+        根據 stepSize 格式化數量（符合 Binance FUTURES LOT_SIZE 規則）
+        使用 Decimal 向下取整避免精度超出
         
         Args:
             quantity: 原始數量
             step_size: 步進大小
         
         Returns:
-            格式化後的數量
+            格式化後的數量（向下取整到 stepSize 倍數）
         """
+        from decimal import Decimal, ROUND_DOWN
         import math
         
         if step_size == 0:
             return quantity
+        
+        # 轉換為 Decimal 避免浮點數精度問題
+        qty_decimal = Decimal(str(quantity))
+        step_decimal = Decimal(str(step_size))
+        
+        # 向下取整到 stepSize 的倍數（floor）
+        steps = int(qty_decimal / step_decimal)
+        formatted_decimal = step_decimal * Decimal(steps)
         
         # 計算精度（小數位數）
         precision = int(round(-math.log(step_size, 10), 0))
         if precision < 0:
             precision = 0
         
-        # 四捨五入到正確的精度
-        formatted = round(quantity, precision)
+        # 量化到正確精度（向下取整）
+        quantize_str = '0.' + '0' * precision if precision > 0 else '1'
+        formatted_decimal = formatted_decimal.quantize(Decimal(quantize_str), rounding=ROUND_DOWN)
         
-        # 確保符合 stepSize 的倍數
-        formatted = round(formatted / step_size) * step_size
-        formatted = round(formatted, precision)
-        
-        return formatted
+        return float(formatted_decimal)
     
     async def format_quantity(self, symbol: str, quantity: float) -> float:
         """
@@ -445,6 +452,16 @@ class BinanceClient:
             if float(pos.get('positionAmt', 0)) != 0
         ]
         return positions
+    
+    async def get_position_info_async(self) -> list:
+        """
+        獲取持倉信息（異步版本，position_controller 使用）
+        
+        Returns:
+            持倉列表（包含所有持倉，包括零倉位）
+        """
+        account_info = await self.get_account_info()
+        return account_info.get('positions', [])
     
     async def get_account_balance(self) -> dict:
         """

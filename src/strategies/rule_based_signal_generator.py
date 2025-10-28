@@ -371,9 +371,18 @@ class RuleBasedSignalGenerator:
                    (direction == 'SHORT' and ob['type'] == 'bearish')
             ]
             if relevant_obs:
-                # 取最近的 OB
-                nearest_ob = min(relevant_obs, key=lambda x: abs(x['zone'][0] - current_price))
-                ob_distance = abs(nearest_ob['zone'][0] - current_price) / current_price
+                # 取最近的 OB（使用 zone 中點：(zone_low + zone_high) / 2）
+                def get_ob_price(ob):
+                    if 'price' in ob:
+                        return ob['price']
+                    elif 'zone_low' in ob and 'zone_high' in ob:
+                        return (ob['zone_low'] + ob['zone_high']) / 2
+                    else:
+                        return current_price
+                
+                nearest_ob = min(relevant_obs, key=lambda x: abs(get_ob_price(x) - current_price))
+                ob_price = get_ob_price(nearest_ob)
+                ob_distance = abs(ob_price - current_price) / current_price
                 
                 # 距離越近分數越高
                 if ob_distance < 0.005:  # <0.5%
