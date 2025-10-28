@@ -72,8 +72,8 @@ class TradingBot:
     async def initialize(self):
         """初始化系統"""
         logger.info("=" * 60)
-        logger.info("🚀 高頻交易系統 v3.15.0 啟動中...")
-        logger.info("📌 代碼版本: v3.15.0 (5大性能优化 - TFLite量化+增量缓存+批量预测+记忆体映射+智能监控)")
+        logger.info("🚀 高頻交易系統 v3.16.0 啟動中...")
+        logger.info("📌 代碼版本: v3.16.0 (3大高级功能 - 市场状态预测器+动态特征生成+流动性狩猎)")
         logger.info("=" * 60)
         
         # 📊 显示评分系统说明
@@ -105,7 +105,15 @@ class TradingBot:
         logger.info("  ⚡ v3.12.0: 性能優化五合一（進程池+增量緩存+批量ML+ONNX+雙循環，週期時間↓40%）")
         logger.info("  🚀 v3.13.0: 全面轻量化（异步批量更新+12项优化+内存↓30%+代码↓20%）")
         logger.info("  ✨ v3.14.0: 混合智能系统（策略工厂+深度学习+生命周期监控）")
-        logger.info("  ⚡ v3.15.0: 5大性能优化（TFLite量化+增量缓存+批量预测+记忆体映射+智能监控）\n")
+        logger.info("  ⚡ v3.15.0: 5大性能优化（TFLite量化+增量缓存+批量预测+记忆体映射+智能监控）")
+        logger.info("  🔥 v3.16.0: 3大高级功能（市场状态预测器+动态特征生成+流动性狩猎器）\n")
+        
+        # 🔥 v3.16.0 配置状态
+        logger.info("\n🔥 v3.16.0 性能模块状态：")
+        logger.info(f"  🎯 市场状态预测器: {'✅ 启用' if Config.ENABLE_MARKET_REGIME_PREDICTION else '⚪ 禁用 (默认)'}")
+        logger.info(f"  🔧 动态特征生成器: {'✅ 启用' if Config.ENABLE_DYNAMIC_FEATURES else '⚪ 禁用 (默认)'}")
+        logger.info(f"  🎣 流动性狩猎器: {'✅ 启用' if Config.ENABLE_LIQUIDITY_HUNTING else '⚪ 禁用 (默认)'}")
+        logger.info("  💡 提示: 默认全部禁用，可通过环境变量启用新功能\n")
         
         is_valid, errors = Config.validate()
         if not is_valid:
