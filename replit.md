@@ -229,6 +229,111 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
+### v3.17.7 (2025-10-28) - 部署環境限制說明 📍
+
+**類型**: 📖 **DOCUMENTATION / DEPLOYMENT GUIDE**  
+**問題**: Replit 環境無法訪問 Binance API（HTTP 451 錯誤）  
+**狀態**: ✅ **已文檔化並提供解決方案**
+
+#### **問題診斷**
+
+當在 Replit 環境中運行時，系統會出現：
+
+```
+❌ Binance API 錯誤 451: Service unavailable from a restricted location
+🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+... (連續失敗 5 次)
+❌ 熔斷器阻斷(失敗5次)，請25秒後重試
+```
+
+#### **根本原因**
+
+**這不是代碼錯誤，也不是熔斷器故障！**
+
+1. **HTTP 451 = 地理位置限制**
+   - Binance 基於服務器 IP 地址限制 API 訪問
+   - Replit 服務器位於被限制的地區（美國或其他受限地區）
+   - 所有 API 請求都會被 Binance 阻止
+
+2. **熔斷器正確工作**
+   - 檢測到連續 5 次 HTTP 451 錯誤
+   - 自動阻斷後續請求以保護系統
+   - 避免浪費 API 配額和系統資源
+
+3. **Binance 限制的地區包括**：
+   - 🇺🇸 美國（必須使用 binance.us，功能有限）
+   - 🇨🇦 加拿大
+   - 🇳🇱 荷蘭
+   - 🇸🇬 新加坡（部分限制）
+   - 其他受制裁國家
+
+#### **解決方案**
+
+**✅ 唯一方案：部署到 Railway**
+
+Railway 服務器位於允許訪問的地區：
+- 🇪🇺 歐洲（德國、法國等）
+- 🇯🇵 日本
+- 🇦🇺 澳大利亞
+
+**📖 完整部署指南**：[`RAILWAY_DEPLOY.md`](./RAILWAY_DEPLOY.md)
+
+**快速部署步驟**：
+```bash
+# 1. 推送代碼到 GitHub
+git add .
+git commit -m "Deploy to Railway v3.17.7"
+git push origin main
+
+# 2. 在 Railway 創建項目
+# - 連接 GitHub 倉庫
+# - 配置環境變量：BINANCE_API_KEY, BINANCE_API_SECRET
+# - 等待自動部署（2-3 分鐘）
+
+# 3. 驗證部署
+# Railway 日誌應顯示：
+# ✅ Binance API 連接成功
+# ✅ Position Mode 查詢成功
+# ✅ 24/7 交易監控已啟動
+```
+
+#### **為什麼不能在 Replit 運行？**
+
+| 方案 | 可行性 | 說明 |
+|------|--------|------|
+| VPN/代理 | ❌ 不可靠 | Replit 不支持自定義網絡配置 |
+| 修改代碼 | ❌ 無法解決 | 這是 Binance 服務器端的地理限制 |
+| 等待修復 | ❌ 不會改變 | Binance 的地理政策不會改變 |
+| **部署到 Railway** | ✅ **唯一方案** | Railway 服務器在允許的地區 |
+
+#### **相關文件**
+
+- ✅ [`RAILWAY_DEPLOY.md`](./RAILWAY_DEPLOY.md) - 完整部署指南
+- ✅ [`RAILWAY_ENV_SETUP.md`](./RAILWAY_ENV_SETUP.md) - 環境變量配置
+- ✅ [`RAILWAY_LOGGING_GUIDE.md`](./RAILWAY_LOGGING_GUIDE.md) - 日誌監控指南
+- ✅ `requirements.txt` - Python 依賴列表
+- ✅ `.python-version` - Python 版本規範
+
+#### **熔斷器設計說明**
+
+熔斷器在此場景中的行為是**完全正確**的：
+
+```
+第 1 次失敗 (HTTP 451) → 熔斷器級別: normal → warning
+第 2 次失敗 (HTTP 451) → 熔斷器級別: warning
+第 3 次失敗 (HTTP 451) → 熔斷器級別: warning
+第 4 次失敗 (HTTP 451) → 熔斷器級別: warning → throttled
+第 5 次失敗 (HTTP 451) → 熔斷器級別: throttled → blocked
+
+✅ 熔斷器阻斷後續請求 25 秒
+✅ 保護系統資源
+✅ 避免觸發 Binance IP 封鎖
+```
+
+這是**保護機制**，不是錯誤。
+
+---
+
 ### v3.17.6 (2025-10-28) - 修復函數調用錯誤（全面代碼審查）
 
 **類型**: 🐛 **CRITICAL BUG FIX**  
