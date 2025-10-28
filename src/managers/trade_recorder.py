@@ -10,6 +10,7 @@ from datetime import datetime
 import logging
 
 from src.config import Config
+from src.ml.feature_engine import FeatureEngine
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +33,20 @@ class TradeRecorder:
         self.pending_entries: List[Dict] = []
         self.completed_trades: List[Dict] = []
         
+        # 🔥 v3.17.10+：特徵工程引擎（競價上下文特徵）
+        self.feature_engine = FeatureEngine()
+        logger.info("✅ 特徵工程引擎已啟用（v3.17.10+）")
+        
         self._load_data()
     
-    def record_entry(self, signal: Dict, position_info: Dict):
+    def record_entry(self, signal: Dict, position_info: Dict, competition_context: Optional[Dict] = None):
         """
         記錄開倉信號（待配對）
         
         Args:
             signal: 交易信號
             position_info: 倉位信息
+            competition_context: 競價上下文（v3.17.10+）包含 rank, score_gap, num_signals
         """
         entry_data = {
             'entry_id': f"{signal['symbol']}_{datetime.now().timestamp()}",
@@ -57,6 +63,17 @@ class TradeRecorder:
             'liquidity_zones': signal.get('liquidity_zones', 0),
             'indicators': signal.get('indicators', {}),
         }
+        
+        # 🔥 v3.17.10+：添加競價上下文特徵（3個新特徵）
+        if competition_context:
+            entry_data['competition_rank'] = competition_context.get('rank', 1)
+            entry_data['score_gap_to_best'] = competition_context.get('score_gap', 0.0)
+            entry_data['num_competing_signals'] = competition_context.get('num_signals', 1)
+        else:
+            # 默認值（向後兼容）
+            entry_data['competition_rank'] = 1
+            entry_data['score_gap_to_best'] = 0.0
+            entry_data['num_competing_signals'] = 1
         
         self.pending_entries.append(entry_data)
         
@@ -112,7 +129,12 @@ class TradeRecorder:
     
     def _create_ml_record(self, entry: Dict, exit_data: Dict) -> Dict:
         """
-        創建完整的 ML 訓練記錄（38 個特徵）
+        創建完整的 ML 訓練記錄（41 個特徵）
+        
+        v3.17.10+：新增3個競價上下文特徵
+        - competition_rank: 信號排名（1=最優）
+        - score_gap_to_best: 與最優信號的評分差距
+        - num_competing_signals: 當時競爭的信號數量
         
         Args:
             entry: 開倉數據
@@ -177,7 +199,11 @@ class TradeRecorder:
             'bb_width_pct': indicators.get('bb_width_pct', 0),
             'volume_sma_ratio': indicators.get('volume_sma_ratio', 0),
             'price_vs_ema50': indicators.get('price_vs_ema50', 0),
-            'price_vs_ema200': indicators.get('price_vs_ema200', 0)
+            'price_vs_ema200': indicators.get('price_vs_ema200', 0),
+            # 🔥 v3.17.10+：競價上下文特徵（3個新特徵）
+            'competition_rank': entry.get('competition_rank', 1),
+            'score_gap_to_best': entry.get('score_gap_to_best', 0.0),
+            'num_competing_signals': entry.get('num_competing_signals', 1)
         }
         
         return ml_record

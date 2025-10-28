@@ -30,7 +30,8 @@ class ModelInitializer:
         self,
         binance_client=None,
         trade_recorder=None,
-        config_profile=None
+        config_profile=None,
+        model_evaluator=None
     ):
         """
         初始化模型初始化器
@@ -39,10 +40,12 @@ class ModelInitializer:
             binance_client: BinanceClient 實例（可選）
             trade_recorder: TradeRecorder 實例（可選）
             config_profile: ConfigProfile 實例（可選）
+            model_evaluator: ModelEvaluator 實例（可選，v3.17.10+）
         """
         self.binance = binance_client
         self.trade_recorder = trade_recorder
         self.config = config_profile
+        self.model_evaluator = model_evaluator  # 🔥 v3.17.10+
         
         # 模型目錄
         self.model_dir = Path("models")
@@ -455,6 +458,14 @@ class ModelInitializer:
             
             if model_size > 100:
                 logger.warning(f"⚠️ 模型較大 ({model_size:.2f} KB)，建議量化")
+            
+            # 🔥 v3.17.10+：訓練後分析特徵重要性（反饋循環）
+            if self.model_evaluator:
+                try:
+                    logger.info("📊 分析模型特徵重要性...")
+                    self.model_evaluator.analyze_feature_importance(model)
+                except Exception as e:
+                    logger.warning(f"⚠️ 特徵重要性分析失敗: {e}")
             
             return True
             

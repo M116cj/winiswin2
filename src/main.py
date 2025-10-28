@@ -39,6 +39,8 @@ from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.core.unified_scheduler import UnifiedScheduler
 from src.managers.trade_recorder import TradeRecorder
+from src.core.model_evaluator import ModelEvaluator
+from src.core.model_initializer import ModelInitializer
 
 # 配置日誌
 logging.basicConfig(
@@ -71,6 +73,8 @@ class SelfLearningTradingSystem:
         self.binance_client: Optional[BinanceClient] = None
         self.data_service: Optional[DataService] = None
         self.trade_recorder: Optional[TradeRecorder] = None
+        self.model_evaluator: Optional[ModelEvaluator] = None  # v3.17.10+
+        self.model_initializer: Optional[ModelInitializer] = None  # v3.17.10+
         self.scheduler: Optional[UnifiedScheduler] = None
     
     async def initialize(self):
@@ -117,12 +121,29 @@ class SelfLearningTradingSystem:
             self.trade_recorder = TradeRecorder()
             logger.info("✅ 交易記錄器初始化完成")
             
+            # 🔥 v3.17.10+：模型評估器（用於特徵重要性分析）
+            self.model_evaluator = ModelEvaluator(
+                config=self.config,
+                reports_dir=self.config.REPORTS_DIR
+            )
+            logger.info("✅ 模型評估器初始化完成（v3.17.10+）")
+            
+            # 🔥 v3.17.10+：模型初始化器（動態重訓練觸發）
+            self.model_initializer = ModelInitializer(
+                binance_client=self.binance_client,
+                trade_recorder=self.trade_recorder,
+                config_profile=self.config,
+                model_evaluator=self.model_evaluator
+            )
+            logger.info("✅ 模型初始化器已創建（v3.17.10+）")
+            
             # UnifiedScheduler（核心調度器）
             self.scheduler = UnifiedScheduler(  # type: ignore  # Config 類級別使用
                 config=self.config,
                 binance_client=self.binance_client,
                 data_service=self.data_service,
-                trade_recorder=self.trade_recorder
+                trade_recorder=self.trade_recorder,
+                model_initializer=self.model_initializer  # 🔥 v3.17.10+
             )
             logger.info("✅ UnifiedScheduler 初始化完成")
             

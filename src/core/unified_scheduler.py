@@ -46,7 +46,8 @@ class UnifiedScheduler:
         config: Config,
         binance_client: BinanceClient,
         data_service: DataService,
-        trade_recorder=None
+        trade_recorder=None,
+        model_initializer=None
     ):
         """
         初始化 UnifiedScheduler
@@ -56,11 +57,13 @@ class UnifiedScheduler:
             binance_client: Binance 客戶端
             data_service: 數據服務
             trade_recorder: 交易記錄器
+            model_initializer: 模型初始化器（v3.17.10+）
         """
         self.config = config
         self.binance_client = binance_client
         self.data_service = data_service
         self.trade_recorder = trade_recorder
+        self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
         # 初始化核心組件
         self.self_learning_trader = SelfLearningTrader(
@@ -204,6 +207,16 @@ class UnifiedScheduler:
             logger.info("=" * 80)
             logger.info(f"🔄 交易週期 #{self.stats['total_cycles']} | {cycle_start.strftime('%Y-%m-%d %H:%M:%S UTC')}")
             logger.info("=" * 80)
+            
+            # 🔥 v3.17.10+：每10個週期檢查是否需要重訓練（動態觸發）
+            if self.model_initializer and self.stats['total_cycles'] % 10 == 0:
+                try:
+                    if self.model_initializer.should_retrain():
+                        logger.warning("⚠️ 觸發動態重訓練（性能驟降 or 市場狀態劇變 or 樣本累積）...")
+                        await self.model_initializer.force_retrain()
+                        logger.info("✅ 動態重訓練完成，模型已更新")
+                except Exception as e:
+                    logger.error(f"❌ 動態重訓練失敗: {e}")
             
             # 步驟 1：獲取並顯示持倉狀態
             positions = await self._get_and_display_positions()

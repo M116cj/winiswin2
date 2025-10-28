@@ -495,6 +495,12 @@ class SelfLearningTrader:
             exploration_candidates = [s for s in scored_signals if s != best]
             if exploration_candidates:
                 explore = random.choice(exploration_candidates)
+                
+                # 計算競價上下文（用於記錄）
+                sorted_signals = sorted(scored_signals, key=lambda x: x['score'], reverse=True)
+                explore_rank = sorted_signals.index(explore) + 1
+                score_gap = best['score'] - explore['score']
+                
                 logger.info(
                     f"🔍 探索模式: 執行 {explore['signal']['symbol']}（非最優） | "
                     f"評分={explore['score']:.3f} vs 最優={best['score']:.3f}"
@@ -507,7 +513,14 @@ class SelfLearningTrader:
                 
                 # 執行探索性交易
                 position = await self._place_order_and_monitor(
-                    explore['signal'], explore['size'], available_balance
+                    explore['signal'], 
+                    explore['size'], 
+                    available_balance,
+                    competition_context={
+                        'rank': explore_rank,
+                        'score_gap': score_gap,
+                        'num_signals': len(scored_signals)
+                    }
                 )
                 
                 # 創建虛擬倉位（包含 best 信號）
@@ -517,7 +530,14 @@ class SelfLearningTrader:
         
         # === 7. 執行最優信號（95% 情況）===
         position = await self._place_order_and_monitor(
-            best['signal'], best['size'], available_balance
+            best['signal'], 
+            best['size'], 
+            available_balance,
+            competition_context={
+                'rank': 1,  # 最優信號始終是 rank 1
+                'score_gap': 0.0,  # 與自己的差距為0
+                'num_signals': len(scored_signals)
+            }
         )
         
         # === 8. 創建虛擬倉位（未執行信號）===
@@ -612,7 +632,8 @@ class SelfLearningTrader:
         self, 
         signal: Dict, 
         size: float, 
-        available_balance: float
+        available_balance: float,
+        competition_context: Optional[Dict] = None
     ) -> Optional[Dict]:
         """
         執行下單並監控倉位
@@ -621,6 +642,7 @@ class SelfLearningTrader:
             signal: 交易信號
             size: 倉位數量
             available_balance: 可用保證金
+            competition_context: 競價上下文（v3.17.10+）
             
         Returns:
             倉位信息或 None
@@ -675,7 +697,8 @@ class SelfLearningTrader:
                             'leverage': signal['leverage'],
                             'position_value': position_value,
                             'size': size
-                        }
+                        },
+                        competition_context=competition_context  # 🔥 v3.17.10+：競價上下文特徵
                     )
                     logger.debug(f"📝 記錄開倉信號: {signal['symbol']}")
                 except Exception as e:

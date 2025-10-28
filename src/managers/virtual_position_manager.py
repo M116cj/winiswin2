@@ -28,6 +28,7 @@ from src.config import Config
 from src.core.data_models import VirtualPosition
 from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMonitor
 from src.managers.virtual_position_events import VirtualPositionEvent
+from src.core.virtual_position_monitor import VirtualPositionMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,10 @@ class VirtualPositionManager:
             event_callback=self._handle_position_event
         )
         logger.info("✅ 虛擬倉位生命週期監控器已啟用")
+        
+        # 🔥 v3.17.10+：虛擬倉位真實性監控器（滑點、流動性、強平模擬）
+        self.realism_monitor = VirtualPositionMonitor()
+        logger.info("✅ 虛擬倉位真實性監控器已啟用（v3.17.10+）")
         
         # v3.15.0: 性能优化模块（可选）
         if OPTIMIZATION_MODULES_AVAILABLE:
@@ -294,6 +299,20 @@ class VirtualPositionManager:
                 # 更新价格（主字典中的仓位）
                 position.update_price(prices[symbol])
                 
+                # 🔥 v3.17.10+：真實性監控（滑點、流動性、強平風險）
+                # 檢查虛擬倉位是否因現實因素應該被關閉
+                if self.realism_monitor:
+                    should_liquidate, liquidation_reason = self.realism_monitor.check_liquidation_risk(
+                        position, prices[symbol]
+                    )
+                    if should_liquidate:
+                        logger.warning(
+                            f"⚠️ 虛擬倉位 {symbol} 因真實性因素觸發強平: {liquidation_reason}"
+                        )
+                        self._close_virtual_position(symbol, f"liquidation_{liquidation_reason}")
+                        closed_positions.append(position)
+                        continue
+                
                 # 🔥 v3.14.0：同步更新 lifecycle_monitor 中的倉位引用
                 # lifecycle_monitor 使用 signal_id 作为 key
                 position_id = position.signal_id
@@ -367,6 +386,22 @@ class VirtualPositionManager:
         
         # ✅ v3.12.0：使用可变对象的 close_position 方法
         position.close_position(reason)
+        
+        # 🔥 v3.17.10+：真實性調整（添加滑點和流動性成本）
+        # 確保虛擬倉位的PnL反映現實交易的摩擦成本
+        if self.realism_monitor:
+            original_pnl = position.current_pnl
+            adjusted_pnl = self.realism_monitor.adjust_final_pnl(position)
+            pnl_adjustment = adjusted_pnl - original_pnl
+            
+            if abs(pnl_adjustment) > 0.01:  # 只記錄有意義的調整（>0.01%）
+                logger.info(
+                    f"🔧 虛擬倉位 {symbol} PnL 真實性調整: "
+                    f"{original_pnl:+.2f}% → {adjusted_pnl:+.2f}% "
+                    f"(調整: {pnl_adjustment:+.2f}%)"
+                )
+                # 更新倉位的 PnL（直接修改可變對象）
+                position.current_pnl = adjusted_pnl
         
         logger.info(
             f"✅ 虛擬倉位關閉: {symbol} "
