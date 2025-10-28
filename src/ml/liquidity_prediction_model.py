@@ -35,15 +35,19 @@ class LiquidityPredictionModel:
         """构建LSTM流动性预测模型"""
         if not TF_AVAILABLE:
             return None
-            
-        model = Sequential([
-            LSTM(64, return_sequences=True, input_shape=(self.sequence_length, 5)),
-            Dropout(0.2),
-            LSTM(32, return_sequences=False),
-            Dropout(0.2),
-            Dense(16, activation='relu'),
-            Dense(2, activation='linear')
-        ])
+        
+        from tensorflow.keras.layers import Input
+        from tensorflow.keras.models import Model
+        
+        inputs = Input(shape=(self.sequence_length, 5))
+        x = LSTM(64, return_sequences=True)(inputs)
+        x = Dropout(0.2)(x)
+        x = LSTM(32, return_sequences=False)(x)
+        x = Dropout(0.2)(x)
+        x = Dense(16, activation='relu')(x)
+        outputs = Dense(2, activation='linear')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
         return model
     
     def predict_liquidity(self, symbol: str, recent_data: pd.DataFrame) -> Dict[str, Any]:

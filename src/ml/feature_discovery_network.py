@@ -36,14 +36,18 @@ class FeatureDiscoveryNetwork:
         """构建特征发现模型"""
         if not TF_AVAILABLE:
             return None
-            
-        model = Sequential([
-            Dense(64, activation='relu', input_shape=(self.input_dim,)),
-            Dropout(0.3),
-            Dense(128, activation='relu'),
-            Dropout(0.3),
-            Dense(self.output_dim, activation='tanh')
-        ])
+        
+        from tensorflow.keras.layers import Input
+        from tensorflow.keras.models import Model
+        
+        inputs = Input(shape=(self.input_dim,))
+        x = Dense(64, activation='relu')(inputs)
+        x = Dropout(0.3)(x)
+        x = Dense(128, activation='relu')(x)
+        x = Dropout(0.3)(x)
+        outputs = Dense(self.output_dim, activation='tanh')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
         return model
     
     def discover_features(self, market_structure: np.ndarray, recent_data: pd.DataFrame) -> np.ndarray:

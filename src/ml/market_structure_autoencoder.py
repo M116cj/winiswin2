@@ -36,24 +36,32 @@ class MarketStructureAutoencoder:
         """编码器：压缩价格序列到市场结构向量"""
         if not TF_AVAILABLE:
             return None
-            
-        model = Sequential([
-            Conv1D(64, 5, activation='relu', input_shape=(50, 1)),
-            Conv1D(32, 3, activation='relu'),
-            GlobalMaxPooling1D(),
-            Dense(self.structure_dim, activation='tanh')
-        ])
+        
+        from tensorflow.keras.layers import Input
+        from tensorflow.keras.models import Model
+        
+        inputs = Input(shape=(50, 1))
+        x = Conv1D(64, 5, activation='relu')(inputs)
+        x = Conv1D(32, 3, activation='relu')(x)
+        x = GlobalMaxPooling1D()(x)
+        outputs = Dense(self.structure_dim, activation='tanh')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
         return model
     
     def _build_decoder(self):
         """解码器：从市场结构向量重建价格序列"""
         if not TF_AVAILABLE:
             return None
-            
-        model = Sequential([
-            Dense(32, activation='relu', input_shape=(self.structure_dim,)),
-            Dense(50, activation='linear')
-        ])
+        
+        from tensorflow.keras.layers import Input
+        from tensorflow.keras.models import Model
+        
+        inputs = Input(shape=(self.structure_dim,))
+        x = Dense(32, activation='relu')(inputs)
+        outputs = Dense(50, activation='linear')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
         return model
     
     def encode_structure(self, price_series: np.ndarray) -> np.ndarray:
