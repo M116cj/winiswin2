@@ -23,7 +23,6 @@ from src.services.data_service import DataService
 from src.services.parallel_analyzer import ParallelAnalyzer
 from src.services.timeframe_scheduler import SmartDataManager
 from src.strategies.strategy_factory import StrategyFactory
-from src.managers.risk_manager import RiskManager
 from src.managers.expectancy_calculator import ExpectancyCalculator
 from src.services.trading_service import TradingService
 from src.managers.virtual_position_manager import VirtualPositionManager
@@ -51,7 +50,6 @@ class TradingBot:
         self.smart_data_manager: Optional[SmartDataManager] = None
         self.parallel_analyzer: Optional[ParallelAnalyzer] = None
         self.strategy: Optional[Any] = None
-        self.risk_manager: Optional[RiskManager] = None
         self.expectancy_calculator: Optional[ExpectancyCalculator] = None
         self.data_archiver: Optional[DataArchiver] = None
         self.trading_service: Optional[TradingService] = None
