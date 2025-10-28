@@ -134,6 +134,5 @@ class ConfigProfile:
             "position_monitor": "已啟用" if self.position_monitor_enabled else "已禁用",
             "model_rating": "已啟用" if self.model_rating_enabled else "已禁用",
             "trading_enabled": self.trading_enabled,
-            "max_positions": self.max_positions,
             "use_thread_pool": self.use_thread_pool,
         }
