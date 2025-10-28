@@ -96,11 +96,11 @@ def calculate_macd(
     signal_line = calculate_ema(macd_line, signal_period)
     histogram = macd_line - signal_line
     
-    # 返回字典格式以保持一致性
+    # 返回字典格式以保持一致性（已經是 Series，無需重複包裝）
     return {
-        'macd': pd.Series(macd_line),
-        'signal': pd.Series(signal_line),
-        'histogram': pd.Series(histogram)
+        'macd': macd_line,
+        'signal': signal_line,
+        'histogram': histogram
     }
 
 def calculate_rsi(data, period: int = 14) -> pd.Series:
@@ -133,8 +133,8 @@ def calculate_rsi(data, period: int = 14) -> pd.Series:
     rs = gain / loss
     rsi = 100 - (100 / (1 + rs))
     
-    # 確保返回Series類型
-    return pd.Series(rsi)
+    # rsi 已經是 Series，無需重複包裝
+    return rsi
 
 def calculate_bollinger_bands(
     data,

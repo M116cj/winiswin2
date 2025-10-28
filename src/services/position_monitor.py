@@ -980,16 +980,18 @@ class PositionMonitor:
             bb_width_pct = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1] * 100 if bb_middle.iloc[-1] > 0 else 0
             
             # 价格相对布林带位置 (0=下轨, 1=上轨)
-            if bb_upper[-1] > bb_lower[-1]:
-                price_vs_bb = (current_price - bb_lower[-1]) / (bb_upper[-1] - bb_lower[-1])
+            bb_upper_val = bb_upper.iloc[-1] if len(bb_upper) > 0 else 0
+            bb_lower_val = bb_lower.iloc[-1] if len(bb_lower) > 0 else 0
+            if bb_upper_val > bb_lower_val:
+                price_vs_bb = (current_price - bb_lower_val) / (bb_upper_val - bb_lower_val)
             else:
                 price_vs_bb = 0.5
             
             indicators = {
-                'rsi': rsi[-1] if len(rsi) > 0 else 50,
-                'macd': macd_line[-1] if len(macd_line) > 0 else 0,
-                'macd_signal': signal_line[-1] if len(signal_line) > 0 else 0,
-                'macd_histogram': histogram[-1] if len(histogram) > 0 else 0,
+                'rsi': rsi.iloc[-1] if len(rsi) > 0 else 50,
+                'macd': macd_line.iloc[-1] if len(macd_line) > 0 else 0,
+                'macd_signal': signal_line.iloc[-1] if len(signal_line) > 0 else 0,
+                'macd_histogram': histogram.iloc[-1] if len(histogram) > 0 else 0,
                 'bb_width_pct': bb_width_pct,
                 'price_vs_bb': price_vs_bb
             }
