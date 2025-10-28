@@ -317,7 +317,7 @@ class DualLoopManager:
     
     async def _analyze_market_pipeline(self) -> List[Dict]:
         """
-        阶段2：分析市场（流水线）
+        阶段2：分析市场（流水线）（v3.16.1 增强错误处理）
         
         流水线结构：
         1. 扫描市场 → 2. 并行分析 → 3. ML批量预测
@@ -325,31 +325,41 @@ class DualLoopManager:
         返回：
             List[Dict]: 信号列表
         """
-        logger.info("🔍 开始市场分析流水线...")
-        
-        # 子阶段1：扫描市场（获取候选交易对）
-        symbols = await self._scan_market()
-        
-        if not symbols:
-            logger.warning("未找到候选交易对")
+        try:
+            logger.info("🔍 开始市场分析流水线...")
+            
+            # 子阶段1：扫描市场（获取候选交易对）
+            symbols = await self._scan_market()
+            
+            if not symbols:
+                logger.warning("未找到候选交易对")
+                return []
+            
+            logger.info(f"找到 {len(symbols)} 个候选交易对")
+            
+            # 子阶段2：并行分析（复用进程池）
+            signals = await self.parallel_analyzer.analyze_batch_async(symbols)
+            
+            if not signals:
+                logger.warning("未生成任何信号")
+                return []
+            
+            logger.info(f"生成 {len(signals)} 个信号")
+            
+            # 子阶段3：批量ML预测（如果需要）
+            if self.ml_predictor:
+                signals = await self._ml_batch_predict(signals)
+            
+            return signals
+            
+        except Exception as e:
+            # 🔥 v3.16.1: BrokenProcessPool 错误处理
+            from concurrent.futures import BrokenProcessPool
+            if isinstance(e, BrokenProcessPool):
+                logger.error("❌ 進程池損壞，跳過本次分析")
+            else:
+                logger.error(f"❌ 市場分析流水線錯誤: {e}")
             return []
-        
-        logger.info(f"找到 {len(symbols)} 个候选交易对")
-        
-        # 子阶段2：并行分析（复用进程池）
-        signals = await self.parallel_analyzer.analyze_batch_async(symbols)
-        
-        if not signals:
-            logger.warning("未生成任何信号")
-            return []
-        
-        logger.info(f"生成 {len(signals)} 个信号")
-        
-        # 子阶段3：批量ML预测（如果需要）
-        if self.ml_predictor:
-            signals = await self._ml_batch_predict(signals)
-        
-        return signals
     
     async def _scan_market(self) -> List[str]:
         """
