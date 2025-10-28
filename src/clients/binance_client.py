@@ -234,6 +234,96 @@ class BinanceClient:
         logger.info(f"獲取到 {len(symbols)} 個 USDT 永續合約")
         return symbols
     
+    async def get_symbol_info(self, symbol: str) -> Optional[dict]:
+        """
+        獲取交易對詳細信息
+        
+        Args:
+            symbol: 交易對符號
+        
+        Returns:
+            交易對信息字典，包含 filters 等
+        """
+        exchange_info = await self.get_exchange_info()
+        for sym in exchange_info.get('symbols', []):
+            if sym['symbol'] == symbol:
+                return sym
+        return None
+    
+    async def get_min_quantity(self, symbol: str) -> float:
+        """
+        獲取交易對最小數量
+        
+        Args:
+            symbol: 交易對符號
+        
+        Returns:
+            最小數量
+        """
+        symbol_info = await self.get_symbol_info(symbol)
+        if not symbol_info:
+            return 0.0
+        
+        # 從 LOT_SIZE filter 獲取 minQty
+        for f in symbol_info.get('filters', []):
+            if f.get('filterType') == 'LOT_SIZE':
+                return float(f.get('minQty', 0.0))
+        
+        return 0.0
+    
+    def _format_quantity(self, quantity: float, step_size: float) -> float:
+        """
+        根據 stepSize 格式化數量（避免精度錯誤）
+        
+        Args:
+            quantity: 原始數量
+            step_size: 步進大小
+        
+        Returns:
+            格式化後的數量
+        """
+        import math
+        
+        if step_size == 0:
+            return quantity
+        
+        # 計算精度（小數位數）
+        precision = int(round(-math.log(step_size, 10), 0))
+        if precision < 0:
+            precision = 0
+        
+        # 四捨五入到正確的精度
+        formatted = round(quantity, precision)
+        
+        # 確保符合 stepSize 的倍數
+        formatted = round(formatted / step_size) * step_size
+        formatted = round(formatted, precision)
+        
+        return formatted
+    
+    async def format_quantity(self, symbol: str, quantity: float) -> float:
+        """
+        根據交易對規則格式化數量
+        
+        Args:
+            symbol: 交易對符號
+            quantity: 原始數量
+        
+        Returns:
+            格式化後的數量
+        """
+        symbol_info = await self.get_symbol_info(symbol)
+        if not symbol_info:
+            return quantity
+        
+        # 獲取 LOT_SIZE filter
+        for f in symbol_info.get('filters', []):
+            if f.get('filterType') == 'LOT_SIZE':
+                step_size = float(f.get('stepSize', 0))
+                return self._format_quantity(quantity, step_size)
+        
+        return quantity
+    
     async def get_klines(
         self,
         symbol: str,
@@ -412,7 +502,7 @@ class BinanceClient:
         **kwargs
     ) -> dict:
         """
-        創建訂單
+        創建訂單（自動格式化數量精度）
         
         Args:
             symbol: 交易對
@@ -426,11 +516,14 @@ class BinanceClient:
         Returns:
             訂單信息
         """
+        # 自動格式化數量以符合 Binance 精度要求
+        formatted_quantity = await self.format_quantity(symbol, quantity)
+        
         params = {
             "symbol": symbol,
             "side": side,
             "type": order_type,
-            "quantity": quantity,
+            "quantity": formatted_quantity,
             **kwargs
         }
         
@@ -439,7 +532,10 @@ class BinanceClient:
         if stop_price:
             params['stopPrice'] = stop_price
         
-        logger.info(f"創建訂單: {symbol} {side} {order_type} {quantity}")
+        logger.info(f"創建訂單: {symbol} {side} {order_type} {formatted_quantity}")
+        if formatted_quantity != quantity:
+            logger.debug(f"  數量已格式化: {quantity} → {formatted_quantity}")
+        
         return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
     
     async def place_order(
