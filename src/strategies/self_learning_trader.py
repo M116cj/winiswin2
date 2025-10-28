@@ -24,12 +24,18 @@ class SelfLearningTrader:
         self.config = config
         
         # 优化1：使用量化模型（如果启用）
+        self.quantization_enabled = False
         if hasattr(config, 'ENABLE_QUANTIZATION') and config.ENABLE_QUANTIZATION:
             try:
-                self.structure_model = ModelQuantizer.load_quantized_model(
-                    f"{config.QUANTIZED_MODEL_PATH}/structure_encoder_quant.tflite"
-                )
-                logger.info("✅ 使用量化模型（TensorFlow Lite）")
+                import os
+                model_path = f"{config.QUANTIZED_MODEL_PATH}/structure_encoder_quant.tflite"
+                if os.path.exists(model_path):
+                    self.structure_model = ModelQuantizer.load_quantized_model(model_path)
+                    self.quantization_enabled = True
+                    logger.info("✅ 使用量化模型（TensorFlow Lite）")
+                else:
+                    logger.warning(f"⚠️ 量化模型文件不存在: {model_path}，使用原始模型")
+                    self.structure_model = MarketStructureAutoencoder()
             except Exception as e:
                 logger.warning(f"⚠️ 量化模型加载失败，使用原始模型: {e}")
                 self.structure_model = MarketStructureAutoencoder()
