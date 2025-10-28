@@ -590,7 +590,7 @@ class BinanceClient:
         **kwargs
     ) -> dict:
         """
-        下單（create_order 的別名，智能適配 Position Mode）
+        下單（create_order 的別名，智能適配 Position Mode，自動重試）
         
         Args:
             symbol: 交易對
@@ -617,7 +617,31 @@ class BinanceClient:
             del kwargs['positionSide']
             logger.debug("  One-Way Mode: 移除 positionSide")
         
-        return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+        # 嘗試下單，如果遇到 -4061 錯誤則自動重試
+        try:
+            return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+        except BinanceRequestError as e:
+            # 檢查是否是 -4061 錯誤（Position Side 不匹配）
+            if '-4061' in str(e):
+                logger.warning(f"⚠️ Position Side 錯誤，嘗試切換模式並重試...")
+                
+                # 切換 Position Mode 猜測
+                self._hedge_mode = not is_hedge_mode
+                logger.info(f"📍 切換到 {'Hedge Mode' if self._hedge_mode else 'One-Way Mode'} 並重試")
+                
+                # 重新調整參數
+                if self._hedge_mode and 'positionSide' not in kwargs:
+                    kwargs['positionSide'] = 'LONG' if side == 'BUY' else 'SHORT'
+                    logger.debug(f"  添加 positionSide={kwargs['positionSide']}")
+                elif not self._hedge_mode and 'positionSide' in kwargs:
+                    del kwargs['positionSide']
+                    logger.debug("  移除 positionSide")
+                
+                # 重試
+                return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+            else:
+                # 其他錯誤直接拋出
+                raise
     
     async def get_order(self, symbol: str, order_id: int) -> dict:
         """

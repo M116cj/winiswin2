@@ -360,6 +360,7 @@ class SelfLearningTrader:
         decisions = {}
         
         for position in positions:
+            position_id = None
             try:
                 position_id = position.get('id') or position.get('symbol')
                 pnl_pct = position.get('pnl_pct', 0.0)
@@ -377,7 +378,10 @@ class SelfLearningTrader:
                 decisions[position_id] = 'HOLD'
                 
             except Exception as e:
-                logger.error(f"❌ 評估持倉 {position_id} 失敗: {e}")
-                decisions[position_id] = 'HOLD'
+                if position_id:
+                    logger.error(f"❌ 評估持倉 {position_id} 失敗: {e}")
+                    decisions[position_id] = 'HOLD'
+                else:
+                    logger.error(f"❌ 評估持倉失敗（無法獲取 ID）: {e}")
         
         return decisions
