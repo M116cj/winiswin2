@@ -72,8 +72,8 @@ class TradingBot:
     async def initialize(self):
         """初始化系統"""
         logger.info("=" * 60)
-        logger.info("🚀 高頻交易系統 v3.13.0 啟動中...")
-        logger.info("📌 代碼版本: v3.13.0 (全面轻量化 - 异步化+12项优化+内存↓30%+代码↓20%)")
+        logger.info("🚀 高頻交易系統 v3.15.0 啟動中...")
+        logger.info("📌 代碼版本: v3.15.0 (5大性能优化 - TFLite量化+增量缓存+批量预测+记忆体映射+智能监控)")
         logger.info("=" * 60)
         
         # 📊 显示评分系统说明
@@ -103,7 +103,9 @@ class TradingBot:
         logger.info("  🎯 v3.11.0: 高級優化（OB質量篩選+BOS/CHOCH+市場狀態分類+反轉預警）")
         logger.info("  🚀 v3.11.1: 移除持倉限制（允許無限同時持倉）")
         logger.info("  ⚡ v3.12.0: 性能優化五合一（進程池+增量緩存+批量ML+ONNX+雙循環，週期時間↓40%）")
-        logger.info("  🚀 v3.13.0: 全面轻量化（异步批量更新+12项优化+内存↓30%+代码↓20%）\n")
+        logger.info("  🚀 v3.13.0: 全面轻量化（异步批量更新+12项优化+内存↓30%+代码↓20%）")
+        logger.info("  ✨ v3.14.0: 混合智能系统（策略工厂+深度学习+生命周期监控）")
+        logger.info("  ⚡ v3.15.0: 5大性能优化（TFLite量化+增量缓存+批量预测+记忆体映射+智能监控）\n")
         
         is_valid, errors = Config.validate()
         if not is_valid:
