@@ -517,3 +517,246 @@ class ModelInitializer:
         
         # 重新初始化
         return await self.check_and_initialize()
+    
+    def should_retrain(self) -> bool:
+        """
+        動態重訓練觸發條件（v3.17.10+）
+        
+        解決「市場適應慢」問題：
+        - 固定 50 筆觸發無法應對市場 regime shift
+        - 從 trending → choppy 轉換時需要立即重訓練
+        
+        Returns:
+            是否應該重訓練
+        """
+        try:
+            # 條件 1：性能驟降（Sharpe 比率下降 50%）
+            recent_trades = self._get_recent_trades(days=1)
+            
+            if len(recent_trades) >= 10:
+                current_sharpe = self._calculate_sharpe(recent_trades)
+                historical_sharpe = self._get_historical_sharpe()
+                
+                if historical_sharpe > 0 and current_sharpe < historical_sharpe * 0.5:
+                    logger.warning(
+                        f"⚠️ 性能驟降觸發重訓練: "
+                        f"當前 Sharpe={current_sharpe:.2f} "
+                        f"歷史 Sharpe={historical_sharpe:.2f} "
+                        f"(下降 {(1 - current_sharpe/historical_sharpe)*100:.1f}%)"
+                    )
+                    return True
+            
+            # 條件 2：市場狀態劇變（regime shift）
+            current_regime = self._get_current_market_regime()
+            last_regime = self._get_last_market_regime()
+            
+            if current_regime != last_regime and last_regime is not None:
+                logger.warning(
+                    f"⚠️ 市場狀態劇變觸發重訓練: "
+                    f"{last_regime} → {current_regime}"
+                )
+                self._update_last_market_regime(current_regime)
+                return True
+            
+            # 條件 3：累積足夠樣本（原有邏輯）
+            new_samples = self._count_new_samples()
+            if new_samples >= 50:
+                logger.info(
+                    f"ℹ️ 累積樣本觸發重訓練: {new_samples} 筆新交易"
+                )
+                return True
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"檢查重訓練條件失敗: {e}", exc_info=True)
+            return False
+    
+    def _get_recent_trades(self, days: int = 1) -> List[Dict]:
+        """
+        獲取最近 N 天的交易記錄
+        
+        Args:
+            days: 天數
+            
+        Returns:
+            交易記錄列表
+        """
+        try:
+            if not self.trade_recorder:
+                return []
+            
+            cutoff_time = datetime.now() - timedelta(days=days)
+            all_trades = self.trade_recorder.completed_trades
+            
+            recent = [
+                t for t in all_trades
+                if datetime.fromisoformat(t.get('entry_timestamp', '1970-01-01')) > cutoff_time
+            ]
+            
+            return recent
+            
+        except Exception as e:
+            logger.error(f"獲取最近交易失敗: {e}")
+            return []
+    
+    def _calculate_sharpe(self, trades: List[Dict]) -> float:
+        """
+        計算 Sharpe 比率
+        
+        Args:
+            trades: 交易記錄列表
+            
+        Returns:
+            Sharpe 比率
+        """
+        try:
+            if not trades:
+                return 0.0
+            
+            import numpy as np
+            
+            returns = [t.get('pnl_pct', 0.0) for t in trades]
+            
+            if not returns:
+                return 0.0
+            
+            mean_return = np.mean(returns)
+            std_return = np.std(returns)
+            
+            if std_return == 0:
+                return 0.0
+            
+            sharpe = mean_return / std_return
+            
+            return sharpe
+            
+        except Exception as e:
+            logger.error(f"計算 Sharpe 失敗: {e}")
+            return 0.0
+    
+    def _get_historical_sharpe(self) -> float:
+        """
+        獲取歷史 Sharpe 比率（過去 7 天）
+        
+        Returns:
+            歷史 Sharpe 比率
+        """
+        try:
+            historical_trades = self._get_recent_trades(days=7)
+            return self._calculate_sharpe(historical_trades)
+        except Exception as e:
+            logger.error(f"獲取歷史 Sharpe 失敗: {e}")
+            return 0.0
+    
+    def _get_current_market_regime(self) -> str:
+        """
+        獲取當前市場狀態
+        
+        Returns:
+            'trending', 'choppy', 'volatile', 'calm'
+        """
+        try:
+            # 簡化版：基於最近交易的勝率和波動性
+            recent_trades = self._get_recent_trades(days=1)
+            
+            if len(recent_trades) < 5:
+                return 'unknown'
+            
+            import numpy as np
+            
+            # 計算勝率
+            winners = sum(1 for t in recent_trades if t.get('pnl_pct', 0) > 0)
+            win_rate = winners / len(recent_trades)
+            
+            # 計算波動性
+            returns = [t.get('pnl_pct', 0.0) for t in recent_trades]
+            volatility = np.std(returns)
+            
+            # 簡單分類
+            if volatility > 0.05:  # 高波動
+                return 'volatile'
+            elif win_rate > 0.6:  # 高勝率
+                return 'trending'
+            elif win_rate < 0.4:  # 低勝率
+                return 'choppy'
+            else:
+                return 'calm'
+                
+        except Exception as e:
+            logger.error(f"獲取市場狀態失敗: {e}")
+            return 'unknown'
+    
+    def _get_last_market_regime(self) -> Optional[str]:
+        """
+        獲取上次記錄的市場狀態
+        
+        Returns:
+            上次市場狀態或 None
+        """
+        try:
+            regime_file = self.model_dir / "market_regime.json"
+            
+            if not regime_file.exists():
+                return None
+            
+            with open(regime_file, 'r') as f:
+                data = json.load(f)
+                return data.get('regime')
+                
+        except Exception as e:
+            logger.error(f"讀取市場狀態失敗: {e}")
+            return None
+    
+    def _update_last_market_regime(self, regime: str):
+        """
+        更新市場狀態記錄
+        
+        Args:
+            regime: 新的市場狀態
+        """
+        try:
+            regime_file = self.model_dir / "market_regime.json"
+            
+            data = {
+                'regime': regime,
+                'updated_at': datetime.now().isoformat()
+            }
+            
+            with open(regime_file, 'w') as f:
+                json.dump(data, f, indent=2)
+                
+        except Exception as e:
+            logger.error(f"更新市場狀態失敗: {e}")
+    
+    def _count_new_samples(self) -> int:
+        """
+        計算自上次訓練以來的新樣本數
+        
+        Returns:
+            新樣本數量
+        """
+        try:
+            if not self.trade_recorder:
+                return 0
+            
+            # 讀取上次訓練時間
+            if not self.flag_file.exists():
+                return 0
+            
+            with open(self.flag_file, 'r') as f:
+                flag_data = json.load(f)
+                last_trained = datetime.fromisoformat(flag_data.get('initialized_at', '1970-01-01'))
+            
+            # 計算新交易數
+            all_trades = self.trade_recorder.completed_trades
+            new_trades = [
+                t for t in all_trades
+                if datetime.fromisoformat(t.get('entry_timestamp', '1970-01-01')) > last_trained
+            ]
+            
+            return len(new_trades)
+            
+        except Exception as e:
+            logger.error(f"計算新樣本數失敗: {e}")
+            return 0
