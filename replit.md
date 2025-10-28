@@ -200,35 +200,63 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
-### v3.17.3 (2025-10-28) - 修復 Binance API POST 請求
+### v3.17.4 (2025-10-28) - 修復 Binance API 簽名無效錯誤 ⚠️
 
-**類型**: 🐛 **BUG FIX**  
-**問題**: 設置槓桿返回 HTTP 400 Bad Request  
+**類型**: 🐛 **CRITICAL BUG FIX**  
+**問題**: 所有簽名請求返回 -1022 錯誤（簽名無效）  
 **狀態**: ✅ **已修復**
 
 #### **根本原因**
-- ❌ POST 請求錯誤地將參數放在 request body 中
-- ❌ Binance API 要求所有請求參數都在 query string 中（包括 POST/DELETE）
-- ❌ 導致 `set_leverage()` 無法正常工作
+Railway 日誌顯示：
+```
+Binance API 錯誤 400: code=-1022, msg=Signature for this request is not valid.
+URL: ...?signature=XXX&timestamp=YYY
+```
+
+**問題**：
+- ❌ 簽名被加入參數後參與排序
+- ❌ 導致 `signature` 不在 URL 最後
+- ❌ Binance 要求簽名必須是**最後一個參數**
+
+**錯誤流程**：
+```python
+_params['signature'] = signature  # 加入參數
+query_string = sorted(_params.items())  # ❌ 排序！
+# 結果：signature=...&timestamp=... （順序錯誤）
+```
 
 #### **修復方案**
+簽名單獨附加，不參與排序：
 ```python
-# 修復前（錯誤）：
-if method.upper() == "POST":
-    async with session.request(method, url, data=query_string, headers=headers):
-        # 參數在 body 中 ❌
-
-# 修復後（正確）：
-if method.upper() in ["POST", "DELETE"]:
-    async with session.request(method, url, params=_params, headers=headers):
-        # 參數在 query string 中 ✅
+# 正確流程：
+if signed:
+    _params['timestamp'] = int(time.time() * 1000)
+    # 計算簽名（不包含 signature 本身）
+    signature = self._generate_signature(_params)
+    # 構建排序後的 query string
+    query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
+    # ✅ 簽名附加在最後
+    query_string = f"{query_string}&signature={signature}"
 ```
 
 #### **影響範圍**
-- ✅ `set_leverage()` - 可以正常設置槓桿
-- ✅ `create_order()` - 更穩定
-- ✅ `cancel_order()` - 更穩定
-- ✅ 所有 POST/DELETE 操作符合 Binance API 規範
+- ✅ 所有簽名請求（GET/POST/DELETE）現在正常工作
+- ✅ `get_account_info()` - 可以查詢賬戶
+- ✅ `set_leverage()` - 可以設置槓桿
+- ✅ `create_order()` - 可以下單
+- ✅ `cancel_order()` - 可以取消訂單
+- ✅ 熔斷器將自動恢復
+
+---
+
+### v3.17.3 (2025-10-28) - 修復 POST 請求參數傳遞
+
+**類型**: 🐛 **BUG FIX**  
+**狀態**: ⚠️ **部分修復**（發現新問題：簽名順序錯誤）
+
+- 修復了 POST 請求使用 body 的錯誤
+- 統一使用 query string 傳遞參數
+- 但引入了簽名順序問題（已在 v3.17.4 修復）
 
 ---
 

@@ -108,14 +108,20 @@ class BinanceClient:
             else:
                 _params = params.copy()
             
-            if signed:
-                _params['timestamp'] = int(time.time() * 1000)
-                _params['signature'] = self._generate_signature(_params)
-            
             headers = {'X-MBX-APIKEY': self.api_key} if self.api_key else {}
             
-            # 構建排序後的 query string（與簽名計算保持一致）
-            query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
+            if signed:
+                # 添加時間戳
+                _params['timestamp'] = int(time.time() * 1000)
+                # 計算簽名（不包含 signature 本身）
+                signature = self._generate_signature(_params)
+                # 構建排序後的 query string（用於簽名計算）
+                query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
+                # 簽名必須附加在最後
+                query_string = f"{query_string}&signature={signature}"
+            else:
+                # 無需簽名時直接構建 query string
+                query_string = "&".join([f"{k}={v}" for k, v in sorted(_params.items())])
             
             # 將 query string 附加到 URL（所有請求類型都使用 query string）
             url = f"{self.base_url}{endpoint}"
