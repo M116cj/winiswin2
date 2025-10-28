@@ -200,6 +200,68 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
+### v3.17.6 (2025-10-28) - 修復函數調用錯誤（全面代碼審查）
+
+**類型**: 🐛 **CRITICAL BUG FIX**  
+**問題**: 多個模塊調用不存在的方法，導致運行時錯誤  
+**狀態**: ✅ **已修復並通過 Architect 審查**
+
+#### **問題列表**
+1. **position_monitor_24x7.py** - 調用不存在的 `get_all_positions(priority=0)`
+2. **position_controller.py** - 調用不存在的 `place_order_async()` 並傳遞不支持的 `priority` 參數
+
+#### **修復內容**
+
+**文件 1: src/core/position_monitor_24x7.py**
+```python
+# ❌ 修復前：
+positions = await self.binance_client.get_all_positions(priority=0)
+
+# ✅ 修復後：
+positions = await self.binance_client.get_position_info_async()
+```
+- `get_all_positions` 方法不存在
+- `priority` 參數在所有 API 方法中都不支持
+- 使用正確的 `get_position_info_async()` 方法
+
+**文件 2: src/core/position_controller.py**
+```python
+# ❌ 修復前：
+result = await self.binance_client.place_order_async(
+    symbol=symbol,
+    side=close_side,
+    order_type='MARKET',
+    quantity=size,
+    reduce_only=True,
+    priority=0  # ❌ 不支持的參數
+)
+
+# ✅ 修復後：
+result = await self.binance_client.place_order(
+    symbol=symbol,
+    side=close_side,
+    order_type='MARKET',
+    quantity=size,
+    reduce_only=True
+)
+```
+- `place_order_async` 方法不存在，正確方法是 `place_order`
+- 移除不支持的 `priority` 參數
+
+#### **全面驗證**
+✅ **LSP 診斷**: 無類型錯誤或警告  
+✅ **函數調用審查**: 所有 `place_order`, `get_positions`, `get_klines` 等調用正確  
+✅ **Position Mode 適配**: 自動 Hedge/One-Way Mode 適配邏輯正常  
+✅ **Architect 審查**: 所有修復通過專家審查  
+
+#### **影響**
+修復後，系統在 Railway 部署時應該能夠：
+- ✅ 正確獲取持倉信息
+- ✅ 正確執行平倉操作  
+- ✅ 無運行時函數調用錯誤
+
+---
+
 ### v3.17.5 (2025-10-28) - 修復持倉數據解析錯誤
 
 **類型**: 🐛 **BUG FIX**  
