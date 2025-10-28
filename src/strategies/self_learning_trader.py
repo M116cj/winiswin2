@@ -9,6 +9,7 @@ from typing import Dict, Optional, List
 import logging
 import json
 import time
+import random
 
 from src.strategies.rule_based_signal_generator import RuleBasedSignalGenerator
 from src.core.leverage_engine import LeverageEngine
@@ -486,12 +487,40 @@ class SelfLearningTrader:
             best['size'] = min_notional / best['signal']['entry_price']
             best['notional'] = min_notional
         
-        # === 6. 執行下單 ===
+        # === 6. 探索-利用平衡（v3.17.10+）===
+        # 解決「局部最優」問題：5% 時間執行非最優信號
+        # 持續收集「模型不喜歡但可能正確」的樣本
+        if random.random() < 0.05 and len(scored_signals) > 1:
+            # 從 Rank 2-N 中隨機選一個
+            exploration_candidates = [s for s in scored_signals if s != best]
+            if exploration_candidates:
+                explore = random.choice(exploration_candidates)
+                logger.info(
+                    f"🔍 探索模式: 執行 {explore['signal']['symbol']}（非最優） | "
+                    f"評分={explore['score']:.3f} vs 最優={best['score']:.3f}"
+                )
+                
+                # 補足倉位至最小值
+                if explore['notional'] < min_notional:
+                    explore['size'] = min_notional / explore['signal']['entry_price']
+                    explore['notional'] = min_notional
+                
+                # 執行探索性交易
+                position = await self._place_order_and_monitor(
+                    explore['signal'], explore['size'], available_balance
+                )
+                
+                # 創建虛擬倉位（包含 best 信號）
+                await self._create_virtual_positions(scored_signals, explore['signal'], total_equity)
+                
+                return position
+        
+        # === 7. 執行最優信號（95% 情況）===
         position = await self._place_order_and_monitor(
             best['signal'], best['size'], available_balance
         )
         
-        # === 7. 創建虛擬倉位（未執行信號）===
+        # === 8. 創建虛擬倉位（未執行信號）===
         await self._create_virtual_positions(scored_signals, best['signal'], total_equity)
         
         return position
