@@ -55,6 +55,7 @@ class BinanceClient:
         
         self.cache = CacheManager()
         self.session: Optional[aiohttp.ClientSession] = None
+        self._hedge_mode = None  # None = 未檢測，True = Hedge Mode，False = One-Way Mode
     
     async def _get_session(self) -> aiohttp.ClientSession:
         """獲取或創建 aiohttp session"""
@@ -555,6 +556,29 @@ class BinanceClient:
         
         return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
     
+    async def get_position_mode(self) -> bool:
+        """
+        查詢當前 Position Mode（支持自動重試）
+        
+        Returns:
+            True = Hedge Mode (雙向持倉)，False = One-Way Mode (單向持倉)
+        """
+        # 如果已成功查詢過，直接返回緩存
+        if self._hedge_mode is not None:
+            return self._hedge_mode
+        
+        try:
+            result = await self._request("GET", "/fapi/v1/positionSide/dual", signed=True)
+            # ✅ 只在成功時緩存結果
+            self._hedge_mode = result.get('dualSidePosition', False)
+            mode_name = "Hedge Mode (雙向持倉)" if self._hedge_mode else "One-Way Mode (單向持倉)"
+            logger.info(f"📍 當前 Position Mode: {mode_name}")
+            return self._hedge_mode
+        except Exception as e:
+            # ⚠️ 失敗時不緩存，允許後續重試
+            logger.warning(f"⚠️ 查詢 Position Mode 失敗: {e}，默認使用 One-Way Mode（下次會重試）")
+            return False  # 臨時返回 One-Way，不設置 self._hedge_mode
+    
     async def place_order(
         self,
         symbol: str,
@@ -566,7 +590,7 @@ class BinanceClient:
         **kwargs
     ) -> dict:
         """
-        下單（create_order 的別名）
+        下單（create_order 的別名，智能適配 Position Mode）
         
         Args:
             symbol: 交易對
@@ -580,6 +604,19 @@ class BinanceClient:
         Returns:
             訂單信息
         """
+        # 自動適配 Position Mode
+        is_hedge_mode = await self.get_position_mode()
+        
+        if is_hedge_mode and 'positionSide' not in kwargs:
+            # Hedge Mode: 必須指定 positionSide
+            # BUY → LONG, SELL → SHORT
+            kwargs['positionSide'] = 'LONG' if side == 'BUY' else 'SHORT'
+            logger.debug(f"  Hedge Mode: 添加 positionSide={kwargs['positionSide']}")
+        elif not is_hedge_mode and 'positionSide' in kwargs:
+            # One-Way Mode: 移除 positionSide
+            del kwargs['positionSide']
+            logger.debug("  One-Way Mode: 移除 positionSide")
+        
         return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
     
     async def get_order(self, symbol: str, order_id: int) -> dict:
@@ -640,10 +677,14 @@ class BinanceClient:
         return await self._request("POST", "/fapi/v1/leverage", params=params, signed=True)
     
     async def test_connection(self) -> bool:
-        """測試 API 連接"""
+        """測試 API 連接並初始化 Position Mode"""
         try:
             await self._request("GET", "/fapi/v1/ping")
             logger.info("✅ Binance API 連接成功")
+            
+            # 立即檢測 Position Mode（Hedge 或 One-Way）
+            await self.get_position_mode()
+            
             return True
         except Exception as e:
             logger.error(f"❌ Binance API 連接失敗: {e}")
