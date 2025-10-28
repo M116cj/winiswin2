@@ -65,7 +65,7 @@ class SelfLearningTradingSystem:
     def __init__(self):
         """初始化系統"""
         self.running = False
-        self.config = Config
+        self.config = Config  # type: ignore  # Config 使用類級別配置
         
         # 核心組件
         self.binance_client: Optional[BinanceClient] = None
@@ -118,7 +118,7 @@ class SelfLearningTradingSystem:
             logger.info("✅ 交易記錄器初始化完成")
             
             # UnifiedScheduler（核心調度器）
-            self.scheduler = UnifiedScheduler(
+            self.scheduler = UnifiedScheduler(  # type: ignore  # Config 類級別使用
                 config=self.config,
                 binance_client=self.binance_client,
                 data_service=self.data_service,
@@ -169,7 +169,8 @@ class SelfLearningTradingSystem:
             # 啟動 UnifiedScheduler
             self.running = True
             logger.info("\n🚀 啟動 UnifiedScheduler...")
-            await self.scheduler.start()
+            if self.scheduler:  # 類型檢查
+                await self.scheduler.start()
             
         except KeyboardInterrupt:
             logger.info("\n⏸️  收到中斷信號，正在關閉...")

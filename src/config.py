@@ -234,93 +234,29 @@ class Config:
     LOG_FILE: str = "data/logs/trading_bot.log"
     
     # ===== 小寫屬性別名（用於兼容 ConfigProfile 介面）=====
-    @property
-    def min_win_probability(self) -> float:
-        return self.MIN_WIN_PROBABILITY
-    
-    @property
-    def min_rr_ratio(self) -> float:
-        return self.MIN_RR_RATIO
-    
-    @property
-    def max_rr_ratio(self) -> float:
-        return self.MAX_RR_RATIO
-    
-    @property
-    def min_confidence(self) -> float:
-        return self.MIN_CONFIDENCE
-    
-    @property
-    def equity_usage_ratio(self) -> float:
-        return self.EQUITY_USAGE_RATIO
-    
-    @property
-    def min_notional_value(self) -> float:
-        return self.MIN_NOTIONAL_VALUE
-    
-    @property
-    def min_stop_distance_pct(self) -> float:
-        return self.MIN_STOP_DISTANCE_PCT
-    
-    @property
-    def sltp_scale_factor(self) -> float:
-        return self.SLTP_SCALE_FACTOR
-    
-    @property
-    def sltp_max_scale(self) -> float:
-        return self.SLTP_MAX_SCALE
-    
-    @property
-    def position_monitor_enabled(self) -> bool:
-        return self.POSITION_MONITOR_ENABLED
-    
-    @property
-    def position_monitor_interval(self) -> int:
-        return self.POSITION_MONITOR_INTERVAL
-    
-    @property
-    def risk_kill_threshold(self) -> float:
-        return self.RISK_KILL_THRESHOLD
-    
-    @property
-    def model_rating_enabled(self) -> bool:
-        return self.MODEL_RATING_ENABLED
-    
-    @property
-    def enable_daily_report(self) -> bool:
-        return self.ENABLE_DAILY_REPORT
-    
-    @property
-    def reports_dir(self) -> str:
-        return self.REPORTS_DIR
-    
-    @property
-    def rating_loss_penalty(self) -> float:
-        return self.RATING_LOSS_PENALTY
-    
-    @property
-    def binance_api_key(self) -> str:
-        return self.BINANCE_API_KEY
-    
-    @property
-    def binance_api_secret(self) -> str:
-        return self.BINANCE_API_SECRET
-    
-    @property
-    def binance_testnet(self) -> bool:
-        return self.BINANCE_TESTNET
-    
-    @property
-    def trading_enabled(self) -> bool:
-        return self.TRADING_ENABLED
-    
-    @property
-    def max_positions(self) -> int:
-        return self.MAX_POSITIONS
-    
-    @property
-    def cycle_interval(self) -> int:
-        return self.CYCLE_INTERVAL
+    # 直接引用大寫變量，避免 @property 格式化問題
+    min_win_probability: float = MIN_WIN_PROBABILITY
+    min_rr_ratio: float = MIN_RR_RATIO
+    max_rr_ratio: float = MAX_RR_RATIO
+    min_confidence: float = MIN_CONFIDENCE
+    equity_usage_ratio: float = EQUITY_USAGE_RATIO
+    min_notional_value: float = MIN_NOTIONAL_VALUE
+    min_stop_distance_pct: float = MIN_STOP_DISTANCE_PCT
+    sltp_scale_factor: float = SLTP_SCALE_FACTOR
+    sltp_max_scale: float = SLTP_MAX_SCALE
+    position_monitor_enabled: bool = POSITION_MONITOR_ENABLED
+    position_monitor_interval: int = POSITION_MONITOR_INTERVAL
+    risk_kill_threshold: float = RISK_KILL_THRESHOLD
+    model_rating_enabled: bool = MODEL_RATING_ENABLED
+    enable_daily_report: bool = ENABLE_DAILY_REPORT
+    reports_dir: str = REPORTS_DIR
+    rating_loss_penalty: float = RATING_LOSS_PENALTY
+    binance_api_key: str = BINANCE_API_KEY
+    binance_api_secret: str = BINANCE_API_SECRET
+    binance_testnet: bool = BINANCE_TESTNET
+    trading_enabled: bool = TRADING_ENABLED
+    max_positions: int = MAX_POSITIONS
+    cycle_interval: int = CYCLE_INTERVAL
     
     # 槓桿計算參數（ConfigProfile 兼容）
     leverage_base: float = 1.0
