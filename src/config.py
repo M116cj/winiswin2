@@ -181,6 +181,27 @@ class Config:
     # 虛擬倉位配置
     VIRTUAL_POSITION_EXPIRY: int = 96
     
+    # ===== v3.15.0: 性能优化配置 =====
+    # 优化1: TensorFlow Lite 量化
+    ENABLE_QUANTIZATION: bool = os.getenv("ENABLE_QUANTIZATION", "false").lower() == "true"
+    QUANTIZED_MODEL_PATH: str = os.getenv("QUANTIZED_MODEL_PATH", "models/")
+    
+    # 优化2: 特征快取
+    ENABLE_INCREMENTAL_CACHE: bool = os.getenv("ENABLE_INCREMENTAL_CACHE", "true").lower() == "true"
+    
+    # 优化3: 异步批量预测
+    ENABLE_BATCH_PREDICTION: bool = os.getenv("ENABLE_BATCH_PREDICTION", "true").lower() == "true"
+    BATCH_PREDICTION_SIZE: int = int(os.getenv("BATCH_PREDICTION_SIZE", "32"))
+    BATCH_MAX_DELAY: float = float(os.getenv("BATCH_MAX_DELAY", "0.1"))
+    
+    # 优化4: 记忆体映射存储
+    ENABLE_MEMORY_MAPPED_STORAGE: bool = os.getenv("ENABLE_MEMORY_MAPPED_STORAGE", "true").lower() == "true"
+    MAX_MEMORY_MAPPED_POSITIONS: int = int(os.getenv("MAX_MEMORY_MAPPED_POSITIONS", "1000"))
+    FEATURE_DIMENSION: int = int(os.getenv("FEATURE_DIMENSION", "32"))
+    
+    # 优化5: 智能监控频率
+    ENABLE_SMART_MONITORING: bool = os.getenv("ENABLE_SMART_MONITORING", "true").lower() == "true"
+    
     # ML 數據收集配置
     ML_FLUSH_COUNT: int = 25
     ML_FLUSH_INTERVAL: int = 300

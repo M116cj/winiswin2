@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any
 from src.ml.market_structure_autoencoder import MarketStructureAutoencoder
 from src.ml.feature_discovery_network import FeatureDiscoveryNetwork
 from src.ml.liquidity_prediction_model import LiquidityPredictionModel
+from src.ml.model_quantizer import ModelQuantizer
 from src.core.data_models import TradingSignal
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,19 @@ class SelfLearningTrader:
     def __init__(self, config):
         self.config = config
         
-        self.structure_model = MarketStructureAutoencoder()
+        # 优化1：使用量化模型（如果启用）
+        if hasattr(config, 'ENABLE_QUANTIZATION') and config.ENABLE_QUANTIZATION:
+            try:
+                self.structure_model = ModelQuantizer.load_quantized_model(
+                    f"{config.QUANTIZED_MODEL_PATH}/structure_encoder_quant.tflite"
+                )
+                logger.info("✅ 使用量化模型（TensorFlow Lite）")
+            except Exception as e:
+                logger.warning(f"⚠️ 量化模型加载失败，使用原始模型: {e}")
+                self.structure_model = MarketStructureAutoencoder()
+        else:
+            self.structure_model = MarketStructureAutoencoder()
+        
         self.feature_model = FeatureDiscoveryNetwork()
         self.liquidity_model = LiquidityPredictionModel()
         

@@ -29,6 +29,16 @@ from src.core.data_models import VirtualPosition
 
 logger = logging.getLogger(__name__)
 
+# v3.15.0: 性能优化模块（可选）
+try:
+    from src.core.memory_mapped_features import MemoryMappedFeatureStore
+    from src.utils.incremental_feature_cache import IncrementalFeatureCache
+    from src.managers.smart_monitoring_scheduler import SmartMonitoringScheduler
+    OPTIMIZATION_MODULES_AVAILABLE = True
+except ImportError:
+    OPTIMIZATION_MODULES_AVAILABLE = False
+    logger.warning("⚠️ v3.15.0 优化模块未完全加载，使用默认实现")
+
 
 class VirtualPositionManager:
     """
@@ -56,6 +66,33 @@ class VirtualPositionManager:
         
         # v3.13.0修复：使用threading.Lock（兼容同步和异步上下文）
         self._save_lock = threading.Lock()
+        
+        # v3.15.0: 性能优化模块（可选）
+        if OPTIMIZATION_MODULES_AVAILABLE:
+            if hasattr(Config, 'ENABLE_MEMORY_MAPPED_STORAGE') and Config.ENABLE_MEMORY_MAPPED_STORAGE:
+                self.feature_store = MemoryMappedFeatureStore(
+                    max_positions=Config.MAX_MEMORY_MAPPED_POSITIONS,
+                    feature_dim=Config.FEATURE_DIMENSION
+                )
+                logger.info("✅ 记忆体映射特征存储已启用")
+            else:
+                self.feature_store = None
+            
+            if hasattr(Config, 'ENABLE_INCREMENTAL_CACHE') and Config.ENABLE_INCREMENTAL_CACHE:
+                self.feature_cache = IncrementalFeatureCache()
+                logger.info("✅ 增量特征缓存已启用")
+            else:
+                self.feature_cache = None
+            
+            if hasattr(Config, 'ENABLE_SMART_MONITORING') and Config.ENABLE_SMART_MONITORING:
+                self.smart_scheduler = SmartMonitoringScheduler()
+                logger.info("✅ 智能监控频率调度器已启用")
+            else:
+                self.smart_scheduler = None
+        else:
+            self.feature_store = None
+            self.feature_cache = None
+            self.smart_scheduler = None
         
         self._load_positions()
     
