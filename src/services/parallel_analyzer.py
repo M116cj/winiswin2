@@ -1,6 +1,10 @@
 """
-並行分析器（v3.16.1 BrokenProcessPool 修复版）
+並行分析器（v3.16.2 序列化修復版）
 職責：批量處理大量交易對分析、自動重建損壞進程池、內存監控
+
+v3.16.2 修復（2025-10-28）：
+- 修復子進程 logger 序列化問題（thread.lock 錯誤）
+- 在子進程內部創建獨立 logger（避免序列化模塊級別 logger）
 
 v3.16.1 修復：
 - 重新啟用進程池（使用安全提交機制）
@@ -157,6 +161,10 @@ class ParallelAnalyzer:
         Returns:
             Optional[Dict]: 交易信號
         """
+        # 🔥 v3.16.2 修復：子進程內部創建 logger（避免序列化 thread.lock）
+        import logging
+        proc_logger = logging.getLogger(f"{__name__}.subprocess")
+        
         try:
             # 🔥 添加記憶體監控
             try:
@@ -181,7 +189,7 @@ class ParallelAnalyzer:
                 
             except (ImportError, MemoryError) as e:
                 # 🔥 降級到 ICT 策略
-                logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
+                proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
                 result = ParallelAnalyzer._fallback_analysis(symbol_data, config)
             
             # 🔥 記憶體監控
@@ -191,7 +199,7 @@ class ParallelAnalyzer:
                     memory_increase = final_memory - initial_memory
                     
                     if memory_increase > 500:  # 記憶體增加超過 500MB
-                        logger.warning(
+                        proc_logger.warning(
                             f"⚠️ 記憶體洩漏警告 {symbol_data['symbol']}: +{memory_increase:.1f}MB"
                         )
                 except Exception:
@@ -200,17 +208,17 @@ class ParallelAnalyzer:
             return result
             
         except MemoryError:
-            logger.error(f"❌ 記憶體不足: {symbol_data['symbol']}")
+            proc_logger.error(f"❌ 記憶體不足: {symbol_data['symbol']}")
             return None
         except ImportError as e:
-            logger.warning(f"⚠️ 模組導入錯誤: {e}")
+            proc_logger.warning(f"⚠️ 模組導入錯誤: {e}")
             # 使用 fallback 策略
             try:
                 return ParallelAnalyzer._fallback_analysis(symbol_data, config_dict)
             except Exception:
                 return None
         except Exception as e:
-            logger.error(f"❌ 分析錯誤 {symbol_data['symbol']}: {e}")
+            proc_logger.error(f"❌ 分析錯誤 {symbol_data['symbol']}: {e}")
             return None
     
     @staticmethod
@@ -225,6 +233,10 @@ class ParallelAnalyzer:
         Returns:
             Optional[Dict]: 交易信號
         """
+        # 🔥 v3.16.2 修復：子進程內部創建 logger（避免序列化 thread.lock）
+        import logging
+        proc_logger = logging.getLogger(f"{__name__}.fallback")
+        
         try:
             from src.strategies.ict_strategy import ICTStrategy
             from src.config import Config
@@ -243,7 +255,7 @@ class ParallelAnalyzer:
             return result
             
         except Exception as e:
-            logger.error(f"❌ 降級分析失敗: {e}")
+            proc_logger.error(f"❌ 降級分析失敗: {e}")
             return None
     
     async def close(self):
