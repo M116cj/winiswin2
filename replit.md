@@ -229,6 +229,125 @@ except BinanceRequestError as e:
 
 ## 最近更新
 
+### v3.17.8 (2025-10-28) - 保證金管理完整修復 🔧
+
+**類型**: 🐛 **CRITICAL BUG FIX**  
+**狀態**: ✅ **已完成並通過 Architect 審查**
+
+#### **問題診斷**
+
+**症狀**：系統出現大量 `Margin is insufficient` 錯誤
+
+**用戶原始描述**："連線不穩定"
+
+**真實原因**：**保證金管理邏輯嚴重錯誤**（非連線問題）
+
+**具體問題**：
+```
+1. ❌ 使用 totalWalletBalance（總權益）而非 availableBalance（可用保證金）
+2. ❌ 每個信號都使用相同的總權益計算倉位
+3. ❌ 沒有追蹤已分配的保證金
+4. ❌ 沒有限制同時開倉數量
+5. ❌ 沒有檢查已有持倉數量
+
+結果：權益 $21.40，但同時嘗試開 10+ 個倉位，每個需要 $17+ 保證金
+      → 總需求 $170+，遠超可用保證金 → 全部失敗
+```
+
+#### **修復方案**
+
+##### 1. 使用可用保證金
+```python
+# ❌ 錯誤：使用總權益
+account_equity = float(account_info.get('totalWalletBalance', 0))
+
+# ✅ 正確：使用可用保證金
+account_info = await self.binance_client.get_account_balance()
+available_balance = account_info['available_balance']
+```
+
+##### 2. 限制同時開倉數量
+```python
+# 添加配置
+MAX_CONCURRENT_ORDERS = 5  # 最多同時 5 個倉位
+
+# 計算可用倉位
+active_position_count = len(positions)
+available_slots = max(0, MAX_CONCURRENT_ORDERS - active_position_count)
+```
+
+##### 3. 保證金預算分配
+```python
+# 計算可分配保證金
+available_for_trading = available_balance * 0.8  # 使用 80%
+
+# 每個倉位的預算
+budget_per_position = available_for_trading / len(signals_to_execute)
+
+# 使用預算計算倉位（不是總權益）
+position_size = await calculate_position_size(
+    account_equity=budget_per_position  # ✅ 使用分配的預算
+)
+```
+
+##### 4. 最小預算檢查
+```python
+# 避免預算太小導致 Margin insufficient
+min_notional = 10.0
+if budget_per_position < min_notional / 10:
+    logger.warning("保證金預算不足，跳過本週期開倉")
+    return
+```
+
+#### **修復效果**
+
+**修復前**：
+```
+權益 $21.40
+→ 嘗試開 15 個倉位
+→ 每個使用 $21.40 × 0.8 = $17.12
+→ 總需求 $256.80
+→ 全部失敗：Margin is insufficient ❌
+```
+
+**修復後**：
+```
+權益 $21.40
+已有 2 個持倉
+→ 可開 3 個新倉位（5 - 2 = 3）
+→ 每個預算 $21.40 × 0.8 / 3 = $5.71
+→ 總需求 $17.13
+→ 全部成功 ✅
+```
+
+#### **修改文件**
+
+- `src/core/unified_scheduler.py`
+  - 使用 `get_account_balance()` 獲取可用保證金
+  - 添加倉位數量檢查
+  - 實現保證金預算分配
+  - 添加最小預算檢查
+
+- `src/config.py`
+  - 添加 `MAX_CONCURRENT_ORDERS = 5` 配置
+
+#### **Architect 審查結果**
+
+✅ **PASS** - 邏輯正確，已修復所有問題
+
+**審查意見**：
+- ✅ 正確限制總倉位數量（不超過 MAX_CONCURRENT_ORDERS）
+- ✅ 保證金預算計算合理
+- ✅ 避免了原始的保證金短缺問題
+- ✅ 代碼清晰易懂
+
+**建議**：
+1. 添加回歸測試確保上限執行
+2. 監控低預算守衛的觸發情況
+3. 檢查 `MIN_NOTIONAL_VALUE` 配置是否符合 Binance 要求
+
+---
+
 ### v3.17.7 (2025-10-28) - 部署環境限制說明 📍
 
 **類型**: 📖 **DOCUMENTATION / DEPLOYMENT GUIDE**  
