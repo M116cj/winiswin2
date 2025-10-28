@@ -272,7 +272,14 @@ class Config:
     ML_MIN_TRAINING_SAMPLES: int = 100  # XGBoost最小訓練樣本數
     INDICATOR_CACHE_TTL: int = 60  # 技術指標緩存時間（秒）
     CACHE_TTL_KLINES_HISTORICAL: int = 86400  # 歷史K線緩存24小時（不會改變）
-    MAX_WORKERS: int = int(os.getenv("MAX_WORKERS", "32"))  # 並行分析工作線程數
+    
+    # 🔥 v3.16.1: 進程池配置（BrokenProcessPool 修復）
+    MAX_WORKERS: int = min(
+        int(os.getenv("MAX_WORKERS", "16")), 
+        (os.cpu_count() or 1) + 4
+    )  # 減少 worker 數量避免記憶體不足（默認16，最多CPU+4）
+    PROCESS_MEMORY_LIMIT_MB: int = int(os.getenv("PROCESS_MEMORY_LIMIT_MB", "1024"))  # 每個子進程記憶體限制（MB）
+    PROCESS_TIMEOUT_SECONDS: int = int(os.getenv("PROCESS_TIMEOUT_SECONDS", "30"))  # 子進程超時時間（秒）
     
     # 日誌配置
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
