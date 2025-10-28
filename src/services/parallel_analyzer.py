@@ -1,17 +1,15 @@
 """
-並行分析器（v3.16.2 序列化修復版）
-職責：批量處理大量交易對分析、自動重建損壞進程池、內存監控
+並行分析器（v3.16.2 ThreadPool 修復版）
+職責：批量處理大量交易對分析
 
-v3.16.2 修復（2025-10-28）：
-- 修復子進程 logger 序列化問題（thread.lock 錯誤）
-- 在子進程內部創建獨立 logger（避免序列化模塊級別 logger）
+v3.16.2 徹底修復（2025-10-28）：
+- 改用 ThreadPoolExecutor 替代 ProcessPoolExecutor
+- 完全解決序列化問題（'cannot pickle _thread.lock'）
+- 移除所有 pickle 驗證（不再需要）
+- ML 模型（ONNX）會釋放 GIL，線程池可並行
 
-v3.16.1 修復：
-- 重新啟用進程池（使用安全提交機制）
-- 添加 BrokenProcessPool 自動恢復
-- 添加子進程內存監控
-- 添加 fallback 降級策略
-- 添加超時機制（30秒/任務）
+v3.16.1 修復嘗試（已廢棄）：
+- 嘗試修復 ProcessPoolExecutor 序列化問題
 """
 
 import asyncio
@@ -19,24 +17,22 @@ from typing import List, Dict, Optional
 import logging
 import time
 from concurrent.futures import TimeoutError
-from concurrent.futures.process import BrokenProcessPool
 
-from src.core.global_pool import GlobalProcessPool
+from src.core.global_pool import GlobalThreadPool
 from src.config import Config
 
 logger = logging.getLogger(__name__)
 
 
-# 🔥 v3.16.2 修復：模塊級別工作函數（完全無閉包設計）
+# 🔥 v3.16.2 修復：工作函數（線程池版本，無序列化問題）
 def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: dict) -> Optional[Dict]:
     """
-    單個交易對分析（獨立工作函數，無任何外部依賴）
+    單個交易對分析（線程池工作函數）
     
-    🔥 v3.16.2 嚴格修復（GlobalProcessPool 方案）：
-    - 完全獨立的模塊級函數（不依賴任何類或模塊狀態）
-    - 參數完全扁平化（symbol, market_data, config_dict）
-    - 所有參數都是基本類型（str, dict）
-    - 在子進程內部重建所有複雜對象（logger, DataFrame, Config, Strategy）
+    v3.16.2 ThreadPool 版本：
+    - 使用線程池，共享內存，無序列化需求
+    - 可以直接使用模塊級 logger（無 thread.lock 問題）
+    - 參數保持扁平化以便調用
     
     Args:
         symbol: 交易對名稱（str）
@@ -46,13 +42,12 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
     Returns:
         Optional[Dict]: 交易信號
     """
-    # 🔥 步驟1：在子進程內部創建獨立 logger（避免序列化主進程 logger）
+    # 🔥 線程池可以直接使用 logger（無序列化問題）
     import logging
     import pandas as pd
-    proc_logger = logging.getLogger(f"worker.{symbol}")
     
     try:
-        # 🔥 步驟2：重建 DataFrame（從純字典恢復）
+        # 🔥 步驟1：重建 DataFrame（從純字典恢復）
         reconstructed_data = {}
         for tf_key, tf_dict in market_data.items():
             if tf_dict is not None and isinstance(tf_dict, dict) and 'data' in tf_dict:
@@ -64,25 +59,15 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
             else:
                 reconstructed_data[tf_key] = None
         
-        # 🔥 步驟3：添加記憶體監控
-        process = None
-        initial_memory = None
-        try:
-            import psutil
-            process = psutil.Process()
-            initial_memory = process.memory_info().rss / 1024 / 1024  # MB
-        except ImportError:
-            pass
-        
-        # 🔥 步驟4：在子進程內重建 Config 對象
+        # 🔥 步驟2：在線程內重建 Config 對象
         from src.config import Config
         config = Config()
-        # 只應用傳入的配置參數
+        # 應用傳入的配置參數
         for key, value in config_dict.items():
             if hasattr(config, key):
                 setattr(config, key, value)
         
-        # 🔥 步驟5：在子進程內創建策略實例並執行分析
+        # 🔥 步驟3：創建策略實例並執行分析
         result = None
         try:
             from src.strategies.self_learning_trader import SelfLearningTrader
@@ -91,58 +76,44 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
             
         except Exception as e:
             # 🔥 降級到 ICT 策略
-            proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
+            logger.warning(f"⚠️ {symbol} 自我學習交易員不可用，使用降級策略: {e}")
             try:
                 from src.strategies.ict_strategy import ICTStrategy
                 trader = ICTStrategy()
                 result = trader.analyze(symbol, reconstructed_data)
             except Exception as fallback_error:
-                proc_logger.error(f"❌ 降級策略也失敗: {fallback_error}")
+                logger.error(f"❌ {symbol} 降級策略也失敗: {fallback_error}")
                 result = None
-        
-        # 🔥 步驟6：記憶體監控
-        if initial_memory is not None and process is not None:
-            try:
-                final_memory = process.memory_info().rss / 1024 / 1024  # MB
-                memory_increase = final_memory - initial_memory
-                
-                if memory_increase > 500:  # 記憶體增加超過 500MB
-                    proc_logger.warning(
-                        f"⚠️ 記憶體洩漏警告 {symbol}: +{memory_increase:.1f}MB"
-                    )
-            except Exception:
-                pass
         
         return result
         
     except MemoryError:
-        proc_logger.error(f"❌ 記憶體不足 {symbol}")
+        logger.error(f"❌ {symbol} 記憶體不足")
         return None
     except Exception as e:
-        proc_logger.error(f"❌ 分析失敗 {symbol}: {e}")
+        logger.error(f"❌ {symbol} 分析失敗: {e}")
         return None
 
 
 class ParallelAnalyzer:
-    """並行分析器 - v3.16.1 BrokenProcessPool 修復版"""
+    """並行分析器 - v3.16.2 ThreadPool 修復版"""
     
     def __init__(self, max_workers: Optional[int] = None, perf_monitor=None):
         """
         初始化並行分析器
         
         Args:
-            max_workers: 最大工作進程數（未使用，由 GlobalProcessPool 管理）
+            max_workers: 未使用（由 GlobalThreadPool 管理）
             perf_monitor: 性能監控器
         """
-        self.config = Config()  # 🔥 修复：实例化 Config 对象
-        self.global_pool = GlobalProcessPool()
-        self._model_path = "data/models/model.onnx"
+        self.config = Config()
+        self.global_pool = GlobalThreadPool()
         
         # ✨ 性能監控
         self.perf_monitor = perf_monitor
         
-        logger.info("✅ 並行分析器初始化: 使用全局進程池（v3.16.1 安全版本）")
-        logger.info(f"   進程池狀態: {self.global_pool.get_pool_health()}")
+        logger.info("✅ 並行分析器初始化: 使用全局線程池（v3.16.2 ThreadPool 版本）")
+        logger.info(f"   線程池狀態: {self.global_pool.get_pool_health()}")
     
     async def analyze_batch(
         self,
@@ -213,29 +184,12 @@ class ParallelAnalyzer:
                     'TRADING_ENABLED': bool(self.config.TRADING_ENABLED)
                 }
                 
-                # 🔥 v3.16.2 嚴格驗證：提交前檢查所有參數可序列化
-                try:
-                    import pickle
-                    # 驗證函數本身
-                    pickle.dumps(_analyze_single_symbol_worker)
-                    # 驗證所有參數
-                    pickle.dumps(symbol)  # str
-                    pickle.dumps(market_data)  # dict
-                    pickle.dumps(config_dict)  # dict
-                except Exception as pickle_error:
-                    logger.error(f"❌ 序列化驗證失敗 {symbol}: {pickle_error}")
-                    logger.error(f"   函數: _analyze_single_symbol_worker")
-                    logger.error(f"   symbol 類型: {type(symbol)}")
-                    logger.error(f"   market_data 類型: {type(market_data)}")
-                    logger.error(f"   config_dict 類型: {type(config_dict)}")
-                    continue  # 跳過無法序列化的任務
-                
-                # 🔥 使用完全扁平化的參數（無嵌套，無閉包）
+                # 🔥 v3.16.2: 使用線程池提交任務（無序列化問題）
                 future = self.global_pool.submit_safe(
-                    _analyze_single_symbol_worker,  # 模塊級函數
-                    symbol,                         # str (扁平參數1)
-                    market_data,                    # dict (扁平參數2)
-                    config_dict                     # dict (扁平參數3)
+                    _analyze_single_symbol_worker,
+                    symbol,
+                    market_data,
+                    config_dict
                 )
                 tasks.append((symbol, future))
             
@@ -249,9 +203,6 @@ class ParallelAnalyzer:
                         signals.append(result)
                 except TimeoutError:
                     logger.warning(f"⚠️ 分析 {symbol} 超時（{timeout_seconds}秒）")
-                except BrokenProcessPool:
-                    logger.error(f"❌ 進程池損壞（分析 {symbol}），跳過剩餘任務")
-                    break
                 except Exception as e:
                     logger.error(f"❌ 分析 {symbol} 失敗: {e}")
             
@@ -272,9 +223,6 @@ class ParallelAnalyzer:
             
             return signals
             
-        except BrokenProcessPool:
-            logger.error("❌ 進程池損壞，跳過本次分析")
-            return []
         except Exception as e:
             logger.error(f"❌ 批量分析失敗: {e}", exc_info=True)
             return []

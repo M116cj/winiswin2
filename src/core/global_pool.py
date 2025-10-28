@@ -1,36 +1,33 @@
 """
-全局进程池管理器（v3.16.1 BrokenProcessPool 修复版）
-职责：单例模式进程池复用、健康检查、自动重建
+全局線程池管理器（v3.16.2 ThreadPool 修復版）
+職責：單例模式線程池復用、健康檢查
 
-v3.16.1 修复：
-- 添加健康检查机制（检测进程池损坏）
-- 自动重建损坏的进程池
-- submit_safe 方法（自动处理 BrokenProcessPool）
-- 子进程内存监控
+v3.16.2 重大修復：
+- 改用 ThreadPoolExecutor（避免序列化問題）
+- 移除所有 pickle 相關代碼
+- 簡化實現（線程共享內存，無序列化需求）
+- ML 模型（ONNX/TensorRT）會釋放 GIL，線程池可並行
 """
 
-import multiprocessing as mp
 import logging
-import os
-from concurrent.futures import ProcessPoolExecutor
-from concurrent.futures.process import BrokenProcessPool
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
-class GlobalProcessPool:
+class GlobalThreadPool:
     """
-    全局进程池单例管理器（带健康检查和重建机制）
+    全局線程池單例管理器（v3.16.2 徹底解決序列化問題）
     
-    特点：
-    1. 单例模式 - 整个应用生命周期内只创建一次
-    2. 健康检查 - 自动检测进程池是否损坏
-    3. 自动重建 - 损坏时自动重建进程池
-    4. 安全提交 - submit_safe 方法自动处理 BrokenProcessPool
+    關鍵改進：
+    1. 使用 ThreadPoolExecutor 替代 ProcessPoolExecutor
+    2. 線程共享內存，無需序列化
+    3. ML 模型（ONNX）會釋放 GIL，線程池可並行
+    4. 完全避免 'cannot pickle _thread.lock' 錯誤
     """
     
-    _instance: Optional['GlobalProcessPool'] = None
+    _instance: Optional['GlobalThreadPool'] = None
     
     def __new__(cls):
         if cls._instance is None:
@@ -40,137 +37,81 @@ class GlobalProcessPool:
     
     def _initialize_pool(self, max_workers: Optional[int] = None):
         """
-        初始化进程池
+        初始化線程池
         
         Args:
-            max_workers: 最大工作进程数（如果未指定，从 Config 读取）
+            max_workers: 最大工作線程數（如果未指定，從 Config 讀取）
         """
-        # 🔥 修复：从 Config 读取限制
+        # 從 Config 讀取配置
         if max_workers is None:
             from src.config import Config
             max_workers = Config.MAX_WORKERS
         
         self.max_workers = max_workers
-        self.executor = ProcessPoolExecutor(
+        
+        # 🔥 v3.16.2 關鍵修復：使用 ThreadPoolExecutor
+        self.executor = ThreadPoolExecutor(
             max_workers=max_workers,
-            initializer=self._worker_init,
-            initargs=(self._get_model_path(),),
-            mp_context=mp.get_context('spawn')  # 使用 spawn 避免 fork 问题
+            thread_name_prefix="MLWorker"
         )
-        self._is_broken = False
-        logger.info(f"✅ 全局進程池初始化完成 (workers={max_workers})")
-    
-    def _get_model_path(self) -> str:
-        """获取模型路径"""
-        return "data/models/model.onnx"
-    
-    def _worker_init(self, model_path: str):
-        """
-        子进程初始化
         
-        Args:
-            model_path: 模型文件路径
-        """
-        # 设置子进程名称便于调试
-        mp.current_process().name = f"Worker-{mp.current_process().pid}"
-        
-        # 预加载模型（注意：这里要处理可能的 ImportError）
-        try:
-            import onnxruntime as ort
-            global ml_model
-            if os.path.exists(model_path):
-                ml_model = ort.InferenceSession(model_path)
-                logger.info(f"✅ 子進程 {mp.current_process().name} 模型加載成功")
-            else:
-                ml_model = None
-                logger.warning(f"⚠️ 模型文件不存在: {model_path}")
-        except ImportError:
-            logger.warning(f"⚠️ 子進程 {mp.current_process().name} ONNX Runtime 未安装")
-            ml_model = None
-        except Exception as e:
-            logger.warning(f"⚠️ 子進程 {mp.current_process().name} 模型加載失敗: {e}")
-            # 即使模型加载失败，子进程仍可运行（使用 fallback 逻辑）
-            ml_model = None
+        logger.info(f"✅ 全局線程池初始化完成 (workers={max_workers})")
+        logger.info(f"   使用 ThreadPoolExecutor（無序列化問題）")
     
-    def get_executor(self) -> ProcessPoolExecutor:
+    def get_executor(self) -> ThreadPoolExecutor:
         """
-        获取健康的进程池执行器
+        獲取線程池執行器
         
         Returns:
-            ProcessPoolExecutor: 健康的进程池
+            ThreadPoolExecutor: 線程池執行器
         """
-        if self._is_broken:
-            logger.warning("⚠️ 檢測到損壞的進程池，正在重建...")
-            self._rebuild_pool()
-        
         return self.executor
-    
-    def _rebuild_pool(self):
-        """重建进程池"""
-        try:
-            # 关闭旧的进程池
-            if hasattr(self, 'executor') and self.executor is not None:
-                self.executor.shutdown(wait=True, cancel_futures=True)
-        except Exception as e:
-            logger.error(f"關閉舊進程池時出錯: {e}")
-        
-        # 创建新的进程池
-        self._initialize_pool(self.max_workers)
-        self._is_broken = False
-        logger.info("✅ 進程池重建完成")
     
     def submit_safe(self, func, *args, **kwargs):
         """
-        安全提交任务（自动处理 BrokenProcessPool）
+        安全提交任務
         
         Args:
-            func: 要执行的函数
-            *args: 位置参数
-            **kwargs: 关键字参数
+            func: 要執行的函數
+            *args: 位置參數
+            **kwargs: 關鍵字參數
         
         Returns:
-            Future: 任务的 Future 对象
+            Future: 任務的 Future 對象
         """
-        try:
-            executor = self.get_executor()
-            return executor.submit(func, *args, **kwargs)
-        except BrokenProcessPool:
-            logger.warning("⚠️ 捕獲 BrokenProcessPool，重建進程池後重試")
-            self._is_broken = True
-            self._rebuild_pool()
-            executor = self.get_executor()
-            return executor.submit(func, *args, **kwargs)
+        executor = self.get_executor()
+        return executor.submit(func, *args, **kwargs)
     
     def get_pool_health(self) -> dict:
         """
-        获取进程池健康状态
+        獲取線程池健康狀態
         
         Returns:
-            dict: 健康状态信息
+            dict: 健康狀態信息
         """
         return {
-            'is_broken': self._is_broken,
             'max_workers': self.max_workers,
-            'executor_available': self.executor is not None
+            'executor_available': self.executor is not None,
+            'executor_type': 'ThreadPoolExecutor'
         }
     
     def shutdown(self, wait: bool = True):
         """
-        关闭进程池
+        關閉線程池
         
         Args:
-            wait: 是否等待所有任务完成
+            wait: 是否等待所有任務完成
         """
         if self.executor is not None:
-            logger.info("🛑 關閉全局進程池...")
+            logger.info("🛑 關閉全局線程池...")
             try:
                 self.executor.shutdown(wait=wait, cancel_futures=not wait)
-                logger.info("✅ 全局進程池已關閉")
+                logger.info("✅ 全局線程池已關閉")
             except Exception as e:
-                logger.error(f"關閉進程池時出錯: {e}")
+                logger.error(f"關閉線程池時出錯: {e}")
     
     def __del__(self):
-        """析构函数 - 确保进程池被关闭"""
+        """析構函數 - 確保線程池被關閉"""
         try:
             self.shutdown(wait=False)
         except Exception:
@@ -179,18 +120,22 @@ class GlobalProcessPool:
     @classmethod
     def reset(cls):
         """
-        重置单例（主要用于测试）
+        重置單例（主要用於測試）
         """
         if cls._instance is not None:
             cls._instance.shutdown(wait=False)
             cls._instance = None
 
 
-def get_global_pool() -> GlobalProcessPool:
+# 向後兼容別名
+GlobalProcessPool = GlobalThreadPool
+
+
+def get_global_pool() -> GlobalThreadPool:
     """
-    获取全局进程池实例（便捷函数）
+    獲取全局線程池實例（便捷函數）
     
     Returns:
-        GlobalProcessPool: 全局进程池实例
+        GlobalThreadPool: 全局線程池實例
     """
-    return GlobalProcessPool()
+    return GlobalThreadPool()
