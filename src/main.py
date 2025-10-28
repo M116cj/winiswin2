@@ -36,9 +36,9 @@ from typing import Optional
 
 from src.config import Config
 from src.clients.binance_client import BinanceClient
-from src.services.data_manager import DataManager
+from src.services.data_service import DataService
 from src.core.unified_scheduler import UnifiedScheduler
-from src.managers.trade_history_db import TradeHistoryDB
+from src.managers.trade_recorder import TradeRecorder
 
 # 配置日誌
 logging.basicConfig(
@@ -69,8 +69,8 @@ class SelfLearningTradingSystem:
         
         # 核心組件
         self.binance_client: Optional[BinanceClient] = None
-        self.data_manager: Optional[DataManager] = None
-        self.trade_history_db: Optional[TradeHistoryDB] = None
+        self.data_service: Optional[DataService] = None
+        self.trade_recorder: Optional[TradeRecorder] = None
         self.scheduler: Optional[UnifiedScheduler] = None
     
     async def initialize(self):
@@ -98,11 +98,7 @@ class SelfLearningTradingSystem:
             logger.info("\n🔧 初始化核心組件...")
             
             # Binance 客戶端
-            self.binance_client = BinanceClient(
-                api_key=self.config.BINANCE_API_KEY,
-                api_secret=self.config.BINANCE_API_SECRET,
-                testnet=self.config.BINANCE_TESTNET
-            )
+            self.binance_client = BinanceClient()
             
             # 測試連接
             if not await self.binance_client.test_connection():
@@ -111,26 +107,22 @@ class SelfLearningTradingSystem:
             
             logger.info("✅ Binance 客戶端已連接")
             
-            # 數據管理器
-            self.data_manager = DataManager(
-                binance_client=self.binance_client,
-                config=self.config
+            # 數據服務
+            self.data_service = DataService(
+                binance_client=self.binance_client
             )
-            logger.info("✅ 數據管理器初始化完成")
+            logger.info("✅ 數據服務初始化完成")
             
-            # 交易歷史數據庫（可選）
-            if hasattr(self.config, 'TRADE_HISTORY_DB_PATH'):
-                self.trade_history_db = TradeHistoryDB(
-                    db_path=self.config.TRADE_HISTORY_DB_PATH
-                )
-                logger.info("✅ 交易歷史數據庫初始化完成")
+            # 交易記錄器
+            self.trade_recorder = TradeRecorder()
+            logger.info("✅ 交易記錄器初始化完成")
             
             # UnifiedScheduler（核心調度器）
             self.scheduler = UnifiedScheduler(
                 config=self.config,
                 binance_client=self.binance_client,
-                data_manager=self.data_manager,
-                trade_history_db=self.trade_history_db
+                data_service=self.data_service,
+                trade_recorder=self.trade_recorder
             )
             logger.info("✅ UnifiedScheduler 初始化完成")
             
@@ -200,9 +192,9 @@ class SelfLearningTradingSystem:
             if self.binance_client:
                 await self.binance_client.close()
             
-            # 關閉數據庫
-            if self.trade_history_db:
-                self.trade_history_db.close()
+            # 清理交易記錄器
+            if self.trade_recorder:
+                pass  # TradeRecorder 無需特殊清理
             
             logger.info("✅ 系統已安全關閉")
             

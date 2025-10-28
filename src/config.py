@@ -39,6 +39,11 @@ class Config:
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
     
+    # ===== v3.17+ SelfLearningTrader 開倉條件 =====
+    MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.55"))
+    MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
+    MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "2.0"))
+    
     # ===== 掃描配置 =====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))
@@ -194,13 +199,35 @@ class Config:
     
     # ===== 性能優化配置 =====
     DEFAULT_ACCOUNT_BALANCE: float = float(os.getenv("DEFAULT_ACCOUNT_BALANCE", "10000"))
-    MIN_NOTIONAL_VALUE: float = 20.0
+    
+    # ===== v3.17+ 倉位計算配置 =====
+    EQUITY_USAGE_RATIO: float = float(os.getenv("EQUITY_USAGE_RATIO", "0.8"))
+    MIN_NOTIONAL_VALUE: float = float(os.getenv("MIN_NOTIONAL_VALUE", "10.0"))
+    MIN_STOP_DISTANCE_PCT: float = float(os.getenv("MIN_STOP_DISTANCE_PCT", "0.003"))
+    
+    # ===== v3.17+ 動態 SL/TP 配置 =====
+    SLTP_SCALE_FACTOR: float = float(os.getenv("SLTP_SCALE_FACTOR", "0.05"))
+    SLTP_MAX_SCALE: float = float(os.getenv("SLTP_MAX_SCALE", "3.0"))
     
     # ===== v3.17+: ThreadPool 配置（避免序列化錯誤）=====
     MAX_WORKERS: int = min(
         int(os.getenv("MAX_WORKERS", "4")), 
         (os.cpu_count() or 1) + 4
     )
+    
+    # ===== v3.17+ PositionController 配置 =====
+    POSITION_MONITOR_ENABLED: bool = os.getenv("POSITION_MONITOR_ENABLED", "true").lower() == "true"
+    POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "2"))
+    RISK_KILL_THRESHOLD: float = float(os.getenv("RISK_KILL_THRESHOLD", "0.99"))
+    
+    # ===== v3.17+ ModelEvaluator 配置 =====
+    MODEL_RATING_ENABLED: bool = os.getenv("MODEL_RATING_ENABLED", "true").lower() == "true"
+    ENABLE_DAILY_REPORT: bool = os.getenv("ENABLE_DAILY_REPORT", "true").lower() == "true"
+    REPORTS_DIR: str = os.getenv("REPORTS_DIR", "reports/daily")
+    RATING_LOSS_PENALTY: float = float(os.getenv("RATING_LOSS_PENALTY", "15.0"))
+    
+    # ===== v3.17+ UnifiedScheduler 配置 =====
+    TRADING_SYMBOLS: list = os.getenv("TRADING_SYMBOLS", "").split(",") if os.getenv("TRADING_SYMBOLS") else []
     
     # ===== 日誌配置 =====
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")

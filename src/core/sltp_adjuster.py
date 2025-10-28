@@ -4,7 +4,7 @@ v3.17+ 動態 SL/TP 調整器
 """
 
 import logging
-from typing import tuple
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class SLTPAdjuster:
         base_sl_pct: float,
         leverage: float,
         verbose: bool = False
-    ) -> tuple[float, float]:
+    ) -> Tuple[float, float]:
         """
         根據槓桿調整 SL/TP
         
@@ -120,7 +120,7 @@ class SLTPAdjuster:
         stop_loss: float,
         take_profit: float,
         side: str
-    ) -> tuple[bool, str]:
+    ) -> Tuple[bool, str]:
         """
         驗證 SL/TP 是否有效
         

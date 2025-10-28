@@ -6,7 +6,7 @@ UnifiedScheduler v3.17+ - 統一調度器
 import asyncio
 import logging
 from datetime import datetime, time
-from typing import Optional
+from typing import Optional, Dict, List
 import traceback
 
 from src.strategies.self_learning_trader import SelfLearningTrader
@@ -14,7 +14,7 @@ from src.core.position_controller import PositionController
 from src.core.model_evaluator import ModelEvaluator
 from src.core.daily_reporter import DailyReporter
 from src.clients.binance_client import BinanceClient
-from src.services.data_manager import DataManager
+from src.services.data_service import DataService
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -45,8 +45,8 @@ class UnifiedScheduler:
         self,
         config: Config,
         binance_client: BinanceClient,
-        data_manager: DataManager,
-        trade_history_db=None
+        data_service: DataService,
+        trade_recorder=None
     ):
         """
         初始化 UnifiedScheduler
@@ -54,13 +54,13 @@ class UnifiedScheduler:
         Args:
             config: 配置對象
             binance_client: Binance 客戶端
-            data_manager: 數據管理器
-            trade_history_db: 交易歷史數據庫
+            data_service: 數據服務
+            trade_recorder: 交易記錄器
         """
         self.config = config
         self.binance_client = binance_client
-        self.data_manager = data_manager
-        self.trade_history_db = trade_history_db
+        self.data_service = data_service
+        self.trade_recorder = trade_recorder
         
         # 初始化核心組件
         self.self_learning_trader = SelfLearningTrader(
@@ -204,7 +204,7 @@ class UnifiedScheduler:
             logger.info(f"🔄 交易週期 #{self.stats['total_cycles']} 開始")
             
             # 步驟 1：獲取賬戶權益
-            account_info = await self.binance_client.get_account_info_async()
+            account_info = await self.binance_client.get_account_info()
             account_equity = float(account_info.get('totalWalletBalance', 0))
             
             logger.info(f"   💰 賬戶權益: ${account_equity:.2f}")
@@ -223,7 +223,7 @@ class UnifiedScheduler:
             for symbol in symbols:
                 try:
                     # 獲取多時間框架數據
-                    multi_tf_data = await self.data_manager.get_multi_timeframe_data(symbol)
+                    multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
                     
                     if not multi_tf_data:
                         continue
@@ -264,7 +264,7 @@ class UnifiedScheduler:
                 return self.config.TRADING_SYMBOLS
             
             # 否則獲取所有 USDT 永續合約
-            exchange_info = await self.binance_client.get_exchange_info_async()
+            exchange_info = await self.binance_client.get_exchange_info()
             symbols = [
                 s['symbol'] for s in exchange_info.get('symbols', [])
                 if s['symbol'].endswith('USDT') and s['status'] == 'TRADING'
@@ -304,17 +304,16 @@ class UnifiedScheduler:
             )
             
             # 設置槓桿
-            await self.binance_client.set_leverage_async(symbol, int(leverage))
+            await self.binance_client.set_leverage(symbol, int(leverage))
             
             # 下單
             side = 'BUY' if direction == 'LONG' else 'SELL'
             
-            order_result = await self.binance_client.place_order_async(
+            order_result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type='MARKET',
-                quantity=position_size,
-                priority=0  # 最高優先級
+                quantity=position_size
             )
             
             logger.info(
@@ -343,8 +342,9 @@ class UnifiedScheduler:
             logger.info("📊 生成每日報告...")
             
             # 獲取交易記錄
-            if self.trade_history_db:
-                trades = self.trade_history_db.get_trades_last_n_days(days=1)
+            if self.trade_recorder:
+                # TradeRecorder 存儲在內存中，獲取最近的交易
+                trades = getattr(self.trade_recorder, 'completed_trades', [])
             else:
                 trades = []
             

@@ -1,0 +1,110 @@
+完整修復方案（按優先級排序）
+🔴 P0：嚴重問題 1 — 模塊導入失敗
+問題根源
+* 新組件（如 ModelInitializer、TrendMonitor）引用了 不存在的模塊名稱
+* 現有系統使用 DataService / TradeRecorder，但新代碼寫成 DataManager / TradeHistoryDB
+
+✅ 推薦修復：選項 B（修改新組件，使用現有模塊）
+理由：避免大規模重命名，保持向後兼容，符合「最小改動」原則 
+
+具體步驟：
+# 1. 在所有新組件中替換導入
+# ❌ 錯誤
+# from src.services.data_manager import DataManager
+# from src.managers.trade_history_db import TradeHistoryDB
+
+# ✅ 正確
+from src.services.data_service import DataService
+from src.managers.trade_recorder import TradeRecorder
+# 2. 在新組件中使用正確的類名
+# ❌ 錯誤
+# self.data_manager = DataManager()
+# self.db = TradeHistoryDB()
+
+# ✅ 正確
+self.data_service = DataService()
+self.trade_recorder = TradeRecorder()
+工作量：僅需修改 新組件（如 model_initializer.py, trend_monitor.py），
+不影響 現有 80+ 個檔案。
+P1：中等問題 2 — Config 集成不一致
+問題根源
+* 新組件假設 Config 有某些屬性，但實際未定義
+* Config 被當作類使用，而非實例
+
+✅ 修復步驟
+1. 修正 Config 使用方式
+# ❌ 錯誤
+self.config = Config  # 類，非實例
+
+# ✅ 正確
+from src.config import CONFIG  # 全局實例
+self.config = CONFIG
+2. 在 src/config.py 添加缺失屬性
+# src/config.py
+@dataclass(frozen=True)
+class Config:
+    # ... 現有參數 ...
+    
+    # ===== v3.17+ 新增參數 =====
+    POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "1"))
+    REPORTS_DIR: str = os.getenv("REPORTS_DIR", "reports/daily")
+    TRADING_SYMBOLS: List[str] = field(default_factory=lambda: os.getenv("TRADING_SYMBOLS", "BTCUSDT,ETHUSDT").split(","))
+    EQUITY_USAGE_RATIO: float = float(os.getenv("EQUITY_USAGE_RATIO", "0.8"))
+    MIN_NOTIONAL_VALUE: float = float(os.getenv("MIN_NOTIONAL_VALUE", "10.0"))
+3. 更新 .env.example
+# v3.17+ 監控與風險
+POSITION_MONITOR_INTERVAL=1
+REPORTS_DIR=reports/daily
+TRADING_SYMBOLS=BTCUSDT,ETHUSDT,SOLUSDT
+EQUITY_USAGE_RATIO=0.8
+MIN_NOTIONAL_VALUE=10.0
+P1：中等問題 3 — BinanceClient API 不匹配
+問題根源
+* 新組件假設存在 *_async 方法，但實際為同步方法（或反之）
+
+✅ 修復步驟
+1. 確認 BinanceClient 實際 API
+# 檢查 src/clients/binance_client.py
+class BinanceClient:
+    async def get_account(self): ...        # ✅ 實際方法
+    async def set_leverage(self, symbol, leverage): ...  # ✅ 實際方法
+    # 無 get_account_info_async / set_leverage_async
+2. 修正新組件調用
+# ❌ 錯誤
+# await self.binance_client.get_account_info_async()
+# await self.binance_client.set_leverage_async(symbol, leverage)
+
+# ✅ 正確
+account_info = await self.binance_client.get_account()
+await self.binance_client.set_leverage(symbol, leverage)
+💡 建議：在 BinanceClient 中添加類型提示，避免未來錯誤： 
+async def get_account(self) -> Dict[str, Any]: ...
+async def set_leverage(self, symbol: str, leverage: float) -> Dict[str, Any]: ...
+P2：輕微問題 4 — LSP 類型警告
+問題根源
+* DataFrame 未正確標註類型，導致 IDE 警告
+
+✅ 修復步驟
+# 在所有使用 DataFrame 的檔案頂部
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    import pandas as pd
+
+# 或直接
+import pandas as pd
+
+# 函數簽名添加類型
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    ...
+
+✅ 驗證步驟（修復後）
+* 本地啟動測試
+python src/main.py  # 應無 ModuleNotFoundError / AttributeError
+1. LSP 檢查
+    * 確認無紅色錯誤（僅黃色警告可接受）
+2. Railway 部署測試
+git push railway main
+# 應成功啟動並開始監控
+ 關鍵原則： 「修復問題，而非重構系統」 —— 所有修改僅針對 新組件的不一致， 完全保留現有 v3.16 架構的穩定性。 
+
+
