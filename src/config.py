@@ -137,6 +137,22 @@ class Config:
     AUTOENCODER_TRAINING_ENABLED: bool = os.getenv("AUTOENCODER_TRAINING_ENABLED", "true").lower() == "true"
     FEATURE_DISCOVERY_ENABLED: bool = os.getenv("FEATURE_DISCOVERY_ENABLED", "true").lower() == "true"
     
+    # ===== v3.16.0 性能模块配置 =====
+    # 市场状态转换预测器
+    ENABLE_MARKET_REGIME_PREDICTION: bool = os.getenv('ENABLE_MARKET_REGIME_PREDICTION', 'false').lower() == 'true'
+    REGIME_PREDICTION_THRESHOLD: float = float(os.getenv('REGIME_PREDICTION_THRESHOLD', '0.65'))
+    REGIME_PREDICTION_LOOKBACK: int = int(os.getenv('REGIME_PREDICTION_LOOKBACK', '10'))
+    
+    # 动态特征生成器
+    ENABLE_DYNAMIC_FEATURES: bool = os.getenv('ENABLE_DYNAMIC_FEATURES', 'false').lower() == 'true'
+    DYNAMIC_FEATURE_MIN_SHARPE: float = float(os.getenv('DYNAMIC_FEATURE_MIN_SHARPE', '0.3'))
+    DYNAMIC_FEATURE_MAX_COUNT: int = int(os.getenv('DYNAMIC_FEATURE_MAX_COUNT', '15'))
+    
+    # 流动性狩猎器
+    ENABLE_LIQUIDITY_HUNTING: bool = os.getenv('ENABLE_LIQUIDITY_HUNTING', 'false').lower() == 'true'
+    LIQUIDITY_HUNT_CONFIDENCE_THRESHOLD: float = float(os.getenv('LIQUIDITY_HUNT_CONFIDENCE_THRESHOLD', '0.7'))
+    LIQUIDITY_SLIPPAGE_TOLERANCE: float = float(os.getenv('LIQUIDITY_SLIPPAGE_TOLERANCE', '0.0015'))
+    
     # 緩存配置（根據時間框架優化）
     # K線緩存時間應該匹配時間框架的持續時間
     CACHE_TTL_KLINES_1H: int = 3600    # 1小時 K線緩存1小時
