@@ -35,9 +35,10 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
     🔥 v3.16.2 關鍵修復：
     - 必須是模塊級別函數（不能是類方法）
     - 避免序列化類時包含模塊級 logger（含 thread.lock）
+    - 輸入數據已轉換為純 Python 字典（無 DataFrame）
     
     Args:
-        symbol_data: {'symbol': str, 'data': Dict}
+        symbol_data: {'symbol': str, 'data': Dict[str, Dict]}
         model_path: ML 模型路徑（可選）
         config_dict: 配置字典（純數據）
     
@@ -46,10 +47,23 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
     """
     # 🔥 子進程內部創建獨立 logger
     import logging
+    import pandas as pd
     proc_logger = logging.getLogger(f"{__name__}.subprocess")
     
     try:
-        # 🔥 添加記憶體監控
+        # 🔥 步驟1：重建 DataFrame（從純字典恢復）
+        reconstructed_data = {}
+        for tf_key, tf_dict in symbol_data['data'].items():
+            if tf_dict is not None and 'data' in tf_dict:
+                # 從字典重建 DataFrame
+                df = pd.DataFrame(tf_dict['data'])
+                if 'index' in tf_dict:
+                    df.index = tf_dict['index']
+                reconstructed_data[tf_key] = df
+            else:
+                reconstructed_data[tf_key] = None
+        
+        # 🔥 步驟2：添加記憶體監控
         process = None
         try:
             import psutil
@@ -58,29 +72,26 @@ def _analyze_single_symbol_worker(symbol_data: Dict, model_path: Optional[str], 
         except ImportError:
             initial_memory = None
         
-        # 重建配置
+        # 🔥 步驟3：重建配置
         from src.config import Config
         config = Config()
         for key, value in config_dict.items():
             if hasattr(config, key):
                 setattr(config, key, value)
         
-        # 嘗試使用自我學習交易員
+        # 🔥 步驟4：嘗試使用自我學習交易員
         try:
             from src.strategies.self_learning_trader import SelfLearningTrader
             
-            trader = SelfLearningTrader(
-                config=config,
-                model_path=model_path
-            )
-            result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
+            trader = SelfLearningTrader(config=config)
+            result = trader.analyze(symbol_data['symbol'], reconstructed_data)
             
         except Exception as e:
             # 🔥 降級到 ICT 策略
             proc_logger.warning(f"⚠️ 自我學習交易員不可用 ({e})，使用降級策略")
             from src.strategies.ict_strategy import ICTStrategy
             trader = ICTStrategy()
-            result = trader.analyze(symbol_data['symbol'], symbol_data['data'])
+            result = trader.analyze(symbol_data['symbol'], reconstructed_data)
         
         # 🔥 記憶體監控
         if initial_memory is not None and process is not None:
@@ -165,17 +176,40 @@ class ParallelAnalyzer:
                 if isinstance(multi_tf_data, Exception) or multi_tf_data is None:
                     continue
                 
+                # 確保是字典類型
+                if not isinstance(multi_tf_data, dict):
+                    continue
+                
                 symbol = symbols_data[i]['symbol']
+                
+                # 🔥 v3.16.2 關鍵修復：將 DataFrame 轉換為純字典（避免序列化問題）
+                # DataFrame 在某些環境下序列化可能失敗，轉換為純 Python 類型最安全
+                serializable_data = {}
+                for tf_key, df in multi_tf_data.items():
+                    if df is not None and hasattr(df, 'to_dict'):
+                        # 轉換為純字典格式
+                        serializable_data[tf_key] = {
+                            'data': df.to_dict('list'),  # 轉換為列表字典
+                            'index': df.index.tolist() if hasattr(df.index, 'tolist') else list(df.index)
+                        }
+                    else:
+                        serializable_data[tf_key] = None
+                
                 symbol_data = {
                     'symbol': symbol,
-                    'data': multi_tf_data
+                    'data': serializable_data  # 純 Python 字典
                 }
                 
-                # 🔥 使用安全提交（自動處理 BrokenProcessPool）
-                # 创建可序列化的配置字典
+                # 🔥 創建可序列化的配置字典（只包含基本類型）
                 config_dict = {
-                    key: value for key, value in vars(self.config).items()
-                    if not key.startswith('_') and not callable(value)
+                    'MIN_CONFIDENCE': self.config.MIN_CONFIDENCE,
+                    'MAX_LEVERAGE': self.config.MAX_LEVERAGE,
+                    'MIN_LEVERAGE': self.config.MIN_LEVERAGE,
+                    'BASE_MARGIN_PCT': self.config.BASE_MARGIN_PCT,
+                    'MIN_MARGIN_PCT': self.config.MIN_MARGIN_PCT,
+                    'MAX_MARGIN_PCT': self.config.MAX_MARGIN_PCT,
+                    'RISK_REWARD_RATIO': self.config.RISK_REWARD_RATIO,
+                    'TRADING_ENABLED': self.config.TRADING_ENABLED
                 }
                 
                 # 🔥 v3.16.2: 使用模塊級函數（避免序列化類）
