@@ -34,6 +34,7 @@ from src.monitoring.performance_monitor import PerformanceMonitor
 from src.ml.predictor import MLPredictor
 from src.ml.data_archiver import DataArchiver
 from src.services.position_monitor import PositionMonitor
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ class TradingBot:
         self.data_service: Optional[DataService] = None
         self.smart_data_manager: Optional[SmartDataManager] = None
         self.parallel_analyzer: Optional[ParallelAnalyzer] = None
-        self.strategy: Optional[ICTStrategy] = None
+        self.strategy: Optional[Any] = None
         self.risk_manager: Optional[RiskManager] = None
         self.expectancy_calculator: Optional[ExpectancyCalculator] = None
         self.data_archiver: Optional[DataArchiver] = None
