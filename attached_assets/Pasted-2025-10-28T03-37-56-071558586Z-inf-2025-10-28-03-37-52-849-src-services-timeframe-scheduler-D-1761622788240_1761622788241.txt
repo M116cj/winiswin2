@@ -1,0 +1,1001 @@
+2025-10-28T03:37:56.071558586Z [inf]  2025-10-28 03:37:52,849 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.071565649Z [inf]  2025-10-28 03:37:52,849 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.071572008Z [inf]  2025-10-28 03:37:52,850 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.071579496Z [inf]  2025-10-28 03:37:52,850 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.071609601Z [inf]  2025-10-28 03:37:52,850 - src.services.data_service - DEBUG - 💾 首次拉取: EVAAUSDT 5m
+2025-10-28T03:37:56.071614937Z [inf]  2025-10-28 03:37:52,853 - src.services.data_service - DEBUG - 💾 緩存 EVAAUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.073545224Z [inf]  2025-10-28 03:37:52,856 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073552274Z [inf]  2025-10-28 03:37:52,857 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073560441Z [inf]  2025-10-28 03:37:52,858 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073568079Z [inf]  2025-10-28 03:37:52,858 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073574772Z [inf]  2025-10-28 03:37:52,858 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073581897Z [inf]  2025-10-28 03:37:52,859 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073588276Z [inf]  2025-10-28 03:37:52,859 - src.services.data_service - DEBUG - 💾 首次拉取: BCHUSDT 5m
+2025-10-28T03:37:56.073594398Z [inf]  2025-10-28 03:37:52,862 - src.services.data_service - DEBUG - 💾 緩存 BCHUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.073601495Z [inf]  2025-10-28 03:37:52,862 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073607285Z [inf]  2025-10-28 03:37:52,863 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073613700Z [inf]  2025-10-28 03:37:52,863 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073619246Z [inf]  2025-10-28 03:37:52,864 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073626056Z [inf]  2025-10-28 03:37:52,864 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073631867Z [inf]  2025-10-28 03:37:52,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.073636992Z [inf]  2025-10-28 03:37:52,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074807384Z [inf]  2025-10-28 03:37:52,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074817523Z [inf]  2025-10-28 03:37:52,866 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074819245Z [inf]  2025-10-28 03:37:52,876 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074827838Z [inf]  2025-10-28 03:37:52,871 - src.services.data_service - DEBUG - 💾 緩存 AAVEUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.074829638Z [inf]  2025-10-28 03:37:52,866 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074840279Z [inf]  2025-10-28 03:37:52,867 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074841288Z [inf]  2025-10-28 03:37:52,871 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074853535Z [inf]  2025-10-28 03:37:52,867 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074853678Z [inf]  2025-10-28 03:37:52,871 - src.services.data_service - DEBUG - 💾 首次拉取: ZENUSDT 5m
+2025-10-28T03:37:56.074863869Z [inf]  2025-10-28 03:37:52,874 - src.services.data_service - DEBUG - 💾 緩存 ZENUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.074868439Z [inf]  2025-10-28 03:37:52,868 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074873663Z [inf]  2025-10-28 03:37:52,874 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074882611Z [inf]  2025-10-28 03:37:52,868 - src.services.data_service - DEBUG - 💾 首次拉取: AAVEUSDT 5m
+2025-10-28T03:37:56.074883876Z [inf]  2025-10-28 03:37:52,875 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.074892277Z [inf]  2025-10-28 03:37:52,875 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076739381Z [inf]  2025-10-28 03:37:52,876 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076745564Z [inf]  2025-10-28 03:37:52,876 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076750827Z [inf]  2025-10-28 03:37:52,877 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076751623Z [inf]  2025-10-28 03:37:52,882 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076755763Z [inf]  2025-10-28 03:37:52,878 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076761385Z [inf]  2025-10-28 03:37:52,878 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076763771Z [inf]  2025-10-28 03:37:52,883 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076766615Z [inf]  2025-10-28 03:37:52,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076773059Z [inf]  2025-10-28 03:37:52,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076773720Z [inf]  2025-10-28 03:37:52,883 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076778034Z [inf]  2025-10-28 03:37:52,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076782040Z [inf]  2025-10-28 03:37:52,883 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076784251Z [inf]  2025-10-28 03:37:52,880 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076790143Z [inf]  2025-10-28 03:37:52,884 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.076791082Z [inf]  2025-10-28 03:37:52,880 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078472230Z [inf]  2025-10-28 03:37:52,884 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078480222Z [inf]  2025-10-28 03:37:52,885 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078485669Z [inf]  2025-10-28 03:37:52,885 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078491381Z [inf]  2025-10-28 03:37:52,886 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078497212Z [inf]  2025-10-28 03:37:52,886 - src.services.data_service - DEBUG - 💾 首次拉取: DASHUSDT 5m
+2025-10-28T03:37:56.078502791Z [inf]  2025-10-28 03:37:52,889 - src.services.data_service - DEBUG - 💾 緩存 DASHUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.078507953Z [inf]  2025-10-28 03:37:52,889 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078512976Z [inf]  2025-10-28 03:37:52,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078518557Z [inf]  2025-10-28 03:37:52,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078523851Z [inf]  2025-10-28 03:37:52,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078530511Z [inf]  2025-10-28 03:37:52,891 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078535676Z [inf]  2025-10-28 03:37:52,891 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078540606Z [inf]  2025-10-28 03:37:52,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078545745Z [inf]  2025-10-28 03:37:52,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.078552464Z [inf]  2025-10-28 03:37:52,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079809485Z [inf]  2025-10-28 03:37:52,897 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079818141Z [inf]  2025-10-28 03:37:52,898 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079829859Z [inf]  2025-10-28 03:37:52,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079840316Z [inf]  2025-10-28 03:37:52,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079850192Z [inf]  2025-10-28 03:37:52,894 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079853762Z [inf]  2025-10-28 03:37:52,898 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079863087Z [inf]  2025-10-28 03:37:52,894 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079865234Z [inf]  2025-10-28 03:37:52,898 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079873056Z [inf]  2025-10-28 03:37:52,899 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079877498Z [inf]  2025-10-28 03:37:52,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079884015Z [inf]  2025-10-28 03:37:52,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079891214Z [inf]  2025-10-28 03:37:52,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079898073Z [inf]  2025-10-28 03:37:52,896 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079904215Z [inf]  2025-10-28 03:37:52,896 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.079909723Z [inf]  2025-10-28 03:37:52,897 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082524948Z [inf]  2025-10-28 03:37:52,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082533919Z [inf]  2025-10-28 03:37:52,899 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082542245Z [inf]  2025-10-28 03:37:52,900 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082551522Z [inf]  2025-10-28 03:37:52,900 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082562215Z [inf]  2025-10-28 03:37:52,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082564475Z [inf]  2025-10-28 03:37:52,900 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082576725Z [inf]  2025-10-28 03:37:52,901 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082577749Z [inf]  2025-10-28 03:37:52,907 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082587784Z [inf]  2025-10-28 03:37:52,901 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082594358Z [inf]  2025-10-28 03:37:52,902 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082599490Z [inf]  2025-10-28 03:37:52,902 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082604370Z [inf]  2025-10-28 03:37:52,902 - src.services.data_service - DEBUG - 💾 首次拉取: TRBUSDT 5m
+2025-10-28T03:37:56.082610069Z [inf]  2025-10-28 03:37:52,905 - src.services.data_service - DEBUG - 💾 緩存 TRBUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.082614944Z [inf]  2025-10-28 03:37:52,905 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.082620025Z [inf]  2025-10-28 03:37:52,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084316005Z [inf]  2025-10-28 03:37:52,907 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084324461Z [inf]  2025-10-28 03:37:52,907 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084327814Z [inf]  2025-10-28 03:37:52,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084332084Z [inf]  2025-10-28 03:37:52,908 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084336574Z [inf]  2025-10-28 03:37:52,908 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084341968Z [inf]  2025-10-28 03:37:52,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084347082Z [inf]  2025-10-28 03:37:52,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084353296Z [inf]  2025-10-28 03:37:52,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084358224Z [inf]  2025-10-28 03:37:52,910 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084362492Z [inf]  2025-10-28 03:37:52,910 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084367798Z [inf]  2025-10-28 03:37:52,910 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084372753Z [inf]  2025-10-28 03:37:52,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084377166Z [inf]  2025-10-28 03:37:52,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084382048Z [inf]  2025-10-28 03:37:52,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.084386484Z [inf]  2025-10-28 03:37:52,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086066803Z [inf]  2025-10-28 03:37:52,912 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086082903Z [inf]  2025-10-28 03:37:52,912 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086091700Z [inf]  2025-10-28 03:37:52,912 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086099763Z [inf]  2025-10-28 03:37:52,912 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086107928Z [inf]  2025-10-28 03:37:52,912 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086113832Z [inf]  2025-10-28 03:37:52,913 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086120220Z [inf]  2025-10-28 03:37:52,913 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086127672Z [inf]  2025-10-28 03:37:52,913 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086134726Z [inf]  2025-10-28 03:37:52,913 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086141339Z [inf]  2025-10-28 03:37:52,913 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086146922Z [inf]  2025-10-28 03:37:52,914 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086153235Z [inf]  2025-10-28 03:37:52,914 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086159818Z [inf]  2025-10-28 03:37:52,914 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086166946Z [inf]  2025-10-28 03:37:52,914 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.086174326Z [inf]  2025-10-28 03:37:52,914 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087730484Z [inf]  2025-10-28 03:37:52,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087742683Z [inf]  2025-10-28 03:37:52,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087751370Z [inf]  2025-10-28 03:37:52,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087757991Z [inf]  2025-10-28 03:37:52,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087766581Z [inf]  2025-10-28 03:37:52,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087772538Z [inf]  2025-10-28 03:37:52,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087778440Z [inf]  2025-10-28 03:37:52,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087783837Z [inf]  2025-10-28 03:37:52,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087788930Z [inf]  2025-10-28 03:37:52,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087795538Z [inf]  2025-10-28 03:37:52,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087804403Z [inf]  2025-10-28 03:37:52,917 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087809645Z [inf]  2025-10-28 03:37:52,917 - src.services.data_service - DEBUG - 💾 首次拉取: XMRUSDT 5m
+2025-10-28T03:37:56.087815127Z [inf]  2025-10-28 03:37:52,920 - src.services.data_service - DEBUG - 💾 緩存 XMRUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.087820263Z [inf]  2025-10-28 03:37:52,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.087826782Z [inf]  2025-10-28 03:37:52,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089765149Z [inf]  2025-10-28 03:37:52,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089765383Z [inf]  2025-10-28 03:37:52,920 - src.services.data_service - DEBUG - 💾 首次拉取: OGUSDT 5m
+2025-10-28T03:37:56.089776283Z [inf]  2025-10-28 03:37:52,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089778359Z [inf]  2025-10-28 03:37:52,923 - src.services.data_service - DEBUG - 💾 緩存 OGUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.089784676Z [inf]  2025-10-28 03:37:52,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089787797Z [inf]  2025-10-28 03:37:52,923 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089792643Z [inf]  2025-10-28 03:37:52,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089795540Z [inf]  2025-10-28 03:37:52,923 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089802117Z [inf]  2025-10-28 03:37:52,923 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089810814Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089818166Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089826649Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089833444Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089840134Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.089846442Z [inf]  2025-10-28 03:37:52,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091226398Z [inf]  2025-10-28 03:37:52,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091227317Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091241254Z [inf]  2025-10-28 03:37:52,926 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091243047Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091256126Z [inf]  2025-10-28 03:37:52,926 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091256367Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091268411Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091270168Z [inf]  2025-10-28 03:37:52,926 - src.services.data_service - DEBUG - 💾 首次拉取: EULUSDT 5m
+2025-10-28T03:37:56.091282674Z [inf]  2025-10-28 03:37:52,929 - src.services.data_service - DEBUG - 💾 緩存 EULUSDT 5m，動態TTL=60秒
+2025-10-28T03:37:56.091284715Z [inf]  2025-10-28 03:37:52,931 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091290750Z [inf]  2025-10-28 03:37:52,929 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091297283Z [inf]  2025-10-28 03:37:52,929 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091305853Z [inf]  2025-10-28 03:37:52,929 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091312282Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.091319474Z [inf]  2025-10-28 03:37:52,930 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092679585Z [inf]  2025-10-28 03:37:52,931 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092687920Z [inf]  2025-10-28 03:37:52,933 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092696645Z [inf]  2025-10-28 03:37:52,933 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092703938Z [inf]  2025-10-28 03:37:52,934 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092711768Z [inf]  2025-10-28 03:37:52,934 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092718280Z [inf]  2025-10-28 03:37:52,934 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092724864Z [inf]  2025-10-28 03:37:52,934 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092733370Z [inf]  2025-10-28 03:37:52,934 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092740424Z [inf]  2025-10-28 03:37:52,935 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092748993Z [inf]  2025-10-28 03:37:52,935 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092755296Z [inf]  2025-10-28 03:37:52,935 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092761725Z [inf]  2025-10-28 03:37:52,935 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092767465Z [inf]  2025-10-28 03:37:52,935 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092775067Z [inf]  2025-10-28 03:37:52,936 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.092782350Z [inf]  2025-10-28 03:37:52,936 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093922078Z [inf]  2025-10-28 03:37:52,947 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XRPUSDT 5m
+2025-10-28T03:37:56.093931156Z [inf]  2025-10-28 03:37:52,936 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093936738Z [inf]  2025-10-28 03:37:52,948 - src.services.data_service - DEBUG - 💾 緩存 XRPUSDT 5m，動態TTL=280秒
+2025-10-28T03:37:56.093942312Z [inf]  2025-10-28 03:37:52,936 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093950222Z [inf]  2025-10-28 03:37:53,045 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PENDLEUSDT 5m
+2025-10-28T03:37:56.093952398Z [inf]  2025-10-28 03:37:52,937 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093962135Z [inf]  2025-10-28 03:37:52,937 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093970085Z [inf]  2025-10-28 03:37:52,937 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093975816Z [inf]  2025-10-28 03:37:52,938 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093978097Z [inf]  2025-10-28 03:37:53,046 - src.services.data_service - DEBUG - 💾 緩存 PENDLEUSDT 5m，動態TTL=269秒
+2025-10-28T03:37:56.093983895Z [inf]  2025-10-28 03:37:52,938 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093995928Z [inf]  2025-10-28 03:37:52,938 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.093999162Z [inf]  2025-10-28 03:37:53,098 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DOGEUSDT 5m
+2025-10-28T03:37:56.094003500Z [inf]  2025-10-28 03:37:52,938 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:37:56.094008795Z [inf]  2025-10-28 03:37:53,098 - src.services.data_service - DEBUG - 💾 緩存 DOGEUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.095615376Z [inf]  2025-10-28 03:37:53,099 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MELANIAUSDT 5m
+2025-10-28T03:37:56.095615488Z [inf]  2025-10-28 03:37:53,103 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ADAUSDT 5m
+2025-10-28T03:37:56.095622472Z [inf]  2025-10-28 03:37:53,099 - src.services.data_service - DEBUG - 💾 緩存 MELANIAUSDT 5m，動態TTL=278秒
+2025-10-28T03:37:56.095626652Z [inf]  2025-10-28 03:37:53,103 - src.services.data_service - DEBUG - 💾 緩存 ADAUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.095637305Z [inf]  2025-10-28 03:37:53,099 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AVAXUSDT 5m
+2025-10-28T03:37:56.095642766Z [inf]  2025-10-28 03:37:53,100 - src.services.data_service - DEBUG - 💾 緩存 AVAXUSDT 5m，動態TTL=92秒
+2025-10-28T03:37:56.095851651Z [inf]  2025-10-28 03:37:53,101 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AIAUSDT 5m
+2025-10-28T03:37:56.095859477Z [inf]  2025-10-28 03:37:53,101 - src.services.data_service - DEBUG - 💾 緩存 AIAUSDT 5m，動態TTL=227秒
+2025-10-28T03:37:56.095864343Z [inf]  2025-10-28 03:37:53,102 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: APRUSDT 5m
+2025-10-28T03:37:56.095869700Z [inf]  2025-10-28 03:37:53,102 - src.services.data_service - DEBUG - 💾 緩存 APRUSDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.095874217Z [inf]  2025-10-28 03:37:53,102 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WLDUSDT 5m
+2025-10-28T03:37:56.095878563Z [inf]  2025-10-28 03:37:53,102 - src.services.data_service - DEBUG - 💾 緩存 WLDUSDT 5m，動態TTL=290秒
+2025-10-28T03:37:56.095882466Z [inf]  2025-10-28 03:37:53,103 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: VIRTUALUSDT 5m
+2025-10-28T03:37:56.095886440Z [inf]  2025-10-28 03:37:53,103 - src.services.data_service - DEBUG - 💾 緩存 VIRTUALUSDT 5m，動態TTL=235秒
+2025-10-28T03:37:56.097352620Z [inf]  2025-10-28 03:37:53,103 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XLMUSDT 5m
+2025-10-28T03:37:56.097354099Z [inf]  2025-10-28 03:37:53,106 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ASTERUSDT 5m
+2025-10-28T03:37:56.097362184Z [inf]  2025-10-28 03:37:53,106 - src.services.data_service - DEBUG - 💾 緩存 ASTERUSDT 5m，動態TTL=288秒
+2025-10-28T03:37:56.097363192Z [inf]  2025-10-28 03:37:53,104 - src.services.data_service - DEBUG - 💾 緩存 XLMUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.097369530Z [inf]  2025-10-28 03:37:53,104 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PUMPUSDT 5m
+2025-10-28T03:37:56.097375945Z [inf]  2025-10-28 03:37:53,104 - src.services.data_service - DEBUG - 💾 緩存 PUMPUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.097381922Z [inf]  2025-10-28 03:37:53,104 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HBARUSDT 5m
+2025-10-28T03:37:56.097388189Z [inf]  2025-10-28 03:37:53,105 - src.services.data_service - DEBUG - 💾 緩存 HBARUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.097395065Z [inf]  2025-10-28 03:37:53,105 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SUIUSDT 5m
+2025-10-28T03:37:56.097400748Z [inf]  2025-10-28 03:37:53,105 - src.services.data_service - DEBUG - 💾 緩存 SUIUSDT 5m，動態TTL=276秒
+2025-10-28T03:37:56.097408355Z [inf]  2025-10-28 03:37:53,105 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000PEPEUSDT 5m
+2025-10-28T03:37:56.097413806Z [inf]  2025-10-28 03:37:53,105 - src.services.data_service - DEBUG - 💾 緩存 1000PEPEUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.097420196Z [inf]  2025-10-28 03:37:53,106 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MEUSDT 5m
+2025-10-28T03:37:56.097425458Z [inf]  2025-10-28 03:37:53,106 - src.services.data_service - DEBUG - 💾 緩存 MEUSDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.098862990Z [inf]  2025-10-28 03:37:53,111 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LINKUSDT 5m
+2025-10-28T03:37:56.098876884Z [inf]  2025-10-28 03:37:53,111 - src.services.data_service - DEBUG - 💾 緩存 LINKUSDT 5m，動態TTL=129秒
+2025-10-28T03:37:56.098885589Z [inf]  2025-10-28 03:37:53,111 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DIAUSDT 5m
+2025-10-28T03:37:56.098894506Z [inf]  2025-10-28 03:37:53,112 - src.services.data_service - DEBUG - 💾 緩存 DIAUSDT 5m，動態TTL=250秒
+2025-10-28T03:37:56.098902176Z [inf]  2025-10-28 03:37:53,112 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XPLUSDT 5m
+2025-10-28T03:37:56.098909493Z [inf]  2025-10-28 03:37:53,112 - src.services.data_service - DEBUG - 💾 緩存 XPLUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.098918383Z [inf]  2025-10-28 03:37:53,112 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WLFIUSDT 5m
+2025-10-28T03:37:56.098926202Z [inf]  2025-10-28 03:37:53,113 - src.services.data_service - DEBUG - 💾 緩存 WLFIUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.098934016Z [inf]  2025-10-28 03:37:53,113 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: UBUSDT 5m
+2025-10-28T03:37:56.098943381Z [inf]  2025-10-28 03:37:53,113 - src.services.data_service - DEBUG - 💾 緩存 UBUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.098951984Z [inf]  2025-10-28 03:37:53,113 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OPUSDT 5m
+2025-10-28T03:37:56.098960605Z [inf]  2025-10-28 03:37:53,113 - src.services.data_service - DEBUG - 💾 緩存 OPUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.098967951Z [inf]  2025-10-28 03:37:53,114 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FFUSDT 5m
+2025-10-28T03:37:56.098976549Z [inf]  2025-10-28 03:37:53,114 - src.services.data_service - DEBUG - 💾 緩存 FFUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.100937689Z [inf]  2025-10-28 03:37:53,114 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: COMMONUSDT 5m
+2025-10-28T03:37:56.100947095Z [inf]  2025-10-28 03:37:53,114 - src.services.data_service - DEBUG - 💾 緩存 COMMONUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.100966244Z [inf]  2025-10-28 03:37:53,114 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BLESSUSDT 5m
+2025-10-28T03:37:56.100971221Z [inf]  2025-10-28 03:37:53,115 - src.services.data_service - DEBUG - 💾 緩存 BLESSUSDT 5m，動態TTL=284秒
+2025-10-28T03:37:56.100976010Z [inf]  2025-10-28 03:37:53,115 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000BONKUSDT 5m
+2025-10-28T03:37:56.100981141Z [inf]  2025-10-28 03:37:53,115 - src.services.data_service - DEBUG - 💾 緩存 1000BONKUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.100986048Z [inf]  2025-10-28 03:37:53,115 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PENGUUSDT 5m
+2025-10-28T03:37:56.100991029Z [inf]  2025-10-28 03:37:53,115 - src.services.data_service - DEBUG - 💾 緩存 PENGUUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.100995741Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AIXBTUSDT 5m
+2025-10-28T03:37:56.101001539Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - 💾 緩存 AIXBTUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.101005693Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DEGOUSDT 5m
+2025-10-28T03:37:56.101009550Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - 💾 緩存 DEGOUSDT 5m，動態TTL=258秒
+2025-10-28T03:37:56.101013588Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AVNTUSDT 5m
+2025-10-28T03:37:56.101017883Z [inf]  2025-10-28 03:37:53,116 - src.services.data_service - DEBUG - 💾 緩存 AVNTUSDT 5m，動態TTL=275秒
+2025-10-28T03:37:56.102400863Z [inf]  2025-10-28 03:37:53,119 - src.services.data_service - DEBUG - 💾 緩存 HUSDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.102405247Z [inf]  2025-10-28 03:37:53,117 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TRUMPUSDT 5m
+2025-10-28T03:37:56.102413705Z [inf]  2025-10-28 03:37:53,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ZORAUSDT 5m
+2025-10-28T03:37:56.102418249Z [inf]  2025-10-28 03:37:53,117 - src.services.data_service - DEBUG - 💾 緩存 TRUMPUSDT 5m，動態TTL=157秒
+2025-10-28T03:37:56.102425499Z [inf]  2025-10-28 03:37:53,119 - src.services.data_service - DEBUG - 💾 緩存 ZORAUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.102428249Z [inf]  2025-10-28 03:37:53,117 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ETHFIUSDT 5m
+2025-10-28T03:37:56.102434830Z [inf]  2025-10-28 03:37:53,117 - src.services.data_service - DEBUG - 💾 緩存 ETHFIUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.102446302Z [inf]  2025-10-28 03:37:53,117 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 4USDT 5m
+2025-10-28T03:37:56.102452327Z [inf]  2025-10-28 03:37:53,118 - src.services.data_service - DEBUG - 💾 緩存 4USDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.102458609Z [inf]  2025-10-28 03:37:53,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RVVUSDT 5m
+2025-10-28T03:37:56.102467929Z [inf]  2025-10-28 03:37:53,118 - src.services.data_service - DEBUG - 💾 緩存 RVVUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.102474972Z [inf]  2025-10-28 03:37:53,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RIVERUSDT 5m
+2025-10-28T03:37:56.102480618Z [inf]  2025-10-28 03:37:53,118 - src.services.data_service - DEBUG - 💾 緩存 RIVERUSDT 5m，動態TTL=127秒
+2025-10-28T03:37:56.102485758Z [inf]  2025-10-28 03:37:53,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HUSDT 5m
+2025-10-28T03:37:56.103897320Z [inf]  2025-10-28 03:37:53,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 42USDT 5m
+2025-10-28T03:37:56.103915310Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - 💾 緩存 42USDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.103927428Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RECALLUSDT 5m
+2025-10-28T03:37:56.103937256Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - 💾 緩存 RECALLUSDT 5m，動態TTL=265秒
+2025-10-28T03:37:56.103948004Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ENSOUSDT 5m
+2025-10-28T03:37:56.103961538Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - 💾 緩存 ENSOUSDT 5m，動態TTL=257秒
+2025-10-28T03:37:56.103971289Z [inf]  2025-10-28 03:37:53,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: EIGENUSDT 5m
+2025-10-28T03:37:56.103981024Z [inf]  2025-10-28 03:37:53,121 - src.services.data_service - DEBUG - 💾 緩存 EIGENUSDT 5m，動態TTL=285秒
+2025-10-28T03:37:56.103990114Z [inf]  2025-10-28 03:37:53,127 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FARTCOINUSDT 5m
+2025-10-28T03:37:56.103999937Z [inf]  2025-10-28 03:37:53,127 - src.services.data_service - DEBUG - 💾 緩存 FARTCOINUSDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.104011460Z [inf]  2025-10-28 03:37:53,128 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ENAUSDT 5m
+2025-10-28T03:37:56.104027440Z [inf]  2025-10-28 03:37:53,128 - src.services.data_service - DEBUG - 💾 緩存 ENAUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.104038956Z [inf]  2025-10-28 03:37:53,128 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FILUSDT 5m
+2025-10-28T03:37:56.104046274Z [inf]  2025-10-28 03:37:53,128 - src.services.data_service - DEBUG - 💾 緩存 FILUSDT 5m，動態TTL=281秒
+2025-10-28T03:37:56.105644549Z [inf]  2025-10-28 03:37:53,129 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DOTUSDT 5m
+2025-10-28T03:37:56.105650842Z [inf]  2025-10-28 03:37:53,129 - src.services.data_service - DEBUG - 💾 緩存 DOTUSDT 5m，動態TTL=273秒
+2025-10-28T03:37:56.105656461Z [inf]  2025-10-28 03:37:53,129 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XPINUSDT 5m
+2025-10-28T03:37:56.105661581Z [inf]  2025-10-28 03:37:53,129 - src.services.data_service - DEBUG - 💾 緩存 XPINUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.105665599Z [inf]  2025-10-28 03:37:53,129 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TRXUSDT 5m
+2025-10-28T03:37:56.105672680Z [inf]  2025-10-28 03:37:53,130 - src.services.data_service - DEBUG - 💾 緩存 TRXUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.105679117Z [inf]  2025-10-28 03:37:53,130 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: APTUSDT 5m
+2025-10-28T03:37:56.105684303Z [inf]  2025-10-28 03:37:53,130 - src.services.data_service - DEBUG - 💾 緩存 APTUSDT 5m，動態TTL=272秒
+2025-10-28T03:37:56.105689096Z [inf]  2025-10-28 03:37:53,130 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: YBUSDT 5m
+2025-10-28T03:37:56.105694128Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - 💾 緩存 YBUSDT 5m，動態TTL=277秒
+2025-10-28T03:37:56.105698426Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BLUAIUSDT 5m
+2025-10-28T03:37:56.105703525Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - 💾 緩存 BLUAIUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.105709809Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ARBUSDT 5m
+2025-10-28T03:37:56.105714471Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - 💾 緩存 ARBUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.107467017Z [inf]  2025-10-28 03:37:53,131 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SNXUSDT 5m
+2025-10-28T03:37:56.107469545Z [inf]  2025-10-28 03:37:53,134 - src.services.data_service - DEBUG - 💾 緩存 INJUSDT 5m，動態TTL=218秒
+2025-10-28T03:37:56.107476874Z [inf]  2025-10-28 03:37:53,132 - src.services.data_service - DEBUG - 💾 緩存 SNXUSDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.107483301Z [inf]  2025-10-28 03:37:53,132 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MYROUSDT 5m
+2025-10-28T03:37:56.107490327Z [inf]  2025-10-28 03:37:53,132 - src.services.data_service - DEBUG - 💾 緩存 MYROUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.107498261Z [inf]  2025-10-28 03:37:53,132 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TURTLEUSDT 5m
+2025-10-28T03:37:56.107504921Z [inf]  2025-10-28 03:37:53,132 - src.services.data_service - DEBUG - 💾 緩存 TURTLEUSDT 5m，動態TTL=289秒
+2025-10-28T03:37:56.107511320Z [inf]  2025-10-28 03:37:53,133 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: IPUSDT 5m
+2025-10-28T03:37:56.107517048Z [inf]  2025-10-28 03:37:53,133 - src.services.data_service - DEBUG - 💾 緩存 IPUSDT 5m，動態TTL=246秒
+2025-10-28T03:37:56.107529190Z [inf]  2025-10-28 03:37:53,133 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LINEAUSDT 5m
+2025-10-28T03:37:56.107534257Z [inf]  2025-10-28 03:37:53,133 - src.services.data_service - DEBUG - 💾 緩存 LINEAUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.107539721Z [inf]  2025-10-28 03:37:53,133 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BIOUSDT 5m
+2025-10-28T03:37:56.107546239Z [inf]  2025-10-28 03:37:53,134 - src.services.data_service - DEBUG - 💾 緩存 BIOUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.107552031Z [inf]  2025-10-28 03:37:53,134 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: INJUSDT 5m
+2025-10-28T03:37:56.109995785Z [inf]  2025-10-28 03:37:53,134 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FUSDT 5m
+2025-10-28T03:37:56.110006805Z [inf]  2025-10-28 03:37:53,134 - src.services.data_service - DEBUG - 💾 緩存 FUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.110015899Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ONDOUSDT 5m
+2025-10-28T03:37:56.110023937Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - 💾 緩存 ONDOUSDT 5m，動態TTL=292秒
+2025-10-28T03:37:56.110031341Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: JUPUSDT 5m
+2025-10-28T03:37:56.110040085Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - 💾 緩存 JUPUSDT 5m，動態TTL=292秒
+2025-10-28T03:37:56.110047738Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: METUSDT 5m
+2025-10-28T03:37:56.110055281Z [inf]  2025-10-28 03:37:53,135 - src.services.data_service - DEBUG - 💾 緩存 METUSDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.110064317Z [inf]  2025-10-28 03:37:53,136 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CRVUSDT 5m
+2025-10-28T03:37:56.110072021Z [inf]  2025-10-28 03:37:53,136 - src.services.data_service - DEBUG - 💾 緩存 CRVUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.110080277Z [inf]  2025-10-28 03:37:53,136 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OLUSDT 5m
+2025-10-28T03:37:56.110088045Z [inf]  2025-10-28 03:37:53,136 - src.services.data_service - DEBUG - 💾 緩存 OLUSDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.110096315Z [inf]  2025-10-28 03:37:53,136 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000CHEEMSUSDT 5m
+2025-10-28T03:37:56.110104689Z [inf]  2025-10-28 03:37:53,137 - src.services.data_service - DEBUG - 💾 緩存 1000CHEEMSUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.111612081Z [inf]  2025-10-28 03:37:53,138 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MAVIAUSDT 5m
+2025-10-28T03:37:56.111612135Z [inf]  2025-10-28 03:37:53,137 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: KAITOUSDT 5m
+2025-10-28T03:37:56.111620735Z [inf]  2025-10-28 03:37:53,138 - src.services.data_service - DEBUG - 💾 緩存 MAVIAUSDT 5m，動態TTL=287秒
+2025-10-28T03:37:56.111623229Z [inf]  2025-10-28 03:37:53,137 - src.services.data_service - DEBUG - 💾 緩存 KAITOUSDT 5m，動態TTL=290秒
+2025-10-28T03:37:56.111630268Z [inf]  2025-10-28 03:37:53,139 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CAKEUSDT 5m
+2025-10-28T03:37:56.111630426Z [inf]  2025-10-28 03:37:53,137 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ZBTUSDT 5m
+2025-10-28T03:37:56.111636182Z [inf]  2025-10-28 03:37:53,139 - src.services.data_service - DEBUG - 💾 緩存 CAKEUSDT 5m，動態TTL=275秒
+2025-10-28T03:37:56.111638581Z [inf]  2025-10-28 03:37:53,138 - src.services.data_service - DEBUG - 💾 緩存 ZBTUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.111642649Z [inf]  2025-10-28 03:37:53,139 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: KGENUSDT 5m
+2025-10-28T03:37:56.111647663Z [inf]  2025-10-28 03:37:53,138 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: B2USDT 5m
+2025-10-28T03:37:56.111650065Z [inf]  2025-10-28 03:37:53,139 - src.services.data_service - DEBUG - 💾 緩存 KGENUSDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.111655386Z [inf]  2025-10-28 03:37:53,139 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000SHIBUSDT 5m
+2025-10-28T03:37:56.111657125Z [inf]  2025-10-28 03:37:53,138 - src.services.data_service - DEBUG - 💾 緩存 B2USDT 5m，動態TTL=260秒
+2025-10-28T03:37:56.111673539Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - 💾 緩存 1000SHIBUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.113152244Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SAPIENUSDT 5m
+2025-10-28T03:37:56.113161744Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - 💾 緩存 SAPIENUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.113167702Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ETCUSDT 5m
+2025-10-28T03:37:56.113173104Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - 💾 緩存 ETCUSDT 5m，動態TTL=133秒
+2025-10-28T03:37:56.113180375Z [inf]  2025-10-28 03:37:53,140 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: VANAUSDT 5m
+2025-10-28T03:37:56.113188184Z [inf]  2025-10-28 03:37:53,141 - src.services.data_service - DEBUG - 💾 緩存 VANAUSDT 5m，動態TTL=276秒
+2025-10-28T03:37:56.113193436Z [inf]  2025-10-28 03:37:53,141 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: USELESSUSDT 5m
+2025-10-28T03:37:56.113198870Z [inf]  2025-10-28 03:37:53,141 - src.services.data_service - DEBUG - 💾 緩存 USELESSUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.113203981Z [inf]  2025-10-28 03:37:53,141 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NEARUSDT 5m
+2025-10-28T03:37:56.113210443Z [inf]  2025-10-28 03:37:53,141 - src.services.data_service - DEBUG - 💾 緩存 NEARUSDT 5m，動態TTL=282秒
+2025-10-28T03:37:56.113216049Z [inf]  2025-10-28 03:37:53,142 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TONUSDT 5m
+2025-10-28T03:37:56.113221604Z [inf]  2025-10-28 03:37:53,142 - src.services.data_service - DEBUG - 💾 緩存 TONUSDT 5m，動態TTL=263秒
+2025-10-28T03:37:56.113227174Z [inf]  2025-10-28 03:37:53,142 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LDOUSDT 5m
+2025-10-28T03:37:56.113233475Z [inf]  2025-10-28 03:37:53,142 - src.services.data_service - DEBUG - 💾 緩存 LDOUSDT 5m，動態TTL=287秒
+2025-10-28T03:37:56.114910888Z [inf]  2025-10-28 03:37:53,142 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: UNIUSDT 5m
+2025-10-28T03:37:56.114922182Z [inf]  2025-10-28 03:37:53,143 - src.services.data_service - DEBUG - 💾 緩存 UNIUSDT 5m，動態TTL=245秒
+2025-10-28T03:37:56.114930933Z [inf]  2025-10-28 03:37:53,143 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FETUSDT 5m
+2025-10-28T03:37:56.114930947Z [inf]  2025-10-28 03:37:53,149 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PNUTUSDT 5m
+2025-10-28T03:37:56.114945113Z [inf]  2025-10-28 03:37:53,149 - src.services.data_service - DEBUG - 💾 緩存 PNUTUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.114951630Z [inf]  2025-10-28 03:37:53,143 - src.services.data_service - DEBUG - 💾 緩存 FETUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.114959110Z [inf]  2025-10-28 03:37:53,150 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ONUSDT 5m
+2025-10-28T03:37:56.114966012Z [inf]  2025-10-28 03:37:53,143 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WIFUSDT 5m
+2025-10-28T03:37:56.114971027Z [inf]  2025-10-28 03:37:53,150 - src.services.data_service - DEBUG - 💾 緩存 ONUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.114980953Z [inf]  2025-10-28 03:37:53,143 - src.services.data_service - DEBUG - 💾 緩存 WIFUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.114986845Z [inf]  2025-10-28 03:37:53,148 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SEIUSDT 5m
+2025-10-28T03:37:56.114992703Z [inf]  2025-10-28 03:37:53,148 - src.services.data_service - DEBUG - 💾 緩存 SEIUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.115008325Z [inf]  2025-10-28 03:37:53,148 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NXPCUSDT 5m
+2025-10-28T03:37:56.115014683Z [inf]  2025-10-28 03:37:53,149 - src.services.data_service - DEBUG - 💾 緩存 NXPCUSDT 5m，動態TTL=294秒
+2025-10-28T03:37:56.116333019Z [inf]  2025-10-28 03:37:53,152 - src.services.data_service - DEBUG - 💾 緩存 SPXUSDT 5m，動態TTL=288秒
+2025-10-28T03:37:56.116344664Z [inf]  2025-10-28 03:37:53,152 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LIGHTUSDT 5m
+2025-10-28T03:37:56.116348082Z [inf]  2025-10-28 03:37:53,150 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 0GUSDT 5m
+2025-10-28T03:37:56.116354850Z [inf]  2025-10-28 03:37:53,153 - src.services.data_service - DEBUG - 💾 緩存 LIGHTUSDT 5m，動態TTL=282秒
+2025-10-28T03:37:56.116358582Z [inf]  2025-10-28 03:37:53,150 - src.services.data_service - DEBUG - 💾 緩存 0GUSDT 5m，動態TTL=284秒
+2025-10-28T03:37:56.116363876Z [inf]  2025-10-28 03:37:53,150 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000FLOKIUSDT 5m
+2025-10-28T03:37:56.116368958Z [inf]  2025-10-28 03:37:53,151 - src.services.data_service - DEBUG - 💾 緩存 1000FLOKIUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.116373819Z [inf]  2025-10-28 03:37:53,151 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PIPPINUSDT 5m
+2025-10-28T03:37:56.116379168Z [inf]  2025-10-28 03:37:53,151 - src.services.data_service - DEBUG - 💾 緩存 PIPPINUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.116421528Z [inf]  2025-10-28 03:37:53,151 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TIAUSDT 5m
+2025-10-28T03:37:56.116427945Z [inf]  2025-10-28 03:37:53,151 - src.services.data_service - DEBUG - 💾 緩存 TIAUSDT 5m，動態TTL=289秒
+2025-10-28T03:37:56.116433551Z [inf]  2025-10-28 03:37:53,152 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MLNUSDT 5m
+2025-10-28T03:37:56.116440111Z [inf]  2025-10-28 03:37:53,152 - src.services.data_service - DEBUG - 💾 緩存 MLNUSDT 5m，動態TTL=93秒
+2025-10-28T03:37:56.116444703Z [inf]  2025-10-28 03:37:53,152 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SPXUSDT 5m
+2025-10-28T03:37:56.118341972Z [inf]  2025-10-28 03:37:53,153 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ATOMUSDT 5m
+2025-10-28T03:37:56.118353298Z [inf]  2025-10-28 03:37:53,153 - src.services.data_service - DEBUG - 💾 緩存 ATOMUSDT 5m，動態TTL=274秒
+2025-10-28T03:37:56.118360973Z [inf]  2025-10-28 03:37:53,153 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AKTUSDT 5m
+2025-10-28T03:37:56.118367483Z [inf]  2025-10-28 03:37:53,154 - src.services.data_service - DEBUG - 💾 緩存 AKTUSDT 5m，動態TTL=264秒
+2025-10-28T03:37:56.118373738Z [inf]  2025-10-28 03:37:53,154 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ARUSDT 5m
+2025-10-28T03:37:56.118380012Z [inf]  2025-10-28 03:37:53,154 - src.services.data_service - DEBUG - 💾 緩存 ARUSDT 5m，動態TTL=244秒
+2025-10-28T03:37:56.118386372Z [inf]  2025-10-28 03:37:53,154 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SKLUSDT 5m
+2025-10-28T03:37:56.118392242Z [inf]  2025-10-28 03:37:53,155 - src.services.data_service - DEBUG - 💾 緩存 SKLUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.118398306Z [inf]  2025-10-28 03:37:53,155 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DYDXUSDT 5m
+2025-10-28T03:37:56.118405038Z [inf]  2025-10-28 03:37:53,155 - src.services.data_service - DEBUG - 💾 緩存 DYDXUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.118410512Z [inf]  2025-10-28 03:37:53,155 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BRETTUSDT 5m
+2025-10-28T03:37:56.118415497Z [inf]  2025-10-28 03:37:53,155 - src.services.data_service - DEBUG - 💾 緩存 BRETTUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.118420183Z [inf]  2025-10-28 03:37:53,156 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OPENUSDT 5m
+2025-10-28T03:37:56.118424519Z [inf]  2025-10-28 03:37:53,156 - src.services.data_service - DEBUG - 💾 緩存 OPENUSDT 5m，動態TTL=291秒
+2025-10-28T03:37:56.121319131Z [inf]  2025-10-28 03:37:53,186 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BASUSDT 5m
+2025-10-28T03:37:56.121334387Z [inf]  2025-10-28 03:37:53,156 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: EDENUSDT 5m
+2025-10-28T03:37:56.121334797Z [inf]  2025-10-28 03:37:53,186 - src.services.data_service - DEBUG - 💾 緩存 BASUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.121347496Z [inf]  2025-10-28 03:37:53,187 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LABUSDT 5m
+2025-10-28T03:37:56.121349813Z [inf]  2025-10-28 03:37:53,156 - src.services.data_service - DEBUG - 💾 緩存 EDENUSDT 5m，動態TTL=289秒
+2025-10-28T03:37:56.121363265Z [inf]  2025-10-28 03:37:53,187 - src.services.data_service - DEBUG - 💾 緩存 LABUSDT 5m，動態TTL=293秒
+2025-10-28T03:37:56.121364650Z [inf]  2025-10-28 03:37:53,172 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: GALAUSDT 5m
+2025-10-28T03:37:56.121380344Z [inf]  2025-10-28 03:37:53,173 - src.services.data_service - DEBUG - 💾 緩存 GALAUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.121388708Z [inf]  2025-10-28 03:37:53,174 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FORMUSDT 5m
+2025-10-28T03:37:56.121395076Z [inf]  2025-10-28 03:37:53,174 - src.services.data_service - DEBUG - 💾 緩存 FORMUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.121400282Z [inf]  2025-10-28 03:37:53,176 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FLOCKUSDT 5m
+2025-10-28T03:37:56.121405952Z [inf]  2025-10-28 03:37:53,176 - src.services.data_service - DEBUG - 💾 緩存 FLOCKUSDT 5m，動態TTL=283秒
+2025-10-28T03:37:56.121413666Z [inf]  2025-10-28 03:37:53,184 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MERLUSDT 5m
+2025-10-28T03:37:56.121419233Z [inf]  2025-10-28 03:37:53,185 - src.services.data_service - DEBUG - 💾 緩存 MERLUSDT 5m，動態TTL=292秒
+2025-10-28T03:37:56.123316606Z [inf]  2025-10-28 03:37:53,190 - src.services.data_service - DEBUG - 💾 緩存 MIRAUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.123324288Z [inf]  2025-10-28 03:37:53,190 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XANUSDT 5m
+2025-10-28T03:37:56.123332626Z [inf]  2025-10-28 03:37:53,187 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BERAUSDT 5m
+2025-10-28T03:37:56.123336763Z [inf]  2025-10-28 03:37:53,190 - src.services.data_service - DEBUG - 💾 緩存 XANUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.123345427Z [inf]  2025-10-28 03:37:53,190 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NEIROUSDT 5m
+2025-10-28T03:37:56.123346678Z [inf]  2025-10-28 03:37:53,188 - src.services.data_service - DEBUG - 💾 緩存 BERAUSDT 5m，動態TTL=274秒
+2025-10-28T03:37:56.123351898Z [inf]  2025-10-28 03:37:53,191 - src.services.data_service - DEBUG - 💾 緩存 NEIROUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.123357030Z [inf]  2025-10-28 03:37:53,188 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ALGOUSDT 5m
+2025-10-28T03:37:56.123362807Z [inf]  2025-10-28 03:37:53,188 - src.services.data_service - DEBUG - 💾 緩存 ALGOUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.123370305Z [inf]  2025-10-28 03:37:53,188 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AI16ZUSDT 5m
+2025-10-28T03:37:56.123375867Z [inf]  2025-10-28 03:37:53,188 - src.services.data_service - DEBUG - 💾 緩存 AI16ZUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.123381960Z [inf]  2025-10-28 03:37:53,189 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FLOWUSDT 5m
+2025-10-28T03:37:56.123388879Z [inf]  2025-10-28 03:37:53,189 - src.services.data_service - DEBUG - 💾 緩存 FLOWUSDT 5m，動態TTL=297秒
+2025-10-28T03:37:56.123394418Z [inf]  2025-10-28 03:37:53,189 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MIRAUSDT 5m
+2025-10-28T03:37:56.125406647Z [inf]  2025-10-28 03:37:53,191 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: STBLUSDT 5m
+2025-10-28T03:37:56.125413441Z [inf]  2025-10-28 03:37:53,191 - src.services.data_service - DEBUG - 💾 緩存 STBLUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.125419227Z [inf]  2025-10-28 03:37:53,191 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OMUSDT 5m
+2025-10-28T03:37:56.125424566Z [inf]  2025-10-28 03:37:53,192 - src.services.data_service - DEBUG - 💾 緩存 OMUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.125430045Z [inf]  2025-10-28 03:37:53,199 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: JELLYJELLYUSDT 5m
+2025-10-28T03:37:56.125434754Z [inf]  2025-10-28 03:37:53,199 - src.services.data_service - DEBUG - 💾 緩存 JELLYJELLYUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.125438992Z [inf]  2025-10-28 03:37:53,200 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FISUSDT 5m
+2025-10-28T03:37:56.125443140Z [inf]  2025-10-28 03:37:53,200 - src.services.data_service - DEBUG - 💾 緩存 FISUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.125448091Z [inf]  2025-10-28 03:37:53,201 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: KDAUSDT 5m
+2025-10-28T03:37:56.125452961Z [inf]  2025-10-28 03:37:53,201 - src.services.data_service - DEBUG - 💾 緩存 KDAUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.125462182Z [inf]  2025-10-28 03:37:53,201 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CFXUSDT 5m
+2025-10-28T03:37:56.125468431Z [inf]  2025-10-28 03:37:53,201 - src.services.data_service - DEBUG - 💾 緩存 CFXUSDT 5m，動態TTL=298秒
+2025-10-28T03:37:56.125473213Z [inf]  2025-10-28 03:37:53,202 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: JTOUSDT 5m
+2025-10-28T03:37:56.125477022Z [inf]  2025-10-28 03:37:53,202 - src.services.data_service - DEBUG - 💾 緩存 JTOUSDT 5m，動態TTL=290秒
+2025-10-28T03:37:56.126821310Z [inf]  2025-10-28 03:37:53,202 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SOONUSDT 5m
+2025-10-28T03:37:56.126836837Z [inf]  2025-10-28 03:37:53,203 - src.services.data_service - DEBUG - 💾 緩存 SOONUSDT 5m，動態TTL=276秒
+2025-10-28T03:37:56.126846681Z [inf]  2025-10-28 03:37:53,203 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 2ZUSDT 5m
+2025-10-28T03:37:56.126855915Z [inf]  2025-10-28 03:37:53,203 - src.services.data_service - DEBUG - 💾 緩存 2ZUSDT 5m，動態TTL=296秒
+2025-10-28T03:37:56.126864640Z [inf]  2025-10-28 03:37:53,203 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CLOUSDT 5m
+2025-10-28T03:37:56.126873919Z [inf]  2025-10-28 03:37:53,203 - src.services.data_service - DEBUG - 💾 緩存 CLOUSDT 5m，動態TTL=295秒
+2025-10-28T03:37:56.128409693Z [inf]  2025-10-28 03:37:53,206 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: APEUSDT 5m
+2025-10-28T03:37:56.129761342Z [inf]  2025-10-28 03:37:53,210 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AUCTIONUSDT 5m
+2025-10-28T03:37:56.131447672Z [inf]  2025-10-28 03:37:53,223 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PYTHUSDT 5m
+2025-10-28T03:37:56.133440119Z [inf]  2025-10-28 03:37:53,226 - src.services.data_service - DEBUG - 💾 緩存 BOMEUSDT 5m，動態TTL=299秒
+2025-10-28T03:37:56.135513956Z [inf]  2025-10-28 03:37:53,226 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NFPUSDT 5m
+2025-10-28T03:37:56.137956534Z [inf]  2025-10-28 03:37:53,232 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: IMXUSDT 5m
+2025-10-28T03:37:56.139718206Z [inf]  2025-10-28 03:37:53,235 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AEROUSDT 5m
+2025-10-28T03:37:56.141529732Z [inf]    File "/root/.nix-profile/lib/python3.11/multiprocessing/process.py", line 121, in start
+2025-10-28T03:38:14.386522041Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 141
+2025-10-28T03:38:16.110754145Z [inf]  2025-10-28 03:38:09,634 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-28T03:38:16.110760215Z [inf]  2025-10-28 03:38:09,879 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2025-10-28T03:38:56.132702670Z [inf]  2025-10-28 03:38:50,886 - discord.gateway - DEBUG - Keeping shard ID None websocket alive with sequence 1.
+2025-10-28T03:38:56.132706001Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - ============================================================
+2025-10-28T03:38:56.132714550Z [inf]  2025-10-28 03:38:51,128 - discord.gateway - DEBUG - For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2025-10-28T03:38:56.132717600Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - ✅ 連續虧損: 0 單（良好）
+2025-10-28T03:38:56.132723296Z [inf]  2025-10-28 03:38:54,341 - __main__ - INFO - 
+2025-10-28T03:38:56.132724171Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - ✅ 當前回撤: 0% （無回撤）
+2025-10-28T03:38:56.132730373Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - ✅ 謹慎模式：未啟動（正常交易）
+2025-10-28T03:38:56.132732952Z [inf]  🔢 週期 #9
+2025-10-28T03:38:56.132739729Z [inf]  2025-10-28 03:38:54,341 - __main__ - INFO - 
+2025-10-28T03:38:56.132745983Z [inf]  ============================================================
+2025-10-28T03:38:56.132752395Z [inf]  2025-10-28 03:38:54,341 - __main__ - INFO - 🔄 交易週期開始: 2025-10-28 03:38:54
+2025-10-28T03:38:56.132758571Z [inf]  2025-10-28 03:38:54,341 - __main__ - INFO - ============================================================
+2025-10-28T03:38:56.132764908Z [inf]  2025-10-28 03:38:54,341 - __main__ - INFO - 📚 模型訓練數據: 0筆 (虛擬倉位: 0筆 | 真實倉位: 0筆)
+2025-10-28T03:38:56.132770933Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - 
+2025-10-28T03:38:56.132780332Z [inf]  ============================================================
+2025-10-28T03:38:56.132786162Z [inf]  2025-10-28 03:38:54,341 - src.managers.risk_manager - INFO - 📊 風險管理狀態
+2025-10-28T03:38:56.134347638Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO - ✅ 緊急停止：未觸發
+2025-10-28T03:38:56.134362650Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO - 
+2025-10-28T03:38:56.134370793Z [inf]  🛡️  保護閾值設置：
+2025-10-28T03:38:56.134377682Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO -    • 單日虧損警戒線：3.0% → 謹慎模式
+2025-10-28T03:38:56.134384882Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO -    • 單日虧損上限：15.0% → 當日停止
+2025-10-28T03:38:56.134394589Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO -    • 總虧損斷路器：20.0% → 立即停止
+2025-10-28T03:38:56.134402237Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO -    • 總虧損上限：30.0% → 永久停止
+2025-10-28T03:38:56.134410047Z [inf]  2025-10-28 03:38:54,342 - src.managers.risk_manager - INFO - ============================================================
+2025-10-28T03:38:56.134418880Z [inf]  
+2025-10-28T03:38:56.134426520Z [inf]  2025-10-28 03:38:54,342 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.134433265Z [inf]  2025-10-28 03:38:54,342 - __main__ - INFO - ⏰ 時間框架調度狀態:
+2025-10-28T03:38:56.134440133Z [inf]  2025-10-28 03:38:54,342 - __main__ - INFO -   1h: 間隔=3600秒, 上次掃描=495秒前, 下次掃描=3104秒, 需掃描=否
+2025-10-28T03:38:56.134447685Z [inf]  2025-10-28 03:38:54,342 - __main__ - INFO -   15m: 間隔=900秒, 上次掃描=495秒前, 下次掃描=404秒, 需掃描=否
+2025-10-28T03:38:56.134454127Z [inf]  2025-10-28 03:38:54,342 - __main__ - INFO -   5m: 間隔=60秒, 上次掃描=從未掃描, 下次掃描=立即, 需掃描=是
+2025-10-28T03:38:56.134460815Z [inf]  2025-10-28 03:38:54,342 - __main__ - INFO - 👁️  監控活躍持倉...
+2025-10-28T03:38:56.134467538Z [inf]  2025-10-28 03:38:54,449 - src.services.position_monitor - INFO - 
+2025-10-28T03:38:56.137831535Z [inf]  ======================================================================
+2025-10-28T03:38:56.137842212Z [inf]  2025-10-28 03:38:54,449 - src.services.position_monitor - INFO - 📊 当前持仓状态 [1个]
+2025-10-28T03:38:56.137849272Z [inf]  2025-10-28 03:38:54,449 - src.services.position_monitor - INFO - ======================================================================
+2025-10-28T03:38:56.137864101Z [inf]  2025-10-28 03:38:54,523 - src.services.position_monitor - ERROR - 持仓监控失败: 'float' object is not subscriptable
+2025-10-28T03:38:56.137872598Z [inf]  2025-10-28 03:38:54,523 - __main__ - DEBUG - 當前無活躍持倉
+2025-10-28T03:38:56.137879288Z [inf]  2025-10-28 03:38:54,523 - __main__ - INFO - 🔍 開始掃描市場，目標選擇前 200 個高流動性交易對...
+2025-10-28T03:38:56.137889943Z [inf]  2025-10-28 03:38:54,523 - src.services.data_service - INFO - 開始掃描 527 個交易對（流動性排序）...
+2025-10-28T03:38:56.137896888Z [inf]  2025-10-28 03:38:54,752 - src.services.data_service - INFO - ✅ 市場掃描完成: 從 527 個交易對中選擇 流動性最高的前 200 個 (平均24h交易額: $296,197,876 USDT) ⚡ 耗時: 0.23s
+2025-10-28T03:38:56.137903318Z [inf]  2025-10-28 03:38:54,752 - __main__ - INFO - 📊 已選擇 200 個高流動性交易對 (平均24h交易額: $296,197,876 USDT)
+2025-10-28T03:38:56.137910320Z [inf]  2025-10-28 03:38:54,752 - __main__ - INFO - 🔍 使用 32 核心並行分析 200 個高流動性交易對 (已按流動性排序)...
+2025-10-28T03:38:56.137922566Z [inf]  2025-10-28 03:38:54,753 - src.services.parallel_analyzer - INFO - 開始批量分析 200 個交易對
+2025-10-28T03:38:56.137933815Z [inf]  2025-10-28 03:38:54,754 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.137941332Z [inf]  2025-10-28 03:38:54,754 - src.services.data_service - DEBUG - 💾 首次拉取: ETHUSDT 5m
+2025-10-28T03:38:56.139232276Z [inf]  2025-10-28 03:38:54,758 - src.services.data_service - DEBUG - 💾 緩存 ETHUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.139242701Z [inf]  2025-10-28 03:38:54,758 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.139251401Z [inf]  2025-10-28 03:38:54,758 - src.services.data_service - DEBUG - 💾 首次拉取: BTCUSDT 5m
+2025-10-28T03:38:56.139260514Z [inf]  2025-10-28 03:38:54,762 - src.services.data_service - DEBUG - 💾 緩存 BTCUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.139268717Z [inf]  2025-10-28 03:38:54,762 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.139277673Z [inf]  2025-10-28 03:38:54,762 - src.services.data_service - DEBUG - 💾 首次拉取: SOLUSDT 5m
+2025-10-28T03:38:56.139288293Z [inf]  2025-10-28 03:38:54,765 - src.services.data_service - DEBUG - 💾 緩存 SOLUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.139297538Z [inf]  2025-10-28 03:38:54,765 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.139306243Z [inf]  2025-10-28 03:38:54,766 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.139316598Z [inf]  2025-10-28 03:38:54,766 - src.services.data_service - DEBUG - 💾 首次拉取: BNBUSDT 5m
+2025-10-28T03:38:56.139324569Z [inf]  2025-10-28 03:38:54,770 - src.services.data_service - DEBUG - 💾 緩存 BNBUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.139333151Z [inf]  2025-10-28 03:38:54,770 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.139340850Z [inf]  2025-10-28 03:38:54,770 - src.services.data_service - DEBUG - 💾 首次拉取: ZECUSDT 5m
+2025-10-28T03:38:56.139349085Z [inf]  2025-10-28 03:38:54,773 - src.services.data_service - DEBUG - 💾 緩存 ZECUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.139357921Z [inf]  2025-10-28 03:38:54,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140901801Z [inf]  2025-10-28 03:38:54,774 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140915364Z [inf]  2025-10-28 03:38:54,775 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140924419Z [inf]  2025-10-28 03:38:54,775 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140936017Z [inf]  2025-10-28 03:38:54,775 - src.services.data_service - DEBUG - 💾 首次拉取: HYPEUSDT 5m
+2025-10-28T03:38:56.140944005Z [inf]  2025-10-28 03:38:54,779 - src.services.data_service - DEBUG - 💾 緩存 HYPEUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.140970064Z [inf]  2025-10-28 03:38:54,779 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140978133Z [inf]  2025-10-28 03:38:54,780 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140989172Z [inf]  2025-10-28 03:38:54,781 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.140997040Z [inf]  2025-10-28 03:38:54,781 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.141006162Z [inf]  2025-10-28 03:38:54,782 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.141013816Z [inf]  2025-10-28 03:38:54,784 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.141020685Z [inf]  2025-10-28 03:38:54,784 - src.services.data_service - DEBUG - 💾 首次拉取: GIGGLEUSDT 5m
+2025-10-28T03:38:56.141028135Z [inf]  2025-10-28 03:38:54,788 - src.services.data_service - DEBUG - 💾 緩存 GIGGLEUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.141037053Z [inf]  2025-10-28 03:38:54,788 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.141069789Z [inf]  2025-10-28 03:38:54,788 - src.services.data_service - DEBUG - 💾 首次拉取: COAIUSDT 5m
+2025-10-28T03:38:56.142146424Z [inf]  2025-10-28 03:38:54,806 - src.services.data_service - DEBUG - 💾 首次拉取: EVAAUSDT 5m
+2025-10-28T03:38:56.142155971Z [inf]  2025-10-28 03:38:54,792 - src.services.data_service - DEBUG - 💾 緩存 COAIUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.142169633Z [inf]  2025-10-28 03:38:54,792 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142177072Z [inf]  2025-10-28 03:38:54,793 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142185192Z [inf]  2025-10-28 03:38:54,793 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142190837Z [inf]  2025-10-28 03:38:54,795 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142196668Z [inf]  2025-10-28 03:38:54,795 - src.services.data_service - DEBUG - 💾 首次拉取: TAOUSDT 5m
+2025-10-28T03:38:56.142204146Z [inf]  2025-10-28 03:38:54,799 - src.services.data_service - DEBUG - 💾 緩存 TAOUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.142210409Z [inf]  2025-10-28 03:38:54,800 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142226848Z [inf]  2025-10-28 03:38:54,800 - src.services.data_service - DEBUG - 💾 首次拉取: LTCUSDT 5m
+2025-10-28T03:38:56.142240426Z [inf]  2025-10-28 03:38:54,804 - src.services.data_service - DEBUG - 💾 緩存 LTCUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.142250976Z [inf]  2025-10-28 03:38:54,804 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142259440Z [inf]  2025-10-28 03:38:54,805 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142267811Z [inf]  2025-10-28 03:38:54,806 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.142274084Z [inf]  2025-10-28 03:38:54,806 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143577829Z [inf]  2025-10-28 03:38:54,811 - src.services.data_service - DEBUG - 💾 緩存 EVAAUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.143587967Z [inf]  2025-10-28 03:38:54,811 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143594954Z [inf]  2025-10-28 03:38:54,811 - src.services.data_service - DEBUG - 💾 首次拉取: PAXGUSDT 5m
+2025-10-28T03:38:56.143600851Z [inf]  2025-10-28 03:38:54,814 - src.services.data_service - DEBUG - 💾 緩存 PAXGUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.143607435Z [inf]  2025-10-28 03:38:54,814 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143612764Z [inf]  2025-10-28 03:38:54,815 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143621317Z [inf]  2025-10-28 03:38:54,816 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143627430Z [inf]  2025-10-28 03:38:54,816 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143632828Z [inf]  2025-10-28 03:38:54,817 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143637967Z [inf]  2025-10-28 03:38:54,817 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143642917Z [inf]  2025-10-28 03:38:54,817 - src.services.data_service - DEBUG - 💾 首次拉取: BCHUSDT 5m
+2025-10-28T03:38:56.143648352Z [inf]  2025-10-28 03:38:54,820 - src.services.data_service - DEBUG - 💾 緩存 BCHUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.143654553Z [inf]  2025-10-28 03:38:54,820 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143660284Z [inf]  2025-10-28 03:38:54,821 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.143666681Z [inf]  2025-10-28 03:38:54,822 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145211679Z [inf]  2025-10-28 03:38:54,822 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145220270Z [inf]  2025-10-28 03:38:54,823 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145227564Z [inf]  2025-10-28 03:38:54,823 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145232505Z [inf]  2025-10-28 03:38:54,823 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145237495Z [inf]  2025-10-28 03:38:54,824 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145243095Z [inf]  2025-10-28 03:38:54,824 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145247124Z [inf]  2025-10-28 03:38:54,825 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145253080Z [inf]  2025-10-28 03:38:54,825 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145282362Z [inf]  2025-10-28 03:38:54,826 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145287905Z [inf]  2025-10-28 03:38:54,826 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145293877Z [inf]  2025-10-28 03:38:54,826 - src.services.data_service - DEBUG - 💾 首次拉取: AAVEUSDT 5m
+2025-10-28T03:38:56.145298146Z [inf]  2025-10-28 03:38:54,831 - src.services.data_service - DEBUG - 💾 緩存 AAVEUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.145302315Z [inf]  2025-10-28 03:38:54,831 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.145306311Z [inf]  2025-10-28 03:38:54,831 - src.services.data_service - DEBUG - 💾 首次拉取: ZENUSDT 5m
+2025-10-28T03:38:56.145310588Z [inf]  2025-10-28 03:38:54,835 - src.services.data_service - DEBUG - 💾 緩存 ZENUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.147005772Z [inf]  2025-10-28 03:38:54,835 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147014956Z [inf]  2025-10-28 03:38:54,836 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147020324Z [inf]  2025-10-28 03:38:54,837 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147026070Z [inf]  2025-10-28 03:38:54,837 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147031949Z [inf]  2025-10-28 03:38:54,838 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147037978Z [inf]  2025-10-28 03:38:54,838 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147043164Z [inf]  2025-10-28 03:38:54,839 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147049206Z [inf]  2025-10-28 03:38:54,840 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147054979Z [inf]  2025-10-28 03:38:54,840 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147060681Z [inf]  2025-10-28 03:38:54,841 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147066081Z [inf]  2025-10-28 03:38:54,841 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147071542Z [inf]  2025-10-28 03:38:54,842 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147076759Z [inf]  2025-10-28 03:38:54,842 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147083142Z [inf]  2025-10-28 03:38:54,843 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.147088099Z [inf]  2025-10-28 03:38:54,843 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149405970Z [inf]  2025-10-28 03:38:54,844 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149420052Z [inf]  2025-10-28 03:38:54,845 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149429834Z [inf]  2025-10-28 03:38:54,845 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149439585Z [inf]  2025-10-28 03:38:54,846 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149448493Z [inf]  2025-10-28 03:38:54,846 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149463286Z [inf]  2025-10-28 03:38:54,847 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149470904Z [inf]  2025-10-28 03:38:54,847 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149479168Z [inf]  2025-10-28 03:38:54,848 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149486983Z [inf]  2025-10-28 03:38:54,848 - src.services.data_service - DEBUG - 💾 首次拉取: DASHUSDT 5m
+2025-10-28T03:38:56.149495190Z [inf]  2025-10-28 03:38:54,852 - src.services.data_service - DEBUG - 💾 緩存 DASHUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.149502816Z [inf]  2025-10-28 03:38:54,852 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149510795Z [inf]  2025-10-28 03:38:54,853 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149519141Z [inf]  2025-10-28 03:38:54,854 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149527306Z [inf]  2025-10-28 03:38:54,854 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.149535454Z [inf]  2025-10-28 03:38:54,855 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150745417Z [inf]  2025-10-28 03:38:54,856 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150746395Z [inf]  2025-10-28 03:38:54,864 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150755481Z [inf]  2025-10-28 03:38:54,856 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150761487Z [inf]  2025-10-28 03:38:54,857 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150767233Z [inf]  2025-10-28 03:38:54,858 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150773641Z [inf]  2025-10-28 03:38:54,858 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150780044Z [inf]  2025-10-28 03:38:54,859 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150786368Z [inf]  2025-10-28 03:38:54,859 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150792514Z [inf]  2025-10-28 03:38:54,860 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150798606Z [inf]  2025-10-28 03:38:54,861 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150804662Z [inf]  2025-10-28 03:38:54,861 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150810374Z [inf]  2025-10-28 03:38:54,862 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150816655Z [inf]  2025-10-28 03:38:54,862 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150823643Z [inf]  2025-10-28 03:38:54,863 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.150829710Z [inf]  2025-10-28 03:38:54,864 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152128366Z [inf]  2025-10-28 03:38:54,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152132166Z [inf]  2025-10-28 03:38:54,871 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152137417Z [inf]  2025-10-28 03:38:54,865 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152143350Z [inf]  2025-10-28 03:38:54,871 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152145621Z [inf]  2025-10-28 03:38:54,866 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152154102Z [inf]  2025-10-28 03:38:54,871 - src.services.data_service - DEBUG - 💾 首次拉取: TRBUSDT 5m
+2025-10-28T03:38:56.152154386Z [inf]  2025-10-28 03:38:54,867 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152162088Z [inf]  2025-10-28 03:38:54,867 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152163084Z [inf]  2025-10-28 03:38:54,876 - src.services.data_service - DEBUG - 💾 緩存 TRBUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.152169940Z [inf]  2025-10-28 03:38:54,868 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152170377Z [inf]  2025-10-28 03:38:54,876 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152176127Z [inf]  2025-10-28 03:38:54,868 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152181088Z [inf]  2025-10-28 03:38:54,869 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152186985Z [inf]  2025-10-28 03:38:54,869 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.152191928Z [inf]  2025-10-28 03:38:54,870 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153492898Z [inf]  2025-10-28 03:38:54,877 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153506824Z [inf]  2025-10-28 03:38:54,878 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153643683Z [inf]  2025-10-28 03:38:54,878 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153653123Z [inf]  2025-10-28 03:38:54,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153660158Z [inf]  2025-10-28 03:38:54,879 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153667495Z [inf]  2025-10-28 03:38:54,880 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153675106Z [inf]  2025-10-28 03:38:54,880 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153682375Z [inf]  2025-10-28 03:38:54,881 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153688368Z [inf]  2025-10-28 03:38:54,881 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153697584Z [inf]  2025-10-28 03:38:54,882 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153702918Z [inf]  2025-10-28 03:38:54,882 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153708435Z [inf]  2025-10-28 03:38:54,883 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153715547Z [inf]  2025-10-28 03:38:54,883 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153722039Z [inf]  2025-10-28 03:38:54,887 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.153727701Z [inf]  2025-10-28 03:38:54,887 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154840317Z [inf]  2025-10-28 03:38:54,888 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154848214Z [inf]  2025-10-28 03:38:54,891 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154848900Z [inf]  2025-10-28 03:38:54,888 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154854060Z [inf]  2025-10-28 03:38:54,889 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154859600Z [inf]  2025-10-28 03:38:54,889 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154859920Z [inf]  2025-10-28 03:38:54,891 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154864570Z [inf]  2025-10-28 03:38:54,889 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154869089Z [inf]  2025-10-28 03:38:54,891 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154870782Z [inf]  2025-10-28 03:38:54,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154877990Z [inf]  2025-10-28 03:38:54,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154878288Z [inf]  2025-10-28 03:38:54,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154884099Z [inf]  2025-10-28 03:38:54,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154887678Z [inf]  2025-10-28 03:38:54,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154889134Z [inf]  2025-10-28 03:38:54,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.154894501Z [inf]  2025-10-28 03:38:54,890 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156271772Z [inf]  2025-10-28 03:38:54,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156276314Z [inf]  2025-10-28 03:38:54,896 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156282496Z [inf]  2025-10-28 03:38:54,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156289738Z [inf]  2025-10-28 03:38:54,896 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156292557Z [inf]  2025-10-28 03:38:54,892 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156297425Z [inf]  2025-10-28 03:38:54,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156301395Z [inf]  2025-10-28 03:38:54,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156307074Z [inf]  2025-10-28 03:38:54,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156313261Z [inf]  2025-10-28 03:38:54,893 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156321521Z [inf]  2025-10-28 03:38:54,894 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156327393Z [inf]  2025-10-28 03:38:54,894 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156333482Z [inf]  2025-10-28 03:38:54,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156338312Z [inf]  2025-10-28 03:38:54,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156342320Z [inf]  2025-10-28 03:38:54,895 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.156346968Z [inf]  2025-10-28 03:38:54,896 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157923836Z [inf]  2025-10-28 03:38:54,896 - src.services.data_service - DEBUG - 💾 首次拉取: XMRUSDT 5m
+2025-10-28T03:38:56.157926356Z [inf]  2025-10-28 03:38:54,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157931308Z [inf]  2025-10-28 03:38:54,901 - src.services.data_service - DEBUG - 💾 緩存 XMRUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.157937302Z [inf]  2025-10-28 03:38:54,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157938072Z [inf]  2025-10-28 03:38:54,901 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157946213Z [inf]  2025-10-28 03:38:54,901 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157946266Z [inf]  2025-10-28 03:38:54,907 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157953071Z [inf]  2025-10-28 03:38:54,907 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157953109Z [inf]  2025-10-28 03:38:54,901 - src.services.data_service - DEBUG - 💾 首次拉取: OGUSDT 5m
+2025-10-28T03:38:56.157960244Z [inf]  2025-10-28 03:38:54,905 - src.services.data_service - DEBUG - 💾 緩存 OGUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.157961198Z [inf]  2025-10-28 03:38:54,908 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157966872Z [inf]  2025-10-28 03:38:54,905 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157967572Z [inf]  2025-10-28 03:38:54,908 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157973476Z [inf]  2025-10-28 03:38:54,906 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.157974402Z [inf]  2025-10-28 03:38:54,908 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159325740Z [inf]  2025-10-28 03:38:54,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159331239Z [inf]  2025-10-28 03:38:54,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159335716Z [inf]  2025-10-28 03:38:54,909 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159340284Z [inf]  2025-10-28 03:38:54,910 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159344577Z [inf]  2025-10-28 03:38:54,910 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159348357Z [inf]  2025-10-28 03:38:54,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159352799Z [inf]  2025-10-28 03:38:54,911 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159356273Z [inf]  2025-10-28 03:38:54,911 - src.services.data_service - DEBUG - 💾 首次拉取: EULUSDT 5m
+2025-10-28T03:38:56.159359759Z [inf]  2025-10-28 03:38:54,915 - src.services.data_service - DEBUG - 💾 緩存 EULUSDT 5m，動態TTL=60秒
+2025-10-28T03:38:56.159363575Z [inf]  2025-10-28 03:38:54,915 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159367405Z [inf]  2025-10-28 03:38:54,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159372371Z [inf]  2025-10-28 03:38:54,916 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159376830Z [inf]  2025-10-28 03:38:54,917 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159380657Z [inf]  2025-10-28 03:38:54,917 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.159390449Z [inf]  2025-10-28 03:38:54,918 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160853674Z [inf]  2025-10-28 03:38:54,922 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160854654Z [inf]  2025-10-28 03:38:54,918 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160863169Z [inf]  2025-10-28 03:38:54,918 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160868503Z [inf]  2025-10-28 03:38:54,918 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160874074Z [inf]  2025-10-28 03:38:54,919 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160878602Z [inf]  2025-10-28 03:38:54,919 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160883281Z [inf]  2025-10-28 03:38:54,919 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160889284Z [inf]  2025-10-28 03:38:54,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160893603Z [inf]  2025-10-28 03:38:54,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160897819Z [inf]  2025-10-28 03:38:54,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160901896Z [inf]  2025-10-28 03:38:54,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160906499Z [inf]  2025-10-28 03:38:54,920 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160911529Z [inf]  2025-10-28 03:38:54,921 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160917201Z [inf]  2025-10-28 03:38:54,921 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.160923437Z [inf]  2025-10-28 03:38:54,921 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162971354Z [inf]  2025-10-28 03:38:54,926 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162972467Z [inf]  2025-10-28 03:38:54,922 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162982597Z [inf]  2025-10-28 03:38:54,922 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162983753Z [inf]  2025-10-28 03:38:54,927 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162990113Z [inf]  2025-10-28 03:38:54,933 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XRPUSDT 5m
+2025-10-28T03:38:56.162991694Z [inf]  2025-10-28 03:38:54,923 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.162995962Z [inf]  2025-10-28 03:38:54,933 - src.services.data_service - DEBUG - 💾 緩存 XRPUSDT 5m，動態TTL=280秒
+2025-10-28T03:38:56.163000234Z [inf]  2025-10-28 03:38:54,923 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163007342Z [inf]  2025-10-28 03:38:54,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163014300Z [inf]  2025-10-28 03:38:54,924 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163020575Z [inf]  2025-10-28 03:38:54,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163026664Z [inf]  2025-10-28 03:38:54,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163031764Z [inf]  2025-10-28 03:38:54,925 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163037029Z [inf]  2025-10-28 03:38:54,926 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.163041676Z [inf]  2025-10-28 03:38:54,926 - src.services.timeframe_scheduler - DEBUG - 時間框架 5m 需要更新
+2025-10-28T03:38:56.164334212Z [inf]  2025-10-28 03:38:55,022 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PENDLEUSDT 5m
+2025-10-28T03:38:56.164345115Z [inf]  2025-10-28 03:38:55,022 - src.services.data_service - DEBUG - 💾 緩存 PENDLEUSDT 5m，動態TTL=269秒
+2025-10-28T03:38:56.164351709Z [inf]  2025-10-28 03:38:55,073 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WLFIUSDT 5m
+2025-10-28T03:38:56.164358389Z [inf]  2025-10-28 03:38:55,074 - src.services.data_service - DEBUG - 💾 緩存 WLFIUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.164364852Z [inf]  2025-10-28 03:38:55,074 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ASTERUSDT 5m
+2025-10-28T03:38:56.164373350Z [inf]  2025-10-28 03:38:55,075 - src.services.data_service - DEBUG - 💾 緩存 ASTERUSDT 5m，動態TTL=288秒
+2025-10-28T03:38:56.164380044Z [inf]  2025-10-28 03:38:55,075 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FARTCOINUSDT 5m
+2025-10-28T03:38:56.164387543Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - 💾 緩存 FARTCOINUSDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.164394919Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PENGUUSDT 5m
+2025-10-28T03:38:56.164402442Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - 💾 緩存 PENGUUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.164409694Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WIFUSDT 5m
+2025-10-28T03:38:56.164416944Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - 💾 緩存 WIFUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.164426449Z [inf]  2025-10-28 03:38:55,076 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AIXBTUSDT 5m
+2025-10-28T03:38:56.164433368Z [inf]  2025-10-28 03:38:55,077 - src.services.data_service - DEBUG - 💾 緩存 AIXBTUSDT 5m，動態TTL=296秒
+2025-10-28T03:38:56.165504372Z [inf]  2025-10-28 03:38:55,077 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ENAUSDT 5m
+2025-10-28T03:38:56.165512313Z [inf]  2025-10-28 03:38:55,077 - src.services.data_service - DEBUG - 💾 緩存 ENAUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.165517612Z [inf]  2025-10-28 03:38:55,077 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PUMPUSDT 5m
+2025-10-28T03:38:56.165523125Z [inf]  2025-10-28 03:38:55,078 - src.services.data_service - DEBUG - 💾 緩存 PUMPUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.165530259Z [inf]  2025-10-28 03:38:55,079 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MYROUSDT 5m
+2025-10-28T03:38:56.165536503Z [inf]  2025-10-28 03:38:55,079 - src.services.data_service - DEBUG - 💾 緩存 MYROUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.165543050Z [inf]  2025-10-28 03:38:55,079 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RECALLUSDT 5m
+2025-10-28T03:38:56.165548970Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - 💾 緩存 RECALLUSDT 5m，動態TTL=265秒
+2025-10-28T03:38:56.165555500Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HUSDT 5m
+2025-10-28T03:38:56.165562334Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - 💾 緩存 HUSDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.165572939Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ADAUSDT 5m
+2025-10-28T03:38:56.165579578Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - 💾 緩存 ADAUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.165588716Z [inf]  2025-10-28 03:38:55,080 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NEARUSDT 5m
+2025-10-28T03:38:56.165594352Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - 💾 緩存 NEARUSDT 5m，動態TTL=282秒
+2025-10-28T03:38:56.166570947Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MAVIAUSDT 5m
+2025-10-28T03:38:56.166582451Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - 💾 緩存 MAVIAUSDT 5m，動態TTL=287秒
+2025-10-28T03:38:56.166589785Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 42USDT 5m
+2025-10-28T03:38:56.166599446Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - 💾 緩存 42USDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.166607155Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: IPUSDT 5m
+2025-10-28T03:38:56.166615147Z [inf]  2025-10-28 03:38:55,081 - src.services.data_service - DEBUG - 💾 緩存 IPUSDT 5m，動態TTL=246秒
+2025-10-28T03:38:56.166621249Z [inf]  2025-10-28 03:38:55,082 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DIAUSDT 5m
+2025-10-28T03:38:56.166626630Z [inf]  2025-10-28 03:38:55,082 - src.services.data_service - DEBUG - 💾 緩存 DIAUSDT 5m，動態TTL=250秒
+2025-10-28T03:38:56.166631611Z [inf]  2025-10-28 03:38:55,082 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: WLDUSDT 5m
+2025-10-28T03:38:56.166636930Z [inf]  2025-10-28 03:38:55,082 - src.services.data_service - DEBUG - 💾 緩存 WLDUSDT 5m，動態TTL=290秒
+2025-10-28T03:38:56.166642078Z [inf]  2025-10-28 03:38:55,087 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000PEPEUSDT 5m
+2025-10-28T03:38:56.166648486Z [inf]  2025-10-28 03:38:55,087 - src.services.data_service - DEBUG - 💾 緩存 1000PEPEUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.166653063Z [inf]  2025-10-28 03:38:55,087 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TRXUSDT 5m
+2025-10-28T03:38:56.166658518Z [inf]  2025-10-28 03:38:55,087 - src.services.data_service - DEBUG - 💾 緩存 TRXUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.168194726Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BLUAIUSDT 5m
+2025-10-28T03:38:56.168195480Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - 💾 緩存 SUIUSDT 5m，動態TTL=276秒
+2025-10-28T03:38:56.168209168Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - 💾 緩存 BLUAIUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.168212152Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: B2USDT 5m
+2025-10-28T03:38:56.168221710Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: UBUSDT 5m
+2025-10-28T03:38:56.168225896Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - 💾 緩存 B2USDT 5m，動態TTL=260秒
+2025-10-28T03:38:56.168231627Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - 💾 緩存 UBUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.168238383Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DOGEUSDT 5m
+2025-10-28T03:38:56.168245432Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - 💾 緩存 DOGEUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.168253336Z [inf]  2025-10-28 03:38:55,088 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LINKUSDT 5m
+2025-10-28T03:38:56.168260122Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - 💾 緩存 LINKUSDT 5m，動態TTL=129秒
+2025-10-28T03:38:56.168266803Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AVNTUSDT 5m
+2025-10-28T03:38:56.168273260Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - 💾 緩存 AVNTUSDT 5m，動態TTL=275秒
+2025-10-28T03:38:56.168278873Z [inf]  2025-10-28 03:38:55,089 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SUIUSDT 5m
+2025-10-28T03:38:56.169923982Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - 💾 緩存 YBUSDT 5m，動態TTL=277秒
+2025-10-28T03:38:56.169924217Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000BONKUSDT 5m
+2025-10-28T03:38:56.169933131Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - 💾 緩存 1000BONKUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.169938897Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TRUMPUSDT 5m
+2025-10-28T03:38:56.169944495Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - 💾 緩存 TRUMPUSDT 5m，動態TTL=157秒
+2025-10-28T03:38:56.169950241Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MEUSDT 5m
+2025-10-28T03:38:56.169956249Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - 💾 緩存 MEUSDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.169961555Z [inf]  2025-10-28 03:38:55,090 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HBARUSDT 5m
+2025-10-28T03:38:56.169967198Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - 💾 緩存 HBARUSDT 5m，動態TTL=296秒
+2025-10-28T03:38:56.169972775Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FUSDT 5m
+2025-10-28T03:38:56.169978737Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - 💾 緩存 FUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.169986001Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AVAXUSDT 5m
+2025-10-28T03:38:56.169993951Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - 💾 緩存 AVAXUSDT 5m，動態TTL=92秒
+2025-10-28T03:38:56.170000459Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: YBUSDT 5m
+2025-10-28T03:38:56.171376066Z [inf]  2025-10-28 03:38:55,091 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CAKEUSDT 5m
+2025-10-28T03:38:56.171377135Z [inf]  2025-10-28 03:38:55,093 - src.services.data_service - DEBUG - 💾 緩存 COMMONUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.171384937Z [inf]  2025-10-28 03:38:55,092 - src.services.data_service - DEBUG - 💾 緩存 CAKEUSDT 5m，動態TTL=275秒
+2025-10-28T03:38:56.171386219Z [inf]  2025-10-28 03:38:55,093 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 4USDT 5m
+2025-10-28T03:38:56.171392203Z [inf]  2025-10-28 03:38:55,092 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ZBTUSDT 5m
+2025-10-28T03:38:56.171393083Z [inf]  2025-10-28 03:38:55,093 - src.services.data_service - DEBUG - 💾 緩存 4USDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.171398477Z [inf]  2025-10-28 03:38:55,093 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: KAITOUSDT 5m
+2025-10-28T03:38:56.171402886Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - 💾 緩存 KAITOUSDT 5m，動態TTL=290秒
+2025-10-28T03:38:56.171407436Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FILUSDT 5m
+2025-10-28T03:38:56.171409868Z [inf]  2025-10-28 03:38:55,092 - src.services.data_service - DEBUG - 💾 緩存 ZBTUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.171413705Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - 💾 緩存 FILUSDT 5m，動態TTL=281秒
+2025-10-28T03:38:56.171416649Z [inf]  2025-10-28 03:38:55,092 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: APRUSDT 5m
+2025-10-28T03:38:56.171421176Z [inf]  2025-10-28 03:38:55,092 - src.services.data_service - DEBUG - 💾 緩存 APRUSDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.171425670Z [inf]  2025-10-28 03:38:55,093 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: COMMONUSDT 5m
+2025-10-28T03:38:56.172387206Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - 💾 緩存 SNXUSDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.172391702Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: VIRTUALUSDT 5m
+2025-10-28T03:38:56.172400365Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - 💾 緩存 VIRTUALUSDT 5m，動態TTL=235秒
+2025-10-28T03:38:56.172406067Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ETHFIUSDT 5m
+2025-10-28T03:38:56.172411373Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - 💾 緩存 ETHFIUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.172416566Z [inf]  2025-10-28 03:38:55,094 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FFUSDT 5m
+2025-10-28T03:38:56.172422352Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - 💾 緩存 FFUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.172427463Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ONDOUSDT 5m
+2025-10-28T03:38:56.172432232Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - 💾 緩存 ONDOUSDT 5m，動態TTL=292秒
+2025-10-28T03:38:56.172437879Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: METUSDT 5m
+2025-10-28T03:38:56.172443765Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - 💾 緩存 METUSDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.172449748Z [inf]  2025-10-28 03:38:55,095 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000CHEEMSUSDT 5m
+2025-10-28T03:38:56.172454671Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - 💾 緩存 1000CHEEMSUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.172459720Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SNXUSDT 5m
+2025-10-28T03:38:56.173702381Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DEGOUSDT 5m
+2025-10-28T03:38:56.173717185Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - 💾 緩存 DEGOUSDT 5m，動態TTL=258秒
+2025-10-28T03:38:56.173726310Z [inf]  2025-10-28 03:38:55,096 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TONUSDT 5m
+2025-10-28T03:38:56.173736266Z [inf]  2025-10-28 03:38:55,097 - src.services.data_service - DEBUG - 💾 緩存 TONUSDT 5m，動態TTL=263秒
+2025-10-28T03:38:56.173743128Z [inf]  2025-10-28 03:38:55,097 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000SHIBUSDT 5m
+2025-10-28T03:38:56.173752427Z [inf]  2025-10-28 03:38:55,097 - src.services.data_service - DEBUG - 💾 緩存 1000SHIBUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.173759113Z [inf]  2025-10-28 03:38:55,097 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OPUSDT 5m
+2025-10-28T03:38:56.173766338Z [inf]  2025-10-28 03:38:55,098 - src.services.data_service - DEBUG - 💾 緩存 OPUSDT 5m，動態TTL=296秒
+2025-10-28T03:38:56.173772893Z [inf]  2025-10-28 03:38:55,098 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XPINUSDT 5m
+2025-10-28T03:38:56.173780076Z [inf]  2025-10-28 03:38:55,098 - src.services.data_service - DEBUG - 💾 緩存 XPINUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.173786718Z [inf]  2025-10-28 03:38:55,098 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ZORAUSDT 5m
+2025-10-28T03:38:56.173795098Z [inf]  2025-10-28 03:38:55,099 - src.services.data_service - DEBUG - 💾 緩存 ZORAUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.173801740Z [inf]  2025-10-28 03:38:55,099 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: UNIUSDT 5m
+2025-10-28T03:38:56.173809105Z [inf]  2025-10-28 03:38:55,099 - src.services.data_service - DEBUG - 💾 緩存 UNIUSDT 5m，動態TTL=245秒
+2025-10-28T03:38:56.175278536Z [inf]  2025-10-28 03:38:55,099 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OLUSDT 5m
+2025-10-28T03:38:56.175288125Z [inf]  2025-10-28 03:38:55,099 - src.services.data_service - DEBUG - 💾 緩存 OLUSDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.175294943Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XPLUSDT 5m
+2025-10-28T03:38:56.175300056Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - 💾 緩存 XPLUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.175304954Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BLESSUSDT 5m
+2025-10-28T03:38:56.175309495Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - 💾 緩存 BLESSUSDT 5m，動態TTL=284秒
+2025-10-28T03:38:56.175313813Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AIAUSDT 5m
+2025-10-28T03:38:56.175319069Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - 💾 緩存 AIAUSDT 5m，動態TTL=227秒
+2025-10-28T03:38:56.175325157Z [inf]  2025-10-28 03:38:55,100 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: EDENUSDT 5m
+2025-10-28T03:38:56.175330215Z [inf]  2025-10-28 03:38:55,101 - src.services.data_service - DEBUG - 💾 緩存 EDENUSDT 5m，動態TTL=289秒
+2025-10-28T03:38:56.175335286Z [inf]  2025-10-28 03:38:55,106 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: EIGENUSDT 5m
+2025-10-28T03:38:56.175339266Z [inf]  2025-10-28 03:38:55,106 - src.services.data_service - DEBUG - 💾 緩存 EIGENUSDT 5m，動態TTL=285秒
+2025-10-28T03:38:56.175344682Z [inf]  2025-10-28 03:38:55,106 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DOTUSDT 5m
+2025-10-28T03:38:56.175350471Z [inf]  2025-10-28 03:38:55,107 - src.services.data_service - DEBUG - 💾 緩存 DOTUSDT 5m，動態TTL=273秒
+2025-10-28T03:38:56.177018342Z [inf]  2025-10-28 03:38:55,107 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: APTUSDT 5m
+2025-10-28T03:38:56.177026718Z [inf]  2025-10-28 03:38:55,107 - src.services.data_service - DEBUG - 💾 緩存 APTUSDT 5m，動態TTL=272秒
+2025-10-28T03:38:56.177033052Z [inf]  2025-10-28 03:38:55,107 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ARBUSDT 5m
+2025-10-28T03:38:56.177039894Z [inf]  2025-10-28 03:38:55,107 - src.services.data_service - DEBUG - 💾 緩存 ARBUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.177047626Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LDOUSDT 5m
+2025-10-28T03:38:56.177054931Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - 💾 緩存 LDOUSDT 5m，動態TTL=287秒
+2025-10-28T03:38:56.177062231Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: VANAUSDT 5m
+2025-10-28T03:38:56.177067817Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - 💾 緩存 VANAUSDT 5m，動態TTL=276秒
+2025-10-28T03:38:56.177073119Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TURTLEUSDT 5m
+2025-10-28T03:38:56.177077426Z [inf]  2025-10-28 03:38:55,108 - src.services.data_service - DEBUG - 💾 緩存 TURTLEUSDT 5m，動態TTL=289秒
+2025-10-28T03:38:56.177082301Z [inf]  2025-10-28 03:38:55,109 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BIOUSDT 5m
+2025-10-28T03:38:56.177086799Z [inf]  2025-10-28 03:38:55,109 - src.services.data_service - DEBUG - 💾 緩存 BIOUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.177091407Z [inf]  2025-10-28 03:38:55,109 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CRVUSDT 5m
+2025-10-28T03:38:56.177096313Z [inf]  2025-10-28 03:38:55,109 - src.services.data_service - DEBUG - 💾 緩存 CRVUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.178138758Z [inf]  2025-10-28 03:38:55,109 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XLMUSDT 5m
+2025-10-28T03:38:56.178148444Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - 💾 緩存 XLMUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.178153475Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LINEAUSDT 5m
+2025-10-28T03:38:56.178158859Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - 💾 緩存 LINEAUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.178163635Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RVVUSDT 5m
+2025-10-28T03:38:56.178171079Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - 💾 緩存 RVVUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.178177942Z [inf]  2025-10-28 03:38:55,110 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: INJUSDT 5m
+2025-10-28T03:38:56.178182895Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - 💾 緩存 INJUSDT 5m，動態TTL=218秒
+2025-10-28T03:38:56.178186784Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ENSOUSDT 5m
+2025-10-28T03:38:56.178191121Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - 💾 緩存 ENSOUSDT 5m，動態TTL=257秒
+2025-10-28T03:38:56.178196109Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MELANIAUSDT 5m
+2025-10-28T03:38:56.178201697Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - 💾 緩存 MELANIAUSDT 5m，動態TTL=278秒
+2025-10-28T03:38:56.178206206Z [inf]  2025-10-28 03:38:55,111 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: TIAUSDT 5m
+2025-10-28T03:38:56.178210980Z [inf]  2025-10-28 03:38:55,112 - src.services.data_service - DEBUG - 💾 緩存 TIAUSDT 5m，動態TTL=289秒
+2025-10-28T03:38:56.181000691Z [inf]  2025-10-28 03:38:55,112 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: JUPUSDT 5m
+2025-10-28T03:38:56.181012170Z [inf]  2025-10-28 03:38:55,112 - src.services.data_service - DEBUG - 💾 緩存 JUPUSDT 5m，動態TTL=292秒
+2025-10-28T03:38:56.181019696Z [inf]  2025-10-28 03:38:55,112 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SAPIENUSDT 5m
+2025-10-28T03:38:56.181029309Z [inf]  2025-10-28 03:38:55,112 - src.services.data_service - DEBUG - 💾 緩存 SAPIENUSDT 5m，動態TTL=296秒
+2025-10-28T03:38:56.181035968Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ETCUSDT 5m
+2025-10-28T03:38:56.181042619Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - 💾 緩存 ETCUSDT 5m，動態TTL=133秒
+2025-10-28T03:38:56.181049767Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: KGENUSDT 5m
+2025-10-28T03:38:56.181057183Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - 💾 緩存 KGENUSDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.181064573Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FETUSDT 5m
+2025-10-28T03:38:56.181071145Z [inf]  2025-10-28 03:38:55,113 - src.services.data_service - DEBUG - 💾 緩存 FETUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.181076742Z [inf]  2025-10-28 03:38:55,116 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AKTUSDT 5m
+2025-10-28T03:38:56.181082385Z [inf]  2025-10-28 03:38:55,116 - src.services.data_service - DEBUG - 💾 緩存 AKTUSDT 5m，動態TTL=264秒
+2025-10-28T03:38:56.181092980Z [inf]  2025-10-28 03:38:55,117 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SEIUSDT 5m
+2025-10-28T03:38:56.181098637Z [inf]  2025-10-28 03:38:55,117 - src.services.data_service - DEBUG - 💾 緩存 SEIUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.182217474Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - 💾 緩存 1000FLOKIUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.182225331Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ATOMUSDT 5m
+2025-10-28T03:38:56.182226467Z [inf]  2025-10-28 03:38:55,117 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: USELESSUSDT 5m
+2025-10-28T03:38:56.182231549Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - 💾 緩存 ATOMUSDT 5m，動態TTL=274秒
+2025-10-28T03:38:56.182234537Z [inf]  2025-10-28 03:38:55,117 - src.services.data_service - DEBUG - 💾 緩存 USELESSUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.182239403Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OPENUSDT 5m
+2025-10-28T03:38:56.182244659Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - 💾 緩存 OPENUSDT 5m，動態TTL=291秒
+2025-10-28T03:38:56.182250013Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MLNUSDT 5m
+2025-10-28T03:38:56.182255035Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - 💾 緩存 MLNUSDT 5m，動態TTL=93秒
+2025-10-28T03:38:56.182261187Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NXPCUSDT 5m
+2025-10-28T03:38:56.182266214Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - 💾 緩存 NXPCUSDT 5m，動態TTL=294秒
+2025-10-28T03:38:56.182270750Z [inf]  2025-10-28 03:38:55,118 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SKLUSDT 5m
+2025-10-28T03:38:56.182276429Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - 💾 緩存 SKLUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.182280623Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 1000FLOKIUSDT 5m
+2025-10-28T03:38:56.183521480Z [inf]  2025-10-28 03:38:55,119 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ONUSDT 5m
+2025-10-28T03:38:56.183522056Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BRETTUSDT 5m
+2025-10-28T03:38:56.183531779Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - 💾 緩存 ONUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.183531927Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - 💾 緩存 BRETTUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.183540119Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PIPPINUSDT 5m
+2025-10-28T03:38:56.183540596Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ARUSDT 5m
+2025-10-28T03:38:56.183547644Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - 💾 緩存 ARUSDT 5m，動態TTL=244秒
+2025-10-28T03:38:56.183549943Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - 💾 緩存 PIPPINUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.183557696Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: 0GUSDT 5m
+2025-10-28T03:38:56.183558219Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: PNUTUSDT 5m
+2025-10-28T03:38:56.183565863Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - 💾 緩存 0GUSDT 5m，動態TTL=284秒
+2025-10-28T03:38:56.183566134Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - 💾 緩存 PNUTUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.183572627Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LIGHTUSDT 5m
+2025-10-28T03:38:56.183579846Z [inf]  2025-10-28 03:38:55,120 - src.services.data_service - DEBUG - 💾 緩存 LIGHTUSDT 5m，動態TTL=282秒
+2025-10-28T03:38:56.185393768Z [inf]  2025-10-28 03:38:55,155 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: XANUSDT 5m
+2025-10-28T03:38:56.185403911Z [inf]  2025-10-28 03:38:55,155 - src.services.data_service - DEBUG - 💾 緩存 XANUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.185410190Z [inf]  2025-10-28 03:38:55,155 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BASUSDT 5m
+2025-10-28T03:38:56.185416743Z [inf]  2025-10-28 03:38:55,155 - src.services.data_service - DEBUG - 💾 緩存 BASUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.185423181Z [inf]  2025-10-28 03:38:55,156 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: STBLUSDT 5m
+2025-10-28T03:38:56.185429692Z [inf]  2025-10-28 03:38:55,156 - src.services.data_service - DEBUG - 💾 緩存 STBLUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.185434483Z [inf]  2025-10-28 03:38:55,121 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SPXUSDT 5m
+2025-10-28T03:38:56.185450224Z [inf]  2025-10-28 03:38:55,122 - src.services.data_service - DEBUG - 💾 緩存 SPXUSDT 5m，動態TTL=288秒
+2025-10-28T03:38:56.185459866Z [inf]  2025-10-28 03:38:55,122 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: DYDXUSDT 5m
+2025-10-28T03:38:56.185467783Z [inf]  2025-10-28 03:38:55,122 - src.services.data_service - DEBUG - 💾 緩存 DYDXUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.185474915Z [inf]  2025-10-28 03:38:55,150 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FLOCKUSDT 5m
+2025-10-28T03:38:56.185482256Z [inf]  2025-10-28 03:38:55,151 - src.services.data_service - DEBUG - 💾 緩存 FLOCKUSDT 5m，動態TTL=283秒
+2025-10-28T03:38:56.185491288Z [inf]  2025-10-28 03:38:55,154 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MERLUSDT 5m
+2025-10-28T03:38:56.185499383Z [inf]  2025-10-28 03:38:55,154 - src.services.data_service - DEBUG - 💾 緩存 MERLUSDT 5m，動態TTL=292秒
+2025-10-28T03:38:56.187087244Z [inf]  2025-10-28 03:38:55,160 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ALGOUSDT 5m
+2025-10-28T03:38:56.187096576Z [inf]  2025-10-28 03:38:55,161 - src.services.data_service - DEBUG - 💾 緩存 ALGOUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.187099834Z [inf]  2025-10-28 03:38:55,156 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: GALAUSDT 5m
+2025-10-28T03:38:56.187103646Z [inf]  2025-10-28 03:38:55,161 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FLOWUSDT 5m
+2025-10-28T03:38:56.187109176Z [inf]  2025-10-28 03:38:55,162 - src.services.data_service - DEBUG - 💾 緩存 FLOWUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.187111520Z [inf]  2025-10-28 03:38:55,156 - src.services.data_service - DEBUG - 💾 緩存 GALAUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.187119117Z [inf]  2025-10-28 03:38:55,156 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: FORMUSDT 5m
+2025-10-28T03:38:56.187125917Z [inf]  2025-10-28 03:38:55,157 - src.services.data_service - DEBUG - 💾 緩存 FORMUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.187132288Z [inf]  2025-10-28 03:38:55,157 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: LABUSDT 5m
+2025-10-28T03:38:56.187141000Z [inf]  2025-10-28 03:38:55,157 - src.services.data_service - DEBUG - 💾 緩存 LABUSDT 5m，動態TTL=293秒
+2025-10-28T03:38:56.187147963Z [inf]  2025-10-28 03:38:55,159 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AI16ZUSDT 5m
+2025-10-28T03:38:56.187153909Z [inf]  2025-10-28 03:38:55,159 - src.services.data_service - DEBUG - 💾 緩存 AI16ZUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.187159918Z [inf]  2025-10-28 03:38:55,160 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MIRAUSDT 5m
+2025-10-28T03:38:56.187164162Z [inf]  2025-10-28 03:38:55,160 - src.services.data_service - DEBUG - 💾 緩存 MIRAUSDT 5m，動態TTL=295秒
+2025-10-28T03:38:56.188885477Z [inf]  2025-10-28 03:38:55,162 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ICPUSDT 5m
+2025-10-28T03:38:56.188892103Z [inf]  2025-10-28 03:38:55,162 - src.services.data_service - DEBUG - 💾 緩存 ICPUSDT 5m，動態TTL=264秒
+2025-10-28T03:38:56.188897538Z [inf]  2025-10-28 03:38:55,162 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BERAUSDT 5m
+2025-10-28T03:38:56.188902097Z [inf]  2025-10-28 03:38:55,163 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: NEIROUSDT 5m
+2025-10-28T03:38:56.188903582Z [inf]  2025-10-28 03:38:55,162 - src.services.data_service - DEBUG - 💾 緩存 BERAUSDT 5m，動態TTL=274秒
+2025-10-28T03:38:56.188909909Z [inf]  2025-10-28 03:38:55,163 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: OMUSDT 5m
+2025-10-28T03:38:56.188912739Z [inf]  2025-10-28 03:38:55,163 - src.services.data_service - DEBUG - 💾 緩存 NEIROUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.188917449Z [inf]  2025-10-28 03:38:55,163 - src.services.data_service - DEBUG - 💾 緩存 OMUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.188921529Z [inf]  2025-10-28 03:38:55,164 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BMTUSDT 5m
+2025-10-28T03:38:56.188928416Z [inf]  2025-10-28 03:38:55,165 - src.services.data_service - DEBUG - 💾 緩存 BMTUSDT 5m，動態TTL=299秒
+2025-10-28T03:38:56.188936355Z [inf]  2025-10-28 03:38:55,165 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MYXUSDT 5m
+2025-10-28T03:38:56.188944209Z [inf]  2025-10-28 03:38:55,165 - src.services.data_service - DEBUG - 💾 緩存 MYXUSDT 5m，動態TTL=281秒
+2025-10-28T03:38:56.188986352Z [inf]  2025-10-28 03:38:55,176 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HANAUSDT 5m
+2025-10-28T03:38:56.188993005Z [inf]  2025-10-28 03:38:55,177 - src.services.data_service - DEBUG - 💾 緩存 HANAUSDT 5m，動態TTL=296秒
+2025-10-28T03:38:56.191329255Z [inf]  2025-10-28 03:38:55,178 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: ZKCUSDT 5m
+2025-10-28T03:38:56.191338461Z [inf]  2025-10-28 03:38:55,178 - src.services.data_service - DEBUG - 💾 緩存 ZKCUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.191344692Z [inf]  2025-10-28 03:38:55,179 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: CFXUSDT 5m
+2025-10-28T03:38:56.191349649Z [inf]  2025-10-28 03:38:55,180 - src.services.data_service - DEBUG - 💾 緩存 CFXUSDT 5m，動態TTL=298秒
+2025-10-28T03:38:56.191355656Z [inf]  2025-10-28 03:38:55,180 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: HOLOUSDT 5m
+2025-10-28T03:38:56.191360248Z [inf]  2025-10-28 03:38:55,180 - src.services.data_service - DEBUG - 💾 緩存 HOLOUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.192862450Z [inf]  2025-10-28 03:38:55,183 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: AUCTIONUSDT 5m
+2025-10-28T03:38:56.194781946Z [inf]  2025-10-28 03:38:55,189 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: BATUSDT 5m
+2025-10-28T03:38:56.197608234Z [inf]  2025-10-28 03:38:55,197 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: RENDERUSDT 5m
+2025-10-28T03:38:56.199138739Z [inf]  2025-10-28 03:38:55,202 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: MOODENGUSDT 5m
+2025-10-28T03:38:56.200698185Z [inf]  2025-10-28 03:38:55,208 - src.services.data_service - DEBUG - 💾 緩存 MANAUSDT 5m，動態TTL=297秒
+2025-10-28T03:38:56.203812915Z [inf]  2025-10-28 03:38:55,213 - src.services.data_service - DEBUG - ✅ 使用缓存（无新数据）: SUSHIUSDT 5m
+2025-10-28T03:38:56.205725997Z [inf]    File "/root/.nix-profile/lib/python3.11/concurrent/futures/process.py", line 808, in submit
+2025-10-28T03:38:56.207424381Z [inf]  TypeError: cannot pickle '_thread.lock' object
+2025-10-28T03:38:56.383029817Z [inf]  2025-10-28 03:38:56,366 - __main__ - INFO - 📊 系統狀態: CPU 6.8% | 內存 50.3% | API 調用 8
+2025-10-28T03:38:56.383039318Z [inf]  2025-10-28 03:38:56,366 - src.ml.data_archiver - INFO - 所有缓冲区已刷新
+2025-10-28T03:38:56.383045706Z [inf]  2025-10-28 03:38:56,366 - __main__ - DEBUG - ✅ 數據已刷新到磁盤
+2025-10-28T03:38:56.383052256Z [inf]  2025-10-28 03:38:56,366 - __main__ - INFO - 
+2025-10-28T03:38:56.383059751Z [inf]  ✅ 週期完成，耗時: 2.03 秒
+2025-10-28T03:38:56.383067524Z [inf]  2025-10-28 03:38:56,366 - __main__ - INFO - ============================================================
+2025-10-28T03:38:56.383072723Z [inf]  2025-10-28 03:38:56,367 - __main__ - INFO - 
+2025-10-28T03:38:56.383078173Z [inf]  ⏳ 等待 60 秒...
