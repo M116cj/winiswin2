@@ -307,7 +307,9 @@ class VirtualPosition:
         'order_blocks', 'liquidity_zones',
         'rsi', 'macd', 'atr', 'close_timestamp', 'close_reason',
         '_last_update', 'leverage',
-        'signal_id', '_entry_direction'
+        'signal_id', '_entry_direction',
+        # 🔥 v3.14.0：lifecycle monitor 所需属性
+        'pnl_pct', 'is_closed', '_last_pnl', '_last_max_pnl', '_last_min_pnl'
     )
     
     def __init__(self, **kwargs):
@@ -348,6 +350,13 @@ class VirtualPosition:
         
         self._last_update = time.time()
         self.leverage = kwargs.get('leverage', 10)
+        
+        # 🔥 v3.14.0：lifecycle monitor 属性初始化
+        self.pnl_pct = kwargs.get('pnl_pct', 0.0)  # 百分比PnL
+        self.is_closed = kwargs.get('is_closed', False)  # 是否已关闭
+        self._last_pnl = None  # 上次PnL（用于变化检测）
+        self._last_max_pnl = None  # 上次最大PnL（用于变化检测）
+        self._last_min_pnl = None  # 上次最小PnL（用于变化检测）
         
         # 🔥 v3.13.0修复3：signal_id机制
         # 自动生成signal_id（如果未提供）

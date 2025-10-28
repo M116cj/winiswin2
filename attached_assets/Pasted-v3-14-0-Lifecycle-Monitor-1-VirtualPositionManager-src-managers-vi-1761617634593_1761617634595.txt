@@ -1,0 +1,303 @@
+v3.14.0 完整審核報告完整修復方案
+ 高優先級修復：Lifecycle Monitor 集成
+1. 修復 VirtualPositionManager 初始化
+# src/managers/virtual_position_manager.py
+import logging
+from typing import Dict, Optional, Callable
+from src.core.data_models import VirtualPosition
+from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMonitor
+from src.managers.virtual_position_events import VirtualPositionEvent
+
+logger = logging.getLogger(__name__)
+
+class VirtualPositionManager:
+    def __init__(self, binance_client, on_open_callback=None, on_close_callback=None):
+        self.binance_client = binance_client
+        self.virtual_positions: Dict[str, VirtualPosition] = {}
+        self.on_open_callback = on_open_callback
+        self.on_close_callback = on_close_callback
+        self._price_cache = {}
+        
+        # 🔥 新增：生命週期監控器
+        self.lifecycle_monitor = VirtualPositionLifecycleMonitor(
+            event_callback=self._handle_position_event
+        )
+        logger.info("✅ 虛擬倉位生命週期監控器已啟用")
+2. 修復 add_virtual_position 方法
+
+# src/managers/virtual_position_manager.py
+def add_virtual_position(self, signal: Dict, rank: int):
+    """添加虛擬倉位"""
+    from src.core.data_models import VirtualPosition
+    
+    # 創建 VirtualPosition 實例
+    virtual_pos = VirtualPosition(
+        symbol=signal['symbol'],
+        direction=signal['direction'],
+        entry_price=signal['entry_price'],
+        stop_loss=signal['stop_loss'],
+        take_profit=signal['take_profit'],
+        leverage=signal['leverage'],
+        entry_timestamp=signal['timestamp'],
+        signal_id=f"{signal['symbol']}_{int(signal['timestamp'])}"
+    )
+    
+    # 添加到字典（兼容性）
+    self.virtual_positions[signal['symbol']] = virtual_pos
+    
+    # 🔥 新增：添加到生命週期監控
+    self.lifecycle_monitor.add_position(virtual_pos)
+    
+    logger.debug(f"✅ 虛擬倉位創建: {virtual_pos.symbol} {virtual_pos.signal_id}")
+    
+    if self.on_open_callback:
+        self.on_open_callback(virtual_pos)
+3. 修復 update_all_prices_async 方法
+
+# src/managers/virtual_position_manager.py
+async def update_all_prices_async(self, binance_client=None):
+    """異步批量更新所有活躍倉位價格"""
+    if not self.virtual_positions:
+        return []
+    
+    # 獲取所有唯一交易對
+    active_symbols = list(self.virtual_positions.keys())
+    
+    if not active_symbols:
+        return []
+    
+    # 批量獲取價格
+    price_tasks = [
+        self._get_price_safe(symbol, binance_client or self.binance_client)
+        for symbol in active_symbols
+    ]
+    price_results = await asyncio.gather(*price_tasks, return_exceptions=True)
+    
+    # 處理結果
+    prices = {}
+    for symbol, result in zip(active_symbols, price_results):
+        if isinstance(result, Exception):
+            logger.warning(f"獲取 {symbol} 價格失敗: {result}")
+        else:
+            prices[symbol] = result
+    
+    if not prices:
+        logger.warning("未能獲取任何價格，跳過更新")
+        return []
+    
+    self._price_cache.update(prices)
+    
+    # 🔥 關鍵修復：更新所有倉位價格（包括 lifecycle_monitor）
+    closed_positions = []
+    for symbol, position in list(self.virtual_positions.items()):
+        if symbol in prices:
+            # 更新主字典中的倉位
+            position.update_price(prices[symbol])
+            
+            # 🔥 同步更新 lifecycle_monitor 中的倉位引用
+            # 注意：lifecycle_monitor 使用 signal_id 作為 key
+            position_id = position.signal_id
+            if position_id in self.lifecycle_monitor.active_positions:
+                # 確保 lifecycle_monitor 中的引用與主字典一致
+                self.lifecycle_monitor.active_positions[position_id] = position
+    
+    # 返回空列表（關閉邏輯由 lifecycle_monitor 處理）
+    return []
+4. 修復事件處理回調
+
+# src/managers/virtual_position_manager.py
+def _handle_position_event(self, event_payload):
+    """處理倉位事件"""
+    from src.managers.virtual_position_events import VirtualPositionEvent
+    
+    if event_payload.event_type == VirtualPositionEvent.CLOSED:
+        # 倉位關閉時從主字典移除
+        symbol = event_payload.symbol
+        if symbol in self.virtual_positions:
+            del self.virtual_positions[symbol]
+        
+        # 歸檔數據
+        self._archive_closed_position(event_payload)
+        
+        # 呼叫關閉回調
+        if self.on_close_callback:
+            # 需要重建 VirtualPosition 物件用於回調
+            closed_pos = VirtualPosition(
+                symbol=event_payload.symbol,
+                direction=1 if event_payload.metadata.get('direction') == 'LONG' else -1,
+                entry_price=event_payload.metadata.get('entry_price', 0),
+                stop_loss=0,  # 已關閉，不需要
+                take_profit=0,
+                leverage=event_payload.metadata.get('leverage', 1),
+                entry_timestamp=event_payload.metadata.get('entry_timestamp', event_payload.timestamp),
+                signal_id=event_payload.position_id
+            )
+            closed_pos.is_closed = True
+            closed_pos.close_timestamp = event_payload.timestamp
+            closed_pos.close_reason = event_payload.metadata.get('close_reason', 'unknown')
+            closed_pos.current_price = event_payload.current_price
+            closed_pos.pnl_pct = event_payload.pnl_pct
+            
+            self.on_close_callback(closed_pos)
+    
+    elif event_payload.event_type in [
+        VirtualPositionEvent.TP_APPROACHING,
+        VirtualPositionEvent.SL_APPROACHING
+    ]:
+        self._send_approach_notification(event_payload)
+中優先級修復
+1. 修復 market_regime 字段不一致
+# src/ml/high_quality_filter.py
+def _check_signal_quality(self, signal):
+    """檢查信號生成品質"""
+    # ... 其他條件 ...
+    
+    # 🔥 修復：兼容兩個字段名
+    market_state = signal.get('market_state', 
+                             signal.get('market_regime', 'unknown'))
+    if market_state not in ['trending', 'breakout']:
+        return False
+    
+    # ... 其他條件 ...
+2. 修復 add_position 重複檢查
+
+# src/managers/virtual_position_lifecycle.py
+def add_position(self, position: VirtualPosition):
+    """添加虛擬倉位到監控"""
+    position_id = position.signal_id
+    
+    # 🔥 新增：重複檢查
+    if position_id in self.active_positions:
+        logger.warning(f"⚠️ 倉位 {position_id} 已存在，先移除舊監控")
+        self.remove_position(position_id)
+    
+    self.active_positions[position_id] = position
+    self.max_pnl_tracker[position_id] = position.pnl_pct
+    self.min_pnl_tracker[position_id] = position.pnl_pct
+    
+    # 發送創建事件
+    self._emit_event(VirtualPositionEvent.CREATED, position)
+    
+    # 啟動監控任務
+    if position_id not in self.monitoring_tasks:
+        task = asyncio.create_task(self._monitor_position_lifecycle(position_id))
+        self.monitoring_tasks[position_id] = task
+        
+    logger.debug(f"✅ 開始監控虛擬倉位: {position_id}")
+證測試腳本
+測試 1：Lifecycle Monitor 集成驗證
+# tests/test_lifecycle_integration.py
+import asyncio
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.managers.virtual_position_manager import VirtualPositionManager
+from src.clients.binance_client import BinanceClient
+
+async def test_lifecycle_integration():
+    """測試 Lifecycle Monitor 完整集成"""
+    # Mock BinanceClient
+    mock_client = BinanceClient(api_key="test", api_secret="test")
+    mock_client.get_ticker_price = lambda symbol: 60000.0
+    
+    # 創建管理器
+    manager = VirtualPositionManager(mock_client)
+    
+    # 創建測試信號
+    test_signal = {
+        'symbol': 'BTCUSDT',
+        'direction': 1,
+        'entry_price': 60000,
+        'stop_loss': 59000,
+        'take_profit': 63000,
+        'leverage': 10,
+        'timestamp': 1730000000,
+        'confidence_score': 0.8,
+        'market_state': 'trending'
+    }
+    
+    # 添加虛擬倉位
+    manager.add_virtual_position(test_signal, rank=1)
+    
+    # 驗證 lifecycle_monitor 已接收倉位
+    assert len(manager.lifecycle_monitor.active_positions) == 1
+    assert 'BTCUSDT_1730000000' in manager.lifecycle_monitor.active_positions
+    
+    # 驗證主字典也包含倉位
+    assert 'BTCUSDT' in manager.virtual_positions
+    
+    # 測試價格更新
+    await manager.update_all_prices_async()
+    
+    # 驗證價格已更新
+    pos = manager.virtual_positions['BTCUSDT']
+    assert pos.current_price == 60000.0
+    
+    # 驗證 lifecycle_monitor 中的引用一致
+    lifecycle_pos = manager.lifecycle_monitor.active_positions['BTCUSDT_1730000000']
+    assert lifecycle_pos is pos  # 同一物件引用
+    
+    print("✅ Lifecycle Monitor 集成測試通過！")
+
+if __name__ == "__main__":
+    asyncio.run(test_lifecycle_integration())
+測試 2：事件觸發驗證
+
+# tests/test_position_events.py
+import asyncio
+import time
+from src.core.data_models import VirtualPosition
+from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMonitor
+
+async def test_position_events():
+    """測試倉位事件觸發"""
+    events_received = []
+    
+    def event_callback(event_payload):
+        events_received.append(event_payload)
+    
+    # 創建監控器
+    monitor = VirtualPositionLifecycleMonitor(event_callback=event_callback)
+    
+    # 創建倉位
+    position = VirtualPosition(
+        symbol="ETHUSDT",
+        direction=-1,  # SHORT
+        entry_price=3000,
+        stop_loss=3100,
+        take_profit=2800,
+        leverage=5,
+        entry_timestamp=time.time(),
+        signal_id="ETHUSDT_1730000001"
+    )
+    
+    # 添加監控
+    monitor.add_position(position)
+    
+    # 觸發止盈
+    position.update_price(2799)  # 低於止盈價 2800
+    
+    # 等待事件處理
+    await asyncio.sleep(0.1)
+    
+    # 驗證事件觸發
+    event_types = [e.event_type.value for e in events_received]
+    assert 'tp_triggered' in event_types
+    assert 'closed' in event_types
+    
+    # 驗證倉位已關閉
+    assert position.is_closed == True
+    assert position.close_reason == "tp"
+    
+    print("✅ 倉位事件觸發測試通過！")
+
+if __name__ == "__main__":
+    asyncio.run(test_position_events())
+執行修復步驟
+1. 應用高優先級修復（3 個檔案修改）
+2. 應用中優先級修復（2 個檔案修改）
+3. 執行驗證測試：
+python tests/test_lifecycle_integration.py
+python tests/test_position_events.py
+重新運行 Replit 檢查（20 項全部通過）

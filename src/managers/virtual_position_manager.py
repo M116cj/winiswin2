@@ -17,7 +17,7 @@ v3.12.0 优化（纯 __slots__ 可变对象）：
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Callable
 from datetime import datetime, timedelta
 import logging
 import asyncio
@@ -26,6 +26,8 @@ import threading
 
 from src.config import Config
 from src.core.data_models import VirtualPosition
+from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMonitor
+from src.managers.virtual_position_events import VirtualPositionEvent
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +68,12 @@ class VirtualPositionManager:
         
         # v3.13.0修复：使用threading.Lock（兼容同步和异步上下文）
         self._save_lock = threading.Lock()
+        
+        # 🔥 v3.14.0：生命週期監控器集成
+        self.lifecycle_monitor = VirtualPositionLifecycleMonitor(
+            event_callback=self._handle_position_event
+        )
+        logger.info("✅ 虛擬倉位生命週期監控器已啟用")
         
         # v3.15.0: 性能优化模块（可选）
         if OPTIMIZATION_MODULES_AVAILABLE:
@@ -120,6 +128,11 @@ class VirtualPositionManager:
         virtual_pos = VirtualPosition.from_signal(signal, rank, expiry)
         
         self.virtual_positions[symbol] = virtual_pos  # 直接存储对象
+        
+        # 🔥 v3.14.0：添加到生命週期監控
+        self.lifecycle_monitor.add_position(virtual_pos)
+        logger.debug(f"✅ 虛擬倉位創建並添加到監控: {symbol} {virtual_pos.signal_id}")
+        
         self._save_positions_sync()  # v3.13.0：明确使用同步保存
         
         logger.info(
@@ -262,7 +275,7 @@ class VirtualPositionManager:
             logger.warning("未能获取任何价格，跳过更新")
             return []
         
-        # 高效更新每个倉位
+        # 🔥 v3.14.0：高效更新每个倉位（包括 lifecycle_monitor 同步）
         closed_positions = []
         for symbol, position in list(self.virtual_positions.items()):
             if position.status != 'active':
@@ -278,8 +291,15 @@ class VirtualPositionManager:
                 continue
             
             try:
-                # 更新价格
+                # 更新价格（主字典中的仓位）
                 position.update_price(prices[symbol])
+                
+                # 🔥 v3.14.0：同步更新 lifecycle_monitor 中的倉位引用
+                # lifecycle_monitor 使用 signal_id 作为 key
+                position_id = position.signal_id
+                if position_id in self.lifecycle_monitor.active_positions:
+                    # 确保 lifecycle_monitor 中的引用与主字典一致（同一对象）
+                    self.lifecycle_monitor.active_positions[position_id] = position
                 
                 # 检查是否应该关闭
                 if self._should_close_virtual(position, prices[symbol]):
@@ -577,3 +597,77 @@ class VirtualPositionManager:
                 await f.write(json.dumps(positions_dict, ensure_ascii=False, indent=2))
         except Exception as e:
             logger.error(f"异步写入文件失敗: {e}")
+    
+    def _handle_position_event(self, event_payload):
+        """
+        🔥 v3.14.0：處理倉位事件（lifecycle_monitor 回調）
+        
+        Args:
+            event_payload: VirtualPositionEventPayload 事件有效负载
+        """
+        from src.managers.virtual_position_events import VirtualPositionEvent
+        from datetime import datetime
+        
+        try:
+            if event_payload.event_type == VirtualPositionEvent.CLOSED:
+                # 倉位關閉時從主字典移除
+                symbol = event_payload.symbol
+                if symbol in self.virtual_positions:
+                    position = self.virtual_positions[symbol]
+                    del self.virtual_positions[symbol]
+                    logger.debug(f"📝 從主字典移除已關閉倉位: {symbol}")
+                
+                # 調用關閉回調
+                if self.on_close_callback:
+                    try:
+                        # 構建關閉數據
+                        close_data = {
+                            'symbol': event_payload.symbol,
+                            'close_price': event_payload.current_price,
+                            'exit_price': event_payload.current_price,
+                            'pnl': event_payload.pnl_pct / 100,  # 轉換為小數
+                            'pnl_pct': event_payload.pnl_pct / 100,
+                            'close_reason': event_payload.metadata.get('close_reason', 'unknown'),
+                            'timestamp': event_payload.timestamp,
+                            'close_timestamp': event_payload.timestamp,
+                            'is_virtual': True
+                        }
+                        
+                        # 構建倉位數據（從 metadata）
+                        position_data = {
+                            'symbol': event_payload.symbol,
+                            'direction': event_payload.metadata.get('direction', 'LONG'),
+                            'entry_price': event_payload.metadata.get('entry_price', 0),
+                            'stop_loss': event_payload.metadata.get('stop_loss', 0),
+                            'take_profit': event_payload.metadata.get('take_profit', 0),
+                            'leverage': event_payload.metadata.get('leverage', 1),
+                            'confidence': event_payload.metadata.get('confidence', 0),
+                            'entry_timestamp': event_payload.metadata.get('entry_timestamp', event_payload.timestamp),
+                            'current_price': event_payload.current_price,
+                            'current_pnl': event_payload.pnl_pct,
+                            'status': 'closed',
+                            'close_timestamp': event_payload.timestamp,
+                            'close_reason': event_payload.metadata.get('close_reason', 'unknown')
+                        }
+                        
+                        self.on_close_callback(position_data, close_data)
+                        logger.debug(f"📝 已調用虛擬倉位關閉回調: {symbol}")
+                    except Exception as e:
+                        logger.error(f"虛擬倉位關閉回調失敗: {e}", exc_info=True)
+                
+                # 保存更新
+                self._save_positions_sync()
+            
+            elif event_payload.event_type in [
+                VirtualPositionEvent.TP_APPROACHING,
+                VirtualPositionEvent.SL_APPROACHING
+            ]:
+                # 接近止盈/止損時記錄日誌
+                event_name = "止盈" if event_payload.event_type == VirtualPositionEvent.TP_APPROACHING else "止損"
+                logger.info(
+                    f"🚨 {event_payload.symbol} 接近{event_name} "
+                    f"(PnL: {event_payload.pnl_pct:.2f}%)"
+                )
+        
+        except Exception as e:
+            logger.error(f"處理倉位事件失敗: {e}", exc_info=True)

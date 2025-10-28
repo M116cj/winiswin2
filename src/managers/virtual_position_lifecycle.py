@@ -36,6 +36,12 @@ class VirtualPositionLifecycleMonitor:
     def add_position(self, position: VirtualPosition):
         """添加虚拟仓位到监控"""
         position_id = position.signal_id
+        
+        # 🔥 v3.14.0修复：重複檢查（避免監控衝突）
+        if position_id in self.active_positions:
+            logger.warning(f"⚠️ 倉位 {position_id} 已存在，先移除舊監控")
+            self.remove_position(position_id)
+        
         self.active_positions[position_id] = position
         self.max_pnl_tracker[position_id] = position.pnl_pct
         self.min_pnl_tracker[position_id] = position.pnl_pct

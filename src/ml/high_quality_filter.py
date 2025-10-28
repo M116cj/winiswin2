@@ -62,8 +62,10 @@ class HighQualitySignalFilter:
             
         if signal.get('ml_score', 0) < 0.5:
             return False
-            
-        market_state = signal.get('market_regime', 'unknown')
+        
+        # 🔥 v3.14.0修复：兼容两个字段名（market_state 和 market_regime）
+        market_state = signal.get('market_state', 
+                                 signal.get('market_regime', 'unknown'))
         if market_state not in ['trending', 'breakout']:
             return False
             
