@@ -4,9 +4,9 @@
 
 混合智能交易系統，支持ICT/SMC策略、自我學習AI交易員、混合模式三種策略切換。集成XGBoost ML、ONNX推理加速、深度學習模型（TensorFlow + TFLite量化），監控Top 200高流動性交易對，跨3時間框架生成平衡LONG/SHORT信號。
 
-## 當前版本：v3.16.2 (2025-10-28)
+## 當前版本：v3.16.3 (2025-10-28)
 
-**最新修復：ThreadPoolExecutor 徹底修復（架構級別解決方案）** ✅
+**最新功能：增量學習系統（模型持久化 + 在線學習）** ✅
 
 ### 核心特性
 - ✅ **三種策略模式**：ICT策略、自我學習AI、混合模式（可配置切換）
@@ -20,6 +20,80 @@
 ---
 
 ## 最近更新
+
+### v3.16.3 (2025-10-28) - 增量學習系統 🎓
+
+**類型**: ✨ **NEW FEATURE**  
+**目標**: 實現模型持久化和增量學習，使 AI 持續進化  
+**狀態**: ✅ **已完成並通過 Architect 審查**
+
+#### **核心功能**
+1. **模型持久化** - TensorFlow SavedModel 格式保存/加載
+2. **增量學習** - 每次分析後在線更新模型權重
+3. **自動保存** - 每 100 次分析自動保存模型
+4. **優雅關閉** - 系統關閉時保存所有學習狀態
+5. **狀態恢復** - 重啟後從磁盤恢復學習進度
+
+#### **實施細節**
+
+**新增文件：**
+- `src/ml/model_persistence.py` - 模型持久化管理器（180行）
+
+**修改文件：**
+- `src/strategies/self_learning_trader.py` - 增量學習系統（+140行）
+- `src/ml/market_structure_autoencoder.py` - 增量更新接口（+26行）
+- `src/ml/feature_discovery_network.py` - 增量更新接口（+34行）
+- `src/ml/liquidity_prediction_model.py` - 增量更新接口（+40行）
+- `src/main.py` - 優雅關閉鉤子（+9行）
+
+**模型保存結構：**
+```
+data/models/self_learning/
+├── structure_encoder_encoder/     # TensorFlow SavedModel
+├── structure_encoder_decoder/     # TensorFlow SavedModel
+├── structure_encoder_metadata.json
+├── feature_network/               # TensorFlow SavedModel
+├── feature_network_metadata.json
+├── liquidity_predictor/           # TensorFlow SavedModel
+└── liquidity_predictor_metadata.json
+```
+
+#### **Architect 審查結果**
+- ✅ **PASS** - 功能目標達成，學習狀態跨重啟保存
+- ✅ SavedModel 持久化正確實現
+- ✅ training_counter 正確恢復
+- ✅ 優雅關閉機制完善
+- ✅ TensorFlow 缺失時優雅降級
+
+#### **使用示例**
+
+**首次啟動：**
+```
+✅ 自我學習交易員初始化完成（v3.16.3 - 增量學習系統）
+   🆕 創建新模型: structure_encoder
+   🆕 創建新模型: feature_network
+   🆕 創建新模型: liquidity_predictor
+   📊 學習進度: 0 次分析
+```
+
+**學習進行中：**
+```
+🎓 增量學習完成: BTCUSDT
+📊 學習進度: 100 次分析
+💾 模型已保存 (訓練次數: 100)
+```
+
+**重啟後恢復：**
+```
+✅ 加載已訓練模型: structure_encoder (訓練次數: 100)
+✅ 加載已訓練模型: feature_network (訓練次數: 100)
+✅ 加載已訓練模型: liquidity_predictor (訓練次數: 100)
+📊 學習進度: 100 次分析  ← 成功恢復！
+```
+
+**詳細文檔**: 參見 `V3.16.3_INCREMENTAL_LEARNING_COMPLETE.md`
+
+---
 
 ### v3.16.2 (2025-10-28) - ThreadPoolExecutor 徹底修復 ✅
 
