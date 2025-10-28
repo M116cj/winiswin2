@@ -18,7 +18,8 @@ class HybridStrategy:
     
     def __init__(self, config):
         self.config = config
-        self.ict_strategy = ICTStrategy(config)
+        # 🔧 修复：ICTStrategy 不接受参数，直接使用 Config 类
+        self.ict_strategy = ICTStrategy()
         self.ml_predictor = MLPredictor(config)
         
         self.ml_min_confidence = 0.5
