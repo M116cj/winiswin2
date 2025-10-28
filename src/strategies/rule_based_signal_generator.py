@@ -19,6 +19,7 @@ from src.utils.indicators import (
     determine_market_structure
 )
 from src.config import Config
+from src.utils.signal_details_logger import get_signal_details_logger
 
 logger = logging.getLogger(__name__)
 
@@ -169,11 +170,14 @@ class RuleBasedSignalGenerator:
                 'timestamp': pd.Timestamp.now()
             }
             
-            logger.info(
-                f"✅ {symbol} 信號生成: {signal_direction} | "
-                f"信心度={confidence_score:.1f}% | "
-                f"勝率={win_probability*100:.1f}% | "
-                f"R:R={rr_ratio:.2f}"
+            # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
+            signal_logger = get_signal_details_logger()
+            signal_logger.log_signal_generated(
+                symbol=symbol,
+                direction=signal_direction,
+                confidence=confidence_score / 100.0,
+                win_rate=win_probability,
+                rr_ratio=rr_ratio
             )
             
             return signal

@@ -16,6 +16,7 @@ from src.core.leverage_engine import LeverageEngine
 from src.core.position_sizer import PositionSizer
 from src.core.sltp_adjuster import SLTPAdjuster
 from src.config import Config
+from src.utils.signal_details_logger import get_signal_details_logger
 
 logger = logging.getLogger(__name__)
 
@@ -153,10 +154,17 @@ class SelfLearningTrader:
                 }
             }
             
-            logger.info(
-                f"🎯 {symbol} 完整信號: {direction} @ {entry_price:.2f} | "
-                f"槓桿={leverage:.1f}x | SL={stop_loss:.2f} | TP={take_profit:.2f} | "
-                f"勝率={win_probability*100:.1f}% | 信心度={confidence*100:.1f}%"
+            # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
+            signal_logger = get_signal_details_logger()
+            signal_logger.log_complete_signal(
+                symbol=symbol,
+                direction=direction,
+                entry_price=entry_price,
+                leverage=leverage,
+                sl_price=stop_loss,
+                tp_price=take_profit,
+                win_rate=win_probability,
+                confidence=confidence
             )
             
             return final_signal
@@ -211,10 +219,15 @@ class SelfLearningTrader:
         leverage = max(0.5, leverage)
         
         if verbose:
-            logger.info(
-                f"   📊 槓桿計算: 勝率={win_probability:.2%} → win_leverage={win_leverage:.2f}x | "
-                f"信心度={confidence:.2%} → conf_factor={conf_factor:.2f}x | "
-                f"最終槓桿={leverage:.2f}x"
+            # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
+            signal_logger = get_signal_details_logger()
+            signal_logger.log_leverage_calculation(
+                symbol="UNKNOWN",  # 在analyze方法中會有完整信號記錄，這裡僅記錄計算細節
+                win_rate=win_probability,
+                confidence=confidence,
+                win_leverage=win_leverage,
+                conf_factor=conf_factor,
+                final_leverage=leverage
             )
         
         return leverage
@@ -343,10 +356,16 @@ class SelfLearningTrader:
             take_profit = entry_price * (1 - adjusted_tp_pct)
         
         if verbose:
-            logger.info(
-                f"   🎯 SL/TP 調整: 槓桿={leverage:.1f}x → scale={scale:.2f}x | "
-                f"基礎 SL={base_sl_pct:.2%} → 調整後={adjusted_sl_pct:.2%} | "
-                f"SL=${stop_loss:.2f} | TP=${take_profit:.2f}"
+            # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
+            signal_logger = get_signal_details_logger()
+            signal_logger.log_sltp_adjustment(
+                symbol="UNKNOWN",  # 在analyze方法中會有完整信號記錄，這裡僅記錄調整細節
+                leverage=leverage,
+                scale=scale,
+                base_sl_pct=base_sl_pct,
+                adjusted_sl_pct=adjusted_sl_pct,
+                sl_price=stop_loss,
+                tp_price=take_profit
             )
         
         return stop_loss, take_profit
