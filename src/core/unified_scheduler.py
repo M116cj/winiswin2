@@ -369,7 +369,11 @@ class UnifiedScheduler:
                 return []
             
             # 計算當前所有持倉總損益
-            total_unrealized_pnl = sum(float(p.get('unRealizedProfit', 0)) for p in active_positions)
+            # 🔥 Binance API 字段名稱修正：/fapi/v2/account 使用 'unrealizedProfit' (全小寫)
+            total_unrealized_pnl = sum(
+                float(p.get('unrealizedProfit', p.get('unRealizedProfit', 0))) 
+                for p in active_positions
+            )
             
             logger.info(f"📦 當前持倉: {len(active_positions)} 個 | 總未實現盈虧: ${total_unrealized_pnl:+.2f}")
             logger.info("=" * 80)
@@ -380,7 +384,8 @@ class UnifiedScheduler:
                 direction = "LONG" if amt > 0 else "SHORT"
                 entry_price = float(pos.get('entryPrice', 0))
                 mark_price = float(pos.get('markPrice', 0))
-                unrealized_pnl = float(pos.get('unRealizedProfit', 0))
+                # 🔥 支持兩種字段名稱 (Binance API不一致)
+                unrealized_pnl = float(pos.get('unrealizedProfit', pos.get('unRealizedProfit', 0)))
                 leverage = int(pos.get('leverage', 1))
                 
                 # 計算盈虧百分比
