@@ -294,3 +294,32 @@ class TradeRecorder:
         if self.completed_trades:
             self._flush_to_disk()
             logger.info("強制保存完成")
+    
+    async def save_competition_log(self, competition_log: Dict):
+        """
+        保存多信號競價記錄（用於模型改進和審計）
+        
+        Args:
+            competition_log: 競價記錄數據
+        """
+        try:
+            # 構建競價記錄文件路徑
+            competition_file = os.path.join(
+                os.path.dirname(self.trades_file),
+                'signal_competitions.jsonl'
+            )
+            
+            # 確保目錄存在
+            os.makedirs(os.path.dirname(competition_file), exist_ok=True)
+            
+            # 追加寫入競價記錄
+            with open(competition_file, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(competition_log, ensure_ascii=False) + '\n')
+            
+            logger.debug(
+                f"💾 保存競價記錄: {competition_log['total_signals']} 個信號, "
+                f"選中 {competition_log['best_signal']['symbol']}"
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ 保存競價記錄失敗: {e}")

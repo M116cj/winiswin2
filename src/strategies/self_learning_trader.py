@@ -406,6 +406,11 @@ class SelfLearningTrader:
         if not signals:
             return None
         
+        # 確保 Binance 客戶端已初始化
+        if not self.binance_client:
+            logger.error("❌ Binance 客戶端未初始化，無法執行交易")
+            return None
+        
         # === 1. 獲取帳戶狀態 ===
         account_info = await self.binance_client.get_account_info()
         available_balance = float(account_info.get('availableBalance', 0))
