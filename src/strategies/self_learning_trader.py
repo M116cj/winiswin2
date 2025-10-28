@@ -1,12 +1,14 @@
 """
 SelfLearningTrader v3.17+ - 智能決策核心
-職責：槓桿計算、倉位計算、動態 SL/TP、倉位評估
+職責：槓桿計算、倉位計算、動態 SL/TP、倉位評估、多信號競價
 """
 
 import pandas as pd
 import numpy as np
 from typing import Dict, Optional, List
 import logging
+import json
+import time
 
 from src.strategies.rule_based_signal_generator import RuleBasedSignalGenerator
 from src.core.leverage_engine import LeverageEngine
@@ -31,16 +33,20 @@ class SelfLearningTrader:
     4. 倉位評估：24/7 監控並決定平倉時機
     """
     
-    def __init__(self, config=None, binance_client=None):
+    def __init__(self, config=None, binance_client=None, trade_recorder=None, virtual_position_manager=None):
         """
         初始化 SelfLearningTrader
         
         Args:
             config: 配置對象
             binance_client: Binance 客戶端（用於獲取交易規格）
+            trade_recorder: 交易記錄器（用於記錄競價結果）
+            virtual_position_manager: 虛擬倉位管理器（用於創建虛擬倉位）
         """
         self.config = config or Config
         self.binance_client = binance_client
+        self.trade_recorder = trade_recorder
+        self.virtual_position_manager = virtual_position_manager
         
         # 初始化信號生成器
         self.signal_generator = RuleBasedSignalGenerator(config)
@@ -55,6 +61,7 @@ class SelfLearningTrader:
         logger.info("   🎯 模式: 無限制槓桿（基於勝率 × 信心度）")
         logger.info("   🧠 決策依據: win_probability × confidence")
         logger.info("   🛡️  風險控制: 動態 SL/TP + 10 USDT 最小倉位")
+        logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
         logger.info("=" * 80)
     
     def analyze(
@@ -385,3 +392,294 @@ class SelfLearningTrader:
                     logger.error(f"❌ 評估持倉失敗（無法獲取 ID）: {e}")
         
         return decisions
+    
+    async def execute_best_trade(self, signals: List[Dict]) -> Optional[Dict]:
+        """
+        從多個信號中選擇最優者執行（加權評分 + 完整記錄）
+        
+        Args:
+            signals: 交易信號列表
+            
+        Returns:
+            成功執行的倉位信息，或 None
+        """
+        if not signals:
+            return None
+        
+        # === 1. 獲取帳戶狀態 ===
+        account_info = await self.binance_client.get_account_info()
+        available_balance = float(account_info.get('availableBalance', 0))
+        total_equity = float(account_info.get('totalWalletBalance', 0))
+        
+        # === 2. 過濾有效信號 + 計算加權評分 ===
+        scored_signals = []
+        for signal in signals:
+            # 品質過濾（基本門檻）
+            if not self._validate_signal_quality(signal):
+                continue
+            
+            # 計算理論倉位
+            theoretical_size = await self.calculate_position_size(
+                account_equity=available_balance,
+                entry_price=signal['entry_price'],
+                stop_loss=signal['adjusted_stop_loss'],
+                leverage=signal['leverage'],
+                symbol=signal['symbol'],
+                verbose=False
+            )
+            notional_value = theoretical_size * signal['entry_price']
+            
+            # 單倉上限：≤ 50% 總權益
+            if notional_value > total_equity * 0.5:
+                logger.debug(f"❌ {signal['symbol']} 倉位過大 ({notional_value:.2f} > {total_equity * 0.5:.2f})，跳過")
+                continue
+            
+            # 🔢 計算加權評分（標準化至 0~1）
+            norm_confidence = min(signal['confidence'] / 1.0, 1.0)                    # 信心值 (0~1)
+            norm_win_rate = min(signal['win_probability'] / 1.0, 1.0)                # 勝率 (0~1)
+            norm_rr = min(signal.get('rr_ratio', 1.5) / 3.0, 1.0)                    # R:R (0~3 → 0~1)
+            
+            weighted_score = (
+                norm_confidence * 0.4 +   # 信心值 40%
+                norm_win_rate * 0.4 +     # 勝率 40%
+                norm_rr * 0.2             # 報酬率 20%
+            )
+            
+            scored_signals.append({
+                'signal': signal,
+                'size': theoretical_size,
+                'notional': notional_value,
+                'score': weighted_score,
+                'details': {
+                    'confidence': signal['confidence'],
+                    'win_rate': signal['win_probability'],
+                    'rr_ratio': signal.get('rr_ratio', 1.5),
+                    'norm_confidence': norm_confidence,
+                    'norm_win_rate': norm_win_rate,
+                    'norm_rr': norm_rr,
+                    'weighted_score': weighted_score
+                }
+            })
+        
+        if not scored_signals:
+            logger.info("❌ 無有效信號可執行")
+            return None
+        
+        # === 3. 選擇最高分信號 ===
+        best = max(scored_signals, key=lambda x: x['score'])
+        
+        # === 4. 記錄競價過程（供審計與訓練）===
+        await self._log_competition_results(scored_signals, best)
+        
+        # === 5. 倉位補足至最小值 ===
+        min_notional = getattr(self.config, 'MIN_NOTIONAL_VALUE', 10.0)
+        if best['notional'] < min_notional:
+            logger.info(
+                f"🔧 {best['signal']['symbol']} 倉位補足至最小值 "
+                f"({best['notional']:.2f} → {min_notional})"
+            )
+            best['size'] = min_notional / best['signal']['entry_price']
+            best['notional'] = min_notional
+        
+        # === 6. 執行下單 ===
+        position = await self._place_order_and_monitor(
+            best['signal'], best['size'], available_balance
+        )
+        
+        # === 7. 創建虛擬倉位（未執行信號）===
+        await self._create_virtual_positions(scored_signals, best['signal'], total_equity)
+        
+        return position
+
+    def _validate_signal_quality(self, signal: Dict) -> bool:
+        """
+        驗證信號品質（基本門檻）
+        
+        Args:
+            signal: 交易信號
+            
+        Returns:
+            是否通過品質檢查
+        """
+        try:
+            # 檢查必要欄位
+            required_fields = ['symbol', 'direction', 'entry_price', 'confidence', 
+                             'win_probability', 'leverage', 'adjusted_stop_loss', 
+                             'adjusted_take_profit']
+            
+            for field in required_fields:
+                if field not in signal:
+                    logger.debug(f"❌ {signal.get('symbol', 'UNKNOWN')} 缺少欄位: {field}")
+                    return False
+            
+            # 基本數值檢查
+            if signal['confidence'] < 0 or signal['confidence'] > 1:
+                logger.debug(f"❌ {signal['symbol']} 信心度異常: {signal['confidence']}")
+                return False
+                
+            if signal['win_probability'] < 0 or signal['win_probability'] > 1:
+                logger.debug(f"❌ {signal['symbol']} 勝率異常: {signal['win_probability']}")
+                return False
+                
+            if signal['leverage'] <= 0:
+                logger.debug(f"❌ {signal['symbol']} 槓桿異常: {signal['leverage']}")
+                return False
+            
+            return True
+            
+        except Exception as e:
+            logger.warning(f"⚠️ 信號品質驗證失敗: {e}")
+            return False
+
+    async def _log_competition_results(self, all_signals: List[dict], best: dict):
+        """
+        記錄多信號競價結果（JSON 格式，供分析）
+        
+        Args:
+            all_signals: 所有參與競價的信號
+            best: 獲勝的信號
+        """
+        competition_log = {
+            'timestamp': time.time(),
+            'total_signals': len(all_signals),
+            'best_signal': {
+                'symbol': best['signal']['symbol'],
+                'score': best['score'],
+                'details': best['details']
+            },
+            'all_signals': [
+                {
+                    'symbol': s['signal']['symbol'],
+                    'score': s['score'],
+                    'confidence': s['details']['confidence'],
+                    'win_rate': s['details']['win_rate'],
+                    'rr_ratio': s['details']['rr_ratio']
+                }
+                for s in all_signals
+            ]
+        }
+        
+        # 輸出到 stdout（Railway Logs 可捕獲）
+        print(f"[SIGNAL_COMPETITION] {json.dumps(competition_log)}")
+        
+        # 保存到訓練數據（用於模型改進）
+        if self.trade_recorder:
+            await self.trade_recorder.save_competition_log(competition_log)
+        
+        logger.info(
+            f"🏆 選中 {best['signal']['symbol']} | "
+            f"評分: {best['score']:.3f} | "
+            f"信心: {best['details']['confidence']:.1%} | "
+            f"勝率: {best['details']['win_rate']:.1%} | "
+            f"R:R: {best['details']['rr_ratio']:.2f}"
+        )
+
+    async def _place_order_and_monitor(
+        self, 
+        signal: Dict, 
+        size: float, 
+        available_balance: float
+    ) -> Optional[Dict]:
+        """
+        執行下單並監控倉位
+        
+        Args:
+            signal: 交易信號
+            size: 倉位數量
+            available_balance: 可用保證金
+            
+        Returns:
+            倉位信息或 None
+        """
+        try:
+            # 設置槓桿
+            safe_leverage = min(int(signal['leverage']), 125)
+            try:
+                await self.binance_client.set_leverage(signal['symbol'], safe_leverage)
+            except Exception as e:
+                logger.warning(f"⚠️ 設置槓桿失敗 ({signal['symbol']} {safe_leverage}x): {e}")
+            
+            # 下單
+            side = 'BUY' if signal['direction'] == 'LONG' else 'SELL'
+            order_result = await self.binance_client.place_order(
+                symbol=signal['symbol'],
+                side=side,
+                order_type='MARKET',
+                quantity=size
+            )
+            
+            # 構建倉位信息
+            position = {
+                'symbol': signal['symbol'],
+                'direction': signal['direction'],
+                'entry_price': signal['entry_price'],
+                'size': size,
+                'leverage': signal['leverage'],
+                'stop_loss': signal['adjusted_stop_loss'],
+                'take_profit': signal['adjusted_take_profit'],
+                'confidence': signal['confidence'],
+                'win_probability': signal['win_probability'],
+                'order_id': order_result.get('orderId'),
+                'timestamp': time.time()
+            }
+            
+            logger.info(
+                f"✅ 下單成功: {signal['symbol']} {signal['direction']} | "
+                f"數量={size:.6f} | 槓桿={signal['leverage']:.1f}x"
+            )
+            
+            return position
+            
+        except Exception as e:
+            logger.error(f"❌ 下單失敗 {signal['symbol']}: {e}", exc_info=True)
+            return None
+
+    async def _create_virtual_positions(
+        self, 
+        scored_signals: List[dict], 
+        executed_signal: Dict,
+        total_equity: float
+    ):
+        """
+        創建虛擬倉位（未執行的信號）
+        
+        Args:
+            scored_signals: 所有評分後的信號
+            executed_signal: 已執行的信號
+            total_equity: 總權益
+        """
+        if not self.virtual_position_manager:
+            logger.debug("⚠️ 未配置虛擬倉位管理器，跳過虛擬倉位創建")
+            return
+        
+        try:
+            executed_symbol = executed_signal['symbol']
+            rank = 2  # 從第2名開始（第1名已執行）
+            
+            # 按評分排序
+            sorted_signals = sorted(scored_signals, key=lambda x: x['score'], reverse=True)
+            
+            for item in sorted_signals:
+                signal = item['signal']
+                
+                # 跳過已執行的信號
+                if signal['symbol'] == executed_symbol:
+                    continue
+                
+                # 創建虛擬倉位
+                try:
+                    self.virtual_position_manager.add_position(
+                        signal=signal,
+                        rank=rank,
+                        expiry=96  # 96小時過期
+                    )
+                    logger.debug(f"📝 創建虛擬倉位: {signal['symbol']} (排名={rank}, 評分={item['score']:.3f})")
+                    rank += 1
+                    
+                except Exception as e:
+                    logger.warning(f"⚠️ 創建虛擬倉位失敗 {signal['symbol']}: {e}")
+            
+            logger.info(f"✅ 創建 {rank - 2} 個虛擬倉位")
+            
+        except Exception as e:
+            logger.error(f"❌ 虛擬倉位批次創建失敗: {e}", exc_info=True)

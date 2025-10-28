@@ -1,0 +1,171 @@
+🧠 SelfLearningTrader 多信號競價邏輯（加權評分 + 記錄）
+
+
+# src/strategies/self_learning_trader.py
+
+class SelfLearningTrader:
+    async def execute_best_trade(self, signals: List[TradeSignal]) -> Optional[Position]:
+        """
+        從多個信號中選擇最優者執行（加權評分 + 完整記錄）
+        """
+        if not signals:
+            return None
+        
+        # === 1. 獲取帳戶狀態 ===
+        account_info = await self.binance_client.get_account()
+        available_balance = float(account_info['availableBalance'])
+        total_equity = float(account_info['totalWalletBalance'])
+        
+        # === 2. 過濾有效信號 + 計算加權評分 ===
+        scored_signals = []
+        for signal in signals:
+            # 品質過濾（基本門檻）
+            if not self._validate_signal_quality(signal):
+                continue
+            
+            # 計算理論倉位
+            theoretical_size = self.position_sizer.calculate_position_size(
+                account_equity=available_balance,
+                entry_price=signal.entry,
+                stop_loss=signal.sl,
+                leverage=signal.leverage
+            )
+            notional_value = theoretical_size * signal.entry
+            
+            # 單倉上限：≤ 50% 總權益
+            if notional_value > total_equity * 0.5:
+                continue
+            
+            # 🔢 計算加權評分（標準化至 0~1）
+            norm_confidence = min(signal.confidence / 1.0, 1.0)      # 信心值 (0~1)
+            norm_win_rate = min(signal.win_probability / 1.0, 1.0)   # 勝率 (0~1)
+            norm_rr = min(signal.risk_reward_ratio / 3.0, 1.0)       # R:R (0~3 → 0~1)
+            
+            weighted_score = (
+                norm_confidence * 0.4 +   # 信心值 40%
+                norm_win_rate * 0.4 +     # 勝率 40%
+                norm_rr * 0.2             # 報酬率 20%
+            )
+            
+            scored_signals.append({
+                'signal': signal,
+                'size': theoretical_size,
+                'notional': notional_value,
+                'score': weighted_score,
+                'details': {
+                    'confidence': signal.confidence,
+                    'win_rate': signal.win_probability,
+                    'rr_ratio': signal.risk_reward_ratio,
+                    'norm_confidence': norm_confidence,
+                    'norm_win_rate': norm_win_rate,
+                    'norm_rr': norm_rr,
+                    'weighted_score': weighted_score
+                }
+            })
+        
+        if not scored_signals:
+            logger.info("❌ 無有效信號可執行")
+            return None
+        
+        # === 3. 選擇最高分信號 ===
+        best = max(scored_signals, key=lambda x: x['score'])
+        
+        # === 4. 記錄競價過程（供審計與訓練）===
+        await self._log_competition_results(scored_signals, best)
+        
+        # === 5. 倉位補足至最小值 ===
+        if best['notional'] < self.config.MIN_NOTIONAL_VALUE:
+            logger.info(f"🔧 {best['signal'].symbol} 倉位補足至最小值 ({best['notional']:.2f} → {self.config.MIN_NOTIONAL_VALUE})")
+            best['size'] = self.config.MIN_NOTIONAL_VALUE / best['signal'].entry
+            best['notional'] = self.config.MIN_NOTIONAL_VALUE
+        
+        # === 6. 執行下單 ===
+        position = await self._place_order_and_monitor(
+            best['signal'], best['size'], available_balance
+        )
+        
+        # === 7. 創建虛擬倉位（未執行信號）===
+        await self._create_virtual_positions(scored_signals, best['signal'], total_equity)
+        
+        return position
+
+    async def _log_competition_results(self, all_signals: List[dict], best: dict):
+        """記錄多信號競價結果（JSON 格式，供分析）"""
+        competition_log = {
+            'timestamp': time.time(),
+            'total_signals': len(all_signals),
+            'best_signal': {
+                'symbol': best['signal'].symbol,
+                'score': best['score'],
+                'details': best['details']
+            },
+            'all_signals': [
+                {
+                    'symbol': s['signal'].symbol,
+                    'score': s['score'],
+                    'confidence': s['details']['confidence'],
+                    'win_rate': s['details']['win_rate'],
+                    'rr_ratio': s['details']['rr_ratio']
+                }
+                for s in all_signals
+            ]
+        }
+        
+        # 輸出到 stdout（Railway Logs 可捕獲）
+        print(f"[SIGNAL_COMPETITION] {json.dumps(competition_log)}")
+        
+        # 保存到訓練數據（用於模型改進）
+        await self.trade_recorder.save_competition_log(competition_log)
+        
+        logger.info(
+            f"🏆 選中 {best['signal'].symbol} | "
+            f"評分: {best['score']:.3f} | "
+            f"信心: {best['details']['confidence']:.1%} | "
+            f"勝率: {best['details']['win_rate']:.1%} | "
+            f"R:R: {best['details']['rr_ratio']:.2f}"
+        )
+
+
+📊 加權評分公式說明
+
+指標：
+信心值
+勝率
+報酬率
+，
+權重：
+40%
+40%
+20%
+,
+標準化方式：
+min(confidence / 1.0, 1.0)
+min(win_rate / 1.0, 1.0)
+min(rr_ratio / 3.0, 1.0)
+✅ 總分範圍：0.0 ~ 1.0
+✅ 公平比較：避免 R:R 過高主導評分（因 R:R 通常 ≤3）
+
+
+📁 記錄內容範例（Railway Logs）
+[SIGNAL_COMPETITION] {
+  "timestamp": 1730123456.789,
+  "total_signals": 3,
+  "best_signal": {
+    "symbol": "BTCUSDT",
+    "score": 0.782,
+    "details": {
+      "confidence": 0.82,
+      "win_rate": 0.75,
+      "rr_ratio": 1.9,
+      "norm_confidence": 0.82,
+      "norm_win_rate": 0.75,
+      "norm_rr": 0.633,
+      "weighted_score": 0.782
+    }
+  },
+  "all_signals": [
+    {"symbol": "BTCUSDT", "score": 0.782, "confidence": 0.82, "win_rate": 0.75, "rr_ratio": 1.9},
+    {"symbol": "ETHUSDT", "score": 0.721, "confidence": 0.78, "win_rate": 0.72, "rr_ratio": 2.1},
+    {"symbol": "SOLUSDT", "score": 0.654, "confidence": 0.70, "win_rate": 0.68, "rr_ratio": 1.7}
+  ]
+}
