@@ -640,21 +640,13 @@ class TradingService:
     ) -> Optional[Dict]:
         """下市價單"""
         try:
-            # 添加 positionSide 參數支持雙向持倉模式
-            position_side = None
-            if direction:
-                position_side = "LONG" if direction == "LONG" else "SHORT"
-            
-            params = {}
-            if position_side:
-                params['positionSide'] = position_side
-            
+            # ⚠️ One-Way Mode: 不使用 positionSide（避免 -4061 錯誤）
+            # Binance 默認為 One-Way Mode，BUY/SELL 會自動開平倉
             order = await self.client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
-                quantity=quantity,
-                **params
+                quantity=quantity
             )
             logger.info(f"✅ 市價單成交: {symbol} {side} {quantity}")
             return order
@@ -703,16 +695,10 @@ class TradingService:
                 f"(保護範圍 ±{self.config.MAX_SLIPPAGE_PCT:.2%})"
             )
             
-            # 添加 positionSide 參數支持雙向持倉模式
-            position_side = None
-            if direction:
-                position_side = "LONG" if direction == "LONG" else "SHORT"
-            
+            # ⚠️ One-Way Mode: 不使用 positionSide
             params = {
                 "timeInForce": "GTC"  # Good Till Cancel
             }
-            if position_side:
-                params['positionSide'] = position_side
             
             # 下限價單
             try:
@@ -726,7 +712,7 @@ class TradingService:
                 )
             except Exception as e:
                 logger.error(f"下限價單失敗 {symbol}: {e}")
-                logger.error(f"  參數: side={side}, qty={quantity}, price={limit_price}, positionSide={params.get('positionSide')}")
+                logger.error(f"  參數: side={side}, qty={quantity}, price={limit_price}")
                 return None
             
             order_id = order.get('orderId')
@@ -873,18 +859,17 @@ class TradingService:
             Exception: 如果止損設置失敗
         """
         side = "SELL" if direction == "LONG" else "BUY"
-        position_side = "LONG" if direction == "LONG" else "SHORT"
         
         # 四捨五入止損價格到交易所精度
         stop_price = await self._round_price(symbol, stop_price)
         
+        # ⚠️ One-Way Mode: 不使用 positionSide
         order = await self.client.place_order(
             symbol=symbol,
             side=side,
             order_type="STOP_MARKET",
             quantity=quantity,
-            stop_price=stop_price,
-            positionSide=position_side
+            stop_price=stop_price
         )
         
         if not order:
@@ -907,18 +892,17 @@ class TradingService:
             Exception: 如果止盈設置失敗
         """
         side = "SELL" if direction == "LONG" else "BUY"
-        position_side = "LONG" if direction == "LONG" else "SHORT"
         
         # 四捨五入止盈價格到交易所精度
         take_profit_price = await self._round_price(symbol, take_profit_price)
         
+        # ⚠️ One-Way Mode: 不使用 positionSide
         order = await self.client.place_order(
             symbol=symbol,
             side=side,
             order_type="TAKE_PROFIT_MARKET",
             quantity=quantity,
-            stop_price=take_profit_price,
-            positionSide=position_side
+            stop_price=take_profit_price
         )
         
         if not order:

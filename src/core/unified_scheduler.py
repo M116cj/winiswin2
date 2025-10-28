@@ -375,7 +375,7 @@ class UnifiedScheduler:
             leverage = signal['leverage']
             
             # 計算倉位數量
-            position_size = self.self_learning_trader.calculate_position_size(
+            position_size = await self.self_learning_trader.calculate_position_size(
                 account_equity=account_equity,
                 entry_price=entry_price,
                 stop_loss=stop_loss,

@@ -211,7 +211,7 @@ class SelfLearningTrader:
         
         return leverage
     
-    def calculate_position_size(
+    async def calculate_position_size(
         self,
         account_equity: float,
         entry_price: float,
@@ -271,7 +271,7 @@ class SelfLearningTrader:
         # Binance 最小數量精度檢查
         if self.binance_client:
             try:
-                min_qty = self.binance_client.get_min_quantity(symbol)
+                min_qty = await self.binance_client.get_min_quantity(symbol)
                 if size < min_qty:
                     size = min_qty
                     if verbose:

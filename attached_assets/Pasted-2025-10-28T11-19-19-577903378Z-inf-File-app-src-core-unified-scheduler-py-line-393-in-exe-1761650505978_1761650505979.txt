@@ -1,0 +1,1001 @@
+2025-10-28T11:19:19.577903378Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:19:19.577908053Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:19:19.577913887Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.577918605Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:19:19.578102661Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:19:19.578109524Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.578114144Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:19:19.578119633Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:19:19.578123902Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.578128776Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:19.578135889Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:19.578141073Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:19.578145381Z [inf]  2025-10-28 11:19:19,564 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 BUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:19:19.578749801Z [inf]  2025-10-28 11:19:19,564 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.1x | 名義價值=$224.85 | 數量=1132.181878 | 實際價值=$224.85
+2025-10-28T11:19:19.578757404Z [inf]  2025-10-28 11:19:19,564 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:19.645685217Z [inf]  2025-10-28 11:19:19,641 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:19:19.645695296Z [inf]  2025-10-28 11:19:19,641 - src.clients.binance_client - INFO - 創建訂單: BUSDT BUY MARKET 1132.0
+2025-10-28T11:19:19.722592886Z [inf]  2025-10-28 11:19:19,714 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'BUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 1132.0, 'timestamp': 1761650359641, 'signature': '9e557060f0ad0133fa6122389d5c85fd66fd27a91933c4ce0cd7d50cb3e82812'}
+2025-10-28T11:19:19.722597559Z [inf]  2025-10-28 11:19:19,714 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:19:19.722602441Z [inf]  2025-10-28 11:19:19,714 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:19:19.722608100Z [inf]  2025-10-28 11:19:19,714 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:19:19.722613279Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:19.722618432Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:19:19.722623441Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:19:19.722632192Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.722638612Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:19:19.722644460Z [inf]      raise e
+2025-10-28T11:19:19.722651829Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:19:19.722662951Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:19:19.722668052Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.722674006Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:19:19.722679662Z [inf]      response.raise_for_status()
+2025-10-28T11:19:19.722683797Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:19:19.725104557Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.725116045Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:19:19.725122992Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:19:19.725128763Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.725135662Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:19.725142702Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:19.725148854Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:19.725154685Z [inf]  2025-10-28 11:19:19,715 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 PUMPUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:19:19.725168942Z [inf]      raise ClientResponseError(
+2025-10-28T11:19:19.725176559Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:19:19.725183495Z [inf]  
+2025-10-28T11:19:19.725191377Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:19:19.725196275Z [inf]  
+2025-10-28T11:19:19.725201504Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:19.725207613Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:19:19.725214088Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:19:19.725221135Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.725227463Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:19:19.725236278Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:19:19.726286268Z [inf]  2025-10-28 11:19:19,715 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=42373.409785 | 實際價值=$219.37
+2025-10-28T11:19:19.726292646Z [inf]  2025-10-28 11:19:19,715 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:19.793894799Z [inf]  2025-10-28 11:19:19,790 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:19:19.793902287Z [inf]  2025-10-28 11:19:19,790 - src.clients.binance_client - INFO - 創建訂單: PUMPUSDT BUY MARKET 42373.0
+2025-10-28T11:19:19.870748448Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:19:19.870762649Z [inf]      raise e
+2025-10-28T11:19:19.870762888Z [inf]  2025-10-28 11:19:19,866 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'PUMPUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 42373.0, 'timestamp': 1761650359790, 'signature': '5cadbf16a1fa04be4d459b6ed5286f68849cd4289d451eec07b116d96ceefd96'}
+2025-10-28T11:19:19.870769608Z [inf]  2025-10-28 11:19:19,866 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:19:19.870775731Z [inf]  2025-10-28 11:19:19,866 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:19:19.870776048Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:19:19.870780954Z [inf]  2025-10-28 11:19:19,866 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:19:19.870786422Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:19:19.870786996Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:19.870793426Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:19:19.870796369Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.870800148Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:19:19.870805357Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.870805761Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:19:19.870813993Z [inf]      response.raise_for_status()
+2025-10-28T11:19:19.870821590Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:19:19.872309879Z [inf]      raise ClientResponseError(
+2025-10-28T11:19:19.872328019Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:19:19.872338764Z [inf]  
+2025-10-28T11:19:19.872348883Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:19:19.872359632Z [inf]  
+2025-10-28T11:19:19.872369175Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:19.872379364Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:19:19.872389532Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:19:19.872399576Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.872411825Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:19:19.872420948Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:19:19.872431180Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.872441227Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:19:19.872450655Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:19:19.872460161Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:19.872470759Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:19.872479567Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:19.872489235Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:19.872498798Z [inf]  2025-10-28 11:19:19,867 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 TAKEUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:19:19.875758021Z [inf]  2025-10-28 11:19:19,867 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.5x | 名義價值=$233.08 | 數量=828.337440 | 實際價值=$233.08
+2025-10-28T11:19:19.875766332Z [inf]  2025-10-28 11:19:19,867 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:19.947189247Z [inf]  2025-10-28 11:19:19,943 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:19:19.947202980Z [inf]  2025-10-28 11:19:19,943 - src.clients.binance_client - INFO - 創建訂單: TAKEUSDT SELL MARKET 828.0
+2025-10-28T11:19:20.024109463Z [inf]  2025-10-28 11:19:20,017 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'TAKEUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 828.0, 'timestamp': 1761650359943, 'signature': '9eab65f08b2df687ae7c66fe66c9473db26e00baf3c205f964588717c49d2ccb'}
+2025-10-28T11:19:20.024122696Z [inf]  2025-10-28 11:19:20,017 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:19:20.024127749Z [inf]  2025-10-28 11:19:20,017 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:19:20.024134819Z [inf]  2025-10-28 11:19:20,017 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:19:20.024139098Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.024143839Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:19:20.024147996Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:19:20.024152148Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.024157355Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:19:20.024162634Z [inf]      raise e
+2025-10-28T11:19:20.024166760Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:19:20.024171289Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:19:20.024175779Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.024180092Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:19:20.024184973Z [inf]      response.raise_for_status()
+2025-10-28T11:19:20.024189492Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:19:20.025387820Z [inf]      raise ClientResponseError(
+2025-10-28T11:19:20.025399034Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:19:20.025405576Z [inf]  
+2025-10-28T11:19:20.025411100Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:19:20.025416598Z [inf]  
+2025-10-28T11:19:20.025422255Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.025427891Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:19:20.025432713Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:19:20.025438364Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.025443474Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:19:20.025452064Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:19:20.025456700Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.025462018Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:19:20.025467705Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:19:20.025472823Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.025478063Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:20.025505811Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:20.025511706Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:20.025516980Z [inf]  2025-10-28 11:19:20,018 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 MONUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:19:20.026351058Z [inf]  2025-10-28 11:19:20,018 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.3x | 名義價值=$211.14 | 數量=3723.824949 | 實際價值=$211.14
+2025-10-28T11:19:20.026359228Z [inf]  2025-10-28 11:19:20,018 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:20.108522284Z [inf]      response.raise_for_status()
+2025-10-28T11:19:20.108534181Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:19:20.108544583Z [inf]      raise ClientResponseError(
+2025-10-28T11:19:20.108550497Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/leverage'
+2025-10-28T11:19:20.108564336Z [inf]  2025-10-28 11:19:20,093 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4028, msg=Leverage 12 is not valid, endpoint=/fapi/v1/leverage, params={'symbol': 'MONUSDT', 'leverage': 12, 'timestamp': 1761650360018, 'signature': 'c8acbbc8b3e8e836e0ddbfe5c0fcab852166da2ca78acbf0101c04febd13744e'}
+2025-10-28T11:19:20.108572039Z [inf]  2025-10-28 11:19:20,093 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/leverage - HTTP 400: Bad Request
+2025-10-28T11:19:20.108578741Z [inf]  2025-10-28 11:19:20,093 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:19:20.108585235Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.108592494Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:19:20.108599013Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:19:20.108606292Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.108613105Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:19:20.108620661Z [inf]      raise e
+2025-10-28T11:19:20.108629060Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:19:20.108636084Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:19:20.108642717Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.108649693Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:19:20.110232035Z [inf]  
+2025-10-28T11:19:20.110243958Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:19:20.110252667Z [inf]  
+2025-10-28T11:19:20.110258671Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.110263847Z [inf]    File "/app/src/core/unified_scheduler.py", line 388, in _execute_signal
+2025-10-28T11:19:20.110270404Z [inf]      await self.binance_client.set_leverage(symbol, int(leverage))
+2025-10-28T11:19:20.110275652Z [inf]    File "/app/src/clients/binance_client.py", line 640, in set_leverage
+2025-10-28T11:19:20.110282534Z [inf]      return await self._request("POST", "/fapi/v1/leverage", params=params, signed=True)
+2025-10-28T11:19:20.110289357Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.110295973Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:20.110301358Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:20.110307856Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:20.110312606Z [inf]  2025-10-28 11:19:20,094 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 TURTLEUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:19:20.110318654Z [inf]  2025-10-28 11:19:20,094 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=1416.185555 | 實際價值=$219.37
+2025-10-28T11:19:20.110323567Z [inf]  2025-10-28 11:19:20,094 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:20.493291884Z [inf]      response.raise_for_status()
+2025-10-28T11:19:20.493345022Z [inf]  2025-10-28 11:19:20,170 - src.clients.binance_client - INFO - 創建訂單: TURTLEUSDT SELL MARKET 1416.0
+2025-10-28T11:19:20.493353962Z [inf]  2025-10-28 11:19:20,170 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:20.493360731Z [inf]  2025-10-28 11:19:20,244 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'TURTLEUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 1416.0, 'timestamp': 1761650360170, 'signature': '7442a133c31c22909c1c11aa87f01ea42eb652bc9f22313c2400d0e5daee487a'}
+2025-10-28T11:19:20.493368020Z [inf]  2025-10-28 11:19:20,244 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:19:20.493375515Z [inf]      raise e
+2025-10-28T11:19:20.493376222Z [inf]  2025-10-28 11:19:20,244 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:19:20.493389879Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:19:20.493401794Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:19:20.493409696Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.493414100Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.493426679Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:19:20.493428500Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:19:20.493439506Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:19:20.493450971Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.493458319Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:19:20.495205355Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:19:20.495214543Z [inf]      raise ClientResponseError(
+2025-10-28T11:19:20.495222426Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:19:20.495229463Z [inf]  
+2025-10-28T11:19:20.495238960Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:19:20.495247160Z [inf]  
+2025-10-28T11:19:20.495257038Z [inf]  Traceback (most recent call last):
+2025-10-28T11:19:20.495261257Z [inf]  2025-10-28 11:19:20,245 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 57.7s | 新成交: 0
+2025-10-28T11:19:20.495270533Z [inf]  2025-10-28 11:19:20,245 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-28T11:19:20.495273221Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:19:20.495280737Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:19:20.495289102Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.495296858Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:19:20.495304878Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:19:20.495312147Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.495322105Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:19:20.495330297Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:19:20.495336798Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:19:20.495343848Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:19:20.495351719Z [inf]      raise BinanceRequestError(
+2025-10-28T11:19:20.495359809Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:19:23.570031339Z [inf]  2025-10-28 11:19:23,272 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:33.539391363Z [inf]  2025-10-28 11:19:33,381 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:19:33.539395905Z [inf]  2025-10-28 11:19:33,473 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:23.286227185Z [inf]  2025-10-28 11:20:20,247 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-28T11:20:23.286231343Z [inf]  2025-10-28 11:20:20,247 - src.core.unified_scheduler - INFO - 🔄 交易週期 #2 | 2025-10-28 11:20:20 UTC
+2025-10-28T11:20:23.286238561Z [inf]  2025-10-28 11:20:20,247 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-28T11:20:23.286243036Z [inf]  2025-10-28 11:20:20,247 - src.core.unified_scheduler - INFO - 📦 當前持倉: 無
+2025-10-28T11:20:23.286247666Z [inf]  2025-10-28 11:20:20,248 - src.core.unified_scheduler - INFO - 💰 賬戶權益: $21.51 | 未實現盈虧: $+0.00
+2025-10-28T11:20:23.286251788Z [inf]  2025-10-28 11:20:20,248 - src.core.unified_scheduler - INFO - 📊 掃描到 528 個 USDT 永續合約，監控前 999 個
+2025-10-28T11:20:23.286255571Z [inf]  2025-10-28 11:20:20,248 - src.core.unified_scheduler - INFO - 📊 掃描 528 個交易對中...
+2025-10-28T11:20:23.286260133Z [inf]  2025-10-28 11:20:20,696 - src.strategies.rule_based_signal_generator - INFO - ✅ YFIUSDT 信號生成: LONG | 信心度=74.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.286264696Z [inf]  2025-10-28 11:20:20,697 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=74.00% → conf_factor=1.48x | 最終槓桿=11.79x
+2025-10-28T11:20:23.286268503Z [inf]  2025-10-28 11:20:20,697 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=11.8x → scale=1.54x | 基礎 SL=0.44% → 調整後=0.67% | SL=$4827.23 | TP=$4909.16
+2025-10-28T11:20:23.286273239Z [inf]  2025-10-28 11:20:20,697 - src.strategies.self_learning_trader - INFO - 🎯 YFIUSDT 完整信號: LONG @ 4860.00 | 槓桿=11.8x | SL=4827.23 | TP=4909.16 | 勝率=64.5% | 信心度=74.0%
+2025-10-28T11:20:23.286276944Z [inf]  2025-10-28 11:20:20,808 - src.strategies.rule_based_signal_generator - INFO - ✅ STORJUSDT 信號生成: SHORT | 信心度=59.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.288156621Z [inf]  2025-10-28 11:20:21,551 - src.strategies.rule_based_signal_generator - INFO - ✅ SPELLUSDT 信號生成: LONG | 信心度=65.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.288167409Z [inf]  2025-10-28 11:20:21,725 - src.strategies.rule_based_signal_generator - INFO - ✅ PHBUSDT 信號生成: LONG | 信心度=80.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.288177205Z [inf]  2025-10-28 11:20:21,725 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=80.00% → conf_factor=1.60x | 最終槓桿=12.75x
+2025-10-28T11:20:23.288183593Z [inf]  2025-10-28 11:20:21,725 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.7x → scale=1.59x | 基礎 SL=3.01% → 調整後=4.77% | SL=$0.59 | TP=$0.66
+2025-10-28T11:20:23.288189185Z [inf]  2025-10-28 11:20:21,725 - src.strategies.self_learning_trader - INFO - 🎯 PHBUSDT 完整信號: LONG @ 0.61 | 槓桿=12.7x | SL=0.59 | TP=0.66 | 勝率=64.5% | 信心度=80.0%
+2025-10-28T11:20:23.288195880Z [inf]  2025-10-28 11:20:22,052 - src.strategies.rule_based_signal_generator - INFO - ✅ AGLDUSDT 信號生成: SHORT | 信心度=64.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.288201453Z [inf]  2025-10-28 11:20:22,327 - src.strategies.rule_based_signal_generator - INFO - ✅ KASUSDT 信號生成: LONG | 信心度=75.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.288207541Z [inf]  2025-10-28 11:20:22,327 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=75.00% → conf_factor=1.50x | 最終槓桿=11.95x
+2025-10-28T11:20:23.288213294Z [inf]  2025-10-28 11:20:22,327 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.0x → scale=1.55x | 基礎 SL=0.67% → 調整後=1.03% | SL=$0.06 | TP=$0.06
+2025-10-28T11:20:23.288219450Z [inf]  2025-10-28 11:20:22,327 - src.strategies.self_learning_trader - INFO - 🎯 KASUSDT 完整信號: LONG @ 0.06 | 槓桿=12.0x | SL=0.06 | TP=0.06 | 勝率=64.5% | 信心度=75.0%
+2025-10-28T11:20:23.290036708Z [inf]  2025-10-28 11:20:22,678 - src.strategies.rule_based_signal_generator - INFO - ✅ TONUSDT 信號生成: LONG | 信心度=69.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.290046384Z [inf]  2025-10-28 11:20:22,813 - src.strategies.rule_based_signal_generator - INFO - ✅ TAOUSDT 信號生成: LONG | 信心度=74.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.290052916Z [inf]  2025-10-28 11:20:22,813 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=74.00% → conf_factor=1.48x | 最終槓桿=11.79x
+2025-10-28T11:20:23.290059223Z [inf]  2025-10-28 11:20:22,813 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=11.8x → scale=1.54x | 基礎 SL=1.50% → 調整後=2.32% | SL=$438.18 | TP=$464.16
+2025-10-28T11:20:23.290065437Z [inf]  2025-10-28 11:20:22,813 - src.strategies.self_learning_trader - INFO - 🎯 TAOUSDT 完整信號: LONG @ 448.57 | 槓桿=11.8x | SL=438.18 | TP=464.16 | 勝率=64.5% | 信心度=74.0%
+2025-10-28T11:20:23.290070902Z [inf]  2025-10-28 11:20:23,076 - src.strategies.rule_based_signal_generator - INFO - ✅ CHESSUSDT 信號生成: LONG | 信心度=85.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.290077438Z [inf]  2025-10-28 11:20:23,077 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=85.00% → conf_factor=1.70x | 最終槓桿=13.54x
+2025-10-28T11:20:23.290083147Z [inf]  2025-10-28 11:20:23,077 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=13.5x → scale=1.63x | 基礎 SL=1.30% → 調整後=2.12% | SL=$0.05 | TP=$0.05
+2025-10-28T11:20:23.290089322Z [inf]  2025-10-28 11:20:23,077 - src.strategies.self_learning_trader - INFO - 🎯 CHESSUSDT 完整信號: LONG @ 0.05 | 槓桿=13.5x | SL=0.05 | TP=0.05 | 勝率=64.5% | 信心度=85.0%
+2025-10-28T11:20:23.290095899Z [inf]  2025-10-28 11:20:23,153 - src.strategies.rule_based_signal_generator - INFO - ✅ KDAUSDT 信號生成: LONG | 信心度=57.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.442370955Z [inf]  2025-10-28 11:20:23,440 - src.strategies.rule_based_signal_generator - INFO - ✅ HIPPOUSDT 信號生成: LONG | 信心度=67.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.469117737Z [inf]  2025-10-28 11:20:23,463 - src.strategies.rule_based_signal_generator - INFO - ✅ DEGENUSDT 信號生成: LONG | 信心度=72.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.469123167Z [inf]  2025-10-28 11:20:23,463 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=72.00% → conf_factor=1.44x | 最終槓桿=11.47x
+2025-10-28T11:20:23.469128743Z [inf]  2025-10-28 11:20:23,463 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=11.5x → scale=1.52x | 基礎 SL=1.91% → 調整後=2.91% | SL=$0.00 | TP=$0.00
+2025-10-28T11:20:23.469134257Z [inf]  2025-10-28 11:20:23,463 - src.strategies.self_learning_trader - INFO - 🎯 DEGENUSDT 完整信號: LONG @ 0.00 | 槓桿=11.5x | SL=0.00 | TP=0.00 | 勝率=64.5% | 信心度=72.0%
+2025-10-28T11:20:23.812582699Z [inf]  2025-10-28 11:20:23,780 - src.strategies.rule_based_signal_generator - INFO - ✅ FARTCOINUSDT 信號生成: LONG | 信心度=82.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.812595846Z [inf]  2025-10-28 11:20:23,780 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=82.00% → conf_factor=1.64x | 最終槓桿=13.07x
+2025-10-28T11:20:23.812603303Z [inf]  2025-10-28 11:20:23,780 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=13.1x → scale=1.60x | 基礎 SL=0.94% → 調整後=1.51% | SL=$0.41 | TP=$0.42
+2025-10-28T11:20:23.812610510Z [inf]  2025-10-28 11:20:23,780 - src.strategies.self_learning_trader - INFO - 🎯 FARTCOINUSDT 完整信號: LONG @ 0.41 | 槓桿=13.1x | SL=0.41 | TP=0.42 | 勝率=64.5% | 信心度=82.0%
+2025-10-28T11:20:23.812755481Z [inf]  2025-10-28 11:20:23,568 - src.strategies.rule_based_signal_generator - INFO - ✅ KAIAUSDT 信號生成: LONG | 信心度=69.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.812764671Z [inf]  2025-10-28 11:20:23,599 - src.strategies.rule_based_signal_generator - INFO - ✅ ORCAUSDT 信號生成: LONG | 信心度=74.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:23.812774027Z [inf]  2025-10-28 11:20:23,599 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=74.00% → conf_factor=1.48x | 最終槓桿=11.79x
+2025-10-28T11:20:23.812780191Z [inf]  2025-10-28 11:20:23,599 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=11.8x → scale=1.54x | 基礎 SL=0.58% → 調整後=0.90% | SL=$1.50 | TP=$1.54
+2025-10-28T11:20:23.812786155Z [inf]  2025-10-28 11:20:23,599 - src.strategies.self_learning_trader - INFO - 🎯 ORCAUSDT 完整信號: LONG @ 1.52 | 槓桿=11.8x | SL=1.50 | TP=1.54 | 勝率=64.5% | 信心度=74.0%
+2025-10-28T11:20:23.812792129Z [inf]  2025-10-28 11:20:23,641 - src.strategies.rule_based_signal_generator - INFO - ✅ VIRTUALUSDT 信號生成: LONG | 信心度=69.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:23.814173610Z [inf]  2025-10-28 11:20:23,795 - src.strategies.rule_based_signal_generator - INFO - ✅ KMNOUSDT 信號生成: LONG | 信心度=67.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:24.032050155Z [inf]  2025-10-28 11:20:24,020 - src.strategies.rule_based_signal_generator - INFO - ✅ ARCUSDT 信號生成: LONG | 信心度=74.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.032057391Z [inf]  2025-10-28 11:20:24,020 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=74.00% → conf_factor=1.48x | 最終槓桿=11.79x
+2025-10-28T11:20:24.032063766Z [inf]  2025-10-28 11:20:24,021 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=11.8x → scale=1.54x | 基礎 SL=4.51% → 調整後=6.94% | SL=$0.01 | TP=$0.02
+2025-10-28T11:20:24.032069440Z [inf]  2025-10-28 11:20:24,021 - src.strategies.self_learning_trader - INFO - 🎯 ARCUSDT 完整信號: LONG @ 0.02 | 槓桿=11.8x | SL=0.01 | TP=0.02 | 勝率=64.5% | 信心度=74.0%
+2025-10-28T11:20:24.198104385Z [inf]  2025-10-28 11:20:24,192 - src.strategies.rule_based_signal_generator - INFO - ✅ GPSUSDT 信號生成: LONG | 信心度=80.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.198111260Z [inf]  2025-10-28 11:20:24,192 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=80.00% → conf_factor=1.60x | 最終槓桿=12.75x
+2025-10-28T11:20:24.198116404Z [inf]  2025-10-28 11:20:24,192 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.7x → scale=1.59x | 基礎 SL=1.77% → 調整後=2.81% | SL=$0.01 | TP=$0.01
+2025-10-28T11:20:24.198120456Z [inf]  2025-10-28 11:20:24,192 - src.strategies.self_learning_trader - INFO - 🎯 GPSUSDT 完整信號: LONG @ 0.01 | 槓桿=12.7x | SL=0.01 | TP=0.01 | 勝率=64.5% | 信心度=80.0%
+2025-10-28T11:20:24.211334916Z [inf]  2025-10-28 11:20:24,203 - src.strategies.rule_based_signal_generator - INFO - ✅ SHELLUSDT 信號生成: LONG | 信心度=77.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.211344275Z [inf]  2025-10-28 11:20:24,203 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=77.00% → conf_factor=1.54x | 最終槓桿=12.27x
+2025-10-28T11:20:24.211351451Z [inf]  2025-10-28 11:20:24,203 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.3x → scale=1.56x | 基礎 SL=2.85% → 調整後=4.46% | SL=$0.11 | TP=$0.12
+2025-10-28T11:20:24.211357916Z [inf]  2025-10-28 11:20:24,203 - src.strategies.self_learning_trader - INFO - 🎯 SHELLUSDT 完整信號: LONG @ 0.11 | 槓桿=12.3x | SL=0.11 | TP=0.12 | 勝率=64.5% | 信心度=77.0%
+2025-10-28T11:20:24.238161436Z [inf]  2025-10-28 11:20:24,235 - src.strategies.rule_based_signal_generator - INFO - ✅ VICUSDT 信號生成: SHORT | 信心度=54.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:24.428434340Z [inf]  2025-10-28 11:20:24,417 - src.strategies.rule_based_signal_generator - INFO - ✅ WALUSDT 信號生成: SHORT | 信心度=54.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:24.481219551Z [inf]  2025-10-28 11:20:24,479 - src.strategies.rule_based_signal_generator - INFO - ✅ FORTHUSDT 信號生成: LONG | 信心度=69.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:24.848683672Z [inf]  2025-10-28 11:20:24,587 - src.strategies.rule_based_signal_generator - INFO - ✅ EPTUSDT 信號生成: SHORT | 信心度=79.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.848692194Z [inf]  2025-10-28 11:20:24,587 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=79.00% → conf_factor=1.58x | 最終槓桿=12.59x
+2025-10-28T11:20:24.848700121Z [inf]  2025-10-28 11:20:24,587 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.6x → scale=1.58x | 基礎 SL=0.83% → 調整後=1.31% | SL=$0.00 | TP=$0.00
+2025-10-28T11:20:24.848707555Z [inf]  2025-10-28 11:20:24,587 - src.strategies.self_learning_trader - INFO - 🎯 EPTUSDT 完整信號: SHORT @ 0.00 | 槓桿=12.6x | SL=0.00 | TP=0.00 | 勝率=64.5% | 信心度=79.0%
+2025-10-28T11:20:24.848714622Z [inf]  2025-10-28 11:20:24,799 - src.strategies.rule_based_signal_generator - INFO - ✅ OGUSDT 信號生成: SHORT | 信心度=85.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.848721237Z [inf]  2025-10-28 11:20:24,799 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=85.00% → conf_factor=1.70x | 最終槓桿=13.54x
+2025-10-28T11:20:24.848729545Z [inf]  2025-10-28 11:20:24,799 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=13.5x → scale=1.63x | 基礎 SL=0.69% → 調整後=1.12% | SL=$13.67 | TP=$13.29
+2025-10-28T11:20:24.848737678Z [inf]  2025-10-28 11:20:24,799 - src.strategies.self_learning_trader - INFO - 🎯 OGUSDT 完整信號: SHORT @ 13.52 | 槓桿=13.5x | SL=13.67 | TP=13.29 | 勝率=64.5% | 信心度=85.0%
+2025-10-28T11:20:24.884609517Z [inf]  2025-10-28 11:20:24,879 - src.strategies.rule_based_signal_generator - INFO - ✅ BUSDT 信號生成: LONG | 信心度=82.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:24.884615195Z [inf]  2025-10-28 11:20:24,879 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=82.00% → conf_factor=1.64x | 最終槓桿=13.07x
+2025-10-28T11:20:24.884620123Z [inf]  2025-10-28 11:20:24,879 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=13.1x → scale=1.60x | 基礎 SL=2.63% → 調整後=4.22% | SL=$0.19 | TP=$0.21
+2025-10-28T11:20:24.884624792Z [inf]  2025-10-28 11:20:24,879 - src.strategies.self_learning_trader - INFO - 🎯 BUSDT 完整信號: LONG @ 0.20 | 槓桿=13.1x | SL=0.19 | TP=0.21 | 勝率=64.5% | 信心度=82.0%
+2025-10-28T11:20:25.257962773Z [inf]  2025-10-28 11:20:25,247 - src.strategies.rule_based_signal_generator - INFO - ✅ PUMPUSDT 信號生成: LONG | 信心度=80.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:25.257969966Z [inf]  2025-10-28 11:20:25,248 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=80.00% → conf_factor=1.60x | 最終槓桿=12.75x
+2025-10-28T11:20:25.257975946Z [inf]  2025-10-28 11:20:25,248 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.7x → scale=1.59x | 基礎 SL=1.70% → 調整後=2.69% | SL=$0.01 | TP=$0.01
+2025-10-28T11:20:25.257982292Z [inf]  2025-10-28 11:20:25,248 - src.strategies.self_learning_trader - INFO - 🎯 PUMPUSDT 完整信號: LONG @ 0.01 | 槓桿=12.7x | SL=0.01 | TP=0.01 | 勝率=64.5% | 信心度=80.0%
+2025-10-28T11:20:25.467426476Z [inf]  2025-10-28 11:20:25,460 - src.strategies.rule_based_signal_generator - INFO - ✅ PROVEUSDT 信號生成: SHORT | 信心度=59.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:25.854602373Z [inf]  2025-10-28 11:20:25,692 - src.strategies.rule_based_signal_generator - INFO - ✅ TAKEUSDT 信號生成: SHORT | 信心度=85.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:25.854609006Z [inf]  2025-10-28 11:20:25,692 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=85.00% → conf_factor=1.70x | 最終槓桿=13.54x
+2025-10-28T11:20:25.854615524Z [inf]  2025-10-28 11:20:25,692 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=13.5x → scale=1.63x | 基礎 SL=0.37% → 調整後=0.61% | SL=$0.28 | TP=$0.28
+2025-10-28T11:20:25.854623301Z [inf]  2025-10-28 11:20:25,692 - src.strategies.self_learning_trader - INFO - 🎯 TAKEUSDT 完整信號: SHORT @ 0.28 | 槓桿=13.5x | SL=0.28 | TP=0.28 | 勝率=64.5% | 信心度=85.0%
+2025-10-28T11:20:25.880106226Z [inf]  2025-10-28 11:20:25,869 - src.strategies.rule_based_signal_generator - INFO - ✅ TRADOORUSDT 信號生成: LONG | 信心度=57.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:25.906432139Z [inf]  2025-10-28 11:20:25,902 - src.strategies.rule_based_signal_generator - INFO - ✅ COAIUSDT 信號生成: SHORT | 信心度=54.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:26.034265151Z [inf]  2025-10-28 11:20:26,030 - src.strategies.rule_based_signal_generator - INFO - ✅ TRUTHUSDT 信號生成: SHORT | 信心度=60.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:26.110657476Z [inf]  2025-10-28 11:20:26,108 - src.strategies.rule_based_signal_generator - INFO - ✅ MONUSDT 信號生成: SHORT | 信心度=77.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:26.110664698Z [inf]  2025-10-28 11:20:26,108 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=77.00% → conf_factor=1.54x | 最終槓桿=12.27x
+2025-10-28T11:20:26.110670348Z [inf]  2025-10-28 11:20:26,108 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.3x → scale=1.56x | 基礎 SL=2.17% → 調整後=3.40% | SL=$0.06 | TP=$0.05
+2025-10-28T11:20:26.110683005Z [inf]  2025-10-28 11:20:26,108 - src.strategies.self_learning_trader - INFO - 🎯 MONUSDT 完整信號: SHORT @ 0.06 | 槓桿=12.3x | SL=0.06 | TP=0.05 | 勝率=64.5% | 信心度=77.0%
+2025-10-28T11:20:26.264905360Z [inf]  2025-10-28 11:20:26,262 - src.strategies.rule_based_signal_generator - INFO - ✅ TURTLEUSDT 信號生成: SHORT | 信心度=80.0% | 勝率=64.5% | R:R=1.50
+2025-10-28T11:20:26.264914151Z [inf]  2025-10-28 11:20:26,262 - src.strategies.self_learning_trader - INFO -    📊 槓桿計算: 勝率=64.50% → win_leverage=7.97x | 信心度=80.00% → conf_factor=1.60x | 最終槓桿=12.75x
+2025-10-28T11:20:26.264920815Z [inf]  2025-10-28 11:20:26,262 - src.strategies.self_learning_trader - INFO -    🎯 SL/TP 調整: 槓桿=12.7x → scale=1.59x | 基礎 SL=1.67% → 調整後=2.65% | SL=$0.16 | TP=$0.15
+2025-10-28T11:20:26.264925601Z [inf]  2025-10-28 11:20:26,262 - src.strategies.self_learning_trader - INFO - 🎯 TURTLEUSDT 完整信號: SHORT @ 0.15 | 槓桿=12.7x | SL=0.16 | TP=0.15 | 勝率=64.5% | 信心度=80.0%
+2025-10-28T11:20:26.295655060Z [inf]  2025-10-28 11:20:26,283 - src.strategies.rule_based_signal_generator - INFO - ✅ ONUSDT 信號生成: SHORT | 信心度=57.0% | 勝率=59.5% | R:R=1.50
+2025-10-28T11:20:26.295672259Z [inf]  2025-10-28 11:20:26,284 - src.core.unified_scheduler - INFO - ✅ 發現 18 個交易信號
+2025-10-28T11:20:26.295680585Z [inf]  2025-10-28 11:20:26,284 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 YFIUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:26.295688808Z [inf]  2025-10-28 11:20:26,284 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=11.8x | 名義價值=$202.91 | 數量=0.041752 | 實際價值=$202.91
+2025-10-28T11:20:26.295696950Z [err]  /app/src/core/unified_scheduler.py:378: RuntimeWarning: coroutine 'BinanceClient.get_min_quantity' was never awaited
+2025-10-28T11:20:26.295705186Z [err]    position_size = self.self_learning_trader.calculate_position_size(
+2025-10-28T11:20:26.295712757Z [err]  RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+2025-10-28T11:20:26.367487933Z [inf]  2025-10-28 11:20:26,363 - src.clients.binance_client - INFO - 創建訂單: YFIUSDT BUY MARKET 0.041
+2025-10-28T11:20:26.441443136Z [inf]  2025-10-28 11:20:26,439 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'YFIUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.041, 'timestamp': 1761650426363, 'signature': 'ea9275c3b95ab998cb886ae2bcf7cff4c19f8da293cda1fc1903600d8b3d0e81'}
+2025-10-28T11:20:26.441452070Z [inf]  2025-10-28 11:20:26,439 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:26.441458106Z [inf]  2025-10-28 11:20:26,439 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:26.444007870Z [inf]  2025-10-28 11:20:26,439 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:26.444013564Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.444023926Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.444029962Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:26.444034261Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:26.444041992Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:26.444045553Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:26.444053291Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.444063073Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:26.444071847Z [inf]      raise e
+2025-10-28T11:20:26.444080018Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:26.444089827Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:26.444099742Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.444106165Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:26.444112066Z [inf]      response.raise_for_status()
+2025-10-28T11:20:26.444117928Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:26.444122519Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:26.444128202Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:26.444133989Z [inf]  
+2025-10-28T11:20:26.444142440Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:26.444148615Z [inf]  
+2025-10-28T11:20:26.447663398Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.447670808Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:26.447678008Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:26.447687727Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.447694969Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:26.447701060Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:26.447707110Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.447736168Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:26.447742943Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:26.447750333Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:26.447756995Z [inf]  2025-10-28 11:20:26,440 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 PHBUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:26.447764954Z [inf]  2025-10-28 11:20:26,440 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=356.984772 | 實際價值=$219.37
+2025-10-28T11:20:26.447771931Z [inf]  2025-10-28 11:20:26,440 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:26.517927393Z [inf]  2025-10-28 11:20:26,516 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:26.517936722Z [inf]  2025-10-28 11:20:26,516 - src.clients.binance_client - INFO - 創建訂單: PHBUSDT BUY MARKET 356.0
+2025-10-28T11:20:26.868066005Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:26.868078135Z [inf]      response.raise_for_status()
+2025-10-28T11:20:26.868087524Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:26.868093192Z [inf]  2025-10-28 11:20:26,593 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:26.868103332Z [inf]  2025-10-28 11:20:26,593 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:26.868107795Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:26.868114638Z [inf]  2025-10-28 11:20:26,593 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:26.868118137Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.868122939Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.868128133Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:26.868131061Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:26.868137525Z [inf]      raise e
+2025-10-28T11:20:26.868148505Z [inf]  2025-10-28 11:20:26,592 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'PHBUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 356.0, 'timestamp': 1761650426517, 'signature': 'f0e17149b0e3b7ca8411820bce562cab5d86697f630d5c187988b2df7a40fdc8'}
+2025-10-28T11:20:26.868154167Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:26.868161897Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:26.868168853Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.870826145Z [inf]  
+2025-10-28T11:20:26.870826247Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:26.870836925Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:26.870847625Z [inf]  
+2025-10-28T11:20:26.870851948Z [inf]  2025-10-28 11:20:26,594 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 KASUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:26.870859983Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.870864588Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:26.870871386Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:26.870880432Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:26.870888064Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:26.870894875Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.870899198Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.870907607Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:26.870912002Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:26.870918399Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:26.870924921Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:26.870933932Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.870943547Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:26.870950917Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:26.873713077Z [inf]  2025-10-28 11:20:26,743 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'KASUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 3499.0, 'timestamp': 1761650426668, 'signature': '62dd60b1818304132db327b01c090530574f036cd14777a0cb2800d8ef2ffa11'}
+2025-10-28T11:20:26.873723505Z [inf]  2025-10-28 11:20:26,744 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:26.873738505Z [inf]  2025-10-28 11:20:26,744 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:26.873750644Z [inf]  2025-10-28 11:20:26,744 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:26.873758000Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.873763733Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:26.873774439Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:26.873780420Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.873794384Z [inf]  2025-10-28 11:20:26,594 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.0x | 名義價值=$205.66 | 數量=3499.943772 | 實際價值=$205.66
+2025-10-28T11:20:26.873800582Z [inf]  2025-10-28 11:20:26,594 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:26.873854655Z [inf]  2025-10-28 11:20:26,668 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:26.873861834Z [inf]  2025-10-28 11:20:26,668 - src.clients.binance_client - INFO - 創建訂單: KASUSDT BUY MARKET 3499.0
+2025-10-28T11:20:26.875809992Z [inf]  
+2025-10-28T11:20:26.875818334Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:26.875830849Z [inf]  
+2025-10-28T11:20:26.875838171Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.875844642Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:26.875851242Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:26.875860244Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.875876407Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:26.875877760Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:26.875892864Z [inf]      raise e
+2025-10-28T11:20:26.875903384Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:26.875914124Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:26.875926076Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.875934815Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:26.875944283Z [inf]      response.raise_for_status()
+2025-10-28T11:20:26.875953191Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:26.875963837Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:26.875971705Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:26.876034788Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:26.876049686Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.876058619Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:26.877082393Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:26.877087440Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.877092283Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:26.877096331Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:26.877102456Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:26.877108035Z [inf]  2025-10-28 11:20:26,745 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 TAOUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:26.877114271Z [inf]  2025-10-28 11:20:26,745 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=11.8x | 名義價值=$202.91 | 數量=0.452359 | 實際價值=$202.91
+2025-10-28T11:20:26.877119579Z [inf]  2025-10-28 11:20:26,745 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:26.877124831Z [inf]  2025-10-28 11:20:26,818 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:26.877130820Z [inf]  2025-10-28 11:20:26,818 - src.clients.binance_client - INFO - 創建訂單: TAOUSDT BUY MARKET 0.452
+2025-10-28T11:20:26.897849807Z [inf]  2025-10-28 11:20:26,895 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'TAOUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.452, 'timestamp': 1761650426818, 'signature': '4f0883484ecfe9d814b3c15534f1dbf64fc8792ba638477dd92085b3fb212b12'}
+2025-10-28T11:20:26.897854863Z [inf]      raise e
+2025-10-28T11:20:26.897861959Z [inf]  2025-10-28 11:20:26,895 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:26.897867042Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:26.897871843Z [inf]  2025-10-28 11:20:26,895 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:26.897875048Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:26.897880324Z [inf]  2025-10-28 11:20:26,895 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:26.897883161Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.897889514Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.897890895Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:26.897898138Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:26.897898628Z [inf]      response.raise_for_status()
+2025-10-28T11:20:26.897905834Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:26.897906750Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:26.897914092Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.897920465Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:26.899438773Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.899448736Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:26.899452973Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:26.899458071Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:26.899463888Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:26.899465918Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.899474698Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:26.899479129Z [inf]  
+2025-10-28T11:20:26.899480939Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:26.899485961Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:26.899490674Z [inf]  2025-10-28 11:20:26,896 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 CHESSUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:26.899493778Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:26.899500983Z [inf]  
+2025-10-28T11:20:26.899506383Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:26.899515512Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:26.899521369Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:26.899526802Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:26.899532385Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:26.899541087Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:26.900815013Z [inf]  2025-10-28 11:20:26,896 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.5x | 名義價值=$233.08 | 數量=4837.641944 | 實際價值=$233.08
+2025-10-28T11:20:26.900821581Z [inf]  2025-10-28 11:20:26,896 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:26.972844662Z [inf]  2025-10-28 11:20:26,968 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:26.972853795Z [inf]  2025-10-28 11:20:26,968 - src.clients.binance_client - INFO - 創建訂單: CHESSUSDT BUY MARKET 4837.0
+2025-10-28T11:20:27.043336145Z [inf]  2025-10-28 11:20:27,042 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'CHESSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 4837.0, 'timestamp': 1761650426968, 'signature': '0523a5abece6dcb24c2ed599739d3a2c53901ee96b6c5a56f512715f42647d29'}
+2025-10-28T11:20:27.043340183Z [inf]  2025-10-28 11:20:27,042 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.043345138Z [inf]  2025-10-28 11:20:27,042 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.044831385Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.044834471Z [inf]  
+2025-10-28T11:20:27.044840118Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.044843298Z [inf]  2025-10-28 11:20:27,042 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.044846882Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.044847373Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.044850521Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.044855858Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.044857328Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.044859347Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.044863508Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.044864483Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.044866872Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.044870357Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.044873966Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.044876405Z [inf]  
+2025-10-28T11:20:27.044882059Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.044882100Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.044887410Z [inf]      raise e
+2025-10-28T11:20:27.044891773Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.044896116Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.046293358Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.046300955Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.046309129Z [inf]  2025-10-28 11:20:27,043 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 DEGENUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.046314751Z [inf]  2025-10-28 11:20:27,043 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=11.5x | 名義價值=$197.43 | 數量=90647.579527 | 實際價值=$197.43
+2025-10-28T11:20:27.046319244Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.046320823Z [inf]  2025-10-28 11:20:27,043 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.046325260Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.046330654Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.046337361Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.046343628Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.046349904Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.046354999Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.046360307Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.123321773Z [inf]  2025-10-28 11:20:27,116 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.123328125Z [inf]  2025-10-28 11:20:27,117 - src.clients.binance_client - INFO - 創建訂單: DEGENUSDT BUY MARKET 90647.0
+2025-10-28T11:20:27.198351404Z [inf]  2025-10-28 11:20:27,190 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'DEGENUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 90647.0, 'timestamp': 1761650427117, 'signature': '7211bfe47cdc4948b90c361439d418ad1d095c6d027f1f465c18981b5e02869d'}
+2025-10-28T11:20:27.198357693Z [inf]  2025-10-28 11:20:27,190 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.198363791Z [inf]  2025-10-28 11:20:27,190 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.198370373Z [inf]  2025-10-28 11:20:27,190 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.198375837Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.198383486Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.198389772Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.198395721Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.198401197Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.198406641Z [inf]      raise e
+2025-10-28T11:20:27.198412714Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.198418666Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.198424417Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.198430723Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.198436433Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.198443589Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.200755107Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.200760749Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.200765875Z [inf]  
+2025-10-28T11:20:27.200770878Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.200776986Z [inf]  
+2025-10-28T11:20:27.200783042Z [inf]  2025-10-28 11:20:27,191 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=11.8x | 名義價值=$202.91 | 數量=133.848685 | 實際價值=$202.91
+2025-10-28T11:20:27.200785566Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.200791112Z [inf]  2025-10-28 11:20:27,191 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.200792748Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.200798567Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.200803853Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.200811136Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.200816250Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.200822355Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.200828207Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.200833637Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.200840845Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.200846619Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.200852938Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.200859084Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.200864377Z [inf]  2025-10-28 11:20:27,191 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 ORCAUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.278398611Z [inf]  2025-10-28 11:20:27,273 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.278406318Z [inf]  2025-10-28 11:20:27,274 - src.clients.binance_client - INFO - 創建訂單: ORCAUSDT BUY MARKET 133.8
+2025-10-28T11:20:27.353992952Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.354005272Z [inf]  2025-10-28 11:20:27,349 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'ORCAUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 133.8, 'timestamp': 1761650427274, 'signature': 'dd26c783b6160bd437225ade527b2a8286725ac61f7028f04728ec73e5b1f265'}
+2025-10-28T11:20:27.354011168Z [inf]  2025-10-28 11:20:27,349 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.354016248Z [inf]  2025-10-28 11:20:27,349 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.354021151Z [inf]  2025-10-28 11:20:27,349 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.354025666Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.354031000Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.354035125Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.354042018Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.354070066Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.354075196Z [inf]      raise e
+2025-10-28T11:20:27.354079366Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.354083916Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.354089271Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.354093746Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.354099081Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.355523426Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.355530643Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.355535098Z [inf]  
+2025-10-28T11:20:27.355539139Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.355543436Z [inf]  
+2025-10-28T11:20:27.355548023Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.355552912Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.355557489Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.355561363Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.355565316Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.355569217Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.355573141Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.355577215Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.355581061Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.355585091Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.355590215Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.355594179Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.355599230Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.355603469Z [inf]  2025-10-28 11:20:27,350 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 FARTCOINUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.357149983Z [inf]  2025-10-28 11:20:27,350 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.1x | 名義價值=$224.85 | 數量=545.226288 | 實際價值=$224.85
+2025-10-28T11:20:27.357156972Z [inf]  2025-10-28 11:20:27,350 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.427786852Z [inf]  2025-10-28 11:20:27,425 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.427796391Z [inf]  2025-10-28 11:20:27,425 - src.clients.binance_client - INFO - 創建訂單: FARTCOINUSDT BUY MARKET 545.2
+2025-10-28T11:20:27.500545515Z [inf]  2025-10-28 11:20:27,498 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.500555286Z [inf]  2025-10-28 11:20:27,497 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'FARTCOINUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 545.2, 'timestamp': 1761650427425, 'signature': '4442950a36b2b4fd51d5c22180aa9af7748ce302b1664ee4a3df0ce2c962b665'}
+2025-10-28T11:20:27.500557938Z [inf]  2025-10-28 11:20:27,498 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.500560687Z [inf]  2025-10-28 11:20:27,498 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.500565998Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.500570660Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.500575524Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.500581129Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.500585828Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.500590565Z [inf]      raise e
+2025-10-28T11:20:27.500595581Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.500601589Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.500606175Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.500610550Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.500614629Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.500619695Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.502916023Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.502925538Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.502931082Z [inf]  
+2025-10-28T11:20:27.502936777Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.502942887Z [inf]  
+2025-10-28T11:20:27.502950266Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.502954800Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.502959834Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.502965252Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.502974464Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.502979125Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.502983098Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.502987639Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.502992446Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.502996172Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.503000173Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.503003971Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.503008388Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.503012840Z [inf]  2025-10-28 11:20:27,498 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 ARCUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.504373078Z [inf]  2025-10-28 11:20:27,499 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=11.8x | 名義價值=$202.91 | 數量=13091.264953 | 實際價值=$202.91
+2025-10-28T11:20:27.504380955Z [inf]  2025-10-28 11:20:27,499 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.890472978Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.890478916Z [inf]      raise e
+2025-10-28T11:20:27.890485304Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.890493085Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.890498539Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.890517792Z [inf]  2025-10-28 11:20:27,573 - src.clients.binance_client - INFO - 創建訂單: ARCUSDT BUY MARKET 13091.0
+2025-10-28T11:20:27.890523927Z [inf]  2025-10-28 11:20:27,648 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'ARCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 13091.0, 'timestamp': 1761650427574, 'signature': 'f8afd885d422903562949d341471d3c67c1dac35d2711349b565791dcaef81c2'}
+2025-10-28T11:20:27.890532512Z [inf]  2025-10-28 11:20:27,648 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.890533726Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.890539696Z [inf]  2025-10-28 11:20:27,648 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.890540152Z [inf]  2025-10-28 11:20:27,573 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.890546790Z [inf]  2025-10-28 11:20:27,648 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.890557097Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.890569956Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.890581027Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.891752737Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.891760757Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.891764570Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.891768992Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.891773774Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.891777891Z [inf]  
+2025-10-28T11:20:27.891782254Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.891787770Z [inf]  
+2025-10-28T11:20:27.891793753Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.891802363Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.891807964Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.891812591Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.891818134Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.891824235Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.891830494Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.891837456Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.891842481Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.891853546Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.891862036Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.893679071Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.893687534Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.893694100Z [inf]  2025-10-28 11:20:27,649 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 GPSUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.893700543Z [inf]  2025-10-28 11:20:27,649 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=24675.719061 | 實際價值=$219.37
+2025-10-28T11:20:27.893707089Z [inf]  2025-10-28 11:20:27,649 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.893713259Z [inf]  2025-10-28 11:20:27,722 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.893719000Z [inf]  2025-10-28 11:20:27,722 - src.clients.binance_client - INFO - 創建訂單: GPSUSDT BUY MARKET 24675.0
+2025-10-28T11:20:27.893724597Z [inf]  2025-10-28 11:20:27,797 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'GPSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 24675.0, 'timestamp': 1761650427722, 'signature': 'c8c4f031fba9d0ef44da7afd90340d8f6c56b8ed8bb41ea6b0c3e53ff615e8cd'}
+2025-10-28T11:20:27.893729455Z [inf]  2025-10-28 11:20:27,797 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.893735814Z [inf]  2025-10-28 11:20:27,797 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.893741868Z [inf]  2025-10-28 11:20:27,797 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.895432428Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.895440397Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.895446346Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.895452214Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.895457752Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.895462983Z [inf]      raise e
+2025-10-28T11:20:27.895470072Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.895476540Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.895482613Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.895488789Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.895493813Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.895499140Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.895504466Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.895510261Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.895516043Z [inf]  
+2025-10-28T11:20:27.895522420Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.895527583Z [inf]  
+2025-10-28T11:20:27.895533175Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.895538807Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.895544301Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.895549881Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.895555409Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.896752891Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.896757368Z [inf]  2025-10-28 11:20:27,798 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:27.896761812Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.896767036Z [inf]  2025-10-28 11:20:27,871 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:27.896768915Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.896774184Z [inf]  2025-10-28 11:20:27,872 - src.clients.binance_client - INFO - 創建訂單: SHELLUSDT BUY MARKET 1909.0
+2025-10-28T11:20:27.896776264Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.896781452Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.896787793Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.896793621Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.896798722Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.896803622Z [inf]  2025-10-28 11:20:27,798 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 SHELLUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.896808608Z [inf]  2025-10-28 11:20:27,798 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.3x | 名義價值=$211.14 | 數量=1909.049499 | 實際價值=$211.14
+2025-10-28T11:20:27.952409529Z [inf]  2025-10-28 11:20:27,946 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'SHELLUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 1909.0, 'timestamp': 1761650427872, 'signature': '461ccd069a862b12e9483339d08d4e647cfdcbd1d47327185886fd76e20c8887'}
+2025-10-28T11:20:27.952422382Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:27.952427270Z [inf]  2025-10-28 11:20:27,946 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:27.952440406Z [inf]      response.raise_for_status()
+2025-10-28T11:20:27.952441374Z [inf]  2025-10-28 11:20:27,946 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:27.952452935Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:27.952457370Z [inf]  2025-10-28 11:20:27,946 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:27.952467034Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.952475032Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:27.952483988Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:27.952494313Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.952502730Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:27.952512659Z [inf]      raise e
+2025-10-28T11:20:27.952524043Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:27.952533458Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:27.952544012Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.954049655Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:27.954060132Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:27.954069098Z [inf]  
+2025-10-28T11:20:27.954075071Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:27.954081073Z [inf]  
+2025-10-28T11:20:27.954087442Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:27.954096150Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:27.954102048Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:27.954106715Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.954113042Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:27.954117787Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:27.954125021Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.954130140Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:27.954135688Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:27.954141638Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:27.954147047Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:27.954152267Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:27.954157850Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:27.954162960Z [inf]  2025-10-28 11:20:27,947 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 EPTUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:27.956136902Z [inf]  2025-10-28 11:20:27,947 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.6x | 名義價值=$216.63 | 數量=47756.845938 | 實際價值=$216.63
+2025-10-28T11:20:27.956150307Z [inf]  2025-10-28 11:20:27,947 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.029596802Z [inf]  2025-10-28 11:20:28,022 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:28.029602281Z [inf]  2025-10-28 11:20:28,022 - src.clients.binance_client - INFO - 創建訂單: EPTUSDT SELL MARKET 47756.0
+2025-10-28T11:20:28.108555140Z [inf]  2025-10-28 11:20:28,098 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'EPTUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 47756.0, 'timestamp': 1761650428022, 'signature': '1824a263246c25473b99e6ec9d9979d0cb619c1c54d65b9111757fe91604e4ec'}
+2025-10-28T11:20:28.108560565Z [inf]  2025-10-28 11:20:28,099 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:28.108564970Z [inf]  2025-10-28 11:20:28,099 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.108570428Z [inf]  2025-10-28 11:20:28,099 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.108574744Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.108579314Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.108584328Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.108589168Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.108594504Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.108600202Z [inf]      raise e
+2025-10-28T11:20:28.108605124Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.108609476Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.108613198Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.108617869Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.108622969Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.108627622Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.110356646Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.110365801Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.110373787Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.110374127Z [inf]  
+2025-10-28T11:20:28.110380138Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.110387069Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.110387501Z [inf]  
+2025-10-28T11:20:28.110394974Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.110398578Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.110400853Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.110407660Z [inf]  2025-10-28 11:20:28,100 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 OGUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.110409467Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.110415215Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.110421062Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.110426875Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.110432088Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.110436042Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.110441003Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.110446686Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.111521730Z [inf]  2025-10-28 11:20:28,100 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.5x | 名義價值=$233.08 | 數量=17.240742 | 實際價值=$233.08
+2025-10-28T11:20:28.111527566Z [inf]  2025-10-28 11:20:28,100 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.181868024Z [inf]  2025-10-28 11:20:28,178 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:28.181877743Z [inf]  2025-10-28 11:20:28,178 - src.clients.binance_client - INFO - 創建訂單: OGUSDT SELL MARKET 17.2
+2025-10-28T11:20:28.259100589Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.259116822Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.259129881Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.259133602Z [inf]  2025-10-28 11:20:28,255 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'OGUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 17.2, 'timestamp': 1761650428178, 'signature': 'c336d962c7b678a7609bb288906b16704e3ce10d8d960c614bdb7daf0edb1d73'}
+2025-10-28T11:20:28.259141266Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.259158203Z [inf]  2025-10-28 11:20:28,255 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:28.259167667Z [inf]  2025-10-28 11:20:28,255 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.259178083Z [inf]  2025-10-28 11:20:28,255 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.259188330Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.259197513Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.259206945Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.259215265Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.259226067Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.259236504Z [inf]      raise e
+2025-10-28T11:20:28.259245752Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.259255883Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.261714729Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.261731143Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.261733854Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.261744200Z [inf]  
+2025-10-28T11:20:28.261753622Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.261759261Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.261768271Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.261773325Z [inf]  
+2025-10-28T11:20:28.261780641Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.261790870Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.261791674Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.261817231Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.261819596Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.261827629Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.261834942Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.261838638Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.261850401Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.261852130Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.261861780Z [inf]  2025-10-28 11:20:28,256 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 BUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.262727425Z [inf]  2025-10-28 11:20:28,256 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.1x | 名義價值=$224.85 | 數量=1132.181878 | 實際價值=$224.85
+2025-10-28T11:20:28.262734787Z [inf]  2025-10-28 11:20:28,256 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.339779535Z [inf]  2025-10-28 11:20:28,330 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:28.339790324Z [inf]  2025-10-28 11:20:28,330 - src.clients.binance_client - INFO - 創建訂單: BUSDT BUY MARKET 1132.0
+2025-10-28T11:20:28.408754754Z [inf]  2025-10-28 11:20:28,404 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'BUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 1132.0, 'timestamp': 1761650428330, 'signature': '1d0ed5ec2673b0489102c6042673d8b5eb57a01332e9e1b1c8092c634ebea81f'}
+2025-10-28T11:20:28.408760818Z [inf]  2025-10-28 11:20:28,404 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:28.408766631Z [inf]  2025-10-28 11:20:28,404 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.410348049Z [inf]  2025-10-28 11:20:28,405 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.410353627Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.410360450Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.410365899Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.410372961Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.410379868Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.410385046Z [inf]      raise e
+2025-10-28T11:20:28.410391205Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.410398557Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.410405206Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.410410810Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.410417872Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.410424237Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.410432141Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.410438713Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.410444774Z [inf]  
+2025-10-28T11:20:28.410451627Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.410456701Z [inf]  
+2025-10-28T11:20:28.410464551Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.410470376Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.410475495Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.411095103Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.411107526Z [inf]  2025-10-28 11:20:28,406 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 PUMPUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.411116092Z [inf]  2025-10-28 11:20:28,406 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=42373.409785 | 實際價值=$219.37
+2025-10-28T11:20:28.411123197Z [inf]  2025-10-28 11:20:28,406 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.411130787Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.411137732Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.411143306Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.411149996Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.411155892Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.411161531Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.411169279Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.411178003Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.411183473Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.482217541Z [inf]  2025-10-28 11:20:28,480 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:28.482226205Z [inf]  2025-10-28 11:20:28,480 - src.clients.binance_client - INFO - 創建訂單: PUMPUSDT BUY MARKET 42373.0
+2025-10-28T11:20:28.878598014Z [inf]  2025-10-28 11:20:28,555 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'PUMPUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 42373.0, 'timestamp': 1761650428480, 'signature': '5a01e05afdda9acd72c744c270944d931a066ce91f12afc987fcd02dd1dcd33a'}
+2025-10-28T11:20:28.878603406Z [inf]  2025-10-28 11:20:28,555 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:28.878608754Z [inf]  2025-10-28 11:20:28,555 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.878614295Z [inf]  2025-10-28 11:20:28,555 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.878619822Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.878624933Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.878631297Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.878638521Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.878646583Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.878651669Z [inf]      raise e
+2025-10-28T11:20:28.878657063Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.878662745Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.878668958Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.878673750Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.878679747Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.878685677Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.879050488Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.879056967Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.879062842Z [inf]  
+2025-10-28T11:20:28.879070002Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.879075681Z [inf]  
+2025-10-28T11:20:28.879085964Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.879093334Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.879099155Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.879104890Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.879111629Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.879120593Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.879151896Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.879159211Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.879166258Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.879171948Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.879178639Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.879186928Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.879196848Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.879203768Z [inf]  2025-10-28 11:20:28,556 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 TAKEUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.883123510Z [inf]  2025-10-28 11:20:28,556 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=13.5x | 名義價值=$233.08 | 數量=828.337440 | 實際價值=$233.08
+2025-10-28T11:20:28.883133124Z [inf]  2025-10-28 11:20:28,556 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.883141083Z [inf]  2025-10-28 11:20:28,630 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-28T11:20:28.883148333Z [inf]  2025-10-28 11:20:28,631 - src.clients.binance_client - INFO - 創建訂單: TAKEUSDT SELL MARKET 828.0
+2025-10-28T11:20:28.883154580Z [inf]  2025-10-28 11:20:28,705 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'TAKEUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 828.0, 'timestamp': 1761650428631, 'signature': 'f73f8de876c7dc324a5204c2299251918a3871e05efa1b1b30fb9ae83774cd1f'}
+2025-10-28T11:20:28.883162228Z [inf]  2025-10-28 11:20:28,705 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-28T11:20:28.883169755Z [inf]  2025-10-28 11:20:28,705 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.883175651Z [inf]  2025-10-28 11:20:28,705 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.883184367Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.883191039Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.883197551Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.883203075Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.885565061Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.885581774Z [inf]      raise e
+2025-10-28T11:20:28.885589467Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.885595879Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.885602655Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.885610011Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.885619249Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.885626580Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.885632835Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.885641580Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.885647760Z [inf]  
+2025-10-28T11:20:28.885653836Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.885659634Z [inf]  
+2025-10-28T11:20:28.885667601Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.885674602Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.885680496Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.885686419Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.885692918Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.885698905Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.885704880Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.885710942Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.887183176Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.887188571Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.887192285Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.887197387Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.887201899Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.887205831Z [inf]  2025-10-28 11:20:28,706 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 MONUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.887210241Z [inf]  2025-10-28 11:20:28,706 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.3x | 名義價值=$211.14 | 數量=3723.824949 | 實際價值=$211.14
+2025-10-28T11:20:28.887216216Z [inf]  2025-10-28 11:20:28,706 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.887222532Z [inf]  2025-10-28 11:20:28,782 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4028, msg=Leverage 12 is not valid, endpoint=/fapi/v1/leverage, params={'symbol': 'MONUSDT', 'leverage': 12, 'timestamp': 1761650428706, 'signature': 'c48dbe1136bcf40d40113865e80848cf71c29b754456a41cb9a73c7b7e63c2ba'}
+2025-10-28T11:20:28.887227120Z [inf]  2025-10-28 11:20:28,782 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/leverage - HTTP 400: Bad Request
+2025-10-28T11:20:28.887231236Z [inf]  2025-10-28 11:20:28,782 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.887235148Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.887239161Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.889827602Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.889836545Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.889842979Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.889849802Z [inf]      raise e
+2025-10-28T11:20:28.889855514Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.889862296Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.889868379Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.890117415Z [inf]      await self.binance_client.set_leverage(symbol, int(leverage))
+2025-10-28T11:20:28.890131719Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.890144018Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.890152955Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.890160082Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.890170231Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/leverage'
+2025-10-28T11:20:28.890177296Z [inf]    File "/app/src/clients/binance_client.py", line 640, in set_leverage
+2025-10-28T11:20:28.890178292Z [inf]  
+2025-10-28T11:20:28.890185987Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.890193313Z [inf]  
+2025-10-28T11:20:28.890198907Z [inf]      return await self._request("POST", "/fapi/v1/leverage", params=params, signed=True)
+2025-10-28T11:20:28.890200768Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.890208857Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.890209572Z [inf]    File "/app/src/core/unified_scheduler.py", line 388, in _execute_signal
+2025-10-28T11:20:28.891103935Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:28.891110076Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.891114910Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.891120185Z [inf]  2025-10-28 11:20:28,783 - src.strategies.self_learning_trader - WARNING -    ⚠️ 無法獲取 TURTLEUSDT 最小數量: '<' not supported between instances of 'float' and 'coroutine'
+2025-10-28T11:20:28.891124483Z [inf]  2025-10-28 11:20:28,783 - src.strategies.self_learning_trader - INFO -    💰 倉位計算: 權益=$21.51 | 槓桿=12.7x | 名義價值=$219.37 | 數量=1416.185555 | 實際價值=$219.37
+2025-10-28T11:20:28.891128668Z [inf]  2025-10-28 11:20:28,783 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.891133556Z [inf]  2025-10-28 11:20:28,858 - src.clients.binance_client - INFO - 創建訂單: TURTLEUSDT SELL MARKET 1416.0
+2025-10-28T11:20:28.891137464Z [inf]  2025-10-28 11:20:28,859 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:28.943754386Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order'
+2025-10-28T11:20:28.943775900Z [inf]  2025-10-28 11:20:28,938 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4061, msg=Order's position side does not match user's setting., endpoint=/fapi/v1/order, params={'symbol': 'TURTLEUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 1416.0, 'timestamp': 1761650428859, 'signature': 'd2543ee4d39003e03e64fb37a152ae65c63af779ddcf4f96ed2d5efcc21ad0d3'}
+2025-10-28T11:20:28.943783982Z [inf]  2025-10-28 11:20:28,938 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-28T11:20:28.943798787Z [inf]  2025-10-28 11:20:28,938 - src.core.unified_scheduler - ERROR -    ❌ 執行信號失敗: HTTP 400: Bad Request
+2025-10-28T11:20:28.943810036Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.943818326Z [inf]    File "/app/src/clients/binance_client.py", line 191, in _request
+2025-10-28T11:20:28.943827517Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-28T11:20:28.943833482Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.943839742Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-28T11:20:28.943847880Z [inf]      raise e
+2025-10-28T11:20:28.943854971Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-28T11:20:28.943860796Z [inf]      result = await func(*args, **kwargs)
+2025-10-28T11:20:28.943867141Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.943873454Z [inf]    File "/app/src/clients/binance_client.py", line 154, in _do_request
+2025-10-28T11:20:28.943879726Z [inf]      response.raise_for_status()
+2025-10-28T11:20:28.943886025Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-28T11:20:28.943892118Z [inf]      raise ClientResponseError(
+2025-10-28T11:20:28.945189647Z [inf]      raise BinanceRequestError(
+2025-10-28T11:20:28.945190499Z [inf]  
+2025-10-28T11:20:28.945201477Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-28T11:20:28.945202069Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-28T11:20:28.945209300Z [inf]  
+2025-10-28T11:20:28.945212742Z [inf]  2025-10-28 11:20:28,939 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 8.7s | 新成交: 0
+2025-10-28T11:20:28.945216587Z [inf]  Traceback (most recent call last):
+2025-10-28T11:20:28.945221241Z [inf]  2025-10-28 11:20:28,939 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-28T11:20:28.945224155Z [inf]    File "/app/src/core/unified_scheduler.py", line 393, in _execute_signal
+2025-10-28T11:20:28.945229896Z [inf]      order_result = await self.binance_client.place_order(
+2025-10-28T11:20:28.945235616Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.945240988Z [inf]    File "/app/src/clients/binance_client.py", line 583, in place_order
+2025-10-28T11:20:28.945246228Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-28T11:20:28.945252633Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.945257872Z [inf]    File "/app/src/clients/binance_client.py", line 556, in create_order
+2025-10-28T11:20:28.945263575Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-28T11:20:28.945268772Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-28T11:20:28.945275246Z [inf]    File "/app/src/clients/binance_client.py", line 195, in _request
+2025-10-28T11:20:34.029269967Z [inf]  2025-10-28 11:20:34,027 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:54.053871047Z [inf]  2025-10-28 11:20:44,138 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-28T11:20:54.053876975Z [inf]  2025-10-28 11:20:44,230 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
