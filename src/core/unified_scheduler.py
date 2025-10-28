@@ -257,7 +257,7 @@ class UnifiedScheduler:
             logger.error(f"❌ 交易週期執行失敗: {e}", exc_info=True)
     
     async def _get_trading_symbols(self) -> list:
-        """獲取交易對列表"""
+        """獲取交易對列表（監控所有 USDT 永續合約）"""
         try:
             # 從配置獲取交易對列表
             if hasattr(self.config, 'TRADING_SYMBOLS') and self.config.TRADING_SYMBOLS:
@@ -270,8 +270,10 @@ class UnifiedScheduler:
                 if s['symbol'].endswith('USDT') and s['status'] == 'TRADING'
             ]
             
-            # 限制數量（避免過多）
-            return symbols[:50]
+            # 使用配置的限制數量（默認 200，可設為 999 監控所有）
+            max_symbols = getattr(self.config, 'TOP_VOLATILITY_SYMBOLS', 200)
+            logger.info(f"📊 掃描到 {len(symbols)} 個 USDT 永續合約，監控前 {max_symbols} 個")
+            return symbols[:max_symbols]
             
         except Exception as e:
             logger.error(f"❌ 獲取交易對列表失敗: {e}")

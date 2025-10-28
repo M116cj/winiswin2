@@ -31,7 +31,7 @@ class Config:
     # ===== 交易配置 =====
     MAX_POSITIONS: int = int(os.getenv("MAX_POSITIONS", "999"))
     CYCLE_INTERVAL: int = int(os.getenv("CYCLE_INTERVAL", "60"))
-    TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "false").lower() == "true"
+    TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "true").lower() == "true"
     VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))
     
     # ===== v3.17+ 核心策略配置 =====
@@ -44,9 +44,9 @@ class Config:
     MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
     MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "2.0"))
     
-    # ===== 掃描配置 =====
+    # ===== 掃描配置（監控所有 U 本位合約）=====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
-    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "200"))
+    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "999"))
     
     # ===== 技術指標配置 =====
     EMA_FAST: int = 20
