@@ -229,13 +229,12 @@ class PositionMonitor24x7:
             )
             
             # 市價平倉（優先級 0，最高優先級）
+            # ⚠️ One-Way Mode: 不使用 positionSide，reduce_only 也移除
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
-                quantity=quantity,
-                reduce_only=True,
-                priority=0  # 最高優先級
+                quantity=quantity
             )
             
             if result:

@@ -384,10 +384,16 @@ class UnifiedScheduler:
                 verbose=True
             )
             
-            # 設置槓桿
-            await self.binance_client.set_leverage(symbol, int(leverage))
+            # 設置槓桿（忽略錯誤，某些交易對可能有槓桿限制）
+            try:
+                # 限制槓桿最大 125x（Binance 通用上限）
+                safe_leverage = min(int(leverage), 125)
+                await self.binance_client.set_leverage(symbol, safe_leverage)
+            except Exception as e:
+                logger.warning(f"   ⚠️ 設置槓桿失敗 ({symbol} {safe_leverage}x): {e}")
+                # 繼續執行，使用當前槓桿
             
-            # 下單
+            # 下單（One-Way Mode，不使用 positionSide）
             side = 'BUY' if direction == 'LONG' else 'SELL'
             
             order_result = await self.binance_client.place_order(
