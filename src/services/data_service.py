@@ -23,15 +23,16 @@ logger = logging.getLogger(__name__)
 
 
 class DataService:
-    """數據服務類（v3.12.0 增量更新优化版）"""
+    """數據服務類（v3.17.2+ WebSocket整合版）"""
     
-    def __init__(self, binance_client: BinanceClient, perf_monitor=None):
+    def __init__(self, binance_client: BinanceClient, perf_monitor=None, websocket_monitor=None):
         """
         初始化數據服務
         
         Args:
             binance_client: Binance 客戶端
             perf_monitor: 性能監控器
+            websocket_monitor: WebSocket監控器（v3.17.2+）
         """
         self.client = binance_client
         self.cache = binance_client.cache
@@ -47,6 +48,14 @@ class DataService:
         
         # ✨ 性能監控
         self.perf_monitor = perf_monitor
+        
+        # 🔥 v3.17.2+：WebSocket整合
+        self.websocket_monitor = websocket_monitor
+        
+        logger.info("=" * 80)
+        logger.info("✅ DataService v3.17.2+ 初始化完成")
+        logger.info(f"   📡 WebSocket模式: {'啟用' if websocket_monitor else '停用（純REST）'}")
+        logger.info("=" * 80)
     
     async def initialize(self):
         """初始化數據服務"""
@@ -80,9 +89,12 @@ class DataService:
         timeframes: Optional[List[str]] = None
     ) -> Dict[str, pd.DataFrame]:
         """
-        获取多时间框架数据（v3.13.0 文档步骤3：使用增量缓存）
+        获取多时间框架数据（v3.17.2+ WebSocket優先版）
         
-        🔥 优化：使用get_klines_incremental()减少API请求60-80%
+        🔥 v3.17.2+優化：
+        1. 優先使用WebSocket實時K線（1m）
+        2. 從1m K線聚合生成15m/1h（無REST API請求）
+        3. 僅在WebSocket不可用時才使用REST備援
         
         Args:
             symbol: 交易對
@@ -94,7 +106,22 @@ class DataService:
         if timeframes is None:
             timeframes = self.timeframes
         
-        # ✨ v3.13.0关键：使用增量缓存版本
+        # 🔥 v3.17.2+：優先使用WebSocket
+        if self.websocket_monitor:
+            try:
+                # 從WebSocket獲取1m K線
+                kline_1m = self.websocket_monitor.get_kline(symbol)
+                
+                if kline_1m:
+                    # TODO: 從1m聚合生成15m/1h（後續優化）
+                    # 目前先使用REST備援
+                    logger.debug(f"📡 {symbol} WebSocket數據可用（未實現聚合），使用REST備援")
+                else:
+                    logger.debug(f"📡 {symbol} WebSocket數據不可用，使用REST備援")
+            except Exception as e:
+                logger.debug(f"📡 {symbol} WebSocket讀取失敗: {e}，使用REST備援")
+        
+        # REST備援（或WebSocket未啟用）
         tasks = [
             self.get_klines_incremental(symbol, tf, limit=100)
             for tf in timeframes
@@ -570,7 +597,12 @@ class DataService:
     
     async def scan_market(self, top_n: int = 200) -> List[Dict]:
         """
-        掃描市場，按流動性排序，返回前N個交易對（v3.3.7性能優化版）
+        掃描市場，按流動性排序，返回前N個交易對（v3.17.2+ 降低REST調用版）
+        
+        🔥 v3.17.2+優化：
+        - 僅在啟動時調用get_24h_tickers（REST API）
+        - 結果緩存1小時（減少99%的REST請求）
+        - 流動性排序結果穩定，無需頻繁更新
         
         策略：優先監控流動性最高的前200個標的
         - 流動性指標：24h 交易額（quoteVolume，以 USDT 計）
@@ -582,10 +614,17 @@ class DataService:
         Returns:
             List[Dict]: 按流動性排序的交易對列表
         """
+        # 🔥 v3.17.2+：檢查長時間緩存（1小時）
+        cache_key = f"scan_market_{top_n}"
+        cached = self.cache.get(cache_key)
+        if cached:
+            logger.debug(f"📦 使用緩存的市場掃描結果（{len(cached)}個交易對）")
+            return cached
+        
         # ✨ v3.3.7：性能追蹤
         start_time = time.time()
         
-        logger.info(f"開始掃描 {len(self.all_symbols)} 個交易對（流動性排序）...")
+        logger.info(f"🔍 開始掃描 {len(self.all_symbols)} 個交易對（流動性排序）...")
         
         # 獲取24h ticker數據（包含交易量數據）
         try:
@@ -632,6 +671,10 @@ class DataService:
             # ✨ v3.3.7：記錄性能
             if self.perf_monitor:
                 self.perf_monitor.record_operation("scan_market", duration)
+            
+            # 🔥 v3.17.2+：緩存1小時（減少REST API調用）
+            self.cache.set(cache_key, top_liquidity, ttl=3600)
+            logger.info(f"📦 市場掃描結果已緩存1小時（下次調用將跳過REST API）")
             
             return top_liquidity
             

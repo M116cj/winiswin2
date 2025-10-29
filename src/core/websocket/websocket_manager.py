@@ -83,7 +83,7 @@ class WebSocketManager:
         
         logger.info("=" * 80)
         logger.info("✅ WebSocketManager v3.17.2+ 初始化完成")
-        logger.info(f"   📊 交易對模式: {'自動獲取全市場' if auto_fetch_symbols else f'{len(symbols)}個'}")
+        logger.info(f"   📊 交易對模式: {'自動獲取全市場' if auto_fetch_symbols else f'{len(symbols or [])}個'}")
         logger.info(f"   🔀 分片大小: {shard_size}")
         logger.info(f"   📡 K線Feed: {'啟用' if enable_kline_feed else '停用'}")
         logger.info(f"   💰 價格Feed: {'啟用' if enable_price_feed else '停用'}")

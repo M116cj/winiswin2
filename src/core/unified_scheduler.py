@@ -264,8 +264,20 @@ class UnifiedScheduler:
             # 步驟 1：獲取並顯示持倉狀態
             positions = await self._get_and_display_positions()
             
-            # 步驟 2：獲取賬戶餘額信息
-            account_info = await self.binance_client.get_account_balance()
+            # 步驟 2：獲取賬戶餘額信息（v3.17.2+：優先使用WebSocket）
+            account_info = None
+            
+            # 🔥 v3.17.2+：優先從WebSocket獲取（無REST API請求）
+            if self.websocket_manager and self.websocket_manager.account_feed:
+                account_info = self.websocket_manager.get_account_balance()
+                if account_info:
+                    logger.debug("📡 從WebSocket獲取帳戶餘額")
+            
+            # REST備援
+            if not account_info:
+                logger.debug("📡 WebSocket帳戶數據不可用，使用REST API備援")
+                account_info = await self.binance_client.get_account_balance()
+            
             total_balance = account_info['total_balance']
             available_balance = account_info['available_balance']
             total_margin = account_info['total_margin']

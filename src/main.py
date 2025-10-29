@@ -116,9 +116,10 @@ class SelfLearningTradingSystem:
                 logger.warning("⚠️ API連接測試未通過，將在實際調用時重試")
                 logger.warning("⚠️ 系統將繼續初始化，實際API調用將由熔斷器保護")
             
-            # 數據服務
+            # 數據服務（v3.17.2+：預留websocket_monitor，稍後設置）
             self.data_service = DataService(
-                binance_client=self.binance_client
+                binance_client=self.binance_client,
+                websocket_monitor=None  # 🔥 v3.17.2+：將在UnifiedScheduler創建後設置
             )
             logger.info("✅ 數據服務初始化完成")
             
@@ -151,6 +152,10 @@ class SelfLearningTradingSystem:
                 model_initializer=self.model_initializer  # 🔥 v3.17.10+
             )
             logger.info("✅ UnifiedScheduler 初始化完成")
+            
+            # 🔥 v3.17.2+：將websocket_monitor設置到DataService（降低REST API使用）
+            self.data_service.websocket_monitor = self.scheduler.websocket_manager
+            logger.info("✅ DataService已連接WebSocket（優先使用WebSocket數據）")
             
             logger.info("\n✅ 所有核心組件初始化完成")
             return True
