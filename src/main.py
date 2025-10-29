@@ -67,7 +67,7 @@ class SelfLearningTradingSystem:
     def __init__(self):
         """初始化系統"""
         self.running = False
-        self.config = Config  # type: ignore  # Config 使用類級別配置
+        self.config = Config  # Config類本身（類級別配置）
         
         # 核心組件
         self.binance_client: Optional[BinanceClient] = None
@@ -143,8 +143,8 @@ class SelfLearningTradingSystem:
             logger.info("✅ 模型初始化器已創建（v3.17.10+）")
             
             # UnifiedScheduler（核心調度器）
-            self.scheduler = UnifiedScheduler(  # type: ignore  # Config 類級別使用
-                config=self.config,
+            self.scheduler = UnifiedScheduler(
+                config=self.config,  # type: ignore  # Config類級別配置
                 binance_client=self.binance_client,
                 data_service=self.data_service,
                 trade_recorder=self.trade_recorder,

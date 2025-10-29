@@ -8,6 +8,7 @@ ccxt>=4.2.0                 # 加密貨幣交易所統一 API
 pandas>=2.0.0               # 數據處理與分析
 numpy>=1.24.0,<2.0.0        # 數值計算（兼容 XGBoost）
 python-dotenv>=1.0.0        # 環境變量管理
+websockets>=12.0            # WebSocket 客戶端（即時市場數據）
 
 # ===== ML 依賴（僅 XGBoost）=====
 xgboost>=2.0.0              # 唯一 ML 模型（輕量、高效）

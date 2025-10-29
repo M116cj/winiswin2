@@ -50,10 +50,69 @@ git push origin main
 
 ## 最近更新
 
-### v3.17.11 (2025-10-29) - Railway重啟循環修復 🚨
+### v3.17.11 (2025-10-29) - WebSocket即時數據整合 + Railway重啟循環修復 🚀
 
-**類型**: 🔧 **CRITICAL INFRASTRUCTURE FIX**  
-**目標**: 修復Railway自動重啟死循環導致的API濫用問題  
+**類型**: 🎯 **MAJOR FEATURE + CRITICAL FIX**  
+**目標**: 整合WebSocket即時數據（減少API調用）+ 修復Railway重啟死循環  
+**狀態**: ✅ **已完成**
+
+#### **WebSocket整合架構**
+
+**新增組件**：
+- ✅ **WebSocketMonitor**：訂閱Binance bookTicker，緩存即時價格和深度數據
+- ✅ **自動重連機制**：WebSocket斷線自動重連（每5秒）
+- ✅ **優雅降級**：WebSocket無數據時自動回退到REST API
+
+**架構變更**：
+```
+┌──────────────────────────────────┐
+│      UnifiedScheduler            │
+│ • WebSocketMonitor（即時數據）   │ ← 新增
+│ • SelfLearningTrader（決策）     │
+│ • PositionController（監控）     │
+└──────────────────────────────────┘
+```
+
+**數據流向**：
+```
+WebSocket → WebSocketMonitor → PositionController
+                             → SelfLearningTrader
+            
+備援：REST API ← 當WebSocket無數據時
+```
+
+**核心方法**：
+```python
+# PositionController
+async def _get_current_price(symbol: str) -> float:
+    if websocket_monitor:
+        price = websocket_monitor.get_price(symbol)
+        if price:
+            return price  # 優先使用WebSocket
+    
+    # 備援：REST API
+    ticker = await binance_client.get_ticker(symbol)
+    return float(ticker['lastPrice'])
+
+# SelfLearningTrader
+def _get_market_context(symbol: str) -> Dict:
+    return {
+        'current_price': websocket_monitor.get_price(symbol),
+        'liquidity_score': websocket_monitor.get_liquidity_score(symbol),
+        'spread_bps': websocket_monitor.get_spread_bps(symbol)
+    }
+```
+
+**優勢**：
+- ✅ **減少API調用**：價格查詢無需REST API
+- ✅ **零延遲**：即時價格更新（WebSocket推送）
+- ✅ **流動性數據**：買賣深度評估
+- ✅ **自動容錯**：WebSocket失敗自動使用REST備援
+
+---
+
+#### **Railway重啟循環修復**
+
 **狀態**: ✅ **已完成**
 
 #### **問題：Railway重啟死循環**

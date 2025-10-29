@@ -13,6 +13,7 @@ from src.strategies.self_learning_trader import SelfLearningTrader
 from src.core.position_controller import PositionController
 from src.core.model_evaluator import ModelEvaluator
 from src.core.daily_reporter import DailyReporter
+from src.core.websocket_monitor import WebSocketMonitor  # 🔥 v3.17.11
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.config import Config
@@ -30,10 +31,11 @@ class UnifiedScheduler:
     3. 每日生成報告（00:00 UTC）
     4. 協調所有組件
     
-    架構：
+    架構（v3.17.11+ WebSocket整合）：
     ┌─────────────────────────────────┐
     │    UnifiedScheduler (調度器)    │
     ├─────────────────────────────────┤
+    │ • WebSocketMonitor (即時數據)   │
     │ • SelfLearningTrader (決策)     │
     │ • PositionController (監控)     │
     │ • ModelEvaluator (評級)         │
@@ -43,7 +45,7 @@ class UnifiedScheduler:
     
     def __init__(
         self,
-        config: Config,
+        config,  # Config類或實例（支持類級別配置）
         binance_client: BinanceClient,
         data_service: DataService,
         trade_recorder=None,
@@ -65,10 +67,16 @@ class UnifiedScheduler:
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
-        # 初始化核心組件
+        # 🔥 v3.17.11：初始化WebSocketMonitor
+        self.websocket_monitor = WebSocketMonitor(
+            symbols=config.TRADING_SYMBOLS
+        )
+        
+        # 初始化核心組件（注入websocket_monitor）
         self.self_learning_trader = SelfLearningTrader(
             config=config,
-            binance_client=binance_client
+            binance_client=binance_client,
+            websocket_monitor=self.websocket_monitor  # 🔥 v3.17.11
         )
         
         self.position_controller = PositionController(
@@ -77,7 +85,8 @@ class UnifiedScheduler:
             monitor_interval=config.POSITION_MONITOR_INTERVAL,
             config=config,
             trade_recorder=trade_recorder,  # 🔥 v3.17.10+
-            data_service=data_service  # 🔥 v3.17.10+
+            data_service=data_service,  # 🔥 v3.17.10+
+            websocket_monitor=self.websocket_monitor  # 🔥 v3.17.11
         )
         
         self.model_evaluator = ModelEvaluator(
@@ -103,8 +112,9 @@ class UnifiedScheduler:
         }
         
         logger.info("=" * 80)
-        logger.info("✅ UnifiedScheduler v3.17+ 初始化完成")
+        logger.info("✅ UnifiedScheduler v3.17.11 初始化完成（WebSocket整合）")
         logger.info("   🎯 模式: SelfLearningTrader")
+        logger.info("   📡 WebSocket: {} 個幣種即時監控".format(len(config.TRADING_SYMBOLS) if config.TRADING_SYMBOLS else 0))
         logger.info("   ⏱️  交易週期: 每 {} 秒".format(config.CYCLE_INTERVAL))
         logger.info("   🛡️  倉位監控: 每 {} 秒".format(config.POSITION_MONITOR_INTERVAL))
         logger.info("   📊 每日報告: 00:00 UTC")
@@ -115,6 +125,10 @@ class UnifiedScheduler:
         try:
             self.is_running = True
             logger.info("🚀 UnifiedScheduler 啟動中...")
+            
+            # 🔥 v3.17.11：啟動WebSocket監聽（非阻塞）
+            asyncio.create_task(self.websocket_monitor.start())
+            logger.info("✅ WebSocket監控已啟動（後台運行）")
             
             # 啟動任務
             tasks = [
@@ -137,6 +151,9 @@ class UnifiedScheduler:
         logger.info("⏸️  UnifiedScheduler 停止中...")
         self.is_running = False
         
+        # 🔥 v3.17.11：停止WebSocket監聽
+        await self.websocket_monitor.stop()
+        
         # 停止 PositionController
         await self.position_controller.stop_monitoring()
         
@@ -147,6 +164,11 @@ class UnifiedScheduler:
         logger.info(f"   總信號: {self.stats['total_signals']}")
         logger.info(f"   總訂單: {self.stats['total_orders']}")
         logger.info(f"   總報告: {self.stats['total_reports']}")
+        
+        # 🔥 v3.17.11：WebSocket統計
+        ws_stats = self.websocket_monitor.get_stats()
+        logger.info(f"   WebSocket更新: {ws_stats['total_updates']} 次")
+        logger.info(f"   WebSocket重連: {ws_stats['reconnections']} 次")
         logger.info("=" * 80)
     
     async def _position_monitoring_loop(self):

@@ -35,7 +35,7 @@ class SelfLearningTrader:
     4. 倉位評估：24/7 監控並決定平倉時機
     """
     
-    def __init__(self, config=None, binance_client=None, trade_recorder=None, virtual_position_manager=None):
+    def __init__(self, config=None, binance_client=None, trade_recorder=None, virtual_position_manager=None, websocket_monitor=None):
         """
         初始化 SelfLearningTrader
         
@@ -44,11 +44,13 @@ class SelfLearningTrader:
             binance_client: Binance 客戶端（用於獲取交易規格）
             trade_recorder: 交易記錄器（用於記錄競價結果）
             virtual_position_manager: 虛擬倉位管理器（用於創建虛擬倉位）
+            websocket_monitor: WebSocket監控器（v3.17.11，用於獲取即時市場數據）
         """
         self.config = config or Config
         self.binance_client = binance_client
         self.trade_recorder = trade_recorder
         self.virtual_position_manager = virtual_position_manager
+        self.websocket_monitor = websocket_monitor  # 🔥 v3.17.11
         
         # 初始化信號生成器
         self.signal_generator = RuleBasedSignalGenerator(config)
@@ -59,9 +61,10 @@ class SelfLearningTrader:
         self.sltp_adjuster = SLTPAdjuster(config)
         
         logger.info("=" * 80)
-        logger.info("✅ SelfLearningTrader v3.17+ 初始化完成")
+        logger.info("✅ SelfLearningTrader v3.17.11 初始化完成（WebSocket整合）")
         logger.info("   🎯 模式: 無限制槓桿（基於勝率 × 信心度）")
         logger.info("   🧠 決策依據: win_probability × confidence")
+        logger.info("   📡 WebSocket: {}".format("已啟用（即時市場數據）" if websocket_monitor else "未啟用"))
         logger.info("   🛡️  風險控制: 動態 SL/TP + 10 USDT 最小倉位")
         logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
         logger.info("=" * 80)
@@ -784,3 +787,43 @@ class SelfLearningTrader:
             
         except Exception as e:
             logger.error(f"❌ 虛擬倉位批次創建失敗: {e}", exc_info=True)
+    
+    async def _get_market_context(self, symbol: str) -> Dict:
+        """
+        獲取即時市場上下文（WebSocket優先，REST備援）
+        
+        Args:
+            symbol: 交易對
+        
+        Returns:
+            市場上下文字典
+        """
+        context = {
+            'current_price': None,
+            'liquidity_score': 0.0,
+            'spread_bps': None,
+            'data_source': 'unknown'
+        }
+        
+        # 🔥 v3.17.11：優先使用WebSocket數據
+        if self.websocket_monitor:
+            price = self.websocket_monitor.get_price(symbol)
+            if price is not None:
+                context['current_price'] = price
+                context['data_source'] = 'websocket'
+                context['liquidity_score'] = self.websocket_monitor.get_liquidity_score(symbol)
+                context['spread_bps'] = self.websocket_monitor.get_spread_bps(symbol)
+                logger.debug(f"💡 {symbol} 市場上下文（WebSocket）: 價格=${price}, 流動性={context['liquidity_score']:.2f}")
+                return context
+        
+        # 🔥 v3.17.11：備援 - 使用REST API獲取價格
+        if self.binance_client:
+            try:
+                ticker = await self.binance_client.get_ticker(symbol)
+                context['current_price'] = float(ticker.get('lastPrice', 0))
+                context['data_source'] = 'rest_api'
+                logger.debug(f"📡 {symbol} 市場上下文（REST API）: 價格=${context['current_price']}")
+            except Exception as e:
+                logger.warning(f"⚠️ {symbol} REST API備援失敗: {e}")
+        
+        return context

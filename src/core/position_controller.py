@@ -37,7 +37,8 @@ class PositionController:
         monitor_interval: int = 2,
         config=None,
         trade_recorder=None,
-        data_service=None
+        data_service=None,
+        websocket_monitor=None  # 🔥 v3.17.11
     ):
         """
         初始化 PositionController
@@ -49,6 +50,7 @@ class PositionController:
             config: 配置對象
             trade_recorder: 交易記錄器（v3.17.10+）
             data_service: 數據服務（v3.17.10+）
+            websocket_monitor: WebSocket監控器（v3.17.11，優先使用WebSocket數據）
         """
         self.binance_client = binance_client
         self.trader = self_learning_trader
@@ -56,6 +58,7 @@ class PositionController:
         self.config = config
         self.trade_recorder = trade_recorder
         self.data_service = data_service
+        self.websocket_monitor = websocket_monitor  # 🔥 v3.17.11
         
         # 🔥 v3.17.10+：整合 PositionMonitor24x7（進場失效 + 逆勢平倉）
         self.monitor_24x7 = PositionMonitor24x7(
@@ -78,10 +81,11 @@ class PositionController:
         }
         
         logger.info("=" * 80)
-        logger.info("✅ PositionController v3.17.10+ 初始化完成")
+        logger.info("✅ PositionController v3.17.11 初始化完成（WebSocket整合）")
         logger.info(f"   ⏱️  監控間隔: {monitor_interval} 秒")
         logger.info("   🛡️  優先級: 0（最高優先級）")
         logger.info("   🚨 緊急平倉: PnL ≤ -99%")
+        logger.info("   📡 WebSocket: {}".format("已啟用（優先使用）" if websocket_monitor else "未啟用（僅REST）"))
         logger.info("   🔥 整合 PositionMonitor24x7（進場失效 + 逆勢自動平倉）")
         logger.info("=" * 80)
     
@@ -310,6 +314,40 @@ class PositionController:
             
         except Exception as e:
             logger.error(f"❌ 調整止損失敗 ({position['symbol']}): {e}", exc_info=True)
+    
+    async def _get_current_price(self, symbol: str) -> float:
+        """
+        獲取當前價格（優先使用WebSocket，失敗時回退到REST API）
+        
+        Args:
+            symbol: 交易對
+        
+        Returns:
+            當前價格
+        """
+        # 🔥 v3.17.11：優先使用WebSocket數據
+        if self.websocket_monitor:
+            price = self.websocket_monitor.get_price(symbol)
+            if price is not None:
+                logger.debug(f"💡 {symbol} WebSocket價格: ${price:.2f}")
+                return price
+            else:
+                logger.debug(f"⚠️ {symbol} WebSocket無數據，使用REST備援")
+        
+        # 備援：REST API
+        try:
+            ticker = await self.binance_client.get_ticker(symbol)
+            price = float(ticker.get('lastPrice', 0))
+            if price > 0:
+                logger.debug(f"📡 {symbol} REST API價格: ${price:.2f}")
+                return price
+            else:
+                # ⚠️ 0.0不是合法價格，拋出異常
+                raise ValueError(f"{symbol} REST API返回無效價格: {price}")
+        except Exception as e:
+            # 🔥 v3.17.11：價格獲取失敗時拋出異常，不返回0.0
+            logger.error(f"❌ 獲取{symbol}價格失敗（WebSocket+REST均失敗）: {e}")
+            raise  # 向上傳播異常，讓調用者處理
     
     async def _adjust_take_profit(self, position: Dict):
         """
