@@ -713,6 +713,18 @@ class SelfLearningTrader:
             # 記錄開倉信號（用於後續配對和 ML 訓練）
             if self.trade_recorder:
                 try:
+                    # 🔥 v3.17.2+：從WebSocketManager獲取元數據
+                    websocket_metadata = None
+                    if self.websocket_monitor:
+                        kline = self.websocket_monitor.get_kline(signal['symbol'])
+                        if kline:
+                            websocket_metadata = {
+                                'latency_ms': kline.get('latency_ms', 0),
+                                'server_timestamp': kline.get('server_timestamp', 0),
+                                'local_timestamp': kline.get('local_timestamp', 0),
+                                'shard_id': kline.get('shard_id', 0)
+                            }
+                    
                     self.trade_recorder.record_entry(
                         signal=signal,
                         position_info={
@@ -720,7 +732,8 @@ class SelfLearningTrader:
                             'position_value': position_value,
                             'size': size
                         },
-                        competition_context=competition_context  # 🔥 v3.17.10+：競價上下文特徵
+                        competition_context=competition_context,  # 🔥 v3.17.10+：競價上下文特徵
+                        websocket_metadata=websocket_metadata  # 🔥 v3.17.2+：WebSocket元數據
                     )
                     logger.debug(f"📝 記錄開倉信號: {signal['symbol']}")
                 except Exception as e:

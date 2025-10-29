@@ -1,0 +1,266 @@
+🚀 SelfLearningTrader v3.17.2+ 完整升級藍圖
+
+升級目標
+1. ✅ 監控全 Binance USDT 永續交易對（~200+）
+2. ✅ API 權重降至 0（完全避開限流）
+3. ✅ 7x24 穩定運行（無熔斷、無重啟）
+4. ✅ 保留所有 v3.17.2+ 智能功能
+新架構圖
+
+
+┌──────────────────────────────────────────────────────┐
+│            UnifiedScheduler v3.17.2+                  │
+│            （部署於 Railway）                         │
+└─────────────┬────────────────────────────────────────┘
+              │
+    ┌─────────┼──────────────────────────────────────┐
+    │         │                                      │
+    ▼         ▼                                      ▼
+┌─────────┐ ┌──────────────┐                ┌──────────────────────┐
+│Position │ │ SelfLearning │                │ WebSocketManager     │
+│Controller│ │   Trader     │                │ （全市場監控）        │
+└────┬────┘ └──────┬───────┘                └──────────┬───────────┘
+     │             │                                   │
+     │    ┌────────┴────────┐                          │
+     │    │                 │                          │
+     ▼    ▼                 ▼                          ▼
+┌──────────────────────────────────────────────────────────────┐
+│                    Binance API (Futures)                     │
+│  • REST：僅用於下單、帳戶初始化                            │
+│  • WebSocket：全市場 bookTicker + Kline + 帳戶監控          │
+└──────────────────────────────────────────────────────────────┘
+
+變化： 
+* 100% WebSocket 驅動監控
+* REST API 僅用於寫入操作（下單、設槓桿）
+* 部署於 Railway（解決 HTTP 451）
+
+
+、升級步驟
+🔹 階段 1：啟用全市場 WebSocket 監控
+1. 動態獲取全交易對
+# src/core/websocket/websocket_manager.py
+async def _get_all_futures_symbols(self) -> List[str]:
+    """獲取所有 USDT 永續交易對"""
+    info = await self.binance_client._request("GET", "/fapi/v1/exchangeInfo")
+    return [
+        s['symbol'] for s in info['symbols']
+        if s['quoteAsset'] == 'USDT' and s['status'] == 'TRADING'
+    ]
+2. 合併訂閱全市場
+# 啟動 WebSocketManager
+all_symbols = await self._get_all_futures_symbols()
+self.kline_feed = KlineFeed(all_symbols, interval="1m")
+self.price_feed = PriceFeed(all_symbols)  # bookTicker
+self.account_feed = AccountFeed(self.binance_client)
+
+# 單一連線訂閱
+streams = "/".join([f"{s.lower()}@bookTicker" for s in all_symbols])
+url = f"wss://fstream.binance.com/stream?streams={streams}"
+3. 移除 REST 輪詢
+# src/strategies/self_learning_trader.py
+def _get_market_context(self, symbol: str):
+    # 僅使用 WebSocket 數據
+    kline = self.websocket_manager.get_kline(symbol)
+    price = self.websocket_manager.get_price(symbol)
+    return {'kline': kline, 'price': price}
+
+階段 2：保留 REST 備援（安全網）
+1. 僅對寫入操作使用 REST
+# 仍需 REST 的操作：
+- POST /fapi/v1/order        # 下單
+- POST /fapi/v1/leverage     # 設槓桿
+- GET /fapi/v2/account       # 帳戶初始化（僅啟動時）
+2. REST 請求加入熔斷保護
+# src/clients/binance_client.py
+async def _request(self, method, endpoint, ...):
+    # 僅對寫入操作使用熔斷器
+    if method == "POST":
+        return await self.circuit_breaker.call_async(_do_request)
+    else:
+        return await _do_request()  # WebSocket 已取代讀取操作
+
+風險控制與備援
+1. WebSocket 斷線重連
+* 自動每 5 秒重連
+* 重連失敗 3 次後觸發告警
+
+2. REST 備援（僅緊急）
+* 僅當 WebSocket 完全失效時啟用
+* 限制 1 次/分鐘/符號
+
+3. Railway 健康監控
+* 設置 自動重啟（崩潰時）
+* 配置 Discord 告警（WebSocket 中斷）
+
+
+先完成以上
+🚀 一、WebSocket 效能與穩定性強化
+1. WebSocket 時間戳標準化（關鍵！）
+問題
+Binance WebSocket 不提供伺服器時間戳，僅能使用本地時間，導致：
+* 多節點時間不同步
+* K線閉盤時間誤判
+* 訓練數據時間軸混亂
+
+✅ 解決方案：混合時間戳
+# src/core/websocket/kline_feed.py
+def _update_kline(self, symbol: str, kline: dict):
+    # 1. 優先使用 Binance K線內建時間戳
+    server_timestamp = int(kline['t'])  # K線開盤時間（毫秒）
+    
+    # 2. 補充本地接收時間（用於延遲分析）
+    local_timestamp = time.time_ns() // 1_000_000  # 毫秒
+    
+    self.kline_cache[symbol] = {
+        'open': float(kline['o']),
+        'high': float(kline['h']),
+        'low': float(kline['l']),
+        'close': float(kline['c']),
+        'volume': float(kline['v']),
+        'server_timestamp': server_timestamp,  # Binance 伺服器時間
+        'local_timestamp': local_timestamp,    # 本地接收時間
+        'latency_ms': local_timestamp - server_timestamp  # 網路延遲
+    }
+
+訓練價值： 
+* latency_ms 可作為 特徵（高延遲時降低信心度）
+* server_timestamp 確保 全市場時間軸一致
+
+
+2. WebSocket 連線分片（防單點過載）
+問題
+單一 WebSocket 連線監控 200+ 交易對 → 訊息處理瓶頸
+
+✅ 解決方案：動態分片
+# src/core/websocket/websocket_manager.py
+def _create_shards(self, symbols: List[str], shard_size: int = 50) -> List[List[str]]:
+    """將交易對分片（每片 ≤50 個）"""
+    return [symbols[i:i + shard_size] for i in range(0, len(symbols), shard_size)]
+
+async def start(self):
+    all_symbols = await self._get_all_futures_symbols()
+    shards = self._create_shards(all_symbols)
+    
+    # 每個分片獨立 WebSocket 連線
+    self.shards = []
+    for shard in shards:
+        feed = ShardFeed(shard)
+        self.shards.append(feed)
+        asyncio.create_task(feed.start())
+
+效果： 
+* 避免單一連線處理 200+ 訊息的 CPU 瓶頸
+* 符合 Binance 最佳實務（建議 ≤100 streams/連線）
+
+
+
+🔒 二、極致穩定性設計
+1. WebSocket 心跳監控
+# src/core/websocket/shard_feed.py
+async def _heartbeat_monitor(self):
+    """監控 WebSocket 活躍度"""
+    last_msg_time = time.time()
+    while self.running:
+        await asyncio.sleep(10)
+        if time.time() - last_msg_time > 30:  # 30秒無訊息
+            logger.warning(f"⚠️ Shard {self.shard_id} 心跳中斷，重連")
+            await self._reconnect()
+        # 每收到訊息更新 last_msg_time
+2. REST 備援智慧冷卻
+# src/core/websocket/base_feed.py
+async def _safe_rest_fallback(self, symbol: str, fallback_func):
+    # 動態冷卻：根據失敗次數延長冷卻時間
+    failure_count = self._rest_failure_count.get(symbol, 0)
+    cooldown = min(300, 60 * (2 ** failure_count))  # 指數退避
+    
+    if time.time() - self._last_rest_call.get(symbol, 0) < cooldown:
+        raise Exception(f"REST 冷卻中 ({cooldown}s)")
+    
+    try:
+        result = await fallback_func()
+        self._rest_failure_count[symbol] = 0  # 成功重置
+        return result
+    except:
+        self._rest_failure_count[symbol] = failure_count + 1
+        raise
+
+三、訓練數據優化（為模型學習而生）
+1. 結構化訓練數據格式
+# 訓練樣本包含 WebSocket 元數據
+{
+    "features": {
+        "price": 67200.0,
+        "volume": 1234.56,
+        "latency_ms": 23,          # ← 新增：網路延遲
+        "server_timestamp": 1730177520000,
+        "market_regime": "trending"
+    },
+    "label": 1,  # 1=盈利, 0=虧損
+    "metadata": {
+        "symbol": "BTCUSDT",
+        "leverage": 12.5,
+        "hold_duration_sec": 3600,
+        "websocket_shard_id": 0    # ← 新增：分片ID（用於錯誤分析）
+    }
+}
+
+2. 數據品質過濾
+
+# src/core/trade_recorder.py
+def _is_high_quality_sample(self, sample: dict) -> bool:
+    """過濾低品質訓練數據（僅保留技術性過濾）"""
+    # 1. 網路延遲過高（>500ms）
+    if sample['features']['latency_ms'] > 500:
+        return False
+    
+    # 2. 時間戳異常（本地 vs 伺服器差異 >10秒）
+    if abs(sample['features']['local_timestamp'] - sample['features']['server_timestamp']) > 10000:
+        return False
+    
+    # ✅ 移除「非交易時段」過濾（加密貨幣 24/7 交易）
+    
+    return True
+動態市場狀態判斷：
+def _is_high_quality_sample(self, sample: dict) -> bool:
+    # ... [延遲 + 時間戳過濾] ...
+    
+    # 3. 動態流動性過濾（非固定時段）
+    if sample['features']['volume'] < self._get_volume_threshold(sample['symbol']):
+        return False  # 交易量過低，視為噪音
+    
+    return True
+
+def _get_volume_threshold(self, symbol: str) -> float:
+    """根據幣種動態計算最低交易量"""
+    # 例如：BTC 門檻 = 100 BTC, SHIB 門檻 = 10M SHIB
+    thresholds = {
+        'BTCUSDT': 100,
+        'ETHUSDT': 1000,
+        'SOLUSDT': 10000,
+        # ... 其他幣種
+    }
+    return thresholds.get(symbol, 1000)  # 默認 1000
+
+3. 特徵工程升級
+# src/ml/feature_engine.py
+def build_enhanced_features(self, raw_data: dict) -> np.ndarray:
+    base_features = super().build_enhanced_features(raw_data)
+    
+    # 新增 WebSocket 專屬特徵
+    websocket_features = {
+        'latency_zscore': self._calculate_latency_zscore(raw_data['latency_ms']),
+        'shard_load': self._get_shard_load(raw_data['websocket_shard_id']),
+        'timestamp_consistency': 1 if abs(raw_data['local_ts'] - raw_data['server_ts']) < 1000 else 0
+    }
+    
+    return {**base_features, **websocket_features}
+
+
+
+
+
+
+
+
+

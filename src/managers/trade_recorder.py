@@ -39,7 +39,13 @@ class TradeRecorder:
         
         self._load_data()
     
-    def record_entry(self, signal: Dict, position_info: Dict, competition_context: Optional[Dict] = None):
+    def record_entry(
+        self, 
+        signal: Dict, 
+        position_info: Dict, 
+        competition_context: Optional[Dict] = None,
+        websocket_metadata: Optional[Dict] = None
+    ):
         """
         記錄開倉信號（待配對）
         
@@ -47,6 +53,7 @@ class TradeRecorder:
             signal: 交易信號
             position_info: 倉位信息
             competition_context: 競價上下文（v3.17.10+）包含 rank, score_gap, num_signals
+            websocket_metadata: WebSocket元數據（v3.17.2+）包含 latency_ms, server_timestamp, local_timestamp, shard_id
         """
         entry_data = {
             'entry_id': f"{signal['symbol']}_{datetime.now().timestamp()}",
@@ -74,6 +81,19 @@ class TradeRecorder:
             entry_data['competition_rank'] = 1
             entry_data['score_gap_to_best'] = 0.0
             entry_data['num_competing_signals'] = 1
+        
+        # 🔥 v3.17.2+：添加WebSocket元數據（4個新字段）
+        if websocket_metadata:
+            entry_data['latency_ms'] = websocket_metadata.get('latency_ms', 0)
+            entry_data['server_timestamp'] = websocket_metadata.get('server_timestamp', 0)
+            entry_data['local_timestamp'] = websocket_metadata.get('local_timestamp', 0)
+            entry_data['websocket_shard_id'] = websocket_metadata.get('shard_id', 0)
+        else:
+            # 默認值（向後兼容）
+            entry_data['latency_ms'] = 0
+            entry_data['server_timestamp'] = int(datetime.now().timestamp() * 1000)
+            entry_data['local_timestamp'] = int(datetime.now().timestamp() * 1000)
+            entry_data['websocket_shard_id'] = 0
         
         self.pending_entries.append(entry_data)
         
@@ -104,6 +124,12 @@ class TradeRecorder:
         
         ml_record = self._create_ml_record(entry_data, trade_result)
         
+        # 🔥 v3.17.2+：數據品質過濾（僅保存高品質樣本）
+        if not self._is_high_quality_sample(ml_record):
+            logger.debug(f"⚠️ 低品質樣本已過濾: {symbol} (延遲/時間戳/流動性異常)")
+            # 不保存到completed_trades，但仍返回給調用者（用於模型評分）
+            return ml_record
+        
         self.completed_trades.append(ml_record)
         
         logger.info(f"📝 記錄交易: {symbol} PnL: {ml_record['pnl']:+.2%}")
@@ -129,19 +155,17 @@ class TradeRecorder:
     
     def _create_ml_record(self, entry: Dict, exit_data: Dict) -> Dict:
         """
-        創建完整的 ML 訓練記錄（41 個特徵）
+        創建完整的 ML 訓練記錄（使用FeatureEngine）
         
         v3.17.10+：新增3個競價上下文特徵
-        - competition_rank: 信號排名（1=最優）
-        - score_gap_to_best: 與最優信號的評分差距
-        - num_competing_signals: 當時競爭的信號數量
+        v3.17.2+：新增3個WebSocket專屬特徵（通過FeatureEngine計算）
         
         Args:
             entry: 開倉數據
             exit_data: 平倉數據
         
         Returns:
-            Dict: ML 記錄
+            Dict: 完整的ML記錄（兼容舊格式+新特徵）
         """
         pnl = exit_data.get('pnl', 0)
         pnl_pct = exit_data.get('pnl_pct', 0)
@@ -152,58 +176,84 @@ class TradeRecorder:
         if isinstance(exit_time, str):
             exit_time = datetime.fromisoformat(exit_time)
         
-        hold_duration = (exit_time - entry_time).total_seconds() / 3600
+        hold_duration = (exit_time - entry_time).total_seconds()
         
-        indicators = entry.get('indicators', {})
+        # 構建信號數據（用於FeatureEngine）
+        signal_data = {
+            'symbol': entry['symbol'],
+            'direction': entry['direction'],
+            'entry_price': entry['entry_price'],
+            'confidence': entry['confidence'],
+            'leverage': entry['leverage'],
+            'position_value': entry['position_value'],
+            'order_blocks': entry.get('order_blocks', 0),
+            'liquidity_zones': entry.get('liquidity_zones', 0),
+            'indicators': entry.get('indicators', {}),
+            'timeframes': entry.get('timeframes', {}),
+            'market_structure': entry.get('market_structure', 'neutral'),
+            'rr_ratio': self._calculate_rr_ratio(
+                entry['entry_price'],
+                exit_data.get('stop_loss', 0),
+                exit_data.get('take_profit', 0)
+            ),
+            'win_probability': entry.get('win_probability', 0.5)
+        }
         
+        # 競價上下文
+        competition_context = {
+            'rank': entry.get('competition_rank', 1),
+            'my_score': entry.get('confidence', 0.5),
+            'best_score': entry.get('confidence', 0.5),
+            'total_signals': entry.get('num_competing_signals', 1)
+        }
+        
+        # WebSocket元數據
+        websocket_metadata = {
+            'latency_ms': entry.get('latency_ms', 0),
+            'server_timestamp': entry.get('server_timestamp', 0),
+            'local_timestamp': entry.get('local_timestamp', 0),
+            'shard_id': entry.get('websocket_shard_id', 0)
+        }
+        
+        # 🔥 v3.17.2+：使用FeatureEngine構建完整特徵（包含WebSocket專屬特徵）
+        try:
+            enhanced_features = self.feature_engine.build_enhanced_features(
+                signal=signal_data,
+                competition_context=competition_context,
+                websocket_metadata=websocket_metadata
+            )
+        except Exception as e:
+            logger.error(f"構建增強特徵失敗: {e}，使用默認特徵")
+            enhanced_features = {'confidence': signal_data['confidence']}
+        
+        # 🔥 協調schema：先展開features，然後用關鍵metadata覆蓋重複字段
         ml_record = {
+            # Step 1: 展開所有特徵（44個）
+            **enhanced_features,
+            
+            # Step 2: 覆蓋關鍵metadata（確保不被feature覆蓋）
             'symbol': entry['symbol'],
             'direction': entry['direction'],
             'entry_price': entry['entry_price'],
             'exit_price': exit_data.get('exit_price', 0),
             'entry_timestamp': entry['entry_timestamp'],
             'exit_timestamp': exit_time.isoformat(),
-            'hold_duration_hours': hold_duration,
-            'confidence_score': entry['confidence'],
-            'leverage': entry['leverage'],
-            'position_value': entry['position_value'],
+            'hold_duration_hours': hold_duration / 3600,
+            'hold_duration_sec': hold_duration,
+            'confidence_score': entry['confidence'],  # 保留原始信心度
             'pnl': pnl,
             'pnl_pct': pnl_pct,
             'is_winner': pnl > 0,
             'close_reason': exit_data.get('close_reason', 'unknown'),
-            'trend_1h': entry['timeframes'].get('1h', 'neutral'),
-            'trend_15m': entry['timeframes'].get('15m', 'neutral'),
-            'trend_5m': entry['timeframes'].get('5m', 'neutral'),
-            'market_structure': entry.get('market_structure', 'neutral'),
-            'order_blocks_count': entry.get('order_blocks', 0),
-            'liquidity_zones_count': entry.get('liquidity_zones', 0),
-            'stop_loss': exit_data.get('stop_loss', 0),
-            'take_profit': exit_data.get('take_profit', 0),
-            'risk_reward_ratio': self._calculate_rr_ratio(
-                entry['entry_price'],
-                exit_data.get('stop_loss', 0),
-                exit_data.get('take_profit', 0)
-            ),
-            'max_favorable_excursion': 0,
-            'max_adverse_excursion': 0,
             'trade_id': entry.get('entry_id'),
             'recorded_at': datetime.now().isoformat(),
-            'rsi_entry': indicators.get('rsi', 0),
-            'macd_entry': indicators.get('macd', 0),
-            'macd_signal_entry': indicators.get('macd_signal', 0),
-            'macd_histogram_entry': indicators.get('macd_histogram', 0),
-            'atr_entry': indicators.get('atr', 0),
-            'bb_upper_entry': indicators.get('bb_upper', 0),
-            'bb_middle_entry': indicators.get('bb_middle', 0),
-            'bb_lower_entry': indicators.get('bb_lower', 0),
-            'bb_width_pct': indicators.get('bb_width_pct', 0),
-            'volume_sma_ratio': indicators.get('volume_sma_ratio', 0),
-            'price_vs_ema50': indicators.get('price_vs_ema50', 0),
-            'price_vs_ema200': indicators.get('price_vs_ema200', 0),
-            # 🔥 v3.17.10+：競價上下文特徵（3個新特徵）
-            'competition_rank': entry.get('competition_rank', 1),
-            'score_gap_to_best': entry.get('score_gap_to_best', 0.0),
-            'num_competing_signals': entry.get('num_competing_signals', 1)
+            'label': 1 if pnl > 0 else 0,
+            
+            # 保留WebSocket原始元數據（用於品質過濾）
+            'latency_ms': entry.get('latency_ms', 0),
+            'server_timestamp': entry.get('server_timestamp', 0),
+            'local_timestamp': entry.get('local_timestamp', 0),
+            'websocket_shard_id': entry.get('websocket_shard_id', 0)
         }
         
         return ml_record
@@ -399,3 +449,80 @@ class TradeRecorder:
             
         except Exception as e:
             logger.error(f"❌ 保存競價記錄失敗: {e}")
+    
+    # ==================== v3.17.2+ 數據品質過濾方法 ====================
+    
+    def _is_high_quality_sample(self, sample: dict) -> bool:
+        """
+        過濾低品質訓練數據（v3.17.2+）
+        
+        僅保留技術性過濾條件：
+        1. 網路延遲過高（>500ms）
+        2. 時間戳異常（本地 vs 伺服器差異 >10秒）
+        3. 動態流動性過濾（交易量過低）
+        
+        ✅ 移除「非交易時段」過濾（加密貨幣 24/7 交易）
+        
+        Args:
+            sample: ML訓練樣本（扁平格式，向後兼容）
+        
+        Returns:
+            bool: True=高品質樣本，False=低品質樣本
+        """
+        # 🔥 v3.17.2+：支持扁平格式（向後兼容）
+        # 1. 網路延遲過高（>500ms）
+        latency_ms = sample.get('latency_ms', 0)
+        if latency_ms > 500:
+            logger.debug(f"過濾樣本：延遲過高 {latency_ms}ms > 500ms")
+            return False
+        
+        # 2. 時間戳異常（本地 vs 伺服器差異 >10秒）
+        server_ts = sample.get('server_timestamp', 0)
+        local_ts = sample.get('local_timestamp', 0)
+        if server_ts > 0 and local_ts > 0:
+            timestamp_diff = abs(local_ts - server_ts)
+            if timestamp_diff > 10000:  # 10秒 = 10000毫秒
+                logger.debug(f"過濾樣本：時間戳異常 {timestamp_diff}ms > 10000ms")
+                return False
+        
+        # 3. 動態流動性過濾（非固定時段）
+        symbol = sample.get('symbol', '')
+        volume = sample.get('volume', 0)
+        volume_threshold = self._get_volume_threshold(symbol)
+        
+        if volume < volume_threshold:
+            logger.debug(
+                f"過濾樣本：{symbol} 交易量過低 {volume} < {volume_threshold}"
+            )
+            return False
+        
+        return True
+    
+    def _get_volume_threshold(self, symbol: str) -> float:
+        """
+        根據幣種動態計算最低交易量門檻（v3.17.2+）
+        
+        Args:
+            symbol: 交易對符號（例如：BTCUSDT）
+        
+        Returns:
+            float: 最低交易量門檻
+        """
+        # 主流幣種門檻（基於歷史數據統計）
+        thresholds = {
+            'BTCUSDT': 100,      # BTC 門檻 = 100 BTC
+            'ETHUSDT': 1000,     # ETH 門檻 = 1000 ETH
+            'BNBUSDT': 500,      # BNB 門檻 = 500 BNB
+            'SOLUSDT': 10000,    # SOL 門檻 = 10000 SOL
+            'ADAUSDT': 50000,    # ADA 門檻 = 50000 ADA
+            'DOGEUSDT': 100000,  # DOGE 門檻 = 100000 DOGE
+            'XRPUSDT': 50000,    # XRP 門檻 = 50000 XRP
+            'DOTUSDT': 5000,     # DOT 門檻 = 5000 DOT
+            'MATICUSDT': 20000,  # MATIC 門檻 = 20000 MATIC
+            'AVAXUSDT': 2000,    # AVAX 門檻 = 2000 AVAX
+        }
+        
+        # 獲取門檻（默認 1000 適用於大多數幣種）
+        threshold = thresholds.get(symbol, 1000)
+        
+        return threshold
