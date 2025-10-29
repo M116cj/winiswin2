@@ -119,6 +119,9 @@ class PositionOpenRecord:
     """
     开仓记录数据类（使用 __slots__ 优化）
     
+    🔥 v3.18+ 新增：
+    - original_signal: 完整的開倉信號數據（用於EvaluationEngine即時評估）
+    
     内存优化：
     - 每个实例节省约 200-300 字节
     - frozen=True: 不可变，确保数据完整性
@@ -130,7 +133,8 @@ class PositionOpenRecord:
         'quantity', 'leverage', 'confidence',
         'trend_alignment_score', 'market_structure_score',
         'price_position_score', 'momentum_score', 'volatility_score',
-        'rsi', 'macd', 'atr', 'bb_width_pct'
+        'rsi', 'macd', 'atr', 'bb_width_pct',
+        'original_signal'
     )
     
     event: str  # 'open'
@@ -157,6 +161,8 @@ class PositionOpenRecord:
     atr: Optional[float]
     bb_width_pct: Optional[float]
     
+    original_signal: Optional[Dict]  # 🔥 v3.18+ 完整的開倉信號數據
+    
     def to_dict(self) -> Dict:
         """转换为字典（用于序列化）"""
         return asdict(self)
@@ -167,7 +173,7 @@ class PositionOpenRecord:
     
     @classmethod
     def from_position_data(cls, position_data: Dict, is_virtual: bool = False):
-        """从持仓数据创建记录"""
+        """从持仓数据创建记录（v3.18+ 支持original_signal）"""
         return cls(
             event='open',
             timestamp=position_data.get('timestamp', datetime.now().isoformat()),
@@ -192,6 +198,8 @@ class PositionOpenRecord:
             macd=position_data.get('indicators', {}).get('macd'),
             atr=position_data.get('indicators', {}).get('atr'),
             bb_width_pct=position_data.get('indicators', {}).get('bb_width_pct'),
+            
+            original_signal=position_data.get('original_signal'),  # 🔥 v3.18+ 存儲完整信號
         )
 
 

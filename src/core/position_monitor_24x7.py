@@ -1,12 +1,20 @@
 """
-v3.17+ 24/7 倉位監控器
-每 2 秒檢查所有倉位，-99% 風險立即平倉
+🔥 v3.18+ 24/7 倉位監控器 - 完整7種出場邏輯系統
+
+核心哲學：高槓桿是高信心的結果，系統應保護而非懲罰這種決策
+
+v3.18+ 新特性：
+- 集成EvaluationEngine進行即時信心值/勝率評估
+- 集成TradeRecorder進行5分鐘歷史指標追蹤
+- 7種智能出場情境（強制止盈、虧損熔斷、智能持倉、進場失效、逆勢、追蹤止盈、OCO）
 """
 
 import logging
 import asyncio
 from typing import Dict, List, Any, Optional
 from datetime import datetime
+
+from src.core.evaluation_engine import EvaluationEngine, MarketContext
 
 logger = logging.getLogger(__name__)
 
@@ -27,21 +35,26 @@ class PositionMonitor24x7:
         config_profile,
         binance_client=None,
         trade_recorder=None,
-        data_service=None
+        data_service=None,
+        evaluation_engine: Optional[EvaluationEngine] = None
     ):
         """
-        初始化監控器
+        初始化監控器（v3.18+）
         
         Args:
             config_profile: ConfigProfile 實例
             binance_client: BinanceClient 實例（可選）
-            trade_recorder: TradeRecorder 實例（可選）
+            trade_recorder: TradeRecorder 實例（必須，用於歷史指標追蹤）
             data_service: DataService 實例（可選，用於獲取市場數據）
+            evaluation_engine: EvaluationEngine 實例（v3.18+，用於即時評估）
         """
         self.config = config_profile
         self.binance_client = binance_client
         self.trade_recorder = trade_recorder
         self.data_service = data_service
+        
+        # 🔥 v3.18+ 新增：統一評估引擎
+        self.evaluation_engine = evaluation_engine or EvaluationEngine(model=None)
         
         self.is_running = False
         self.monitor_task: Optional[asyncio.Task] = None
@@ -55,16 +68,23 @@ class PositionMonitor24x7:
         # 統計數據
         self.total_checks = 0
         self.forced_closures = 0
-        self.entry_reason_expired_closures = 0  # 🔥 新增：進場理由失效平倉數
-        self.counter_trend_closures = 0  # 🔥 新增：逆勢平倉數
+        self.forced_tp_closures = 0  # 🔥 v3.18+：強制止盈平倉數
+        self.smart_hold_count = 0  # 🔥 v3.18+：智能持倉次數
+        self.entry_reason_expired_closures = 0
+        self.counter_trend_closures = 0
+        self.trailing_tp_adjustments = 0  # 🔥 v3.18+：追蹤止盈調整次數
         self.last_check_time: Optional[datetime] = None
         
         logger.info("=" * 60)
-        logger.info("✅ 24/7 倉位監控器初始化完成（v3.17.10+）")
+        logger.info("✅ 24/7 倉位監控器初始化完成（v3.18+）")
         logger.info(f"   ⏱️  檢查間隔: {self.monitor_interval} 秒")
         logger.info(f"   🚨 風險熔斷閾值: {self.risk_threshold:.1%}")
-        logger.info(f"   🔥 進場理由失效自動平倉: 啟用")
-        logger.info(f"   🔥 逆勢無反彈自動平倉: 啟用")
+        logger.info(f"   🤖 評估引擎: {self.evaluation_engine.get_engine_info()['engine_type']}")
+        logger.info(f"   ✅ 強制止盈（信心/勝率降20%）: 啟用")
+        logger.info(f"   🟡 智能持倉（深度虧損+高信心）: 啟用")
+        logger.info(f"   ⚠️ 進場理由失效（信心<70%）: 啟用")
+        logger.info(f"   ⚪ 逆勢平倉（信心<80%）: 啟用")
+        logger.info(f"   🔵 追蹤止盈（盈利>20%）: 啟用")
         logger.info(f"   🎯 優先級: 0 (最高)")
         logger.info("=" * 60)
     
