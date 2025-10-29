@@ -310,17 +310,61 @@ class WebSocketManager:
     
     def get_account_balance(self, asset: str = 'USDT') -> Optional[Dict]:
         """
-        獲取帳戶餘額
+        獲取帳戶餘額（v3.17.2+ 格式轉換）
+        
+        將AccountFeed的原始數據轉換為UnifiedScheduler期望的格式
         
         Args:
             asset: 資產名稱
         
         Returns:
-            餘額數據，或None
+            餘額數據（與REST API格式一致），或None
+            {
+                'total_balance': float,
+                'available_balance': float,
+                'total_margin': float,
+                'unrealized_pnl': float,
+                'total_wallet_balance': float
+            }
         """
         if not self.account_feed:
             return None
-        return self.account_feed.get_account_balance(asset)
+        
+        # 從AccountFeed獲取原始數據
+        account_data = self.account_feed.get_account_balance(asset)
+        
+        if not account_data:
+            return None
+        
+        # 格式轉換（匹配REST API格式）
+        # AccountFeed: {'balance': wb, 'cross_un_pnl': cw, ...}
+        # REST API: {'total_balance': ..., 'available_balance': ..., ...}
+        
+        wallet_balance = account_data.get('balance', 0.0)  # 錢包餘額
+        unrealized_pnl = account_data.get('cross_un_pnl', 0.0)  # 未實現盈虧
+        
+        # 從所有倉位計算已用保證金
+        positions = self.get_all_positions()
+        total_margin = 0.0
+        
+        for pos in positions.values():
+            # 簡化計算：使用倉位的未實現盈虧作為保證金估算
+            # 實際保證金 = |倉位價值| / 槓桿，但WebSocket不提供槓桿信息
+            # 因此我們使用近似值
+            pos_value = abs(pos.get('size', 0) * pos.get('entry_price', 0))
+            if pos_value > 0:
+                # 假設平均槓桿為10x（保守估計）
+                total_margin += pos_value / 10.0
+        
+        available_balance = wallet_balance - total_margin
+        
+        return {
+            'total_balance': wallet_balance,
+            'available_balance': max(0.0, available_balance),  # 確保非負
+            'total_margin': total_margin,
+            'unrealized_pnl': unrealized_pnl,
+            'total_wallet_balance': wallet_balance + unrealized_pnl
+        }
     
     # ==================== 統計數據接口 ====================
     
