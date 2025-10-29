@@ -1,7 +1,7 @@
 """
 WebSocketManager v3.17.2+ - 統一WebSocket管理器（完整升級版）
-職責：動態獲取全交易對、分片管理、統一數據接口
-升級：自動獲取200+ USDT合約、ShardFeed整合、PriceFeed支持
+職責：動態波動率交易對選擇、分片管理、統一數據接口
+升級：波動率選擇器（前300高波動）、ShardFeed整合、PriceFeed支持
 """
 
 import asyncio
@@ -10,25 +10,29 @@ from typing import Dict, List, Optional, Any
 
 from src.core.websocket.shard_feed import ShardFeed
 from src.core.websocket.account_feed import AccountFeed
+from src.core.symbol_selector import SymbolSelector
+from src.config import Config
 
 logger = logging.getLogger(__name__)
 
 
 class WebSocketManager:
     """
-    WebSocketManager - 統一WebSocket管理器（v3.17.2+完整升級版）
+    WebSocketManager - 統一WebSocket管理器（v3.17.2+波動率優化版）
     
     職責：
-    1. 動態獲取所有Binance USDT永續合約（200+）
+    1. 動態選擇波動率最高的前300個USDT永續合約
     2. 使用ShardFeed進行分片管理（每片50個符號）
     3. 管理AccountFeed（帳戶/倉位監控）
     4. 提供統一的數據查詢接口
     5. 協調生命週期管理（start/stop）
     
-    架構（v3.17.2+）：
+    架構（v3.17.2+波動率優化）：
     ┌──────────────────────────────────────────┐
     │      WebSocketManager v3.17.2+           │
     ├──────────────────────────────────────────┤
+    │ • SymbolSelector (波動率篩選器)         │
+    │   └─ 前300個高波動交易對                │
     │ • ShardFeed (分片管理器)                 │
     │   ├─ Shard 0: K線Feed + 價格Feed (50)   │
     │   ├─ Shard 1: K線Feed + 價格Feed (50)   │
@@ -38,7 +42,8 @@ class WebSocketManager:
     
     優勢：
     - 100% WebSocket驅動（API權重≈0）
-    - 自動獲取全市場（無需手動配置）
+    - 動態波動率選擇（精準篩選高波動）
+    - 過濾低流動性噪音（<1M USDT）
     - 分片防止單連線過載
     - 心跳監控 + 自動重連
     """
@@ -81,9 +86,12 @@ class WebSocketManager:
         self.shard_feed: Optional[ShardFeed] = None
         self.account_feed: Optional[AccountFeed] = None
         
+        # v3.17.2+ 波動率選擇器（動態篩選高波動交易對）
+        self.symbol_selector = SymbolSelector(binance_client, Config)
+        
         logger.info("=" * 80)
-        logger.info("✅ WebSocketManager v3.17.2+ 初始化完成")
-        logger.info(f"   📊 交易對模式: {'自動獲取全市場' if auto_fetch_symbols else f'{len(symbols or [])}個'}")
+        logger.info("✅ WebSocketManager v3.17.2+ 初始化完成（波動率優化）")
+        logger.info(f"   📊 交易對模式: {'波動率前{0}名'.format(Config.WEBSOCKET_SYMBOL_LIMIT) if auto_fetch_symbols else f'{len(symbols or [])}個'}")
         logger.info(f"   🔀 分片大小: {shard_size}")
         logger.info(f"   📡 K線Feed: {'啟用' if enable_kline_feed else '停用'}")
         logger.info(f"   💰 價格Feed: {'啟用' if enable_price_feed else '停用'}")
@@ -92,26 +100,51 @@ class WebSocketManager:
     
     async def _get_all_futures_symbols(self) -> List[str]:
         """
-        動態獲取所有USDT永續交易對
+        動態獲取波動率最高的USDT永續交易對（v3.17.2+優化版）
+        
+        使用 SymbolSelector 精準篩選：
+        1. 獲取所有 USDT 永續合約
+        2. 並行獲取 24h 統計數據
+        3. 計算波動率分數（價格波動 × 流動性）
+        4. 過濾低流動性噪音（<1M USDT）
+        5. 排除槓桿幣（UP/DOWN）
+        6. 返回前 N 個高波動交易對
         
         Returns:
-            所有交易對列表
+            波動率最高的交易對列表（默認前300個）
         """
         try:
-            logger.info("🔍 正在獲取所有USDT永續合約...")
-            info = await self.binance_client._request("GET", "/fapi/v1/exchangeInfo")
+            # 使用 SymbolSelector 獲取波動率最高的交易對
+            symbols = await self.symbol_selector.get_top_volatility_symbols(
+                limit=Config.WEBSOCKET_SYMBOL_LIMIT  # 默認300
+            )
             
-            symbols = [
-                s['symbol'] for s in info['symbols']
-                if s['quoteAsset'] == 'USDT' and s['status'] == 'TRADING'
-            ]
+            if symbols:
+                logger.info(f"✅ 波動率篩選成功：{len(symbols)} 個高波動交易對")
+            else:
+                logger.warning("⚠️ 波動率篩選未返回任何交易對")
             
-            logger.info(f"✅ 獲取成功：{len(symbols)} 個USDT永續合約")
             return symbols
         
         except Exception as e:
-            logger.error(f"❌ 獲取交易對失敗: {e}")
-            return []
+            logger.error(f"❌ 波動率篩選失敗: {e}")
+            logger.warning("⚠️ 降級使用全市場模式...")
+            
+            # 降級方案：獲取所有 USDT 永續合約
+            try:
+                info = await self.binance_client._request("GET", "/fapi/v1/exchangeInfo")
+                symbols = [
+                    s['symbol'] for s in info['symbols']
+                    if s['quoteAsset'] == 'USDT' 
+                    and s['status'] == 'TRADING'
+                    and 'UP' not in s['symbol']    # 仍然過濾槓桿幣
+                    and 'DOWN' not in s['symbol']
+                ]
+                logger.info(f"✅ 降級模式：{len(symbols)} 個USDT永續合約")
+                return symbols
+            except Exception as fallback_error:
+                logger.error(f"❌ 降級模式也失敗: {fallback_error}")
+                return []
     
     async def start(self):
         """啟動所有WebSocket Feed（非阻塞）"""
