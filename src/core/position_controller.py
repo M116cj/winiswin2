@@ -86,18 +86,12 @@ class PositionController:
         logger.info("=" * 80)
     
     async def start_monitoring(self):
-        """啟動 24/7 倉位監控（整合 PositionMonitor24x7）"""
+        """啟動 24/7 倉位監控（整合 PositionMonitor24x7，共享API調用）"""
         self.is_running = True
-        logger.info("🚀 PositionController 24/7 監控已啟動")
+        logger.info("🚀 PositionController 24/7 監控已啟動（整合進場失效+逆勢檢測）")
         
-        # 🔥 v3.17.10+：同時啟動 PositionMonitor24x7（捕獲啟動異常）
-        try:
-            await self.monitor_24x7.start()
-            logger.info("✅ PositionMonitor24x7 已啟動")
-        except Exception as e:
-            logger.error(f"❌ PositionMonitor24x7 啟動失敗: {e}")
-            self.is_running = False  # 🔥 重置狀態避免不一致
-            raise
+        # 🔥 v3.17.10+：不再獨立啟動PositionMonitor24x7，改為共享API調用
+        # 避免重複調用導致 HTTP 429 速率限制
         
         while self.is_running:
             try:
@@ -112,27 +106,24 @@ class PositionController:
         """停止監控"""
         self.is_running = False
         
-        # 🔥 v3.17.10+：停止 PositionMonitor24x7
-        await self.monitor_24x7.stop()
-        
         logger.info("⏸️  PositionController 監控已停止")
         logger.info(f"   📊 統計: 檢查={self.stats['total_checks']}, "
                    f"平倉={self.stats['total_closes']}, "
                    f"調整={self.stats['total_adjustments']}, "
                    f"緊急平倉={self.stats['emergency_closes']}")
         
-        # 🔥 顯示 PositionMonitor24x7 統計
+        # 🔥 v3.17.10+：顯示進場失效+逆勢平倉統計
         monitor_stats = self.monitor_24x7.get_monitor_stats()
-        logger.info(f"   📊 監控器統計: 進場失效平倉={monitor_stats.get('entry_reason_expired_closures', 0)}, "
-                   f"逆勢平倉={monitor_stats.get('counter_trend_closures', 0)}")
+        logger.info(f"   📊 自動平倉: 進場失效={monitor_stats.get('entry_reason_expired_closures', 0)}, "
+                   f"逆勢無反彈={monitor_stats.get('counter_trend_closures', 0)}")
     
     async def _monitoring_cycle(self):
-        """單次監控週期"""
+        """單次監控週期（整合PositionMonitor24x7檢測，共享API調用）"""
         try:
             self.stats['total_checks'] += 1
             self.last_check_time = datetime.now()
             
-            # 步驟 1：獲取所有持倉（優先級 0）
+            # 步驟 1：獲取所有持倉（優先級 0）- 共享給兩個監控器
             positions = await self._fetch_all_positions()
             
             if not positions:
@@ -140,6 +131,10 @@ class PositionController:
                 return
             
             logger.debug(f"   📊 監控 {len(positions)} 個持倉")
+            
+            # 🔥 v3.17.10+：優先執行PositionMonitor24x7檢測（進場失效+逆勢平倉）
+            # 共享同一次API調用結果，避免HTTP 429速率限制
+            await self.monitor_24x7.check_positions_with_data(positions)
             
             # 步驟 2：調用 SelfLearningTrader 評估持倉
             decisions = await self.trader.evaluate_positions(positions)

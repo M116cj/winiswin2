@@ -69,18 +69,20 @@ class PositionMonitor24x7:
         logger.info("=" * 60)
     
     async def start(self):
-        """啟動監控器（修復：表面初始化失敗）"""
-        if self.is_running:
-            logger.warning("⚠️ 監控器已在運行")
-            return
+        """
+        🚫 已廢棄：不再獨立啟動監控器（防止重複API調用）
         
-        # 🔥 驗證必要組件
-        if not self.binance_client:
-            raise ValueError("PositionMonitor24x7 需要 binance_client 才能運行")
-        
-        self.is_running = True
-        self.monitor_task = asyncio.create_task(self._monitor_loop())
-        logger.info("🚀 24/7 倉位監控器已啟動")
+        v3.17.10+：PositionMonitor24x7 改為被動模式，接收PositionController共享的倉位數據。
+        如果調用此方法會導致HTTP 429速率限制問題。
+        """
+        logger.error(
+            "❌ PositionMonitor24x7.start() 已廢棄！\n"
+            "   原因：避免與PositionController重複API調用導致HTTP 429\n"
+            "   解決：請使用 check_positions_with_data() 接收共享數據"
+        )
+        raise DeprecationWarning(
+            "PositionMonitor24x7.start() 已廢棄，改用 check_positions_with_data() 被動模式"
+        )
     
     async def stop(self):
         """停止監控器"""
@@ -98,53 +100,68 @@ class PositionMonitor24x7:
         logger.info(f"⏸️  24/7 倉位監控器已停止 (總檢查: {self.total_checks}, 強制平倉: {self.forced_closures})")
     
     async def _monitor_loop(self):
-        """主監控循環"""
-        logger.info("🔄 開始監控循環...")
+        """
+        🚫 已廢棄：主監控循環（不再使用）
         
-        while self.is_running:
-            try:
-                # 檢查所有倉位
-                await self._check_all_positions()
-                
-                # 更新統計
-                self.total_checks += 1
-                self.last_check_time = datetime.now()
-                
-                # 等待下一次檢查（使用實例屬性）
-                await asyncio.sleep(self.monitor_interval)
-                
-            except asyncio.CancelledError:
-                break
-            except Exception as e:
-                logger.error(f"❌ 監控循環錯誤: {e}", exc_info=True)
-                await asyncio.sleep(self.monitor_interval)
+        v3.17.10+：改為被動模式，由PositionController調用 check_positions_with_data()
+        """
+        logger.error("❌ _monitor_loop() 被意外調用！此方法已廢棄，應使用被動模式")
+        raise DeprecationWarning("_monitor_loop() 已廢棄")
     
-    async def _check_all_positions(self):
-        """檢查所有倉位"""
-        if not self.binance_client:
+    async def check_positions_with_data(self, positions: List[Dict]):
+        """
+        🔥 v3.17.10+ 標準方法：接收倉位數據進行檢測（共享API調用）
+        
+        此方法由PositionController調用，避免重複API請求導致HTTP 429。
+        
+        Args:
+            positions: PositionController提供的倉位列表（格式已標準化）
+        """
+        if not positions:
             return
         
-        try:
-            # 獲取所有倉位
-            positions = await self.binance_client.get_position_info_async()
-            
-            if not positions:
-                return
-            
-            # 過濾有效倉位（數量 > 0）
-            active_positions = [p for p in positions if abs(float(p.get('positionAmt', 0))) > 0]
-            
-            if not active_positions:
-                return
-            
-            logger.debug(f"📊 檢查 {len(active_positions)} 個活躍倉位")
-            
-            # 檢查每個倉位
-            for position in active_positions:
-                await self._check_single_position(position)
-                
-        except Exception as e:
-            logger.error(f"❌ 獲取倉位失敗: {e}")
+        # 🔥 不再更新 total_checks（由PositionController統一計數）
+        # 僅更新時間戳
+        self.last_check_time = datetime.now()
+        
+        logger.debug(f"   🔥 PositionMonitor24x7 檢查 {len(positions)} 個倉位（共享數據，零額外API調用）")
+        
+        # 檢查每個倉位（轉換為Binance API格式）
+        for position in positions:
+            await self._check_position_from_controller(position)
+    
+    async def _check_position_from_controller(self, position: Dict):
+        """
+        從PositionController格式轉換並檢查倉位
+        
+        Args:
+            position: PositionController標準化格式的倉位數據
+        """
+        # 如果有原始數據，直接使用
+        if 'raw_data' in position:
+            await self._check_single_position(position['raw_data'])
+        else:
+            # 轉換為Binance API格式
+            position_amt = position['size'] if position['side'] == 'LONG' else -position['size']
+            converted = {
+                'symbol': position['symbol'],
+                'positionAmt': str(position_amt),
+                'entryPrice': str(position['entry_price']),
+                'markPrice': str(position['current_price']),
+                'unrealizedProfit': str(position['pnl']),
+                'unRealizedProfit': str(position['pnl']),  # 兩種格式兼容
+                'leverage': str(position.get('leverage', 1))
+            }
+            await self._check_single_position(converted)
+    
+    async def _check_all_positions(self):
+        """
+        🚫 已廢棄：檢查所有倉位（會重複調用API）
+        
+        v3.17.10+：改用 check_positions_with_data() 接收共享數據
+        """
+        logger.error("❌ _check_all_positions() 被意外調用！此方法已廢棄，會導致API速率限制")
+        raise DeprecationWarning("_check_all_positions() 已廢棄，改用 check_positions_with_data()")
     
     async def _check_single_position(self, position: Dict[str, Any]):
         """
@@ -355,14 +372,13 @@ class PositionMonitor24x7:
     
     def get_monitor_stats(self) -> Dict[str, Any]:
         """
-        獲取監控器統計信息
+        獲取監控器統計信息（v3.17.10+：被動模式）
         
         Returns:
             統計字典
         """
         return {
-            "is_running": self.is_running,
-            "total_checks": self.total_checks,
+            "mode": "passive (shared API calls)",  # 🔥 新增：標明被動模式
             "forced_closures": self.forced_closures,
             "entry_reason_expired_closures": self.entry_reason_expired_closures,
             "counter_trend_closures": self.counter_trend_closures,
