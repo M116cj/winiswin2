@@ -104,12 +104,17 @@ class SelfLearningTradingSystem:
             # Binance 客戶端
             self.binance_client = BinanceClient()
             
-            # 測試連接
-            if not await self.binance_client.test_connection():
-                logger.error("❌ 無法連接到 Binance API")
-                return False
+            # 測試連接（非阻塞，帶指數退避重試）
+            connection_ok = await self._test_connection_with_retry(
+                max_retries=3,
+                initial_delay=5
+            )
             
-            logger.info("✅ Binance 客戶端已連接")
+            if connection_ok:
+                logger.info("✅ Binance 客戶端已連接")
+            else:
+                logger.warning("⚠️ API連接測試未通過，將在實際調用時重試")
+                logger.warning("⚠️ 系統將繼續初始化，實際API調用將由熔斷器保護")
             
             # 數據服務
             self.data_service = DataService(
@@ -153,6 +158,43 @@ class SelfLearningTradingSystem:
         except Exception as e:
             logger.error(f"❌ 初始化失敗: {e}", exc_info=True)
             return False
+    
+    async def _test_connection_with_retry(
+        self, 
+        max_retries: int = 3, 
+        initial_delay: int = 5
+    ) -> bool:
+        """
+        測試API連接（帶指數退避重試）
+        
+        Args:
+            max_retries: 最大重試次數
+            initial_delay: 初始延遲秒數
+            
+        Returns:
+            連接成功返回True，否則返回False
+        """
+        for attempt in range(max_retries):
+            try:
+                if self.binance_client and await self.binance_client.test_connection():
+                    if attempt > 0:
+                        logger.info(f"✅ 第{attempt + 1}次嘗試成功連接")
+                    return True
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    wait_time = initial_delay * (2 ** attempt)
+                    logger.warning(
+                        f"⚠️ 連接測試失敗 (嘗試 {attempt + 1}/{max_retries}): {e}"
+                    )
+                    logger.warning(f"⏳ {wait_time}秒後重試...")
+                    await asyncio.sleep(wait_time)
+                else:
+                    logger.warning(
+                        f"⚠️ 達到最大重試次數 ({max_retries}次)，跳過連接測試"
+                    )
+                    logger.warning(f"⚠️ 最後錯誤: {e}")
+        
+        return False
     
     def _display_config(self):
         """顯示當前配置"""

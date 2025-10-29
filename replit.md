@@ -50,6 +50,55 @@ git push origin main
 
 ## 最近更新
 
+### v3.17.11 (2025-10-29) - Railway重啟循環修復 🚨
+
+**類型**: 🔧 **CRITICAL INFRASTRUCTURE FIX**  
+**目標**: 修復Railway自動重啟死循環導致的API濫用問題  
+**狀態**: ✅ **已完成**
+
+#### **問題：Railway重啟死循環**
+Railway日誌顯示觸發Binance 2400次/分鐘限制，端點為 `/fapi/v1/ping`
+
+**根本原因**：
+```
+系統啟動 → test_connection()失敗 → 進程退出
+    ↓
+Railway檢測異常 → 自動重啟容器
+    ↓
+再次調用test_connection() → 再次失敗
+    ↓
+無限重啟循環 → 2400次/分鐘限制觸發 ❌
+```
+
+#### **解決方案：非阻塞初始化 + 指數退避**
+
+**架構變更**：
+- ✅ **移除阻塞性Ping**：test_connection失敗不再導致進程退出
+- ✅ **指數退避重試**：3次重試（5秒→10秒→20秒），避免快速失敗
+- ✅ **繼續初始化**：即使連接測試失敗，系統仍會完成初始化
+- ✅ **熔斷器保護**：實際API調用由GradedCircuitBreaker保護
+
+**重試邏輯**：
+```python
+async def _test_connection_with_retry(max_retries=3, initial_delay=5):
+    for attempt in range(max_retries):
+        try:
+            if await test_connection():
+                return True
+        except Exception as e:
+            wait_time = initial_delay * (2 ** attempt)  # 指數退避
+            await asyncio.sleep(wait_time)
+    return False  # 失敗但不退出
+```
+
+**效果**：
+- ✅ 避免Railway無限重啟循環
+- ✅ API臨時故障不影響系統啟動
+- ✅ 實際調用仍由熔斷器保護
+- ✅ 防止觸發Binance速率限制
+
+---
+
 ### v3.17.10+ (2025-10-29) - HTTP 429 API速率限制修復 🚀
 
 **類型**: 🔧 **CRITICAL PERFORMANCE FIX / API OPTIMIZATION**  
