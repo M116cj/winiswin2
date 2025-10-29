@@ -1,7 +1,7 @@
 """
 AccountFeed v3.17.2+ - 即時帳戶/倉位數據流（升級版）
 職責：使用listenKey監控倉位變動，取代REST /fapi/v1/account輪詢
-升級：心跳監控、REST智慧冷卻、時間戳標準化
+升級：心跳監控、REST智慧冷卻、時間戳標準化、listenKey自動續期優化
 """
 
 import asyncio
@@ -25,7 +25,7 @@ class AccountFeed(BaseFeed):
     AccountFeed - Binance帳戶WebSocket監控器（v3.17.2+升級版）
     
     職責：
-    1. 管理listenKey（獲取/續期/30分鐘keep-alive）
+    1. 管理listenKey（獲取/自動續期/智能重試）
     2. 訂閱ACCOUNT_UPDATE事件
     3. 緩存即時倉位數據
     4. 提供即時倉位查詢
@@ -36,6 +36,8 @@ class AccountFeed(BaseFeed):
     - 完全移除/fapi/v1/account輪詢（零API請求）
     - 即時倉位更新（無延遲）
     - 自動帳戶變動通知
+    - listenKey自動續期（每15分鐘，比過期早一半）
+    - 續期失敗自動重試（最多3次）
     - 網路延遲追蹤
     """
     
@@ -61,7 +63,7 @@ class AccountFeed(BaseFeed):
         logger.info("✅ AccountFeed 初始化完成")
         logger.info("   📡 監控類型: ACCOUNT_UPDATE（即時倉位）")
         logger.info("   🔌 WebSocket URL: wss://fstream.binance.com/ws/")
-        logger.info("   ⏱️  listenKey續期: 每30分鐘")
+        logger.info("   ⏱️  listenKey自動續期: 每15分鐘（過期前提前續期）")
         logger.info(f"   ⏱️  接收超時: {recv_timeout}秒（可配置）")
         logger.info("   💓 心跳監控: 30秒無訊息→重連")
         logger.info("   🔄 智能重連: 指數退避（5-60秒）")
@@ -98,21 +100,46 @@ class AccountFeed(BaseFeed):
             raise
     
     async def _keep_alive(self):
-        """每30分鐘續期listenKey"""
+        """
+        自動續期listenKey（優化版）
+        
+        改進：
+        - 每15分鐘續期（比30分鐘過期時間提前一半，更安全）
+        - 續期失敗時立即重試（最多3次）
+        - 記錄續期成功率
+        """
         while self.running:
             try:
-                await asyncio.sleep(1800)  # 30分鐘
+                await asyncio.sleep(900)  # 15分鐘（比30分鐘過期早一半）
                 
-                if self.listen_key:
-                    await self.binance_client.renew_listen_key(self.listen_key)
-                    self.stats['listen_key_renewals'] = \
-                        self.stats.get('listen_key_renewals', 0) + 1
-                    logger.debug(f"🔄 listenKey已續期: {self.listen_key[:8]}...")
+                if not self.listen_key:
+                    logger.warning("⚠️ listenKey為空，跳過續期")
+                    continue
+                
+                # 嘗試續期（最多重試3次）
+                success = False
+                for attempt in range(3):
+                    try:
+                        await self.binance_client.renew_listen_key(self.listen_key)
+                        self.stats['listen_key_renewals'] = \
+                            self.stats.get('listen_key_renewals', 0) + 1
+                        logger.info(f"✅ listenKey已續期: {self.listen_key[:8]}... (第{attempt+1}次嘗試)")
+                        success = True
+                        break
+                    except Exception as e:
+                        logger.warning(f"⚠️ listenKey續期失敗 (第{attempt+1}次): {e}")
+                        if attempt < 2:  # 前2次失敗後等待重試
+                            await asyncio.sleep(5)
+                
+                if not success:
+                    logger.error("❌ listenKey續期連續失敗3次，可能需要重新獲取")
+                    # 標記需要重連（WebSocket循環會自動處理）
+                    self.stats['renew_failures'] = self.stats.get('renew_failures', 0) + 1
                 
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                logger.error(f"❌ listenKey續期失敗: {e}")
+                logger.error(f"❌ listenKey續期循環異常: {e}")
                 await asyncio.sleep(5)
     
     async def _listen_account(self):
@@ -341,7 +368,8 @@ class AccountFeed(BaseFeed):
             **base_stats,
             'cached_positions': len(self.position_cache),
             'listen_key_active': bool(self.listen_key),
-            'listen_key_renewals': self.stats.get('listen_key_renewals', 0)
+            'listen_key_renewals': self.stats.get('listen_key_renewals', 0),
+            'renew_failures': self.stats.get('renew_failures', 0)
         }
     
     async def stop(self):

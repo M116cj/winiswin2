@@ -98,6 +98,15 @@ Railway日誌顯示系統觸發 `HTTP 429: Too many requests; current limit of I
    - 自動訂閱波動率最高的前300個交易對
    - 降級方案：若選擇失敗，使用全市場PERPETUAL合約
 
+4. ✅ **AccountFeed listenKey自動續期優化** (`src/core/websocket/account_feed.py`):
+   - **優化前**：每30分鐘續期1次，續期失敗無重試
+   - **優化後**：
+     - ⏱️ **每15分鐘續期**（比30分鐘過期時間提前一半，更安全）
+     - 🔁 **自動重試3次**：續期失敗時立即重試，每次間隔5秒
+     - 📊 **失敗追蹤**：記錄 `renew_failures` 統計，方便監控
+     - 📝 **詳細日誌**：記錄每次續期嘗試和結果
+   - **目的**：防止 listenKey 過期導致 WebSocket 斷連和心跳超時
+
 #### **修復方案：WebSocket混合策略**
 
 ##### 1. WebSocket部分可用策略 ✅
