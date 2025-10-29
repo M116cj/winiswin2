@@ -1,0 +1,1000 @@
+2025-10-29T03:16:03.279560653Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:03.279567779Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:03.279574512Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:03.279582158Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:03.279587888Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:03.279593814Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:03.279602124Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:03.279608710Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:03.280232072Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:03.280239781Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:03.280245115Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:03.280250280Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請56秒後重試
+2025-10-29T03:16:05.195202477Z [inf]  2025-10-29 03:16:05,193 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請54秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:05.195211100Z [inf]  2025-10-29 03:16:05,193 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.195217185Z [inf]  2025-10-29 03:16:05,193 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.288009769Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:05.288028438Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:05.288036361Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:05.288044800Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:05.288052284Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:05.288060428Z [inf]  2025-10-29 03:16:05,277 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請54秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:05.288071745Z [inf]  2025-10-29 03:16:05,278 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.288079542Z [inf]  2025-10-29 03:16:05,278 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.288087698Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:05.288094776Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:05.288103213Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:05.288110816Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:05.288118647Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:05.288126252Z [inf]      raise Exception(reason)
+2025-10-29T03:16:05.288133832Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.288141570Z [inf]  
+2025-10-29T03:16:05.288148603Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:05.288155349Z [inf]  
+2025-10-29T03:16:05.288162487Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:05.289417904Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:05.289418263Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:05.289427184Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:05.289428097Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請54秒後重試
+2025-10-29T03:16:05.289436378Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:05.289441434Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:05.289446795Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:07.216672445Z [inf]  2025-10-29 03:16:07,196 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請52秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:07.216678133Z [inf]  2025-10-29 03:16:07,196 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:07.216685069Z [inf]  2025-10-29 03:16:07,196 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:07.285858423Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:07.285871267Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:07.285878459Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:07.285883482Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:07.285889796Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:07.285896704Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:07.285913763Z [inf]  2025-10-29 03:16:07,280 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請52秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:07.285920380Z [inf]  2025-10-29 03:16:07,281 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:07.285928963Z [inf]  2025-10-29 03:16:07,281 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:07.285935739Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:07.285942269Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:07.285949442Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:07.285955239Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:07.285961590Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:07.285967170Z [inf]      raise Exception(reason)
+2025-10-29T03:16:07.285973720Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:07.285978475Z [inf]  
+2025-10-29T03:16:07.285983334Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:07.285989830Z [inf]  
+2025-10-29T03:16:07.286686866Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:07.286693966Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:07.286699089Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:07.286704650Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:07.286710065Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:07.286715997Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:07.286721126Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請52秒後重試
+2025-10-29T03:16:09.202138768Z [inf]  2025-10-29 03:16:09,199 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請50秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:09.202146245Z [inf]  2025-10-29 03:16:09,199 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:09.202152882Z [inf]  2025-10-29 03:16:09,199 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:09.285435301Z [inf]  2025-10-29 03:16:09,282 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請50秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:09.285444441Z [inf]  2025-10-29 03:16:09,282 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:09.285450136Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:09.285453124Z [inf]  2025-10-29 03:16:09,282 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:09.285459274Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:09.285465854Z [inf]  
+2025-10-29T03:16:09.285466800Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:09.285472269Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:09.285477853Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:09.285479251Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:09.285483214Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:09.285488458Z [inf]      raise Exception(reason)
+2025-10-29T03:16:09.285494351Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:09.285494920Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:09.285501155Z [inf]  
+2025-10-29T03:16:09.285520955Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:09.285529785Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:09.285539926Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:09.285548420Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:09.287927971Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:09.287938567Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:09.287945466Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:09.287951841Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:09.287957442Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:09.287963573Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:09.287969712Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請50秒後重試
+2025-10-29T03:16:11.203406548Z [inf]  2025-10-29 03:16:11,201 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請48秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:11.203412664Z [inf]  2025-10-29 03:16:11,201 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:11.203418298Z [inf]  2025-10-29 03:16:11,201 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:11.286479562Z [inf]  2025-10-29 03:16:11,283 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請48秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:11.286481362Z [inf]  
+2025-10-29T03:16:11.286488174Z [inf]  2025-10-29 03:16:11,283 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:11.286496024Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:11.286498031Z [inf]  2025-10-29 03:16:11,284 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:11.286506015Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:11.286513565Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:11.286523334Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:11.286530783Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:11.286537017Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:11.286780231Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:11.286787715Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:11.286795764Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:11.286802496Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:11.286808297Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:11.286814658Z [inf]      raise Exception(reason)
+2025-10-29T03:16:11.286820565Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:11.286828125Z [inf]  
+2025-10-29T03:16:11.286835112Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:11.287893452Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:11.287900538Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:11.287906612Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:11.287912616Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:11.287918194Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:11.287923785Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:11.287928865Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請48秒後重試
+2025-10-29T03:16:13.217681164Z [inf]  2025-10-29 03:16:13,203 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請46秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:13.217688050Z [inf]  2025-10-29 03:16:13,203 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:13.217695863Z [inf]  2025-10-29 03:16:13,203 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:13.298804937Z [inf]      raise Exception(reason)
+2025-10-29T03:16:13.298822032Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:13.298828005Z [inf]  2025-10-29 03:16:13,285 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請46秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:13.298832956Z [inf]  
+2025-10-29T03:16:13.298836265Z [inf]  2025-10-29 03:16:13,285 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:13.298842008Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:13.298845586Z [inf]  2025-10-29 03:16:13,285 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:13.298850749Z [inf]  
+2025-10-29T03:16:13.298854983Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:13.298860740Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:13.298864869Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:13.298871421Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:13.298873371Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:13.298879008Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:13.298885608Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:13.298893082Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:13.298899026Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:13.298901691Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:13.298908024Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:13.300657242Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:13.300665968Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:13.300671018Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:13.300675062Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:13.300678980Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:13.300683346Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:13.300689244Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請46秒後重試
+2025-10-29T03:16:15.208582960Z [inf]  2025-10-29 03:16:15,206 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請44秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:15.208588923Z [inf]  2025-10-29 03:16:15,206 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:15.208593565Z [inf]  2025-10-29 03:16:15,206 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:15.289679203Z [inf]  2025-10-29 03:16:15,287 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請44秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:15.289688939Z [inf]  2025-10-29 03:16:15,287 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:15.292846201Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:15.292860272Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:15.292867662Z [inf]  2025-10-29 03:16:15,287 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:15.292869485Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:15.292876341Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:15.292882289Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:15.292882805Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:15.292888386Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:15.292894507Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:15.292900552Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:15.292906687Z [inf]      raise Exception(reason)
+2025-10-29T03:16:15.292912457Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:15.292920220Z [inf]  
+2025-10-29T03:16:15.292925011Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:15.292930390Z [inf]  
+2025-10-29T03:16:15.292935716Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:15.292940235Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:15.292945402Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:15.292951021Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:15.292956061Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:15.294795137Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:15.294805483Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:15.294814767Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:15.294823431Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請44秒後重試
+2025-10-29T03:16:17.225800255Z [inf]  2025-10-29 03:16:17,209 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請42秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:17.225808754Z [inf]  2025-10-29 03:16:17,209 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:17.225815329Z [inf]  2025-10-29 03:16:17,209 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:17.302568229Z [inf]  2025-10-29 03:16:17,288 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請42秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:17.302581092Z [inf]  2025-10-29 03:16:17,289 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:17.302589348Z [inf]  2025-10-29 03:16:17,289 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:17.302596979Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:17.302615163Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:17.302622535Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:17.302631669Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:17.302638819Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:17.302645628Z [inf]      raise Exception(reason)
+2025-10-29T03:16:17.302656026Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:17.302663472Z [inf]  
+2025-10-29T03:16:17.302669348Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:17.302675478Z [inf]  
+2025-10-29T03:16:17.302681485Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:17.302707174Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:17.302713174Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:17.302719172Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:17.302725934Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:17.302731894Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:17.304203279Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:17.304214700Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:17.304223029Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:17.304228755Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:17.304235552Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:17.304241623Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:17.304247251Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請42秒後重試
+2025-10-29T03:16:19.212366967Z [inf]  2025-10-29 03:16:19,210 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請40秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:19.212376974Z [inf]  2025-10-29 03:16:19,210 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:19.212384716Z [inf]  2025-10-29 03:16:19,210 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:19.291518416Z [inf]  2025-10-29 03:16:19,290 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請40秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:19.291528186Z [inf]  2025-10-29 03:16:19,290 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:19.293943614Z [inf]  2025-10-29 03:16:19,290 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:19.293953839Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:19.293965484Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:19.293971995Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:19.293978462Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:19.293984921Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:19.293992702Z [inf]      raise Exception(reason)
+2025-10-29T03:16:19.294007334Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:19.294014605Z [inf]  
+2025-10-29T03:16:19.294020465Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:19.294025663Z [inf]  
+2025-10-29T03:16:19.294032167Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:19.294041345Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:19.294046494Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:19.294051484Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:19.294056481Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:19.294061793Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:19.294067254Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:19.294072465Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:19.294077160Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:19.296367954Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:19.296376489Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:19.296384403Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:19.296390704Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請40秒後重試
+2025-10-29T03:16:21.215484820Z [inf]  2025-10-29 03:16:21,213 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請38秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:21.215492938Z [inf]  2025-10-29 03:16:21,213 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:21.215500106Z [inf]  2025-10-29 03:16:21,213 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:21.304521883Z [inf]  2025-10-29 03:16:21,291 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請38秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:21.304533621Z [inf]  2025-10-29 03:16:21,291 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:21.304538603Z [inf]  
+2025-10-29T03:16:21.304540049Z [inf]  2025-10-29 03:16:21,291 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:21.304547415Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:21.304554414Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:21.304555643Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:21.304563699Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:21.304563849Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:21.304571237Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:21.304572483Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:21.304577802Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:21.304582299Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:21.304584873Z [inf]      raise Exception(reason)
+2025-10-29T03:16:21.304592171Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:21.304592565Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:21.304600606Z [inf]  
+2025-10-29T03:16:21.304601178Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:21.304607149Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:21.305625622Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:21.305635802Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:21.305644778Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:21.305657050Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:21.305662625Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:21.305668627Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:21.305675003Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請38秒後重試
+2025-10-29T03:16:23.220342116Z [inf]  2025-10-29 03:16:23,216 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請36秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:23.220347224Z [inf]  2025-10-29 03:16:23,216 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:23.220352272Z [inf]  2025-10-29 03:16:23,216 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:23.299549626Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:23.299559193Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:23.299564932Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:23.299569997Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:23.299576670Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:23.299579867Z [inf]  2025-10-29 03:16:23,293 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請36秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:23.299586754Z [inf]  2025-10-29 03:16:23,293 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:23.299592786Z [inf]  2025-10-29 03:16:23,293 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:23.299597916Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:23.299602986Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:23.299610135Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:23.299615242Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:23.299620411Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:23.299624851Z [inf]      raise Exception(reason)
+2025-10-29T03:16:23.299629745Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:23.299634159Z [inf]  
+2025-10-29T03:16:23.299638866Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:23.299642789Z [inf]  
+2025-10-29T03:16:23.299647124Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:23.300822373Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:23.300830781Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:23.300837448Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:23.300842448Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:23.300847193Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:23.300851568Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:23.300856703Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請36秒後重試
+2025-10-29T03:16:25.222028034Z [inf]  2025-10-29 03:16:25,220 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請34秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:25.222036499Z [inf]  2025-10-29 03:16:25,220 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:25.222044426Z [inf]  2025-10-29 03:16:25,220 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:25.298020116Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:25.298033306Z [inf]  2025-10-29 03:16:25,294 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請34秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:25.298045622Z [inf]  2025-10-29 03:16:25,295 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:25.298054111Z [inf]  2025-10-29 03:16:25,295 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:25.298064453Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:25.298072733Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:25.298081018Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:25.298088379Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:25.298095524Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:25.298105699Z [inf]      raise Exception(reason)
+2025-10-29T03:16:25.298119350Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:25.298128181Z [inf]  
+2025-10-29T03:16:25.298135546Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:25.298142751Z [inf]  
+2025-10-29T03:16:25.298149888Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:25.298157095Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:25.298165142Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:25.298172294Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:25.298180455Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:25.299649237Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:25.299657203Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:25.299661839Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:25.299666431Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:25.299671358Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:25.299675846Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:25.299681688Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請34秒後重試
+2025-10-29T03:16:27.233265645Z [inf]  2025-10-29 03:16:27,222 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請32秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:27.233272500Z [inf]  2025-10-29 03:16:27,222 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:27.233277877Z [inf]  2025-10-29 03:16:27,222 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:27.301854546Z [inf]  2025-10-29 03:16:27,296 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請32秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:27.301865089Z [inf]  2025-10-29 03:16:27,296 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:27.301865145Z [inf]  
+2025-10-29T03:16:27.301871534Z [inf]  2025-10-29 03:16:27,296 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:27.301878596Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:27.301879653Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:27.301887070Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:27.301888224Z [inf]  
+2025-10-29T03:16:27.301893820Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:27.301896762Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:27.301904265Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:27.301905209Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:27.301911269Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:27.301914350Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:27.301918175Z [inf]      raise Exception(reason)
+2025-10-29T03:16:27.301922899Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:27.301924822Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:27.301931086Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:27.301938029Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:27.302785404Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:27.302792565Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:27.302798895Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:27.302804725Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:27.302809920Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:27.302816668Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:27.302821183Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請32秒後重試
+2025-10-29T03:16:29.226176380Z [inf]  2025-10-29 03:16:29,223 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請30秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:29.226186937Z [inf]  2025-10-29 03:16:29,223 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:29.226192949Z [inf]  2025-10-29 03:16:29,223 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:29.305982177Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:29.305994726Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:29.306003369Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:29.306005847Z [inf]  2025-10-29 03:16:29,298 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請30秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:29.306010537Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:29.306017080Z [inf]  2025-10-29 03:16:29,298 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:29.306019656Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:29.306025209Z [inf]  2025-10-29 03:16:29,298 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:29.306028510Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:29.306034505Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:29.306041321Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:29.306048753Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:29.306054135Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:29.306059244Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:29.306064835Z [inf]      raise Exception(reason)
+2025-10-29T03:16:29.306070926Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:29.306076721Z [inf]  
+2025-10-29T03:16:29.306082116Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:29.306088242Z [inf]  
+2025-10-29T03:16:29.308587028Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:29.308599453Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:29.308607289Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:29.308614032Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:29.308621084Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:29.308628808Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:29.308635319Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請30秒後重試
+2025-10-29T03:16:31.230163592Z [inf]  2025-10-29 03:16:31,225 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請28秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:31.230171503Z [inf]  2025-10-29 03:16:31,225 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.230178611Z [inf]  2025-10-29 03:16:31,225 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.303074899Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:31.303088775Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:31.303098300Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:31.303107109Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:31.303140741Z [inf]  2025-10-29 03:16:31,300 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請28秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:31.303150978Z [inf]  2025-10-29 03:16:31,300 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.303160010Z [inf]  2025-10-29 03:16:31,300 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.303169067Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:31.303176601Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:31.303184615Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:31.303191709Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:31.303197645Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:31.303203790Z [inf]      raise Exception(reason)
+2025-10-29T03:16:31.303209225Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.303218317Z [inf]  
+2025-10-29T03:16:31.303225102Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:31.303231087Z [inf]  
+2025-10-29T03:16:31.303238386Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:31.303245174Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:31.304370488Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:31.304377437Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請28秒後重試
+2025-10-29T03:16:31.304440384Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:31.304445756Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:31.304450668Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:31.304455757Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:31.304462450Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:33.230348263Z [inf]  2025-10-29 03:16:33,228 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請26秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:33.230354279Z [inf]  2025-10-29 03:16:33,228 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:33.230359419Z [inf]  2025-10-29 03:16:33,228 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:33.302848383Z [inf]  2025-10-29 03:16:33,301 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請26秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:33.302855932Z [inf]  2025-10-29 03:16:33,301 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:33.306002474Z [inf]  2025-10-29 03:16:33,301 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:33.306011128Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:33.306018645Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:33.306025395Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:33.306028146Z [inf]  
+2025-10-29T03:16:33.306032160Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:33.306041249Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:33.306041655Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:33.306050092Z [inf]      raise Exception(reason)
+2025-10-29T03:16:33.306050385Z [inf]  
+2025-10-29T03:16:33.306057944Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:33.306059055Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:33.306066091Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:33.306072721Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:33.306079330Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:33.306085467Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:33.306091251Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:33.306100738Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:33.306106993Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:33.306114483Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:33.307866625Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:33.307875756Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:33.307883181Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:33.307889447Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請26秒後重試
+2025-10-29T03:16:35.232065329Z [inf]  2025-10-29 03:16:35,229 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請24秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:35.232073071Z [inf]  2025-10-29 03:16:35,229 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:35.232080482Z [inf]  2025-10-29 03:16:35,230 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:35.312465148Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:35.312475816Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:35.312490679Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:35.312496375Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:35.312599374Z [inf]  2025-10-29 03:16:35,303 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請24秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:35.312612533Z [inf]  2025-10-29 03:16:35,303 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:35.312621039Z [inf]  2025-10-29 03:16:35,303 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:35.312629544Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:35.312639548Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:35.312647218Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:35.312655801Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:35.312663783Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:35.312666780Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:35.312675452Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:35.312742256Z [inf]      raise Exception(reason)
+2025-10-29T03:16:35.312751866Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:35.312759739Z [inf]  
+2025-10-29T03:16:35.312768522Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:35.312790199Z [inf]  
+2025-10-29T03:16:35.315083279Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:35.315093331Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:35.315100549Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:35.315107354Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:35.315113387Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:35.315119791Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:35.315127160Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請24秒後重試
+2025-10-29T03:16:37.234983467Z [inf]  2025-10-29 03:16:37,232 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請22秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:37.234993039Z [inf]  2025-10-29 03:16:37,232 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:37.234999826Z [inf]  2025-10-29 03:16:37,232 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:37.308511741Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:37.308523970Z [inf]  
+2025-10-29T03:16:37.308533596Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:37.308540711Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:37.308548147Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:37.308555696Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:37.308561601Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:37.308568493Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:37.308571750Z [inf]  2025-10-29 03:16:37,306 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請22秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:37.308581525Z [inf]  2025-10-29 03:16:37,306 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:37.308587360Z [inf]  2025-10-29 03:16:37,306 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:37.308593917Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:37.308602761Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:37.308608636Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:37.308614322Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:37.308619802Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:37.308625382Z [inf]      raise Exception(reason)
+2025-10-29T03:16:37.308630829Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:37.308636203Z [inf]  
+2025-10-29T03:16:37.310341309Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:37.310348578Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:37.310354459Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:37.310359434Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:37.310365103Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:37.310370584Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:37.310375904Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請22秒後重試
+2025-10-29T03:16:39.240967535Z [inf]  2025-10-29 03:16:39,235 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請20秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:39.240979023Z [inf]  2025-10-29 03:16:39,235 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.240987465Z [inf]  2025-10-29 03:16:39,235 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.313011044Z [inf]  2025-10-29 03:16:39,308 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請20秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:39.313015936Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.313021921Z [inf]  2025-10-29 03:16:39,308 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.313028162Z [inf]  
+2025-10-29T03:16:39.313028999Z [inf]  2025-10-29 03:16:39,309 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.313035670Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:39.313036582Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:39.313044853Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:39.313079542Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:39.313086132Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:39.313091401Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:39.313097684Z [inf]      raise Exception(reason)
+2025-10-29T03:16:39.313134118Z [inf]  
+2025-10-29T03:16:39.313139546Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:39.313148775Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:39.313156550Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:39.313166373Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:39.313174222Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:39.313196956Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:39.314097691Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請20秒後重試
+2025-10-29T03:16:39.314124520Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:39.314131475Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:39.314137583Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:39.314143698Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:39.314150869Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:39.314163227Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:41.244947436Z [inf]  2025-10-29 03:16:41,236 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請18秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:41.244956169Z [inf]  2025-10-29 03:16:41,236 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:41.244963242Z [inf]  2025-10-29 03:16:41,236 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:41.313689233Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:41.313702336Z [inf]      raise Exception(reason)
+2025-10-29T03:16:41.313709404Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:41.313714364Z [inf]  2025-10-29 03:16:41,311 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請18秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:41.313717316Z [inf]  
+2025-10-29T03:16:41.313726012Z [inf]  2025-10-29 03:16:41,311 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:41.313734586Z [inf]  2025-10-29 03:16:41,311 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:41.313734907Z [inf]  
+2025-10-29T03:16:41.313742297Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:41.313743364Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:41.313750562Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:41.313751640Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:41.313758597Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:41.313760631Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:41.313767312Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:41.313767462Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:41.313774164Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:41.313779239Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:41.315185685Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:41.315193454Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:41.315199909Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:41.315204984Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:41.315209324Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:41.315214163Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:41.315218408Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請18秒後重試
+2025-10-29T03:16:43.294974185Z [inf]  2025-10-29 03:16:43,239 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請16秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:43.294984052Z [inf]  2025-10-29 03:16:43,239 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:43.294991157Z [inf]  2025-10-29 03:16:43,239 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:43.326462517Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:43.326479147Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:43.326519662Z [inf]  2025-10-29 03:16:43,312 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請16秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:43.326526619Z [inf]  2025-10-29 03:16:43,313 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:43.326533193Z [inf]  2025-10-29 03:16:43,313 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:43.326539920Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:43.326548075Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:43.326556714Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:43.326563174Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:43.326570569Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:43.326578213Z [inf]      raise Exception(reason)
+2025-10-29T03:16:43.326585003Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:43.326591707Z [inf]  
+2025-10-29T03:16:43.326599927Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:43.326606661Z [inf]  
+2025-10-29T03:16:43.326613480Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:43.326620668Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:43.326627930Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:43.326636154Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:43.328808730Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:43.328820668Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:43.328826503Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:43.328832134Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:43.328838067Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:43.328844983Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:43.328851579Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請16秒後重試
+2025-10-29T03:16:45.242667735Z [inf]  2025-10-29 03:16:45,241 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請14秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:45.242681803Z [inf]  2025-10-29 03:16:45,241 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:45.242689011Z [inf]  2025-10-29 03:16:45,241 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:45.318900949Z [inf]  2025-10-29 03:16:45,315 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請14秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:45.318913234Z [inf]  2025-10-29 03:16:45,315 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:45.318924030Z [inf]  2025-10-29 03:16:45,315 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:45.318930893Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:45.318937680Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:45.318945338Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:45.318951807Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:45.318958070Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:45.318964465Z [inf]      raise Exception(reason)
+2025-10-29T03:16:45.318970710Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:45.318977386Z [inf]  
+2025-10-29T03:16:45.318983636Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:45.318989785Z [inf]  
+2025-10-29T03:16:45.318995957Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:45.319002252Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:45.319008280Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:45.319014762Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:45.319021019Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:45.319026769Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:45.320897543Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:45.320905116Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:45.320911751Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:45.320917912Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:45.320924161Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:45.320930041Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:45.320936849Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請14秒後重試
+2025-10-29T03:16:47.253219559Z [inf]  2025-10-29 03:16:47,244 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請12秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:47.253227713Z [inf]  2025-10-29 03:16:47,244 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:47.253234525Z [inf]  2025-10-29 03:16:47,244 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:47.330319919Z [inf]  2025-10-29 03:16:47,318 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請12秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:47.330325742Z [inf]  2025-10-29 03:16:47,318 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:47.330332170Z [inf]  2025-10-29 03:16:47,318 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:47.330339844Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:47.330348108Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:47.330358472Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:47.330369199Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:47.330375201Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:47.330382754Z [inf]      raise Exception(reason)
+2025-10-29T03:16:47.330388614Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:47.330394906Z [inf]  
+2025-10-29T03:16:47.330399894Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:47.330405114Z [inf]  
+2025-10-29T03:16:47.330412167Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:47.330417022Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:47.330421334Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:47.330425756Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:47.330435290Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:47.330440679Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:47.331940552Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:47.331945806Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:47.331950556Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:47.331954749Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:47.331959510Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:47.331963680Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:47.331967789Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請12秒後重試
+2025-10-29T03:16:49.252038096Z [inf]  2025-10-29 03:16:49,247 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請10秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:49.252045765Z [inf]  2025-10-29 03:16:49,247 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:49.252052051Z [inf]  2025-10-29 03:16:49,247 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:49.334500916Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:49.334511815Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:49.334513683Z [inf]  2025-10-29 03:16:49,320 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請10秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:49.334519009Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:49.334522736Z [inf]  2025-10-29 03:16:49,321 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:49.334529019Z [inf]  2025-10-29 03:16:49,321 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:49.334535538Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:49.334540660Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:49.334546203Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:49.334551138Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:49.334555736Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:49.334562982Z [inf]      raise Exception(reason)
+2025-10-29T03:16:49.334568697Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:49.334574188Z [inf]  
+2025-10-29T03:16:49.334579369Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:49.334584364Z [inf]  
+2025-10-29T03:16:49.334589424Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:49.334594050Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:49.334599436Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:49.335030342Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:49.335038594Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:49.335045435Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:49.335051950Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:49.335058453Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:49.335065819Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:49.335072026Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請10秒後重試
+2025-10-29T03:16:51.254357556Z [inf]  2025-10-29 03:16:51,249 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請8秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:51.254380654Z [inf]  2025-10-29 03:16:51,249 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:51.254388989Z [inf]  2025-10-29 03:16:51,249 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:51.325713041Z [inf]  2025-10-29 03:16:51,323 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請8秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:51.325721056Z [inf]  2025-10-29 03:16:51,323 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:51.325726868Z [inf]  2025-10-29 03:16:51,323 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:51.325732529Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:51.325738329Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:51.325744391Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:51.325750219Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:51.325756075Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:51.325761980Z [inf]      raise Exception(reason)
+2025-10-29T03:16:51.325768116Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:51.325773253Z [inf]  
+2025-10-29T03:16:51.325778419Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:51.325785175Z [inf]  
+2025-10-29T03:16:51.325790002Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:51.325795256Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:51.325800413Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:51.325806217Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:51.325812027Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:51.325817852Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:51.327412548Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:51.327419214Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:51.327423501Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:51.327428149Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:51.327433696Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:51.327440076Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:51.327446897Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請8秒後重試
+2025-10-29T03:16:53.255126722Z [inf]  2025-10-29 03:16:53,252 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請6秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:53.255146328Z [inf]  2025-10-29 03:16:53,252 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:53.255153237Z [inf]  2025-10-29 03:16:53,252 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:53.334664474Z [inf]  2025-10-29 03:16:53,326 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請6秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:53.334667172Z [inf]  
+2025-10-29T03:16:53.334677303Z [inf]  2025-10-29 03:16:53,326 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:53.334683129Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:53.334687362Z [inf]  2025-10-29 03:16:53,326 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:53.334693309Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:53.334696206Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:53.334703319Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:53.334706185Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:53.334712839Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:53.334715430Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:53.334721872Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:53.334723785Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:53.334731562Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:53.334733066Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:53.334739700Z [inf]      raise Exception(reason)
+2025-10-29T03:16:53.334755660Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:53.334763410Z [inf]  
+2025-10-29T03:16:53.334770738Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:53.335859776Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:53.335868619Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:53.335875376Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:53.335883891Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:53.335890899Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:53.335898239Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:53.335907141Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請6秒後重試
+2025-10-29T03:16:55.256171826Z [inf]  2025-10-29 03:16:55,253 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請4秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:55.256178876Z [inf]  2025-10-29 03:16:55,253 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:55.256185068Z [inf]  2025-10-29 03:16:55,254 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:55.333693486Z [inf]  2025-10-29 03:16:55,327 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請4秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:55.333707409Z [inf]  2025-10-29 03:16:55,327 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:55.333715641Z [inf]  2025-10-29 03:16:55,327 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:55.333723426Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:55.333730525Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:55.333737728Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:55.333744462Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:55.333751022Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:55.333757884Z [inf]      raise Exception(reason)
+2025-10-29T03:16:55.333766612Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:55.333773994Z [inf]  
+2025-10-29T03:16:55.333782170Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:55.333788142Z [inf]  
+2025-10-29T03:16:55.333794395Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:55.333800556Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:55.333807433Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:55.333814958Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:55.333822082Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:55.333828023Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:55.334539445Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:55.334546714Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:55.334551709Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:55.334556371Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:55.334561678Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:55.334566235Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:55.334570552Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請4秒後重試
+2025-10-29T03:16:57.257157189Z [inf]  2025-10-29 03:16:57,255 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請2秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:57.257163754Z [inf]  2025-10-29 03:16:57,255 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:57.257169534Z [inf]  2025-10-29 03:16:57,255 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:57.331963109Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:57.331968090Z [inf]  2025-10-29 03:16:57,329 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗7次)，請2秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-29T03:16:57.331971899Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:57.331978427Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:57.331979278Z [inf]  2025-10-29 03:16:57,329 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:57.331986004Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:57.331990209Z [inf]  2025-10-29 03:16:57,329 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:57.331993185Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:57.332000479Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:57.332002453Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:57.332008518Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:57.332015878Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:57.332023978Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:57.332030534Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-29T03:16:57.332036683Z [inf]      raise Exception(reason)
+2025-10-29T03:16:57.332043337Z [inf]  Exception: 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:57.332054831Z [inf]  
+2025-10-29T03:16:57.332061274Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:57.332067085Z [inf]  
+2025-10-29T03:16:57.333219820Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:57.333270589Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:57.333279163Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:57.333285522Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:57.333291652Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-29T03:16:57.333297309Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:57.333302575Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗7次)，請2秒後重試
+2025-10-29T03:16:59.236706385Z [inf]  2025-10-29 03:16:59,225 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-29T03:16:59.236715461Z [inf]  2025-10-29 03:16:59,226 - src.core.unified_scheduler - INFO - 🔄 交易週期 #551 | 2025-10-29 03:16:59 UTC
+2025-10-29T03:16:59.236725143Z [inf]  2025-10-29 03:16:59,226 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-29T03:16:59.236733688Z [inf]  2025-10-29 03:16:59,226 - src.core.circuit_breaker - INFO - ✅ 熔斷器超時恢復: blocked → NORMAL (超時60秒)
+2025-10-29T03:16:59.361286035Z [inf]  2025-10-29 03:16:59,316 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v2/account, params={'timestamp': 1761707819226}
+2025-10-29T03:16:59.361292247Z [inf]  2025-10-29 03:16:59,316 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-29T03:16:59.361298619Z [inf]  2025-10-29 03:16:59,316 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - HTTP 429: Too Many Requests
+2025-10-29T03:16:59.361306107Z [inf]  2025-10-29 03:16:59,316 - src.core.unified_scheduler - ERROR - ❌ 獲取持倉失敗: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.361312520Z [inf]  2025-10-29 03:16:59,316 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-29T03:16:59.361317950Z [inf]  2025-10-29 03:16:59,331 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-29T03:16:59.361341297Z [inf]  2025-10-29 03:16:59,347 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v2/account, params={'timestamp': 1761707819256}
+2025-10-29T03:16:59.361349328Z [inf]  2025-10-29 03:16:59,347 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - HTTP 429: Too Many Requests
+2025-10-29T03:16:59.361356235Z [inf]  2025-10-29 03:16:59,348 - src.core.position_monitor_24x7 - ERROR - ❌ 獲取倉位失敗: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.408881093Z [inf]    File "/app/src/core/unified_scheduler.py", line 227, in _execute_trading_cycle
+2025-10-29T03:16:59.408890447Z [inf]      account_info = await self.binance_client.get_account_balance()
+2025-10-29T03:16:59.408895067Z [inf]  2025-10-29 03:16:59,395 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v2/account, params={'timestamp': 1761707819316}
+2025-10-29T03:16:59.408896224Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:59.408896926Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.408905475Z [inf]    File "/app/src/clients/binance_client.py", line 491, in get_account_balance
+2025-10-29T03:16:59.408907727Z [inf]  2025-10-29 03:16:59,395 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - HTTP 429: Too Many Requests
+2025-10-29T03:16:59.408908909Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.408915023Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:59.408918463Z [inf]  2025-10-29 03:16:59,395 - src.core.unified_scheduler - ERROR - ❌ 交易週期執行失敗: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.408919148Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-29T03:16:59.408924662Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.408929101Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:59.408931461Z [inf]      raise e
+2025-10-29T03:16:59.408932555Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:59.408938394Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:59.408940580Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-29T03:16:59.408942979Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:59.408947543Z [inf]      result = await func(*args, **kwargs)
+2025-10-29T03:16:59.408951809Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.408954213Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.408958731Z [inf]    File "/app/src/clients/binance_client.py", line 199, in _do_request
+2025-10-29T03:16:59.408963288Z [inf]      response.raise_for_status()
+2025-10-29T03:16:59.408969265Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-29T03:16:59.408973897Z [inf]      raise ClientResponseError(
+2025-10-29T03:16:59.408979527Z [inf]  aiohttp.client_exceptions.ClientResponseError: 429, message='Too Many Requests', url='https://fapi.binance.com/fapi/v2/account?timestamp=1761707819316&signature=2bf0cc2697d26c09206017b80146edb0ef0c409ae7208340e2f6ef3e0e684a3f'
+2025-10-29T03:16:59.408993727Z [inf]  
+2025-10-29T03:16:59.409002102Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:59.409006643Z [inf]  
+2025-10-29T03:16:59.409011444Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:59.409156992Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-29T03:16:59.409166270Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:59.409173840Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.423512466Z [inf]  2025-10-29 03:16:59,419 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v2/account, params={'timestamp': 1761707819331}
+2025-10-29T03:16:59.423521298Z [inf]  2025-10-29 03:16:59,419 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → throttled (失敗次數: 4)
+2025-10-29T03:16:59.423526260Z [inf]  2025-10-29 03:16:59,419 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - HTTP 429: Too Many Requests
+2025-10-29T03:16:59.423532196Z [inf]  2025-10-29 03:16:59,419 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.423538151Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:59.423543353Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-29T03:16:59.423548631Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-29T03:16:59.423555184Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.423559540Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-29T03:16:59.423564511Z [inf]      raise e
+2025-10-29T03:16:59.423568749Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-29T03:16:59.423573539Z [inf]      result = await func(*args, **kwargs)
+2025-10-29T03:16:59.423578103Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.423583132Z [inf]    File "/app/src/clients/binance_client.py", line 199, in _do_request
+2025-10-29T03:16:59.423589128Z [inf]      response.raise_for_status()
+2025-10-29T03:16:59.423593717Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-29T03:16:59.439436329Z [inf]      raise BinanceRequestError(
+2025-10-29T03:16:59.439449087Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 429: Too Many Requests
+2025-10-29T03:16:59.439458922Z [inf]      raise ClientResponseError(
+2025-10-29T03:16:59.439471983Z [inf]  aiohttp.client_exceptions.ClientResponseError: 429, message='Too Many Requests', url='https://fapi.binance.com/fapi/v2/account?timestamp=1761707819331&signature=7770e79b02965fbde1f4a7dcb79aed744ec25a7c07dc89c1d08e2bde1b5cae56'
+2025-10-29T03:16:59.439480562Z [inf]  
+2025-10-29T03:16:59.439488075Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-29T03:16:59.439494668Z [inf]  
+2025-10-29T03:16:59.439502359Z [inf]  Traceback (most recent call last):
+2025-10-29T03:16:59.439510693Z [inf]    File "/app/src/core/position_controller.py", line 171, in _fetch_all_positions
+2025-10-29T03:16:59.439516801Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-29T03:16:59.439524729Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.439532374Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-29T03:16:59.439538774Z [inf]      account_info = await self.get_account_info()
+2025-10-29T03:16:59.439545556Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.439551533Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-29T03:16:59.439560105Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-29T03:16:59.439566289Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-29T03:16:59.439571618Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-29T03:17:01.355225369Z [inf]  2025-10-29 03:17:01,349 - src.core.circuit_breaker - WARNING - 🔸 熔斷器限流: 增加2.0秒延遲 (失敗4次, 操作: generic)
+2025-10-29T03:17:01.424015564Z [inf]  2025-10-29 03:17:01,422 - src.core.circuit_breaker - WARNING - 🔸 熔斷器限流: 增加2.0秒延遲 (失敗4次, 操作: generic)
+2025-10-29T03:17:03.452067153Z [inf]  2025-10-29 03:17:03,450 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: throttled → warning (失敗次數: 3)
+2025-10-29T03:17:03.452073831Z [inf]  2025-10-29 03:17:03,451 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:03.452078629Z [inf]  2025-10-29 03:17:03,451 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:03.452082526Z [inf]  2025-10-29 03:17:03,451 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:03.453746579Z [inf]  2025-10-29 03:17:03,451 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:03.453756507Z [inf]  2025-10-29 03:17:03,451 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:05.456336553Z [inf]  2025-10-29 03:17:05,453 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:05.456351310Z [inf]  2025-10-29 03:17:05,453 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:05.456362121Z [inf]  2025-10-29 03:17:05,453 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:05.456374850Z [inf]  2025-10-29 03:17:05,453 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:05.456388083Z [inf]  2025-10-29 03:17:05,453 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:07.463084614Z [inf]  2025-10-29 03:17:07,457 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:07.463093226Z [inf]  2025-10-29 03:17:07,457 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:07.463101588Z [inf]  2025-10-29 03:17:07,457 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:07.463107925Z [inf]  2025-10-29 03:17:07,457 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:07.463114676Z [inf]  2025-10-29 03:17:07,457 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:09.462247211Z [inf]  2025-10-29 03:17:09,460 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:09.462255548Z [inf]  2025-10-29 03:17:09,460 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:09.462263168Z [inf]  2025-10-29 03:17:09,460 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:09.462269304Z [inf]  2025-10-29 03:17:09,460 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:09.462276540Z [inf]  2025-10-29 03:17:09,460 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:11.466168976Z [inf]  2025-10-29 03:17:11,463 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:11.466179969Z [inf]  2025-10-29 03:17:11,463 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:11.466186761Z [inf]  2025-10-29 03:17:11,464 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:11.466195067Z [inf]  2025-10-29 03:17:11,464 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:11.466200849Z [inf]  2025-10-29 03:17:11,464 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.469132887Z [inf]  2025-10-29 03:17:13,466 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.469142383Z [inf]  2025-10-29 03:17:13,466 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.469149729Z [inf]  2025-10-29 03:17:13,466 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.469155015Z [inf]  2025-10-29 03:17:13,466 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.469160682Z [inf]  2025-10-29 03:17:13,466 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:13.666889037Z [inf]  2025-10-29 03:17:13,664 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-29T03:17:15.471725534Z [inf]  2025-10-29 03:17:15,469 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:15.471734808Z [inf]  2025-10-29 03:17:15,469 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:15.471741373Z [inf]  2025-10-29 03:17:15,469 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:15.471746862Z [inf]  2025-10-29 03:17:15,469 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:15.471752742Z [inf]  2025-10-29 03:17:15,469 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:17.475613183Z [inf]  2025-10-29 03:17:17,472 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:17.475620001Z [inf]  2025-10-29 03:17:17,472 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:17.475627986Z [inf]  2025-10-29 03:17:17,472 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:17.475635243Z [inf]  2025-10-29 03:17:17,472 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:17.475642626Z [inf]  2025-10-29 03:17:17,472 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:19.481124660Z [inf]  2025-10-29 03:17:19,475 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:19.481135183Z [inf]  2025-10-29 03:17:19,475 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:19.481144835Z [inf]  2025-10-29 03:17:19,475 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:19.481151283Z [inf]  2025-10-29 03:17:19,475 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:19.481156899Z [inf]  2025-10-29 03:17:19,475 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:21.479184000Z [inf]  2025-10-29 03:17:21,477 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:21.479193518Z [inf]  2025-10-29 03:17:21,477 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:21.479200723Z [inf]  2025-10-29 03:17:21,477 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:21.479208890Z [inf]  2025-10-29 03:17:21,477 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:21.479217590Z [inf]  2025-10-29 03:17:21,478 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.486850884Z [inf]  2025-10-29 03:17:23,480 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.486860743Z [inf]  2025-10-29 03:17:23,480 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.486866963Z [inf]  2025-10-29 03:17:23,480 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.486873189Z [inf]  2025-10-29 03:17:23,480 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.486880308Z [inf]  2025-10-29 03:17:23,480 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:23.776027371Z [inf]  2025-10-29 03:17:23,774 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-29T03:17:24.138564609Z [inf]  2025-10-29 03:17:23,877 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-29T03:17:25.485798429Z [inf]  2025-10-29 03:17:25,481 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:25.485819321Z [inf]  2025-10-29 03:17:25,482 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:25.485826765Z [inf]  2025-10-29 03:17:25,482 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:25.485833383Z [inf]  2025-10-29 03:17:25,482 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:25.485839852Z [inf]  2025-10-29 03:17:25,482 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:27.486551731Z [inf]  2025-10-29 03:17:27,484 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:27.486562763Z [inf]  2025-10-29 03:17:27,484 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:27.486570005Z [inf]  2025-10-29 03:17:27,484 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:27.486576437Z [inf]  2025-10-29 03:17:27,484 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:27.486583814Z [inf]  2025-10-29 03:17:27,484 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:29.489913088Z [inf]  2025-10-29 03:17:29,487 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:29.489923691Z [inf]  2025-10-29 03:17:29,487 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:29.489931020Z [inf]  2025-10-29 03:17:29,487 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:29.489938399Z [inf]  2025-10-29 03:17:29,487 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:29.489942979Z [inf]  2025-10-29 03:17:29,487 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:31.491765110Z [inf]  2025-10-29 03:17:31,489 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:31.491774008Z [inf]  2025-10-29 03:17:31,489 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:31.491781148Z [inf]  2025-10-29 03:17:31,489 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:31.491787745Z [inf]  2025-10-29 03:17:31,489 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:31.491794047Z [inf]  2025-10-29 03:17:31,489 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:33.496945882Z [inf]  2025-10-29 03:17:33,492 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:33.496958392Z [inf]  2025-10-29 03:17:33,492 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:33.496968339Z [inf]  2025-10-29 03:17:33,492 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:33.496974622Z [inf]  2025-10-29 03:17:33,492 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:33.496979763Z [inf]  2025-10-29 03:17:33,492 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:35.499121794Z [inf]  2025-10-29 03:17:35,495 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:35.499130225Z [inf]  2025-10-29 03:17:35,495 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:35.499134845Z [inf]  2025-10-29 03:17:35,495 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:35.499139006Z [inf]  2025-10-29 03:17:35,496 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:35.499143235Z [inf]  2025-10-29 03:17:35,496 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:37.501060619Z [inf]  2025-10-29 03:17:37,498 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:37.501068399Z [inf]  2025-10-29 03:17:37,498 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:37.501074465Z [inf]  2025-10-29 03:17:37,498 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:37.501080931Z [inf]  2025-10-29 03:17:37,498 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:37.501087082Z [inf]  2025-10-29 03:17:37,498 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:39.504419304Z [inf]  2025-10-29 03:17:39,501 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:39.504428311Z [inf]  2025-10-29 03:17:39,501 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:39.504434979Z [inf]  2025-10-29 03:17:39,501 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:39.504441321Z [inf]  2025-10-29 03:17:39,501 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:39.504447529Z [inf]  2025-10-29 03:17:39,501 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:41.507295341Z [inf]  2025-10-29 03:17:41,506 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:41.507304436Z [inf]  2025-10-29 03:17:41,506 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:41.507310863Z [inf]  2025-10-29 03:17:41,506 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:41.507317199Z [inf]  2025-10-29 03:17:41,506 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:41.507323268Z [inf]  2025-10-29 03:17:41,506 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:43.511153046Z [inf]  2025-10-29 03:17:43,509 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:43.511160979Z [inf]  2025-10-29 03:17:43,509 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:43.511166625Z [inf]  2025-10-29 03:17:43,509 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:43.511171613Z [inf]  2025-10-29 03:17:43,509 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:43.511176847Z [inf]  2025-10-29 03:17:43,509 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:45.516225357Z [inf]  2025-10-29 03:17:45,512 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:45.516235400Z [inf]  2025-10-29 03:17:45,513 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:45.516241920Z [inf]  2025-10-29 03:17:45,513 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:45.516248211Z [inf]  2025-10-29 03:17:45,513 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:45.516254429Z [inf]  2025-10-29 03:17:45,513 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:47.516971346Z [inf]  2025-10-29 03:17:47,515 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:47.516984535Z [inf]  2025-10-29 03:17:47,515 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:47.516992642Z [inf]  2025-10-29 03:17:47,515 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:47.516998471Z [inf]  2025-10-29 03:17:47,515 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:47.517003963Z [inf]  2025-10-29 03:17:47,515 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:49.539549572Z [inf]  2025-10-29 03:17:49,518 - src.core.position_monitor_24x7 - WARNING - ⚠️ FXSUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:49.539559817Z [inf]  2025-10-29 03:17:49,518 - src.core.position_monitor_24x7 - WARNING - ⚠️ LTCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:49.539567451Z [inf]  2025-10-29 03:17:49,518 - src.core.position_monitor_24x7 - WARNING - ⚠️ RLCUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:49.539574641Z [inf]  2025-10-29 03:17:49,518 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINKUSDT 無法獲取風險金額，跳過檢查
+2025-10-29T03:17:49.539580387Z [inf]  2025-10-29 03:17:49,518 - src.core.position_monitor_24x7 - WARNING - ⚠️ DYDXUSDT 無法獲取風險金額，跳過檢查
