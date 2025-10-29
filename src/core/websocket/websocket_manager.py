@@ -152,13 +152,13 @@ class WebSocketManager:
                 return []
     
     async def start(self):
-        """啟動所有WebSocket Feed（非阻塞）"""
+        """啟動所有WebSocket Feed（非阻塞）+ 預熱緩存"""
         if self.running:
             logger.warning("⚠️ WebSocketManager 已在運行中")
             return
         
         self.running = True
-        logger.info("🚀 WebSocketManager v3.17.2+ 啟動中...")
+        logger.info("🚀 WebSocketManager v3.17.3+ 啟動中（預熱優化）...")
         
         # 1. 動態獲取交易對（如果需要）
         if self.auto_fetch_symbols and not self.symbols:
@@ -191,7 +191,134 @@ class WebSocketManager:
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
         
-        logger.info("✅ WebSocketManager已啟動（K線Feed + 價格Feed + 帳戶Feed）")
+        # 🔥 v3.17.3+：預熱K線緩存（解決冷啟動問題）
+        if self.enable_kline_feed and self.shard_feed:
+            logger.info("🔥 開始預熱WebSocket緩存（用REST獲取歷史K線）...")
+            await self._warmup_cache()
+        
+        logger.info("✅ WebSocketManager已啟動（K線Feed + 價格Feed + 帳戶Feed + 預熱完成）")
+    
+    async def _warmup_cache(self, timeout: int = 60):
+        """
+        預熱K線緩存（v3.17.3+冷啟動優化）
+        
+        解決問題：
+        - WebSocket啟動時緩存為空，導致立即fallback到REST
+        - 需要60分鐘才能累積足夠的1m K線聚合成1h
+        
+        解決方案：
+        - 啟動時用REST API獲取歷史100根1m K線
+        - 填充到所有分片的KlineFeed緩存中
+        - 立即可用於聚合5m/15m/1h
+        - WebSocket繼續接收新K線並累積
+        
+        Args:
+            timeout: 預熱超時時間（秒），默認60秒
+        """
+        if not self.shard_feed or not self.shard_feed.kline_shards:
+            logger.warning("⚠️ 無K線分片，跳過預熱")
+            return
+        
+        logger.info(f"🔥 開始預熱{len(self.symbols)}個交易對的K線緩存...")
+        start_time = asyncio.get_event_loop().time()
+        
+        # 批量獲取歷史K線（避免速率限制）
+        batch_size = 10  # 每批10個交易對
+        warmed_count = 0
+        failed_count = 0
+        
+        for i in range(0, len(self.symbols), batch_size):
+            batch = self.symbols[i:i + batch_size]
+            
+            # 並行獲取這批交易對的K線
+            tasks = [
+                self._fetch_and_seed_kline_history(symbol)
+                for symbol in batch
+            ]
+            
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            for symbol, result in zip(batch, results):
+                if isinstance(result, Exception):
+                    logger.debug(f"⚠️ {symbol} 預熱失敗: {result}")
+                    failed_count += 1
+                elif result:
+                    warmed_count += 1
+            
+            # 檢查超時
+            elapsed = asyncio.get_event_loop().time() - start_time
+            if elapsed > timeout:
+                logger.warning(f"⚠️ 預熱超時（{elapsed:.1f}s），已完成{warmed_count}/{len(self.symbols)}個交易對")
+                break
+            
+            # 避免速率限制
+            await asyncio.sleep(0.1)
+        
+        elapsed = asyncio.get_event_loop().time() - start_time
+        success_rate = (warmed_count / len(self.symbols) * 100) if self.symbols else 0
+        
+        logger.info("=" * 80)
+        logger.info(f"✅ WebSocket緩存預熱完成")
+        logger.info(f"   ⏱️  耗時: {elapsed:.1f}秒")
+        logger.info(f"   ✅ 成功: {warmed_count}/{len(self.symbols)} ({success_rate:.1f}%)")
+        logger.info(f"   ❌ 失敗: {failed_count}")
+        logger.info(f"   📊 現在可以立即使用WebSocket數據聚合5m/15m/1h")
+        logger.info("=" * 80)
+    
+    async def _fetch_and_seed_kline_history(self, symbol: str) -> bool:
+        """
+        獲取並填充單個交易對的K線歷史
+        
+        Args:
+            symbol: 交易對
+        
+        Returns:
+            True如果成功，False如果失敗
+        """
+        try:
+            # 使用binance_client獲取最近100根1m K線
+            klines = await self.binance_client.get_klines(
+                symbol=symbol,
+                interval="1m",
+                limit=100
+            )
+            
+            if not klines or len(klines) == 0:
+                logger.debug(f"⚠️ {symbol} 未獲取到歷史K線")
+                return False
+            
+            # 轉換為標準格式（與WebSocket格式一致）
+            formatted_klines = []
+            for kline in klines:
+                formatted_klines.append({
+                    'symbol': symbol,
+                    'timestamp': int(kline[0]),  # 開盤時間（毫秒）
+                    'open': float(kline[1]),
+                    'high': float(kline[2]),
+                    'low': float(kline[3]),
+                    'close': float(kline[4]),
+                    'volume': float(kline[5]),
+                    'close_time': int(kline[6]),
+                    'quote_volume': float(kline[7]),
+                    'trades': int(kline[8]),
+                    'server_timestamp': int(kline[0]),
+                    'local_timestamp': int(kline[0]),  # 歷史數據無法獲取真實local_timestamp
+                    'latency_ms': 0,  # 歷史數據延遲設為0
+                    'shard_id': -1  # 預熱數據標記為-1（後續WebSocket數據會覆蓋）
+                })
+            
+            # 找到對應的KlineFeed並填充數據
+            for kline_feed in self.shard_feed.kline_shards:
+                if symbol.lower() in kline_feed.symbols:
+                    kline_feed.seed_history(symbol, formatted_klines)
+                    return True
+            
+            logger.debug(f"⚠️ {symbol} 未找到對應的KlineFeed分片")
+            return False
+            
+        except Exception as e:
+            logger.debug(f"⚠️ {symbol} 預熱異常: {e}")
+            return False
     
     # ==================== K線數據接口 ====================
     

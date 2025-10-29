@@ -1,0 +1,92 @@
+websocket優化方案
+问题本质：启动时的冷启动悖论
+您的逻辑（当前实现）：
+def get_kline(symbol):
+    if websocket_has_data(symbol):  # ← 启动时永远为 False
+        return websocket_data
+    else:
+        return rest_api_fallback()  # ← 永远走这里
+
+致的结果：
+* WebSocket 缓存永远为空（因为从未被填充）
+* 系统永远 fallback 到 REST
+* WebSocket 命中率 = 0%（永久）
+
+
+正确解法：主动填充 WebSocket 缓存
+核心原则：
+「WebSocket 是数据源，不是缓存」 必须让 WebSocket 主动推送数据到缓存，而非被动等待查询。 
+正确实现架构
+1. WebSocket 负责「写入」缓存
+# src/core/websocket/kline_feed.py
+async def _listen_kline(self, symbol: str):
+    url = f"wss://fstream.binance.com/ws/{symbol.lower()}@kline_1m"
+    async with websockets.connect(url) as ws:
+        while self.running:
+            msg = await ws.recv()
+            data = json.loads(msg)
+            if data['e'] == 'kline' and data['k']['x']:  # is_final
+                # ✅ 主动写入缓存（非被动查询）
+                self._update_cache(symbol, data['k'])
+
+2. 查询逻辑：缓存有数据就用，没有就等
+
+# src/services/data_service.py
+async def _get_kline_from_websocket(self, symbol: str, timeout: int = 10):
+    """从 WebSocket 缓存获取 K线（带超时等待）"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        kline = self.websocket_manager.get_kline(symbol)
+        if kline:  # 缓存已有数据
+            return kline
+        await asyncio.sleep(0.1)  # 短暂等待
+    
+    # 超时后 fallback 到 REST
+    logger.warning(f"⚠️ WebSocket 超時 ({timeout}s)，fallback 到 REST: {symbol}")
+    return await self._fetch_kline_from_rest(symbol)
+
+3. 启动时预热缓存（关键！）
+# src/core/websocket/websocket_manager.py
+async def start(self):
+    # 1. 启动 WebSocket 订阅（开始接收数据）
+    await self._start_all_feeds()
+    
+    # 2. 预热缓存：等待至少 1 根 K线
+    await self._warmup_cache()
+    
+    logger.info("✅ WebSocket 缓存预热完成，开始交易循环")
+
+async def _warmup_cache(self, timeout: int = 60):
+    """等待所有分片至少收到 1 根 K线"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        ready_count = 0
+        for shard in self.shards:
+            if shard.has_received_data():
+                ready_count += 1
+        
+        if ready_count == len(self.shards):
+            logger.info(f"✅ 所有 {ready_count} 个分片已接收数据")
+            return
+        
+        await asyncio.sleep(1)
+    
+    logger.warning("⚠️ 缓存预热超时，部分分片可能无数据")
+
+关键区别： 
+* 旧逻辑：立即 fallback → WebSocket 永远无数据
+* 新逻辑：等待 + 预热 → WebSocket 成为主要数据源
+
+
+启动时混合数据源
+若不想等待 60 秒，可采用 混合策略：
+# 启动时：REST 获取历史 K线 + WebSocket 接收实时 K线
+async def _get_initial_klines(self, symbol: str):
+    # 1. 用 REST 获取最近 100 根 1m K线（立即可用）
+    historical = await self._fetch_klines_from_rest(symbol, limit=100)
+    
+    # 2. 启动 WebSocket（接收新 K线）
+    asyncio.create_task(self._start_websocket(symbol))
+    
+    # 3. 合并数据：历史 + 实时
+    return self._merge_historical_and_realtime(historical, symbol)

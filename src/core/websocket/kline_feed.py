@@ -60,7 +60,7 @@ class KlineFeed(BaseFeed):
     }
     """
     
-    def __init__(self, symbols: List[str], interval: str = "1m", shard_id: int = 0):
+    def __init__(self, symbols: List[str], interval: str = "1m", shard_id: int = 0, max_history: int = 100):
         """
         初始化KlineFeed
         
@@ -68,19 +68,22 @@ class KlineFeed(BaseFeed):
             symbols: 交易對列表（例如：['BTCUSDT', 'ETHUSDT']）
             interval: K線週期（默認1m）
             shard_id: 分片ID（用於追蹤，默認0）
+            max_history: 最大歷史K線數量（默認100，用於聚合5m/15m/1h）
         """
         super().__init__(name=f"KlineFeed-Shard{shard_id}")
         
         self.symbols = [s.lower() for s in symbols if s]
         self.interval = interval
         self.shard_id = shard_id
-        self.kline_cache: Dict[str, Dict] = {}  # {symbol: latest_kline}
+        self.max_history = max_history
+        self.kline_cache: Dict[str, List[Dict]] = {}  # {symbol: [kline1, kline2, ...]}（保留最近max_history根）
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
         logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成")
         logger.info(f"   📊 監控幣種數量: {len(self.symbols)}")
         logger.info(f"   ⏱️  K線週期: {interval}")
+        logger.info(f"   📦 歷史緩存大小: {max_history}根K線")
         logger.info(f"   🔌 WebSocket模式: 合併流（單一連線）")
         logger.info(f"   ⚡ 時間戳標準化: server_ts + local_ts + latency_ms")
         logger.info(f"   💓 心跳監控: 30秒無訊息→重連")
@@ -177,8 +180,9 @@ class KlineFeed(BaseFeed):
             local_ts = self.get_local_timestamp_ms()
             latency_ms = self.calculate_latency_ms(server_ts, local_ts)
             
-            self.kline_cache[symbol] = {
+            kline_data = {
                 'symbol': kline.get('s'),
+                'timestamp': server_ts,               # 🔥 新增：用於聚合時間對齊
                 'open': float(kline['o']),
                 'high': float(kline['h']),
                 'low': float(kline['l']),
@@ -193,10 +197,20 @@ class KlineFeed(BaseFeed):
                 'shard_id': self.shard_id             # 分片ID
             }
             
+            # 🔥 v3.17.3+：維護K線歷史列表（保留最近max_history根）
+            if symbol not in self.kline_cache:
+                self.kline_cache[symbol] = []
+            
+            self.kline_cache[symbol].append(kline_data)
+            
+            # 保留最近max_history根K線
+            if len(self.kline_cache[symbol]) > self.max_history:
+                self.kline_cache[symbol] = self.kline_cache[symbol][-self.max_history:]
+            
             logger.debug(
                 f"📊 {symbol.upper()} K線更新: "
                 f"O={kline['o']}, H={kline['h']}, L={kline['l']}, C={kline['c']}, "
-                f"latency={latency_ms}ms, shard={self.shard_id}"
+                f"latency={latency_ms}ms, 歷史={len(self.kline_cache[symbol])}根, shard={self.shard_id}"
             )
     
     async def _on_heartbeat_timeout(self):
@@ -216,16 +230,63 @@ class KlineFeed(BaseFeed):
         Returns:
             最新K線數據，或None（如果無數據）
         """
-        return self.kline_cache.get(symbol.lower())
+        klines = self.kline_cache.get(symbol.lower())
+        if klines and len(klines) > 0:
+            return klines[-1]
+        return None
     
-    def get_all_klines(self) -> Dict[str, Dict]:
+    def get_kline_history(self, symbol: str) -> List[Dict]:
         """
-        獲取所有幣種的最新K線
+        獲取K線歷史數據（用於聚合5m/15m/1h）
+        
+        Args:
+            symbol: 交易對
         
         Returns:
-            所有K線數據的字典
+            K線歷史列表（按時間戳升序），如果無數據則返回空列表
         """
-        return self.kline_cache.copy()
+        return self.kline_cache.get(symbol.lower(), []).copy()
+    
+    def get_all_klines(self) -> Dict[str, List[Dict]]:
+        """
+        獲取所有幣種的K線歷史
+        
+        Returns:
+            所有K線歷史數據的字典 {symbol: [kline1, kline2, ...]}
+        """
+        return {symbol: klines.copy() for symbol, klines in self.kline_cache.items()}
+    
+    def seed_history(self, symbol: str, klines: List[Dict]):
+        """
+        預填充K線歷史（用於啟動時預熱緩存）
+        
+        Args:
+            symbol: 交易對
+            klines: K線歷史列表（按時間戳升序）
+        """
+        symbol = symbol.lower()
+        if symbol not in self.symbols:
+            logger.warning(f"⚠️ {symbol} 不在監控列表中，跳過預填充")
+            return
+        
+        # 保留最近max_history根K線
+        self.kline_cache[symbol] = klines[-self.max_history:] if len(klines) > self.max_history else klines.copy()
+        
+        logger.info(f"✅ {symbol.upper()} 預填充 {len(self.kline_cache[symbol])} 根K線歷史")
+    
+    def has_sufficient_history(self, symbol: str, min_count: int = 60) -> bool:
+        """
+        檢查是否有足夠的K線歷史（用於預熱檢查）
+        
+        Args:
+            symbol: 交易對
+            min_count: 最小K線數量（默認60，用於聚合1h）
+        
+        Returns:
+            True如果歷史數據足夠，否則False
+        """
+        klines = self.kline_cache.get(symbol.lower(), [])
+        return len(klines) >= min_count
     
     def get_stats(self) -> Dict:
         """

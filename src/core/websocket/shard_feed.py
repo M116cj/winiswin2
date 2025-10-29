@@ -205,12 +205,12 @@ class ShardFeed:
                 return spread
         return None
     
-    def get_all_klines(self) -> Dict[str, Dict]:
+    def get_all_klines(self) -> Dict[str, List[Dict]]:
         """
         獲取所有K線數據（合併所有分片）
         
         Returns:
-            所有K線數據的字典
+            所有K線數據的字典 {symbol: [kline1, kline2, ...]}
         """
         all_klines = {}
         for kline_feed in self.kline_shards:
