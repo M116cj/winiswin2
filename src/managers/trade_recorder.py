@@ -37,6 +37,12 @@ class TradeRecorder:
         self.feature_engine = FeatureEngine()
         logger.info("✅ 特徵工程引擎已啟用（v3.17.10+）")
         
+        # 🔥 v3.18+：信心值/勝率歷史記錄（用於檢測變化）
+        # 格式: {position_key: [(timestamp, confidence, win_probability), ...]}
+        self.position_metrics_history: Dict[str, List[tuple]] = {}
+        self.history_retention_seconds = 600  # 保留10分鐘歷史（5分鐘比較+5分鐘緩衝）
+        logger.info("✅ 倉位指標歷史追蹤已啟用（v3.18+，用於強制止盈檢測）")
+        
         self._load_data()
     
     def record_entry(
@@ -526,3 +532,158 @@ class TradeRecorder:
         threshold = thresholds.get(symbol, 1000)
         
         return threshold
+    
+    # ==================== v3.18+ 倉位指標歷史追蹤方法 ====================
+    
+    def update_position_metrics(
+        self,
+        symbol: str,
+        direction: str,
+        confidence: float,
+        win_probability: float
+    ):
+        """
+        更新倉位的信心值/勝率歷史記錄（v3.18+）
+        
+        用於強制止盈檢測：當信心值或勝率相較5分鐘前降低20%時平倉
+        
+        Args:
+            symbol: 交易對
+            direction: 方向（LONG/SHORT）
+            confidence: 當前信心值（0-1）
+            win_probability: 當前勝率（0-1）
+        """
+        position_key = f"{symbol}_{direction}"
+        current_time = datetime.now().timestamp()
+        
+        # 初始化或獲取歷史記錄
+        if position_key not in self.position_metrics_history:
+            self.position_metrics_history[position_key] = []
+        
+        # 添加當前記錄
+        self.position_metrics_history[position_key].append(
+            (current_time, confidence, win_probability)
+        )
+        
+        # 清理過期記錄（保留最近10分鐘）
+        cutoff_time = current_time - self.history_retention_seconds
+        self.position_metrics_history[position_key] = [
+            record for record in self.position_metrics_history[position_key]
+            if record[0] >= cutoff_time
+        ]
+    
+    def get_metrics_5min_ago(
+        self,
+        symbol: str,
+        direction: str
+    ) -> Optional[tuple[float, float]]:
+        """
+        獲取5分鐘前的信心值和勝率（v3.18+）
+        
+        Args:
+            symbol: 交易對
+            direction: 方向（LONG/SHORT）
+        
+        Returns:
+            Optional[tuple]: (confidence_5min_ago, win_probability_5min_ago)
+            如果沒有5分鐘前的數據，返回None
+        """
+        position_key = f"{symbol}_{direction}"
+        
+        if position_key not in self.position_metrics_history:
+            return None
+        
+        history = self.position_metrics_history[position_key]
+        if not history:
+            return None
+        
+        current_time = datetime.now().timestamp()
+        target_time = current_time - 300  # 5分鐘前 = 300秒
+        
+        # 找到最接近5分鐘前的記錄
+        closest_record = None
+        min_time_diff = float('inf')
+        
+        for record in history:
+            time_diff = abs(record[0] - target_time)
+            if time_diff < min_time_diff:
+                min_time_diff = time_diff
+                closest_record = record
+        
+        # 如果最接近的記錄距離目標時間超過1分鐘，認為無效
+        if closest_record and min_time_diff <= 60:
+            return (closest_record[1], closest_record[2])  # (confidence, win_probability)
+        
+        return None
+    
+    def check_metrics_drop(
+        self,
+        symbol: str,
+        direction: str,
+        current_confidence: float,
+        current_win_probability: float,
+        drop_threshold: float = 0.20
+    ) -> tuple[bool, Optional[str]]:
+        """
+        檢測信心值/勝率是否相較5分鐘前降低20%（v3.18+ 強制止盈）
+        
+        Args:
+            symbol: 交易對
+            direction: 方向
+            current_confidence: 當前信心值（0-1）
+            current_win_probability: 當前勝率（0-1）
+            drop_threshold: 降低閾值（默認0.20=20%）
+        
+        Returns:
+            tuple: (should_close, reason)
+            - should_close: True表示應該平倉
+            - reason: 平倉原因（如果should_close=True）
+        """
+        metrics_5min_ago = self.get_metrics_5min_ago(symbol, direction)
+        
+        if not metrics_5min_ago:
+            # 沒有歷史數據，無法比較
+            return False, None
+        
+        confidence_5min_ago, win_prob_5min_ago = metrics_5min_ago
+        
+        # 計算降幅
+        if confidence_5min_ago > 0:
+            conf_drop = (confidence_5min_ago - current_confidence) / confidence_5min_ago
+        else:
+            conf_drop = 0
+        
+        if win_prob_5min_ago > 0:
+            win_prob_drop = (win_prob_5min_ago - current_win_probability) / win_prob_5min_ago
+        else:
+            win_prob_drop = 0
+        
+        # 檢查是否任一指標降低超過閾值
+        if conf_drop >= drop_threshold:
+            reason = (
+                f"信心值降低{conf_drop:.1%}（5分鐘前：{confidence_5min_ago:.1%} → "
+                f"現在：{current_confidence:.1%}）"
+            )
+            return True, reason
+        
+        if win_prob_drop >= drop_threshold:
+            reason = (
+                f"勝率降低{win_prob_drop:.1%}（5分鐘前：{win_prob_5min_ago:.1%} → "
+                f"現在：{current_win_probability:.1%}）"
+            )
+            return True, reason
+        
+        return False, None
+    
+    def clear_position_metrics(self, symbol: str, direction: str):
+        """
+        清除倉位的歷史指標記錄（平倉後調用）
+        
+        Args:
+            symbol: 交易對
+            direction: 方向
+        """
+        position_key = f"{symbol}_{direction}"
+        if position_key in self.position_metrics_history:
+            del self.position_metrics_history[position_key]
+            logger.debug(f"✅ 清除 {position_key} 的歷史指標記錄")

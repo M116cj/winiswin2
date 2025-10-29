@@ -44,7 +44,7 @@ class LeverageEngine:
         verbose: bool = False
     ) -> float:
         """
-        計算槓桿倍數（完全無限制）
+        計算槓桿倍數（v3.18+：無上限，最小0.5x）
         
         Args:
             win_probability: 勝率預測（0-1）
@@ -52,7 +52,7 @@ class LeverageEngine:
             verbose: 是否輸出詳細計算過程
             
         Returns:
-            槓桿倍數（無限制，可以是任意正數或零）
+            槓桿倍數（0.5x ~ ∞）
         """
         # 基礎槓桿
         base = self.config.leverage_base
@@ -64,14 +64,21 @@ class LeverageEngine:
         # 信心度因子：信心度越高，槓桿放大越多
         conf_factor = max(1.0, confidence / self.config.leverage_conf_scale)
         
-        # 綜合槓桿（完全無限制，可以是任意正數或零）
+        # 綜合槓桿
         leverage = base * win_leverage * conf_factor
+        
+        # 🔥 v3.18+ 新增：最小槓桿0.5x（防止過低導致倉位無意義）
+        MIN_LEVERAGE = 0.5
+        if leverage < MIN_LEVERAGE:
+            if verbose:
+                logger.debug(f"  ⚠️ 槓桿過低 ({leverage:.2f}x)，調整至最小值 {MIN_LEVERAGE}x")
+            leverage = MIN_LEVERAGE
         
         if verbose:
             logger.debug(f"槓桿計算詳情:")
             logger.debug(f"  勝率: {win_probability:.1%} → win_factor: {win_factor:.2f} → win_leverage: {win_leverage:.2f}x")
             logger.debug(f"  信心度: {confidence:.1%} → conf_factor: {conf_factor:.2f}x")
-            logger.debug(f"  最終槓桿: {leverage:.2f}x")
+            logger.debug(f"  最終槓桿: {leverage:.2f}x（範圍：0.5x ~ ∞）")
         
         return leverage
     

@@ -127,13 +127,13 @@ class PositionSizer:
         verbose: bool = False
     ) -> tuple[float, float]:
         """
-        計算倉位數量（異步版本）
+        計算倉位數量（異步版本）- v3.18+ 硬性上限50%帳戶權益
         
         Args:
             account_equity: 賬戶權益（USDT）
             entry_price: 入場價格
             stop_loss: 止損價格
-            leverage: 槓桿倍數
+            leverage: 槓桿倍數（無上限，最小0.5x）
             symbol: 交易對符號
             verbose: 是否輸出詳細計算過程
             
@@ -147,20 +147,55 @@ class PositionSizer:
         margin = account_equity * self.config.equity_usage_ratio
         notional = leverage * margin
         
-        # 3. 計算倉位數量
+        # 🔥 v3.18+ 新增：強制50%帳戶權益硬性上限（唯一限制）
+        max_notional = account_equity * 0.50  # 單倉不得超過50%帳戶總權益
+        
+        # 3. 先獲取Binance規格以檢查最小值
+        specs = await self.get_symbol_specs(symbol)
+        min_notional = specs.get("min_notional", 10.0) if specs else 10.0
+        
+        # 🔥 關鍵檢查：如果50%上限低於Binance最小值，拒絕下單
+        if max_notional < min_notional:
+            error_msg = (
+                f"❌ 帳戶權益過低無法開倉！"
+                f"50%上限=${max_notional:.2f} < Binance最小倉位${min_notional:.2f} | "
+                f"需要至少${min_notional * 2:.2f} USDT帳戶權益"
+            )
+            logger.error(error_msg)
+            # 返回0表示無法開倉（調用方應檢查並跳過）
+            return 0, adjusted_sl
+        
+        # 4. 應用50%上限
+        original_notional = notional
+        if notional > max_notional:
+            notional = max_notional
+            if verbose:
+                logger.info(f"🚨 倉位價值超限：${original_notional:.2f} → ${notional:.2f} (50%上限)")
+        
+        # 5. 計算倉位數量
         position_size = notional / entry_price
         
-        # 4. 確保符合 Binance 規格
-        specs = await self.get_symbol_specs(symbol)
+        # 6. 應用Binance過濾器（但不允許超過50%上限）
         if specs:
-            position_size = self._apply_binance_filters(
-                position_size, entry_price, specs
+            original_position_size = position_size
+            position_size = self._apply_binance_filters_with_cap(
+                position_size, entry_price, specs, max_notional
             )
+            
+            # 如果Binance過濾器要求的最小倉位超過50%上限，拒絕下單
+            if position_size <= 0:
+                error_msg = (
+                    f"❌ 50%上限與Binance最小倉位衝突！"
+                    f"上限=${max_notional:.2f} 但最小倉位需${min_notional:.2f}"
+                )
+                logger.error(error_msg)
+                return 0, adjusted_sl
         
         if verbose:
             logger.debug(f"倉位計算詳情:")
             logger.debug(f"  權益: ${account_equity:.2f} × {self.config.equity_usage_ratio:.1%} = ${margin:.2f}")
             logger.debug(f"  槓桿: {leverage:.2f}x → 名義價值: ${notional:.2f}")
+            logger.debug(f"  🔒 50%上限: ${max_notional:.2f} (帳戶總權益的唯一硬性限制)")
             logger.debug(f"  入場價: ${entry_price:.2f} → 倉位數量: {position_size:.6f}")
             logger.debug(f"  止損: ${stop_loss:.2f} → 調整後: ${adjusted_sl:.2f} ({abs(entry_price-adjusted_sl)/entry_price:.2%})")
         
@@ -199,7 +234,7 @@ class PositionSizer:
         specs: Dict[str, Any]
     ) -> float:
         """
-        應用 Binance 交易對過濾器
+        應用 Binance 交易對過濾器（舊版本，保留兼容性）
         
         Args:
             position_size: 原始倉位數量
@@ -239,6 +274,65 @@ class PositionSizer:
             logger.debug(
                 f"最終倉位: {position_size:.6f} (名義價值: ${position_size * entry_price:.2f})"
             )
+        
+        return position_size
+    
+    def _apply_binance_filters_with_cap(
+        self, 
+        position_size: float, 
+        entry_price: float,
+        specs: Dict[str, Any],
+        max_notional: float
+    ) -> float:
+        """
+        應用Binance過濾器 + 50%上限檢查（v3.18+）
+        
+        Args:
+            position_size: 原始倉位數量
+            entry_price: 入場價格
+            specs: 交易對規格
+            max_notional: 最大名義價值（50%上限）
+            
+        Returns:
+            調整後的倉位數量，如果無法滿足Binance+上限要求則返回0
+        """
+        min_qty = specs.get("min_quantity", 0.001)
+        step_size = specs.get("step_size", 0.001)
+        min_notional = specs.get("min_notional", 10.0)
+        
+        # 1. 確保符合數量精度
+        position_size = round(position_size / step_size) * step_size
+        
+        # 2. 確保數量 ≥ 最小數量
+        if position_size < min_qty:
+            position_size = min_qty
+        
+        # 3. 檢查最小名義價值
+        notional_value = position_size * entry_price
+        if notional_value < min_notional:
+            required_qty = min_notional / entry_price
+            position_size = round(required_qty / step_size) * step_size
+            notional_value = position_size * entry_price
+        
+        # 4. 關鍵檢查：Binance最小值是否超過50%上限
+        if notional_value > max_notional:
+            logger.warning(
+                f"⚠️ Binance最小倉位${notional_value:.2f} > 50%上限${max_notional:.2f}，"
+                f"無法開倉（帳戶權益過低）"
+            )
+            return 0  # 返回0表示無法開倉
+        
+        # 5. 確保 ≥ 系統配置的最小名義價值（但不超過上限）
+        if notional_value < self.config.min_notional_value:
+            required_qty = self.config.min_notional_value / entry_price
+            position_size = round(required_qty / step_size) * step_size
+            notional_value = position_size * entry_price
+            
+            if notional_value > max_notional:
+                logger.warning(
+                    f"⚠️ 系統最小倉位${notional_value:.2f} > 50%上限${max_notional:.2f}"
+                )
+                return 0
         
         return position_size
     
