@@ -194,9 +194,21 @@ class PositionMonitor24x7:
             # 獲取原始風險金額（從交易記錄）
             risk_amount = await self._get_risk_amount(symbol)
             
+            # 🔥 v3.17.10+：如果無法從交易記錄獲取，使用倉位保證金作為備用
             if risk_amount is None or risk_amount <= 0:
-                logger.warning(f"⚠️ {symbol} 無法獲取風險金額，跳過檢查")
-                return
+                # 計算初始保證金 = 倉位名義價值 / 槓桿
+                leverage = float(position.get('leverage', 1))
+                notional = abs(position_amt) * entry_price
+                risk_amount = notional / leverage if leverage > 0 else notional
+                
+                logger.debug(
+                    f"ℹ️ {symbol} 使用計算保證金作為風險金額: ${risk_amount:.2f} "
+                    f"(名義=${notional:.2f}, 槓桿={leverage}x)"
+                )
+                
+                if risk_amount <= 0:
+                    logger.warning(f"⚠️ {symbol} 無法計算風險金額，跳過檢查")
+                    return
             
             # 計算 PnL 百分比（相對於初始風險）
             pnl_pct = unrealized_pnl / risk_amount if risk_amount > 0 else 0
@@ -286,13 +298,13 @@ class PositionMonitor24x7:
     
     async def _get_risk_amount(self, symbol: str) -> Optional[float]:
         """
-        獲取倉位的初始風險金額
+        獲取倉位的初始風險金額（優先從交易記錄，失敗則返回None使用備用方案）
         
         Args:
             symbol: 交易對符號
             
         Returns:
-            風險金額（USDT），或 None
+            風險金額（USDT），或 None（觸發備用計算方案）
         """
         if not self.trade_recorder:
             return None
@@ -300,11 +312,14 @@ class PositionMonitor24x7:
         try:
             # 從交易記錄獲取最近的開倉記錄
             trades = self.trade_recorder.get_active_trades(symbol)
-            if trades:
-                return trades[0].get('risk_amount', 0)
+            if trades and len(trades) > 0:
+                risk_amt = trades[0].get('risk_amount', 0)
+                if risk_amt and risk_amt > 0:
+                    return risk_amt
         except Exception as e:
-            logger.debug(f"獲取 {symbol} 風險金額失敗: {e}")
+            logger.debug(f"從交易記錄獲取 {symbol} 風險金額失敗: {e}")
         
+        # 返回None觸發備用計算方案
         return None
     
     async def _force_close_position(
