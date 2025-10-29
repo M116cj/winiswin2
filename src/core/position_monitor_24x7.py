@@ -189,19 +189,22 @@ class PositionMonitor24x7:
         
         核心哲學：高槓桿是高信心的結果，系統應保護而非懲罰這種決策
         
-        出場條件（按優先級檢查）：
+        出場條件（按絕對優先級檢查）：
+        🚨 PRIORITY 0: 虧損熔斷（累計虧損≤-risk_threshold，無條件強制平倉）
+        
+        高級出場邏輯（需original_signal支持）：
         1. ✅ 強制止盈：信心值/勝率相較5分鐘前降低20%
-        2. 🔴 100%虧損熔斷：累計虧損≤-99%（唯一強制平倉）
-        3. 🟡 智能持倉：-99%<虧損≤-50% + 反彈概率>70% + 信心值≥80%（持倉）
-        4. ⚠️ 進場理由失效：僅當信心值<70%時才平倉（高信心覆蓋失效）
-        5. ⚪ 逆勢交易：僅當信心值<80%時才平倉（高信心可逆勢）
-        6. 🔵 追蹤止盈：盈虧>20% + 趨勢持續>70% + 勝率≥80%（調整止盈）
-        7. ⚙️ OCO訂單觸發：自動結束監控
+        2. 🟡 智能持倉：-99%<虧損≤-50% + 反彈概率>70% + 信心值≥80%（持倉）
+        3. ⚠️ 進場理由失效：僅當信心值<70%時才平倉（高信心覆蓋失效）
+        4. ⚪ 逆勢交易：僅當信心值<80%時才平倉（高信心可逆勢）
+        5. 🔵 追蹤止盈：盈虧>20% + 趨勢持續>70% + 勝率≥80%（調整止盈）
+        6. ⚙️ OCO訂單觸發：自動結束監控
         
         Args:
             position: 倉位數據（來自 Binance API）
         """
         try:
+            # ========== Step 1: 提取倉位基本信息 ==========
             symbol = position.get('symbol')
             if not symbol:
                 logger.warning("⚠️ 持倉數據缺少 symbol，跳過")
@@ -209,7 +212,6 @@ class PositionMonitor24x7:
                 
             position_amt = float(position.get('positionAmt', 0))
             entry_price = float(position.get('entryPrice', 0))
-            # markPrice 可能缺失，使用 entryPrice 作為備選
             mark_price = float(position.get('markPrice') or position.get('entryPrice', 0))
             unrealized_pnl = float(position.get('unrealizedProfit', position.get('unRealizedProfit', 0)))
             direction = "LONG" if position_amt > 0 else "SHORT"
@@ -217,110 +219,171 @@ class PositionMonitor24x7:
             if position_amt == 0:
                 return
             
-            # 獲取原始風險金額（從交易記錄）
+            # ========== Step 2: 計算PnL% ==========
             risk_amount = await self._get_risk_amount(symbol)
             
-            # 🔥 v3.17.10+：如果無法從交易記錄獲取，使用倉位保證金作為備用
             if risk_amount is None or risk_amount <= 0:
-                # 計算初始保證金 = 倉位名義價值 / 槓桿
                 leverage = float(position.get('leverage', 1))
                 notional = abs(position_amt) * entry_price
                 risk_amount = notional / leverage if leverage > 0 else notional
-                
-                logger.debug(
-                    f"ℹ️ {symbol} 使用計算保證金作為風險金額: ${risk_amount:.2f} "
-                    f"(名義=${notional:.2f}, 槓桿={leverage}x)"
-                )
                 
                 if risk_amount <= 0:
                     logger.warning(f"⚠️ {symbol} 無法計算風險金額，跳過檢查")
                     return
             
-            # 計算 PnL 百分比（相對於初始風險）
             pnl_pct = unrealized_pnl / risk_amount if risk_amount > 0 else 0
             
-            # 🔥 檢查1：100% 虧損熔斷（最高優先級）
+            # ========== 🚨 PRIORITY 0: 虧損熔斷（絕對最高優先級） ==========
+            # 🔥 v3.18+ Critical Fix: 無條件檢查，使用配置閾值，確保任何情況下都強制平倉
             if pnl_pct <= -self.risk_threshold:
                 logger.critical(
-                    f"🚨🚨🚨 {symbol} 觸發 100% 虧損熔斷！"
-                    f"PnL: ${unrealized_pnl:.2f} ({pnl_pct:.1%}) "
-                    f"風險: ${risk_amount:.2f}"
+                    f"🚨🔴 {symbol} {self.risk_threshold:.0%}虧損熔斷觸發！"
+                    f"PnL: ${unrealized_pnl:.2f} ({pnl_pct:.1%}) / 風險: ${risk_amount:.2f} "
+                    f"/ 閾值: {self.risk_threshold:.0%}"
                 )
-                
-                # 立即市價平倉（優先級 0）
                 await self._force_close_position(
-                    symbol,
-                    position_amt,
-                    mark_price,
-                    reason="100% 虧損熔斷"
+                    symbol, position_amt, mark_price, f"{self.risk_threshold:.0%}虧損熔斷（強制安全機制）"
                 )
+                self.forced_closures += 1
                 return
             
-            # 🔥 檢查2：進場理由失效（v3.17.10+）
+            # ========== Step 3: 獲取original_signal並即時評估 ==========
+            original_signal = self._get_original_signal(symbol, direction)
+            
+            if not original_signal:
+                logger.debug(
+                    f"⚠️ {symbol} 無original_signal，跳過高級出場邏輯 | "
+                    f"PnL: {pnl_pct:+.1%}（100%熔斷已保護）"
+                )
+                # 降級模式：僅執行100%熔斷（已在上方檢查），此處正常監控
+                if pnl_pct < -0.5:
+                    logger.warning(
+                        f"⚠️ {symbol} 虧損{pnl_pct:.1%} 但無original_signal，無法執行智能出場"
+                    )
+                return
+            
+            # Step 4: 構建市場上下文並即時評估信心值/勝率
+            market_context = await self._build_market_context_for_position(symbol)
+            
+            current_confidence = self.evaluation_engine.calculate_current_confidence(
+                original_signal, mark_price, market_context
+            )
+            current_win_prob = self.evaluation_engine.calculate_current_win_probability(
+                original_signal, mark_price, market_context
+            )
+            
+            # 🔥 定期更新TradeRecorder歷史指標（用於後續降幅檢測）
+            if self.trade_recorder:
+                self.trade_recorder.update_position_metrics(
+                    symbol, direction, current_confidence, current_win_prob
+                )
+            
+            # ========== 7種出場情境檢查（按優先級） ==========
+            
+            # 1️⃣ 強制止盈（高級場景最高優先級）
+            if self.trade_recorder:
+                should_close, reason = self.trade_recorder.check_metrics_drop(
+                    symbol, direction, current_confidence, current_win_prob
+                )
+                if should_close:
+                    logger.critical(
+                        f"✅ {symbol} 強制止盈: {reason} | "
+                        f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
+                    )
+                    await self._force_close_position(symbol, position_amt, mark_price, reason)
+                    self.forced_tp_closures += 1
+                    return
+            
+            # 2️⃣ 智能持倉（深度虧損但高信心）
+            if -0.99 < pnl_pct <= -0.50:
+                rebound_prob = await self._predict_rebound_probability(symbol, direction)
+                
+                if rebound_prob > 0.70 and current_confidence >= 0.80:
+                    logger.info(
+                        f"🟡 {symbol} 智能持倉: 虧損{pnl_pct:.1%} 但反彈概率{rebound_prob:.1%} "
+                        f"+ 信心值{current_confidence:.1%}≥80%，繼續持有"
+                    )
+                    self.smart_hold_count += 1
+                    return  # 不平倉
+                else:
+                    logger.warning(
+                        f"🟡 {symbol} 深度虧損且無反彈: 虧損{pnl_pct:.1%}, "
+                        f"反彈概率{rebound_prob:.1%}, 信心值{current_confidence:.1%}"
+                    )
+                    await self._force_close_position(
+                        symbol, position_amt, mark_price, "深度虧損且無反彈希望"
+                    )
+                    return
+            
+            # 3️⃣ 進場理由失效（僅信心<70%時平倉）
             entry_expired, expire_reason = await self._is_entry_reason_expired(
-                symbol,
-                entry_price,
-                mark_price,
-                direction
+                symbol, entry_price, mark_price, direction
             )
             
             if entry_expired:
-                logger.warning(
-                    f"⚠️ {symbol} 進場理由失效: {expire_reason} | "
-                    f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%}) → 執行平倉"
-                )
-                
-                await self._force_close_position(
-                    symbol,
-                    position_amt,
-                    mark_price,
-                    reason=f"進場理由失效: {expire_reason}"
-                )
-                self.entry_reason_expired_closures += 1
-                return
+                if current_confidence < 0.70:
+                    logger.warning(
+                        f"⚠️ {symbol} 進場理由失效 + 信心值{current_confidence:.1%}<70%，平倉 | "
+                        f"原因: {expire_reason} | PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
+                    )
+                    await self._force_close_position(
+                        symbol, position_amt, mark_price, f"進場失效+低信心: {expire_reason}"
+                    )
+                    self.entry_reason_expired_closures += 1
+                    return
+                else:
+                    logger.info(
+                        f"⚠️ {symbol} 進場理由失效但信心值{current_confidence:.1%}≥70%，繼續持倉"
+                    )
             
-            # 🔥 檢查3：逆勢 + 無反彈信號（v3.17.10+）
+            # 4️⃣ 逆勢交易（僅信心<80%時平倉）
             is_counter, counter_reason = await self._is_counter_trend(
-                symbol,
-                entry_price,
-                mark_price,
-                direction
+                symbol, entry_price, mark_price, direction
             )
             
             if is_counter:
-                # 檢查是否有反彈信號
-                has_rebound = await self._has_rebound_signal(symbol, direction)
-                
-                if not has_rebound:
+                if current_confidence < 0.80:
                     logger.warning(
-                        f"⚠️ {symbol} 逆勢且無反彈信號: {counter_reason} | "
-                        f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%}) → 執行平倉"
+                        f"⚪ {symbol} 逆勢 + 信心值{current_confidence:.1%}<80%，平倉 | "
+                        f"原因: {counter_reason} | PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
                     )
-                    
                     await self._force_close_position(
-                        symbol,
-                        position_amt,
-                        mark_price,
-                        reason=f"逆勢無反彈: {counter_reason}"
+                        symbol, position_amt, mark_price, f"逆勢+低信心: {counter_reason}"
                     )
                     self.counter_trend_closures += 1
                     return
                 else:
-                    # 有反彈信號，暫時保留
                     logger.info(
-                        f"📊 {symbol} 逆勢但有反彈信號，繼續持有 | "
+                        f"⚪ {symbol} 逆勢但信心值{current_confidence:.1%}≥80%，允許逆勢交易 | "
                         f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
                     )
+            
+            # 5️⃣ 追蹤止盈（盈利>20%時）
+            if pnl_pct > 0.20:
+                trend_continue_prob = await self._predict_trend_continuation(symbol, direction)
+                
+                if trend_continue_prob > 0.70 and current_win_prob >= 0.80:
+                    # 設置追蹤止盈（5%回撤觸發）
+                    trailing_success = await self._set_trailing_stop(symbol, 0.05)
+                    if trailing_success:
+                        logger.info(
+                            f"🔵 {symbol} 追蹤止盈設置: 盈利{pnl_pct:.1%}，趨勢持續{trend_continue_prob:.1%}，"
+                            f"勝率{current_win_prob:.1%}，5%回撤觸發"
+                        )
+                        self.trailing_tp_adjustments += 1
+            
+            # 6️⃣ OCO訂單觸發 - Binance API自動處理，無需額外邏輯
             
             # 正常監控日誌（僅在虧損 >50% 時警告）
             if pnl_pct < -0.5:
                 logger.warning(
                     f"⚠️ {symbol} 虧損 {pnl_pct:.1%} "
-                    f"(PnL: ${unrealized_pnl:.2f} / 風險: ${risk_amount:.2f})"
+                    f"(PnL: ${unrealized_pnl:.2f} / 風險: ${risk_amount:.2f}) | "
+                    f"信心值:{current_confidence:.1%} 勝率:{current_win_prob:.1%}"
                 )
                     
         except Exception as e:
-            logger.error(f"❌ 檢查倉位失敗: {e}")
+            logger.error(f"❌ 檢查倉位失敗 {symbol if 'symbol' in locals() else 'UNKNOWN'}: {e}", exc_info=True)
     
     async def _get_risk_amount(self, symbol: str) -> Optional[float]:
         """
@@ -624,4 +687,308 @@ class PositionMonitor24x7:
             
         except Exception as e:
             logger.debug(f"檢查反彈信號失敗: {e}")
+            return False
+    
+    # ========== v3.18+ 新增輔助方法 ==========
+    
+    def _get_original_signal(self, symbol: str, direction: str) -> Optional[Dict]:
+        """
+        🔥 v3.18+：從TradeRecorder獲取original_signal
+        
+        Args:
+            symbol: 交易對
+            direction: 倉位方向（LONG/SHORT）
+        
+        Returns:
+            original_signal字典，或None（無記錄）
+        """
+        if not self.trade_recorder:
+            return None
+        
+        try:
+            # 從活躍交易記錄獲取
+            trades = self.trade_recorder.get_active_trades(symbol)
+            if not trades or len(trades) == 0:
+                return None
+            
+            # 獲取最近的交易記錄
+            latest_trade = trades[0]
+            
+            # 檢查方向是否匹配
+            trade_direction = latest_trade.get('direction', 'UNKNOWN')
+            if trade_direction != direction:
+                logger.debug(f"{symbol} 方向不匹配: 倉位={direction} vs 記錄={trade_direction}")
+                return None
+            
+            # 返回original_signal
+            original_signal = latest_trade.get('original_signal')
+            if original_signal:
+                logger.debug(f"{symbol} 獲取到original_signal: {original_signal.get('action', 'UNKNOWN')}")
+            
+            return original_signal
+            
+        except Exception as e:
+            logger.debug(f"獲取{symbol} original_signal失敗: {e}")
+            return None
+    
+    async def _build_market_context_for_position(self, symbol: str) -> MarketContext:
+        """
+        🔥 v3.18+：為倉位構建市場上下文（用於即時評估）
+        
+        Args:
+            symbol: 交易對
+        
+        Returns:
+            MarketContext對象
+        """
+        try:
+            if not self.data_service:
+                # 降級：返回空上下文
+                return MarketContext(
+                    trend_direction="neutral",
+                    volatility=0.0,
+                    liquidity=0.0,
+                    rsi=50.0,
+                    macd_histogram=0.0
+                )
+            
+            # 獲取15m K線數據（平衡速度與穩定性）
+            klines = await self.data_service.get_klines_incremental(
+                symbol, interval='15m', limit=100
+            )
+            
+            if klines.empty or len(klines) < 50:
+                # 數據不足，返回中性上下文
+                return MarketContext(
+                    trend_direction="neutral",
+                    volatility=0.0,
+                    liquidity=0.0,
+                    rsi=50.0,
+                    macd_histogram=0.0
+                )
+            
+            # 計算技術指標
+            from src.utils.indicators import calculate_rsi, calculate_macd, calculate_ema
+            
+            rsi = calculate_rsi(klines, period=14)
+            latest_rsi = float(rsi.iloc[-1]) if not rsi.empty else 50.0
+            
+            macd_line, signal_line, histogram = calculate_macd(klines)
+            latest_macd_hist = 0.0
+            if not isinstance(histogram, str) and histogram is not None and not histogram.empty:
+                latest_macd_hist = float(histogram.iloc[-1])
+            
+            # EMA趨勢判斷
+            ema20 = calculate_ema(klines, period=20)
+            ema50 = calculate_ema(klines, period=50)
+            
+            trend_direction = "neutral"
+            if not ema20.empty and not ema50.empty:
+                if ema20.iloc[-1] > ema50.iloc[-1] * 1.01:
+                    trend_direction = "up"
+                elif ema20.iloc[-1] < ema50.iloc[-1] * 0.99:
+                    trend_direction = "down"
+            
+            # 波動率（14根K線ATR標準化）
+            high_prices = klines['high'].astype(float)
+            low_prices = klines['low'].astype(float)
+            close_prices = klines['close'].astype(float)
+            
+            tr = high_prices - low_prices
+            atr = tr.rolling(window=14).mean().iloc[-1]
+            volatility = float(atr / close_prices.iloc[-1]) if close_prices.iloc[-1] > 0 else 0.0
+            
+            # 流動性（簡化為成交量標準化）
+            volumes = klines['volume'].astype(float)
+            avg_volume = volumes.rolling(window=20).mean().iloc[-1]
+            liquidity = float(volumes.iloc[-1] / avg_volume) if avg_volume > 0 else 1.0
+            
+            return MarketContext(
+                trend_direction=trend_direction,
+                volatility=volatility,
+                liquidity=liquidity,
+                rsi=latest_rsi,
+                macd_histogram=latest_macd_hist
+            )
+            
+        except Exception as e:
+            logger.debug(f"構建{symbol}市場上下文失敗: {e}")
+            # 返回中性上下文
+            return MarketContext(
+                trend_direction="neutral",
+                volatility=0.0,
+                liquidity=0.0,
+                rsi=50.0,
+                macd_histogram=0.0
+            )
+    
+    async def _predict_rebound_probability(self, symbol: str, direction: str) -> float:
+        """
+        🔥 v3.18+：預測反彈概率（用於智能持倉決策）
+        
+        判斷標準：
+        - LONG倉位虧損：RSI<30（超賣）→ 高反彈概率
+        - SHORT倉位虧損：RSI>70（超買）→ 高反彈概率
+        
+        Args:
+            symbol: 交易對
+            direction: 倉位方向（LONG/SHORT）
+        
+        Returns:
+            反彈概率（0.0-1.0）
+        """
+        try:
+            if not self.data_service:
+                return 0.40  # 默認中等偏低
+            
+            # 獲取15m K線
+            klines = await self.data_service.get_klines_incremental(
+                symbol, interval='15m', limit=100
+            )
+            
+            if klines.empty or len(klines) < 20:
+                return 0.40
+            
+            # 計算RSI
+            from src.utils.indicators import calculate_rsi
+            rsi = calculate_rsi(klines, period=14)
+            
+            if rsi.empty:
+                return 0.40
+            
+            latest_rsi = float(rsi.iloc[-1])
+            
+            # LONG倉位：RSI越低，反彈概率越高
+            if direction == "LONG":
+                if latest_rsi < 20:
+                    return 0.85
+                elif latest_rsi < 30:
+                    return 0.75
+                elif latest_rsi < 40:
+                    return 0.55
+                else:
+                    return 0.35
+            
+            # SHORT倉位：RSI越高，反彈概率越高
+            elif direction == "SHORT":
+                if latest_rsi > 80:
+                    return 0.85
+                elif latest_rsi > 70:
+                    return 0.75
+                elif latest_rsi > 60:
+                    return 0.55
+                else:
+                    return 0.35
+            
+            return 0.40
+            
+        except Exception as e:
+            logger.debug(f"預測{symbol}反彈概率失敗: {e}")
+            return 0.40
+    
+    async def _predict_trend_continuation(self, symbol: str, direction: str) -> float:
+        """
+        🔥 v3.18+：預測趨勢持續概率（用於追蹤止盈決策）
+        
+        判斷標準：
+        - EMA20 > EMA50：上升趨勢持續概率高
+        - EMA20 < EMA50：下降趨勢持續概率高
+        
+        Args:
+            symbol: 交易對
+            direction: 倉位方向（LONG/SHORT）
+        
+        Returns:
+            趨勢持續概率（0.0-1.0）
+        """
+        try:
+            if not self.data_service:
+                return 0.50  # 默認中性
+            
+            # 獲取15m K線
+            klines = await self.data_service.get_klines_incremental(
+                symbol, interval='15m', limit=100
+            )
+            
+            if klines.empty or len(klines) < 50:
+                return 0.50
+            
+            # 計算EMA
+            from src.utils.indicators import calculate_ema
+            ema20 = calculate_ema(klines, period=20)
+            ema50 = calculate_ema(klines, period=50)
+            
+            if ema20.empty or ema50.empty:
+                return 0.50
+            
+            ema20_val = float(ema20.iloc[-1])
+            ema50_val = float(ema50.iloc[-1])
+            
+            # 計算EMA差距（標準化）
+            ema_gap = (ema20_val - ema50_val) / ema50_val if ema50_val > 0 else 0
+            
+            # LONG倉位：需要EMA20 > EMA50（上升趨勢）
+            if direction == "LONG":
+                if ema_gap > 0.02:  # EMA20高於EMA50 2%以上
+                    return 0.85
+                elif ema_gap > 0.01:
+                    return 0.75
+                elif ema_gap > 0:
+                    return 0.60
+                else:
+                    return 0.40  # 趨勢反轉
+            
+            # SHORT倉位：需要EMA20 < EMA50（下降趨勢）
+            elif direction == "SHORT":
+                if ema_gap < -0.02:  # EMA20低於EMA50 2%以上
+                    return 0.85
+                elif ema_gap < -0.01:
+                    return 0.75
+                elif ema_gap < 0:
+                    return 0.60
+                else:
+                    return 0.40  # 趨勢反轉
+            
+            return 0.50
+            
+        except Exception as e:
+            logger.debug(f"預測{symbol}趨勢持續概率失敗: {e}")
+            return 0.50
+    
+    async def _set_trailing_stop(self, symbol: str, trailing_offset: float) -> bool:
+        """
+        🔥 v3.18+：設置追蹤止盈訂單
+        
+        注意：目前簡化實現，記錄日誌但不實際下單（避免API複雜性）
+        未來可擴展為Binance追蹤止損API
+        
+        Args:
+            symbol: 交易對
+            trailing_offset: 回撤觸發百分比（如0.05 = 5%）
+        
+        Returns:
+            是否成功
+        """
+        try:
+            # 🔥 v3.18.0：簡化實施，僅記錄追蹤止盈意圖
+            # 未來版本可調用Binance TRAILING_STOP_MARKET訂單API
+            
+            logger.info(
+                f"🔵 {symbol} 追蹤止盈記錄: 回撤觸發={trailing_offset:.1%} "
+                f"（當前版本：僅記錄，不實際下單）"
+            )
+            
+            # TODO v3.19+: 實際調用Binance API設置追蹤止損訂單
+            # if self.binance_client:
+            #     await self.binance_client.create_order(
+            #         symbol=symbol,
+            #         side=...,
+            #         order_type="TRAILING_STOP_MARKET",
+            #         callbackRate=trailing_offset * 100
+            #     )
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"設置{symbol}追蹤止盈失敗: {e}")
             return False
