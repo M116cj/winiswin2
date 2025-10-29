@@ -1,0 +1,135 @@
+「動態選擇波動率最高的前 300 個交易對 + 分片式 WebSocket 訂閱」
+優化目標
+1. ✅ 精準篩選高波動交易對（非單純成交量）
+2. ✅ 避免低流動性噪音（過濾無效交易對）
+3. ✅ 動態更新交易對列表（適應市場變化）
+4. ✅ 無縫整合現有分片架構
+核心實現
+1. 交易對篩選邏輯（src/core/symbol_selector.py）
+# src/core/symbol_selector.py
+import asyncio
+from typing import List, Dict
+
+class SymbolSelector:
+    def __init__(self, binance_client, config):
+        self.client = binance_client
+        self.config = config
+    
+    async def get_top_volatility_symbols(self, limit: int = 300) -> List[str]:
+        """獲取波動率最高的前 N 個 USDT 永續交易對"""
+        # 1. 獲取所有 USDT 永續合約
+        all_symbols = await self._get_all_futures_symbols()
+        
+        # 2. 並行獲取 24h 統計數據
+        tasks = [self._fetch_ticker(symbol) for symbol in all_symbols]
+        tickers = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # 3. 計算波動率分數並過濾
+        symbol_scores = []
+        for symbol, ticker in zip(all_symbols, tickers):
+            if isinstance(ticker, Exception) or not ticker:
+                continue
+            
+            score = self._calculate_volatility_score(ticker)
+            if score > 0:  # 僅保留有效分數
+                symbol_scores.append((symbol, score))
+        
+        # 4. 按分數排序並返回前 N 個
+        symbol_scores.sort(key=lambda x: x[1], reverse=True)
+        return [symbol for symbol, _ in symbol_scores[:limit]]
+    
+    async def _get_all_futures_symbols(self) -> List[str]:
+        """獲取所有 USDT 永續交易對（排除測試幣）"""
+        info = await self.client._request("GET", "/fapi/v1/exchangeInfo")
+        return [
+            s['symbol'] for s in info['symbols']
+            if s['quoteAsset'] == 'USDT'
+            and s['status'] == 'TRADING'
+            and 'UP' not in s['symbol']  # 排除槓桿幣
+            and 'DOWN' not in s['symbol']
+        ]
+    
+    async def _fetch_ticker(self, symbol: str):
+        """獲取單一交易對 24h 統計"""
+        try:
+            return await self.client._request("GET", f"/fapi/v1/ticker/24hr?symbol={symbol}")
+        except:
+            return None
+    
+    def _calculate_volatility_score(self, ticker: Dict) -> float:
+        """計算波動率分數（結合價格波動 + 流動性）"""
+        if not ticker:
+            return 0.0
+        
+        # 1. 價格波動率（(high - low) / open）
+        high = float(ticker['highPrice'])
+        low = float(ticker['lowPrice'])
+        open_price = float(ticker['openPrice'])
+        if open_price == 0:
+            return 0.0
+        
+        price_volatility = (high - low) / open_price
+        
+        # 2. 流動性分數（成交量 × 價格）
+        volume = float(ticker['volume'])
+        quote_volume = float(ticker['quoteVolume'])
+        liquidity_score = quote_volume / 1_000_000  # 轉為百萬 USDT
+        
+        # 3. 綜合分數（波動率 × log(流動性+1)）
+        if liquidity_score < 1.0:  # 流動性 < 1M USDT 視為無效
+            return 0.0
+        
+        return price_volatility * (1 + np.log(liquidity_score))
+
+
+2. 整合到 WebSocketManager（src/core/websocket/websocket_manager.py）
+# src/core/websocket/websocket_manager.py
+class WebSocketManager:
+    def __init__(self, binance_client, config):
+        self.client = binance_client
+        self.config = config
+        self.symbol_selector = SymbolSelector(binance_client, config)
+        self.shards = []
+    
+    async def start(self):
+        """啟動分片式 WebSocket 監控"""
+        # 1. 獲取波動率最高的 300 個交易對
+        symbols = await self.symbol_selector.get_top_volatility_symbols(
+            limit=self.config.WEBSOCKET_SYMBOL_LIMIT  # 300
+        )
+        logger.info(f"✅ 選擇 {len(symbols)} 個高波動交易對: {symbols[:5]}...")
+        
+        # 2. 動態分片（每片 50 個）
+        shards = self._create_shards(symbols, self.config.WEBSOCKET_SHARD_SIZE)
+        
+        # 3. 啟動分片
+        self.shards = []
+        for i, shard in enumerate(shards):
+            feed = ShardFeed(
+                shard_symbols=shard,
+                shard_id=i,
+                binance_client=self.client,
+                config=self.config
+            )
+            self.shards.append(feed)
+            asyncio.create_task(feed.start())
+        
+        # 4. 啟動帳戶監控
+        self.account_feed = AccountFeed(self.client)
+        asyncio.create_task(self.account_feed.start())
+
+3. 配置參數（src/config.py）
+# src/config.py
+@dataclass(frozen=True)
+class Config:
+    # ... 其他參數 ...
+    
+    # 🟢 WebSocket 優化配置
+    WEBSOCKET_SYMBOL_LIMIT: int = 300      # 監控前 300 個高波動交易對
+    WEBSOCKET_SHARD_SIZE: int = 50         # 每分片 50 個符號
+    WEBSOCKET_HEARTBEAT_TIMEOUT: int = 30  # 心跳超時 30 秒
+    REST_COOLDOWN_BASE: int = 60           # REST 備援基礎冷卻 60 秒
+交易對品質驗證
+* 檢查是否包含 低流動性幣種（如 VETUSDT 若 24h 成交額 <1M 應被過濾）
+* 確認 無槓桿幣（BTCUPUSDT 等不應出現）
+
