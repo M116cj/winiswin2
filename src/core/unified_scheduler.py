@@ -13,7 +13,7 @@ from src.strategies.self_learning_trader import SelfLearningTrader
 from src.core.position_controller import PositionController
 from src.core.model_evaluator import ModelEvaluator
 from src.core.daily_reporter import DailyReporter
-from src.core.websocket_monitor import WebSocketMonitor  # 🔥 v3.17.11
+from src.core.websocket import WebSocketManager  # 🔥 v3.17.2+
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.config import Config
@@ -31,11 +31,13 @@ class UnifiedScheduler:
     3. 每日生成報告（00:00 UTC）
     4. 協調所有組件
     
-    架構（v3.17.11+ WebSocket整合）：
+    架構（v3.17.2+ WebSocket整合）：
     ┌─────────────────────────────────┐
     │    UnifiedScheduler (調度器)    │
     ├─────────────────────────────────┤
-    │ • WebSocketMonitor (即時數據)   │
+    │ • WebSocketManager (即時數據)   │
+    │   ├─ KlineFeed (即時K線)        │
+    │   └─ AccountFeed (即時倉位)     │
     │ • SelfLearningTrader (決策)     │
     │ • PositionController (監控)     │
     │ • ModelEvaluator (評級)         │
@@ -67,16 +69,23 @@ class UnifiedScheduler:
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
-        # 🔥 v3.17.11：初始化WebSocketMonitor
-        self.websocket_monitor = WebSocketMonitor(
-            symbols=config.TRADING_SYMBOLS
+        # 🔥 v3.17.2+：初始化WebSocketManager（統一管理K線Feed和帳戶Feed）
+        self.websocket_manager = WebSocketManager(
+            symbols=config.TRADING_SYMBOLS,
+            binance_client=binance_client,
+            kline_interval="1m",
+            enable_kline_feed=True,
+            enable_account_feed=True
         )
         
-        # 初始化核心組件（注入websocket_monitor）
+        # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）
+        self.websocket_monitor = self.websocket_manager
+        
+        # 初始化核心組件（注入websocket_manager）
         self.self_learning_trader = SelfLearningTrader(
             config=config,
             binance_client=binance_client,
-            websocket_monitor=self.websocket_monitor  # 🔥 v3.17.11
+            websocket_monitor=self.websocket_manager  # 🔥 v3.17.2+
         )
         
         self.position_controller = PositionController(
@@ -86,7 +95,7 @@ class UnifiedScheduler:
             config=config,
             trade_recorder=trade_recorder,  # 🔥 v3.17.10+
             data_service=data_service,  # 🔥 v3.17.10+
-            websocket_monitor=self.websocket_monitor  # 🔥 v3.17.11
+            websocket_monitor=self.websocket_manager  # 🔥 v3.17.2+
         )
         
         self.model_evaluator = ModelEvaluator(
@@ -112,9 +121,11 @@ class UnifiedScheduler:
         }
         
         logger.info("=" * 80)
-        logger.info("✅ UnifiedScheduler v3.17.11 初始化完成（WebSocket整合）")
+        logger.info("✅ UnifiedScheduler v3.17.2+ 初始化完成（WebSocket整合）")
         logger.info("   🎯 模式: SelfLearningTrader")
-        logger.info("   📡 WebSocket: {} 個幣種即時監控".format(len(config.TRADING_SYMBOLS) if config.TRADING_SYMBOLS else 0))
+        logger.info("   📡 WebSocketManager: {} 個幣種即時監控".format(len(config.TRADING_SYMBOLS) if config.TRADING_SYMBOLS else 0))
+        logger.info("   📈 K線Feed: @kline_1m（取代REST輪詢）")
+        logger.info("   📊 帳戶Feed: listenKey（即時倉位）")
         logger.info("   ⏱️  交易週期: 每 {} 秒".format(config.CYCLE_INTERVAL))
         logger.info("   🛡️  倉位監控: 每 {} 秒".format(config.POSITION_MONITOR_INTERVAL))
         logger.info("   📊 每日報告: 00:00 UTC")
@@ -126,9 +137,9 @@ class UnifiedScheduler:
             self.is_running = True
             logger.info("🚀 UnifiedScheduler 啟動中...")
             
-            # 🔥 v3.17.11：啟動WebSocket監聽（非阻塞）
-            asyncio.create_task(self.websocket_monitor.start())
-            logger.info("✅ WebSocket監控已啟動（後台運行）")
+            # 🔥 v3.17.2+：啟動WebSocketManager（包含K線Feed和帳戶Feed）
+            await self.websocket_manager.start()
+            logger.info("✅ WebSocketManager已啟動（K線Feed + 帳戶Feed）")
             
             # 啟動任務
             tasks = [
@@ -151,8 +162,8 @@ class UnifiedScheduler:
         logger.info("⏸️  UnifiedScheduler 停止中...")
         self.is_running = False
         
-        # 🔥 v3.17.11：停止WebSocket監聽
-        await self.websocket_monitor.stop()
+        # 🔥 v3.17.2+：停止WebSocketManager
+        await self.websocket_manager.stop()
         
         # 停止 PositionController
         await self.position_controller.stop_monitoring()
@@ -165,10 +176,14 @@ class UnifiedScheduler:
         logger.info(f"   總訂單: {self.stats['total_orders']}")
         logger.info(f"   總報告: {self.stats['total_reports']}")
         
-        # 🔥 v3.17.11：WebSocket統計
-        ws_stats = self.websocket_monitor.get_stats()
-        logger.info(f"   WebSocket更新: {ws_stats['total_updates']} 次")
-        logger.info(f"   WebSocket重連: {ws_stats['reconnections']} 次")
+        # 🔥 v3.17.2+：WebSocketManager統計
+        ws_stats = self.websocket_manager.get_stats()
+        if 'kline_feed' in ws_stats:
+            logger.info(f"   K線Feed更新: {ws_stats['kline_feed']['total_updates']} 次")
+            logger.info(f"   K線Feed重連: {ws_stats['kline_feed']['reconnections']} 次")
+        if 'account_feed' in ws_stats:
+            logger.info(f"   帳戶Feed更新: {ws_stats['account_feed']['total_updates']} 次")
+            logger.info(f"   帳戶Feed重連: {ws_stats['account_feed']['reconnections']} 次")
         logger.info("=" * 80)
     
     async def _position_monitoring_loop(self):

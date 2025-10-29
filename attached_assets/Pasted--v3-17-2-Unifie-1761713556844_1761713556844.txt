@@ -1,0 +1,185 @@
+🧩 一、整體架構升級（v3.17.2+）
+
+
+┌──────────────────────────────────────────────────────┐
+│            UnifiedScheduler（統一調度器）              │
+└─────────────┬────────────────────────────────────────┘
+              │
+    ┌─────────┼─────────┬─────────────────┬───────────┐
+    │         │         │                 │           │
+    ▼         ▼         ▼                 ▼           ▼
+┌─────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────┐
+│Position │ │ SelfLearning │ │ DataService  │ │  Daily   │
+│Controller│ │   Trader     │ │ (歷史數據)   │ │ Reporter │
+└────┬────┘ └──────┬───────┘ └──────┬───────┘ └──────────┘
+     │             │                │
+     │    ┌────────┴────────┐      │
+     │    │                 │      │
+     ▼    ▼                 ▼      ▼
+┌──────────────────────────────────────────────────────┐
+│                BinanceClient（REST + WebSocket）      │
+│  • REST：下單、帳戶查詢                              │
+│  • WebSocket：即時數據（K線、價格、帳戶）             │
+└──────────────────────────────────────────────────────┘
+          ▲
+          │
+┌──────────────────────────────────────────────────────┐
+│              WebSocketManager（新核心）               │
+│  • 管理多種 WebSocket 連線                           │
+│  • 抽象交易所介面                                    │
+│  • 自動 listenKey 管理                               │
+└──────────────────────────────────────────────────────┘
+          ▲
+    ┌─────┴─────┐
+    │           │
+┌───────────┐ ┌────────────┐
+│ KlineFeed │ │ AccountFeed│
+│ (1m K線)  │ │ (倉位監控) │
+└───────────┘ └────────────┘
+關鍵升級： 
+* 用 WebSocketManager 取代單一 WebSocketMonitor
+* 新增 KlineFeed 與 AccountFeed 專用模塊
+* 預留 多交易所擴展點
+
+
+ 二、功能 1：Kline WebSocket（即時趨勢分析）
+目標
+* 訂閱 @kline_1m 取代 REST K線輪詢
+* 減少 90%+ 歷史數據 API 請求
+
+實作藍圖
+1. KlineFeed 組件
+# src/core/websocket/kline_feed.py
+class KlineFeed:
+    def __init__(self, symbols: List[str], interval: str = "1m"):
+        self.symbols = [s.lower() for s in symbols]
+        self.interval = interval
+        self.kline_cache = {}  # {symbol: latest_kline}
+        self.running = False
+    
+    async def start(self):
+        self.running = True
+        tasks = [self._listen_kline(s) for s in self.symbols]
+        await asyncio.gather(*tasks)
+    
+    async def _listen_kline(self, symbol: str):
+        stream = f"{symbol}@kline_{self.interval}"
+        url = f"wss://fstream.binance.com/ws/{stream}"
+        while self.running:
+            try:
+                async with websockets.connect(url) as ws:
+                    while self.running:
+                        msg = await ws.recv()
+                        data = json.loads(msg)
+                        if data['e'] == 'kline':
+                            self._update_kline(symbol, data['k'])
+            except Exception as e:
+                logger.warning(f"🔄 Kline {symbol} 重連中... ({e})")
+                await asyncio.sleep(5)
+    
+    def _update_kline(self, symbol: str, kline: dict):
+        """快取最新 K線（僅閉盤 K線）"""
+        if kline['x']:  # is_final
+            self.kline_cache[symbol] = {
+                'open': float(kline['o']),
+                'high': float(kline['h']),
+                'low': float(kline['l']),
+                'close': float(kline['c']),
+                'volume': float(kline['v']),
+                'timestamp': int(kline['t'])
+            }
+    
+    def get_latest_kline(self, symbol: str) -> Optional[dict]:
+        return self.kline_cache.get(symbol.lower())
+
+2. 整合到 SelfLearningTrader
+
+# src/strategies/self_learning_trader.py
+def _get_market_context(self, symbol: str) -> dict:
+    # 優先使用 WebSocket K線
+    if self.websocket_manager:
+        kline = self.websocket_manager.get_kline(symbol)
+        if kline:
+            return {
+                'price': kline['close'],
+                'adx': self._calculate_adx_from_kline(kline),
+                'trend_direction': 'bullish' if kline['close'] > kline['open'] else 'bearish'
+            }
+    
+    # 備援：REST API
+    return self._get_rest_market_context(symbol)
+
+三、功能 2：帳戶 WebSocket 整合（零輪詢）
+目標
+* 用 listenKey 監控倉位變動
+* 完全移除 /fapi/v1/account 輪詢
+
+實作藍圖
+1. AccountFeed 組件
+# src/core/websocket/account_feed.py
+class AccountFeed:
+    def __init__(self, binance_client: BinanceClient):
+        self.client = binance_client
+        self.listen_key = None
+        self.position_cache = {}  # {symbol: position_data}
+        self.running = False
+    
+    async def start(self):
+        # 1. 獲取 listenKey（有效期 60 分鐘）
+        self.listen_key = await self.client.get_listen_key()
+        
+        # 2. 啟動 WebSocket
+        url = f"wss://fstream.binance.com/ws/{self.listen_key}"
+        asyncio.create_task(self._keep_alive())  # 每 30 分鐘續期
+        asyncio.create_task(self._listen_account(url))
+    
+    async def _keep_alive(self):
+        """每 30 分鐘續期 listenKey"""
+        while self.running:
+            await asyncio.sleep(1800)  # 30 分鐘
+            await self.client.renew_listen_key(self.listen_key)
+    
+    async def _listen_account(self, url: str):
+        while self.running:
+            try:
+                async with websockets.connect(url) as ws:
+                    while self.running:
+                        msg = await ws.recv()
+                        data = json.loads(msg)
+                        if data['e'] == 'ACCOUNT_UPDATE':
+                            self._update_positions(data['a']['P'])
+            except Exception as e:
+                logger.error(f"⚠️ 帳戶 WebSocket 錯誤: {e}")
+                await asyncio.sleep(5)
+                # 重新獲取 listenKey
+                self.listen_key = await self.client.get_listen_key()
+    
+    def _update_positions(self, positions: List[dict]):
+        """更新倉位快取"""
+        for pos in positions:
+            if float(pos['pa']) != 0:  # 非零倉位
+                self.position_cache[pos['s'].lower()] = {
+                    'size': float(pos['pa']),
+                    'entry_price': float(pos['ep']),
+                    'unrealized_pnl': float(pos['up']),
+                    'margin_type': pos['mt']
+                }
+            else:
+                self.position_cache.pop(pos['s'].lower(), None)
+    
+    def get_position(self, symbol: str) -> Optional[dict]:
+        return self.position_cache.get(symbol.lower())
+
+2. 整合到 PositionController
+
+# src/core/position_controller.py
+async def monitor_position(self, position: Position):
+    while position.is_active:
+        # 從 AccountFeed 獲取即時倉位狀態（無需 API 請求！）
+        account_pos = self.websocket_manager.get_account_position(position.symbol)
+        if account_pos:
+            current_pnl = account_pos['unrealized_pnl']
+            # ... 執行 SL/TP 邏輯
+        await asyncio.sleep(1)
+
+

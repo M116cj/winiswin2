@@ -152,7 +152,7 @@ class PositionController:
     
     async def _fetch_all_positions(self) -> List[Dict]:
         """
-        獲取所有持倉（使用優先通道）
+        獲取所有持倉（v3.17.2+：WebSocket優先，REST備援）
         
         Returns:
             持倉列表，每個持倉包含：
@@ -166,8 +166,28 @@ class PositionController:
             - leverage: 槓桿
         """
         try:
-            # 使用 Binance API 獲取持倉（priority=0）
-            raw_positions = await self.binance_client.get_position_info_async()
+            raw_positions = []
+            
+            # 🔥 v3.17.2+：優先使用WebSocket帳戶Feed
+            if self.websocket_monitor:
+                ws_positions = self.websocket_monitor.get_all_positions()
+                if ws_positions:
+                    logger.debug(f"📡 從WebSocket獲取 {len(ws_positions)} 個倉位")
+                    # 將WebSocket格式轉換為標準格式
+                    for symbol, pos_data in ws_positions.items():
+                        raw_positions.append({
+                            'symbol': pos_data['symbol'],
+                            'positionAmt': str(pos_data['size']),
+                            'entryPrice': str(pos_data['entry_price']),
+                            'markPrice': str(pos_data.get('entry_price')),
+                            'unRealizedProfit': str(pos_data.get('unrealized_pnl', 0)),
+                            'leverage': '1'
+                        })
+            
+            # 🔥 v3.17.2+：備援 - 使用REST API
+            if not raw_positions:
+                logger.debug("📡 WebSocket無倉位數據，使用REST API備援")
+                raw_positions = await self.binance_client.get_position_info_async()
             
             positions = []
             for pos in raw_positions:

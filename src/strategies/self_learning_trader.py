@@ -802,21 +802,49 @@ class SelfLearningTrader:
             'current_price': None,
             'liquidity_score': 0.0,
             'spread_bps': None,
+            'trend_direction': 'neutral',
             'data_source': 'unknown'
         }
         
-        # 🔥 v3.17.11：優先使用WebSocket數據
+        # 🔥 v3.17.2+：優先使用WebSocket K線數據
         if self.websocket_monitor:
+            kline = self.websocket_monitor.get_kline(symbol)
+            if kline:
+                # 從K線提取市場上下文
+                context['current_price'] = kline.get('close')
+                context['data_source'] = 'websocket_kline'
+                context['liquidity_score'] = self.websocket_monitor.get_liquidity_score(symbol)
+                context['spread_bps'] = self.websocket_monitor.get_spread_bps(symbol)
+                
+                # 🔥 v3.17.2+：趨勢方向判斷（基於K線OHLC）
+                open_price = kline.get('open', 0)
+                close_price = kline.get('close', 0)
+                if close_price > open_price:
+                    context['trend_direction'] = 'bullish'
+                elif close_price < open_price:
+                    context['trend_direction'] = 'bearish'
+                else:
+                    context['trend_direction'] = 'neutral'
+                
+                logger.debug(
+                    f"💡 {symbol} 市場上下文（K線）: "
+                    f"價格=${close_price:.2f}, "
+                    f"趨勢={context['trend_direction']}, "
+                    f"流動性={context['liquidity_score']:.2f}"
+                )
+                return context
+            
+            # 備援：使用價格數據（向後兼容WebSocketMonitor）
             price = self.websocket_monitor.get_price(symbol)
             if price is not None:
                 context['current_price'] = price
-                context['data_source'] = 'websocket'
+                context['data_source'] = 'websocket_price'
                 context['liquidity_score'] = self.websocket_monitor.get_liquidity_score(symbol)
                 context['spread_bps'] = self.websocket_monitor.get_spread_bps(symbol)
-                logger.debug(f"💡 {symbol} 市場上下文（WebSocket）: 價格=${price}, 流動性={context['liquidity_score']:.2f}")
+                logger.debug(f"💡 {symbol} 市場上下文（WebSocket價格）: 價格=${price:.2f}")
                 return context
         
-        # 🔥 v3.17.11：備援 - 使用REST API獲取價格
+        # 🔥 v3.17.2+：REST API備援
         if self.binance_client:
             try:
                 ticker = await self.binance_client.get_ticker(symbol)

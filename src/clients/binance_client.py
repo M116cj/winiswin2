@@ -725,6 +725,52 @@ class BinanceClient:
             logger.error(f"❌ Binance API 連接失敗: {e}")
             return False
     
+    async def get_listen_key(self) -> str:
+        """
+        獲取listenKey（用於UserData WebSocket）
+        
+        Returns:
+            listenKey字符串
+        
+        注意：
+        - listenKey有效期60分鐘
+        - 需要每30分鐘續期一次
+        """
+        result = await self._request("POST", "/fapi/v1/listenKey", signed=True)
+        listen_key = result.get('listenKey', '')
+        logger.debug(f"✅ listenKey已創建: {listen_key[:8]}...")
+        return listen_key
+    
+    async def renew_listen_key(self, listen_key: str) -> dict:
+        """
+        續期listenKey（延長60分鐘有效期）
+        
+        Args:
+            listen_key: 要續期的listenKey
+        
+        Returns:
+            續期結果
+        """
+        params = {'listenKey': listen_key}
+        result = await self._request("PUT", "/fapi/v1/listenKey", params=params, signed=True)
+        logger.debug(f"🔄 listenKey已續期: {listen_key[:8]}...")
+        return result
+    
+    async def close_listen_key(self, listen_key: str) -> dict:
+        """
+        關閉listenKey
+        
+        Args:
+            listen_key: 要關閉的listenKey
+        
+        Returns:
+            關閉結果
+        """
+        params = {'listenKey': listen_key}
+        result = await self._request("DELETE", "/fapi/v1/listenKey", params=params, signed=True)
+        logger.debug(f"✅ listenKey已關閉: {listen_key[:8]}...")
+        return result
+    
     async def close(self):
         """關閉客戶端"""
         if self.session and not self.session.closed:
