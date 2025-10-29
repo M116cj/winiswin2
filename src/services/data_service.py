@@ -52,10 +52,38 @@ class DataService:
         # 🔥 v3.17.2+：WebSocket整合
         self.websocket_monitor = websocket_monitor
         
+        # 🔥 v3.17.2+修復：REST API fallback統計
+        self.ws_stats = {
+            'total_requests': 0,
+            'ws_hits': 0,
+            'rest_fallbacks': 0,
+            'last_report_time': time.time()
+        }
+        
         logger.info("=" * 80)
         logger.info("✅ DataService v3.17.2+ 初始化完成")
         logger.info(f"   📡 WebSocket模式: {'啟用' if websocket_monitor else '停用（純REST）'}")
         logger.info("=" * 80)
+    
+    def _log_ws_stats_periodically(self):
+        """定期記錄WebSocket統計（每5分鐘）"""
+        now = time.time()
+        if now - self.ws_stats['last_report_time'] >= 300:  # 5分鐘
+            total = self.ws_stats['total_requests']
+            ws_hits = self.ws_stats['ws_hits']
+            rest = self.ws_stats['rest_fallbacks']
+            
+            if total > 0:
+                ws_hit_rate = (ws_hits / total) * 100
+                logger.info("=" * 80)
+                logger.info(f"📊 DataService WebSocket統計（最近5分鐘）:")
+                logger.info(f"   總請求: {total}")
+                logger.info(f"   WebSocket命中: {ws_hits} ({ws_hit_rate:.1f}%)")
+                logger.info(f"   REST備援: {rest} ({100-ws_hit_rate:.1f}%)")
+                logger.info("=" * 80)
+            
+            # 重置統計（滾動窗口）
+            self.ws_stats['last_report_time'] = now
     
     async def initialize(self):
         """初始化數據服務"""
@@ -106,36 +134,57 @@ class DataService:
         if timeframes is None:
             timeframes = self.timeframes
         
-        # 🔥 v3.17.2+：優先使用WebSocket聚合（零REST請求）
-        if self.websocket_monitor:
-            try:
-                # 嘗試從WebSocket聚合獲取所有時間框架數據
-                ws_data = await self._get_multi_timeframe_from_websocket(symbol, timeframes)
-                
-                if ws_data and all(not df.empty for df in ws_data.values()):
-                    logger.debug(f"✅ {symbol} 100% WebSocket數據（零REST請求）")
-                    return ws_data
-                else:
-                    logger.debug(f"📡 {symbol} WebSocket聚合不足，使用REST備援")
-            except Exception as e:
-                logger.debug(f"📡 {symbol} WebSocket聚合失敗: {e}，使用REST備援")
-        
-        # REST備援（或WebSocket未啟用）
-        logger.debug(f"📡 {symbol} 使用REST API獲取數據")
-        tasks = [
-            self.get_klines_incremental(symbol, tf, limit=100)
-            for tf in timeframes
-        ]
-        
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        # 🔥 v3.17.2+修復：統計 + 混合使用WebSocket/REST（逐時間框架決策）
+        self.ws_stats['total_requests'] += 1
         
         data = {}
-        for tf, result in zip(timeframes, results):
-            if isinstance(result, Exception):
-                logger.error(f"獲取 {symbol} {tf} 數據失敗: {result}")
-                data[tf] = pd.DataFrame()
-            else:
-                data[tf] = result
+        
+        # 🔥 v3.17.2+修復：優先嘗試從WebSocket獲取（混合模式）
+        if self.websocket_monitor:
+            try:
+                ws_data = await self._get_multi_timeframe_from_websocket(symbol, timeframes)
+                
+                # 使用可用的WebSocket數據
+                for tf in timeframes:
+                    if tf in ws_data and not ws_data[tf].empty:
+                        data[tf] = ws_data[tf]
+                        logger.debug(f"✅ {symbol} {tf} 使用WebSocket數據")
+                
+            except Exception as e:
+                logger.debug(f"📡 {symbol} WebSocket聚合異常: {e}")
+        
+        # 🔥 v3.17.2+修復：僅對缺失的時間框架使用REST備援
+        missing_tfs = [tf for tf in timeframes if tf not in data or data[tf].empty]
+        
+        if missing_tfs:
+            logger.debug(f"📡 {symbol} 使用REST API補充 {missing_tfs}")
+            tasks = [
+                self.get_klines_incremental(symbol, tf, limit=100)
+                for tf in missing_tfs
+            ]
+            
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            for tf, result in zip(missing_tfs, results):
+                if isinstance(result, Exception):
+                    logger.error(f"獲取 {symbol} {tf} 數據失敗: {result}")
+                    data[tf] = pd.DataFrame()
+                else:
+                    data[tf] = result
+        
+        # 🔥 v3.17.2+修復：統計WebSocket命中率（包含部分fallback）
+        ws_count = len([tf for tf in timeframes if tf in data and tf not in missing_tfs])
+        rest_count = len(missing_tfs)
+        
+        if ws_count == len(timeframes):
+            # 100% WebSocket覆蓋
+            self.ws_stats['ws_hits'] += 1
+        elif rest_count > 0:
+            # 部分或全部REST fallback
+            self.ws_stats['rest_fallbacks'] += 1
+        
+        # 定期記錄統計（不論命中類型）
+        self._log_ws_stats_periodically()
         
         return data
     
@@ -766,32 +815,46 @@ class DataService:
         all_klines = self.websocket_monitor.get_all_klines()
         klines_1m = all_klines.get(symbol, [])
         
-        if not klines_1m or len(klines_1m) < 60:
-            # 1m K線不足，無法聚合
+        # 🔥 v3.17.2+修復：部分可用策略（返回有足夠數據的時間框架）
+        # 5m需要5根、15m需要15根、1h需要60根
+        kline_count = len(klines_1m) if klines_1m else 0
+        
+        if kline_count < 5:
+            # 連5m都無法聚合，完全沒有WebSocket數據
+            logger.debug(f"{symbol}: WebSocket 1m K線太少（{kline_count}<5），無法使用")
             return {}
         
         result = {}
         
+        # 🔥 v3.17.2+修復：逐時間框架檢查，返回可用的部分
         for tf in timeframes:
-            if tf == "1m":
+            if tf == "1m" and kline_count >= 1:
                 # 1m直接使用
                 result[tf] = self._convert_kline_to_df(klines_1m[-100:])
             elif tf in ["5m", "15m", "1h"]:
-                # 聚合生成
+                # 檢查是否有足夠數據聚合
                 aggregated = self._aggregate_klines(klines_1m, tf)
                 if aggregated:
                     result[tf] = self._convert_kline_to_df(aggregated[-100:])
+                    logger.debug(f"{symbol} {tf}: WebSocket聚合成功（{kline_count}根1m K線）")
                 else:
+                    # 數據不足，返回空（會由get_multi_timeframe_data補REST）
+                    logger.debug(f"{symbol} {tf}: WebSocket聚合不足（{kline_count}根1m K線）")
                     result[tf] = pd.DataFrame()
             else:
                 # 不支援的時間框架
                 result[tf] = pd.DataFrame()
         
+        # 返回部分可用的數據（即使某些時間框架為空）
         return result
     
     def _aggregate_klines(self, klines_1m: List[Dict], target_interval: str) -> List[Dict]:
         """
-        從1m K線聚合生成高時間框架K線（v3.17.2+）
+        從1m K線聚合生成高時間框架K線（v3.17.2+修復版）
+        
+        🔥 v3.17.2+修復：使用時間對齊的sliding window聚合
+        - 修復前：固定分組（0-5, 5-10...），導致數據不連續
+        - 修復後：基於時間對齊（00:00-00:05, 00:05-00:10...），符合K線規範
         
         Args:
             klines_1m: 1m K線列表（從WebSocket獲取）
@@ -800,47 +863,59 @@ class DataService:
         Returns:
             List[Dict]: 聚合後的K線列表
         """
-        # 時間框架映射（分鐘）
-        interval_minutes = {
-            "5m": 5,
-            "15m": 15,
-            "1h": 60
+        # 時間框架映射（分鐘 → 毫秒）
+        interval_map = {
+            "5m": 5 * 60 * 1000,
+            "15m": 15 * 60 * 1000,
+            "1h": 60 * 60 * 1000
         }
         
-        minutes = interval_minutes.get(target_interval)
-        if not minutes:
+        interval_ms = interval_map.get(target_interval)
+        if not interval_ms:
             logger.warning(f"不支援的聚合時間框架: {target_interval}")
             return []
+        
+        minutes = interval_ms // (60 * 1000)
         
         if len(klines_1m) < minutes:
             logger.debug(f"1m K線數量不足（{len(klines_1m)} < {minutes}），無法聚合")
             return []
         
+        # 🔥 v3.17.2+修復：使用時間對齊的聚合方式
+        # 步驟1：按時間戳分組
+        from collections import defaultdict
+        grouped = defaultdict(list)
+        
+        for kline in klines_1m:
+            # 計算該1m K線屬於哪個時間框架K線
+            # 例如：timestamp=1699999999999（2023-11-15 03:33:19）
+            # 5m K線：應該對齊到 1699999800000（2023-11-15 03:30:00）
+            timestamp = kline['timestamp']
+            aligned_time = (timestamp // interval_ms) * interval_ms
+            grouped[aligned_time].append(kline)
+        
+        # 步驟2：聚合每個時間組
         aggregated = []
         
-        # 按時間框架分組聚合
-        for i in range(0, len(klines_1m), minutes):
-            chunk = klines_1m[i:i+minutes]
-            
-            if len(chunk) < minutes:
-                # 最後一組不完整，跳過
-                break
+        for aligned_time in sorted(grouped.keys()):
+            chunk = grouped[aligned_time]
             
             # 聚合OHLCV
             aggregated_kline = {
-                'timestamp': chunk[0]['timestamp'],  # 使用第一根K線的時間戳
+                'timestamp': aligned_time,  # 使用對齊後的時間戳
                 'open': chunk[0]['open'],  # 開盤價
                 'high': max(k['high'] for k in chunk),  # 最高價
                 'low': min(k['low'] for k in chunk),  # 最低價
                 'close': chunk[-1]['close'],  # 收盤價
                 'volume': sum(k['volume'] for k in chunk),  # 成交量
                 'quote_volume': sum(k.get('quote_volume', 0) for k in chunk),  # USDT成交量
-                'trades': sum(k.get('trades', 0) for k in chunk)  # 交易筆數
+                'trades': sum(k.get('trades', 0) for k in chunk),  # 交易筆數
+                'close_time': chunk[-1].get('close_time', aligned_time + interval_ms - 1)  # 收盤時間
             }
             
             aggregated.append(aggregated_kline)
         
-        logger.debug(f"聚合完成: {len(klines_1m)}根1m → {len(aggregated)}根{target_interval}")
+        logger.debug(f"✅ 時間對齊聚合: {len(klines_1m)}根1m → {len(aggregated)}根{target_interval}")
         return aggregated
     
     def _convert_kline_to_df(self, klines: List[Dict]) -> pd.DataFrame:

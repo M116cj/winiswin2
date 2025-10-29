@@ -383,23 +383,27 @@ class UnifiedScheduler:
             logger.error(f"❌ 交易週期執行失敗: {e}", exc_info=True)
     
     async def _get_trading_symbols(self) -> list:
-        """獲取交易對列表（監控所有 USDT 永續合約）"""
+        """
+        獲取交易對列表（v3.17.2+修復：使用scan_market 1小時緩存）
+        
+        🔥 v3.17.2+修復：
+        - 修復前：每次調用get_exchange_info（REST API請求）
+        - 修復後：使用scan_market（1小時緩存，減少99% REST請求）
+        """
         try:
             # 從配置獲取交易對列表
             if hasattr(self.config, 'TRADING_SYMBOLS') and self.config.TRADING_SYMBOLS:
                 return self.config.TRADING_SYMBOLS
             
-            # 否則獲取所有 USDT 永續合約
-            exchange_info = await self.binance_client.get_exchange_info()
-            symbols = [
-                s['symbol'] for s in exchange_info.get('symbols', [])
-                if s['symbol'].endswith('USDT') and s['status'] == 'TRADING'
-            ]
-            
-            # 使用配置的限制數量（默認 200，可設為 999 監控所有）
+            # 🔥 v3.17.2+修復：使用scan_market（有1小時緩存，僅首次調用REST API）
             max_symbols = getattr(self.config, 'TOP_VOLATILITY_SYMBOLS', 200)
-            logger.info(f"📊 掃描到 {len(symbols)} 個 USDT 永續合約，監控前 {max_symbols} 個")
-            return symbols[:max_symbols]
+            market_data = await self.data_service.scan_market(top_n=max_symbols)
+            
+            # 提取symbol列表
+            symbols = [item['symbol'] for item in market_data]
+            
+            logger.debug(f"📊 使用市場掃描結果：{len(symbols)} 個高流動性交易對（來自緩存）")
+            return symbols
             
         except Exception as e:
             logger.error(f"❌ 獲取交易對列表失敗: {e}")
