@@ -308,10 +308,11 @@ class WebSocketManager:
                 })
             
             # 找到對應的KlineFeed並填充數據
-            for kline_feed in self.shard_feed.kline_shards:
-                if symbol.lower() in kline_feed.symbols:
-                    kline_feed.seed_history(symbol, formatted_klines)
-                    return True
+            if self.shard_feed and self.shard_feed.kline_shards:
+                for kline_feed in self.shard_feed.kline_shards:
+                    if symbol.lower() in kline_feed.symbols:
+                        kline_feed.seed_history(symbol, formatted_klines)
+                        return True
             
             logger.debug(f"⚠️ {symbol} 未找到對應的KlineFeed分片")
             return False
@@ -336,12 +337,12 @@ class WebSocketManager:
             return None
         return self.shard_feed.get_kline(symbol)
     
-    def get_all_klines(self) -> Dict[str, Dict]:
+    def get_all_klines(self) -> Dict[str, List[Dict]]:
         """
-        獲取所有幣種的最新K線
+        獲取所有幣種的K線歷史
         
         Returns:
-            所有K線數據的字典
+            所有K線數據的字典 {symbol: [kline1, kline2, ...]}
         """
         if not self.shard_feed:
             return {}
