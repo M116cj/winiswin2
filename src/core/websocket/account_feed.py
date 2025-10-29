@@ -39,12 +39,13 @@ class AccountFeed(BaseFeed):
     - 網路延遲追蹤
     """
     
-    def __init__(self, binance_client: Any):
+    def __init__(self, binance_client: Any, recv_timeout: int = 30):
         """
         初始化AccountFeed
         
         Args:
             binance_client: Binance客戶端（用於獲取listenKey）
+            recv_timeout: WebSocket接收超時（秒，默認30）
         """
         super().__init__(name="AccountFeed")
         
@@ -54,13 +55,16 @@ class AccountFeed(BaseFeed):
         self.account_data: Dict[str, Any] = {}  # 帳戶餘額等數據
         self.ws_task: Optional[asyncio.Task] = None
         self.keep_alive_task: Optional[asyncio.Task] = None
+        self.recv_timeout = recv_timeout  # 可配置的接收超時
         
         logger.info("=" * 80)
         logger.info("✅ AccountFeed 初始化完成")
         logger.info("   📡 監控類型: ACCOUNT_UPDATE（即時倉位）")
         logger.info("   🔌 WebSocket URL: wss://fstream.binance.com/ws/")
         logger.info("   ⏱️  listenKey續期: 每30分鐘")
+        logger.info(f"   ⏱️  接收超時: {recv_timeout}秒（可配置）")
         logger.info("   💓 心跳監控: 30秒無訊息→重連")
+        logger.info("   🔄 智能重連: 指數退避（5-60秒）")
         logger.info("=" * 80)
     
     async def start(self):
@@ -113,7 +117,7 @@ class AccountFeed(BaseFeed):
     
     async def _listen_account(self):
         """
-        監聽帳戶WebSocket流
+        監聽帳戶WebSocket流（v3.17.2+ 改進超時處理）
         """
         if not self.listen_key:
             logger.error("❌ listenKey為空，無法啟動AccountFeed")
@@ -121,15 +125,27 @@ class AccountFeed(BaseFeed):
         
         url = f"wss://fstream.binance.com/ws/{self.listen_key}"
         reconnect_delay = 5
+        max_reconnect_delay = 60  # 最大重連延遲
+        consecutive_timeouts = 0  # 連續超時計數
         
         while self.running:
             try:
-                async with websockets.connect(url, ping_interval=20, ping_timeout=10) as ws:  # type: ignore
-                    logger.debug("✅ 帳戶WebSocket已連接")
+                async with websockets.connect(
+                    url, 
+                    ping_interval=20, 
+                    ping_timeout=10,
+                    close_timeout=10
+                ) as ws:  # type: ignore
+                    logger.info("✅ 帳戶WebSocket已連接")
+                    consecutive_timeouts = 0  # 重置超時計數
+                    reconnect_delay = 5  # 重置重連延遲
                     
                     while self.running:
                         try:
-                            msg = await asyncio.wait_for(ws.recv(), timeout=30)
+                            msg = await asyncio.wait_for(
+                                ws.recv(), 
+                                timeout=self.recv_timeout
+                            )
                             data = json.loads(msg)
                             
                             # 更新心跳
@@ -142,12 +158,31 @@ class AccountFeed(BaseFeed):
                             # 處理ORDER_TRADE_UPDATE事件（訂單狀態）
                             elif data.get('e') == 'ORDER_TRADE_UPDATE':
                                 self._update_order(data)
+                            
+                            # 重置超時計數（成功接收消息）
+                            consecutive_timeouts = 0
                         
                         except asyncio.TimeoutError:
+                            consecutive_timeouts += 1
+                            logger.debug(
+                                f"⏱️  AccountFeed接收超時 "
+                                f"({consecutive_timeouts}次，{self.recv_timeout}秒無數據)"
+                            )
+                            
+                            # 嘗試ping測試連接
                             try:
-                                await ws.ping()
-                            except Exception:
-                                logger.warning("⚠️ 帳戶WebSocket ping失敗，重連中...")
+                                pong = await asyncio.wait_for(ws.ping(), timeout=5)
+                                await asyncio.wait_for(pong, timeout=5)
+                                logger.debug("✅ ping成功，連接正常")
+                                
+                                # 如果連續超時次數過多，重連
+                                if consecutive_timeouts >= 3:
+                                    logger.warning(
+                                        f"⚠️ 連續{consecutive_timeouts}次超時，主動重連"
+                                    )
+                                    break
+                            except Exception as pe:
+                                logger.warning(f"⚠️ ping失敗: {pe}，重連中...")
                                 break
                         
                         except Exception as e:
@@ -157,7 +192,10 @@ class AccountFeed(BaseFeed):
             
             except Exception as e:
                 self.stats['reconnections'] += 1
-                logger.warning(f"🔄 帳戶WebSocket重連中... (錯誤: {e})")
+                logger.warning(
+                    f"🔄 帳戶WebSocket重連中... "
+                    f"(錯誤: {e}, 延遲: {reconnect_delay}秒)"
+                )
                 
                 # 重新獲取listenKey
                 try:
@@ -166,6 +204,8 @@ class AccountFeed(BaseFeed):
                     logger.info(f"✅ listenKey已重新獲取: {self.listen_key[:8]}...")
                 except Exception as ke:
                     logger.error(f"❌ listenKey重新獲取失敗: {ke}")
+                    # 增加重連延遲（指數退避）
+                    reconnect_delay = min(reconnect_delay * 2, max_reconnect_delay)
                 
                 await asyncio.sleep(reconnect_delay)
     
