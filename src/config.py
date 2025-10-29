@@ -49,8 +49,8 @@ class Config:
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "999"))
     
     # ===== WebSocket 優化配置（v3.17.2+）=====
-    WEBSOCKET_SYMBOL_LIMIT: int = int(os.getenv("WEBSOCKET_SYMBOL_LIMIT", "300"))  # 監控前300個高波動交易對
-    WEBSOCKET_SHARD_SIZE: int = int(os.getenv("WEBSOCKET_SHARD_SIZE", "50"))  # 每分片50個符號
+    WEBSOCKET_SYMBOL_LIMIT: int = int(os.getenv("WEBSOCKET_SYMBOL_LIMIT", "200"))  # 🔥 v3.17.2+ 優化：監控前200個高品質交易對（流動性×波動率）
+    WEBSOCKET_SHARD_SIZE: int = int(os.getenv("WEBSOCKET_SHARD_SIZE", "50"))  # 每分片50個符號（200/50 = 4個分片）
     WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))  # 心跳超時30秒
     REST_COOLDOWN_BASE: int = int(os.getenv("REST_COOLDOWN_BASE", "60"))  # REST備援基礎冷卻60秒
     
