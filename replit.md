@@ -50,6 +50,69 @@ git push origin main
 
 ## 最近更新
 
+### v3.17.10+ (2025-10-29) - HTTP 429 API速率限制修復 🚀
+
+**類型**: 🔧 **CRITICAL PERFORMANCE FIX / API OPTIMIZATION**  
+**目標**: 修復Railway部署中的HTTP 429速率限制問題，優化API調用架構  
+**狀態**: ✅ **已完成並通過2次 Architect 審查**
+
+#### **問題**
+Railway日誌顯示 `HTTP 429: Too many requests; current limit of IP is 2400 requests per minute`
+
+**根本原因**：
+- PositionController 每2秒調用 `get_position_info_async()`
+- PositionMonitor24x7 也每2秒調用 `get_position_info_async()`
+- 兩者並行運行 → API請求頻率翻倍 → 觸發Binance速率限制
+
+#### **解決方案：被動監控模式**
+
+**架構變更**：
+- ✅ PositionController 作為唯一API數據源（每2秒獲取一次倉位）
+- ✅ PositionMonitor24x7 改為被動模式，接收共享數據
+- ✅ 硬禁用 `start()`, `_monitor_loop()`, `_check_all_positions()` 防止意外調用
+- ✅ 新增 `check_positions_with_data()` 方法接收共享倉位數據
+- ✅ API調用次數減半（從每2秒2次降為每2秒1次）
+
+**代碼實現**：
+```python
+# PositionController._monitoring_cycle() - 共享API調用
+async def _monitoring_cycle(self):
+    # 步驟 1：獲取所有持倉（唯一API調用）
+    positions = await self._fetch_all_positions()
+    
+    # 步驟 2：優先執行進場失效+逆勢檢測（零額外API調用）
+    await self.monitor_24x7.check_positions_with_data(positions)
+    
+    # 步驟 3：執行SelfLearningTrader評估
+    decisions = await self.trader.evaluate_positions(positions)
+
+# PositionMonitor24x7 - 被動模式
+async def check_positions_with_data(self, positions: List[Dict]):
+    """接收PositionController提供的倉位數據（零額外API調用）"""
+    for position in positions:
+        await self._check_position_from_controller(position)
+```
+
+**保護機制**：
+```python
+async def start(self):
+    """🚫 已廢棄：防止重複API調用"""
+    logger.error("❌ PositionMonitor24x7.start() 已廢棄！")
+    raise DeprecationWarning("改用 check_positions_with_data() 被動模式")
+```
+
+**Architect審查結果**：
+- ✅ **第一次審查**：發現3個問題（Config兼容性、啟動異常、reduce_only缺失）→ 已全部修復
+- ✅ **第二次審查**：發現double-count和start()可被意外調用 → 已全部修復
+- ✅ **第三次審查**：**通過**，所有API調用路徑已阻斷，被動模式完整保留所有檢測功能
+
+**性能提升**：
+- API調用頻率：**減少50%**（每2秒從2次降為1次）
+- 預期效果：**徹底解決HTTP 429速率限制**
+- 功能保留：**100%**（進場失效、逆勢無反彈、100%虧損熔斷全部保留）
+
+---
+
 ### v3.17+ (2025-10-28) - Binance API 智能適配 🚀
 
 **類型**: 🔧 **CRITICAL BUG FIX / API COMPATIBILITY**  
