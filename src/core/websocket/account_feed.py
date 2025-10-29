@@ -41,13 +41,13 @@ class AccountFeed(BaseFeed):
     - 網路延遲追蹤
     """
     
-    def __init__(self, binance_client: Any, recv_timeout: int = 30):
+    def __init__(self, binance_client: Any, recv_timeout: int = 120):
         """
         初始化AccountFeed
         
         Args:
             binance_client: Binance客戶端（用於獲取listenKey）
-            recv_timeout: WebSocket接收超時（秒，默認30）
+            recv_timeout: WebSocket接收超時（秒，默認120）
         """
         super().__init__(name="AccountFeed")
         
@@ -57,7 +57,10 @@ class AccountFeed(BaseFeed):
         self.account_data: Dict[str, Any] = {}  # 帳戶餘額等數據
         self.ws_task: Optional[asyncio.Task] = None
         self.keep_alive_task: Optional[asyncio.Task] = None
+        self.health_check_task: Optional[asyncio.Task] = None  # 健康檢查任務
         self.recv_timeout = recv_timeout  # 可配置的接收超時
+        self.ws_connection = None  # 當前WebSocket連接
+        self.last_message_time = None  # 最後消息時間
         
         logger.info("=" * 80)
         logger.info("✅ AccountFeed 初始化完成")
@@ -65,7 +68,7 @@ class AccountFeed(BaseFeed):
         logger.info("   🔌 WebSocket URL: wss://fstream.binance.com/ws/")
         logger.info("   ⏱️  listenKey自動續期: 每15分鐘（過期前提前續期）")
         logger.info(f"   ⏱️  接收超時: {recv_timeout}秒（可配置）")
-        logger.info("   💓 心跳監控: 30秒無訊息→重連")
+        logger.info("   💓 健康檢查: 每30秒主動ping")
         logger.info("   🔄 智能重連: 指數退避（5-60秒）")
         logger.info("=" * 80)
     
@@ -83,16 +86,16 @@ class AccountFeed(BaseFeed):
             self.listen_key = await self.binance_client.get_listen_key()
             logger.info(f"✅ listenKey已獲取: {self.listen_key[:8]}...")
             
-            # 2. 啟動心跳監控
-            await self._start_heartbeat_monitor()
-            
-            # 3. 啟動WebSocket監聽
+            # 2. 啟動WebSocket監聽
             self.ws_task = asyncio.create_task(self._listen_account())
             
-            # 4. 啟動listenKey續期任務（每30分鐘）
+            # 3. 啟動listenKey續期任務（每15分鐘）
             self.keep_alive_task = asyncio.create_task(self._keep_alive())
             
-            logger.info("✅ AccountFeed 已啟動")
+            # 4. 啟動健康檢查任務（每30秒主動ping，取代舊的heartbeat monitor）
+            self.health_check_task = asyncio.create_task(self._health_check_loop())
+            
+            logger.info("✅ AccountFeed 已啟動（使用主動健康檢查，120秒空閒容忍）")
             
         except Exception as e:
             logger.error(f"❌ AccountFeed 啟動失敗: {e}")
@@ -142,6 +145,42 @@ class AccountFeed(BaseFeed):
                 logger.error(f"❌ listenKey續期循環異常: {e}")
                 await asyncio.sleep(5)
     
+    async def _health_check_loop(self):
+        """
+        健康檢查循環（v3.17.2+ 主動ping避免誤判超時）
+        
+        改進：
+        - 每30秒主動ping一次WebSocket連接
+        - 避免在空閒期誤判為超時
+        - 提前發現連接死亡並觸發重連
+        """
+        while self.running:
+            try:
+                await asyncio.sleep(30)  # 每30秒檢查一次
+                
+                if self.ws_connection:
+                    try:
+                        # 主動ping測試連接（websockets.ping()返回awaitable，直接await即可）
+                        pong_waiter = self.ws_connection.ping()
+                        await asyncio.wait_for(pong_waiter, timeout=10)
+                        logger.debug("💓 AccountFeed健康檢查通過")
+                    except Exception as e:
+                        logger.warning(f"⚠️ AccountFeed健康檢查失敗: {e}，關閉連接觸發重連")
+                        self.stats['health_check_failures'] = \
+                            self.stats.get('health_check_failures', 0) + 1
+                        
+                        # 主動關閉連接，觸發_listen_account()的重連邏輯
+                        try:
+                            await self.ws_connection.close()
+                        except Exception:
+                            pass  # 忽略關閉錯誤
+                        
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                logger.error(f"❌ 健康檢查循環異常: {e}")
+                await asyncio.sleep(5)
+    
     async def _listen_account(self):
         """
         監聽帳戶WebSocket流（v3.17.2+ 改進超時處理）
@@ -153,69 +192,62 @@ class AccountFeed(BaseFeed):
         url = f"wss://fstream.binance.com/ws/{self.listen_key}"
         reconnect_delay = 5
         max_reconnect_delay = 60  # 最大重連延遲
-        consecutive_timeouts = 0  # 連續超時計數
         
         while self.running:
             try:
                 async with websockets.connect(
                     url, 
-                    ping_interval=20, 
-                    ping_timeout=10,
+                    ping_interval=None,  # 禁用自動ping，使用我們的健康檢查
+                    ping_timeout=None,
                     close_timeout=10
                 ) as ws:  # type: ignore
                     logger.info("✅ 帳戶WebSocket已連接")
-                    consecutive_timeouts = 0  # 重置超時計數
+                    self.ws_connection = ws  # 保存連接供健康檢查使用
                     reconnect_delay = 5  # 重置重連延遲
+                    self.last_message_time = datetime.now()
                     
-                    while self.running:
-                        try:
-                            msg = await asyncio.wait_for(
-                                ws.recv(), 
-                                timeout=self.recv_timeout
-                            )
-                            data = json.loads(msg)
-                            
-                            # 更新心跳
-                            self._update_heartbeat()
-                            
-                            # 處理ACCOUNT_UPDATE事件
-                            if data.get('e') == 'ACCOUNT_UPDATE':
-                                self._update_account(data)
-                            
-                            # 處理ORDER_TRADE_UPDATE事件（訂單狀態）
-                            elif data.get('e') == 'ORDER_TRADE_UPDATE':
-                                self._update_order(data)
-                            
-                            # 重置超時計數（成功接收消息）
-                            consecutive_timeouts = 0
-                        
-                        except asyncio.TimeoutError:
-                            consecutive_timeouts += 1
-                            logger.debug(
-                                f"⏱️  AccountFeed接收超時 "
-                                f"({consecutive_timeouts}次，{self.recv_timeout}秒無數據)"
-                            )
-                            
-                            # 嘗試ping測試連接
+                    try:
+                        while self.running:
                             try:
-                                pong = await asyncio.wait_for(ws.ping(), timeout=5)
-                                await asyncio.wait_for(pong, timeout=5)
-                                logger.debug("✅ ping成功，連接正常")
+                                msg = await asyncio.wait_for(
+                                    ws.recv(), 
+                                    timeout=self.recv_timeout
+                                )
+                                data = json.loads(msg)
                                 
-                                # 如果連續超時次數過多，重連
-                                if consecutive_timeouts >= 3:
-                                    logger.warning(
-                                        f"⚠️ 連續{consecutive_timeouts}次超時，主動重連"
-                                    )
-                                    break
-                            except Exception as pe:
-                                logger.warning(f"⚠️ ping失敗: {pe}，重連中...")
+                                # 更新最後消息時間
+                                self.last_message_time = datetime.now()
+                                
+                                # 更新心跳
+                                self._update_heartbeat()
+                                
+                                # 處理ACCOUNT_UPDATE事件
+                                if data.get('e') == 'ACCOUNT_UPDATE':
+                                    self._update_account(data)
+                                
+                                # 處理ORDER_TRADE_UPDATE事件（訂單狀態）
+                                elif data.get('e') == 'ORDER_TRADE_UPDATE':
+                                    self._update_order(data)
+                            
+                            except asyncio.TimeoutError:
+                                # 120秒無消息（正常，帳戶可能無變動）
+                                time_since_last = (datetime.now() - self.last_message_time).total_seconds()
+                                logger.debug(
+                                    f"⏱️  AccountFeed空閒 {time_since_last:.0f}秒 "
+                                    f"(最大: {self.recv_timeout}秒)"
+                                )
+                                
+                                # 檢查連接是否仍然健康（由健康檢查任務處理）
+                                # 如果連接真的死了，健康檢查會檢測到
+                                continue
+                            
+                            except Exception as e:
+                                logger.error(f"❌ 帳戶WebSocket接收失敗: {e}")
+                                self.stats['errors'] += 1
                                 break
-                        
-                        except Exception as e:
-                            logger.error(f"❌ 帳戶WebSocket接收失敗: {e}")
-                            self.stats['errors'] += 1
-                            break
+                    finally:
+                        # 清除連接引用，避免健康檢查使用過期連接
+                        self.ws_connection = None
             
             except Exception as e:
                 self.stats['reconnections'] += 1
@@ -377,8 +409,13 @@ class AccountFeed(BaseFeed):
         logger.info("⏸️  AccountFeed 停止中...")
         self.running = False
         
-        # 停止心跳監控
-        await self._stop_heartbeat_monitor()
+        # 取消健康檢查任務
+        if self.health_check_task:
+            self.health_check_task.cancel()
+            try:
+                await self.health_check_task
+            except asyncio.CancelledError:
+                pass
         
         # 取消keep-alive任務
         if self.keep_alive_task:
