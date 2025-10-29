@@ -121,6 +121,9 @@ class SelfLearningTradingSystem:
                 binance_client=self.binance_client,
                 websocket_monitor=None  # 🔥 v3.17.2+：將在UnifiedScheduler創建後設置
             )
+            
+            # 🔥 重要：初始化 DataService（加載所有交易對）
+            await self.data_service.initialize()
             logger.info("✅ 數據服務初始化完成")
             
             # 交易記錄器
