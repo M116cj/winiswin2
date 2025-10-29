@@ -69,13 +69,17 @@ class UnifiedScheduler:
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
-        # 🔥 v3.17.2+：初始化WebSocketManager（統一管理K線Feed和帳戶Feed）
+        # 🔥 v3.17.2+：初始化WebSocketManager（統一管理K線Feed、價格Feed和帳戶Feed）
+        # 升級：自動獲取全市場、分片管理、PriceFeed支持
         self.websocket_manager = WebSocketManager(
-            symbols=config.TRADING_SYMBOLS,
             binance_client=binance_client,
+            symbols=config.TRADING_SYMBOLS if config.TRADING_SYMBOLS else None,
             kline_interval="1m",
-            enable_kline_feed=True,
-            enable_account_feed=True
+            shard_size=getattr(config, 'WEBSOCKET_SHARD_SIZE', 50),
+            enable_kline_feed=getattr(config, 'WEBSOCKET_ENABLE_KLINE_FEED', True),
+            enable_price_feed=getattr(config, 'WEBSOCKET_ENABLE_PRICE_FEED', True),
+            enable_account_feed=getattr(config, 'WEBSOCKET_ENABLE_ACCOUNT_FEED', True),
+            auto_fetch_symbols=getattr(config, 'WEBSOCKET_AUTO_FETCH_SYMBOLS', True)
         )
         
         # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）

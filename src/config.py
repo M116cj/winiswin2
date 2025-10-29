@@ -220,6 +220,16 @@ class Config:
     POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "60"))  # v3.17.2+: 改為1分鐘
     RISK_KILL_THRESHOLD: float = float(os.getenv("RISK_KILL_THRESHOLD", "0.99"))
     
+    # ===== v3.17.2+ WebSocket 配置 =====
+    WEBSOCKET_SHARD_SIZE: int = int(os.getenv("WEBSOCKET_SHARD_SIZE", "50"))  # 每個分片50個符號
+    WEBSOCKET_AUTO_FETCH_SYMBOLS: bool = os.getenv("WEBSOCKET_AUTO_FETCH_SYMBOLS", "true").lower() == "true"
+    WEBSOCKET_ENABLE_KLINE_FEED: bool = os.getenv("WEBSOCKET_ENABLE_KLINE_FEED", "true").lower() == "true"
+    WEBSOCKET_ENABLE_PRICE_FEED: bool = os.getenv("WEBSOCKET_ENABLE_PRICE_FEED", "true").lower() == "true"
+    WEBSOCKET_ENABLE_ACCOUNT_FEED: bool = os.getenv("WEBSOCKET_ENABLE_ACCOUNT_FEED", "true").lower() == "true"
+    WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))  # 心跳超時30秒
+    WEBSOCKET_REST_COOLDOWN_MIN: int = int(os.getenv("WEBSOCKET_REST_COOLDOWN_MIN", "60"))  # REST冷卻最小60秒
+    WEBSOCKET_REST_COOLDOWN_MAX: int = int(os.getenv("WEBSOCKET_REST_COOLDOWN_MAX", "300"))  # REST冷卻最大300秒
+    
     # ===== v3.17+ ModelEvaluator 配置 =====
     MODEL_RATING_ENABLED: bool = os.getenv("MODEL_RATING_ENABLED", "true").lower() == "true"
     ENABLE_DAILY_REPORT: bool = os.getenv("ENABLE_DAILY_REPORT", "true").lower() == "true"

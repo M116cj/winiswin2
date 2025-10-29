@@ -1,12 +1,13 @@
 """
-AccountFeed v3.17.2+ - 即時帳戶/倉位數據流
+AccountFeed v3.17.2+ - 即時帳戶/倉位數據流（升級版）
 職責：使用listenKey監控倉位變動，取代REST /fapi/v1/account輪詢
+升級：心跳監控、REST智慧冷卻、時間戳標準化
 """
 
 import asyncio
 import json
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 from datetime import datetime
 
 try:
@@ -14,23 +15,28 @@ try:
 except ImportError:
     websockets = None  # type: ignore
 
+from src.core.websocket.base_feed import BaseFeed
+
 logger = logging.getLogger(__name__)
 
 
-class AccountFeed:
+class AccountFeed(BaseFeed):
     """
-    AccountFeed - Binance帳戶WebSocket監控器
+    AccountFeed - Binance帳戶WebSocket監控器（v3.17.2+升級版）
     
     職責：
     1. 管理listenKey（獲取/續期/30分鐘keep-alive）
     2. 訂閱ACCOUNT_UPDATE事件
     3. 緩存即時倉位數據
     4. 提供即時倉位查詢
+    5. 心跳監控（30秒無訊息→重連）
+    6. REST備援智慧冷卻（指數退避）
     
     優勢：
     - 完全移除/fapi/v1/account輪詢（零API請求）
     - 即時倉位更新（無延遲）
     - 自動帳戶變動通知
+    - 網路延遲追蹤
     """
     
     def __init__(self, binance_client: Any):
@@ -40,27 +46,21 @@ class AccountFeed:
         Args:
             binance_client: Binance客戶端（用於獲取listenKey）
         """
+        super().__init__(name="AccountFeed")
+        
         self.binance_client = binance_client
         self.listen_key: Optional[str] = None
         self.position_cache: Dict[str, Dict] = {}  # {symbol: position_data}
         self.account_data: Dict[str, Any] = {}  # 帳戶餘額等數據
-        self.running = False
         self.ws_task: Optional[asyncio.Task] = None
         self.keep_alive_task: Optional[asyncio.Task] = None
-        
-        # 統計數據
-        self.stats = {
-            'total_updates': 0,
-            'reconnections': 0,
-            'errors': 0,
-            'listen_key_renewals': 0
-        }
         
         logger.info("=" * 80)
         logger.info("✅ AccountFeed 初始化完成")
         logger.info("   📡 監控類型: ACCOUNT_UPDATE（即時倉位）")
         logger.info("   🔌 WebSocket URL: wss://fstream.binance.com/ws/")
         logger.info("   ⏱️  listenKey續期: 每30分鐘")
+        logger.info("   💓 心跳監控: 30秒無訊息→重連")
         logger.info("=" * 80)
     
     async def start(self):
@@ -77,10 +77,13 @@ class AccountFeed:
             self.listen_key = await self.binance_client.get_listen_key()
             logger.info(f"✅ listenKey已獲取: {self.listen_key[:8]}...")
             
-            # 2. 啟動WebSocket監聽
+            # 2. 啟動心跳監控
+            await self._start_heartbeat_monitor()
+            
+            # 3. 啟動WebSocket監聽
             self.ws_task = asyncio.create_task(self._listen_account())
             
-            # 3. 啟動listenKey續期任務（每30分鐘）
+            # 4. 啟動listenKey續期任務（每30分鐘）
             self.keep_alive_task = asyncio.create_task(self._keep_alive())
             
             logger.info("✅ AccountFeed 已啟動")
@@ -98,7 +101,8 @@ class AccountFeed:
                 
                 if self.listen_key:
                     await self.binance_client.renew_listen_key(self.listen_key)
-                    self.stats['listen_key_renewals'] += 1
+                    self.stats['listen_key_renewals'] = \
+                        self.stats.get('listen_key_renewals', 0) + 1
                     logger.debug(f"🔄 listenKey已續期: {self.listen_key[:8]}...")
                 
             except asyncio.CancelledError:
@@ -128,6 +132,9 @@ class AccountFeed:
                             msg = await asyncio.wait_for(ws.recv(), timeout=30)
                             data = json.loads(msg)
                             
+                            # 更新心跳
+                            self._update_heartbeat()
+                            
                             # 處理ACCOUNT_UPDATE事件
                             if data.get('e') == 'ACCOUNT_UPDATE':
                                 self._update_account(data)
@@ -135,7 +142,7 @@ class AccountFeed:
                             # 處理ORDER_TRADE_UPDATE事件（訂單狀態）
                             elif data.get('e') == 'ORDER_TRADE_UPDATE':
                                 self._update_order(data)
-                            
+                        
                         except asyncio.TimeoutError:
                             try:
                                 await ws.ping()
@@ -172,13 +179,21 @@ class AccountFeed:
         try:
             account_data = data.get('a', {})
             
+            # 獲取時間戳
+            server_ts = self.get_server_timestamp_ms(data, 'E')  # 事件時間
+            local_ts = self.get_local_timestamp_ms()
+            latency_ms = self.calculate_latency_ms(server_ts, local_ts)
+            
             # 更新帳戶餘額
             if 'B' in account_data:
                 for balance in account_data['B']:
                     asset = balance['a']
                     self.account_data[asset] = {
                         'balance': float(balance['wb']),  # wallet balance
-                        'cross_un_pnl': float(balance['cw'])  # cross unrealized PnL
+                        'cross_un_pnl': float(balance['cw']),  # cross unrealized PnL
+                        'server_timestamp': server_ts,
+                        'local_timestamp': local_ts,
+                        'latency_ms': latency_ms
                     }
             
             # 更新倉位
@@ -195,19 +210,21 @@ class AccountFeed:
                             'unrealized_pnl': float(position['up']),
                             'margin_type': position.get('mt', 'cross'),
                             'position_side': position.get('ps', 'BOTH'),
+                            'server_timestamp': server_ts,
+                            'local_timestamp': local_ts,
+                            'latency_ms': latency_ms,
                             'update_time': data.get('T', int(datetime.now().timestamp() * 1000))
                         }
                         logger.debug(
                             f"📊 {symbol.upper()} 倉位更新: "
-                            f"size={position_amt}, pnl={position['up']}"
+                            f"size={position_amt}, pnl={position['up']}, "
+                            f"latency={latency_ms}ms"
                         )
                     else:
                         # 倉位已平倉
                         if symbol in self.position_cache:
                             del self.position_cache[symbol]
                             logger.debug(f"🔄 {symbol.upper()} 倉位已清除")
-            
-            self.stats['total_updates'] += 1
             
         except Exception as e:
             logger.error(f"❌ 解析ACCOUNT_UPDATE失敗: {e}", exc_info=True)
@@ -231,6 +248,13 @@ class AccountFeed:
             
         except Exception as e:
             logger.error(f"❌ 解析ORDER_TRADE_UPDATE失敗: {e}")
+    
+    async def _on_heartbeat_timeout(self):
+        """心跳超時處理（觸發重連）"""
+        logger.warning("⚠️ AccountFeed 心跳超時，正在等待自動重連...")
+        # WebSocket會自動重連（_listen_account的while循環）
+    
+    # ==================== 數據查詢接口 ====================
     
     def get_position(self, symbol: str) -> Optional[Dict]:
         """
@@ -272,17 +296,21 @@ class AccountFeed:
         Returns:
             統計數據字典
         """
+        base_stats = super().get_stats()
         return {
-            **self.stats,
+            **base_stats,
             'cached_positions': len(self.position_cache),
-            'running': self.running,
-            'listen_key_active': bool(self.listen_key)
+            'listen_key_active': bool(self.listen_key),
+            'listen_key_renewals': self.stats.get('listen_key_renewals', 0)
         }
     
     async def stop(self):
         """停止帳戶WebSocket監控"""
         logger.info("⏸️  AccountFeed 停止中...")
         self.running = False
+        
+        # 停止心跳監控
+        await self._stop_heartbeat_monitor()
         
         # 取消keep-alive任務
         if self.keep_alive_task:
