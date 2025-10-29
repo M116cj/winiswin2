@@ -64,6 +64,8 @@ class SymbolSelector:
         - 流動性 < 1M USDT → 排除
         - 波動率 < 0.5% → 排除
         
+        🔥 v3.17.2+ API優化：使用批量API（1次請求代替600次）
+        
         Args:
             limit: 返回的交易對數量（默認200）
         
@@ -72,7 +74,7 @@ class SymbolSelector:
         """
         logger.info(f"🔍 開始篩選流動性×波動率綜合分數最高的前 {limit} 個交易對...")
         
-        # 步驟1：獲取所有 USDT 永續合約
+        # 步驟1：獲取所有 USDT 永續合約列表
         all_symbols = await self._get_all_futures_symbols()
         if not all_symbols:
             logger.warning("⚠️ 未獲取到任何交易對")
@@ -80,10 +82,23 @@ class SymbolSelector:
         
         logger.info(f"📊 獲取到 {len(all_symbols)} 個USDT永續合約")
         
-        # 步驟2：並行獲取 24h 統計數據
-        logger.info("📡 並行獲取24h統計數據...")
-        tasks = [self._fetch_ticker(symbol) for symbol in all_symbols]
-        tickers = await asyncio.gather(*tasks, return_exceptions=True)
+        # 🔥 步驟2：批量獲取所有24h統計數據（1次API調用）
+        logger.info("📡 批量獲取24h統計數據（1次API調用代替600次）...")
+        try:
+            all_tickers = await self.client.get_24h_tickers()  # 無參數 = 獲取所有
+            if not all_tickers:
+                logger.warning("⚠️ 批量獲取ticker數據失敗")
+                return []
+            
+            # 轉換為dict以便快速查找
+            ticker_dict = {t['symbol']: t for t in all_tickers if isinstance(t, dict) and 'symbol' in t}
+            logger.info(f"✅ 批量獲取完成：{len(ticker_dict)} 個ticker數據")
+            
+            # 過濾出我們需要的USDT永續合約ticker
+            tickers = [ticker_dict.get(symbol) for symbol in all_symbols]
+        except Exception as e:
+            logger.error(f"❌ 批量獲取24h ticker失敗: {e}")
+            return []
         
         # 步驟3：計算綜合分數並過濾
         logger.info("📈 計算流動性×波動率綜合分數...")
@@ -93,7 +108,7 @@ class SymbolSelector:
         low_volatility_count = 0
         
         for symbol, ticker in zip(all_symbols, tickers):
-            if isinstance(ticker, Exception) or not ticker:
+            if not ticker or not isinstance(ticker, dict):
                 filtered_count += 1
                 continue
             
@@ -167,10 +182,23 @@ class SymbolSelector:
         
         logger.info(f"📊 獲取到 {len(all_symbols)} 個USDT永續合約")
         
-        # 步驟2：並行獲取 24h 統計數據
-        logger.info("📡 並行獲取24h統計數據...")
-        tasks = [self._fetch_ticker(symbol) for symbol in all_symbols]
-        tickers = await asyncio.gather(*tasks, return_exceptions=True)
+        # 🔥 步驟2：批量獲取所有24h統計數據（1次API調用）
+        logger.info("📡 批量獲取24h統計數據（1次API調用代替600次）...")
+        try:
+            all_tickers = await self.client.get_24h_tickers()  # 無參數 = 獲取所有
+            if not all_tickers:
+                logger.warning("⚠️ 批量獲取ticker數據失敗")
+                return []
+            
+            # 轉換為dict以便快速查找
+            ticker_dict = {t['symbol']: t for t in all_tickers if isinstance(t, dict) and 'symbol' in t}
+            logger.info(f"✅ 批量獲取完成：{len(ticker_dict)} 個ticker數據")
+            
+            # 過濾出我們需要的USDT永續合約ticker
+            tickers = [ticker_dict.get(symbol) for symbol in all_symbols]
+        except Exception as e:
+            logger.error(f"❌ 批量獲取24h ticker失敗: {e}")
+            return []
         
         # 步驟3：計算波動率分數並過濾
         logger.info("📈 計算波動率分數...")
@@ -179,7 +207,7 @@ class SymbolSelector:
         low_liquidity_count = 0
         
         for symbol, ticker in zip(all_symbols, tickers):
-            if isinstance(ticker, Exception) or not ticker:
+            if not ticker or not isinstance(ticker, dict):
                 filtered_count += 1
                 continue
             
@@ -251,22 +279,6 @@ class SymbolSelector:
             logger.error(f"❌ 獲取交易對失敗: {e}")
             return []
     
-    async def _fetch_ticker(self, symbol: str) -> Optional[Dict]:
-        """
-        獲取單一交易對 24h 統計數據
-        
-        Args:
-            symbol: 交易對符號
-        
-        Returns:
-            24h統計數據，或None（失敗時）
-        """
-        try:
-            result = await self.client._request("GET", f"/fapi/v1/ticker/24hr?symbol={symbol}")
-            return result
-        except Exception as e:
-            logger.debug(f"⚠️ 獲取 {symbol} 24h統計失敗: {e}")
-            return None
     
     def _calculate_liquidity_volatility_score(self, ticker: Dict) -> float:
         """
