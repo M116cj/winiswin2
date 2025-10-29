@@ -48,6 +48,12 @@ class Config:
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "999"))
     
+    # ===== WebSocket 優化配置（v3.17.2+）=====
+    WEBSOCKET_SYMBOL_LIMIT: int = int(os.getenv("WEBSOCKET_SYMBOL_LIMIT", "300"))  # 監控前300個高波動交易對
+    WEBSOCKET_SHARD_SIZE: int = int(os.getenv("WEBSOCKET_SHARD_SIZE", "50"))  # 每分片50個符號
+    WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))  # 心跳超時30秒
+    REST_COOLDOWN_BASE: int = int(os.getenv("REST_COOLDOWN_BASE", "60"))  # REST備援基礎冷卻60秒
+    
     # ===== 技術指標配置 =====
     EMA_FAST: int = 20
     EMA_SLOW: int = 50
