@@ -217,7 +217,7 @@ class Config:
     
     # ===== v3.17+ PositionController 配置 =====
     POSITION_MONITOR_ENABLED: bool = os.getenv("POSITION_MONITOR_ENABLED", "true").lower() == "true"
-    POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "2"))
+    POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "60"))  # v3.17.2+: 改為1分鐘
     RISK_KILL_THRESHOLD: float = float(os.getenv("RISK_KILL_THRESHOLD", "0.99"))
     
     # ===== v3.17+ ModelEvaluator 配置 =====

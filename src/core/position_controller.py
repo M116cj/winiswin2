@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 
 class PositionController:
     """
-    PositionController v3.17+ - 24/7 倉位全權控制
+    PositionController v3.17.2+ - 24/7 倉位全權控制
     
     職責：
-    1. 每 2 秒監控所有持倉
+    1. 每 60 秒監控所有持倉（v3.17.2+修改）
     2. 調用 SelfLearningTrader.evaluate_positions() 獲取決策
     3. 執行決策（平倉、調整 SL/TP 等）
     4. 記錄所有倉位操作
@@ -34,7 +34,7 @@ class PositionController:
         self,
         binance_client,
         self_learning_trader,
-        monitor_interval: int = 2,
+        monitor_interval: int = 60,  # v3.17.2+: 改為1分鐘
         config=None,
         trade_recorder=None,
         data_service=None,
@@ -46,11 +46,11 @@ class PositionController:
         Args:
             binance_client: Binance 客戶端
             self_learning_trader: SelfLearningTrader 實例
-            monitor_interval: 監控間隔（秒），預設 2 秒
+            monitor_interval: 監控間隔（秒），預設 60 秒（v3.17.2+）
             config: 配置對象
             trade_recorder: 交易記錄器（v3.17.10+）
             data_service: 數據服務（v3.17.10+）
-            websocket_monitor: WebSocket監控器（v3.17.11，優先使用WebSocket數據）
+            websocket_monitor: WebSocket監控器（v3.17.2+，優先使用WebSocket數據）
         """
         self.binance_client = binance_client
         self.trader = self_learning_trader
