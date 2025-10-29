@@ -6,6 +6,7 @@ WebSocketManager v3.17.2+ - 統一WebSocket管理器（完整升級版）
 
 import asyncio
 import logging
+import re
 from typing import Dict, List, Optional, Any
 
 from src.core.websocket.shard_feed import ShardFeed
@@ -43,6 +44,7 @@ class WebSocketManager:
     優勢：
     - 100% WebSocket驅動（API權重≈0）
     - 動態波動率選擇（精準篩選高波動）
+    - PERPETUAL合約過濾（天然排除槓桿幣）
     - 過濾低流動性噪音（<1M USDT）
     - 分片防止單連線過載
     - 心跳監控 + 自動重連
@@ -103,11 +105,11 @@ class WebSocketManager:
         動態獲取波動率最高的USDT永續交易對（v3.17.2+優化版）
         
         使用 SymbolSelector 精準篩選：
-        1. 獲取所有 USDT 永續合約
+        1. 獲取所有 USDT 永續合約（contractType=PERPETUAL，天然排除槓桿幣）
         2. 並行獲取 24h 統計數據
         3. 計算波動率分數（價格波動 × 流動性）
         4. 過濾低流動性噪音（<1M USDT）
-        5. 排除槓桿幣（UP/DOWN）
+        5. 波動率排序（優選高活躍度）
         6. 返回前 N 個高波動交易對
         
         Returns:
@@ -133,13 +135,14 @@ class WebSocketManager:
             # 降級方案：獲取所有 USDT 永續合約
             try:
                 info = await self.binance_client._request("GET", "/fapi/v1/exchangeInfo")
+                
                 symbols = [
                     s['symbol'] for s in info['symbols']
-                    if s['quoteAsset'] == 'USDT' 
-                    and s['status'] == 'TRADING'
-                    and 'UP' not in s['symbol']    # 仍然過濾槓桿幣
-                    and 'DOWN' not in s['symbol']
+                    if s.get('quoteAsset') == 'USDT'
+                    and s.get('contractType') == 'PERPETUAL'  # 防禦性檢查
+                    and s.get('status') == 'TRADING'
                 ]
+                
                 logger.info(f"✅ 降級模式：{len(symbols)} 個USDT永續合約")
                 return symbols
             except Exception as fallback_error:

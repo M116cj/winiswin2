@@ -5,6 +5,7 @@ SymbolSelector v3.17.2+ - 動態波動率交易對選擇器
 
 import asyncio
 import logging
+import re
 from typing import List, Dict, Any, Optional
 import numpy as np
 
@@ -29,8 +30,9 @@ class SymbolSelector:
     - 綜合分數 = 波動率 × (1 + ln(流動性))
     
     過濾規則：
+    - contractType == 'PERPETUAL' → 永續合約（Futures API天然排除槓桿幣）
     - 流動性 < 1M USDT → 排除
-    - 包含 'UP' 或 'DOWN' → 排除（槓桿幣）
+    - 波動率排序 → 前N名
     - status != 'TRADING' → 排除
     """
     
@@ -48,7 +50,7 @@ class SymbolSelector:
         logger.info("=" * 80)
         logger.info("✅ SymbolSelector v3.17.2+ 初始化完成")
         logger.info("   🎯 策略: 波動率 × 流動性綜合評分")
-        logger.info("   🚫 過濾: 低流動性(<1M) + 槓桿幣(UP/DOWN)")
+        logger.info("   🚫 過濾: PERPETUAL合約 + 低流動性(<1M)")
         logger.info("=" * 80)
     
     async def get_top_volatility_symbols(self, limit: int = 300) -> List[str]:
@@ -125,7 +127,15 @@ class SymbolSelector:
     
     async def _get_all_futures_symbols(self) -> List[str]:
         """
-        獲取所有 USDT 永續交易對（過濾槓桿幣）
+        獲取所有 USDT 永續交易對
+        
+        過濾規則：
+        - quoteAsset == 'USDT'
+        - contractType == 'PERPETUAL'（防禦性檢查）
+        - status == 'TRADING'
+        
+        注意：Binance槓桿幣（BTCUP/BTCDOWN等）在SPOT市場，不在Futures API中。
+        /fapi/v1/exchangeInfo 只返回永續合約，天然排除槓桿幣。
         
         Returns:
             所有符合條件的交易對列表
@@ -135,12 +145,12 @@ class SymbolSelector:
             
             symbols = [
                 s['symbol'] for s in info['symbols']
-                if s['quoteAsset'] == 'USDT'
-                and s['status'] == 'TRADING'
-                and 'UP' not in s['symbol']    # 排除槓桿幣（BTCUP等）
-                and 'DOWN' not in s['symbol']  # 排除槓桿幣（BTCDOWN等）
+                if s.get('quoteAsset') == 'USDT'
+                and s.get('contractType') == 'PERPETUAL'  # 防禦性檢查（理論上都是PERPETUAL）
+                and s.get('status') == 'TRADING'
             ]
             
+            logger.debug(f"✅ 獲取完成：{len(symbols)} 個USDT永續合約")
             return symbols
         
         except Exception as e:

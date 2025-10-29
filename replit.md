@@ -50,11 +50,13 @@ git push origin main
 
 ## 最近更新
 
-### v3.17.2+ (2025-10-29) - HTTP 429速率限制完整修復 🚀
+### v3.17.2+ (2025-10-29) - HTTP 429速率限制修復 + 動態波動率交易對選擇 🚀
 
-**類型**: 🔧 **CRITICAL PERFORMANCE FIX / API OPTIMIZATION**  
-**目標**: 解決Railway部署HTTP 429速率限制（IP超過2400請求/分鐘），通過WebSocket混合策略將REST API請求從~150次/分鐘降至<10次/分鐘  
-**狀態**: ✅ **已完成並通過3次Architect審查**
+**類型**: 🔧 **CRITICAL PERFORMANCE FIX / API OPTIMIZATION + FEATURE**  
+**目標**: 
+1. 解決Railway部署HTTP 429速率限制（IP超過2400請求/分鐘），通過WebSocket混合策略將REST API請求從~150次/分鐘降至<10次/分鐘
+2. 動態選擇波動率最高的前300個交易對進行WebSocket訂閱，過濾低流動性(<1M USDT)交易對
+**狀態**: ✅ **全部完成並通過Architect最終審查**
 
 #### **問題診斷**
 
@@ -73,6 +75,28 @@ Railway日誌顯示系統觸發 `HTTP 429: Too many requests; current limit of I
 + symbol列表查詢 → ~800請求/分鐘
 → 觸發HTTP 429限制 ❌
 ```
+
+#### **新功能：動態波動率交易對選擇**
+
+**需求**：動態選擇波動率最高的前300個USDT永續合約進行WebSocket訂閱
+
+**實施方案**：
+1. ✅ **SymbolSelector類** (`src/core/symbol_selector.py`):
+   - 並行獲取所有USDT永續合約的24h統計數據
+   - 計算綜合波動率分數：`波動率 × (1 + ln(流動性))`
+   - 過濾低流動性交易對（<1M USDT）
+   - 返回波動率最高的前N個交易對
+
+2. ✅ **槓桿幣過濾** (通過Architect 6次審查迭代):
+   - **關鍵發現**：Binance槓桿幣（BTCUP/BTCDOWN等）在SPOT市場，不在Futures API中
+   - **API驗證**：`/fapi/v1/exchangeInfo` 只返回 `contractType='PERPETUAL'` 的永續合約
+   - **最終方案**：添加 `contractType=='PERPETUAL'` 防禦性檢查
+   - **結果**：天然排除槓桿幣，保留所有正常永續合約（JUPUSDT、SUPERUSDT、SETUPUSDT等）
+
+3. ✅ **WebSocketManager整合**:
+   - 啟動時調用 `symbol_selector.get_top_volatility_symbols(300)`
+   - 自動訂閱波動率最高的前300個交易對
+   - 降級方案：若選擇失敗，使用全市場PERPETUAL合約
 
 #### **修復方案：WebSocket混合策略**
 
