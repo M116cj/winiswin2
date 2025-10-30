@@ -297,7 +297,7 @@ class PositionController:
             current_time = time.time()
             if current_time - self.last_cross_margin_protection_time < cooldown:
                 time_left = int(cooldown - (current_time - self.last_cross_margin_protection_time))
-                logger.debug(f"🛡️ 全倉保護冷卻中，剩餘 {time_left} 秒")
+                logger.info(f"🛡️ 全倉保護冷卻中，剩餘 {time_left} 秒")
                 return False
             
             # 步驟2：獲取帳戶餘額（優先使用WebSocket，REST備援）
