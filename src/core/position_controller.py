@@ -202,9 +202,9 @@ class PositionController:
                             'symbol': pos_data['symbol'],
                             'positionAmt': str(pos_data['size']),
                             'entryPrice': str(pos_data['entry_price']),
-                            'markPrice': str(pos_data.get('entry_price')),
                             'unRealizedProfit': str(pos_data.get('unrealized_pnl', 0)),
-                            'leverage': '1'
+                            'leverage': '1',
+                            'is_websocket_data': True
                         })
             
             # 🔥 v3.17.2+：備援 - 使用REST API
@@ -221,17 +221,27 @@ class PositionController:
                 
                 symbol = pos.get('symbol', 'UNKNOWN')
                 entry_price = float(pos.get('entryPrice', 0))
-                # markPrice 可能在某些情況下缺失，使用 entryPrice 作為備選
-                current_price = float(pos.get('markPrice') or pos.get('entryPrice', 0))
                 leverage = float(pos.get('leverage', 1))
                 
-                # 計算 PnL
-                if position_amt > 0:  # LONG
-                    pnl = (current_price - entry_price) * position_amt
-                    side = 'LONG'
-                else:  # SHORT
-                    pnl = (entry_price - current_price) * abs(position_amt)
-                    side = 'SHORT'
+                # 🔥 v3.18.1+：優先使用API直接提供的unrealized PnL（準確且高效）
+                if 'unRealizedProfit' in pos:
+                    pnl = float(pos.get('unRealizedProfit', 0))
+                    # 從倉位金額判斷方向
+                    side = 'LONG' if position_amt > 0 else 'SHORT'
+                    # 使用unrealizedPnL時，current_price需反推（僅用於顯示）
+                    if position_amt > 0:  # LONG
+                        current_price = entry_price + (pnl / position_amt) if position_amt != 0 else entry_price
+                    else:  # SHORT
+                        current_price = entry_price - (pnl / abs(position_amt)) if position_amt != 0 else entry_price
+                else:
+                    # 備援：使用markPrice計算PnL（REST API fallback）
+                    current_price = float(pos.get('markPrice') or pos.get('entryPrice', 0))
+                    if position_amt > 0:  # LONG
+                        pnl = (current_price - entry_price) * position_amt
+                        side = 'LONG'
+                    else:  # SHORT
+                        pnl = (entry_price - current_price) * abs(position_amt)
+                        side = 'SHORT'
                 
                 # 計算 PnL 百分比（基於初始保證金）
                 notional = abs(position_amt) * entry_price
