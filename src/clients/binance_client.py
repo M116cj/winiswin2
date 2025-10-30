@@ -603,6 +603,11 @@ class BinanceClient:
         """
         下單（create_order 的別名，智能適配 Position Mode，自動重試）
         
+        ⚠️ Hedge Mode 重要提示：
+        - 必須明確傳遞 positionSide 參數
+        - 開倉：BUY+positionSide=LONG 或 SELL+positionSide=SHORT
+        - 平倉：SELL+positionSide=LONG 或 BUY+positionSide=SHORT
+        
         Args:
             symbol: 交易對
             side: BUY / SELL
@@ -610,7 +615,7 @@ class BinanceClient:
             quantity: 數量
             price: 限價單價格
             stop_price: 止損/止盈價格
-            **kwargs: 其他參數
+            **kwargs: 其他參數（Hedge Mode必須包含positionSide）
         
         Returns:
             訂單信息
@@ -619,10 +624,21 @@ class BinanceClient:
         is_hedge_mode = await self.get_position_mode()
         
         if is_hedge_mode and 'positionSide' not in kwargs:
-            # Hedge Mode: 必須指定 positionSide
-            # BUY → LONG, SELL → SHORT
-            kwargs['positionSide'] = 'LONG' if side == 'BUY' else 'SHORT'
-            logger.debug(f"  Hedge Mode: 添加 positionSide={kwargs['positionSide']}")
+            # 檢查是否為平倉訂單（有reduceOnly或closePosition參數）
+            is_closing_order = kwargs.get('reduceOnly') or kwargs.get('closePosition')
+            
+            if is_closing_order:
+                # 🚨 平倉訂單在Hedge Mode下必須明確指定positionSide
+                # 無法自動推斷：平LONG用SELL，平SHORT用BUY（與開倉邏輯相反）
+                raise ValueError(
+                    f"Closing order in Hedge Mode requires explicit 'positionSide' parameter. "
+                    f"Cannot infer from side='{side}'. "
+                    f"Please specify positionSide='LONG' or 'SHORT' in kwargs."
+                )
+            else:
+                # 開倉訂單：可以自動推斷（BUY→LONG, SELL→SHORT）
+                kwargs['positionSide'] = 'LONG' if side == 'BUY' else 'SHORT'
+                logger.debug(f"  Hedge Mode (開倉): 添加 positionSide={kwargs['positionSide']}")
         elif not is_hedge_mode and 'positionSide' in kwargs:
             # One-Way Mode: 移除 positionSide
             del kwargs['positionSide']

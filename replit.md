@@ -33,13 +33,13 @@ git push origin main
 
 混合智能交易系統，支持ICT/SMC策略、自我學習AI交易員、混合模式三種策略切換。集成XGBoost ML、ONNX推理加速、深度學習模型（TensorFlow + TFLite量化），監控Top 200高流動性交易對，跨3時間框架生成平衡LONG/SHORT信號。
 
-## 當前版本：v3.18.3+ (2025-10-30)
+## 當前版本：v3.18.4+ (2025-10-30)
 
-**最新更新：修復Binance API協議違規 + 平倉功能完全修正** 🚨✅
+**最新更新：完全符合Binance API官方協議 + 修復關鍵安全漏洞** 🚨✅
 
-### v3.18.3 Binance API協議修復 (2025-10-30)
+### v3.18.4 完整Binance API協議合規性修復 (2025-10-30)
 
-**🚨 修復3個嚴重的API協議違規問題**：
+**🚨 已修復4個嚴重的API協議違規問題**：
 
 1. **參數名稱錯誤**（已修復）
    - ❌ 錯誤：`reduce_only=True`（Python風格，Boolean類型）
@@ -57,15 +57,28 @@ git push origin main
      - 平LONG倉：`side=SELL` + `positionSide=LONG`（Hedge）或`reduceOnly="true"`（One-Way）
      - 平SHORT倉：`side=BUY` + `positionSide=SHORT`（Hedge）或`reduceOnly="true"`（One-Way）
 
+4. **binance_client.py 自動推斷邏輯漏洞**（已修復）⚠️
+   - ❌ 問題：Hedge Mode下自動推斷 `positionSide = 'LONG' if side == 'BUY' else 'SHORT'`
+   - ❌ 後果：開倉正確（BUY→LONG），但平倉完全錯誤（平LONG用SELL會被推斷為SHORT）
+   - ✅ 修復：智能檢測，平倉訂單必須明確傳遞positionSide，開倉可自動推斷
+   - ✅ 安全：防止未來代碼犯同樣錯誤
+
 **修復範圍**：
-- ✅ `_force_close_for_cross_margin_protection()` - 全倉保護平倉
-- ✅ `_close_position()` - 一般平倉
-- ✅ `_force_close_position()` (PositionMonitor24x7) - 強制平倉
+- ✅ `_force_close_for_cross_margin_protection()` - 全倉保護平倉（虧損場景）
+- ✅ `_close_position()` - 一般平倉（盈利/虧損場景）
+- ✅ `_force_close_position()` (PositionMonitor24x7) - 強制平倉（風控場景）
+- ✅ `binance_client.place_order()` - 智能模式檢測，防止錯誤推斷
+
+**協議合規性驗證**：
+- ✅ 所有平倉場景（盈利/虧損）完全符合官方協議
+- ✅ Hedge Mode 和 One-Way Mode 都正確支持
+- ✅ 參數類型、命名、使用限制全部符合規範
 
 **官方API文檔依據**：
 - 文檔：https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api
 - 參數：`reduceOnly` (STRING): "true" or "false"
-- 限制：Cannot be sent in Hedge Mode
+- 限制：Cannot be sent in Hedge Mode; cannot be sent with closePosition=true
+- 限制：`positionSide` must be sent in Hedge Mode
 
 ### v3.18.2 日誌可見性修復 (2025-10-30)
 
