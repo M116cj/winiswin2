@@ -328,51 +328,30 @@ class UnifiedScheduler:
                 logger.info("⏸️  本週期無新信號")
             
             # 步驟 6：執行信號（開倉）
-            # 🔥 v3.17.10+: 已移除MAX_POSITIONS限制，僅受保證金預算約束
+            # 🔥 v3.18+: 使用動態預算池 + 質量加權分配
             executed_count = 0
             if signals and self.config.TRADING_ENABLED:
-                # ✅ 保證金預算管理（使用80%可用保證金）
-                available_for_trading = available_balance * 0.8
-                active_position_count = len(positions)
-                
                 logger.info(
-                    f"📊 保證金預算: 可用=${available_balance:.2f} | "
-                    f"可分配=${available_for_trading:.2f} | "
-                    f"已有倉位={active_position_count} | "
-                    f"新信號數={len(signals)}"
+                    f"📊 信號執行 | 可用保證金: ${available_balance:.2f} | "
+                    f"已有倉位: {len(positions)} | 新信號數: {len(signals)}"
                 )
                 
-                # 🔥 無倉位限制：所有信號都嘗試執行（僅受保證金約束）
-                if len(signals) == 0:
-                    logger.info("⏸️ 無可執行信號")
-                else:
-                    budget_per_position = available_for_trading / len(signals)
-                    
-                    # ✅ 最小名義價值檢查（避免 "Margin insufficient"）
-                    min_notional = getattr(self.config, 'MIN_NOTIONAL_VALUE', 10.0)
-                    if budget_per_position < min_notional / 10:  # 預算太小（< 1 USDT）
-                        logger.warning(
-                            f"⚠️ 保證金預算不足: 每倉位${budget_per_position:.2f} < 最小要求${min_notional / 10:.2f}，"
-                            f"跳過本週期開倉"
-                        )
-                    else:
-                        for signal in signals:
-                            try:
-                                # 使用保證金預算而不是總權益
-                                success = await self._execute_signal(signal, budget_per_position, available_balance)
-                                if success:
-                                    executed_count += 1
-                                    self.stats['total_orders'] += 1
-                                    logger.info(f"   ✅ 成交: {signal['symbol']} {signal['direction']} | 槓桿: {signal.get('leverage', 1)}x")
-                                    # 重新獲取可用保證金（已更新）
-                                    try:
-                                        updated_info = await self.binance_client.get_account_balance()
-                                        available_balance = updated_info['available_balance']
-                                        logger.debug(f"   💰 更新可用保證金: ${available_balance:.2f}")
-                                    except:
-                                        pass
-                            except Exception as e:
-                                logger.error(f"   ❌ 執行失敗 {signal['symbol']}: {e}")
+                # 🔥 v3.18+: 使用CapitalAllocator進行動態分配
+                executed_positions = await self.self_learning_trader.execute_best_trades(
+                    signals=signals,
+                    max_positions=None  # 使用Config.MAX_CONCURRENT_ORDERS
+                )
+                
+                executed_count = len(executed_positions)
+                self.stats['total_orders'] += executed_count
+                
+                if executed_count > 0:
+                    for pos in executed_positions:
+                        if pos:
+                            symbol = pos.get('symbol', 'UNKNOWN')
+                            direction = pos.get('direction', 'UNKNOWN')
+                            leverage = pos.get('leverage', 1)
+                            logger.info(f"   ✅ 成交: {symbol} {direction} | 槓桿: {leverage}x")
             
             # 週期統計
             cycle_duration = (datetime.now() - cycle_start).total_seconds()
