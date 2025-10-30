@@ -63,7 +63,169 @@ git push origin main
 
 ---
 
+## 🔒 WebSocket架構定案版本 v3.18+ (2025-10-30)
+
+> **⚠️ 重要聲明**：此為WebSocket架構的**定案版本**  
+> **任何相關修改都必須先經過用戶確認才能執行**
+
+### 核心設計原則（不可變更）
+
+#### 1. **WebSocket監控範圍由掃描規則決定**
+```python
+# ❌ 錯誤：WebSocket自己決定監控哪些交易對
+websocket_manager = WebSocketManager(auto_fetch_symbols=True)
+
+# ✅ 正確：WebSocket接收unified_scheduler傳遞的掃描列表
+trading_symbols = await self._get_trading_symbols()  # 使用scan_market
+self.websocket_manager.symbols = trading_symbols
+await self.websocket_manager.start()
+```
+
+**設計意圖**：
+- WebSocket應該監控**所有掃描規則返回的交易對**
+- 掃描規則：`TOP_VOLATILITY_SYMBOLS=999`（按流動性排序）
+- 當REST API可用時，監控999個交易對
+- 當REST API失敗時，使用fallback列表（50個主流交易對）
+
+#### 2. **REST API僅用於冷啟動預熱**
+```python
+# WebSocket啟動流程（4步驟）
+步驟1：獲取掃描交易對列表（scan_market，1小時緩存）
+步驟2：創建ShardFeed（K線+價格）
+步驟3：創建AccountFeed（帳戶監控）
+步驟4：預熱K線緩存（REST API獲取100根1m K線）
+```
+
+**設計意圖**：
+- REST API在啟動時預熱歷史K線（避免等待60分鐘）
+- WebSocket開始接收數據後，REST API應停用
+- 預熱失敗不影響系統運行（WebSocket仍可正常工作）
+
+#### 3. **Fallback機制確保系統在任何環境下運行**
+```python
+# DataService.load_all_symbols()
+try:
+    # 嘗試從REST API獲取交易對列表
+    exchange_info = await self.client.get_exchange_info()
+    self.all_symbols = [符合條件的交易對]
+except Exception:
+    # REST API失敗 → 使用硬編碼fallback列表
+    from src.core.websocket.websocket_manager import FALLBACK_SYMBOLS
+    self.all_symbols = FALLBACK_SYMBOLS  # 50個主流交易對
+```
+
+**設計意圖**：
+- 在Replit環境下（HTTP 451），系統仍可啟動並監控50個交易對
+- 在Railway環境下（REST API可用），系統監控999個交易對
+- fallback列表包含最重要的主流交易對（BTC、ETH、SOL等）
+
+### 架構圖（定案版本）
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    UnifiedScheduler                         │
+│                                                             │
+│  啟動流程：                                                  │
+│  ├─ 步驟1：獲取掃描交易對 (scan_market, TOP_VOLATILITY)     │
+│  ├─ 步驟2：傳遞給WebSocketManager                          │
+│  └─ 步驟3：啟動WebSocket監控                               │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│               WebSocketManager (v3.18+)                     │
+│                                                             │
+│  監控範圍：由scan_market決定（不自行決定）                   │
+│  ├─ REST API可用：999個交易對                               │
+│  └─ REST API失敗：50個fallback交易對                        │
+│                                                             │
+│  ├─ ShardFeed（K線+價格）                                   │
+│  │   └─ 分片管理：每50個交易對一個分片                       │
+│  ├─ AccountFeed（帳戶監控）                                 │
+│  │   └─ listenKey自動續期：每15分鐘                         │
+│  └─ 預熱機制（可選）                                         │
+│      └─ REST API獲取100根1m K線（啟動優化）                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 關鍵實現文件
+
+1. **src/core/unified_scheduler.py** - 掃描優先啟動流程
+2. **src/services/data_service.py** - fallback機制
+3. **src/core/websocket/websocket_manager.py** - WebSocket核心邏輯
+4. **src/core/websocket/shard_feed.py** - 分片管理
+5. **src/core/websocket/account_feed.py** - 帳戶監控
+
+### 定案確認檢查清單
+
+- ✅ WebSocket監控由掃描規則決定（TOP_VOLATILITY_SYMBOLS）
+- ✅ REST API僅用於冷啟動預熱（非持續使用）
+- ✅ fallback機制確保Replit環境可運行
+- ✅ scan_market降級模式不依賴REST API
+- ✅ 通過Architect審查確認設計正確
+
+### ⚠️ 修改限制
+
+**未來如需修改WebSocket相關邏輯，必須先向用戶確認：**
+1. WebSocket監控範圍調整
+2. REST API使用策略變更
+3. fallback機制修改
+4. 啟動流程順序調整
+5. 任何影響掃描規則的變更
+
+**修改流程**：
+1. 向用戶說明修改原因和影響
+2. 等待用戶明確確認
+3. 實施修改
+4. 立即回報修改結果
+
+---
+
 ## 最近更新
+
+### v3.18+ (2025-10-30) - WebSocket監控邏輯修復 🔥
+
+**類型**: 🚨 **CRITICAL ARCHITECTURE FIX**  
+**目標**: 修復WebSocket自行決定監控範圍的問題，改為由掃描規則（TOP_VOLATILITY_SYMBOLS）決定  
+**狀態**: ✅ **已完成並通過Architect審查**
+
+#### **問題根源**
+
+WebSocket Manager自己決定監控哪些交易對，而非根據掃描規則：
+```python
+# 錯誤設計
+self.websocket_manager = WebSocketManager(
+    auto_fetch_symbols=True  # ❌ 自己獲取交易對（限制200個）
+)
+```
+
+#### **修復方案**
+
+1. ✅ **移除auto_fetch_symbols**：WebSocket不再自行決定監控範圍
+2. ✅ **掃描優先啟動**：unified_scheduler先獲取掃描列表再傳遞給WebSocket
+3. ✅ **DataService fallback**：REST API失敗時使用硬編碼50個主流交易對
+4. ✅ **scan_market降級**：不依賴REST API，直接返回本地列表
+
+#### **修復效果**
+
+```
+✅ WebSocketManager已啟動（監控50個交易對）
+   K線Feed: ✅  
+   價格Feed: ✅  
+   帳戶Feed: ✅
+   
+當前環境：Replit (HTTP 451) → 使用fallback列表
+部署Railway後：REST API可用 → 監控999個交易對
+```
+
+#### **Architect審查結果**
+
+✅ **PASS** - WebSocket監控流程完全符合設計目標：
+- WebSocket完全根據掃描列表動態調整
+- REST API僅用於冷啟動預熱
+- fallback機制確保任何環境下都可運行
+
+---
 
 ### v3.18+ (2025-10-30) - WebSocket冷啟動完整修復 🔥
 
