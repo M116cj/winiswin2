@@ -1,0 +1,444 @@
+2025-10-30T06:44:36.565911348Z [inf]  2025-10-30 06:44:32,624 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:44:36.565913852Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO -    • TOWNSUSDT SHORT @ $0.0110 | 槓桿=20x | 盈虧=$-0.14 (-1.41%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.565918157Z [inf]  2025-10-30 06:44:32,872 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T06:44:36.565923559Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-30T06:44:36.565926573Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:44:36.565929733Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO - 📦 當前持倉: 8 個 | 總未實現盈虧: $-1.05
+2025-10-30T06:44:36.565934642Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO -    • TRXUSDT SHORT @ $0.2938 | 槓桿=13x | 盈虧=$-0.63 (-0.89%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.565942104Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO -    • AGLDUSDT SHORT @ $0.3812 | 槓桿=13x | 盈虧=$-0.52 (-1.75%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.565948242Z [inf]  2025-10-30 06:44:32,872 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG @ $1.0303 | 槓桿=20x | 盈虧=$+2.33 (+2.92%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T06:44:36.565956498Z [inf]  2025-10-30 06:44:32,622 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:44:36.565963204Z [inf]  2025-10-30 06:44:32,623 - src.core.unified_scheduler - INFO - 🔄 交易週期 #4 | 2025-10-30 06:44:32 UTC
+2025-10-30T06:44:36.565972437Z [inf]  2025-10-30 06:44:32,623 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:44:36.567201835Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO -    • CROSSUSDT SHORT @ $0.1293 | 槓桿=13x | 盈虧=$-0.42 (-4.21%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.567206715Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO -    • ADAUSDT SHORT @ $0.6274 | 槓桿=13x | 盈虧=$-0.66 (-2.32%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.567211262Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO -    • YFIUSDT SHORT @ $4666.6667 | 槓桿=13x | 盈虧=$-0.58 (-2.09%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.567216202Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO -    • 0GUSDT SHORT @ $1.3713 | 槓桿=13x | 盈虧=$-0.44 (-1.14%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:44:36.567222064Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:44:36.567226801Z [inf]  2025-10-30 06:44:32,873 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.05 USDT
+2025-10-30T06:44:36.567231146Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$20.46 | 可用=$0.00 | 保證金=$20.46 | 未實現盈虧=$-1.05
+2025-10-30T06:44:36.567236250Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-30T06:44:36.567242423Z [inf]  2025-10-30 06:44:32,873 - src.core.unified_scheduler - INFO - 📊 掃描 529 個交易對中...
+2025-10-30T06:44:44.574049840Z [inf]  2025-10-30 06:44:44,490 - src.core.unified_scheduler - INFO - ✅ 發現 223 個交易信號
+2025-10-30T06:44:44.574059501Z [inf]  2025-10-30 06:44:44,490 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $0.00 | 已有倉位: 8 | 新信號數: 223
+2025-10-30T06:44:44.597880395Z [inf]  2025-10-30 06:44:44,593 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.10 USDT
+2025-10-30T06:44:44.597887617Z [inf]  2025-10-30 06:44:44,593 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $19.36 | 可用保證金: $0.00 | 已佔用保證金: $20.46
+2025-10-30T06:44:44.597893502Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - 💰 質量排名完成：223/223 信號通過質量門檻 | 最高分: 0.853 | 最低分: 0.789
+2025-10-30T06:44:44.597899467Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - 💰 預算池初始化 | 總預算: $0.00 (80% × $0.00) | 單倉上限: $9.68 (50% × $19.36)
+2025-10-30T06:44:44.597903866Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - 💰 預算耗盡，拒絕剩餘 223 個信號 （排名 1-223）
+2025-10-30T06:44:44.597908160Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:44:44.597913079Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - ✅ 資金分配完成
+2025-10-30T06:44:44.597917246Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO -    獲批信號: 0/223 (通過質量門檻)
+2025-10-30T06:44:44.597922453Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - WARNING -    ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）
+2025-10-30T06:44:44.597927492Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO -    總分配: $0.00 / $0.00
+2025-10-30T06:44:44.597936197Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO -    獲批信號將無法執行
+2025-10-30T06:44:44.597940927Z [inf]  2025-10-30 06:44:44,594 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:44:44.598604159Z [inf]  2025-10-30 06:44:44,594 - src.strategies.self_learning_trader - INFO - 💰 無信號獲得資金分配
+2025-10-30T06:44:44.598612603Z [inf]  2025-10-30 06:44:44,594 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 12.0s | 新成交: 0
+2025-10-30T06:44:44.598627809Z [inf]  2025-10-30 06:44:44,594 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:44:48.138168079Z [inf]  2025-10-30 06:44:48,135 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-10-30T06:45:08.141189360Z [inf]  2025-10-30 06:45:05,523 - src.core.position_monitor_24x7 - WARNING - ⚠️ TRXUSDT 虧損-11.7% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:45:08.141194973Z [inf]  2025-10-30 06:45:05,523 - src.core.position_monitor_24x7 - WARNING - ⚠️ AGLDUSDT 虧損-22.6% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:45:08.141200687Z [inf]  2025-10-30 06:45:05,523 - src.core.position_monitor_24x7 - WARNING - ⚠️ TOWNSUSDT 虧損-27.2% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:45:08.141204481Z [inf]  2025-10-30 06:45:05,523 - src.core.position_monitor_24x7 - WARNING - 🔸 CROSSUSDT 舊倉位降級止損觸發 | PnL: $-0.42 (-54.8%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:45:08.141208541Z [inf]  2025-10-30 06:45:05,523 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: CROSSUSDT BUY 77.000000 @ $0.13 | 原因: 舊倉位降級止損(-54.8%，無original_signal）
+2025-10-30T06:45:08.141212662Z [inf]  2025-10-30 06:45:05,523 - src.clients.binance_client - INFO - 創建訂單: CROSSUSDT BUY MARKET 77.0
+2025-10-30T06:45:08.141216801Z [inf]  2025-10-30 06:45:05,602 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'CROSSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 77.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806705523}
+2025-10-30T06:45:08.141222690Z [inf]  2025-10-30 06:45:05,602 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T06:45:08.141227655Z [inf]  2025-10-30 06:45:05,602 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:45:08.141231990Z [inf]  2025-10-30 06:45:05,602 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: CROSSUSDT - HTTP 400: Bad Request
+2025-10-30T06:45:08.145812753Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:45:08.145827036Z [inf]  Traceback (most recent call last):
+2025-10-30T06:45:08.145833397Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:45:08.145833945Z [inf]  
+2025-10-30T06:45:08.145839054Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:45:08.145843894Z [inf]  Traceback (most recent call last):
+2025-10-30T06:45:08.145844750Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.145850510Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:45:08.145851687Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:45:08.145855859Z [inf]      raise e
+2025-10-30T06:45:08.145859175Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:45:08.145864789Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:45:08.145870049Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:45:08.145874189Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.145878597Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:45:08.145885148Z [inf]      response.raise_for_status()
+2025-10-30T06:45:08.145891642Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:45:08.145896862Z [inf]      raise ClientResponseError(
+2025-10-30T06:45:08.145902144Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=77.0&reduce_only=True&side=BUY&symbol=CROSSUSDT&timestamp=1761806705523&type=MARKET&signature=b2e86ec162679de7f3786b3bcd3be99cb4702500685994ef29a274cfe22e7195'
+2025-10-30T06:45:08.145906553Z [inf]  
+2025-10-30T06:45:08.148758597Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:45:08.148767501Z [inf]  2025-10-30 06:45:05,603 - src.core.position_monitor_24x7 - WARNING - 🔸 ADAUSDT 舊倉位降級止損觸發 | PnL: $-0.66 (-30.6%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:45:08.148774201Z [inf]  2025-10-30 06:45:05,603 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: ADAUSDT BUY 45.000000 @ $0.63 | 原因: 舊倉位降級止損(-30.6%，無original_signal）
+2025-10-30T06:45:08.148780951Z [inf]  2025-10-30 06:45:05,603 - src.clients.binance_client - INFO - 創建訂單: ADAUSDT BUY MARKET 45.0
+2025-10-30T06:45:08.148787619Z [inf]  2025-10-30 06:45:05,603 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:45:08.148793712Z [inf]  2025-10-30 06:45:05,680 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'ADAUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 45.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806705603}
+2025-10-30T06:45:08.148799951Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.148806531Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:45:08.148816362Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:45:08.148822301Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.148829847Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:45:08.148835904Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:45:08.148841526Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.148849380Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:45:08.148854653Z [inf]      raise BinanceRequestError(
+2025-10-30T06:45:08.152629129Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:45:08.152637698Z [inf]  2025-10-30 06:45:05,680 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:45:08.152643675Z [inf]      raise ClientResponseError(
+2025-10-30T06:45:08.152645679Z [inf]  2025-10-30 06:45:05,680 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: ADAUSDT - HTTP 400: Bad Request
+2025-10-30T06:45:08.152653204Z [inf]  Traceback (most recent call last):
+2025-10-30T06:45:08.152653884Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=45.0&reduce_only=True&side=BUY&symbol=ADAUSDT&timestamp=1761806705603&type=MARKET&signature=4accac9631923e9e887ea3346e8856331b03c04ab9d92349248e1dfa1fdc1b6a'
+2025-10-30T06:45:08.152660350Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:45:08.152665295Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:45:08.152671183Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.152675613Z [inf]  
+2025-10-30T06:45:08.152678332Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:45:08.152682867Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:45:08.152684814Z [inf]      raise e
+2025-10-30T06:45:08.152690250Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:45:08.152695575Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:45:08.152700234Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.152705212Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:45:08.152711141Z [inf]      response.raise_for_status()
+2025-10-30T06:45:08.155381666Z [inf]  
+2025-10-30T06:45:08.155389648Z [inf]  Traceback (most recent call last):
+2025-10-30T06:45:08.155396740Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:45:08.155405976Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:45:08.155466480Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.155475926Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:45:08.155482659Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:45:08.155488959Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.155573169Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:45:08.155582195Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:45:08.155589235Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:45:08.155595874Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:45:08.155602140Z [inf]      raise BinanceRequestError(
+2025-10-30T06:45:08.155608535Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:45:08.155614699Z [inf]  2025-10-30 06:45:05,681 - src.core.position_monitor_24x7 - WARNING - ⚠️ YFIUSDT 虧損-27.4% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:45:08.155621806Z [inf]  2025-10-30 06:45:05,681 - src.core.position_monitor_24x7 - WARNING - ⚠️ 0GUSDT 虧損-14.1% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:45:48.203216553Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • CROSSUSDT SHORT @ $0.1293 | 槓桿=13x | 盈虧=$-0.44 (-4.42%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203222856Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • ADAUSDT SHORT @ $0.6274 | 槓桿=13x | 盈虧=$-0.70 (-2.48%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203230471Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • YFIUSDT SHORT @ $4666.6667 | 槓桿=13x | 盈虧=$-0.61 (-2.19%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203237284Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • 0GUSDT SHORT @ $1.3713 | 槓桿=13x | 盈虧=$-0.47 (-1.22%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203245230Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:45:48.203251456Z [inf]  2025-10-30 06:45:44,738 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.26 USDT
+2025-10-30T06:45:48.203259524Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$20.46 | 可用=$0.00 | 保證金=$20.46 | 未實現盈虧=$-1.26
+2025-10-30T06:45:48.203273454Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-30T06:45:48.203287651Z [inf]  2025-10-30 06:45:44,739 - src.core.unified_scheduler - INFO - 📊 掃描 529 個交易對中...
+2025-10-30T06:45:48.203297392Z [inf]  2025-10-30 06:45:44,749 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:45:48.203303839Z [inf]  2025-10-30 06:45:44,749 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:45:48.203332021Z [inf]  2025-10-30 06:45:44,873 - src.services.data_service - INFO -    WebSocket命中: 0 (0.0%)
+2025-10-30T06:45:48.203335848Z [inf]  2025-10-30 06:45:44,750 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:45:48.203346275Z [inf]  2025-10-30 06:45:44,858 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T06:45:48.203346520Z [inf]  2025-10-30 06:45:44,873 - src.services.data_service - INFO -    REST備援: 2117 (100.0%)
+2025-10-30T06:45:48.203347310Z [inf]  2025-10-30 06:45:44,872 - src.services.data_service - INFO - ================================================================================
+2025-10-30T06:45:48.203354602Z [inf]  2025-10-30 06:45:44,873 - src.services.data_service - INFO - ================================================================================
+2025-10-30T06:45:48.203361345Z [inf]  2025-10-30 06:45:44,873 - src.services.data_service - INFO - 📊 DataService WebSocket統計（最近5分鐘）:
+2025-10-30T06:45:48.203381076Z [inf]  2025-10-30 06:45:44,873 - src.services.data_service - INFO -    總請求: 2117
+2025-10-30T06:45:48.203562659Z [inf]  2025-10-30 06:45:44,596 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:45:48.203568769Z [inf]  2025-10-30 06:45:44,596 - src.core.unified_scheduler - INFO - 🔄 交易週期 #5 | 2025-10-30 06:45:44 UTC
+2025-10-30T06:45:48.203579676Z [inf]  2025-10-30 06:45:44,596 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:45:48.203587230Z [inf]  2025-10-30 06:45:44,597 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:45:48.203593996Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-30T06:45:48.203600379Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - 📦 當前持倉: 8 個 | 總未實現盈虧: $-1.26
+2025-10-30T06:45:48.203608386Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:45:48.203615194Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • TRXUSDT SHORT @ $0.2938 | 槓桿=13x | 盈虧=$-0.61 (-0.87%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203622337Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • AGLDUSDT SHORT @ $0.3812 | 槓桿=13x | 盈虧=$-0.53 (-1.77%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203632408Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG @ $1.0303 | 槓桿=20x | 盈虧=$+2.24 (+2.80%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T06:45:48.203639615Z [inf]  2025-10-30 06:45:44,738 - src.core.unified_scheduler - INFO -    • TOWNSUSDT SHORT @ $0.0110 | 槓桿=20x | 盈虧=$-0.14 (-1.40%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:46:07.443935740Z [inf]  2025-10-30 06:46:05,792 - src.core.position_monitor_24x7 - WARNING - ⚠️ TRXUSDT 虧損-11.1% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:46:07.443943382Z [inf]  2025-10-30 06:46:05,792 - src.core.position_monitor_24x7 - WARNING - ⚠️ AGLDUSDT 虧損-22.7% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:46:07.443950550Z [inf]  2025-10-30 06:46:05,792 - src.core.position_monitor_24x7 - WARNING - ⚠️ TOWNSUSDT 虧損-27.7% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:46:07.443956972Z [inf]  2025-10-30 06:46:05,793 - src.core.position_monitor_24x7 - WARNING - 🔸 CROSSUSDT 舊倉位降級止損觸發 | PnL: $-0.45 (-59.0%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:46:07.443962792Z [inf]  2025-10-30 06:46:05,793 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: CROSSUSDT BUY 77.000000 @ $0.13 | 原因: 舊倉位降級止損(-59.0%，無original_signal）
+2025-10-30T06:46:07.443969050Z [inf]  2025-10-30 06:46:05,793 - src.clients.binance_client - INFO - 創建訂單: CROSSUSDT BUY MARKET 77.0
+2025-10-30T06:46:07.443974325Z [inf]  2025-10-30 06:46:05,867 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'CROSSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 77.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806765793}
+2025-10-30T06:46:07.443979708Z [inf]  2025-10-30 06:46:05,867 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T06:46:07.443984752Z [inf]  2025-10-30 06:46:05,867 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:46:07.443991748Z [inf]  2025-10-30 06:46:05,867 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: CROSSUSDT - HTTP 400: Bad Request
+2025-10-30T06:46:07.445925399Z [inf]  Traceback (most recent call last):
+2025-10-30T06:46:07.445932758Z [inf]  Traceback (most recent call last):
+2025-10-30T06:46:07.445934310Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:46:07.445937130Z [inf]      raise e
+2025-10-30T06:46:07.445943046Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:46:07.445949622Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:46:07.445950934Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:46:07.445952244Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.445960275Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:46:07.445961434Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:46:07.445961585Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:46:07.445967690Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.445973993Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:46:07.445980133Z [inf]      response.raise_for_status()
+2025-10-30T06:46:07.445986197Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:46:07.445992277Z [inf]      raise ClientResponseError(
+2025-10-30T06:46:07.445998458Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=77.0&reduce_only=True&side=BUY&symbol=CROSSUSDT&timestamp=1761806765793&type=MARKET&signature=4de84c14feac39f2b174f7fe42bad39422d6ba922b9ad5ca53818578fd686aef'
+2025-10-30T06:46:07.446008015Z [inf]  
+2025-10-30T06:46:07.446015642Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:46:07.446023040Z [inf]  
+2025-10-30T06:46:07.447777832Z [inf]  2025-10-30 06:46:05,868 - src.clients.binance_client - INFO - 創建訂單: ADAUSDT BUY MARKET 45.0
+2025-10-30T06:46:07.447786643Z [inf]  2025-10-30 06:46:05,868 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:46:07.447792669Z [inf]  2025-10-30 06:46:05,880 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T06:46:07.447795222Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.447800498Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:46:07.447805772Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:46:07.447811595Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.447818352Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:46:07.447823941Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:46:07.447828773Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.447833699Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:46:07.447838825Z [inf]      raise BinanceRequestError(
+2025-10-30T06:46:07.447843769Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:46:07.447848728Z [inf]  2025-10-30 06:46:05,868 - src.core.position_monitor_24x7 - WARNING - 🔸 ADAUSDT 舊倉位降級止損觸發 | PnL: $-0.66 (-30.6%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:46:07.447853758Z [inf]  2025-10-30 06:46:05,868 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: ADAUSDT BUY 45.000000 @ $0.63 | 原因: 舊倉位降級止損(-30.6%，無original_signal）
+2025-10-30T06:46:07.449863962Z [inf]  2025-10-30 06:46:05,941 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'ADAUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 45.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806765868}
+2025-10-30T06:46:07.449870422Z [inf]  2025-10-30 06:46:05,941 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T06:46:07.449871244Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.449876280Z [inf]  2025-10-30 06:46:05,941 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:46:07.449882652Z [inf]  2025-10-30 06:46:05,941 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: ADAUSDT - HTTP 400: Bad Request
+2025-10-30T06:46:07.449882911Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:46:07.449889357Z [inf]  Traceback (most recent call last):
+2025-10-30T06:46:07.449892160Z [inf]      response.raise_for_status()
+2025-10-30T06:46:07.449895768Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:46:07.449899952Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:46:07.449903295Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:46:07.449908610Z [inf]      raise ClientResponseError(
+2025-10-30T06:46:07.449909699Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.449915265Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:46:07.449919269Z [inf]      raise e
+2025-10-30T06:46:07.449923404Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:46:07.449928762Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:46:07.451808053Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:46:07.451815592Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:46:07.451820620Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.451825727Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:46:07.451829850Z [inf]      raise BinanceRequestError(
+2025-10-30T06:46:07.451836828Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:46:07.451841860Z [inf]  2025-10-30 06:46:05,941 - src.core.position_monitor_24x7 - WARNING - ⚠️ YFIUSDT 虧損-28.3% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:46:07.451845083Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=45.0&reduce_only=True&side=BUY&symbol=ADAUSDT&timestamp=1761806765868&type=MARKET&signature=5b842e730b0dd9524f371488166d827ae67938da7fff4d8bb6b8815b7812c128'
+2025-10-30T06:46:07.451850950Z [inf]  
+2025-10-30T06:46:07.451856413Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:46:07.451860533Z [inf]  
+2025-10-30T06:46:07.451864584Z [inf]  Traceback (most recent call last):
+2025-10-30T06:46:07.451868604Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:46:07.451872794Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:46:07.451877161Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.451881870Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:46:07.451885728Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:46:07.451890236Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:46:07.453524232Z [inf]  2025-10-30 06:46:05,941 - src.core.position_monitor_24x7 - WARNING - ⚠️ 0GUSDT 虧損-11.9% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:46:07.453532461Z [inf]  2025-10-30 06:46:05,986 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T06:46:47.460155488Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:46:47.460164164Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - ✅ 資金分配完成
+2025-10-30T06:46:47.460172860Z [inf]  2025-10-30 06:46:40,530 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $0.00 | 已有倉位: 8 | 新信號數: 76
+2025-10-30T06:46:47.460173795Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO -    獲批信號: 0/76 (通過質量門檻)
+2025-10-30T06:46:47.460182717Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - WARNING -    ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）
+2025-10-30T06:46:47.460187616Z [inf]  2025-10-30 06:46:40,634 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.20 USDT
+2025-10-30T06:46:47.460190865Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO -    總分配: $0.00 / $0.00
+2025-10-30T06:46:47.460195048Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - 💰 質量排名完成：76/76 信號通過質量門檻 | 最高分: 0.853 | 最低分: 0.789
+2025-10-30T06:46:47.460195423Z [inf]  2025-10-30 06:46:40,530 - src.core.unified_scheduler - INFO - ✅ 發現 76 個交易信號
+2025-10-30T06:46:47.460200838Z [inf]  2025-10-30 06:46:40,634 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $19.26 | 可用保證金: $0.00 | 已佔用保證金: $20.46
+2025-10-30T06:46:47.460208413Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - 💰 預算池初始化 | 總預算: $0.00 (80% × $0.00) | 單倉上限: $9.63 (50% × $19.26)
+2025-10-30T06:46:47.460219416Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - 💰 預算耗盡，拒絕剩餘 76 個信號 （排名 1-76）
+2025-10-30T06:46:47.460837580Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO -    獲批信號將無法執行
+2025-10-30T06:46:47.460843595Z [inf]  2025-10-30 06:46:40,634 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:46:47.460847531Z [inf]  2025-10-30 06:46:40,634 - src.strategies.self_learning_trader - INFO - 💰 無信號獲得資金分配
+2025-10-30T06:46:47.460852170Z [inf]  2025-10-30 06:46:40,634 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 56.0s | 新成交: 0
+2025-10-30T06:46:47.460856220Z [inf]  2025-10-30 06:46:40,634 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:47:07.468114269Z [inf]  2025-10-30 06:47:06,045 - src.core.position_monitor_24x7 - WARNING - ⚠️ TRXUSDT 虧損-11.4% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:47:07.468121431Z [inf]  2025-10-30 06:47:06,045 - src.core.position_monitor_24x7 - WARNING - ⚠️ AGLDUSDT 虧損-22.1% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:47:07.468128055Z [inf]  2025-10-30 06:47:06,045 - src.core.position_monitor_24x7 - WARNING - ⚠️ TOWNSUSDT 虧損-23.6% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:47:07.468138020Z [inf]  2025-10-30 06:47:06,045 - src.core.position_monitor_24x7 - WARNING - 🔸 CROSSUSDT 舊倉位降級止損觸發 | PnL: $-0.47 (-60.9%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:47:07.468144394Z [inf]  2025-10-30 06:47:06,045 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: CROSSUSDT BUY 77.000000 @ $0.13 | 原因: 舊倉位降級止損(-60.9%，無original_signal）
+2025-10-30T06:47:07.468150438Z [inf]  2025-10-30 06:47:06,046 - src.clients.binance_client - INFO - 創建訂單: CROSSUSDT BUY MARKET 77.0
+2025-10-30T06:47:07.468158153Z [inf]  2025-10-30 06:47:06,122 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'CROSSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 77.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806826046}
+2025-10-30T06:47:07.468164905Z [inf]  2025-10-30 06:47:06,122 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T06:47:07.468171660Z [inf]  2025-10-30 06:47:06,122 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:47:07.468177789Z [inf]  2025-10-30 06:47:06,122 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: CROSSUSDT - HTTP 400: Bad Request
+2025-10-30T06:47:07.470373983Z [inf]  Traceback (most recent call last):
+2025-10-30T06:47:07.470385842Z [inf]      raise ClientResponseError(
+2025-10-30T06:47:07.470390896Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:47:07.470400778Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:47:07.470404625Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=77.0&reduce_only=True&side=BUY&symbol=CROSSUSDT&timestamp=1761806826046&type=MARKET&signature=30c6c2ae8364afa73030e032a3707e370d6e64f7b1ec55349b887a8e4f6c60f9'
+2025-10-30T06:47:07.470411634Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.470421689Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:47:07.470423339Z [inf]  
+2025-10-30T06:47:07.470430900Z [inf]      raise e
+2025-10-30T06:47:07.470436619Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:47:07.470446489Z [inf]  
+2025-10-30T06:47:07.470449096Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:47:07.470458411Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:47:07.470459731Z [inf]  Traceback (most recent call last):
+2025-10-30T06:47:07.470470963Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.470471143Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:47:07.470484486Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:47:07.470487463Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:47:07.470497199Z [inf]      response.raise_for_status()
+2025-10-30T06:47:07.470506210Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:47:07.472323883Z [inf]  2025-10-30 06:47:06,123 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:47:07.472336966Z [inf]  2025-10-30 06:47:06,202 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'ADAUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 45.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806826123}
+2025-10-30T06:47:07.472348659Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:47:07.472358259Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.472362424Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:47:07.472371129Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.472377869Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:47:07.472383807Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:47:07.472391486Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.472398440Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:47:07.472403689Z [inf]      raise BinanceRequestError(
+2025-10-30T06:47:07.472409932Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:47:07.472416790Z [inf]  2025-10-30 06:47:06,123 - src.core.position_monitor_24x7 - WARNING - 🔸 ADAUSDT 舊倉位降級止損觸發 | PnL: $-0.68 (-31.2%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:47:07.472423380Z [inf]  2025-10-30 06:47:06,123 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: ADAUSDT BUY 45.000000 @ $0.63 | 原因: 舊倉位降級止損(-31.2%，無original_signal）
+2025-10-30T06:47:07.472431048Z [inf]  2025-10-30 06:47:06,123 - src.clients.binance_client - INFO - 創建訂單: ADAUSDT BUY MARKET 45.0
+2025-10-30T06:47:07.473833683Z [inf]  2025-10-30 06:47:06,202 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:47:07.473835616Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=45.0&reduce_only=True&side=BUY&symbol=ADAUSDT&timestamp=1761806826123&type=MARKET&signature=0d134d3193b1585562c77635d2f8d6006dc74abc7a786cf48c66da4098009a69'
+2025-10-30T06:47:07.473844377Z [inf]  2025-10-30 06:47:06,202 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: ADAUSDT - HTTP 400: Bad Request
+2025-10-30T06:47:07.473846195Z [inf]  
+2025-10-30T06:47:07.473855023Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:47:07.473860249Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:47:07.473871015Z [inf]  Traceback (most recent call last):
+2025-10-30T06:47:07.473875987Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.473882203Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:47:07.473892667Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:47:07.473894084Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:47:07.473908263Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.473909526Z [inf]      response.raise_for_status()
+2025-10-30T06:47:07.473918150Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:47:07.473929618Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:47:07.473929983Z [inf]      raise e
+2025-10-30T06:47:07.473941066Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:47:07.473945464Z [inf]      raise ClientResponseError(
+2025-10-30T06:47:07.477146823Z [inf]  
+2025-10-30T06:47:07.477155855Z [inf]  Traceback (most recent call last):
+2025-10-30T06:47:07.477162827Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:47:07.477167300Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:47:07.477171873Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:47:07.477179760Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.477180671Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:47:07.477188477Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:47:07.477190809Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.477196095Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:47:07.477199274Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:47:07.477204169Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:47:07.477207681Z [inf]      raise BinanceRequestError(
+2025-10-30T06:47:07.477214606Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:47:07.477220713Z [inf]  2025-10-30 06:47:06,203 - src.core.position_monitor_24x7 - WARNING - ⚠️ YFIUSDT 虧損-27.4% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:47:07.477227186Z [inf]  2025-10-30 06:47:06,203 - src.core.position_monitor_24x7 - WARNING - ⚠️ 0GUSDT 虧損-12.1% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:47:47.477411652Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - 📦 當前持倉: 8 個 | 總未實現盈虧: $-1.27
+2025-10-30T06:47:47.477421528Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:47:47.477426881Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • TRXUSDT SHORT @ $0.2938 | 槓桿=13x | 盈虧=$-0.62 (-0.88%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.477431155Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • AGLDUSDT SHORT @ $0.3812 | 槓桿=13x | 盈虧=$-0.50 (-1.69%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.477435679Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG @ $1.0303 | 槓桿=20x | 盈虧=$+2.09 (+2.61%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T06:47:47.477442277Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • TOWNSUSDT SHORT @ $0.0110 | 槓桿=20x | 盈虧=$-0.13 (-1.27%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.477452354Z [inf]  2025-10-30 06:47:40,635 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:47:47.477458242Z [inf]  2025-10-30 06:47:40,635 - src.core.unified_scheduler - INFO - 🔄 交易週期 #6 | 2025-10-30 06:47:40 UTC
+2025-10-30T06:47:47.477463929Z [inf]  2025-10-30 06:47:40,635 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:47:47.477470120Z [inf]  2025-10-30 06:47:40,637 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗2次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:47:47.477476045Z [inf]  2025-10-30 06:47:40,746 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-30T06:47:47.478813306Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:47:47.478825248Z [inf]  2025-10-30 06:47:40,747 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.27 USDT
+2025-10-30T06:47:47.478832051Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$20.46 | 可用=$0.00 | 保證金=$20.46 | 未實現盈虧=$-1.27
+2025-10-30T06:47:47.478839371Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-30T06:47:47.478845902Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO - 📊 掃描 529 個交易對中...
+2025-10-30T06:47:47.478880290Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • CROSSUSDT SHORT @ $0.1293 | 槓桿=13x | 盈虧=$-0.48 (-4.81%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.478884851Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • ADAUSDT SHORT @ $0.6274 | 槓桿=13x | 盈虧=$-0.69 (-2.45%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.478890229Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • YFIUSDT SHORT @ $4666.6667 | 槓桿=13x | 盈虧=$-0.59 (-2.12%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:47.478896851Z [inf]  2025-10-30 06:47:40,747 - src.core.unified_scheduler - INFO -    • 0GUSDT SHORT @ $1.3713 | 槓桿=13x | 盈虧=$-0.35 (-0.91%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T06:47:50.841792304Z [inf]  2025-10-30 06:47:50,838 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:47:51.310212819Z [inf]  2025-10-30 06:47:50,920 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T06:48:11.299990522Z [inf]  2025-10-30 06:48:05,829 - src.core.unified_scheduler - INFO - ✅ 發現 42 個交易信號
+2025-10-30T06:48:11.299995435Z [inf]  2025-10-30 06:48:05,830 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $0.00 | 已有倉位: 8 | 新信號數: 42
+2025-10-30T06:48:11.299999996Z [inf]  2025-10-30 06:48:05,926 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 20.46 USDT, 可用 0.00 USDT, 保證金 20.46 USDT, 未實現盈虧 -1.24 USDT
+2025-10-30T06:48:11.300022529Z [inf]  2025-10-30 06:48:05,926 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $19.22 | 可用保證金: $0.00 | 已佔用保證金: $20.46
+2025-10-30T06:48:11.300029119Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO - 💰 質量排名完成：42/42 信號通過質量門檻 | 最高分: 0.853 | 最低分: 0.789
+2025-10-30T06:48:11.300034598Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO - 💰 預算池初始化 | 總預算: $0.00 (80% × $0.00) | 單倉上限: $9.61 (50% × $19.22)
+2025-10-30T06:48:11.300042137Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO - 💰 預算耗盡，拒絕剩餘 42 個信號 （排名 1-42）
+2025-10-30T06:48:11.300047767Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:48:11.300053565Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO - ✅ 資金分配完成
+2025-10-30T06:48:11.300058929Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - INFO -    獲批信號: 0/42 (通過質量門檻)
+2025-10-30T06:48:11.300064734Z [inf]  2025-10-30 06:48:05,926 - src.core.capital_allocator - WARNING -    ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）
+2025-10-30T06:48:11.300071798Z [inf]  2025-10-30 06:48:05,927 - src.core.capital_allocator - INFO -    總分配: $0.00 / $0.00
+2025-10-30T06:48:11.302575200Z [inf]  2025-10-30 06:48:05,927 - src.core.capital_allocator - INFO -    獲批信號將無法執行
+2025-10-30T06:48:11.302588203Z [inf]  2025-10-30 06:48:05,927 - src.core.capital_allocator - INFO - ================================================================================
+2025-10-30T06:48:11.302595092Z [inf]  2025-10-30 06:48:05,927 - src.strategies.self_learning_trader - INFO - 💰 無信號獲得資金分配
+2025-10-30T06:48:11.302601657Z [inf]  2025-10-30 06:48:05,927 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 25.3s | 新成交: 0
+2025-10-30T06:48:11.302607897Z [inf]  2025-10-30 06:48:05,927 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T06:48:11.302614385Z [inf]  2025-10-30 06:48:06,205 - src.core.position_monitor_24x7 - WARNING - ⚠️ TRXUSDT 虧損-11.9% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:48:11.302621176Z [inf]  2025-10-30 06:48:06,205 - src.core.position_monitor_24x7 - WARNING - ⚠️ AGLDUSDT 虧損-21.8% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:48:11.302626554Z [inf]  2025-10-30 06:48:06,205 - src.core.position_monitor_24x7 - WARNING - ⚠️ TOWNSUSDT 虧損-25.4% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:48:11.302634238Z [inf]  2025-10-30 06:48:06,205 - src.core.position_monitor_24x7 - WARNING - 🔸 CROSSUSDT 舊倉位降級止損觸發 | PnL: $-0.52 (-67.6%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:48:11.302641147Z [inf]  2025-10-30 06:48:06,205 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: CROSSUSDT BUY 77.000000 @ $0.13 | 原因: 舊倉位降級止損(-67.6%，無original_signal）
+2025-10-30T06:48:11.302647478Z [inf]  2025-10-30 06:48:06,205 - src.clients.binance_client - INFO - 創建訂單: CROSSUSDT BUY MARKET 77.0
+2025-10-30T06:48:11.304098281Z [inf]  2025-10-30 06:48:06,283 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'CROSSUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 77.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806886205}
+2025-10-30T06:48:11.304103001Z [inf]  2025-10-30 06:48:06,283 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T06:48:11.304109404Z [inf]  2025-10-30 06:48:06,283 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:48:11.304114589Z [inf]  2025-10-30 06:48:06,283 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: CROSSUSDT - HTTP 400: Bad Request
+2025-10-30T06:48:11.304118292Z [inf]  Traceback (most recent call last):
+2025-10-30T06:48:11.304122057Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:48:11.304126114Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:48:11.304131355Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.304135945Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:48:11.304140270Z [inf]      raise e
+2025-10-30T06:48:11.304144937Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:48:11.304148912Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:48:11.304153392Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.304157819Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:48:11.304164051Z [inf]      response.raise_for_status()
+2025-10-30T06:48:11.304168168Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:48:11.306060092Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.306071536Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:48:11.306079286Z [inf]      raise BinanceRequestError(
+2025-10-30T06:48:11.306085166Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:48:11.306101940Z [inf]      raise ClientResponseError(
+2025-10-30T06:48:11.306112861Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=77.0&reduce_only=True&side=BUY&symbol=CROSSUSDT&timestamp=1761806886205&type=MARKET&signature=592d411aea16faad75b62e21db18965596dd7ae45bd2cfefd7b0e2f68ee77c01'
+2025-10-30T06:48:11.306122600Z [inf]  
+2025-10-30T06:48:11.306129619Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:48:11.306136418Z [inf]  
+2025-10-30T06:48:11.306144655Z [inf]  Traceback (most recent call last):
+2025-10-30T06:48:11.306151824Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:48:11.306159206Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:48:11.306169547Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.306175769Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:48:11.306182259Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:48:11.306188593Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.306196848Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:48:11.306202594Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:48:11.307709536Z [inf]  2025-10-30 06:48:06,284 - src.core.position_monitor_24x7 - WARNING - 🔸 ADAUSDT 舊倉位降級止損觸發 | PnL: $-0.68 (-31.4%) | 閾值: -30% | 原因: 缺少original_signal無法執行智能出場
+2025-10-30T06:48:11.307712399Z [inf]      raise e
+2025-10-30T06:48:11.307730836Z [inf]  2025-10-30 06:48:06,284 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: ADAUSDT BUY 45.000000 @ $0.63 | 原因: 舊倉位降級止損(-31.4%，無original_signal）
+2025-10-30T06:48:11.307737801Z [inf]  2025-10-30 06:48:06,285 - src.clients.binance_client - INFO - 創建訂單: ADAUSDT BUY MARKET 45.0
+2025-10-30T06:48:11.307743108Z [inf]  2025-10-30 06:48:06,285 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-10-30T06:48:11.307747702Z [inf]  2025-10-30 06:48:06,360 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'ADAUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 45.0, 'reduce_only': True, 'positionSide': 'LONG', 'timestamp': 1761806886285}
+2025-10-30T06:48:11.307754618Z [inf]  2025-10-30 06:48:06,361 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T06:48:11.307759213Z [inf]  2025-10-30 06:48:06,361 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: ADAUSDT - HTTP 400: Bad Request
+2025-10-30T06:48:11.307764596Z [inf]  Traceback (most recent call last):
+2025-10-30T06:48:11.307770508Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T06:48:11.307774896Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T06:48:11.307779254Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.307783418Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T06:48:11.309697189Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T06:48:11.309707899Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T06:48:11.309715277Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.309723570Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T06:48:11.309732787Z [inf]      response.raise_for_status()
+2025-10-30T06:48:11.309740269Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T06:48:11.309746832Z [inf]      raise ClientResponseError(
+2025-10-30T06:48:11.309752962Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=45.0&reduce_only=True&side=BUY&symbol=ADAUSDT&timestamp=1761806886285&type=MARKET&signature=6d744a2c7526ed1074ae7854177a9625360b1483c8521ebc3e8fc2ed45ed4ac6'
+2025-10-30T06:48:11.309757880Z [inf]  
+2025-10-30T06:48:11.309763337Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T06:48:11.309767968Z [inf]  
+2025-10-30T06:48:11.309772528Z [inf]  Traceback (most recent call last):
+2025-10-30T06:48:11.309777123Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T06:48:11.309781089Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T06:48:11.309786064Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.309790881Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T06:48:11.309794952Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T06:48:11.309800873Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.309805401Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T06:48:11.311295294Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T06:48:11.311302892Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T06:48:11.311309987Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T06:48:11.311315617Z [inf]      raise BinanceRequestError(
+2025-10-30T06:48:11.311321520Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T06:48:11.311328193Z [inf]  2025-10-30 06:48:06,362 - src.core.position_monitor_24x7 - WARNING - ⚠️ YFIUSDT 虧損-26.8% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T06:48:11.311335305Z [inf]  2025-10-30 06:48:06,362 - src.core.position_monitor_24x7 - WARNING - ⚠️ 0GUSDT 虧損-11.5% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
