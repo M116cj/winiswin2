@@ -227,9 +227,17 @@ class CapitalAllocator:
         logger.info("=" * 80)
         logger.info(f"✅ 資金分配完成")
         logger.info(f"   獲批信號: {len(allocated_signals)}/{len(scored_signals)} (通過質量門檻)")
-        logger.info(f"   總分配: ${total_allocated:.2f} / ${total_budget:.2f} ({total_allocated/total_budget:.1%})")
-        logger.info(f"   剩餘預算: ${remaining_budget:.2f}")
-        logger.info(f"   預算利用率: {(total_budget - remaining_budget) / total_budget:.1%}")
+        
+        # 🔥 v3.18+防禦性編程：避免除以零（當available_margin=0時）
+        if total_budget > 0:
+            logger.info(f"   總分配: ${total_allocated:.2f} / ${total_budget:.2f} ({total_allocated/total_budget:.1%})")
+            logger.info(f"   剩餘預算: ${remaining_budget:.2f}")
+            logger.info(f"   預算利用率: {(total_budget - remaining_budget) / total_budget:.1%}")
+        else:
+            logger.warning(f"   ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）")
+            logger.info(f"   總分配: $0.00 / $0.00")
+            logger.info(f"   獲批信號將無法執行")
+        
         logger.info("=" * 80)
         
         return allocated_signals
