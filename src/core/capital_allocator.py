@@ -40,10 +40,13 @@ def calculate_signal_score(signal: Dict, config: Config) -> float:
     公式：
         質量分數 = 勝率^0.4 × 信心值^0.4 × 報酬率^0.2
     
-    參數規範化：
-        - 勝率：min(config.MIN_WIN_PROBABILITY, signal['win_probability'])
-        - 信心值：min(config.MIN_CONFIDENCE, signal['confidence'])
-        - 報酬率：限制在[config.MIN_RR_RATIO, config.MAX_RR_RATIO]
+    參數處理：
+        - 勝率：使用原始值，限制在[0, 1]（不強制拉升到MIN_WIN_PROBABILITY）
+        - 信心值：使用原始值，限制在[0, 1]（不強制拉升到MIN_CONFIDENCE）
+        - 報酬率：限制在[0, config.MAX_RR_RATIO]
+    
+    **重要**：此函數不進行質量過濾，僅計算分數。
+              低品質信號應該產生低分數並被allocate_capital過濾掉。
     
     Args:
         signal: 交易信號（dict格式，包含win_probability, confidence, rr_ratio）
@@ -52,19 +55,24 @@ def calculate_signal_score(signal: Dict, config: Config) -> float:
     Returns:
         質量分數（0-1之間的浮點數）
     """
-    # 提取並規範化參數
-    win_rate = max(config.MIN_WIN_PROBABILITY, signal.get('win_probability', 0.55))
-    confidence = max(config.MIN_CONFIDENCE, signal.get('confidence', 0.5))
+    # 提取原始參數（不拉升）
+    win_rate = signal.get('win_probability', 0.55)
+    confidence = signal.get('confidence', 0.5)
     rr_ratio = signal.get('rr_ratio', 1.0)
     
-    # 報酬率限制在合理範圍
-    rr_ratio = max(
-        config.MIN_RR_RATIO,
-        min(config.MAX_RR_RATIO, rr_ratio)
-    )
+    # 僅進行邊界保護，不強制拉升
+    # 勝率和信心值限制在[0, 1]
+    win_rate = max(0.0, min(1.0, win_rate))
+    confidence = max(0.0, min(1.0, confidence))
+    
+    # 報酬率限制在[0, MAX_RR_RATIO]
+    rr_ratio = max(0.0, min(config.MAX_RR_RATIO, rr_ratio))
     
     # 計算質量分數（加權幾何平均）
     score = (win_rate ** 0.4) * (confidence ** 0.4) * (rr_ratio ** 0.2)
+    
+    # 最終分數限制在[0, 1]（防止rr_ratio較大時分數超過1）
+    score = min(1.0, score)
     
     return score
 
@@ -172,6 +180,7 @@ class CapitalAllocator:
         
         for rank, (signal, score) in enumerate(scored_signals, 1):
             symbol = signal.get('symbol', 'UNKNOWN')
+            leverage = signal.get('leverage', 1.0)
             
             # 檢查預算是否耗盡
             if remaining_budget <= 0:
@@ -185,8 +194,12 @@ class CapitalAllocator:
             allocation_ratio = score / total_score
             theoretical_budget = total_budget * allocation_ratio
             
+            # 計算單倉上限（名義價值 = 保證金 × 槓桿）
+            # 保證金上限 = 名義價值上限 / 槓桿
+            max_budget_for_leverage = max_single_budget / leverage if leverage > 0 else max_single_budget
+            
             # 應用單倉上限和剩餘預算限制
-            actual_budget = min(theoretical_budget, max_single_budget, remaining_budget)
+            actual_budget = min(theoretical_budget, max_budget_for_leverage, remaining_budget)
             
             if actual_budget > 0:
                 allocated_signals.append(AllocatedSignal(

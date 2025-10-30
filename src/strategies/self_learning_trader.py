@@ -868,3 +868,238 @@ class SelfLearningTrader:
                 logger.warning(f"⚠️ {symbol} REST API備援失敗: {e}")
         
         return context
+    
+    async def execute_best_trades(
+        self,
+        signals: List[Dict],
+        max_positions: Optional[int] = None
+    ) -> List[Dict]:
+        """
+        執行多信號資金分配（v3.18+ 動態預算池版本）
+        
+        流程：
+        1. 獲取帳戶狀態（可用保證金、總權益）
+        2. 使用CapitalAllocator進行資金分配
+        3. 對每個已分配信號計算倉位並下單
+        4. 創建虛擬倉位（未分配到資金的信號）
+        
+        Args:
+            signals: 交易信號列表（dict格式）
+            max_positions: 最大同時開倉數（可選，默認使用Config.MAX_CONCURRENT_ORDERS）
+        
+        Returns:
+            成功執行的倉位列表
+        """
+        from src.core.capital_allocator import CapitalAllocator
+        
+        if not signals:
+            logger.debug("💰 無信號需要執行")
+            return []
+        
+        # 確保Binance客戶端已初始化
+        if not self.binance_client:
+            logger.error("❌ Binance客戶端未初始化，無法執行交易")
+            return []
+        
+        # ===== 步驟1：獲取帳戶狀態 =====
+        try:
+            account_info = await self.binance_client.get_account_info()
+            available_margin = float(account_info.get('availableBalance', 0))
+            total_equity = float(account_info.get('totalWalletBalance', 0))
+            
+            logger.info(
+                f"💰 帳戶狀態 | 總權益: ${total_equity:.2f} | "
+                f"可用保證金: ${available_margin:.2f}"
+            )
+        except Exception as e:
+            logger.error(f"❌ 獲取帳戶信息失敗: {e}")
+            return []
+        
+        # ===== 步驟2：動態分配資金 =====
+        # 確保使用Config實例（self.config可能是類或實例）
+        config_instance = self.config if not isinstance(self.config, type) else self.config()
+        allocator = CapitalAllocator(config_instance, total_equity)
+        allocated_signals = allocator.allocate_capital(signals, available_margin)
+        
+        if not allocated_signals:
+            logger.info("💰 無信號獲得資金分配")
+            # 創建虛擬倉位（所有信號都未執行）
+            await self._create_virtual_positions_from_dict(signals, None, total_equity)
+            return []
+        
+        # ===== 步驟3：應用最大開倉數限制 =====
+        max_concurrent = max_positions or self.config.MAX_CONCURRENT_ORDERS
+        if len(allocated_signals) > max_concurrent:
+            logger.warning(
+                f"💰 獲批信號 ({len(allocated_signals)}) 超過最大開倉數 ({max_concurrent})，"
+                f"僅執行前 {max_concurrent} 個"
+            )
+            allocated_signals = allocated_signals[:max_concurrent]
+        
+        # ===== 步驟4：執行已分配信號 =====
+        executed_positions = []
+        
+        for idx, alloc in enumerate(allocated_signals, 1):
+            signal = alloc.signal
+            symbol = signal.get('symbol', 'UNKNOWN')
+            
+            try:
+                # 計算倉位大小（基於分配的保證金）
+                position_size = self._calculate_position_size_from_budget(
+                    allocated_budget=alloc.allocated_budget,
+                    entry_price=signal['entry_price'],
+                    stop_loss=signal.get('adjusted_stop_loss', signal.get('stop_loss')),
+                    leverage=signal['leverage']
+                )
+                
+                # 驗證倉位大小
+                notional_value = position_size * signal['entry_price']
+                min_notional = getattr(self.config, 'MIN_NOTIONAL_VALUE', 10.0)
+                
+                if notional_value < min_notional:
+                    logger.warning(
+                        f"💰 {symbol} 倉位過小 ({notional_value:.2f} < {min_notional})，"
+                        f"調整至最小值"
+                    )
+                    position_size = min_notional / signal['entry_price']
+                    notional_value = min_notional
+                
+                logger.info(
+                    f"💰 執行 #{idx}/{len(allocated_signals)} | {symbol} | "
+                    f"分配: ${alloc.allocated_budget:.2f} | "
+                    f"槓桿: {signal['leverage']:.1f}x | "
+                    f"倉位: {position_size:.6f} | "
+                    f"名義價值: ${notional_value:.2f} | "
+                    f"質量分數: {alloc.quality_score:.3f}"
+                )
+                
+                # 執行下單
+                position = await self._place_order_and_monitor(
+                    signal=signal,
+                    size=position_size,
+                    available_balance=available_margin,
+                    competition_context={
+                        'rank': idx,
+                        'quality_score': alloc.quality_score,
+                        'allocated_budget': alloc.allocated_budget,
+                        'allocation_ratio': alloc.allocation_ratio,
+                        'num_signals': len(allocated_signals)
+                    }
+                )
+                
+                if position:
+                    executed_positions.append(position)
+                    logger.info(
+                        f"✅ {symbol} 開倉成功 | "
+                        f"倉位ID: {position.get('id', 'UNKNOWN')}"
+                    )
+                else:
+                    logger.warning(f"❌ {symbol} 開倉失敗")
+                
+            except Exception as e:
+                logger.error(f"❌ {symbol} 執行失敗: {e}", exc_info=True)
+                continue
+        
+        # ===== 步驟5：創建虛擬倉位（未獲分配的信號）=====
+        executed_symbols = {p.get('symbol') for p in executed_positions if p}
+        unexecuted_signals = [
+            s for s in signals 
+            if s.get('symbol') not in executed_symbols
+        ]
+        
+        if unexecuted_signals:
+            await self._create_virtual_positions_from_dict(
+                unexecuted_signals,
+                None,  # 無執行信號
+                total_equity
+            )
+        
+        # ===== 最終報告 =====
+        logger.info("=" * 80)
+        logger.info(f"✅ 多信號執行完成")
+        logger.info(f"   成功開倉: {len(executed_positions)}/{len(allocated_signals)}")
+        logger.info(f"   虛擬倉位: {len(unexecuted_signals)}")
+        logger.info("=" * 80)
+        
+        return executed_positions
+    
+    def _calculate_position_size_from_budget(
+        self,
+        allocated_budget: float,
+        entry_price: float,
+        stop_loss: float,
+        leverage: float
+    ) -> float:
+        """
+        基於分配的保證金計算倉位大小（v3.18+）
+        
+        公式：
+        1. 名義價值 = 分配保證金 × 槓桿
+        2. 倉位大小 = 名義價值 / 入場價格
+        
+        Args:
+            allocated_budget: 分配的保證金（USDT）
+            entry_price: 入場價格
+            stop_loss: 止損價格（用於驗證）
+            leverage: 槓桿倍數
+        
+        Returns:
+            倉位數量
+        """
+        # 計算名義價值
+        notional_value = allocated_budget * leverage
+        
+        # 計算倉位大小
+        position_size = notional_value / entry_price
+        
+        # 止損距離驗證（防禦性檢查）
+        sl_distance_pct = abs(entry_price - stop_loss) / entry_price
+        if sl_distance_pct < 0.003:  # 止損距離 < 0.3%
+            logger.warning(
+                f"   ⚠️ 止損距離過小 ({sl_distance_pct:.3%})，"
+                f"可能導致過早觸發"
+            )
+        
+        logger.debug(
+            f"   💰 倉位計算: 保證金=${allocated_budget:.2f} × 槓桿={leverage:.1f}x "
+            f"= 名義價值=${notional_value:.2f} → 數量={position_size:.6f}"
+        )
+        
+        return position_size
+    
+    async def _create_virtual_positions_from_dict(
+        self,
+        signals: List[Dict],
+        executed_signal: Optional[Dict],
+        total_equity: float
+    ) -> None:
+        """
+        從dict格式信號創建虛擬倉位（兼容性包裝）
+        
+        Args:
+            signals: 信號列表（dict格式）
+            executed_signal: 已執行的信號（dict格式，可選）
+            total_equity: 總權益
+        """
+        # 過濾掉已執行的信號
+        if executed_signal:
+            executed_symbol = executed_signal.get('symbol')
+            unexecuted_signals = [
+                s for s in signals 
+                if s.get('symbol') != executed_symbol
+            ]
+        else:
+            unexecuted_signals = signals
+        
+        # 創建虛擬倉位
+        if unexecuted_signals and self.virtual_position_manager:
+            for signal in unexecuted_signals:
+                try:
+                    await self.virtual_position_manager.create_virtual_position(
+                        signal=signal,
+                        account_equity=total_equity
+                    )
+                except Exception as e:
+                    logger.error(
+                        f"❌ 創建虛擬倉位失敗 {signal.get('symbol', 'UNKNOWN')}: {e}"
+                    )
