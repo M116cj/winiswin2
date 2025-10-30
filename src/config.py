@@ -50,6 +50,11 @@ class Config:
     MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.5"))  # 單倉 ≤ 50% 帳戶權益
     MAX_TOTAL_MARGIN_RATIO: float = float(os.getenv("MAX_TOTAL_MARGIN_RATIO", "0.9"))  # 總倉位保證金 ≤ 90% 帳戶總金額（不含浮盈浮虧）
     
+    # ===== v3.18+ 全倉保護配置（防止虧損稀釋10%預留緩衝）=====
+    CROSS_MARGIN_PROTECTOR_ENABLED: bool = os.getenv("CROSS_MARGIN_PROTECTOR_ENABLED", "true").lower() == "true"  # 啟用全倉保護
+    CROSS_MARGIN_PROTECTOR_THRESHOLD: float = float(os.getenv("CROSS_MARGIN_PROTECTOR_THRESHOLD", "0.85"))  # 85%觸發閾值（90%上限前5%預警）
+    CROSS_MARGIN_PROTECTOR_COOLDOWN: int = int(os.getenv("CROSS_MARGIN_PROTECTOR_COOLDOWN", "120"))  # 平倉後冷卻時間（秒）
+    
     # ===== 掃描配置（監控所有 U 本位合約）=====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
     TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "999"))

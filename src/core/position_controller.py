@@ -77,16 +77,24 @@ class PositionController:
             'total_checks': 0,
             'total_closes': 0,
             'total_adjustments': 0,
-            'emergency_closes': 0  # 100% 虧損緊急平倉
+            'emergency_closes': 0,  # 100% 虧損緊急平倉
+            'cross_margin_protections': 0  # 🔥 v3.18+：全倉保護平倉次數
         }
         
+        # 🔥 v3.18+：全倉保護狀態追蹤
+        self.last_cross_margin_protection_time = 0  # 上次觸發時間戳
+        
         logger.info("=" * 80)
-        logger.info("✅ PositionController v3.17.11 初始化完成（WebSocket整合）")
+        logger.info("✅ PositionController v3.18+ 初始化完成（全倉保護）")
         logger.info(f"   ⏱️  監控間隔: {monitor_interval} 秒")
         logger.info("   🛡️  優先級: 0（最高優先級）")
         logger.info("   🚨 緊急平倉: PnL ≤ -99%")
         logger.info("   📡 WebSocket: {}".format("已啟用（優先使用）" if websocket_monitor else "未啟用（僅REST）"))
         logger.info("   🔥 整合 PositionMonitor24x7（進場失效 + 逆勢自動平倉）")
+        if config and hasattr(config, 'CROSS_MARGIN_PROTECTOR_ENABLED') and config.CROSS_MARGIN_PROTECTOR_ENABLED:
+            logger.info(f"   🛡️ 全倉保護: 啟用（{getattr(config, 'CROSS_MARGIN_PROTECTOR_THRESHOLD', 0.85):.0%} 閾值，{getattr(config, 'CROSS_MARGIN_PROTECTOR_COOLDOWN', 120)}秒冷卻）")
+        else:
+            logger.info("   🛡️ 全倉保護: 停用")
         logger.info("=" * 80)
     
     async def start_monitoring(self):
@@ -120,6 +128,10 @@ class PositionController:
         monitor_stats = self.monitor_24x7.get_monitor_stats()
         logger.info(f"   📊 自動平倉: 進場失效={monitor_stats.get('entry_reason_expired_closures', 0)}, "
                    f"逆勢無反彈={monitor_stats.get('counter_trend_closures', 0)}")
+        
+        # 🔥 v3.18+：顯示全倉保護統計
+        if self.stats['cross_margin_protections'] > 0:
+            logger.info(f"   🛡️ 全倉保護平倉: {self.stats['cross_margin_protections']} 次")
     
     async def _monitoring_cycle(self):
         """單次監控週期（整合PositionMonitor24x7檢測，共享API調用）"""
@@ -139,6 +151,17 @@ class PositionController:
             # 🔥 v3.17.10+：優先執行PositionMonitor24x7檢測（進場失效+逆勢平倉）
             # 共享同一次API調用結果，避免HTTP 429速率限制
             await self.monitor_24x7.check_positions_with_data(positions)
+            
+            # 🔥 v3.18+：全倉保護檢查（在trader評估之前執行，Priority 0）
+            # 防止虧損稀釋10%預留緩衝，立即市價平倉虧損最大倉位
+            cross_margin_protected = await self._check_cross_margin_protection(positions)
+            if cross_margin_protected:
+                # 如果執行了全倉保護平倉，重新獲取倉位列表
+                logger.info("🛡️ 全倉保護已執行，重新獲取倉位列表")
+                positions = await self._fetch_all_positions()
+                if not positions:
+                    logger.debug("   📭 平倉後無剩餘持倉")
+                    return
             
             # 步驟 2：調用 SelfLearningTrader 評估持倉
             decisions = await self.trader.evaluate_positions(positions)
@@ -233,6 +256,188 @@ class PositionController:
         except Exception as e:
             logger.error(f"❌ 獲取持倉失敗: {e}", exc_info=True)
             return []
+    
+    async def _check_cross_margin_protection(self, positions: List[Dict]) -> bool:
+        """
+        🔥 v3.18+ 全倉保護檢查（防止虧損稀釋10%預留緩衝）
+        
+        檢查邏輯：
+        1. 獲取帳戶總金額（total_balance）和總保證金（total_margin）
+        2. 計算保證金使用率 = total_margin / total_balance
+        3. 如果使用率 > 85%（90%上限前5%預警）且存在虧損倉位：
+           - 找出虧損最大的倉位
+           - 立即市價平倉（Priority 0）
+           - 記錄冷卻時間戳，防止重複觸發
+        
+        Args:
+            positions: 當前所有持倉列表
+        
+        Returns:
+            bool: 是否執行了平倉操作
+        """
+        # 檢查配置是否啟用
+        if not self.config or not getattr(self.config, 'CROSS_MARGIN_PROTECTOR_ENABLED', False):
+            return False
+        
+        try:
+            import time
+            
+            # 步驟1：檢查冷卻時間
+            cooldown = getattr(self.config, 'CROSS_MARGIN_PROTECTOR_COOLDOWN', 120)
+            current_time = time.time()
+            if current_time - self.last_cross_margin_protection_time < cooldown:
+                time_left = int(cooldown - (current_time - self.last_cross_margin_protection_time))
+                logger.debug(f"🛡️ 全倉保護冷卻中，剩餘 {time_left} 秒")
+                return False
+            
+            # 步驟2：獲取帳戶餘額（優先使用WebSocket，REST備援）
+            account_info = None
+            if self.websocket_monitor:
+                account_info = self.websocket_monitor.get_account_balance()
+            
+            if not account_info:
+                # 備援：使用REST API
+                account_info = await self.binance_client.get_futures_account_balance()
+            
+            if not account_info:
+                logger.warning("⚠️ 無法獲取帳戶信息，跳過全倉保護檢查")
+                return False
+            
+            # 步驟3：計算總金額和總保證金
+            # 注意：使用正確的字段名（與binance_client.get_account_balance()返回的格式一致）
+            total_balance = float(account_info.get('total_balance', 0))
+            total_margin = float(account_info.get('total_margin', 0))
+            
+            if total_balance <= 0:
+                logger.warning(f"⚠️ 帳戶總金額異常: ${total_balance:.2f}")
+                return False
+            
+            # 步驟4：計算保證金使用率
+            margin_usage_ratio = total_margin / total_balance
+            threshold = getattr(self.config, 'CROSS_MARGIN_PROTECTOR_THRESHOLD', 0.85)
+            
+            logger.debug(
+                f"🛡️ 全倉保護檢查 | "
+                f"保證金使用率: {margin_usage_ratio:.1%} | "
+                f"閾值: {threshold:.0%} | "
+                f"總金額: ${total_balance:.2f} | "
+                f"總保證金: ${total_margin:.2f}"
+            )
+            
+            # 步驟5：判斷是否觸發保護條件
+            if margin_usage_ratio <= threshold:
+                return False
+            
+            # 步驟6：篩選虧損倉位
+            losing_positions = [p for p in positions if p['pnl'] < 0]
+            
+            if not losing_positions:
+                logger.info(
+                    f"🛡️ 保證金使用率 {margin_usage_ratio:.1%} > {threshold:.0%} "
+                    f"但無虧損倉位，無需保護"
+                )
+                return False
+            
+            # 步驟7：找出虧損最大的倉位（絕對金額）
+            worst_position = min(losing_positions, key=lambda p: p['pnl'])
+            
+            logger.critical(
+                f"🚨🛡️ 全倉保護觸發！保證金使用率 {margin_usage_ratio:.1%} > {threshold:.0%}"
+            )
+            logger.critical(
+                f"   📊 帳戶狀態: 總金額=${total_balance:.2f}, "
+                f"總保證金=${total_margin:.2f} ({margin_usage_ratio:.1%})"
+            )
+            logger.critical(
+                f"   🎯 目標倉位: {worst_position['symbol']} {worst_position['side']} | "
+                f"虧損=${worst_position['pnl']:.2f} ({worst_position['pnl_pct']:.1%})"
+            )
+            logger.critical(
+                f"   ⚡ 執行動作: 立即市價平倉保護10%預留緩衝"
+            )
+            
+            # 步驟8：執行市價平倉（Priority 0，最高優先級）
+            success = await self._force_close_for_cross_margin_protection(worst_position)
+            
+            if success:
+                # 記錄成功平倉
+                self.stats['cross_margin_protections'] += 1
+                self.last_cross_margin_protection_time = current_time
+                
+                logger.critical(
+                    f"✅ 全倉保護平倉成功 | "
+                    f"{worst_position['symbol']} 虧損${worst_position['pnl']:.2f} 已清除 | "
+                    f"冷卻{cooldown}秒"
+                )
+                return True
+            else:
+                logger.error(
+                    f"❌ 全倉保護平倉失敗: {worst_position['symbol']}"
+                )
+                return False
+                
+        except Exception as e:
+            logger.error(f"❌ 全倉保護檢查異常: {e}", exc_info=True)
+            return False
+    
+    async def _force_close_for_cross_margin_protection(self, position: Dict) -> bool:
+        """
+        全倉保護強制平倉（市價單，Priority 0）
+        
+        Args:
+            position: 要平倉的倉位信息
+        
+        Returns:
+            bool: 是否成功平倉
+        """
+        symbol = position.get('symbol', 'UNKNOWN')
+        try:
+            side = "SELL" if position['side'] == "LONG" else "BUY"
+            quantity = position['size']
+            
+            logger.critical(
+                f"🚨 執行全倉保護平倉: {symbol} {side} {quantity} | "
+                f"原因: 保證金使用率過高+虧損稀釋預留緩衝"
+            )
+            
+            # 使用市價單立即平倉（reduce_only=True防止反向開倉）
+            result = await self.binance_client.place_order(
+                symbol=symbol,
+                side=side,
+                order_type="MARKET",
+                quantity=quantity,
+                reduce_only=True  # 確保只平倉，不開反向倉
+            )
+            
+            if result:
+                logger.critical(
+                    f"✅ 全倉保護平倉訂單提交成功: {symbol} (訂單ID: {result.get('orderId')})"
+                )
+                
+                # 記錄到TradeRecorder
+                if self.trade_recorder:
+                    try:
+                        self.trade_recorder.record_forced_closure(
+                            symbol=symbol,
+                            side=side,
+                            quantity=quantity,
+                            price=position['current_price'],
+                            reason=f"全倉保護（虧損${position['pnl']:.2f}）",
+                            order_id=result.get('orderId')
+                        )
+                    except AttributeError:
+                        logger.info(
+                            f"📝 全倉保護平倉記錄: {symbol} {side} {quantity} @ "
+                            f"{position['current_price']} | 虧損${position['pnl']:.2f}"
+                        )
+                
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            logger.critical(f"❌ 全倉保護平倉異常: {symbol} - {e}", exc_info=True)
+            return False
     
     async def _execute_decision(
         self,
