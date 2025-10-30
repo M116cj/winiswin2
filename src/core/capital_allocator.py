@@ -88,19 +88,30 @@ class CapitalAllocator:
     - 總預算控制：使用可用保證金的80%
     """
     
-    def __init__(self, config: Config, total_account_equity: float):
+    def __init__(
+        self,
+        config: Config,
+        total_account_equity: float,
+        total_balance: float = 0.0,
+        total_margin: float = 0.0
+    ):
         """
         初始化資金分配器
         
         Args:
             config: 配置對象
             total_account_equity: 帳戶總權益（用於單倉上限檢查）
+            total_balance: 帳戶總金額（不含浮盈浮虧，用於90%上限檢查）
+            total_margin: 已佔用保證金（用於90%上限檢查）
         """
         self.config = config
         self.total_account_equity = total_account_equity
+        self.total_balance = total_balance
+        self.total_margin = total_margin
         
         logger.debug(
             f"💰 CapitalAllocator初始化 | 帳戶權益: ${total_account_equity:.2f} | "
+            f"總金額: ${total_balance:.2f} | 已佔用保證金: ${total_margin:.2f} | "
             f"單倉上限: {self.config.MAX_SINGLE_POSITION_RATIO:.0%}"
         )
     
@@ -163,15 +174,32 @@ class CapitalAllocator:
             f"最高分: {scored_signals[0][1]:.3f} | 最低分: {scored_signals[-1][1]:.3f}"
         )
         
-        # ===== 步驟3：初始化預算 =====
+        # ===== 步驟3：初始化預算（含90%總倉位保證金上限檢查）=====
         total_budget = available_margin * self.config.MAX_TOTAL_BUDGET_RATIO
-        remaining_budget = total_budget
         max_single_budget = self.total_account_equity * self.config.MAX_SINGLE_POSITION_RATIO
+        
+        # 🔥 v3.18+ 新增：90%總倉位保證金上限檢查
+        # 計算還能使用的保證金空間（帳戶總金額×90% - 已佔用保證金）
+        max_allowed_total_margin = self.total_balance * self.config.MAX_TOTAL_MARGIN_RATIO
+        remaining_margin_space = max(0, max_allowed_total_margin - self.total_margin)
+        
+        # 限制總預算不超過剩餘保證金空間
+        if remaining_margin_space < total_budget:
+            logger.warning(
+                f"⚠️ 90%總倉位保證金上限限制 | "
+                f"原預算: ${total_budget:.2f} → 調整為: ${remaining_margin_space:.2f} | "
+                f"已佔用: ${self.total_margin:.2f} / 上限: ${max_allowed_total_margin:.2f} "
+                f"({self.config.MAX_TOTAL_MARGIN_RATIO:.0%} × ${self.total_balance:.2f})"
+            )
+            total_budget = remaining_margin_space
+        
+        remaining_budget = total_budget
         
         logger.info(
             f"💰 預算池初始化 | "
             f"總預算: ${total_budget:.2f} ({self.config.MAX_TOTAL_BUDGET_RATIO:.0%} × ${available_margin:.2f}) | "
-            f"單倉上限: ${max_single_budget:.2f} ({self.config.MAX_SINGLE_POSITION_RATIO:.0%} × ${self.total_account_equity:.2f})"
+            f"單倉上限: ${max_single_budget:.2f} ({self.config.MAX_SINGLE_POSITION_RATIO:.0%} × ${self.total_account_equity:.2f}) | "
+            f"總倉位保證金: ${self.total_margin:.2f} / ${max_allowed_total_margin:.2f} ({self.config.MAX_TOTAL_MARGIN_RATIO:.0%})"
         )
         
         # ===== 步驟4：動態分配（修正版：預算池扣減）=====
