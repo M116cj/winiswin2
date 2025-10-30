@@ -42,7 +42,12 @@ class Config:
     # ===== v3.17+ SelfLearningTrader 開倉條件 =====
     MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.55"))
     MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
-    MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "2.0"))
+    MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18+：調整上限為3.0
+    
+    # ===== v3.18+ 資金分配配置（動態預算池 + 質量加權）=====
+    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 最低質量門檻
+    MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.8"))  # 總預算 = 80% 可用保證金
+    MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.5"))  # 單倉 ≤ 50% 帳戶權益
     
     # ===== 掃描配置（監控所有 U 本位合約）=====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
