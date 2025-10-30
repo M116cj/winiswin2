@@ -332,8 +332,9 @@ class PositionMonitor24x7:
                     self.entry_reason_expired_closures += 1
                     return
                 else:
-                    logger.info(
-                        f"⚠️ {symbol} 進場理由失效但信心值{current_confidence:.1%}≥70%，繼續持倉"
+                    logger.warning(
+                        f"⚠️ {symbol} 進場理由失效但信心值{current_confidence:.1%}≥70%，繼續持倉 | "
+                        f"原因: {expire_reason} | PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
                     )
             
             # 4️⃣ 逆勢交易（僅信心<80%時平倉）
@@ -353,9 +354,9 @@ class PositionMonitor24x7:
                     self.counter_trend_closures += 1
                     return
                 else:
-                    logger.info(
+                    logger.warning(
                         f"⚪ {symbol} 逆勢但信心值{current_confidence:.1%}≥80%，允許逆勢交易 | "
-                        f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
+                        f"原因: {counter_reason} | PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%})"
                     )
             
             # 5️⃣ 追蹤止盈（盈利>20%時）
@@ -746,10 +747,10 @@ class PositionMonitor24x7:
                 # 降級：返回空上下文
                 return MarketContext(
                     trend_direction="neutral",
+                    liquidity_score=0.0,
                     volatility=0.0,
-                    liquidity=0.0,
                     rsi=50.0,
-                    macd_histogram=0.0
+                    macd=0.0
                 )
             
             # 獲取15m K線數據（平衡速度與穩定性）
@@ -761,10 +762,10 @@ class PositionMonitor24x7:
                 # 數據不足，返回中性上下文
                 return MarketContext(
                     trend_direction="neutral",
+                    liquidity_score=0.0,
                     volatility=0.0,
-                    liquidity=0.0,
                     rsi=50.0,
-                    macd_histogram=0.0
+                    macd=0.0
                 )
             
             # 計算技術指標
@@ -805,10 +806,10 @@ class PositionMonitor24x7:
             
             return MarketContext(
                 trend_direction=trend_direction,
+                liquidity_score=liquidity,
                 volatility=volatility,
-                liquidity=liquidity,
                 rsi=latest_rsi,
-                macd_histogram=latest_macd_hist
+                macd=latest_macd_hist
             )
             
         except Exception as e:
@@ -816,10 +817,10 @@ class PositionMonitor24x7:
             # 返回中性上下文
             return MarketContext(
                 trend_direction="neutral",
+                liquidity_score=0.0,
                 volatility=0.0,
-                liquidity=0.0,
                 rsi=50.0,
-                macd_histogram=0.0
+                macd=0.0
             )
     
     async def _predict_rebound_probability(self, symbol: str, direction: str) -> float:
