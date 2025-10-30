@@ -109,7 +109,10 @@ class DataService:
             
         except Exception as e:
             logger.error(f"加載交易對失敗: {e}")
-            self.all_symbols = []
+            # 🔥 v3.18+：使用硬編碼fallback列表（確保系統在REST API失敗時仍可運行）
+            from src.core.websocket.websocket_manager import FALLBACK_SYMBOLS
+            self.all_symbols = FALLBACK_SYMBOLS
+            logger.warning(f"⚠️ 使用fallback交易對列表（{len(self.all_symbols)}個主流交易對）")
     
     async def get_multi_timeframe_data(
         self,
@@ -733,22 +736,24 @@ class DataService:
             return await self._fallback_scan_market()
     
     async def _fallback_scan_market(self) -> List[Dict]:
-        """降級掃描：當24h ticker失敗時使用"""
-        tickers = await self.get_batch_tickers(self.all_symbols)
+        """
+        降級掃描：當24h ticker失敗時使用
+        
+        🔥 v3.18+修復：不依賴REST API，直接返回all_symbols列表
+        """
+        logger.warning(f"⚠️ REST API不可用，使用本地交易對列表（{len(self.all_symbols)}個）")
         
         market_data = []
         for symbol in self.all_symbols:
-            ticker = tickers.get(symbol, {})
-            if ticker:
-                market_data.append({
-                    'symbol': symbol,
-                    'price': float(ticker.get('price', 0)),
-                    'liquidity': 0.0,
-                    'quote_volume': 0.0,
-                    'timestamp': datetime.now()
-                })
+            market_data.append({
+                'symbol': symbol,
+                'price': 0.0,  # WebSocket稍後會更新
+                'liquidity': 0.0,
+                'quote_volume': 0.0,
+                'timestamp': datetime.now()
+            })
         
-        logger.warning(f"使用降級掃描，獲取 {len(market_data)} 個交易對")
+        logger.info(f"✅ 降級模式：返回 {len(market_data)} 個交易對（等待WebSocket更新價格）")
         return market_data
     
     async def get_account_info(self) -> dict:

@@ -69,17 +69,17 @@ class UnifiedScheduler:
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
-        # 🔥 v3.17.2+：初始化WebSocketManager（統一管理K線Feed、價格Feed和帳戶Feed）
-        # 升級：自動獲取全市場、分片管理、PriceFeed支持
+        # 🔥 v3.18+：初始化WebSocketManager（根據掃描規則動態監控）
+        # 修復：不自動獲取交易對，而是根據scan_market結果動態更新
         self.websocket_manager = WebSocketManager(
             binance_client=binance_client,
-            symbols=config.TRADING_SYMBOLS if config.TRADING_SYMBOLS else None,
+            symbols=config.TRADING_SYMBOLS if config.TRADING_SYMBOLS else [],
             kline_interval="1m",
             shard_size=getattr(config, 'WEBSOCKET_SHARD_SIZE', 50),
             enable_kline_feed=getattr(config, 'WEBSOCKET_ENABLE_KLINE_FEED', True),
             enable_price_feed=getattr(config, 'WEBSOCKET_ENABLE_PRICE_FEED', True),
             enable_account_feed=getattr(config, 'WEBSOCKET_ENABLE_ACCOUNT_FEED', True),
-            auto_fetch_symbols=getattr(config, 'WEBSOCKET_AUTO_FETCH_SYMBOLS', True)
+            auto_fetch_symbols=False  # 🔥 v3.18+：不自動獲取，由scheduler控制
         )
         
         # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）
@@ -141,9 +141,20 @@ class UnifiedScheduler:
             self.is_running = True
             logger.info("🚀 UnifiedScheduler 啟動中...")
             
-            # 🔥 v3.17.2+：啟動WebSocketManager（包含K線Feed和帳戶Feed）
+            # 🔥 v3.18+：先獲取掃描交易對列表，再啟動WebSocket
+            logger.info("📡 步驟1：獲取掃描交易對列表...")
+            trading_symbols = await self._get_trading_symbols()
+            if trading_symbols:
+                logger.info(f"✅ 獲取 {len(trading_symbols)} 個交易對（掃描規則）")
+                # 更新WebSocket監控列表
+                self.websocket_manager.symbols = trading_symbols
+            else:
+                logger.warning("⚠️ 無法獲取交易對列表，WebSocket將使用fallback")
+            
+            # 啟動WebSocketManager（包含K線Feed和帳戶Feed）
+            logger.info("📡 步驟2：啟動WebSocketManager...")
             await self.websocket_manager.start()
-            logger.info("✅ WebSocketManager已啟動（K線Feed + 帳戶Feed）")
+            logger.info(f"✅ WebSocketManager已啟動（監控{len(self.websocket_manager.symbols)}個交易對）")
             
             # 啟動任務
             tasks = [
