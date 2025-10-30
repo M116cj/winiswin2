@@ -75,6 +75,8 @@ class TradeRecorder:
             'order_blocks': signal.get('order_blocks', 0),
             'liquidity_zones': signal.get('liquidity_zones', 0),
             'indicators': signal.get('indicators', {}),
+            # 🔥 v3.18+ Critical Fix: 存儲original_signal用於PositionMonitor即時評估
+            'original_signal': signal.get('original_signal', signal.copy()),  # fallback到完整signal
         }
         
         # 🔥 v3.17.10+：添加競價上下文特徵（3個新特徵）
@@ -291,14 +293,15 @@ class TradeRecorder:
             
             with open(self.trades_file, 'a', encoding='utf-8') as f:
                 for trade in self.completed_trades:
-                    f.write(json.dumps(trade, ensure_ascii=False) + '\n')
+                    f.write(json.dumps(trade, ensure_ascii=False, default=str) + '\n')
             
             logger.info(f"💾 保存 {len(self.completed_trades)} 條交易記錄到磁盤")
             
             self.completed_trades = []
             
+            # 🔥 v3.18+ Critical Fix: 添加default=str處理original_signal中的datetime對象
             with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
-                json.dump(self.pending_entries, f, ensure_ascii=False, indent=2)
+                json.dump(self.pending_entries, f, ensure_ascii=False, indent=2, default=str)
             
         except Exception as e:
             logger.error(f"保存交易記錄失敗: {e}")
@@ -390,9 +393,6 @@ class TradeRecorder:
             if symbol is None or entry.get('symbol') == symbol:
                 trade_record = entry.copy()
                 trade_record['status'] = 'open'  # 標記為未平倉
-                # 🔥 確保包含original_signal（如果有的話）
-                if 'original_signal' not in trade_record and 'signal' in entry:
-                    trade_record['original_signal'] = entry['signal']
                 active_trades.append(trade_record)
         
         return active_trades
@@ -472,7 +472,7 @@ class TradeRecorder:
             
             # 追加寫入競價記錄
             with open(competition_file, 'a', encoding='utf-8') as f:
-                f.write(json.dumps(competition_log, ensure_ascii=False) + '\n')
+                f.write(json.dumps(competition_log, ensure_ascii=False, default=str) + '\n')
             
             logger.debug(
                 f"💾 保存競價記錄: {competition_log['total_signals']} 個信號, "
