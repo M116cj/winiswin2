@@ -143,10 +143,10 @@ class PositionController:
             positions = await self._fetch_all_positions()
             
             if not positions:
-                logger.debug("   📭 當前無持倉")
+                logger.info("   📭 當前無持倉")
                 return
             
-            logger.debug(f"   📊 監控 {len(positions)} 個持倉")
+            logger.info(f"   📊 監控 {len(positions)} 個持倉")
             
             # 🔥 v3.17.10+：優先執行PositionMonitor24x7檢測（進場失效+逆勢平倉）
             # 共享同一次API調用結果，避免HTTP 429速率限制
@@ -195,7 +195,7 @@ class PositionController:
             if self.websocket_monitor:
                 ws_positions = self.websocket_monitor.get_all_positions()
                 if ws_positions:
-                    logger.debug(f"📡 從WebSocket獲取 {len(ws_positions)} 個倉位")
+                    logger.info(f"📡 從WebSocket獲取 {len(ws_positions)} 個倉位")
                     # 將WebSocket格式轉換為標準格式
                     for symbol, pos_data in ws_positions.items():
                         raw_positions.append({
@@ -209,7 +209,7 @@ class PositionController:
             
             # 🔥 v3.17.2+：備援 - 使用REST API
             if not raw_positions:
-                logger.debug("📡 WebSocket無倉位數據，使用REST API備援")
+                logger.info("📡 WebSocket無倉位數據，使用REST API備援")
                 raw_positions = await self.binance_client.get_position_info_async()
             
             positions = []
@@ -326,7 +326,7 @@ class PositionController:
             margin_usage_ratio = total_margin / total_balance
             threshold = getattr(self.config, 'CROSS_MARGIN_PROTECTOR_THRESHOLD', 0.85)
             
-            logger.debug(
+            logger.info(
                 f"🛡️ 全倉保護檢查 | "
                 f"保證金使用率: {margin_usage_ratio:.1%} | "
                 f"閾值: {threshold:.0%} | "
