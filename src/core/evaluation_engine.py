@@ -190,10 +190,13 @@ class EvaluationEngine:
         Returns:
             信心度 = max(predict_proba)
         """
+        if not self.model:
+            return self._rule_based_confidence(signal, current_price, market_context)
+            
         try:
             features = self._build_realtime_features(signal, current_price, market_context)
             proba = self.model.predict_proba([features])[0]
-            confidence = float(max(proba))
+            confidence = float(np.max(proba))
             return min(max(confidence, 0.0), 1.0)  # 限制在[0,1]
             
         except Exception as e:
@@ -212,10 +215,13 @@ class EvaluationEngine:
         Returns:
             勝率 = predict_proba[1] (LONG類別概率)
         """
+        if not self.model:
+            return self._rule_based_win_probability(signal, current_price, market_context)
+            
         try:
             features = self._build_realtime_features(signal, current_price, market_context)
             proba = self.model.predict_proba([features])[0]
-            win_prob = float(proba[1]) if len(proba) > 1 else float(max(proba))
+            win_prob = float(proba[1]) if len(proba) > 1 else float(np.max(proba))
             return min(max(win_prob, 0.0), 1.0)  # 限制在[0,1]
             
         except Exception as e:
@@ -372,7 +378,7 @@ class EvaluationEngine:
         # 計算最終勝率
         win_prob = base_win_prob + trend_bonus + quality_bonus + rsi_adjustment
         
-        return min(max(win_prob, 0.0), 1.0)  # 限制在[0,1]
+        return float(min(max(win_prob, 0.0), 1.0))  # 限制在[0,1]
     
     # ========== 輔助方法 ==========
     

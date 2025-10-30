@@ -384,7 +384,8 @@ class PositionMonitor24x7:
                 )
                     
         except Exception as e:
-            logger.error(f"❌ 檢查倉位失敗 {symbol if 'symbol' in locals() else 'UNKNOWN'}: {e}", exc_info=True)
+            symbol_name = position.get('symbol', 'UNKNOWN') if position else 'UNKNOWN'
+            logger.error(f"❌ 檢查倉位失敗 {symbol_name}: {e}", exc_info=True)
     
     async def _get_risk_amount(self, symbol: str) -> Optional[float]:
         """

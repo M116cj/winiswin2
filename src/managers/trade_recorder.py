@@ -371,6 +371,32 @@ class TradeRecorder:
         
         return all_trades
     
+    def get_active_trades(self, symbol: Optional[str] = None) -> List[Dict]:
+        """
+        🔥 v3.18+：獲取活躍交易記錄（未平倉的pending_entries）
+        
+        這是PositionMonitor24x7用來獲取original_signal的關鍵方法
+        
+        Args:
+            symbol: 可選，過濾指定交易對（默認None=所有活躍交易）
+        
+        Returns:
+            List[Dict]: 活躍交易記錄列表，每條記錄包含 original_signal, status='open'
+        """
+        active_trades = []
+        
+        for entry in self.pending_entries:
+            # 如果指定了symbol，只返回該symbol的記錄
+            if symbol is None or entry.get('symbol') == symbol:
+                trade_record = entry.copy()
+                trade_record['status'] = 'open'  # 標記為未平倉
+                # 🔥 確保包含original_signal（如果有的話）
+                if 'original_signal' not in trade_record and 'signal' in entry:
+                    trade_record['original_signal'] = entry['signal']
+                active_trades.append(trade_record)
+        
+        return active_trades
+    
     def get_trades(self, days: Optional[int] = None) -> List[Dict]:
         """
         獲取所有交易記錄（包括開倉pending和已平倉）
