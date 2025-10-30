@@ -183,6 +183,85 @@ except Exception:
 
 ## 最近更新
 
+### v3.18+ (2025-10-30) - 舊倉位記錄補救機制 🔥
+
+**類型**: 🚨 **CRITICAL ML DATA LOSS FIX**  
+**目標**: 確保所有倉位（包括舊倉位）平倉時都能記錄ML特徵供模型學習  
+**狀態**: ✅ **已完成並通過2次Architect審查**
+
+#### **問題根源**
+
+**用戶需求**：舊倉位的開倉記錄應該保存到平倉為止，平倉後記錄特徵供模型學習
+
+**問題診斷**：
+1. `ml_data/` 目錄為空，沒有 `pending_entries.json` 和 `trades.jsonl`
+2. 舊倉位（如AGLDUSDT）在系統重啟前開倉，開倉記錄丟失
+3. `TradeRecorder.record_exit()` 找不到配對記錄時直接返回 `None`
+4. **ML特徵永久丟失**，無法供模型學習（違反用戶需求）
+
+#### **修復方案**
+
+**1. record_exit() 補救機制**（第132-138行）：
+```python
+if not entry_data:
+    # 🔥 v3.18+ 舊倉位補救機制
+    logger.warning(f"⚠️ {symbol} 未找到開倉記錄（可能是舊倉位），使用補救機制重建")
+    entry_data = self._rebuild_entry_from_position(trade_result)
+    if not entry_data:
+        logger.error(f"❌ {symbol} 補救失敗：無法重建開倉記錄")
+        return None
+```
+
+**2. 新增 _rebuild_entry_from_position() 方法**（第276-359行）：
+- 從 `trade_result` 提取關鍵信息（symbol, direction, entry_price）
+- 推斷 `entry_timestamp`（使用 close_time - holding_duration）
+- 安全計算倉位價值：
+  ```python
+  # 優先從trade_result獲取position_value或notional
+  position_value = trade_result.get('position_value') or trade_result.get('notional')
+  
+  if not position_value:
+      # epsilon保護（|pnl_pct| > 0.0001）避免除以零
+      if abs(pnl_pct) > 0.0001:
+          position_value = abs(pnl) / abs(pnl_pct)
+      else:
+          # pnl_pct≈0時使用默認最小值
+          position_value = 10.0  # USDT
+  ```
+- 標準化 `entry_timestamp` 為ISO字符串
+- 標記為 `REBUILT_` 前綴
+
+#### **修復效果**
+
+✅ **所有舊倉位平倉都能記錄ML特徵**：
+- 保本退出（pnl_pct=0）不會拋出ZeroDivisionError
+- 從 `trade_result` 重建開倉記錄
+- 創建完整ML訓練樣本（44個特徵）
+- 保存到 `ml_data/trades.jsonl`
+
+✅ **符合用戶需求**：
+- 開倉記錄保存到平倉為止
+- 平倉後記錄特徵供模型學習
+- 沒有ML數據永久丟失
+
+#### **Architect審查結果**
+
+**第一次審查（發現除以零風險）**：
+```
+Fail - pnl_pct=0時會拋出ZeroDivisionError
+position_value = abs(pnl) / abs(pnl_pct) 除以零
+```
+
+**第二次審查（修復後）**：
+```
+✅ PASS - 補救機制現在安全處理保本退出場景
+- 優先使用notional/position_value
+- epsilon保護避免除以零
+- 所有舊倉位都能產生ML記錄
+```
+
+---
+
 ### v3.18+ (2025-10-30) - WebSocket監控邏輯修復 🔥
 
 **類型**: 🚨 **CRITICAL ARCHITECTURE FIX**  

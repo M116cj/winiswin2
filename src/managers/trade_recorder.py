@@ -127,8 +127,12 @@ class TradeRecorder:
                 break
         
         if not entry_data:
-            logger.warning(f"未找到 {symbol} 的開倉記錄")
-            return None
+            # 🔥 v3.18+: 舊倉位補救機制 - 從trade_result重建開倉記錄
+            logger.warning(f"⚠️ {symbol} 未找到開倉記錄（可能是舊倉位），使用補救機制重建")
+            entry_data = self._rebuild_entry_from_position(trade_result)
+            if not entry_data:
+                logger.error(f"❌ {symbol} 補救失敗：無法重建開倉記錄")
+                return None
         
         ml_record = self._create_ml_record(entry_data, trade_result)
         
@@ -265,6 +269,107 @@ class TradeRecorder:
         }
         
         return ml_record
+    
+    def _rebuild_entry_from_position(self, trade_result: Dict) -> Optional[Dict]:
+        """
+        🔥 v3.18+ 舊倉位補救機制：從平倉數據重建開倉記錄
+        
+        當倉位缺少開倉記錄時（舊倉位），從trade_result中提取信息重建最小化開倉記錄。
+        這確保即使是舊倉位，平倉後也能記錄特徵供模型學習。
+        
+        Args:
+            trade_result: 平倉交易結果
+            
+        Returns:
+            重建的開倉記錄，或None（如果關鍵信息缺失）
+        """
+        try:
+            # 提取關鍵字段
+            symbol = trade_result.get('symbol')
+            direction = trade_result.get('direction')
+            entry_price = trade_result.get('entry_price')
+            
+            if not all([symbol, direction, entry_price]):
+                logger.error(f"❌ 補救失敗：缺少關鍵字段 symbol={symbol}, direction={direction}, entry_price={entry_price}")
+                return None
+            
+            # 從trade_result推斷entry_timestamp
+            entry_timestamp = trade_result.get('entry_timestamp')
+            if not entry_timestamp:
+                # 如果沒有entry_timestamp，使用close_timestamp往前推holding_duration
+                close_time = trade_result.get('timestamp') or trade_result.get('close_timestamp')
+                holding_minutes = trade_result.get('holding_duration_minutes', 0)
+                if close_time and holding_minutes:
+                    from datetime import timedelta
+                    if isinstance(close_time, str):
+                        close_time = datetime.fromisoformat(close_time)
+                    entry_time = close_time - timedelta(minutes=holding_minutes)
+                    entry_timestamp = entry_time.isoformat()
+                else:
+                    # 最後fallback：使用未知時間戳
+                    entry_timestamp = datetime.now().isoformat()
+                    logger.warning(f"⚠️ {symbol} 無法推斷entry_timestamp，使用當前時間")
+            
+            # 計算倉位價值（安全處理pnl_pct=0的情況）
+            pnl = trade_result.get('pnl', 0)
+            pnl_pct = trade_result.get('pnl_pct', 0)
+            
+            # 優先從trade_result獲取notional或position_value
+            position_value = trade_result.get('position_value') or trade_result.get('notional')
+            
+            if not position_value:
+                # 從pnl和pnl_pct反推（避免除以零）
+                if abs(pnl_pct) > 0.0001:  # epsilon保護
+                    position_value = abs(pnl) / abs(pnl_pct)
+                else:
+                    # pnl_pct≈0時，使用默認最小值
+                    position_value = 10.0  # 最小倉位價值10 USDT
+                    logger.warning(f"⚠️ {symbol} pnl_pct≈0，無法反推倉位價值，使用默認值${position_value}")
+            
+            # 重建開倉記錄（使用trade_result中可用的數據或默認值）
+            entry_data = {
+                'entry_id': f"REBUILT_{symbol}_{datetime.now().timestamp()}",
+                'symbol': symbol,
+                'direction': direction,
+                'entry_price': entry_price,
+                'entry_timestamp': entry_timestamp if isinstance(entry_timestamp, str) else entry_timestamp.isoformat(),
+                'confidence': trade_result.get('confidence', 0.5),  # 默認50%
+                'leverage': trade_result.get('leverage', 1),
+                'position_value': position_value,
+                'timeframes': {},  # 舊倉位無多時框數據
+                'market_structure': trade_result.get('market_structure', 'neutral'),
+                'order_blocks': trade_result.get('order_blocks_count', 0),
+                'liquidity_zones': trade_result.get('liquidity_zones_count', 0),
+                'indicators': {
+                    'rsi': trade_result.get('rsi', 50),
+                    'macd': trade_result.get('macd', 0),
+                    'atr': trade_result.get('atr', 0),
+                    'bb_width_pct': trade_result.get('bb_width_pct', 0)
+                },
+                # 原始信號留空（舊倉位無此數據）
+                'original_signal': None,
+                # 競價上下文默認值
+                'competition_rank': 1,
+                'score_gap_to_best': 0.0,
+                'num_competing_signals': 1,
+                # WebSocket元數據默認值
+                'latency_ms': 0,
+                'server_timestamp': int(datetime.now().timestamp() * 1000),
+                'local_timestamp': int(datetime.now().timestamp() * 1000),
+                'websocket_shard_id': 0
+            }
+            
+            logger.info(
+                f"✅ {symbol} 開倉記錄重建成功 | "
+                f"入場: ${entry_price:.2f} @ {entry_timestamp} | "
+                f"方向: {direction} | 信心: {entry_data['confidence']:.1%}"
+            )
+            
+            return entry_data
+            
+        except Exception as e:
+            logger.error(f"❌ 重建開倉記錄失敗: {e}")
+            return None
     
     def _calculate_rr_ratio(
         self,
