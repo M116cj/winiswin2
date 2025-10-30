@@ -435,9 +435,9 @@ class SelfLearningTrader:
             return None
         
         # === 1. 獲取帳戶狀態 ===
-        account_info = await self.binance_client.get_account_info()
-        available_balance = float(account_info.get('availableBalance', 0))
-        total_equity = float(account_info.get('totalWalletBalance', 0))
+        account_balance = await self.binance_client.get_account_balance()
+        available_balance = account_balance['available_balance']
+        total_equity = account_balance['total_wallet_balance']
         
         # === 2. 過濾有效信號 + 計算加權評分 ===
         scored_signals = []
@@ -903,13 +903,14 @@ class SelfLearningTrader:
         
         # ===== 步驟1：獲取帳戶狀態 =====
         try:
-            account_info = await self.binance_client.get_account_info()
-            available_margin = float(account_info.get('availableBalance', 0))
-            total_equity = float(account_info.get('totalWalletBalance', 0))
+            account_balance = await self.binance_client.get_account_balance()
+            available_margin = account_balance['available_balance']
+            total_equity = account_balance['total_wallet_balance']
             
             logger.info(
                 f"💰 帳戶狀態 | 總權益: ${total_equity:.2f} | "
-                f"可用保證金: ${available_margin:.2f}"
+                f"可用保證金: ${available_margin:.2f} | "
+                f"已佔用保證金: ${account_balance['total_margin']:.2f}"
             )
         except Exception as e:
             logger.error(f"❌ 獲取帳戶信息失敗: {e}")
