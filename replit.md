@@ -183,6 +183,153 @@ except Exception:
 
 ## 最近更新
 
+### v3.18+ (2025-10-30) - 90%總倉位保證金上限 🔥
+
+**類型**: ✨ **NEW FEATURE - RISK MANAGEMENT**  
+**目標**: 增加總倉位保證金不得超過帳號總金額90%的風險控制  
+**狀態**: ✅ **已完成並通過Architect審查**
+
+#### **用戶需求**
+
+**核心要求**：總倉位保證金 ≤ 帳號實際總金額 × 90%
+
+**計算規則**：
+- 帳號實際總金額：`total_balance`（**不包含浮盈浮虧**）
+- 已佔用保證金：`total_margin`
+- 總倉位保證金上限：`total_balance × 90%`
+
+**示例**：
+```
+帳號總金額：100 USDT
+已佔用保證金：80 USDT
+總倉位上限：90 USDT (100 × 90%)
+剩餘可用空間：10 USDT (90 - 80)
+
+→ 新倉位保證金只能使用最多10 USDT
+```
+
+#### **實現方案**
+
+**1. 配置項**（src/config.py第54行）：
+```python
+MAX_TOTAL_MARGIN_RATIO: float = 0.9  # 總倉位保證金 ≤ 90% 帳戶總金額
+```
+- 可通過環境變量 `MAX_TOTAL_MARGIN_RATIO` 自定義配置
+
+**2. CapitalAllocator擴展**（src/core/capital_allocator.py）：
+
+**構造函數增強**：
+```python
+def __init__(
+    self,
+    config: Config,
+    total_account_equity: float,
+    total_balance: float = 0.0,      # 新增：帳戶總金額（不含浮盈浮虧）
+    total_margin: float = 0.0         # 新增：已佔用保證金
+):
+```
+
+**預算池計算邏輯**（第180-206行）：
+```python
+# 計算還能使用的保證金空間
+max_allowed_total_margin = total_balance × MAX_TOTAL_MARGIN_RATIO
+remaining_margin_space = max(0, max_allowed_total_margin - total_margin)
+
+# 限制總預算不超過剩餘保證金空間
+if remaining_margin_space < total_budget:
+    logger.warning(
+        f"⚠️ 90%總倉位保證金上限限制 | "
+        f"原預算: ${total_budget:.2f} → 調整為: ${remaining_margin_space:.2f} | "
+        f"已佔用: ${total_margin:.2f} / 上限: ${max_allowed_total_margin:.2f}"
+    )
+    total_budget = remaining_margin_space
+```
+
+**3. SelfLearningTrader整合**（src/strategies/self_learning_trader.py第924-944行）：
+```python
+# 步驟1：獲取帳戶狀態（含total_balance和total_margin）
+account_balance = await self.binance_client.get_account_balance()
+total_balance = account_balance['total_balance']  # 帳戶總金額（不含浮盈浮虧）
+total_margin = account_balance['total_margin']    # 已佔用保證金
+
+# 步驟2：動態分配資金（傳遞90%上限所需參數）
+allocator = CapitalAllocator(
+    config_instance,
+    total_equity,
+    total_balance=total_balance,
+    total_margin=total_margin
+)
+```
+
+#### **工作流程**
+
+```
+1. 獲取帳戶狀態
+   ├─ total_balance = 100 USDT（不含浮盈浮虧）
+   ├─ total_margin = 85 USDT（已佔用保證金）
+   └─ available_margin = 15 USDT
+
+2. 計算90%上限
+   ├─ max_allowed_total_margin = 100 × 0.9 = 90 USDT
+   ├─ remaining_margin_space = 90 - 85 = 5 USDT
+   └─ ⚠️ 剩餘空間只有5 USDT！
+
+3. 調整預算池
+   ├─ 原預算 = 15 × 0.8 = 12 USDT（80%可用保證金）
+   ├─ 受限於90%上限 → 調整為 5 USDT
+   └─ 日誌警告：總倉位接近上限
+
+4. 分配資金
+   ├─ 總預算 = 5 USDT（受90%上限限制）
+   ├─ 高質量信號優先分配
+   └─ 預算耗盡後拒絕剩餘信號
+```
+
+#### **預期效果**
+
+✅ **風險控制強化**：
+- 總倉位保證金永遠 ≤ 帳號總金額 × 90%
+- 超出上限時自動調整預算池
+- 保留10%緩衝應對市場波動
+
+✅ **智能預算管理**：
+- 動態計算剩餘保證金空間
+- 優先分配給高質量信號
+- 預算耗盡後拒絕低分信號
+
+✅ **詳細日誌記錄**：
+```
+💰 預算池初始化 | 
+   總預算: $5.00 (80% × $15.00) | 
+   單倉上限: $50.00 (50% × $100.00) | 
+   總倉位保證金: $85.00 / $90.00 (90%)
+
+⚠️ 90%總倉位保證金上限限制 | 
+   原預算: $12.00 → 調整為: $5.00 | 
+   已佔用: $85.00 / 上限: $90.00 (90% × $100.00)
+```
+
+#### **Architect審查結果**
+
+```
+✅ PASS - 90%總倉位保證金上限正確實現
+- 配置項支持環境變量自定義
+- CapitalAllocator正確接收total_balance和total_margin
+- 計算邏輯：remaining_margin_space = max(total_balance × 0.9 - total_margin, 0)
+- 預算池優雅降級（警告日誌 + 調整預算）
+- SelfLearningTrader正確傳遞非PnL字段（total_balance）
+- 符合"不包含浮盈浮虧"需求
+```
+
+#### **建議後續測試**
+
+Architect建議：
+1. 單元測試：total_margin接近90%時確保預算降為零
+2. 集成測試：確認account_balance始終包含total_balance字段
+3. 生產監控：觀察警告日誌觸發頻率和低優先級信號被拒絕情況
+
+---
+
 ### v3.18+ (2025-10-30) - 舊倉位記錄補救機制 🔥
 
 **類型**: 🚨 **CRITICAL ML DATA LOSS FIX**  
