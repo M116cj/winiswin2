@@ -394,6 +394,10 @@ class PositionController:
         """
         全倉保護強制平倉（市價單，Priority 0）
         
+        依照Binance API官方協議：
+        - Hedge Mode: 使用 positionSide 參數（reduceOnly不能用）
+        - One-Way Mode: 使用 reduceOnly="true" 參數
+        
         Args:
             position: 要平倉的倉位信息
         
@@ -402,21 +406,39 @@ class PositionController:
         """
         symbol = position.get('symbol', 'UNKNOWN')
         try:
+            # 平倉方向：LONG倉用SELL平，SHORT倉用BUY平
             side = "SELL" if position['side'] == "LONG" else "BUY"
             quantity = position['size']
+            position_side = position['side']  # "LONG" 或 "SHORT"
             
             logger.critical(
-                f"🚨 執行全倉保護平倉: {symbol} {side} {quantity} | "
+                f"🚨 執行全倉保護平倉: {symbol} {side} {quantity} (倉位方向: {position_side}) | "
                 f"原因: 保證金使用率過高+虧損稀釋預留緩衝"
             )
             
-            # 使用市價單立即平倉（reduce_only=True防止反向開倉）
+            # 檢測Position Mode
+            is_hedge_mode = await self.binance_client.get_position_mode()
+            
+            # 依照Binance API協議構建參數
+            order_params = {}
+            if is_hedge_mode:
+                # Hedge Mode: 必須使用positionSide，不能用reduceOnly
+                # 平LONG倉: side=SELL + positionSide=LONG
+                # 平SHORT倉: side=BUY + positionSide=SHORT
+                order_params['positionSide'] = position_side
+                logger.info(f"  Hedge Mode: positionSide={position_side}")
+            else:
+                # One-Way Mode: 使用reduceOnly="true"（字符串，不是Boolean）
+                order_params['reduceOnly'] = "true"
+                logger.info("  One-Way Mode: reduceOnly=\"true\"")
+            
+            # 使用市價單立即平倉
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
                 quantity=quantity,
-                reduce_only=True  # 確保只平倉，不開反向倉
+                **order_params
             )
             
             if result:
@@ -501,17 +523,21 @@ class PositionController:
     
     async def _close_position(self, position: Dict):
         """
-        平倉（使用優先通道）
+        平倉（使用優先通道，符合Binance API協議）
+        
+        依照Binance API官方協議：
+        - Hedge Mode: 使用 positionSide 參數
+        - One-Way Mode: 使用 reduceOnly="true" 參數
         
         Args:
             position: 持倉信息
         """
         try:
             symbol = position['symbol']
-            side = position['side']
+            side = position['side']  # "LONG" 或 "SHORT"
             size = position['size']
             
-            # 確定平倉方向
+            # 確定平倉方向：LONG用SELL平，SHORT用BUY平
             close_side = 'SELL' if side == 'LONG' else 'BUY'
             
             logger.info(
@@ -519,13 +545,25 @@ class PositionController:
                 f"PnL={position['pnl']:.2f} USDT ({position['pnl_pct']:.2%})"
             )
             
+            # 檢測Position Mode
+            is_hedge_mode = await self.binance_client.get_position_mode()
+            
+            # 依照Binance API協議構建參數
+            order_params = {}
+            if is_hedge_mode:
+                # Hedge Mode: 使用positionSide
+                order_params['positionSide'] = side
+            else:
+                # One-Way Mode: 使用reduceOnly="true"（字符串）
+                order_params['reduceOnly'] = "true"
+            
             # 使用市價單平倉
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=close_side,
                 order_type='MARKET',
                 quantity=size,
-                reduce_only=True
+                **order_params
             )
             
             logger.info(f"✅ 平倉成功: {symbol} | 訂單 ID={result.get('orderId')}")

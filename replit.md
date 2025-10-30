@@ -33,9 +33,39 @@ git push origin main
 
 混合智能交易系統，支持ICT/SMC策略、自我學習AI交易員、混合模式三種策略切換。集成XGBoost ML、ONNX推理加速、深度學習模型（TensorFlow + TFLite量化），監控Top 200高流動性交易對，跨3時間框架生成平衡LONG/SHORT信號。
 
-## 當前版本：v3.18.2+ (2025-10-30)
+## 當前版本：v3.18.3+ (2025-10-30)
 
-**最新更新：全倉保護日誌級別修復 + Railway生產環境可見性** 🚨✅
+**最新更新：修復Binance API協議違規 + 平倉功能完全修正** 🚨✅
+
+### v3.18.3 Binance API協議修復 (2025-10-30)
+
+**🚨 修復3個嚴重的API協議違規問題**：
+
+1. **參數名稱錯誤**（已修復）
+   - ❌ 錯誤：`reduce_only=True`（Python風格，Boolean類型）
+   - ✅ 正確：`reduceOnly="true"`（駝峰命名，String類型）
+   - 影響：所有平倉訂單都被Binance API拒絕
+
+2. **Hedge Mode規則違反**（已修復）
+   - ❌ 錯誤：在Hedge Mode下使用`reduceOnly`參數
+   - ✅ 正確：Hedge Mode使用`positionSide`參數，One-Way Mode使用`reduceOnly`
+   - 官方文檔：`reduceOnly` Cannot be sent in Hedge Mode
+
+3. **平倉方向設置錯誤**（已修復）
+   - ❌ 錯誤：平LONG倉時未正確設置`positionSide=LONG`
+   - ✅ 正確：
+     - 平LONG倉：`side=SELL` + `positionSide=LONG`（Hedge）或`reduceOnly="true"`（One-Way）
+     - 平SHORT倉：`side=BUY` + `positionSide=SHORT`（Hedge）或`reduceOnly="true"`（One-Way）
+
+**修復範圍**：
+- ✅ `_force_close_for_cross_margin_protection()` - 全倉保護平倉
+- ✅ `_close_position()` - 一般平倉
+- ✅ `_force_close_position()` (PositionMonitor24x7) - 強制平倉
+
+**官方API文檔依據**：
+- 文檔：https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api
+- 參數：`reduceOnly` (STRING): "true" or "false"
+- 限制：Cannot be sent in Hedge Mode
 
 ### v3.18.2 日誌可見性修復 (2025-10-30)
 

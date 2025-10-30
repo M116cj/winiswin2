@@ -442,7 +442,11 @@ class PositionMonitor24x7:
         reason: str = "未知原因"
     ):
         """
-        強制平倉（市價單）
+        強制平倉（市價單，符合Binance API協議）
+        
+        依照Binance API官方協議：
+        - Hedge Mode: 使用 positionSide 參數
+        - One-Way Mode: 使用 reduceOnly="true" 參數
         
         Args:
             symbol: 交易對符號
@@ -458,18 +462,33 @@ class PositionMonitor24x7:
             # 計算平倉方向和數量
             side = "SELL" if position_amt > 0 else "BUY"
             quantity = abs(position_amt)
+            position_side = "LONG" if position_amt > 0 else "SHORT"
             
             logger.critical(
                 f"🚨 執行強制平倉: {symbol} {side} {quantity:.6f} @ ${current_price:.2f} | 原因: {reason}"
             )
             
-            # 🔥 市價平倉（優先級 0，最高優先級）+ reduce_only防止開反向倉
+            # 檢測Position Mode
+            is_hedge_mode = await self.binance_client.get_position_mode()
+            
+            # 依照Binance API協議構建參數
+            order_params = {}
+            if is_hedge_mode:
+                # Hedge Mode: 使用positionSide
+                order_params['positionSide'] = position_side
+                logger.info(f"  Hedge Mode: positionSide={position_side}")
+            else:
+                # One-Way Mode: 使用reduceOnly="true"（字符串，不是Boolean）
+                order_params['reduceOnly'] = "true"
+                logger.info("  One-Way Mode: reduceOnly=\"true\"")
+            
+            # 市價平倉（Priority 0，最高優先級）
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
                 quantity=quantity,
-                reduce_only=True  # 🔥 修復：防止與PositionController衝突開反向倉
+                **order_params
             )
             
             if result:
