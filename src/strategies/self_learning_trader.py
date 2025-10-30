@@ -918,20 +918,27 @@ class SelfLearningTrader:
             account_balance = await self.binance_client.get_account_balance()
             available_margin = account_balance['available_balance']
             total_equity = account_balance['total_wallet_balance']
+            total_balance = account_balance['total_balance']  # 帳戶總金額（不含浮盈浮虧）
+            total_margin = account_balance['total_margin']    # 已佔用保證金
             
             logger.info(
                 f"💰 帳戶狀態 | 總權益: ${total_equity:.2f} | "
                 f"可用保證金: ${available_margin:.2f} | "
-                f"已佔用保證金: ${account_balance['total_margin']:.2f}"
+                f"已佔用保證金: ${total_margin:.2f}"
             )
         except Exception as e:
             logger.error(f"❌ 獲取帳戶信息失敗: {e}")
             return []
         
-        # ===== 步驟2：動態分配資金 =====
+        # ===== 步驟2：動態分配資金（v3.18+ 含90%總倉位保證金上限）=====
         # 確保使用Config實例（self.config可能是類或實例）
         config_instance = self.config if not isinstance(self.config, type) else self.config()
-        allocator = CapitalAllocator(config_instance, total_equity)
+        allocator = CapitalAllocator(
+            config_instance,
+            total_equity,
+            total_balance=total_balance,
+            total_margin=total_margin
+        )
         allocated_signals = allocator.allocate_capital(signals, available_margin)
         
         if not allocated_signals:
