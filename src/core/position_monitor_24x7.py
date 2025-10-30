@@ -251,16 +251,37 @@ class PositionMonitor24x7:
             original_signal = self._get_original_signal(symbol, direction)
             
             if not original_signal:
+                # 🔥 v3.18+ 補救機制：舊倉位缺少original_signal時的降級處理
+                # 問題：Railway生產環境有舊倉位虧損-60%但無法平倉，資金被鎖死
+                # 解決：添加降級止損邏輯，虧損超過-30%時強制平倉釋放資金
                 logger.debug(
-                    f"⚠️ {symbol} 無original_signal，跳過高級出場邏輯 | "
-                    f"PnL: {pnl_pct:+.1%}（100%熔斷已保護）"
+                    f"⚠️ {symbol} 無original_signal（可能是舊倉位），使用降級出場邏輯 | "
+                    f"PnL: {pnl_pct:+.1%}"
                 )
-                # 降級模式：僅執行100%熔斷（已在上方檢查），此處正常監控
-                if pnl_pct < -0.5:
+                
+                # 降級出場條件：虧損超過-30%時強制平倉（釋放資金）
+                FALLBACK_STOP_LOSS = -0.30  # 舊倉位降級止損閾值
+                if pnl_pct <= FALLBACK_STOP_LOSS:
                     logger.warning(
-                        f"⚠️ {symbol} 虧損{pnl_pct:.1%} 但無original_signal，無法執行智能出場"
+                        f"🔸 {symbol} 舊倉位降級止損觸發 | "
+                        f"PnL: ${unrealized_pnl:.2f} ({pnl_pct:.1%}) | "
+                        f"閾值: {FALLBACK_STOP_LOSS:.0%} | "
+                        f"原因: 缺少original_signal無法執行智能出場"
                     )
-                return
+                    await self._force_close_position(
+                        symbol, position_amt, mark_price, 
+                        f"舊倉位降級止損({pnl_pct:.1%}，無original_signal）"
+                    )
+                    self.forced_closures += 1
+                    return
+                else:
+                    # 虧損<30%時僅記錄警告
+                    if pnl_pct < -0.10:  # 虧損超過-10%時警告
+                        logger.warning(
+                            f"⚠️ {symbol} 虧損{pnl_pct:.1%} 但無original_signal，無法執行智能出場 | "
+                            f"將在虧損達{FALLBACK_STOP_LOSS:.0%}時強制平倉"
+                        )
+                    return
             
             # Step 4: 構建市場上下文並即時評估信心值/勝率
             market_context = await self._build_market_context_for_position(symbol)
