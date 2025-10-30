@@ -1,0 +1,1001 @@
+2025-10-30T12:42:22.959807685Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    📦 歷史緩存大小: 100根K線
+2025-10-30T12:42:22.959817061Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    🔌 WebSocket模式: 合併流（單一連線）
+2025-10-30T12:42:22.959825620Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    ⚡ 時間戳標準化: server_ts + local_ts + latency_ms
+2025-10-30T12:42:22.959834710Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    💓 心跳監控: 30秒無訊息→重連
+2025-10-30T12:42:22.959843665Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ================================================================================
+2025-10-30T12:42:22.959852043Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ================================================================================
+2025-10-30T12:42:22.959862050Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed Shard9 初始化完成
+2025-10-30T12:42:22.959870801Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.959879459Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    ⏱️  K線週期: 1m
+2025-10-30T12:42:22.959888365Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    📦 歷史緩存大小: 100根K線
+2025-10-30T12:42:22.959896485Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    🔌 WebSocket模式: 合併流（單一連線）
+2025-10-30T12:42:22.959904694Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    ⚡ 時間戳標準化: server_ts + local_ts + latency_ms
+2025-10-30T12:42:22.962034418Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    💓 心跳監控: 30秒無訊息→重連
+2025-10-30T12:42:22.962059966Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ================================================================================
+2025-10-30T12:42:22.962079506Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ================================================================================
+2025-10-30T12:42:22.962089809Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed Shard10 初始化完成
+2025-10-30T12:42:22.962099527Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    📊 監控幣種數量: 29
+2025-10-30T12:42:22.962108695Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    ⏱️  K線週期: 1m
+2025-10-30T12:42:22.962116850Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    📦 歷史緩存大小: 100根K線
+2025-10-30T12:42:22.962125011Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    🔌 WebSocket模式: 合併流（單一連線）
+2025-10-30T12:42:22.962132981Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    ⚡ 時間戳標準化: server_ts + local_ts + latency_ms
+2025-10-30T12:42:22.962143524Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO -    💓 心跳監控: 30秒無訊息→重連
+2025-10-30T12:42:22.962149234Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.kline_feed - INFO - ================================================================================
+2025-10-30T12:42:22.962156302Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.962178710Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard0 初始化完成
+2025-10-30T12:42:22.964984394Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.964991126Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.964996935Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.965005406Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.965012194Z [inf]  2025-10-30 12:42:22,426 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard1 初始化完成
+2025-10-30T12:42:22.965018638Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.965024143Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.965030697Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.965037205Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.965042866Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard2 初始化完成
+2025-10-30T12:42:22.965050889Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.965058722Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.965071914Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.968081828Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.968091549Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard3 初始化完成
+2025-10-30T12:42:22.968100275Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.968110760Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.968111000Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard5 初始化完成
+2025-10-30T12:42:22.968119037Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.968131771Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.968133393Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.968142514Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard4 初始化完成
+2025-10-30T12:42:22.968149989Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.968181749Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.968188553Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.968196016Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970284227Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.970294137Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970300559Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970306005Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard6 初始化完成
+2025-10-30T12:42:22.970310316Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.970315448Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.970320527Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970325580Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970330066Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard7 初始化完成
+2025-10-30T12:42:22.970337198Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.970341768Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.970346915Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.970351355Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.973748960Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard8 初始化完成
+2025-10-30T12:42:22.973758270Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.973764386Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.973769771Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.973775797Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.973780462Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard9 初始化完成
+2025-10-30T12:42:22.973785358Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 50
+2025-10-30T12:42:22.973789986Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.973794768Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.973799135Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.973803316Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ✅ PriceFeed Shard10 初始化完成
+2025-10-30T12:42:22.973807670Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📊 監控幣種數量: 29
+2025-10-30T12:42:22.973818444Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO -    📡 數據源: bookTicker（即時買賣價）
+2025-10-30T12:42:22.976788753Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.price_feed - INFO - ================================================================================
+2025-10-30T12:42:22.976791714Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard4 已啟動（合併流單一連線）
+2025-10-30T12:42:22.976799105Z [inf]  2025-10-30 12:42:22,427 - src.core.websocket.account_feed - INFO - 🚀 AccountFeed 啟動中...
+2025-10-30T12:42:22.976803149Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard5 啟動中... (50 個幣種)
+2025-10-30T12:42:22.976807222Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard0 啟動中... (50 個幣種)
+2025-10-30T12:42:22.976813004Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard0 已啟動（合併流單一連線）
+2025-10-30T12:42:22.976819730Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard1 啟動中... (50 個幣種)
+2025-10-30T12:42:22.976826889Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard1 已啟動（合併流單一連線）
+2025-10-30T12:42:22.976833865Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard2 啟動中... (50 個幣種)
+2025-10-30T12:42:22.976839995Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard2 已啟動（合併流單一連線）
+2025-10-30T12:42:22.976845671Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard3 啟動中... (50 個幣種)
+2025-10-30T12:42:22.976851784Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard3 已啟動（合併流單一連線）
+2025-10-30T12:42:22.976857501Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard4 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979439192Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard5 已啟動（合併流單一連線）
+2025-10-30T12:42:22.979439999Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard10 啟動中... (29 個幣種)
+2025-10-30T12:42:22.979449392Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard6 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979451752Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard10 已啟動（合併流單一連線）
+2025-10-30T12:42:22.979459009Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard6 已啟動（合併流單一連線）
+2025-10-30T12:42:22.979459926Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard0 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979469551Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard0 已啟動
+2025-10-30T12:42:22.979471056Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard7 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979477644Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard7 已啟動（合併流單一連線）
+2025-10-30T12:42:22.979484179Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard8 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979490280Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard8 已啟動（合併流單一連線）
+2025-10-30T12:42:22.979496892Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - 🚀 KlineFeed-Shard9 啟動中... (50 個幣種)
+2025-10-30T12:42:22.979503136Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard9 已啟動（合併流單一連線）
+2025-10-30T12:42:22.981975101Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard1 啟動中... (50 個幣種)
+2025-10-30T12:42:22.981983643Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard5 啟動中... (50 個幣種)
+2025-10-30T12:42:22.981986182Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard1 已啟動
+2025-10-30T12:42:22.981993828Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard2 啟動中... (50 個幣種)
+2025-10-30T12:42:22.981995303Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard5 已啟動
+2025-10-30T12:42:22.982002219Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard2 已啟動
+2025-10-30T12:42:22.982002643Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard6 啟動中... (50 個幣種)
+2025-10-30T12:42:22.982010889Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard3 啟動中... (50 個幣種)
+2025-10-30T12:42:22.982011546Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard6 已啟動
+2025-10-30T12:42:22.982020223Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard3 已啟動
+2025-10-30T12:42:22.982020391Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard7 啟動中... (50 個幣種)
+2025-10-30T12:42:22.982028307Z [inf]  2025-10-30 12:42:22,428 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard4 啟動中... (50 個幣種)
+2025-10-30T12:42:22.982029962Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard7 已啟動
+2025-10-30T12:42:22.982037883Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard4 已啟動
+2025-10-30T12:42:22.984659164Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard8 啟動中... (50 個幣種)
+2025-10-30T12:42:22.984671973Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard8 已啟動
+2025-10-30T12:42:22.984679151Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard9 啟動中... (50 個幣種)
+2025-10-30T12:42:22.984685153Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard9 已啟動
+2025-10-30T12:42:22.984690855Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - 🚀 PriceFeed-Shard10 啟動中... (29 個幣種)
+2025-10-30T12:42:22.984697493Z [inf]  2025-10-30 12:42:22,429 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard10 已啟動
+2025-10-30T12:42:22.984702098Z [inf]  2025-10-30 12:42:22,456 - src.core.websocket.shard_feed - INFO - ✅ ShardFeed 已啟動 (K線分片:11, 價格分片:11)
+2025-10-30T12:42:22.984707102Z [inf]  2025-10-30 12:42:22,727 - src.core.websocket.account_feed - INFO - ✅ listenKey已獲取: ol3iRThQ...
+2025-10-30T12:42:22.984711717Z [inf]  2025-10-30 12:42:22,727 - src.core.websocket.account_feed - INFO - ✅ AccountFeed 已啟動（使用主動健康檢查，120秒空閒容忍）
+2025-10-30T12:42:22.984716775Z [inf]  2025-10-30 12:42:22,728 - src.core.websocket.websocket_manager - INFO -    ✅ 所有Feed已啟動
+2025-10-30T12:42:22.984721706Z [inf]  2025-10-30 12:42:22,728 - src.core.websocket.websocket_manager - INFO - 📡 步驟4/4：預熱K線緩存...
+2025-10-30T12:42:22.984725868Z [inf]  2025-10-30 12:42:22,728 - src.core.websocket.websocket_manager - INFO -    🔥 開始預熱（用REST API獲取歷史100根1m K線）...
+2025-10-30T12:42:22.984730318Z [inf]  2025-10-30 12:42:22,728 - src.core.websocket.websocket_manager - INFO -    預熱目標: 529個交易對
+2025-10-30T12:42:22.984734627Z [inf]  2025-10-30 12:42:22,807 - src.core.websocket.kline_feed - INFO - ✅ BTCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987461753Z [inf]  2025-10-30 12:42:22,841 - src.core.websocket.kline_feed - INFO - ✅ DOGEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987475084Z [inf]  2025-10-30 12:42:22,860 - src.core.websocket.kline_feed - INFO - ✅ SUIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987483299Z [inf]  2025-10-30 12:42:22,972 - src.core.websocket.account_feed - INFO - ✅ 帳戶WebSocket已連接
+2025-10-30T12:42:22.987487568Z [inf]  2025-10-30 12:42:22,817 - src.core.websocket.kline_feed - INFO - ✅ ETHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987495068Z [inf]  2025-10-30 12:42:22,818 - src.core.websocket.kline_feed - INFO - ✅ XRPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987500126Z [inf]  2025-10-30 12:42:22,818 - src.core.websocket.kline_feed - INFO - ✅ TRUMPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987504392Z [inf]  2025-10-30 12:42:22,820 - src.core.websocket.kline_feed - INFO - ✅ HYPEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987508714Z [inf]  2025-10-30 12:42:22,822 - src.core.websocket.kline_feed - INFO - ✅ SOLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.987550206Z [inf]  2025-10-30 12:42:22,832 - src.core.websocket.kline_feed - INFO - ✅ ZECUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:22.996003602Z [inf]  2025-10-30 12:42:22,989 - src.core.websocket.kline_feed - INFO - ✅ BNBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.173248264Z [inf]  2025-10-30 12:42:23,169 - src.core.websocket.kline_feed - INFO - ✅ 1000PEPEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.173255293Z [inf]  2025-10-30 12:42:23,170 - src.core.websocket.kline_feed - INFO - ✅ TAOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.173259967Z [inf]  2025-10-30 12:42:23,171 - src.core.websocket.kline_feed - INFO - ✅ PUMPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.176697361Z [inf]  2025-10-30 12:42:23,173 - src.core.websocket.kline_feed - INFO - ✅ GIGGLEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.176706113Z [inf]  2025-10-30 12:42:23,174 - src.core.websocket.kline_feed - INFO - ✅ ASTERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.176713897Z [inf]  2025-10-30 12:42:23,175 - src.core.websocket.kline_feed - INFO - ✅ AVAXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.179643209Z [inf]  2025-10-30 12:42:23,178 - src.core.websocket.kline_feed - INFO - ✅ LINKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.229084641Z [inf]  2025-10-30 12:42:23,213 - src.core.websocket.kline_feed - INFO - ✅ ADAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.336362567Z [inf]  2025-10-30 12:42:23,321 - src.core.websocket.kline_feed - INFO - ✅ ENAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.336372652Z [inf]  2025-10-30 12:42:23,333 - src.core.websocket.kline_feed - INFO - ✅ COAIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940881148Z [inf]  2025-10-30 12:42:23,510 - src.core.websocket.kline_feed - INFO - ✅ HBARUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940886526Z [inf]  2025-10-30 12:42:23,512 - src.core.websocket.kline_feed - INFO - ✅ XPLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940890716Z [inf]  2025-10-30 12:42:23,516 - src.core.websocket.kline_feed - INFO - ✅ KITEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940898091Z [inf]  2025-10-30 12:42:23,517 - src.core.websocket.kline_feed - INFO - ✅ VIRTUALUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940902449Z [inf]  2025-10-30 12:42:23,536 - src.core.websocket.kline_feed - INFO - ✅ EVAAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940907852Z [inf]  2025-10-30 12:42:23,544 - src.core.websocket.kline_feed - INFO - ✅ LTCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940912556Z [inf]  2025-10-30 12:42:23,546 - src.core.websocket.kline_feed - INFO - ✅ BCHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940916505Z [inf]  2025-10-30 12:42:23,563 - src.core.websocket.kline_feed - INFO - ✅ FARTCOINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940920514Z [inf]  2025-10-30 12:42:23,589 - src.core.websocket.kline_feed - INFO - ✅ JELLYJELLYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940926402Z [inf]  2025-10-30 12:42:23,746 - src.core.websocket.kline_feed - INFO - ✅ PAXGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940931765Z [inf]  2025-10-30 12:42:23,923 - src.core.websocket.kline_feed - INFO - ✅ SAPIENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940936743Z [inf]  2025-10-30 12:42:23,925 - src.core.websocket.kline_feed - INFO - ✅ WLFIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940940952Z [inf]  2025-10-30 12:42:23,931 - src.core.websocket.kline_feed - INFO - ✅ UNIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.940945613Z [inf]  2025-10-30 12:42:23,934 - src.core.websocket.kline_feed - INFO - ✅ PENGUUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.944116744Z [inf]  2025-10-30 12:42:23,940 - src.core.websocket.kline_feed - INFO - ✅ WIFUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:23.989220765Z [inf]  2025-10-30 12:42:23,975 - src.core.websocket.kline_feed - INFO - ✅ DOTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.037193212Z [inf]  2025-10-30 12:42:24,030 - src.core.websocket.kline_feed - INFO - ✅ AAVEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.048978737Z [inf]  2025-10-30 12:42:24,046 - src.core.websocket.kline_feed - INFO - ✅ NEARUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.175239634Z [inf]  2025-10-30 12:42:24,162 - src.core.websocket.kline_feed - INFO - ✅ OLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.272059135Z [inf]  2025-10-30 12:42:24,253 - src.core.websocket.kline_feed - INFO - ✅ ENSOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.444722887Z [inf]  2025-10-30 12:42:24,443 - src.core.websocket.kline_feed - INFO - ✅ 1000SHIBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.447767695Z [inf]  2025-10-30 12:42:24,444 - src.core.websocket.kline_feed - INFO - ✅ FLMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.447784349Z [inf]  2025-10-30 12:42:24,444 - src.core.websocket.kline_feed - INFO - ✅ YBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882199150Z [inf]  2025-10-30 12:42:24,447 - src.core.websocket.kline_feed - INFO - ✅ ARBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882204327Z [inf]  2025-10-30 12:42:24,467 - src.core.websocket.kline_feed - INFO - ✅ TRXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882209301Z [inf]  2025-10-30 12:42:24,497 - src.core.websocket.kline_feed - INFO - ✅ WLDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882214860Z [inf]  2025-10-30 12:42:24,501 - src.core.websocket.kline_feed - INFO - ✅ FILUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882220447Z [inf]  2025-10-30 12:42:24,547 - src.core.websocket.kline_feed - INFO - ✅ APTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882226077Z [inf]  2025-10-30 12:42:24,553 - src.core.websocket.kline_feed - INFO - ✅ 1000BONKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.882231649Z [inf]  2025-10-30 12:42:24,774 - src.core.websocket.kline_feed - INFO - ✅ AIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.977947089Z [inf]  2025-10-30 12:42:24,976 - src.core.websocket.kline_feed - INFO - ✅ ATUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.994728036Z [inf]  2025-10-30 12:42:24,990 - src.core.websocket.kline_feed - INFO - ✅ EIGENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:24.997441475Z [inf]  2025-10-30 12:42:24,996 - src.core.websocket.kline_feed - INFO - ✅ TIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.006074629Z [inf]  2025-10-30 12:42:25,000 - src.core.websocket.kline_feed - INFO - ✅ ETHFIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.023228732Z [inf]  2025-10-30 12:42:25,021 - src.core.websocket.kline_feed - INFO - ✅ CRVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.044529367Z [inf]  2025-10-30 12:42:25,040 - src.core.websocket.kline_feed - INFO - ✅ MAVIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.052746723Z [inf]  2025-10-30 12:42:25,046 - src.core.websocket.kline_feed - INFO - ✅ AVNTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.083773034Z [inf]  2025-10-30 12:42:25,070 - src.core.websocket.kline_feed - INFO - ✅ ONDOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.142857180Z [inf]  2025-10-30 12:42:25,138 - src.core.websocket.kline_feed - INFO - ✅ OPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.152193044Z [inf]  2025-10-30 12:42:25,145 - src.core.websocket.kline_feed - INFO - ✅ COMMONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.329315627Z [inf]  2025-10-30 12:42:25,321 - src.core.websocket.kline_feed - INFO - ✅ 4USDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.329320227Z [inf]  2025-10-30 12:42:25,325 - src.core.websocket.kline_feed - INFO - ✅ INJUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.331494392Z [inf]  2025-10-30 12:42:25,329 - src.core.websocket.kline_feed - INFO - ✅ XLMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.389075352Z [inf]  2025-10-30 12:42:25,384 - src.core.websocket.kline_feed - INFO - ✅ ETCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.398637897Z [inf]  2025-10-30 12:42:25,394 - src.core.websocket.kline_feed - INFO - ✅ FFUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.398649457Z [inf]  2025-10-30 12:42:25,394 - src.core.websocket.kline_feed - INFO - ✅ LDOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.398656948Z [inf]  2025-10-30 12:42:25,395 - src.core.websocket.kline_feed - INFO - ✅ BLUAIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.398676472Z [inf]  2025-10-30 12:42:25,395 - src.core.websocket.kline_feed - INFO - ✅ TONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.398682970Z [inf]  2025-10-30 12:42:25,396 - src.core.websocket.kline_feed - INFO - ✅ TREEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946070944Z [inf]  2025-10-30 12:42:25,504 - src.core.websocket.kline_feed - INFO - ✅ KDAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946076272Z [inf]  2025-10-30 12:42:25,684 - src.core.websocket.kline_feed - INFO - ✅ ATOMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946080880Z [inf]  2025-10-30 12:42:25,688 - src.core.websocket.kline_feed - INFO - ✅ ZBTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946086646Z [inf]  2025-10-30 12:42:25,691 - src.core.websocket.kline_feed - INFO - ✅ ZENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946091154Z [inf]  2025-10-30 12:42:25,692 - src.core.websocket.kline_feed - INFO - ✅ SPXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946095661Z [inf]  2025-10-30 12:42:25,696 - src.core.websocket.kline_feed - INFO - ✅ HUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946104327Z [inf]  2025-10-30 12:42:25,726 - src.core.websocket.kline_feed - INFO - ✅ SEIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946108530Z [inf]  2025-10-30 12:42:25,777 - src.core.websocket.kline_feed - INFO - ✅ APRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946113878Z [inf]  2025-10-30 12:42:25,778 - src.core.websocket.kline_feed - INFO - ✅ FETUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946118255Z [inf]  2025-10-30 12:42:25,813 - src.core.websocket.kline_feed - INFO - ✅ MELANIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:25.946123077Z [inf]  2025-10-30 12:42:25,823 - src.core.websocket.kline_feed - INFO - ✅ SNXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.003903980Z [inf]  2025-10-30 12:42:26,000 - src.core.websocket.kline_feed - INFO - ✅ LINEAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.008278242Z [inf]  2025-10-30 12:42:26,003 - src.core.websocket.kline_feed - INFO - ✅ 42USDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.008289960Z [inf]  2025-10-30 12:42:26,004 - src.core.websocket.kline_feed - INFO - ✅ CAKEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.019343479Z [inf]  2025-10-30 12:42:26,010 - src.core.websocket.kline_feed - INFO - ✅ 1000FLOKIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.022963266Z [inf]  2025-10-30 12:42:26,019 - src.core.websocket.kline_feed - INFO - ✅ EULUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.039235191Z [inf]  2025-10-30 12:42:26,037 - src.core.websocket.kline_feed - INFO - ✅ DYDXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.095464027Z [inf]  2025-10-30 12:42:26,074 - src.core.websocket.kline_feed - INFO - ✅ GALAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.095473285Z [inf]  2025-10-30 12:42:26,077 - src.core.websocket.kline_feed - INFO - ✅ LUMIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.095480135Z [inf]  2025-10-30 12:42:26,080 - src.core.websocket.kline_feed - INFO - ✅ TURTLEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.104486604Z [inf]  2025-10-30 12:42:26,100 - src.core.websocket.kline_feed - INFO - ✅ XPINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.313481684Z [inf]  2025-10-30 12:42:26,301 - src.core.websocket.kline_feed - INFO - ✅ SYRUPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.313490882Z [inf]  2025-10-30 12:42:26,302 - src.core.websocket.kline_feed - INFO - ✅ BIOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.313496775Z [inf]  2025-10-30 12:42:26,304 - src.core.websocket.kline_feed - INFO - ✅ RIVERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.313502966Z [inf]  2025-10-30 12:42:26,305 - src.core.websocket.kline_feed - INFO - ✅ AIXBTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.313510004Z [inf]  2025-10-30 12:42:26,310 - src.core.websocket.kline_feed - INFO - ✅ RECALLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.315969573Z [inf]  2025-10-30 12:42:26,313 - src.core.websocket.kline_feed - INFO - ✅ POPCATUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.315979020Z [inf]  2025-10-30 12:42:26,314 - src.core.websocket.kline_feed - INFO - ✅ KGENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.324693600Z [inf]  2025-10-30 12:42:26,321 - src.core.websocket.kline_feed - INFO - ✅ USELESSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.333288115Z [inf]  2025-10-30 12:42:26,327 - src.core.websocket.kline_feed - INFO - ✅ ALGOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971395632Z [inf]  2025-10-30 12:42:26,894 - src.core.websocket.kline_feed - INFO - ✅ RENDERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971409584Z [inf]  2025-10-30 12:42:26,902 - src.core.websocket.kline_feed - INFO - ✅ PHBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971418734Z [inf]  2025-10-30 12:42:26,904 - src.core.websocket.kline_feed - INFO - ✅ AEROUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971425653Z [inf]  2025-10-30 12:42:26,926 - src.core.websocket.kline_feed - INFO - ✅ PNUTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971434827Z [inf]  2025-10-30 12:42:26,935 - src.core.websocket.kline_feed - INFO - ✅ DASHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971799297Z [inf]  2025-10-30 12:42:26,703 - src.core.websocket.kline_feed - INFO - ✅ JUPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971804211Z [inf]  2025-10-30 12:42:26,890 - src.core.websocket.kline_feed - INFO - ✅ NEIROUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:26.971815321Z [inf]  2025-10-30 12:42:26,892 - src.core.websocket.kline_feed - INFO - ✅ IPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.000000000Z [inf]  Stopping Container
+2025-10-30T12:42:27.028730275Z [inf]  2025-10-30 12:42:26,985 - src.core.websocket.kline_feed - INFO - ✅ PENDLEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.067061394Z [inf]  2025-10-30 12:42:27,054 - src.core.websocket.kline_feed - INFO - ✅ 0GUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.116858440Z [inf]  2025-10-30 12:42:27,112 - src.core.websocket.kline_feed - INFO - ✅ METUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.142523395Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard6 停止中...
+2025-10-30T12:42:27.142549636Z [inf]  2025-10-30 12:42:20,716 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:42:27.142556184Z [inf]  2025-10-30 12:42:23,468 - __main__ - INFO - 
+2025-10-30T12:42:27.142560769Z [inf]  收到信號 15，準備關閉...
+2025-10-30T12:42:27.142565154Z [inf]  2025-10-30 12:42:23,487 - __main__ - INFO - 
+2025-10-30T12:42:27.142572216Z [inf]  🔄 系統關閉中...
+2025-10-30T12:42:27.142579019Z [inf]  2025-10-30 12:42:23,487 - src.core.unified_scheduler - INFO - ⏸️  UnifiedScheduler 停止中...
+2025-10-30T12:42:27.142585942Z [inf]  2025-10-30 12:42:23,487 - src.core.websocket.websocket_manager - INFO - ⏸️  WebSocketManager 停止中...
+2025-10-30T12:42:27.142591727Z [inf]  2025-10-30 12:42:23,490 - src.core.websocket.shard_feed - INFO - ⏸️  ShardFeed 停止中...
+2025-10-30T12:42:27.142597168Z [inf]  2025-10-30 12:42:23,490 - src.core.websocket.account_feed - INFO - ⏸️  AccountFeed 停止中...
+2025-10-30T12:42:27.142603254Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard0 停止中...
+2025-10-30T12:42:27.142610092Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard1 停止中...
+2025-10-30T12:42:27.142616759Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard2 停止中...
+2025-10-30T12:42:27.142622013Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard3 停止中...
+2025-10-30T12:42:27.142625917Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard4 停止中...
+2025-10-30T12:42:27.142631125Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard5 停止中...
+2025-10-30T12:42:27.143732386Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard4 停止中...
+2025-10-30T12:42:27.143741825Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard5 停止中...
+2025-10-30T12:42:27.143748112Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard6 停止中...
+2025-10-30T12:42:27.143754027Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard7 停止中...
+2025-10-30T12:42:27.143760793Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard8 停止中...
+2025-10-30T12:42:27.143766637Z [inf]  2025-10-30 12:42:23,492 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard9 停止中...
+2025-10-30T12:42:27.143779673Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard7 停止中...
+2025-10-30T12:42:27.143786901Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard8 停止中...
+2025-10-30T12:42:27.143794047Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard9 停止中...
+2025-10-30T12:42:27.143799118Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.kline_feed - INFO - ⏸️  KlineFeed-Shard10 停止中...
+2025-10-30T12:42:27.143804022Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard0 停止中...
+2025-10-30T12:42:27.143809608Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard1 停止中...
+2025-10-30T12:42:27.143814154Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard2 停止中...
+2025-10-30T12:42:27.143818730Z [inf]  2025-10-30 12:42:23,491 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard3 停止中...
+2025-10-30T12:42:27.145052273Z [inf]  2025-10-30 12:42:23,492 - src.core.websocket.price_feed - INFO - ⏸️  PriceFeed-Shard10 停止中...
+2025-10-30T12:42:27.145053731Z [inf]  2025-10-30 12:42:23,495 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard8 已停止
+2025-10-30T12:42:27.145061597Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard0 已停止
+2025-10-30T12:42:27.145062289Z [inf]  2025-10-30 12:42:23,495 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard9 已停止
+2025-10-30T12:42:27.145068161Z [inf]  2025-10-30 12:42:23,763 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard2 已停止
+2025-10-30T12:42:27.145068266Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard1 已停止
+2025-10-30T12:42:27.145073786Z [inf]  2025-10-30 12:42:24,973 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard3 已停止
+2025-10-30T12:42:27.145074523Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard2 已停止
+2025-10-30T12:42:27.145079007Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard4 已停止
+2025-10-30T12:42:27.145083918Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.kline_feed - INFO - ✅ KlineFeed-Shard9 已停止
+2025-10-30T12:42:27.145088432Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard1 已停止
+2025-10-30T12:42:27.145093101Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard4 已停止
+2025-10-30T12:42:27.145097532Z [inf]  2025-10-30 12:42:23,494 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard5 已停止
+2025-10-30T12:42:27.145101365Z [inf]  2025-10-30 12:42:23,495 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard6 已停止
+2025-10-30T12:42:27.145106070Z [inf]  2025-10-30 12:42:23,495 - src.core.websocket.price_feed - INFO - ✅ PriceFeed-Shard7 已停止
+2025-10-30T12:42:27.307595054Z [inf]  2025-10-30 12:42:27,296 - src.core.websocket.kline_feed - INFO - ✅ ZORAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.307604636Z [inf]  2025-10-30 12:42:27,301 - src.core.websocket.kline_feed - INFO - ✅ ORDIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.307611087Z [inf]  2025-10-30 12:42:27,303 - src.core.websocket.kline_feed - INFO - ✅ BERAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.307617575Z [inf]  2025-10-30 12:42:27,306 - src.core.websocket.kline_feed - INFO - ✅ UBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.337845776Z [inf]  2025-10-30 12:42:27,325 - src.core.websocket.kline_feed - INFO - ✅ STBLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.347212657Z [inf]  2025-10-30 12:42:27,342 - src.core.websocket.kline_feed - INFO - ✅ FORMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.381781011Z [inf]  2025-10-30 12:42:27,376 - src.core.websocket.kline_feed - INFO - ✅ MERLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.381787558Z [inf]  2025-10-30 12:42:27,379 - src.core.websocket.kline_feed - INFO - ✅ ICPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:27.385788322Z [inf]  2025-10-30 12:42:27,383 - src.core.websocket.kline_feed - INFO - ✅ FUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002111507Z [inf]  2025-10-30 12:42:27,905 - src.core.websocket.kline_feed - INFO - ✅ RVVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002132443Z [inf]  2025-10-30 12:42:27,913 - src.core.websocket.kline_feed - INFO - ✅ STRKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002142180Z [inf]  2025-10-30 12:42:27,975 - src.core.websocket.kline_feed - INFO - ✅ KERNELUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002186352Z [inf]  2025-10-30 12:42:27,582 - src.core.websocket.kline_feed - INFO - ✅ ONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002194927Z [inf]  2025-10-30 12:42:27,763 - src.core.websocket.kline_feed - INFO - ✅ FLOWUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002203651Z [inf]  2025-10-30 12:42:27,764 - src.core.websocket.kline_feed - INFO - ✅ OGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002211998Z [inf]  2025-10-30 12:42:27,775 - src.core.websocket.kline_feed - INFO - ✅ 2ZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002219399Z [inf]  2025-10-30 12:42:27,782 - src.core.websocket.kline_feed - INFO - ✅ EDENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002225352Z [inf]  2025-10-30 12:42:27,807 - src.core.websocket.kline_feed - INFO - ✅ BUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002232821Z [inf]  2025-10-30 12:42:27,849 - src.core.websocket.kline_feed - INFO - ✅ BLESSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.002239757Z [inf]  2025-10-30 12:42:27,870 - src.core.websocket.kline_feed - INFO - ✅ SHELLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.164209907Z [inf]  2025-10-30 12:42:28,157 - src.core.websocket.kline_feed - INFO - ✅ WUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.164216093Z [inf]  2025-10-30 12:42:28,160 - src.core.websocket.kline_feed - INFO - ✅ AI16ZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.179769291Z [inf]  2025-10-30 12:42:28,175 - src.core.websocket.kline_feed - INFO - ✅ MOODENGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.209696898Z [inf]  2025-10-30 12:42:28,201 - src.core.websocket.kline_feed - INFO - ✅ SUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367879757Z [inf]  2025-10-30 12:42:28,281 - src.core.websocket.kline_feed - INFO - ✅ DIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367884676Z [inf]  2025-10-30 12:42:28,282 - src.core.websocket.kline_feed - INFO - ✅ OMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367889763Z [inf]  2025-10-30 12:42:28,282 - src.core.websocket.kline_feed - INFO - ✅ TRBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367895789Z [inf]  2025-10-30 12:42:28,293 - src.core.websocket.kline_feed - INFO - ✅ CELOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367899953Z [inf]  2025-10-30 12:42:28,304 - src.core.websocket.kline_feed - INFO - ✅ DOODUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:28.367904571Z [inf]  2025-10-30 12:42:28,309 - src.core.websocket.kline_feed - INFO - ✅ KAITOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267181272Z [inf]  2025-10-30 12:42:28,505 - src.core.websocket.kline_feed - INFO - ✅ PUFFERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267191272Z [inf]  2025-10-30 12:42:28,507 - src.core.websocket.kline_feed - INFO - ✅ PERPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267199289Z [inf]  2025-10-30 12:42:28,509 - src.core.websocket.kline_feed - INFO - ✅ ZROUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267206574Z [inf]  2025-10-30 12:42:28,510 - src.core.websocket.kline_feed - INFO - ✅ COMPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267213768Z [inf]  2025-10-30 12:42:28,521 - src.core.websocket.kline_feed - INFO - ✅ PIPPINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267220831Z [inf]  2025-10-30 12:42:28,523 - src.core.websocket.kline_feed - INFO - ✅ BASUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267227721Z [inf]  2025-10-30 12:42:28,535 - src.core.websocket.kline_feed - INFO - ✅ APEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267234672Z [inf]  2025-10-30 12:42:28,537 - src.core.websocket.kline_feed - INFO - ✅ MUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267241311Z [inf]  2025-10-30 12:42:28,723 - src.core.websocket.kline_feed - INFO - ✅ SANDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267249019Z [inf]  2025-10-30 12:42:28,757 - src.core.websocket.kline_feed - INFO - ✅ JTOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267255641Z [inf]  2025-10-30 12:42:28,945 - src.core.websocket.kline_feed - INFO - ✅ LABUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267262233Z [inf]  2025-10-30 12:42:28,948 - src.core.websocket.kline_feed - INFO - ✅ ARUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267270331Z [inf]  2025-10-30 12:42:28,951 - src.core.websocket.kline_feed - INFO - ✅ VANAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267276915Z [inf]  2025-10-30 12:42:28,960 - src.core.websocket.kline_feed - INFO - ✅ CLOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267314608Z [inf]  2025-10-30 12:42:28,966 - src.core.websocket.kline_feed - INFO - ✅ PYTHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267324183Z [inf]  2025-10-30 12:42:28,971 - src.core.websocket.kline_feed - INFO - ✅ B2USDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267331442Z [inf]  2025-10-30 12:42:29,039 - src.core.websocket.kline_feed - INFO - ✅ SOMIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267483015Z [inf]  2025-10-30 12:42:29,132 - src.core.websocket.kline_feed - INFO - ✅ POLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267491579Z [inf]  2025-10-30 12:42:29,133 - src.core.websocket.kline_feed - INFO - ✅ BANKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.267673241Z [inf]  2025-10-30 12:42:29,217 - src.core.websocket.kline_feed - INFO - ✅ MYXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.418999854Z [inf]  2025-10-30 12:42:29,405 - src.core.websocket.kline_feed - INFO - ✅ XMRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.419005162Z [inf]  2025-10-30 12:42:29,409 - src.core.websocket.kline_feed - INFO - ✅ ARKMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.419012448Z [inf]  2025-10-30 12:42:29,410 - src.core.websocket.kline_feed - INFO - ✅ TURBOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.419019387Z [inf]  2025-10-30 12:42:29,412 - src.core.websocket.kline_feed - INFO - ✅ MIRAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.423181693Z [inf]  2025-10-30 12:42:29,418 - src.core.websocket.kline_feed - INFO - ✅ MANAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.423189663Z [inf]  2025-10-30 12:42:29,420 - src.core.websocket.kline_feed - INFO - ✅ LQTYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:29.441660258Z [inf]  2025-10-30 12:42:29,439 - src.core.websocket.kline_feed - INFO - ✅ DEGOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035393552Z [inf]  2025-10-30 12:42:29,756 - src.core.websocket.kline_feed - INFO - ✅ SUSHIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035409579Z [inf]  2025-10-30 12:42:29,757 - src.core.websocket.kline_feed - INFO - ✅ MEWUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035419657Z [inf]  2025-10-30 12:42:29,783 - src.core.websocket.kline_feed - INFO - ✅ PROVEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035430897Z [inf]  2025-10-30 12:42:29,809 - src.core.websocket.kline_feed - INFO - ✅ BOMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035441374Z [inf]  2025-10-30 12:42:29,809 - src.core.websocket.kline_feed - INFO - ✅ AVAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035452140Z [inf]  2025-10-30 12:42:29,819 - src.core.websocket.kline_feed - INFO - ✅ OPENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035462561Z [inf]  2025-10-30 12:42:29,838 - src.core.websocket.kline_feed - INFO - ✅ MEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035471942Z [inf]  2025-10-30 12:42:29,901 - src.core.websocket.kline_feed - INFO - ✅ PEOPLEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035554835Z [inf]  2025-10-30 12:42:29,481 - src.core.websocket.kline_feed - INFO - ✅ HUMAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035559835Z [inf]  2025-10-30 12:42:29,490 - src.core.websocket.kline_feed - INFO - ✅ AUCTIONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035565553Z [inf]  2025-10-30 12:42:29,573 - src.core.websocket.kline_feed - INFO - ✅ ENSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035570710Z [inf]  2025-10-30 12:42:29,753 - src.core.websocket.kline_feed - INFO - ✅ CKBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.035577475Z [inf]  2025-10-30 12:42:29,755 - src.core.websocket.kline_feed - INFO - ✅ RESOLVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230352423Z [inf]  2025-10-30 12:42:30,088 - src.core.websocket.kline_feed - INFO - ✅ HANAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230365060Z [inf]  2025-10-30 12:42:30,089 - src.core.websocket.kline_feed - INFO - ✅ WALUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230372952Z [inf]  2025-10-30 12:42:30,092 - src.core.websocket.kline_feed - INFO - ✅ IMXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230397928Z [inf]  2025-10-30 12:42:30,108 - src.core.websocket.kline_feed - INFO - ✅ CFXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230407917Z [inf]  2025-10-30 12:42:30,110 - src.core.websocket.kline_feed - INFO - ✅ MEMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230697338Z [inf]  2025-10-30 12:42:30,187 - src.core.websocket.kline_feed - INFO - ✅ DMCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.230705033Z [inf]  2025-10-30 12:42:30,194 - src.core.websocket.kline_feed - INFO - ✅ QTUMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.291436878Z [inf]  2025-10-30 12:42:30,280 - src.core.websocket.kline_feed - INFO - ✅ AXSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.345491392Z [inf]  2025-10-30 12:42:30,335 - src.core.websocket.kline_feed - INFO - ✅ NEOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:30.428023772Z [inf]  2025-10-30 12:42:30,427 - src.core.websocket.kline_feed - INFO - ✅ VETUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040562264Z [inf]  2025-10-30 12:42:30,615 - src.core.websocket.kline_feed - INFO - ✅ KMNOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040567592Z [inf]  2025-10-30 12:42:30,616 - src.core.websocket.kline_feed - INFO - ✅ ZKCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040574001Z [inf]  2025-10-30 12:42:30,616 - src.core.websocket.kline_feed - INFO - ✅ SOONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040584043Z [inf]  2025-10-30 12:42:30,616 - src.core.websocket.kline_feed - INFO - ✅ GRTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040590652Z [inf]  2025-10-30 12:42:30,619 - src.core.websocket.kline_feed - INFO - ✅ RSRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040595477Z [inf]  2025-10-30 12:42:30,620 - src.core.websocket.kline_feed - INFO - ✅ KAVAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040600859Z [inf]  2025-10-30 12:42:30,679 - src.core.websocket.kline_feed - INFO - ✅ HEMIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040607997Z [inf]  2025-10-30 12:42:30,717 - src.core.websocket.kline_feed - INFO - ✅ 1000SATSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040617162Z [inf]  2025-10-30 12:42:30,881 - src.core.websocket.kline_feed - INFO - ✅ MORPHOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.040622298Z [inf]  2025-10-30 12:42:30,887 - src.core.websocket.kline_feed - INFO - ✅ NXPCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.075848679Z [inf]  2025-10-30 12:42:31,072 - src.core.websocket.kline_feed - INFO - ✅ THETAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.075857542Z [inf]  2025-10-30 12:42:31,074 - src.core.websocket.kline_feed - INFO - ✅ RAYSOLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.078473146Z [inf]  2025-10-30 12:42:31,076 - src.core.websocket.kline_feed - INFO - ✅ EGLDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.078481821Z [inf]  2025-10-30 12:42:31,076 - src.core.websocket.kline_feed - INFO - ✅ XANUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.081244467Z [inf]  2025-10-30 12:42:31,078 - src.core.websocket.kline_feed - INFO - ✅ GMXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.081253219Z [inf]  2025-10-30 12:42:31,080 - src.core.websocket.kline_feed - INFO - ✅ API3USDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.130928199Z [inf]  2025-10-30 12:42:31,112 - src.core.websocket.kline_feed - INFO - ✅ KASUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.130934873Z [inf]  2025-10-30 12:42:31,116 - src.core.websocket.kline_feed - INFO - ✅ YGGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.241449355Z [inf]  2025-10-30 12:42:31,229 - src.core.websocket.kline_feed - INFO - ✅ ZKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.241466642Z [inf]  2025-10-30 12:42:31,232 - src.core.websocket.kline_feed - INFO - ✅ LIGHTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.410494266Z [inf]  2025-10-30 12:42:31,408 - src.core.websocket.kline_feed - INFO - ✅ FUNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.414073776Z [inf]  2025-10-30 12:42:31,411 - src.core.websocket.kline_feed - INFO - ✅ JASMYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.414083050Z [inf]  2025-10-30 12:42:31,412 - src.core.websocket.kline_feed - INFO - ✅ LAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.416820974Z [inf]  2025-10-30 12:42:31,415 - src.core.websocket.kline_feed - INFO - ✅ STXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.420549694Z [inf]  2025-10-30 12:42:31,418 - src.core.websocket.kline_feed - INFO - ✅ TWTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.431293604Z [inf]  2025-10-30 12:42:31,426 - src.core.websocket.kline_feed - INFO - ✅ BTCDOMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.434348023Z [inf]  2025-10-30 12:42:31,432 - src.core.websocket.kline_feed - INFO - ✅ RUNEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.463722710Z [inf]  2025-10-30 12:42:31,462 - src.core.websocket.kline_feed - INFO - ✅ IOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.473184390Z [inf]  2025-10-30 12:42:31,467 - src.core.websocket.kline_feed - INFO - ✅ BBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.473199282Z [inf]  2025-10-30 12:42:31,471 - src.core.websocket.kline_feed - INFO - ✅ PLUMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940468633Z [inf]  2025-10-30 12:42:31,647 - src.core.websocket.kline_feed - INFO - ✅ BATUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940476232Z [inf]  2025-10-30 12:42:31,650 - src.core.websocket.kline_feed - INFO - ✅ NOTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940484627Z [inf]  2025-10-30 12:42:31,655 - src.core.websocket.kline_feed - INFO - ✅ SOPHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940492473Z [inf]  2025-10-30 12:42:31,657 - src.core.websocket.kline_feed - INFO - ✅ BANANAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940500220Z [inf]  2025-10-30 12:42:31,659 - src.core.websocket.kline_feed - INFO - ✅ BRETTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940507251Z [inf]  2025-10-30 12:42:31,664 - src.core.websocket.kline_feed - INFO - ✅ GOATUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940517875Z [inf]  2025-10-30 12:42:31,696 - src.core.websocket.kline_feed - INFO - ✅ NMRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940526518Z [inf]  2025-10-30 12:42:31,697 - src.core.websocket.kline_feed - INFO - ✅ TAGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.940534447Z [inf]  2025-10-30 12:42:31,892 - src.core.websocket.kline_feed - INFO - ✅ AKTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:31.948769028Z [inf]  2025-10-30 12:42:31,946 - src.core.websocket.kline_feed - INFO - ✅ CHZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.130024408Z [inf]  2025-10-30 12:42:32,125 - src.core.websocket.kline_feed - INFO - ✅ SAGAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.130036424Z [inf]  2025-10-30 12:42:32,127 - src.core.websocket.kline_feed - INFO - ✅ SPKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.133262331Z [inf]  2025-10-30 12:42:32,129 - src.core.websocket.kline_feed - INFO - ✅ MINAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.133269809Z [inf]  2025-10-30 12:42:32,130 - src.core.websocket.kline_feed - INFO - ✅ HOLOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.133275918Z [inf]  2025-10-30 12:42:32,132 - src.core.websocket.kline_feed - INFO - ✅ MAGICUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.135739443Z [inf]  2025-10-30 12:42:32,132 - src.core.websocket.kline_feed - INFO - ✅ XTZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.135747760Z [inf]  2025-10-30 12:42:32,135 - src.core.websocket.kline_feed - INFO - ✅ ATHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.185598520Z [inf]  2025-10-30 12:42:32,184 - src.core.websocket.kline_feed - INFO - ✅ AIOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.216325372Z [inf]  2025-10-30 12:42:32,214 - src.core.websocket.kline_feed - INFO - ✅ MYROUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.256443327Z [inf]  2025-10-30 12:42:32,250 - src.core.websocket.kline_feed - INFO - ✅ COOKIEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983377261Z [inf]  2025-10-30 12:42:32,552 - src.core.websocket.kline_feed - INFO - ✅ TUTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983388734Z [inf]  2025-10-30 12:42:32,599 - src.core.websocket.kline_feed - INFO - ✅ SAHARAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983396266Z [inf]  2025-10-30 12:42:32,799 - src.core.websocket.kline_feed - INFO - ✅ INUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983402085Z [inf]  2025-10-30 12:42:32,800 - src.core.websocket.kline_feed - INFO - ✅ DOGSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983407361Z [inf]  2025-10-30 12:42:32,800 - src.core.websocket.kline_feed - INFO - ✅ MLNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983413655Z [inf]  2025-10-30 12:42:32,801 - src.core.websocket.kline_feed - INFO - ✅ ROSEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983470380Z [inf]  2025-10-30 12:42:32,517 - src.core.websocket.kline_feed - INFO - ✅ LYNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983476566Z [inf]  2025-10-30 12:42:32,517 - src.core.websocket.kline_feed - INFO - ✅ REZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983482344Z [inf]  2025-10-30 12:42:32,518 - src.core.websocket.kline_feed - INFO - ✅ VINEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983488216Z [inf]  2025-10-30 12:42:32,518 - src.core.websocket.kline_feed - INFO - ✅ IOTAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983494972Z [inf]  2025-10-30 12:42:32,519 - src.core.websocket.kline_feed - INFO - ✅ GMTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983502425Z [inf]  2025-10-30 12:42:32,519 - src.core.websocket.kline_feed - INFO - ✅ BARDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983508601Z [inf]  2025-10-30 12:42:32,519 - src.core.websocket.kline_feed - INFO - ✅ BMTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.983515430Z [inf]  2025-10-30 12:42:32,522 - src.core.websocket.kline_feed - INFO - ✅ MOVEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986093305Z [inf]  2025-10-30 12:42:32,801 - src.core.websocket.kline_feed - INFO - ✅ ALPINEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986099462Z [inf]  2025-10-30 12:42:32,801 - src.core.websocket.kline_feed - INFO - ✅ SOLVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986110630Z [inf]  2025-10-30 12:42:32,822 - src.core.websocket.kline_feed - INFO - ✅ DRIFTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986115923Z [inf]  2025-10-30 12:42:32,860 - src.core.websocket.kline_feed - INFO - ✅ GRIFFAINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986121654Z [inf]  2025-10-30 12:42:32,913 - src.core.websocket.kline_feed - INFO - ✅ 1MBABYDOGEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:32.986178352Z [inf]  2025-10-30 12:42:32,954 - src.core.websocket.kline_feed - INFO - ✅ SUPERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.135179949Z [inf]  2025-10-30 12:42:33,133 - src.core.websocket.kline_feed - INFO - ✅ 1000LUNCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.138473929Z [inf]  2025-10-30 12:42:33,135 - src.core.websocket.kline_feed - INFO - ✅ FLOCKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.138482645Z [inf]  2025-10-30 12:42:33,136 - src.core.websocket.kline_feed - INFO - ✅ DOLOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.143017690Z [inf]  2025-10-30 12:42:33,139 - src.core.websocket.kline_feed - INFO - ✅ LPTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.147130986Z [inf]  2025-10-30 12:42:33,142 - src.core.websocket.kline_feed - INFO - ✅ AIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.169749982Z [inf]  2025-10-30 12:42:33,160 - src.core.websocket.kline_feed - INFO - ✅ 1000CHEEMSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.191190066Z [inf]  2025-10-30 12:42:33,183 - src.core.websocket.kline_feed - INFO - ✅ XAIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.247161695Z [inf]  2025-10-30 12:42:33,240 - src.core.websocket.kline_feed - INFO - ✅ ALICEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.247169748Z [inf]  2025-10-30 12:42:33,240 - src.core.websocket.kline_feed - INFO - ✅ AEVOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.257685996Z [inf]  2025-10-30 12:42:33,254 - src.core.websocket.kline_feed - INFO - ✅ AUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.435919188Z [inf]  2025-10-30 12:42:33,433 - src.core.websocket.kline_feed - INFO - ✅ TOWNSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.438812795Z [inf]  2025-10-30 12:42:33,436 - src.core.websocket.kline_feed - INFO - ✅ MUBARAKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.455613873Z [inf]  2025-10-30 12:42:33,448 - src.core.websocket.kline_feed - INFO - ✅ XNYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.466048149Z [inf]  2025-10-30 12:42:33,458 - src.core.websocket.kline_feed - INFO - ✅ AIOTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.466056994Z [inf]  2025-10-30 12:42:33,460 - src.core.websocket.kline_feed - INFO - ✅ LISTAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.466063933Z [inf]  2025-10-30 12:42:33,460 - src.core.websocket.kline_feed - INFO - ✅ TRUUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.476672327Z [inf]  2025-10-30 12:42:33,472 - src.core.websocket.kline_feed - INFO - ✅ ALTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.476682066Z [inf]  2025-10-30 12:42:33,473 - src.core.websocket.kline_feed - INFO - ✅ 1INCHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:33.486673116Z [inf]  2025-10-30 12:42:33,484 - src.core.websocket.kline_feed - INFO - ✅ QNTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074133102Z [inf]  2025-10-30 12:42:33,710 - src.core.websocket.kline_feed - INFO - ✅ HIPPOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074146820Z [inf]  2025-10-30 12:42:33,714 - src.core.websocket.kline_feed - INFO - ✅ MASKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074154075Z [inf]  2025-10-30 12:42:33,716 - src.core.websocket.kline_feed - INFO - ✅ BIGTIMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074176154Z [inf]  2025-10-30 12:42:33,717 - src.core.websocket.kline_feed - INFO - ✅ ORDERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074182483Z [inf]  2025-10-30 12:42:33,525 - src.core.websocket.kline_feed - INFO - ✅ MONUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074184429Z [inf]  2025-10-30 12:42:33,718 - src.core.websocket.kline_feed - INFO - ✅ SKLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074191670Z [inf]  2025-10-30 12:42:33,728 - src.core.websocket.kline_feed - INFO - ✅ FXSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074201134Z [inf]  2025-10-30 12:42:33,743 - src.core.websocket.kline_feed - INFO - ✅ ACHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074206886Z [inf]  2025-10-30 12:42:33,767 - src.core.websocket.kline_feed - INFO - ✅ EDUUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074212595Z [inf]  2025-10-30 12:42:33,770 - src.core.websocket.kline_feed - INFO - ✅ STOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074218319Z [inf]  2025-10-30 12:42:33,782 - src.core.websocket.kline_feed - INFO - ✅ ERAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074223586Z [inf]  2025-10-30 12:42:33,971 - src.core.websocket.kline_feed - INFO - ✅ ZILUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074228754Z [inf]  2025-10-30 12:42:33,973 - src.core.websocket.kline_feed - INFO - ✅ CHRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.074234859Z [inf]  2025-10-30 12:42:33,976 - src.core.websocket.kline_feed - INFO - ✅ TAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077840129Z [inf]  2025-10-30 12:42:33,979 - src.core.websocket.kline_feed - INFO - ✅ BELUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077845861Z [inf]  2025-10-30 12:42:33,987 - src.core.websocket.kline_feed - INFO - ✅ GRASSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077852081Z [inf]  2025-10-30 12:42:34,002 - src.core.websocket.kline_feed - INFO - ✅ 1000XECUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077859030Z [inf]  2025-10-30 12:42:34,017 - src.core.websocket.kline_feed - INFO - ✅ TSTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077865695Z [inf]  2025-10-30 12:42:34,065 - src.core.websocket.kline_feed - INFO - ✅ CUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.077875322Z [inf]  2025-10-30 12:42:34,072 - src.core.websocket.kline_feed - INFO - ✅ SSVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.210053015Z [inf]  2025-10-30 12:42:34,201 - src.core.websocket.kline_feed - INFO - ✅ YFIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.386991855Z [inf]  2025-10-30 12:42:34,375 - src.core.websocket.kline_feed - INFO - ✅ KSMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.387005064Z [inf]  2025-10-30 12:42:34,381 - src.core.websocket.kline_feed - INFO - ✅ ACTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.387013645Z [inf]  2025-10-30 12:42:34,383 - src.core.websocket.kline_feed - INFO - ✅ ZRXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.387027200Z [inf]  2025-10-30 12:42:34,384 - src.core.websocket.kline_feed - INFO - ✅ AXLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.390924577Z [inf]  2025-10-30 12:42:34,389 - src.core.websocket.kline_feed - INFO - ✅ SIGNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.393325544Z [inf]  2025-10-30 12:42:34,390 - src.core.websocket.kline_feed - INFO - ✅ BROCCOLI714USDT 預填充 100 根K線歷史
+2025-10-30T12:42:34.467045096Z [inf]  2025-10-30 12:42:34,464 - src.core.websocket.kline_feed - INFO - ✅ CVXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.121992538Z [inf]  2025-10-30 12:42:34,829 - src.core.websocket.kline_feed - INFO - ✅ 1000000MOGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122001246Z [inf]  2025-10-30 12:42:35,078 - src.core.websocket.kline_feed - INFO - ✅ ONTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122005015Z [inf]  2025-10-30 12:42:34,853 - src.core.websocket.kline_feed - INFO - ✅ WCTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122015370Z [inf]  2025-10-30 12:42:34,853 - src.core.websocket.kline_feed - INFO - ✅ EPTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122022487Z [inf]  2025-10-30 12:42:35,085 - src.core.websocket.kline_feed - INFO - ✅ HFTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122024099Z [inf]  2025-10-30 12:42:34,854 - src.core.websocket.kline_feed - INFO - ✅ LAYERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122033628Z [inf]  2025-10-30 12:42:34,856 - src.core.websocket.kline_feed - INFO - ✅ TAKEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122041055Z [inf]  2025-10-30 12:42:35,087 - src.core.websocket.kline_feed - INFO - ✅ NEWTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122045644Z [inf]  2025-10-30 12:42:34,857 - src.core.websocket.kline_feed - INFO - ✅ TOSHIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122054606Z [inf]  2025-10-30 12:42:34,858 - src.core.websocket.kline_feed - INFO - ✅ CHILLGUYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122065599Z [inf]  2025-10-30 12:42:35,094 - src.core.websocket.kline_feed - INFO - ✅ GLMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122065638Z [inf]  2025-10-30 12:42:34,886 - src.core.websocket.kline_feed - INFO - ✅ INITUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122075150Z [inf]  2025-10-30 12:42:34,887 - src.core.websocket.kline_feed - INFO - ✅ BLURUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122079880Z [inf]  2025-10-30 12:42:35,061 - src.core.websocket.kline_feed - INFO - ✅ UMAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122242518Z [inf]  2025-10-30 12:42:35,065 - src.core.websocket.kline_feed - INFO - ✅ SKYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122247633Z [inf]  2025-10-30 12:42:35,067 - src.core.websocket.kline_feed - INFO - ✅ C98USDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122252727Z [inf]  2025-10-30 12:42:35,071 - src.core.websocket.kline_feed - INFO - ✅ HYPERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122258480Z [inf]  2025-10-30 12:42:35,072 - src.core.websocket.kline_feed - INFO - ✅ BEAMXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122360411Z [inf]  2025-10-30 12:42:34,556 - src.core.websocket.kline_feed - INFO - ✅ ZEREBROUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122364654Z [inf]  2025-10-30 12:42:34,574 - src.core.websocket.kline_feed - INFO - ✅ USDCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122368977Z [inf]  2025-10-30 12:42:34,652 - src.core.websocket.kline_feed - INFO - ✅ A2ZUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.122375381Z [inf]  2025-10-30 12:42:34,829 - src.core.websocket.kline_feed - INFO - ✅ USUALUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.284306121Z [inf]  2025-10-30 12:42:35,271 - src.core.websocket.kline_feed - INFO - ✅ SQDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508403158Z [inf]  2025-10-30 12:42:35,449 - src.core.websocket.kline_feed - INFO - ✅ CETUSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508410474Z [inf]  2025-10-30 12:42:35,452 - src.core.websocket.kline_feed - INFO - ✅ VANRYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508416972Z [inf]  2025-10-30 12:42:35,455 - src.core.websocket.kline_feed - INFO - ✅ RVNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508423930Z [inf]  2025-10-30 12:42:35,457 - src.core.websocket.kline_feed - INFO - ✅ SUNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508429742Z [inf]  2025-10-30 12:42:35,458 - src.core.websocket.kline_feed - INFO - ✅ TNSRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:35.508436139Z [inf]  2025-10-30 12:42:35,460 - src.core.websocket.kline_feed - INFO - ✅ VFYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077232282Z [inf]  2025-10-30 12:42:35,814 - src.core.websocket.kline_feed - INFO - ✅ ASTRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077245485Z [inf]  2025-10-30 12:42:35,818 - src.core.websocket.kline_feed - INFO - ✅ PTBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077253696Z [inf]  2025-10-30 12:42:35,818 - src.core.websocket.kline_feed - INFO - ✅ TRUTHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077264161Z [inf]  2025-10-30 12:42:35,824 - src.core.websocket.kline_feed - INFO - ✅ EPICUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077270991Z [inf]  2025-10-30 12:42:35,899 - src.core.websocket.kline_feed - INFO - ✅ ANIMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077278063Z [inf]  2025-10-30 12:42:35,960 - src.core.websocket.kline_feed - INFO - ✅ PUMPBTCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077284216Z [inf]  2025-10-30 12:42:35,995 - src.core.websocket.kline_feed - INFO - ✅ LUNA2USDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077295649Z [inf]  2025-10-30 12:42:35,520 - src.core.websocket.kline_feed - INFO - ✅ SWELLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077306246Z [inf]  2025-10-30 12:42:35,529 - src.core.websocket.kline_feed - INFO - ✅ ORCAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077314357Z [inf]  2025-10-30 12:42:35,535 - src.core.websocket.kline_feed - INFO - ✅ XVGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077323479Z [inf]  2025-10-30 12:42:35,629 - src.core.websocket.kline_feed - INFO - ✅ AGTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077338456Z [inf]  2025-10-30 12:42:35,806 - src.core.websocket.kline_feed - INFO - ✅ KAIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077344962Z [inf]  2025-10-30 12:42:35,808 - src.core.websocket.kline_feed - INFO - ✅ LRCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.077353062Z [inf]  2025-10-30 12:42:35,812 - src.core.websocket.kline_feed - INFO - ✅ HAEDALUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.179913040Z [inf]  2025-10-30 12:42:36,178 - src.core.websocket.kline_feed - INFO - ✅ ZRCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.188857398Z [inf]  2025-10-30 12:42:36,183 - src.core.websocket.kline_feed - INFO - ✅ ARCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.191647006Z [inf]  2025-10-30 12:42:36,189 - src.core.websocket.kline_feed - INFO - ✅ GTCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.201054823Z [inf]  2025-10-30 12:42:36,194 - src.core.websocket.kline_feed - INFO - ✅ FIDAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.201071113Z [inf]  2025-10-30 12:42:36,196 - src.core.websocket.kline_feed - INFO - ✅ PROMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.212124282Z [inf]  2025-10-30 12:42:36,208 - src.core.websocket.kline_feed - INFO - ✅ TRADOORUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.221328449Z [inf]  2025-10-30 12:42:36,217 - src.core.websocket.kline_feed - INFO - ✅ NOMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.230318755Z [inf]  2025-10-30 12:42:36,227 - src.core.websocket.kline_feed - INFO - ✅ REDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.385247724Z [inf]  2025-10-30 12:42:36,335 - src.core.websocket.kline_feed - INFO - ✅ 1000CATUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:36.436081041Z [inf]  2025-10-30 12:42:36,429 - src.core.websocket.kline_feed - INFO - ✅ STORJUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045623591Z [inf]  2025-10-30 12:42:36,623 - src.core.websocket.kline_feed - INFO - ✅ VVVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045640517Z [inf]  2025-10-30 12:42:36,628 - src.core.websocket.kline_feed - INFO - ✅ MITOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045650663Z [inf]  2025-10-30 12:42:36,666 - src.core.websocket.kline_feed - INFO - ✅ ENJUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045662014Z [inf]  2025-10-30 12:42:36,736 - src.core.websocket.kline_feed - INFO - ✅ VELVETUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045671425Z [inf]  2025-10-30 12:42:36,754 - src.core.websocket.kline_feed - INFO - ✅ SWARMSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045681808Z [inf]  2025-10-30 12:42:36,969 - src.core.websocket.kline_feed - INFO - ✅ BSVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045691503Z [inf]  2025-10-30 12:42:36,974 - src.core.websocket.kline_feed - INFO - ✅ SXPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045802750Z [inf]  2025-10-30 12:42:36,607 - src.core.websocket.kline_feed - INFO - ✅ DEEPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045810199Z [inf]  2025-10-30 12:42:36,614 - src.core.websocket.kline_feed - INFO - ✅ HOOKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.045815649Z [inf]  2025-10-30 12:42:36,620 - src.core.websocket.kline_feed - INFO - ✅ BDXNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.158304497Z [inf]  2025-10-30 12:42:37,152 - src.core.websocket.kline_feed - INFO - ✅ 1000RATSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.176057505Z [inf]  2025-10-30 12:42:37,169 - src.core.websocket.kline_feed - INFO - ✅ ONEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.204943472Z [inf]  2025-10-30 12:42:37,200 - src.core.websocket.kline_feed - INFO - ✅ FLUIDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.269727739Z [inf]  2025-10-30 12:42:37,268 - src.core.websocket.kline_feed - INFO - ✅ COTIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.287974605Z [inf]  2025-10-30 12:42:37,280 - src.core.websocket.kline_feed - INFO - ✅ BABYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.297101997Z [inf]  2025-10-30 12:42:37,290 - src.core.websocket.kline_feed - INFO - ✅ ATAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.324820473Z [inf]  2025-10-30 12:42:37,318 - src.core.websocket.kline_feed - INFO - ✅ GPSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.334491782Z [inf]  2025-10-30 12:42:37,328 - src.core.websocket.kline_feed - INFO - ✅ SPELLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.393955955Z [inf]  2025-10-30 12:42:37,383 - src.core.websocket.kline_feed - INFO - ✅ SYNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:37.444984253Z [inf]  2025-10-30 12:42:37,426 - src.core.websocket.kline_feed - INFO - ✅ BANANAS31USDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059800348Z [inf]  2025-10-30 12:42:37,617 - src.core.websocket.kline_feed - INFO - ✅ NILUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059808264Z [inf]  2025-10-30 12:42:37,618 - src.core.websocket.kline_feed - INFO - ✅ FISUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059816064Z [inf]  2025-10-30 12:42:37,620 - src.core.websocket.kline_feed - INFO - ✅ PARTIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059823997Z [inf]  2025-10-30 12:42:37,620 - src.core.websocket.kline_feed - INFO - ✅ IDOLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059830639Z [inf]  2025-10-30 12:42:37,628 - src.core.websocket.kline_feed - INFO - ✅ PIXELUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059838215Z [inf]  2025-10-30 12:42:37,629 - src.core.websocket.kline_feed - INFO - ✅ THEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059845262Z [inf]  2025-10-30 12:42:37,634 - src.core.websocket.kline_feed - INFO - ✅ STGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059851491Z [inf]  2025-10-30 12:42:37,642 - src.core.websocket.kline_feed - INFO - ✅ RLCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059860788Z [inf]  2025-10-30 12:42:37,683 - src.core.websocket.kline_feed - INFO - ✅ HOTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059867074Z [inf]  2025-10-30 12:42:37,765 - src.core.websocket.kline_feed - INFO - ✅ IOTXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059872928Z [inf]  2025-10-30 12:42:37,943 - src.core.websocket.kline_feed - INFO - ✅ VOXELUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059878708Z [inf]  2025-10-30 12:42:37,945 - src.core.websocket.kline_feed - INFO - ✅ WOOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059884518Z [inf]  2025-10-30 12:42:37,948 - src.core.websocket.kline_feed - INFO - ✅ ZETAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.059890519Z [inf]  2025-10-30 12:42:37,975 - src.core.websocket.kline_feed - INFO - ✅ NFPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.064824009Z [inf]  2025-10-30 12:42:37,980 - src.core.websocket.kline_feed - INFO - ✅ AVAAIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.064830659Z [inf]  2025-10-30 12:42:38,029 - src.core.websocket.kline_feed - INFO - ✅ SKYAIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.064838372Z [inf]  2025-10-30 12:42:38,037 - src.core.websocket.kline_feed - INFO - ✅ FORTHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.099710234Z [inf]  2025-10-30 12:42:38,090 - src.core.websocket.kline_feed - INFO - ✅ TANSSIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.117821056Z [inf]  2025-10-30 12:42:38,110 - src.core.websocket.kline_feed - INFO - ✅ YALAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.117829982Z [inf]  2025-10-30 12:42:38,112 - src.core.websocket.kline_feed - INFO - ✅ CYBERUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.326636611Z [inf]  2025-10-30 12:42:38,325 - src.core.websocket.kline_feed - INFO - ✅ RDNTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.329266092Z [inf]  2025-10-30 12:42:38,325 - src.core.websocket.kline_feed - INFO - ✅ ANKRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.329274997Z [inf]  2025-10-30 12:42:38,326 - src.core.websocket.kline_feed - INFO - ✅ ALCHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.329280566Z [inf]  2025-10-30 12:42:38,326 - src.core.websocket.kline_feed - INFO - ✅ METISUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.331686700Z [inf]  2025-10-30 12:42:38,328 - src.core.websocket.kline_feed - INFO - ✅ COWUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.340653392Z [inf]  2025-10-30 12:42:38,338 - src.core.websocket.kline_feed - INFO - ✅ DEXEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.396799545Z [inf]  2025-10-30 12:42:38,392 - src.core.websocket.kline_feed - INFO - ✅ DENTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.463925840Z [inf]  2025-10-30 12:42:38,454 - src.core.websocket.kline_feed - INFO - ✅ SONICUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.509237956Z [inf]  2025-10-30 12:42:38,502 - src.core.websocket.kline_feed - INFO - ✅ ALLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:38.527518884Z [inf]  2025-10-30 12:42:38,520 - src.core.websocket.kline_feed - INFO - ✅ PLAYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084616222Z [inf]  2025-10-30 12:42:38,819 - src.core.websocket.kline_feed - INFO - ✅ CELRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084629825Z [inf]  2025-10-30 12:42:38,838 - src.core.websocket.kline_feed - INFO - ✅ SKATEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084637704Z [inf]  2025-10-30 12:42:38,940 - src.core.websocket.kline_feed - INFO - ✅ HMSTRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084769710Z [inf]  2025-10-30 12:42:38,695 - src.core.websocket.kline_feed - INFO - ✅ RAREUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084791010Z [inf]  2025-10-30 12:42:38,697 - src.core.websocket.kline_feed - INFO - ✅ MANTAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084800487Z [inf]  2025-10-30 12:42:38,699 - src.core.websocket.kline_feed - INFO - ✅ AKEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084811638Z [inf]  2025-10-30 12:42:38,700 - src.core.websocket.kline_feed - INFO - ✅ SFPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084820131Z [inf]  2025-10-30 12:42:38,709 - src.core.websocket.kline_feed - INFO - ✅ QUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.084827516Z [inf]  2025-10-30 12:42:38,772 - src.core.websocket.kline_feed - INFO - ✅ DYMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.089832814Z [inf]  2025-10-30 12:42:39,087 - src.core.websocket.kline_feed - INFO - ✅ CATIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.273609130Z [inf]  2025-10-30 12:42:39,264 - src.core.websocket.kline_feed - INFO - ✅ MAVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.273624765Z [inf]  2025-10-30 12:42:39,265 - src.core.websocket.kline_feed - INFO - ✅ BANDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.273637804Z [inf]  2025-10-30 12:42:39,269 - src.core.websocket.kline_feed - INFO - ✅ BROCCOLIF3BUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.273645175Z [inf]  2025-10-30 12:42:39,272 - src.core.websocket.kline_feed - INFO - ✅ IDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.276038635Z [inf]  2025-10-30 12:42:39,273 - src.core.websocket.kline_feed - INFO - ✅ FHEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.279815506Z [inf]  2025-10-30 12:42:39,276 - src.core.websocket.kline_feed - INFO - ✅ AGLDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.284624109Z [inf]  2025-10-30 12:42:39,279 - src.core.websocket.kline_feed - INFO - ✅ SCRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.376579981Z [inf]  2025-10-30 12:42:39,346 - src.core.websocket.kline_feed - INFO - ✅ SXTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.456082127Z [inf]  2025-10-30 12:42:39,452 - src.core.websocket.kline_feed - INFO - ✅ ESPORTSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:39.473787864Z [inf]  2025-10-30 12:42:39,467 - src.core.websocket.kline_feed - INFO - ✅ ARPAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067155171Z [inf]  2025-10-30 12:42:39,657 - src.core.websocket.kline_feed - INFO - ✅ ILVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067161236Z [inf]  2025-10-30 12:42:39,672 - src.core.websocket.kline_feed - INFO - ✅ PORTALUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067165808Z [inf]  2025-10-30 12:42:39,674 - src.core.websocket.kline_feed - INFO - ✅ OGNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067170022Z [inf]  2025-10-30 12:42:39,694 - src.core.websocket.kline_feed - INFO - ✅ BTRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067174928Z [inf]  2025-10-30 12:42:39,761 - src.core.websocket.kline_feed - INFO - ✅ JSTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067179372Z [inf]  2025-10-30 12:42:39,801 - src.core.websocket.kline_feed - INFO - ✅ HEIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067184115Z [inf]  2025-10-30 12:42:39,807 - src.core.websocket.kline_feed - INFO - ✅ ICXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067192941Z [inf]  2025-10-30 12:42:39,828 - src.core.websocket.kline_feed - INFO - ✅ KNCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.067200070Z [inf]  2025-10-30 12:42:39,892 - src.core.websocket.kline_feed - INFO - ✅ DAMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.120621995Z [inf]  2025-10-30 12:42:40,102 - src.core.websocket.kline_feed - INFO - ✅ HOMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.280295820Z [inf]  2025-10-30 12:42:40,278 - src.core.websocket.kline_feed - INFO - ✅ CUDISUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.288623411Z [inf]  2025-10-30 12:42:40,282 - src.core.websocket.kline_feed - INFO - ✅ CTSIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.288631656Z [inf]  2025-10-30 12:42:40,283 - src.core.websocket.kline_feed - INFO - ✅ PHAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.288637437Z [inf]  2025-10-30 12:42:40,284 - src.core.websocket.kline_feed - INFO - ✅ IOSTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.291689314Z [inf]  2025-10-30 12:42:40,289 - src.core.websocket.kline_feed - INFO - ✅ ACEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.295300578Z [inf]  2025-10-30 12:42:40,291 - src.core.websocket.kline_feed - INFO - ✅ ZKJUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.304479463Z [inf]  2025-10-30 12:42:40,302 - src.core.websocket.kline_feed - INFO - ✅ KOMAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.336223009Z [inf]  2025-10-30 12:42:40,328 - src.core.websocket.kline_feed - INFO - ✅ RPLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.372729629Z [inf]  2025-10-30 12:42:40,371 - src.core.websocket.kline_feed - INFO - ✅ JOEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:40.375862719Z [inf]  2025-10-30 12:42:40,372 - src.core.websocket.kline_feed - INFO - ✅ PUNDIXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073907846Z [inf]  2025-10-30 12:42:40,552 - src.core.websocket.kline_feed - INFO - ✅ GUNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073917768Z [inf]  2025-10-30 12:42:40,556 - src.core.websocket.kline_feed - INFO - ✅ TLMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073928463Z [inf]  2025-10-30 12:42:40,557 - src.core.websocket.kline_feed - INFO - ✅ CARVUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073937560Z [inf]  2025-10-30 12:42:40,561 - src.core.websocket.kline_feed - INFO - ✅ NAORISUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073951695Z [inf]  2025-10-30 12:42:40,571 - src.core.websocket.kline_feed - INFO - ✅ CGPTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073960202Z [inf]  2025-10-30 12:42:40,572 - src.core.websocket.kline_feed - INFO - ✅ CHESSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073968812Z [inf]  2025-10-30 12:42:40,583 - src.core.websocket.kline_feed - INFO - ✅ MOCAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073977526Z [inf]  2025-10-30 12:42:40,591 - src.core.websocket.kline_feed - INFO - ✅ BICOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073986390Z [inf]  2025-10-30 12:42:40,621 - src.core.websocket.kline_feed - INFO - ✅ AWEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.073994932Z [inf]  2025-10-30 12:42:40,885 - src.core.websocket.kline_feed - INFO - ✅ USTCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.074003225Z [inf]  2025-10-30 12:42:41,065 - src.core.websocket.kline_feed - INFO - ✅ PROMPTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.092711806Z [inf]  2025-10-30 12:42:41,090 - src.core.websocket.kline_feed - INFO - ✅ DEGENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.092722994Z [inf]  2025-10-30 12:42:41,090 - src.core.websocket.kline_feed - INFO - ✅ VELODROMEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.092730667Z [inf]  2025-10-30 12:42:41,091 - src.core.websocket.kline_feed - INFO - ✅ REIUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.092738093Z [inf]  2025-10-30 12:42:41,091 - src.core.websocket.kline_feed - INFO - ✅ SANTOSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.112001440Z [inf]  2025-10-30 12:42:41,107 - src.core.websocket.kline_feed - INFO - ✅ XCNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.161700307Z [inf]  2025-10-30 12:42:41,143 - src.core.websocket.kline_feed - INFO - ✅ BIDUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.161716215Z [inf]  2025-10-30 12:42:41,145 - src.core.websocket.kline_feed - INFO - ✅ ARIAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.161726484Z [inf]  2025-10-30 12:42:41,156 - src.core.websocket.kline_feed - INFO - ✅ ACXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.172932576Z [inf]  2025-10-30 12:42:41,168 - src.core.websocket.kline_feed - INFO - ✅ PORT3USDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.346406281Z [inf]  2025-10-30 12:42:41,344 - src.core.websocket.kline_feed - INFO - ✅ MOVRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.349263410Z [inf]  2025-10-30 12:42:41,345 - src.core.websocket.kline_feed - INFO - ✅ POLYXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.352682948Z [inf]  2025-10-30 12:42:41,350 - src.core.websocket.kline_feed - INFO - ✅ TUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.352690404Z [inf]  2025-10-30 12:42:41,352 - src.core.websocket.kline_feed - INFO - ✅ ASRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.355136014Z [inf]  2025-10-30 12:42:41,353 - src.core.websocket.kline_feed - INFO - ✅ BANUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.357885992Z [inf]  2025-10-30 12:42:41,355 - src.core.websocket.kline_feed - INFO - ✅ SAFEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.357892752Z [inf]  2025-10-30 12:42:41,356 - src.core.websocket.kline_feed - INFO - ✅ PONKEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.361201537Z [inf]  2025-10-30 12:42:41,358 - src.core.websocket.kline_feed - INFO - ✅ GASUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.361209600Z [inf]  2025-10-30 12:42:41,359 - src.core.websocket.kline_feed - INFO - ✅ ARKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:41.412277234Z [inf]  2025-10-30 12:42:41,404 - src.core.websocket.kline_feed - INFO - ✅ ONGUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078832652Z [inf]  2025-10-30 12:42:41,581 - src.core.websocket.kline_feed - INFO - ✅ OBOLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078837667Z [inf]  2025-10-30 12:42:41,583 - src.core.websocket.kline_feed - INFO - ✅ HIGHUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078842482Z [inf]  2025-10-30 12:42:41,584 - src.core.websocket.kline_feed - INFO - ✅ GUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078847085Z [inf]  2025-10-30 12:42:41,588 - src.core.websocket.kline_feed - INFO - ✅ DUSKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078851563Z [inf]  2025-10-30 12:42:41,591 - src.core.websocket.kline_feed - INFO - ✅ BNTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078856625Z [inf]  2025-10-30 12:42:41,594 - src.core.websocket.kline_feed - INFO - ✅ TACUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078861808Z [inf]  2025-10-30 12:42:41,604 - src.core.websocket.kline_feed - INFO - ✅ AINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078867572Z [inf]  2025-10-30 12:42:41,612 - src.core.websocket.kline_feed - INFO - ✅ TOKENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078872051Z [inf]  2025-10-30 12:42:41,631 - src.core.websocket.kline_feed - INFO - ✅ CROSSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078876300Z [inf]  2025-10-30 12:42:41,710 - src.core.websocket.kline_feed - INFO - ✅ FIOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078881200Z [inf]  2025-10-30 12:42:41,889 - src.core.websocket.kline_feed - INFO - ✅ HIVEUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078886404Z [inf]  2025-10-30 12:42:41,891 - src.core.websocket.kline_feed - INFO - ✅ STEEMUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078890732Z [inf]  2025-10-30 12:42:41,895 - src.core.websocket.kline_feed - INFO - ✅ DUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.078894798Z [inf]  2025-10-30 12:42:41,896 - src.core.websocket.kline_feed - INFO - ✅ MTLUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.081707037Z [inf]  2025-10-30 12:42:41,902 - src.core.websocket.kline_feed - INFO - ✅ MBOXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.081712928Z [inf]  2025-10-30 12:42:41,932 - src.core.websocket.kline_feed - INFO - ✅ NKNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.081719625Z [inf]  2025-10-30 12:42:41,947 - src.core.websocket.kline_feed - INFO - ✅ ICNTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.081726867Z [inf]  2025-10-30 12:42:41,986 - src.core.websocket.kline_feed - INFO - ✅ VTHOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.081733999Z [inf]  2025-10-30 12:42:42,033 - src.core.websocket.kline_feed - INFO - ✅ BRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.258596217Z [inf]  2025-10-30 12:42:42,235 - src.core.websocket.kline_feed - INFO - ✅ 1000XUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.427118099Z [inf]  2025-10-30 12:42:42,415 - src.core.websocket.kline_feed - INFO - ✅ B3USDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.427130770Z [inf]  2025-10-30 12:42:42,416 - src.core.websocket.kline_feed - INFO - ✅ POWRUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.427142297Z [inf]  2025-10-30 12:42:42,422 - src.core.websocket.kline_feed - INFO - ✅ 1000000BOBUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.440560197Z [inf]  2025-10-30 12:42:42,434 - src.core.websocket.kline_feed - INFO - ✅ DODOXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.457316515Z [inf]  2025-10-30 12:42:42,450 - src.core.websocket.kline_feed - INFO - ✅ AERGOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.457326418Z [inf]  2025-10-30 12:42:42,453 - src.core.websocket.kline_feed - INFO - ✅ VICUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.457333245Z [inf]  2025-10-30 12:42:42,454 - src.core.websocket.kline_feed - INFO - ✅ MILKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:42.487739374Z [inf]  2025-10-30 12:42:42,485 - src.core.websocket.kline_feed - INFO - ✅ FLUXUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126134258Z [inf]  2025-10-30 12:42:42,622 - src.core.websocket.kline_feed - INFO - ✅ XVSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126138362Z [inf]  2025-10-30 12:42:42,870 - src.core.websocket.kline_feed - INFO - ✅ DFUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126143104Z [inf]  2025-10-30 12:42:43,054 - src.core.websocket.kline_feed - INFO - ✅ RONINUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126149764Z [inf]  2025-10-30 12:42:43,057 - src.core.websocket.kline_feed - INFO - ✅ CVCUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126155229Z [inf]  2025-10-30 12:42:43,068 - src.core.websocket.kline_feed - INFO - ✅ SCRTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126159825Z [inf]  2025-10-30 12:42:43,069 - src.core.websocket.kline_feed - INFO - ✅ GHSTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126163825Z [inf]  2025-10-30 12:42:43,071 - src.core.websocket.kline_feed - INFO - ✅ NTRNUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126168912Z [inf]  2025-10-30 12:42:43,082 - src.core.websocket.kline_feed - INFO - ✅ ETHWUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126174263Z [inf]  2025-10-30 12:42:43,084 - src.core.websocket.kline_feed - INFO - ✅ COSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.126179413Z [inf]  2025-10-30 12:42:43,085 - src.core.websocket.kline_feed - INFO - ✅ SLPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.153638948Z [inf]  2025-10-30 12:42:43,125 - src.core.websocket.kline_feed - INFO - ✅ LSKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.220065107Z [inf]  2025-10-30 12:42:43,206 - src.core.websocket.kline_feed - INFO - ✅ WAXPUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.392219945Z [inf]  2025-10-30 12:42:43,386 - src.core.websocket.kline_feed - INFO - ✅ BULLAUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.392225678Z [inf]  2025-10-30 12:42:43,389 - src.core.websocket.kline_feed - INFO - ✅ 1000WHYUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.398092275Z [inf]  2025-10-30 12:42:43,392 - src.core.websocket.kline_feed - INFO - ✅ SYSUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.427366013Z [inf]  2025-10-30 12:42:43,419 - src.core.websocket.kline_feed - INFO - ✅ SIRENUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.427376507Z [inf]  2025-10-30 12:42:43,424 - src.core.websocket.kline_feed - INFO - ✅ TAIKOUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.435383273Z [inf]  2025-10-30 12:42:43,433 - src.core.websocket.kline_feed - INFO - ✅ OXTUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.449601204Z [inf]  2025-10-30 12:42:43,444 - src.core.websocket.kline_feed - INFO - ✅ RIFUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:43.498082805Z [inf]  2025-10-30 12:42:43,481 - src.core.websocket.kline_feed - INFO - ✅ CTKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:44.110918321Z [inf]  2025-10-30 12:42:43,595 - src.core.websocket.kline_feed - INFO - ✅ QUICKUSDT 預填充 100 根K線歷史
+2025-10-30T12:42:44.110924980Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    ────────────────────────────────────────────────────────────────────────────
+2025-10-30T12:42:44.110934702Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    預熱結果:
+2025-10-30T12:42:44.110940472Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    ⏱️  耗時: 21.0秒
+2025-10-30T12:42:44.110946381Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    ✅ 成功: 529/529 (100.0%)
+2025-10-30T12:42:44.110951987Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    ❌ 失敗: 0/529
+2025-10-30T12:42:44.110956248Z [inf]  2025-10-30 12:42:43,696 - src.core.websocket.websocket_manager - INFO -    ✅ 預熱成功！現在可以立即使用WebSocket聚合5m/15m/1h
+2025-10-30T12:42:44.110961055Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO -    ────────────────────────────────────────────────────────────────────────────
+2025-10-30T12:42:44.110965425Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO - ================================================================================
+2025-10-30T12:42:44.110973574Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO - ✅ WebSocketManager啟動完成
+2025-10-30T12:42:44.110978836Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO -    K線Feed: ✅
+2025-10-30T12:42:44.113298661Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO -    價格Feed: ✅
+2025-10-30T12:42:44.113303919Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO -    帳戶Feed: ✅
+2025-10-30T12:42:44.113309786Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO -    監控交易對: 529個
+2025-10-30T12:42:44.113316315Z [inf]  2025-10-30 12:42:43,697 - src.core.websocket.websocket_manager - INFO - ================================================================================
+2025-10-30T12:42:44.113321882Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - ✅ WebSocketManager已啟動（監控529個交易對）
+2025-10-30T12:42:44.113333742Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - ✅ 所有任務已啟動
+2025-10-30T12:42:44.113340810Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - 🛡️  倉位監控循環已啟動
+2025-10-30T12:42:44.113346304Z [inf]  2025-10-30 12:42:43,697 - src.core.position_controller - INFO - 🚀 PositionController 24/7 監控已啟動（整合進場失效+逆勢檢測）
+2025-10-30T12:42:44.113351165Z [inf]  2025-10-30 12:42:43,697 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-30T12:42:44.113355613Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - 🔄 交易週期循環已啟動
+2025-10-30T12:42:44.113360959Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T12:42:44.113365976Z [inf]  2025-10-30 12:42:43,697 - src.core.unified_scheduler - INFO - 🔄 交易週期 #1 | 2025-10-30 12:42:43 UTC
+2025-10-30T12:42:44.113370840Z [inf]  2025-10-30 12:42:43,698 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T12:42:44.113859633Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • IOTXUSDT SHORT @ $0.0113 | 槓桿=13x | 盈虧=$+0.08 (+0.79%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113864396Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • JELLYJELLYUSDT LONG @ $0.1332 | 槓桿=13x | 盈虧=$+1.00 (+3.35%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113871394Z [inf]  2025-10-30 12:42:43,698 - src.core.unified_scheduler - INFO - 📊 每日報告循環已啟動
+2025-10-30T12:42:44.113877885Z [inf]  2025-10-30 12:42:43,957 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-30T12:42:44.113881863Z [inf]  2025-10-30 12:42:43,957 - src.core.unified_scheduler - INFO - 📦 當前持倉: 16 個 | 總未實現盈虧: $-2.81
+2025-10-30T12:42:44.113885825Z [inf]  2025-10-30 12:42:43,957 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T12:42:44.113892712Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • TRXUSDT SHORT @ $0.2952 | 槓桿=21x | 盈虧=$+0.07 (+0.70%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113896641Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • FORMUSDT SHORT @ $0.5885 | 槓桿=13x | 盈虧=$+0.92 (+3.08%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113900529Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • TAGUSDT LONG @ $0.0005 | 槓桿=13x | 盈虧=$-6.24 (-8.92%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113904310Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • TURTLEUSDT SHORT @ $0.1252 | 槓桿=13x | 盈虧=$+0.55 (+2.76%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.113910021Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • ILVUSDT SHORT @ $10.7393 | 槓桿=13x | 盈虧=$+0.65 (+2.25%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115814259Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • JSTUSDT LONG @ $0.0350 | 槓桿=22x | 盈虧=$-0.09 (-0.86%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115823845Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • ASRUSDT SHORT @ $1.4110 | 槓桿=13x | 盈虧=$+0.17 (+1.74%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115829533Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • TANSSIUSDT SHORT @ $0.0287 | 槓桿=13x | 盈虧=$+0.21 (+0.52%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115833928Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • LYNUSDT SHORT @ $0.1011 | 槓桿=13x | 盈虧=$+0.36 (+1.20%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115838489Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • SXTUSDT SHORT @ $0.0537 | 槓桿=20x | 盈虧=$+0.13 (+1.25%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115843509Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • NAORISUSDT SHORT @ $0.0488 | 槓桿=13x | 盈虧=$+0.30 (+0.74%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115848888Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • CAKEUSDT SHORT @ $2.5626 | 槓桿=13x | 盈虧=$+0.57 (+3.70%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115853289Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • DEGOUSDT LONG @ $0.8492 | 槓桿=13x | 盈虧=$-0.99 (-1.62%) | ⚠️ 逆勢 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115857504Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO -    • DEGOUSDT SHORT @ $0.8216 | 槓桿=13x | 盈虧=$-0.50 (-1.69%) | 📉 空頭 | 進場理由❌ 已失效
+2025-10-30T12:42:44.115862906Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T12:42:44.117827242Z [inf]  2025-10-30 12:42:43,958 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.32 USDT, 可用 0.00 USDT, 保證金 35.32 USDT, 未實現盈虧 -2.81 USDT
+2025-10-30T12:42:44.117839144Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$35.32 | 可用=$0.00 | 保證金=$35.32 | 未實現盈虧=$-2.81
+2025-10-30T12:42:44.117845718Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-30T12:42:44.117852358Z [inf]  2025-10-30 12:42:43,958 - src.core.unified_scheduler - INFO - 📊 掃描 529 個交易對中...
+2025-10-30T12:42:44.117857885Z [inf]  2025-10-30 12:42:43,990 - src.core.position_controller - INFO -    📊 監控 16 個持倉
+2025-10-30T12:42:44.117864432Z [inf]  2025-10-30 12:42:43,990 - src.core.position_monitor_24x7 - CRITICAL - 🚨🔴 TAGUSDT 99%虧損熔斷觸發！PnL: $-6.24 (-116.0%) / 風險: $5.38 / 閾值: 99%
+2025-10-30T12:42:44.117870094Z [inf]  2025-10-30 12:42:43,990 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: TAGUSDT SELL 135013.000000 @ $0.00 | 原因: 99%虧損熔斷（強制安全機制）
+2025-10-30T12:42:44.117875612Z [inf]  2025-10-30 12:42:43,990 - src.clients.binance_client - INFO - 創建訂單: TAGUSDT SELL MARKET 135013.0
+2025-10-30T12:42:44.117881367Z [inf]  2025-10-30 12:42:44,070 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'TAGUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 135013.0, 'reduce_only': True, 'positionSide': 'SHORT', 'timestamp': 1761828163990}
+2025-10-30T12:42:44.117887387Z [inf]  2025-10-30 12:42:44,070 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T12:42:44.117893407Z [inf]  2025-10-30 12:42:44,070 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T12:42:44.120216795Z [inf]  2025-10-30 12:42:44,070 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: TAGUSDT - HTTP 400: Bad Request
+2025-10-30T12:42:44.120224358Z [inf]  Traceback (most recent call last):
+2025-10-30T12:42:44.120224716Z [inf]      response.raise_for_status()
+2025-10-30T12:42:44.120230098Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T12:42:44.120233623Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T12:42:44.120239063Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T12:42:44.120240748Z [inf]      raise ClientResponseError(
+2025-10-30T12:42:44.120246297Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=SHORT&quantity=135013.0&reduce_only=True&side=SELL&symbol=TAGUSDT&timestamp=1761828163990&type=MARKET&signature=55c59f43ab50df5f606d92d21248ea6235721a16ca90c57c654524910cfba175'
+2025-10-30T12:42:44.120246757Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:42:44.120253044Z [inf]  
+2025-10-30T12:42:44.120253158Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T12:42:44.120259433Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T12:42:44.120261204Z [inf]      raise e
+2025-10-30T12:42:44.120265751Z [inf]  
+2025-10-30T12:42:44.120267764Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T12:42:44.120271503Z [inf]  Traceback (most recent call last):
+2025-10-30T12:42:44.120273537Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T12:42:44.120279508Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:42:44.120284284Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T12:42:44.121884508Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T12:42:44.121891045Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T12:42:44.121899006Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:42:44.121905914Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T12:42:44.121912210Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T12:42:44.121919773Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:42:44.121926203Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T12:42:44.121931596Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T12:42:44.121937103Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:42:44.121942087Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T12:42:44.121946815Z [inf]      raise BinanceRequestError(
+2025-10-30T12:42:44.121951791Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T12:42:44.121957114Z [inf]  2025-10-30 12:42:44,073 - src.core.position_monitor_24x7 - WARNING - ⚠️ JSTUSDT 虧損-18.9% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:42:44.121962631Z [inf]  2025-10-30 12:42:44,073 - src.core.position_monitor_24x7 - WARNING - ⚠️ DEGOUSDT 虧損-21.0% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:42:44.121969653Z [inf]  2025-10-30 12:42:44,073 - src.core.position_monitor_24x7 - WARNING - ⚠️ DEGOUSDT 虧損-21.9% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:42:44.123939701Z [inf]  2025-10-30 12:42:44,073 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.32 USDT, 可用 0.00 USDT, 保證金 35.32 USDT, 未實現盈虧 -2.81 USDT
+2025-10-30T12:42:44.123945944Z [inf]  2025-10-30 12:42:44,073 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 100.0% | 閾值: 85% | 總金額: $35.32 | 總保證金: $35.32
+2025-10-30T12:42:44.123950313Z [inf]  2025-10-30 12:42:44,074 - src.core.position_controller - INFO - 🛡️ 保證金使用率 100.0% > 85% 但無虧損倉位，無需保護
+2025-10-30T12:42:44.123954399Z [inf]  2025-10-30 12:42:44,093 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T12:42:47.125957901Z [inf]  2025-10-30 12:42:47,030 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:43:16.692870767Z [inf]  2025-10-30 12:43:07,674 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:43:18.463848017Z [inf]  2025-10-30 12:43:18,289 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-10-30T12:43:38.009148385Z [inf]  2025-10-30 12:43:31,199 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:43:44.080339945Z [inf]  2025-10-30 12:43:44,074 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-30T12:43:44.167956740Z [inf]  2025-10-30 12:43:44,166 - src.core.position_controller - INFO -    📊 監控 16 個持倉
+2025-10-30T12:43:44.167972038Z [inf]  2025-10-30 12:43:44,166 - src.core.position_monitor_24x7 - CRITICAL - 🚨🔴 TAGUSDT 99%虧損熔斷觸發！PnL: $-6.19 (-115.0%) / 風險: $5.38 / 閾值: 99%
+2025-10-30T12:43:44.167981036Z [inf]  2025-10-30 12:43:44,166 - src.core.position_monitor_24x7 - CRITICAL - 🚨 執行強制平倉: TAGUSDT SELL 135013.000000 @ $0.00 | 原因: 99%虧損熔斷（強制安全機制）
+2025-10-30T12:43:44.167989119Z [inf]  2025-10-30 12:43:44,166 - src.clients.binance_client - INFO - 創建訂單: TAGUSDT SELL MARKET 135013.0
+2025-10-30T12:43:44.271027144Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 636, in raise_for_status
+2025-10-30T12:43:44.271075663Z [inf]  2025-10-30 12:43:44,252 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-2019, msg=Margin is insufficient., endpoint=/fapi/v1/order, params={'symbol': 'TAGUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 135013.0, 'reduce_only': True, 'positionSide': 'SHORT', 'timestamp': 1761828224166}
+2025-10-30T12:43:44.271085806Z [inf]  2025-10-30 12:43:44,252 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T12:43:44.271094539Z [inf]  2025-10-30 12:43:44,252 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-10-30T12:43:44.271100258Z [inf]  2025-10-30 12:43:44,252 - src.core.position_monitor_24x7 - CRITICAL - ❌ 強制平倉異常: TAGUSDT - HTTP 400: Bad Request
+2025-10-30T12:43:44.271108018Z [inf]  Traceback (most recent call last):
+2025-10-30T12:43:44.271113852Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T12:43:44.271120002Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T12:43:44.271125834Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:43:44.271131279Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-10-30T12:43:44.271138507Z [inf]      raise e
+2025-10-30T12:43:44.271145320Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-10-30T12:43:44.271150411Z [inf]      result = await func(*args, **kwargs)
+2025-10-30T12:43:44.271157877Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:43:44.271162510Z [inf]    File "/app/src/clients/binance_client.py", line 165, in _do_request
+2025-10-30T12:43:44.271167336Z [inf]      response.raise_for_status()
+2025-10-30T12:43:44.272581464Z [inf]      raise ClientResponseError(
+2025-10-30T12:43:44.272593695Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url='https://fapi.binance.com/fapi/v1/order?positionSide=SHORT&quantity=135013.0&reduce_only=True&side=SELL&symbol=TAGUSDT&timestamp=1761828224166&type=MARKET&signature=56ecdcbf81d1a0cd2d49e2a55e8b007597650558f31e3aa08a39ee1be26fa8a8'
+2025-10-30T12:43:44.272603062Z [inf]  
+2025-10-30T12:43:44.272612302Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T12:43:44.272621768Z [inf]  
+2025-10-30T12:43:44.272630464Z [inf]  Traceback (most recent call last):
+2025-10-30T12:43:44.272638985Z [inf]    File "/app/src/core/position_monitor_24x7.py", line 467, in _force_close_position
+2025-10-30T12:43:44.272647628Z [inf]      result = await self.binance_client.place_order(
+2025-10-30T12:43:44.272657043Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:43:44.272686597Z [inf]    File "/app/src/clients/binance_client.py", line 633, in place_order
+2025-10-30T12:43:44.272694975Z [inf]      return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+2025-10-30T12:43:44.272702456Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:43:44.272711047Z [inf]    File "/app/src/clients/binance_client.py", line 568, in create_order
+2025-10-30T12:43:44.272719150Z [inf]      return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+2025-10-30T12:43:44.272727539Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:43:44.272737150Z [inf]    File "/app/src/clients/binance_client.py", line 207, in _request
+2025-10-30T12:43:44.272745931Z [inf]      raise BinanceRequestError(
+2025-10-30T12:43:44.272754657Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-10-30T12:43:44.274965423Z [inf]  2025-10-30 12:43:44,253 - src.core.position_monitor_24x7 - WARNING - ⚠️ JSTUSDT 虧損-18.3% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:43:44.274975120Z [inf]  2025-10-30 12:43:44,253 - src.core.position_monitor_24x7 - WARNING - ⚠️ DEGOUSDT 虧損-20.8% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:43:44.274982663Z [inf]  2025-10-30 12:43:44,253 - src.core.position_monitor_24x7 - WARNING - ⚠️ DEGOUSDT 虧損-22.2% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-30T12:43:44.274989009Z [inf]  2025-10-30 12:43:44,253 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.32 USDT, 可用 0.00 USDT, 保證金 35.32 USDT, 未實現盈虧 -3.01 USDT
+2025-10-30T12:43:44.274998448Z [inf]  2025-10-30 12:43:44,253 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 100.0% | 閾值: 85% | 總金額: $35.32 | 總保證金: $35.32
+2025-10-30T12:43:44.275005875Z [inf]  2025-10-30 12:43:44,253 - src.core.position_controller - INFO - 🛡️ 保證金使用率 100.0% > 85% 但無虧損倉位，無需保護
+2025-10-30T12:43:44.804078015Z [inf]  2025-10-30 12:43:44,324 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-10-30T12:43:48.010566307Z [inf]  2025-10-30 12:43:47,993 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:44:07.568190287Z [inf]  2025-10-30 12:43:58,326 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.568271625Z [inf]  2025-10-30 12:43:58,325 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '5m', 'limit': 100}
+2025-10-30T12:44:07.568280033Z [inf]  2025-10-30 12:43:58,325 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-10-30T12:44:07.568288637Z [inf]  2025-10-30 12:43:58,325 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.568295472Z [inf]  2025-10-30 12:43:58,325 - src.services.data_service - ERROR - 獲取 K線數據失敗 LSKUSDT 5m: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.568302316Z [inf]  2025-10-30 12:43:58,326 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '1h', 'limit': 100}
+2025-10-30T12:44:07.568309722Z [inf]  2025-10-30 12:43:58,326 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.568318486Z [inf]  2025-10-30 12:43:58,326 - src.services.data_service - ERROR - 獲取 K線數據失敗 LSKUSDT 1h: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.568325490Z [inf]  2025-10-30 12:43:58,326 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '15m', 'limit': 100}
+2025-10-30T12:44:07.570440815Z [inf]  2025-10-30 12:43:58,326 - src.services.data_service - ERROR - 獲取 K線數據失敗 LSKUSDT 15m: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.570453124Z [inf]  2025-10-30 12:43:58,339 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗3次 (操作: generic, 優先級: NORMAL)
+2025-10-30T12:44:07.570459846Z [inf]  2025-10-30 12:43:58,340 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗3次 (操作: generic, 優先級: NORMAL)
+2025-10-30T12:44:07.570465848Z [inf]  2025-10-30 12:43:58,340 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗3次 (操作: generic, 優先級: NORMAL)
+2025-10-30T12:44:07.570469946Z [inf]  2025-10-30 12:43:58,412 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NTRNUSDT', 'interval': '15m', 'limit': 100}
+2025-10-30T12:44:07.570475609Z [inf]  2025-10-30 12:43:58,412 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → throttled (失敗次數: 4)
+2025-10-30T12:44:07.570479975Z [inf]  2025-10-30 12:43:58,412 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.570484332Z [inf]  2025-10-30 12:43:58,412 - src.services.data_service - ERROR - 獲取 K線數據失敗 NTRNUSDT 15m: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.570488777Z [inf]  2025-10-30 12:43:58,413 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NTRNUSDT', 'interval': '1h', 'limit': 100}
+2025-10-30T12:44:07.570493245Z [inf]  2025-10-30 12:43:58,413 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: throttled → blocked (失敗次數: 5)
+2025-10-30T12:44:07.572479923Z [inf]  2025-10-30 12:43:58,413 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.572492483Z [inf]  2025-10-30 12:43:58,413 - src.services.data_service - ERROR - 獲取 K線數據失敗 NTRNUSDT 1h: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.572500542Z [inf]  2025-10-30 12:43:58,414 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NTRNUSDT', 'interval': '5m', 'limit': 100}
+2025-10-30T12:44:07.572506898Z [inf]  2025-10-30 12:43:58,414 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-10-30T12:44:07.572512853Z [inf]  2025-10-30 12:43:58,414 - src.services.data_service - ERROR - 獲取 K線數據失敗 NTRNUSDT 5m: HTTP 429: Too Many Requests
+2025-10-30T12:44:07.572519603Z [inf]  2025-10-30 12:43:58,423 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.572525559Z [inf]  2025-10-30 12:43:58,423 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.572531936Z [inf]  2025-10-30 12:43:58,424 - src.services.data_service - ERROR - 獲取 K線數據失敗 SCRTUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.572538059Z [inf]  2025-10-30 12:43:58,424 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.572545348Z [inf]  2025-10-30 12:43:58,424 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.572555976Z [inf]  2025-10-30 12:43:58,424 - src.services.data_service - ERROR - 獲取 K線數據失敗 SCRTUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574365544Z [inf]  2025-10-30 12:43:58,435 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.574369434Z [inf]  2025-10-30 12:43:58,425 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.574372750Z [inf]  2025-10-30 12:43:58,435 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574378518Z [inf]  2025-10-30 12:43:58,425 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574398776Z [inf]  2025-10-30 12:43:58,425 - src.services.data_service - ERROR - 獲取 K線數據失敗 SCRTUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574404216Z [inf]  2025-10-30 12:43:58,434 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.574409388Z [inf]  2025-10-30 12:43:58,435 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574416355Z [inf]  2025-10-30 12:43:58,435 - src.services.data_service - ERROR - 獲取 K線數據失敗 SYSUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574422156Z [inf]  2025-10-30 12:43:58,435 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.574427766Z [inf]  2025-10-30 12:43:58,435 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.574435092Z [inf]  2025-10-30 12:43:58,435 - src.services.data_service - ERROR - 獲取 K線數據失敗 SYSUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576056984Z [inf]  2025-10-30 12:43:58,435 - src.services.data_service - ERROR - 獲取 K線數據失敗 SYSUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576068003Z [inf]  2025-10-30 12:43:58,445 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.576075621Z [inf]  2025-10-30 12:43:58,445 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576082272Z [inf]  2025-10-30 12:43:58,445 - src.services.data_service - ERROR - 獲取 K線數據失敗 CTKUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576088909Z [inf]  2025-10-30 12:43:58,446 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.576095499Z [inf]  2025-10-30 12:43:58,446 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576101594Z [inf]  2025-10-30 12:43:58,446 - src.services.data_service - ERROR - 獲取 K線數據失敗 CTKUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576107132Z [inf]  2025-10-30 12:43:58,446 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.576113707Z [inf]  2025-10-30 12:43:58,446 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576120729Z [inf]  2025-10-30 12:43:58,446 - src.services.data_service - ERROR - 獲取 K線數據失敗 CTKUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.576128441Z [inf]  2025-10-30 12:43:58,456 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.577695372Z [inf]  2025-10-30 12:43:58,456 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577703924Z [inf]  2025-10-30 12:43:58,456 - src.services.data_service - ERROR - 獲取 K線數據失敗 OXTUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577709498Z [inf]  2025-10-30 12:43:58,457 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.577716527Z [inf]  2025-10-30 12:43:58,457 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577724672Z [inf]  2025-10-30 12:43:58,457 - src.services.data_service - ERROR - 獲取 K線數據失敗 OXTUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577730510Z [inf]  2025-10-30 12:43:58,457 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.577736928Z [inf]  2025-10-30 12:43:58,457 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577742507Z [inf]  2025-10-30 12:43:58,457 - src.services.data_service - ERROR - 獲取 K線數據失敗 OXTUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577747775Z [inf]  2025-10-30 12:43:58,466 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.577754330Z [inf]  2025-10-30 12:43:58,466 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.577759462Z [inf]  2025-10-30 12:43:58,466 - src.services.data_service - ERROR - 獲取 K線數據失敗 QUICKUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579675309Z [inf]  2025-10-30 12:43:58,467 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.579684906Z [inf]  2025-10-30 12:43:58,467 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579689716Z [inf]  2025-10-30 12:43:58,467 - src.services.data_service - ERROR - 獲取 K線數據失敗 QUICKUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579694883Z [inf]  2025-10-30 12:43:58,467 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.579698887Z [inf]  2025-10-30 12:43:58,467 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579704172Z [inf]  2025-10-30 12:43:58,467 - src.services.data_service - ERROR - 獲取 K線數據失敗 QUICKUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579708576Z [inf]  2025-10-30 12:43:58,487 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.579712695Z [inf]  2025-10-30 12:43:58,487 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579716455Z [inf]  2025-10-30 12:43:58,487 - src.services.data_service - ERROR - 獲取 K線數據失敗 TAIKOUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.579720507Z [inf]  2025-10-30 12:43:58,488 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.579725044Z [inf]  2025-10-30 12:43:58,488 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581647297Z [inf]  2025-10-30 12:43:58,488 - src.services.data_service - ERROR - 獲取 K線數據失敗 TAIKOUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581660791Z [inf]  2025-10-30 12:43:58,488 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.581668739Z [inf]  2025-10-30 12:43:58,488 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581675174Z [inf]  2025-10-30 12:43:58,488 - src.services.data_service - ERROR - 獲取 K線數據失敗 TAIKOUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581681612Z [inf]  2025-10-30 12:43:58,499 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.581687752Z [inf]  2025-10-30 12:43:58,499 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581693166Z [inf]  2025-10-30 12:43:58,499 - src.services.data_service - ERROR - 獲取 K線數據失敗 1000WHYUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581699645Z [inf]  2025-10-30 12:43:58,500 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.581704954Z [inf]  2025-10-30 12:43:58,500 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581711021Z [inf]  2025-10-30 12:43:58,500 - src.services.data_service - ERROR - 獲取 K線數據失敗 1000WHYUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.581717968Z [inf]  2025-10-30 12:43:58,500 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.583842180Z [inf]  2025-10-30 12:43:58,510 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.583847639Z [inf]  2025-10-30 12:43:58,500 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583850587Z [inf]  2025-10-30 12:43:58,510 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583857165Z [inf]  2025-10-30 12:43:58,510 - src.services.data_service - ERROR - 獲取 K線數據失敗 RIFUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583859186Z [inf]  2025-10-30 12:43:58,500 - src.services.data_service - ERROR - 獲取 K線數據失敗 1000WHYUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583866143Z [inf]  2025-10-30 12:43:58,509 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.583871687Z [inf]  2025-10-30 12:43:58,509 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583877689Z [inf]  2025-10-30 12:43:58,509 - src.services.data_service - ERROR - 獲取 K線數據失敗 RIFUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583883208Z [inf]  2025-10-30 12:43:58,509 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.583887615Z [inf]  2025-10-30 12:43:58,510 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.583891733Z [inf]  2025-10-30 12:43:58,510 - src.services.data_service - ERROR - 獲取 K線數據失敗 RIFUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585893363Z [inf]  2025-10-30 12:43:58,517 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.585906979Z [inf]  2025-10-30 12:43:58,517 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585915288Z [inf]  2025-10-30 12:43:58,517 - src.services.data_service - ERROR - 獲取 K線數據失敗 SIRENUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585923213Z [inf]  2025-10-30 12:43:58,518 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.585933400Z [inf]  2025-10-30 12:43:58,518 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585940963Z [inf]  2025-10-30 12:43:58,518 - src.services.data_service - ERROR - 獲取 K線數據失敗 SIRENUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585949020Z [inf]  2025-10-30 12:43:58,518 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.585956545Z [inf]  2025-10-30 12:43:58,518 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585963530Z [inf]  2025-10-30 12:43:58,518 - src.services.data_service - ERROR - 獲取 K線數據失敗 SIRENUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.585968672Z [inf]  2025-10-30 12:43:58,525 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.585974518Z [inf]  2025-10-30 12:43:58,525 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587691842Z [inf]  2025-10-30 12:43:58,525 - src.services.data_service - ERROR - 獲取 K線數據失敗 BULLAUSDT 1h: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587700639Z [inf]  2025-10-30 12:43:58,526 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.587707877Z [inf]  2025-10-30 12:43:58,526 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587739465Z [inf]  2025-10-30 12:43:58,526 - src.services.data_service - ERROR - 獲取 K線數據失敗 BULLAUSDT 15m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587749695Z [inf]  2025-10-30 12:43:58,526 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.587757714Z [inf]  2025-10-30 12:43:58,526 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587762363Z [inf]  2025-10-30 12:43:58,526 - src.services.data_service - ERROR - 獲取 K線數據失敗 BULLAUSDT 5m: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.587767688Z [inf]  2025-10-30 12:43:58,528 - src.core.unified_scheduler - INFO - ✅ 發現 386 個交易信號
+2025-10-30T12:44:07.587772560Z [inf]  2025-10-30 12:43:58,528 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $0.00 | 已有倉位: 16 | 新信號數: 386
+2025-10-30T12:44:07.587778258Z [inf]  2025-10-30 12:43:58,531 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:07.587783434Z [inf]  2025-10-30 12:43:58,531 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.589463886Z [inf]  2025-10-30 12:43:58,532 - src.strategies.self_learning_trader - ERROR - ❌ 獲取帳戶信息失敗: 熔斷器阻斷(失敗6次)，請60秒後重試
+2025-10-30T12:44:07.589472074Z [inf]  2025-10-30 12:43:58,532 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 74.8s | 新成交: 0
+2025-10-30T12:44:07.589477869Z [inf]  2025-10-30 12:43:58,532 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-30T12:44:37.603771391Z [inf]  2025-10-30 12:44:27,886 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:44:38.571552630Z [inf]  2025-10-30 12:44:38,225 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-30T12:44:44.594348404Z [inf]  2025-10-30 12:44:44,254 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-30T12:44:44.594355810Z [inf]  2025-10-30 12:44:44,255 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗6次)，請14秒後重試 | 操作: generic | 優先級: NORMAL
+2025-10-30T12:44:44.594362620Z [inf]  2025-10-30 12:44:44,255 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗6次)，請14秒後重試
+2025-10-30T12:44:44.594367689Z [inf]  2025-10-30 12:44:44,255 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗6次)，請14秒後重試
+2025-10-30T12:44:44.594373127Z [inf]  Traceback (most recent call last):
+2025-10-30T12:44:44.594378765Z [inf]    File "/app/src/clients/binance_client.py", line 203, in _request
+2025-10-30T12:44:44.594614683Z [inf]      result = await self.circuit_breaker.call_async(_do_request)
+2025-10-30T12:44:44.594623069Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:44:44.594629601Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-10-30T12:44:44.594635898Z [inf]      raise Exception(reason)
+2025-10-30T12:44:44.594641533Z [inf]  Exception: 熔斷器阻斷(失敗6次)，請14秒後重試
+2025-10-30T12:44:44.594650510Z [inf]  
+2025-10-30T12:44:44.594657688Z [inf]  During handling of the above exception, another exception occurred:
+2025-10-30T12:44:44.594663996Z [inf]  
+2025-10-30T12:44:44.594671088Z [inf]  Traceback (most recent call last):
+2025-10-30T12:44:44.594677855Z [inf]    File "/app/src/core/position_controller.py", line 213, in _fetch_all_positions
+2025-10-30T12:44:44.594684546Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-10-30T12:44:44.594691055Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:44:44.596884317Z [inf]    File "/app/src/clients/binance_client.py", line 475, in get_position_info_async
+2025-10-30T12:44:44.596891318Z [inf]      account_info = await self.get_account_info()
+2025-10-30T12:44:44.596897972Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:44:44.596905483Z [inf]    File "/app/src/clients/binance_client.py", line 455, in get_account_info
+2025-10-30T12:44:44.596911744Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-10-30T12:44:44.596917582Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-10-30T12:44:44.596923869Z [inf]    File "/app/src/clients/binance_client.py", line 219, in _request
+2025-10-30T12:44:44.596929799Z [inf]      raise BinanceRequestError(
+2025-10-30T12:44:44.596936094Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗6次)，請14秒後重試
+2025-10-30T12:44:44.596941720Z [inf]  2025-10-30 12:44:44,256 - src.core.position_controller - INFO -    📭 當前無持倉
