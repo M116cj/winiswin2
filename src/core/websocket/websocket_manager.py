@@ -16,6 +16,20 @@ from src.config import Config
 
 logger = logging.getLogger(__name__)
 
+# 🔥 v3.18+ 修復：硬編碼的高流動性USDT永續合約列表（REST API失敗時的fallback）
+FALLBACK_SYMBOLS = [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT",
+    "DOGEUSDT", "ADAUSDT", "TRXUSDT", "AVAXUSDT", "LINKUSDT",
+    "MATICUSDT", "DOTUSDT", "LTCUSDT", "UNIUSDT", "ETCUSDT",
+    "ATOMUSDT", "NEARUSDT", "APTUSDT", "FILUSDT", "ARBUSDT",
+    "INJUSDT", "SUIUSDT", "STXUSDT", "SEIUSDT", "OPUSDT",
+    "PEPEUSDT", "AAVEUSDT", "MKRUSDT", "RUNEUSDT", "ORDIUSDT",
+    "WLDUSDT", "TIAUSDT", "JUPUSDT", "PYTHUSDT", "RENDERUSDT",
+    "FETUSDT", "GRTUSDT", "FTMUSDT", "ICPUSDT", "HBARUSDT",
+    "IMXUSDT", "TAOUSDT", "LDOUSDT", "WIFUSDT", "FLOKIUSDT",
+    "GALAUSDT", "BEAMXUSDT", "BLURUSDT", "JTOUSDT", "BONKUSDT"
+]  # 50個主流交易對
+
 
 class WebSocketManager:
     """
@@ -103,7 +117,7 @@ class WebSocketManager:
     
     async def _get_all_futures_symbols(self) -> List[str]:
         """
-        動態獲取流動性×波動率綜合分數最高的USDT永續交易對（v3.17.2+ 優化版）
+        動態獲取流動性×波動率綜合分數最高的USDT永續交易對（v3.18+ 強化版）
         
         使用 SymbolSelector 精準篩選：
         1. 獲取所有 USDT 永續合約（contractType=PERPETUAL，天然排除槓桿幣）
@@ -112,6 +126,8 @@ class WebSocketManager:
         4. 過濾低流動性（<1M USDT）和低波動率（<0.5%）
         5. 綜合分數排序（優選高品質交易對）
         6. 返回前 N 個高品質交易對
+        
+        🔥 v3.18+ 修復：添加硬編碼fallback列表（REST API失敗時使用）
         
         Returns:
             綜合分數最高的交易對列表（默認前200個）
@@ -125,16 +141,16 @@ class WebSocketManager:
             if symbols:
                 logger.info(f"✅ 綜合分數篩選成功：{len(symbols)} 個高品質交易對")
                 logger.info(f"   前5名: {symbols[:5]}")
+                return symbols
             else:
-                logger.warning("⚠️ 綜合分數篩選未返回任何交易對")
-            
-            return symbols
+                logger.warning("⚠️ 綜合分數篩選未返回任何交易對，使用fallback列表")
+                return FALLBACK_SYMBOLS
         
         except Exception as e:
             logger.error(f"❌ 綜合分數篩選失敗: {e}")
             logger.warning("⚠️ 降級使用全市場模式...")
             
-            # 降級方案：獲取所有 USDT 永續合約
+            # 降級方案1：獲取所有 USDT 永續合約
             try:
                 info = await self.binance_client._request("GET", "/fapi/v1/exchangeInfo")
                 
@@ -145,32 +161,47 @@ class WebSocketManager:
                     and s.get('status') == 'TRADING'
                 ]
                 
-                logger.info(f"✅ 降級模式：{len(symbols)} 個USDT永續合約")
-                return symbols
+                if symbols:
+                    logger.info(f"✅ 降級模式：{len(symbols)} 個USDT永續合約")
+                    return symbols
+                else:
+                    logger.warning("⚠️ 降級模式未返回交易對，使用fallback列表")
+                    return FALLBACK_SYMBOLS
+                    
             except Exception as fallback_error:
+                # 🔥 v3.18+ 修復：最終fallback到硬編碼列表
                 logger.error(f"❌ 降級模式也失敗: {fallback_error}")
-                return []
+                logger.warning(f"⚠️ 使用硬編碼fallback列表（{len(FALLBACK_SYMBOLS)}個主流交易對）")
+                return FALLBACK_SYMBOLS
     
     async def start(self):
-        """啟動所有WebSocket Feed（非阻塞）+ 預熱緩存"""
+        """啟動所有WebSocket Feed（非阻塞）+ 預熱緩存（v3.18+ 強化版）"""
         if self.running:
             logger.warning("⚠️ WebSocketManager 已在運行中")
             return
         
         self.running = True
-        logger.info("🚀 WebSocketManager v3.17.3+ 啟動中（預熱優化）...")
+        logger.info("=" * 80)
+        logger.info("🚀 WebSocketManager v3.18+ 啟動中（冷啟動優化）...")
+        logger.info("=" * 80)
         
         # 1. 動態獲取交易對（如果需要）
         if self.auto_fetch_symbols and not self.symbols:
+            logger.info("📡 步驟1/4：獲取交易對列表...")
             self.symbols = await self._get_all_futures_symbols()
-            if not self.symbols:
-                logger.warning("⚠️ 未獲取到交易對，使用空列表")
-                self.symbols = []
+            logger.info(f"   ✅ 已獲取 {len(self.symbols)} 個交易對")
+            logger.info(f"   前10名: {self.symbols[:10]}")
+        else:
+            logger.info(f"📡 步驟1/4：使用預設交易對列表（{len(self.symbols)}個）")
         
         tasks = []
         
         # 2. 啟動ShardFeed（K線+價格分片管理）
+        logger.info("📡 步驟2/4：啟動ShardFeed（K線+價格）...")
         if self.symbols and (self.enable_kline_feed or self.enable_price_feed):
+            shard_count = (len(self.symbols) + self.shard_size - 1) // self.shard_size
+            logger.info(f"   創建 {shard_count} 個分片（每片{self.shard_size}個交易對）")
+            
             self.shard_feed = ShardFeed(
                 all_symbols=self.symbols,
                 shard_size=self.shard_size,
@@ -179,28 +210,45 @@ class WebSocketManager:
                 kline_interval=self.kline_interval
             )
             tasks.append(self.shard_feed.start())
+            logger.info(f"   ✅ ShardFeed已創建")
         else:
-            logger.warning("⚠️ ShardFeed: 無幣種或未啟用，跳過")
+            logger.warning("   ⚠️ 無交易對或Feed未啟用，跳過ShardFeed")
         
         # 3. 啟動AccountFeed（帳戶/倉位監控）
+        logger.info("📡 步驟3/4：啟動AccountFeed（帳戶監控）...")
         if self.enable_account_feed:
             self.account_feed = AccountFeed(binance_client=self.binance_client)
             tasks.append(self.account_feed.start())
+            logger.info("   ✅ AccountFeed已創建")
+        else:
+            logger.info("   ⏸️  AccountFeed未啟用")
         
         # 4. 並行啟動所有Feed
         if tasks:
+            logger.info(f"📡 並行啟動 {len(tasks)} 個Feed...")
             await asyncio.gather(*tasks, return_exceptions=True)
+            logger.info("   ✅ 所有Feed已啟動")
         
-        # 🔥 v3.17.3+：預熱K線緩存（解決冷啟動問題）
+        # 🔥 v3.18+：預熱K線緩存（解決冷啟動問題）
+        logger.info("📡 步驟4/4：預熱K線緩存...")
         if self.enable_kline_feed and self.shard_feed:
-            logger.info("🔥 開始預熱WebSocket緩存（用REST獲取歷史K線）...")
+            logger.info("   🔥 開始預熱（用REST API獲取歷史100根1m K線）...")
             await self._warmup_cache()
+        else:
+            logger.warning("   ⚠️ 預熱跳過（K線Feed未啟用或ShardFeed未創建）")
+            logger.warning("   ⚠️ WebSocket將從實時接收開始，需60分鐘累積1h數據")
         
-        logger.info("✅ WebSocketManager已啟動（K線Feed + 價格Feed + 帳戶Feed + 預熱完成）")
+        logger.info("=" * 80)
+        logger.info("✅ WebSocketManager啟動完成")
+        logger.info(f"   K線Feed: {'✅' if self.shard_feed else '⏸️ '}")
+        logger.info(f"   價格Feed: {'✅' if self.shard_feed and self.enable_price_feed else '⏸️ '}")
+        logger.info(f"   帳戶Feed: {'✅' if self.account_feed else '⏸️ '}")
+        logger.info(f"   監控交易對: {len(self.symbols)}個")
+        logger.info("=" * 80)
     
     async def _warmup_cache(self, timeout: int = 60):
         """
-        預熱K線緩存（v3.17.3+冷啟動優化）
+        預熱K線緩存（v3.18+ 強化版：REST失敗不影響WebSocket）
         
         解決問題：
         - WebSocket啟動時緩存為空，導致立即fallback到REST
@@ -212,14 +260,19 @@ class WebSocketManager:
         - 立即可用於聚合5m/15m/1h
         - WebSocket繼續接收新K線並累積
         
+        🔥 v3.18+ 修復：
+        - 預熱失敗不影響WebSocket啟動
+        - 即使所有REST請求失敗，WebSocket仍會接收實時數據
+        - 實時累積60根1m K線後（約60分鐘）即可聚合1h
+        
         Args:
             timeout: 預熱超時時間（秒），默認60秒
         """
         if not self.shard_feed or not self.shard_feed.kline_shards:
-            logger.warning("⚠️ 無K線分片，跳過預熱")
+            logger.warning("   ⚠️ 無K線分片，跳過預熱")
             return
         
-        logger.info(f"🔥 開始預熱{len(self.symbols)}個交易對的K線緩存...")
+        logger.info(f"   預熱目標: {len(self.symbols)}個交易對")
         start_time = asyncio.get_event_loop().time()
         
         # 批量獲取歷史K線（避免速率限制）
@@ -240,7 +293,10 @@ class WebSocketManager:
             
             for symbol, result in zip(batch, results):
                 if isinstance(result, Exception):
-                    logger.debug(f"⚠️ {symbol} 預熱失敗: {result}")
+                    logger.debug(f"      {symbol}: 異常失敗 ({str(result)[:50]})")
+                    failed_count += 1
+                elif result is False or result is None:
+                    logger.debug(f"      {symbol}: 預熱失敗（REST API不可用）")
                     failed_count += 1
                 elif result:
                     warmed_count += 1
@@ -248,7 +304,7 @@ class WebSocketManager:
             # 檢查超時
             elapsed = asyncio.get_event_loop().time() - start_time
             if elapsed > timeout:
-                logger.warning(f"⚠️ 預熱超時（{elapsed:.1f}s），已完成{warmed_count}/{len(self.symbols)}個交易對")
+                logger.warning(f"   ⚠️ 預熱超時（{elapsed:.1f}s），已完成{warmed_count}/{len(self.symbols)}個交易對")
                 break
             
             # 避免速率限制
@@ -257,13 +313,22 @@ class WebSocketManager:
         elapsed = asyncio.get_event_loop().time() - start_time
         success_rate = (warmed_count / len(self.symbols) * 100) if self.symbols else 0
         
-        logger.info("=" * 80)
-        logger.info(f"✅ WebSocket緩存預熱完成")
+        logger.info("   " + "─" * 76)
+        logger.info(f"   預熱結果:")
         logger.info(f"   ⏱️  耗時: {elapsed:.1f}秒")
         logger.info(f"   ✅ 成功: {warmed_count}/{len(self.symbols)} ({success_rate:.1f}%)")
-        logger.info(f"   ❌ 失敗: {failed_count}")
-        logger.info(f"   📊 現在可以立即使用WebSocket數據聚合5m/15m/1h")
-        logger.info("=" * 80)
+        logger.info(f"   ❌ 失敗: {failed_count}/{len(self.symbols)}")
+        
+        if warmed_count > 0:
+            logger.info(f"   ✅ 預熱成功！現在可以立即使用WebSocket聚合5m/15m/1h")
+        elif warmed_count == 0 and len(self.symbols) > 0:
+            logger.warning(f"   ⚠️ 預熱完全失敗（REST API不可用或熔斷器阻斷）")
+            logger.warning(f"   ⚠️ WebSocket將從實時接收開始，需等待數據累積：")
+            logger.warning(f"      • 5m數據將在5分鐘後可用")
+            logger.warning(f"      • 15m數據將在15分鐘後可用")
+            logger.warning(f"      • 1h數據將在60分鐘後可用")
+        
+        logger.info("   " + "─" * 76)
     
     async def _fetch_and_seed_kline_history(self, symbol: str) -> bool:
         """
