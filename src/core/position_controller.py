@@ -297,7 +297,7 @@ class PositionController:
             
             if not account_info:
                 # 備援：使用REST API
-                account_info = await self.binance_client.get_futures_account_balance()
+                account_info = await self.binance_client.get_account_balance()
             
             if not account_info:
                 logger.warning("⚠️ 無法獲取帳戶信息，跳過全倉保護檢查")
