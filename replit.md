@@ -65,6 +65,50 @@ git push origin main
 
 ## 最近更新
 
+### v3.18+ (2025-10-30) - WebSocket冷啟動完整修復 🔥
+
+**類型**: 🚨 **CRITICAL BUG FIX**  
+**目標**: 完整解決WebSocket冷啟動問題，確保REST API失敗時WebSocket仍可正常啟動  
+**狀態**: ✅ **已完成並通過Architect審查**
+
+#### **修復內容**
+
+**問題診斷**：
+- WebSocket Manager依賴REST API獲取交易對列表
+- Railway環境熔斷器阻斷所有REST請求（缺少API密鑰）
+- 交易對列表為空 → ShardFeed未創建 → WebSocket完全未啟動
+- 系統100% fallback到REST API（但REST也失敗）
+
+**解決方案**：
+1. ✅ **硬編碼Fallback列表**：50個高流動性USDT永續合約（BTCUSDT、ETHUSDT等）
+2. ✅ **_get_all_futures_symbols()修復**：在所有失敗場景都fallback到硬編碼列表
+3. ✅ **預熱失敗處理優化**：
+   - False/None結果正確累計到failed_count
+   - warmed_count==0時發出明確警告
+   - 詳細說明數據累積時間（5m/15m/1h）
+4. ✅ **啟動日誌強化**：步驟化日誌（1/4到4/4），詳細記錄每個階段
+
+**修復效果**：
+```
+✅ WebSocketManager啟動完成
+   K線Feed: ✅  （監控50個交易對）
+   價格Feed: ✅  （實時bookTicker）
+   帳戶Feed: ✅  （即時倉位更新）
+   
+⚠️ 預熱完全失敗（REST API不可用）
+⚠️ WebSocket將從實時接收開始，需等待數據累積：
+   • 5m數據將在5分鐘後可用
+   • 15m數據將在15分鐘後可用
+   • 1h數據將在60分鐘後可用
+```
+
+**關鍵改進**：
+- 即使REST API完全失敗，WebSocket仍可正常啟動並接收實時數據
+- 預熱失敗不影響系統運行，60分鐘後可聚合完整1h K線
+- 詳細日誌便於診斷冷啟動問題
+
+---
+
 ### v3.18+ (2025-10-29) - 完整進出場邏輯系統 + 統一信號上下文架構 🚀
 
 **類型**: 🎯 **MAJOR ARCHITECTURE OVERHAUL**  
