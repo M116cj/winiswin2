@@ -533,6 +533,12 @@ class SelfLearningTrader:
                     explore['size'] = min_notional / explore['signal']['entry_price']
                     explore['notional'] = min_notional
                 
+                # 🔥 v3.18+ Critical Fix: 確保signal包含original_signal用於智能出場
+                if 'original_signal' not in explore['signal']:
+                    import copy
+                    explore['signal']['original_signal'] = copy.deepcopy(explore['signal'])
+                    logger.debug(f"📋 {explore['signal']['symbol']} 已添加original_signal（探索模式）")
+                
                 # 執行探索性交易
                 position = await self._place_order_and_monitor(
                     explore['signal'], 
@@ -551,6 +557,12 @@ class SelfLearningTrader:
                 return position
         
         # === 7. 執行最優信號（95% 情況）===
+        # 🔥 v3.18+ Critical Fix: 確保signal包含original_signal用於智能出場
+        if 'original_signal' not in best['signal']:
+            import copy
+            best['signal']['original_signal'] = copy.deepcopy(best['signal'])
+            logger.debug(f"📋 {best['signal']['symbol']} 已添加original_signal（最優信號）")
+        
         position = await self._place_order_and_monitor(
             best['signal'], 
             best['size'], 
@@ -973,6 +985,14 @@ class SelfLearningTrader:
                     f"名義價值: ${notional_value:.2f} | "
                     f"質量分數: {alloc.quality_score:.3f}"
                 )
+                
+                # 🔥 v3.18+ Critical Fix: 確保signal包含original_signal用於智能出場
+                # 問題：PositionMonitor需要original_signal來執行進場失效、逆勢平倉等高級出場邏輯
+                # 解決：如果signal缺少original_signal，使用deep copy創建完整備份
+                if 'original_signal' not in signal:
+                    import copy
+                    signal['original_signal'] = copy.deepcopy(signal)
+                    logger.debug(f"📋 {symbol} 已添加original_signal（用於智能出場）")
                 
                 # 執行下單
                 position = await self._place_order_and_monitor(
