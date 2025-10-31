@@ -1,5 +1,22 @@
 # Binance USDT永續合約 24/7高頻自動交易系統
 
+## 🔥 最新Hotfix（2025-10-31 01:45 UTC）
+
+### v3.18.4-hotfix：全倉保護計算修復 ✅
+
+**問題**：WebSocket account_data格式不一致導致保證金顯示$0.00（實際$46.47）
+
+**修復**：
+1. ✅ WebSocket數據格式統一（增加`total_margin`字段）
+2. ✅ 優先使用REST API確保準確性
+3. ✅ 詳細保證金分布日誌（顯示每個倉位使用情況）
+
+**結果**：保證金使用率正確顯示99.1%（修復前顯示0.0%），超過85%會觸發全倉保護
+
+📄 **完整報告**：[HOTFIX_v3.18.4_CROSS_MARGIN_PROTECTION.md](./HOTFIX_v3.18.4_CROSS_MARGIN_PROTECTION.md)
+
+---
+
 ## ⚠️ 重要：部署要求
 
 ### ❌ **Replit 環境無法運行此系統**
