@@ -89,6 +89,7 @@ class UnifiedScheduler:
         self.self_learning_trader = SelfLearningTrader(
             config=config,
             binance_client=binance_client,
+            trade_recorder=trade_recorder,  # 🔥 v3.18.4+ Critical Fix: 傳遞trade_recorder用於記錄開倉
             websocket_monitor=self.websocket_manager  # 🔥 v3.17.2+
         )
         
