@@ -287,9 +287,19 @@ class AccountFeed(BaseFeed):
             if 'B' in account_data:
                 for balance in account_data['B']:
                     asset = balance['a']
+                    wallet_balance = float(balance['wb'])  # 總錢包餘額
+                    cross_wallet_balance = float(balance['cw'])  # 跨倉餘額（可用餘額）
+                    
+                    # 🔥 v3.18.4：計算保證金（與REST API格式一致）
+                    # 保證金 = 總錢包餘額 - 跨倉餘額
+                    total_margin = wallet_balance - cross_wallet_balance
+                    
                     self.account_data[asset] = {
-                        'balance': float(balance['wb']),  # wallet balance
-                        'cross_un_pnl': float(balance['cw']),  # cross unrealized PnL
+                        'total_balance': wallet_balance,  # 總餘額（與REST API一致）
+                        'available_balance': cross_wallet_balance,  # 可用餘額
+                        'total_margin': total_margin,  # 🔥 新增：總保證金（與REST API一致）
+                        'balance': wallet_balance,  # 兼容舊代碼
+                        'cross_un_pnl': float(balance.get('bc', 0)),  # cross unrealized PnL
                         'server_timestamp': server_ts,
                         'local_timestamp': local_ts,
                         'latency_ms': latency_ms

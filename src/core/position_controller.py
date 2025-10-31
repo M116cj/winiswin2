@@ -300,23 +300,42 @@ class PositionController:
                 logger.info(f"🛡️ 全倉保護冷卻中，剩餘 {time_left} 秒")
                 return False
             
-            # 步驟2：獲取帳戶餘額（優先使用WebSocket，REST備援）
+            # 步驟2：獲取帳戶餘額（🔥 v3.18.4：優先使用REST API，確保數據準確性）
+            # WebSocket的cw字段可能不等於available_balance，導致保證金計算錯誤
             account_info = None
-            if self.websocket_monitor:
-                account_info = self.websocket_monitor.get_account_balance()
+            data_source = "REST"
             
-            if not account_info:
-                # 備援：使用REST API
+            try:
+                # 優先使用REST API（確保準確性）
                 account_info = await self.binance_client.get_account_balance()
+                
+                # 備援：如果REST失敗，嘗試WebSocket（但可能不準確）
+                if not account_info and self.websocket_monitor:
+                    account_info = self.websocket_monitor.get_account_balance()
+                    data_source = "WebSocket（備援）"
+                    logger.debug("⚠️ REST API失敗，使用WebSocket備援數據")
+                
+            except Exception as e:
+                logger.warning(f"⚠️ 獲取REST帳戶信息失敗: {e}")
+                # 最後備援：使用WebSocket
+                if self.websocket_monitor:
+                    account_info = self.websocket_monitor.get_account_balance()
+                    data_source = "WebSocket（備援）"
             
             if not account_info:
-                logger.warning("⚠️ 無法獲取帳戶信息，跳過全倉保護檢查")
+                logger.warning("⚠️ 無法獲取帳戶信息（REST和WebSocket都失敗），跳過全倉保護檢查")
                 return False
             
             # 步驟3：計算總金額和總保證金
-            # 注意：使用正確的字段名（與binance_client.get_account_balance()返回的格式一致）
             total_balance = float(account_info.get('total_balance', 0))
             total_margin = float(account_info.get('total_margin', 0))
+            
+            # 🔥 v3.18.4：記錄數據來源和原始數據（用於調試）
+            logger.debug(
+                f"🔍 帳戶數據來源: {data_source} | "
+                f"total_balance={total_balance:.2f}, "
+                f"total_margin={total_margin:.2f}"
+            )
             
             if total_balance <= 0:
                 logger.warning(f"⚠️ 帳戶總金額異常: ${total_balance:.2f}")
@@ -326,6 +345,26 @@ class PositionController:
             margin_usage_ratio = total_margin / total_balance
             threshold = getattr(self.config, 'CROSS_MARGIN_PROTECTOR_THRESHOLD', 0.85)
             
+            # 🔥 v3.18.4：計算每個倉位的保證金使用（用於詳細日誌）
+            position_margins = []
+            for p in positions:
+                # 計算倉位保證金 = abs(size × entry_price / leverage)
+                try:
+                    size = abs(float(p.get('size', 0)))
+                    entry_price = float(p.get('entry_price', 0))
+                    leverage = float(p.get('leverage', 1))
+                    position_margin = (size * entry_price) / leverage if leverage > 0 else 0
+                    position_margins.append({
+                        'symbol': p.get('symbol', 'UNKNOWN'),
+                        'margin': position_margin,
+                        'pnl': float(p.get('pnl', 0))
+                    })
+                except Exception as e:
+                    logger.debug(f"⚠️ 計算倉位保證金失敗 {p.get('symbol')}: {e}")
+            
+            # 排序（保證金最大的在前）
+            position_margins.sort(key=lambda x: x['margin'], reverse=True)
+            
             logger.info(
                 f"🛡️ 全倉保護檢查 | "
                 f"保證金使用率: {margin_usage_ratio:.1%} | "
@@ -333,6 +372,15 @@ class PositionController:
                 f"總金額: ${total_balance:.2f} | "
                 f"總保證金: ${total_margin:.2f}"
             )
+            
+            # 🔥 v3.18.4：詳細日誌（顯示前5個最大保證金倉位）
+            if position_margins and len(positions) > 0:
+                logger.debug(f"📊 倉位保證金分布（前5）：")
+                for pm in position_margins[:5]:
+                    logger.debug(
+                        f"   • {pm['symbol']}: ${pm['margin']:.2f} "
+                        f"(PnL: ${pm['pnl']:+.2f})"
+                    )
             
             # 步驟5：判斷是否觸發保護條件
             if margin_usage_ratio <= threshold:
