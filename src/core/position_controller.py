@@ -553,9 +553,11 @@ class PositionController:
             if is_hedge_mode:
                 # Hedge Mode: 使用positionSide
                 order_params['positionSide'] = side
+                logger.info(f"  📍 Hedge Mode: side={close_side}, positionSide={side}")
             else:
                 # One-Way Mode: 使用reduceOnly="true"（字符串）
                 order_params['reduceOnly'] = "true"
+                logger.info(f"  📍 One-Way Mode: side={close_side}, reduceOnly=\"true\"")
             
             # 使用市價單平倉
             result = await self.binance_client.place_order(
