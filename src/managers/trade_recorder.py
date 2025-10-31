@@ -61,6 +61,17 @@ class TradeRecorder:
             competition_context: 競價上下文（v3.17.10+）包含 rank, score_gap, num_signals
             websocket_metadata: WebSocket元數據（v3.17.2+）包含 latency_ms, server_timestamp, local_timestamp, shard_id
         """
+        # 🔥 v3.18.4+ Critical Fix: 創建可JSON序列化的signal副本（移除datetime對象）
+        signal_copy = {}
+        for key, value in signal.items():
+            if isinstance(value, datetime):
+                signal_copy[key] = value.isoformat()
+            elif isinstance(value, dict) or isinstance(value, list) or isinstance(value, (int, float, str, bool, type(None))):
+                signal_copy[key] = value
+            else:
+                # 跳過不可序列化的對象
+                logger.debug(f"跳過不可序列化字段: {key} ({type(value)})")
+        
         entry_data = {
             'entry_id': f"{signal['symbol']}_{datetime.now().timestamp()}",
             'symbol': signal['symbol'],
@@ -75,8 +86,8 @@ class TradeRecorder:
             'order_blocks': signal.get('order_blocks', 0),
             'liquidity_zones': signal.get('liquidity_zones', 0),
             'indicators': signal.get('indicators', {}),
-            # 🔥 v3.18+ Critical Fix: 存儲original_signal用於PositionMonitor即時評估
-            'original_signal': signal.get('original_signal', signal.copy()),  # fallback到完整signal
+            # 🔥 v3.18.4+ Critical Fix: 存儲可序列化的original_signal用於PositionMonitor即時評估
+            'original_signal': signal.get('original_signal', signal_copy),  # fallback到可序列化副本
         }
         
         # 🔥 v3.17.10+：添加競價上下文特徵（3個新特徵）
