@@ -86,7 +86,9 @@ class BinanceClient:
         method: str,
         endpoint: str,
         params: Optional[dict] = None,
-        signed: bool = False
+        signed: bool = False,
+        priority: Optional['Priority'] = None,
+        operation_type: str = "generic"
     ) -> Any:
         """
         執行 API 請求
@@ -96,10 +98,16 @@ class BinanceClient:
             endpoint: API 端點
             params: 請求參數
             signed: 是否需要簽名
+            priority: 熔斷器優先級（CRITICAL平倉操作可bypass阻斷）
+            operation_type: 操作類型（用於熔斷器白名單）
         
         Returns:
             API 響應
         """
+        from src.core.circuit_breaker import Priority
+        if priority is None:
+            priority = Priority.NORMAL
+        
         await self.rate_limiter.acquire()
         
         async def _do_request():
@@ -200,7 +208,11 @@ class BinanceClient:
                     return await response.json()
         
         try:
-            result = await self.circuit_breaker.call_async(_do_request)
+            result = await self.circuit_breaker.call_async(
+                _do_request,
+                priority=priority,
+                operation_type=operation_type
+            )
             return result
         except aiohttp.ClientResponseError as e:
             logger.error(f"API 請求失敗: {endpoint} - HTTP {e.status}: {e.message}")
@@ -528,6 +540,8 @@ class BinanceClient:
         quantity: float,
         price: Optional[float] = None,
         stop_price: Optional[float] = None,
+        priority: Optional['Priority'] = None,
+        operation_type: str = "generic",
         **kwargs
     ) -> dict:
         """
@@ -540,11 +554,17 @@ class BinanceClient:
             quantity: 數量
             price: 限價單價格
             stop_price: 止損/止盈價格
+            priority: 熔斷器優先級（CRITICAL=平倉可bypass）
+            operation_type: 操作類型（close_position=平倉白名單）
             **kwargs: 其他參數
         
         Returns:
             訂單信息
         """
+        from src.core.circuit_breaker import Priority
+        if priority is None:
+            priority = Priority.NORMAL
+        
         # 自動格式化數量以符合 Binance 精度要求
         formatted_quantity = await self.format_quantity(symbol, quantity)
         
@@ -565,7 +585,14 @@ class BinanceClient:
         if formatted_quantity != quantity:
             logger.debug(f"  數量已格式化: {quantity} → {formatted_quantity}")
         
-        return await self._request("POST", "/fapi/v1/order", params=params, signed=True)
+        return await self._request(
+            "POST", 
+            "/fapi/v1/order", 
+            params=params, 
+            signed=True,
+            priority=priority,
+            operation_type=operation_type
+        )
     
     async def get_position_mode(self) -> bool:
         """
@@ -598,6 +625,8 @@ class BinanceClient:
         quantity: float,
         price: Optional[float] = None,
         stop_price: Optional[float] = None,
+        priority: Optional['Priority'] = None,
+        operation_type: str = "generic",
         **kwargs
     ) -> dict:
         """
@@ -615,11 +644,16 @@ class BinanceClient:
             quantity: 數量
             price: 限價單價格
             stop_price: 止損/止盈價格
+            priority: 熔斷器優先級（CRITICAL=平倉可bypass）
+            operation_type: 操作類型（close_position=平倉白名單）
             **kwargs: 其他參數（Hedge Mode必須包含positionSide）
         
         Returns:
             訂單信息
         """
+        from src.core.circuit_breaker import Priority
+        if priority is None:
+            priority = Priority.NORMAL
         # 自動適配 Position Mode
         is_hedge_mode = await self.get_position_mode()
         
@@ -646,7 +680,10 @@ class BinanceClient:
         
         # 嘗試下單，如果遇到 -4061 錯誤則自動重試
         try:
-            return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+            return await self.create_order(
+                symbol, side, order_type, quantity, price, stop_price,
+                priority=priority, operation_type=operation_type, **kwargs
+            )
         except BinanceRequestError as e:
             # 檢查是否是 -4061 錯誤（Position Side 不匹配）
             if '-4061' in str(e):
@@ -665,7 +702,10 @@ class BinanceClient:
                     logger.debug("  移除 positionSide")
                 
                 # 重試
-                return await self.create_order(symbol, side, order_type, quantity, price, stop_price, **kwargs)
+                return await self.create_order(
+                    symbol, side, order_type, quantity, price, stop_price,
+                    priority=priority, operation_type=operation_type, **kwargs
+                )
             else:
                 # 其他錯誤直接拋出
                 raise

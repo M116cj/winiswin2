@@ -496,12 +496,16 @@ class PositionMonitor24x7:
                 order_params['reduceOnly'] = "true"
                 logger.info("  One-Way Mode: reduceOnly=\"true\"")
             
-            # 市價平倉（Priority 0，最高優先級）
+            # 🔥 v3.18.4-Critical: 市價平倉（CRITICAL優先級，確保bypass熔斷器）
+            from src.core.circuit_breaker import Priority
+            
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
                 quantity=quantity,
+                priority=Priority.CRITICAL,
+                operation_type="close_position",
                 **order_params
             )
             
