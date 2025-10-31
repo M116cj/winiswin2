@@ -16,7 +16,7 @@ class ConfigProfile:
     min_win_probability: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.70"))  # 🔥 v3.18.4+：提升至70%
     min_confidence: float = float(os.getenv("MIN_CONFIDENCE", "0.50"))
     min_rr_ratio: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
-    max_rr_ratio: float = float(os.getenv("MAX_RR_RATIO", "2.0"))
+    max_rr_ratio: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18.4+：同步Config上限
     
     # 槓桿計算參數（無上限）
     leverage_base: float = 1.0
