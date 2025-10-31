@@ -177,6 +177,50 @@ class TradeRecorder:
         
         return ml_record
     
+    def record_partial_exit(
+        self,
+        symbol: str,
+        direction: str,
+        exit_price: float,
+        closed_quantity: float,
+        reason: str,
+        pnl: float
+    ):
+        """
+        🔥 v3.18.4+：記錄部分平倉（不配對，僅記錄）
+        
+        Args:
+            symbol: 交易對符號
+            direction: 倉位方向（LONG/SHORT）
+            exit_price: 平倉價格
+            closed_quantity: 平倉數量
+            reason: 平倉原因
+            pnl: 部分平倉盈虧
+        """
+        try:
+            partial_exit_record = {
+                'symbol': symbol,
+                'direction': direction,
+                'exit_price': exit_price,
+                'closed_quantity': closed_quantity,
+                'reason': reason,
+                'pnl': pnl,
+                'exit_timestamp': datetime.now().isoformat(),
+                'is_partial': True
+            }
+            
+            # 可以選擇記錄到單獨的文件或添加標記
+            logger.info(
+                f"📝 部分平倉記錄: {symbol} {direction} 平{closed_quantity:.6f} @ ${exit_price:.2f} | "
+                f"PnL: ${pnl:+.2f} | {reason}"
+            )
+            
+            # 🔥 v3.18.4+：可選：追加到completed_trades作為部分平倉標記
+            # 暫時僅記錄日誌，不持久化（避免影響ML訓練數據）
+            
+        except Exception as e:
+            logger.error(f"❌ 記錄部分平倉失敗: {e}", exc_info=True)
+    
     def _create_ml_record(self, entry: Dict, exit_data: Dict) -> Dict:
         """
         創建完整的 ML 訓練記錄（使用FeatureEngine）

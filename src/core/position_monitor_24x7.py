@@ -73,14 +73,20 @@ class PositionMonitor24x7:
         self.entry_reason_expired_closures = 0
         self.counter_trend_closures = 0
         self.trailing_tp_adjustments = 0  # 🔥 v3.18+：追蹤止盈調整次數
+        self.partial_close_60pct_count = 0  # 🔥 v3.18.4+：60%盈利部分平倉次數
         self.last_check_time: Optional[datetime] = None
         
+        # 🔥 v3.18.4+：60%盈利部分平倉追蹤（每個倉位只執行一次）
+        # 格式：{(symbol, direction): True}
+        self._partial_closed_positions: Dict[tuple, bool] = {}
+        
         logger.info("=" * 60)
-        logger.info("✅ 24/7 倉位監控器初始化完成（v3.18+）")
+        logger.info("✅ 24/7 倉位監控器初始化完成（v3.18.4+）")
         logger.info(f"   ⏱️  檢查間隔: {self.monitor_interval} 秒")
         logger.info(f"   🚨 風險熔斷閾值: {self.risk_threshold:.1%}")
         logger.info(f"   🤖 評估引擎: {self.evaluation_engine.get_engine_info()['engine_type']}")
         logger.info(f"   ✅ 強制止盈（信心/勝率降20%）: 啟用")
+        logger.info(f"   💰 60%盈利自動平倉50%（每倉一次）: 啟用")  # 🔥 v3.18.4+ 新增
         logger.info(f"   🟡 智能持倉（深度虧損+高信心）: 啟用")
         logger.info(f"   ⚠️ 進場理由失效（信心<70%）: 啟用")
         logger.info(f"   ⚪ 逆勢平倉（信心<80%）: 啟用")
@@ -315,6 +321,32 @@ class PositionMonitor24x7:
                     self.forced_tp_closures += 1
                     return
             
+            # 💰 v3.18.4+：60%盈利自動平50%倉位（每個倉位只執行一次）
+            position_key = (symbol, direction)
+            if pnl_pct >= 0.60 and position_key not in self._partial_closed_positions:
+                logger.critical(
+                    f"💰 {symbol} 達到60%報酬率，執行部分平倉（50%倉位）| "
+                    f"PnL: ${unrealized_pnl:+.2f} ({pnl_pct:+.1%}) | "
+                    f"倉位: {abs(position_amt):.6f}"
+                )
+                
+                # 平50%倉位
+                half_quantity = abs(position_amt) * 0.5
+                success = await self._partial_close_position(
+                    symbol, position_amt, mark_price, half_quantity,
+                    reason=f"60%盈利自動平倉50%（{pnl_pct:.1%}）"
+                )
+                
+                if success:
+                    # 標記該倉位已執行60%部分平倉
+                    self._partial_closed_positions[position_key] = True
+                    self.partial_close_60pct_count += 1
+                    logger.info(
+                        f"✅ {symbol} 部分平倉成功，剩餘倉位: {half_quantity:.6f} | "
+                        f"已實現盈利約 {unrealized_pnl * 0.5:+.2f} USDT"
+                    )
+                    # 不return，繼續監控剩餘50%倉位
+            
             # 2️⃣ 智能持倉（深度虧損但高信心）
             if -0.99 < pnl_pct <= -0.50:
                 rebound_prob = await self._predict_rebound_probability(symbol, direction)
@@ -447,6 +479,115 @@ class PositionMonitor24x7:
         
         # 返回None觸發備用計算方案
         return None
+    
+    async def _partial_close_position(
+        self,
+        symbol: str,
+        position_amt: float,
+        current_price: float,
+        close_quantity: float,
+        reason: str = "部分平倉"
+    ) -> bool:
+        """
+        🔥 v3.18.4+：部分平倉（市價單，符合Binance API協議）
+        
+        依照Binance API官方協議：
+        - Hedge Mode: 使用 positionSide 參數
+        - One-Way Mode: 使用 reduceOnly="true" 參數
+        
+        Args:
+            symbol: 交易對符號
+            position_amt: 原始倉位數量（正數=多倉，負數=空倉）
+            current_price: 當前價格
+            close_quantity: 要平倉的數量（絕對值）
+            reason: 平倉原因（用於記錄）
+            
+        Returns:
+            bool: 是否成功
+        """
+        if not self.binance_client:
+            logger.error("❌ 無 Binance 客戶端，無法部分平倉")
+            return False
+        
+        try:
+            # 計算平倉方向和數量
+            side = "SELL" if position_amt > 0 else "BUY"
+            quantity = abs(close_quantity)
+            position_side = "LONG" if position_amt > 0 else "SHORT"
+            
+            logger.critical(
+                f"💰 執行部分平倉: {symbol} {side} {quantity:.6f} @ ${current_price:.2f} | 原因: {reason}"
+            )
+            
+            # 檢測Position Mode
+            is_hedge_mode = await self.binance_client.get_position_mode()
+            
+            # 依照Binance API協議構建參數
+            order_params = {}
+            if is_hedge_mode:
+                # Hedge Mode: 使用positionSide
+                order_params['positionSide'] = position_side
+                logger.info(f"  Hedge Mode: positionSide={position_side}")
+            else:
+                # One-Way Mode: 使用reduceOnly="true"（字符串，不是Boolean）
+                order_params['reduceOnly'] = "true"
+                logger.info("  One-Way Mode: reduceOnly=\"true\"")
+            
+            # 🔥 v3.18.4-Critical: 市價平倉（CRITICAL優先級，確保bypass熔斷器）
+            from src.core.circuit_breaker import Priority
+            
+            result = await self.binance_client.place_order(
+                symbol=symbol,
+                side=side,
+                order_type="MARKET",
+                quantity=quantity,
+                priority=Priority.CRITICAL,
+                operation_type="close_position",
+                **order_params
+            )
+            
+            if result:
+                logger.critical(f"✅ 部分平倉成功: {symbol} (訂單: {result.get('orderId')})")
+                
+                # 🔥 記錄到交易記錄（使用record_partial_close）
+                if self.trade_recorder:
+                    try:
+                        # 從trade_recorder獲取entry_price
+                        entry_price = current_price  # 默認值
+                        try:
+                            active_trades = self.trade_recorder.get_active_trades(symbol)
+                            if active_trades and len(active_trades) > 0:
+                                entry_price = active_trades[0].get('entry_price', current_price)
+                        except Exception as e:
+                            logger.debug(f"獲取 {symbol} entry_price 失敗: {e}")
+                        
+                        # 計算部分平倉PnL
+                        if position_amt > 0:  # LONG
+                            partial_pnl = (current_price - entry_price) * quantity
+                        else:  # SHORT
+                            partial_pnl = (entry_price - current_price) * quantity
+                        
+                        # 記錄部分平倉
+                        self.trade_recorder.record_partial_exit(
+                            symbol=symbol,
+                            direction=position_side,
+                            exit_price=current_price,
+                            closed_quantity=quantity,
+                            reason=reason,
+                            pnl=partial_pnl
+                        )
+                        logger.info(f"  ✅ 部分平倉已記錄到交易記錄")
+                    except Exception as e:
+                        logger.warning(f"記錄部分平倉失敗: {e}")
+                
+                return True
+            else:
+                logger.error(f"❌ 部分平倉失敗: {symbol}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"❌ 部分平倉異常: {symbol} - {e}", exc_info=True)
+            return False
     
     async def _force_close_position(
         self,
