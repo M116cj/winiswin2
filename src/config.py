@@ -166,7 +166,7 @@ class Config:
     VIRTUAL_POSITION_EXPIRY: int = 96
     
     # ===== ML 數據收集配置 =====
-    ML_FLUSH_COUNT: int = 25
+    ML_FLUSH_COUNT: int = 1  # 🔥 v3.18.4-hotfix: 實時保存，防止數據丟失
     ML_FLUSH_INTERVAL: int = 300
     ML_DATA_DIR: str = "ml_data"
     ML_MIN_TRAINING_SAMPLES: int = 100
@@ -302,7 +302,7 @@ class Config:
     
     # ===== 數據文件路徑 =====
     DATA_DIR: str = "data"
-    TRADES_FILE: str = f"{DATA_DIR}/trades.json"
+    TRADES_FILE: str = f"{DATA_DIR}/trades.jsonl"  # 🔥 v3.18.4-hotfix: 正確的JSON Lines格式
     ML_PENDING_FILE: str = f"{DATA_DIR}/ml_pending_entries.json"
     VIRTUAL_POSITIONS_FILE: str = f"{DATA_DIR}/virtual_positions.json"
     
