@@ -1,6 +1,41 @@
 # Binance USDT永續合約 24/7高頻自動交易系統
 
-## 🔥 最新Hotfix（2025-10-31 01:45 UTC）
+## 🔥 最新Hotfix（2025-10-31 15:30 UTC）
+
+### v3.18.4-hotfix-ml：ML學習系統數據持久化修復 ✅
+
+**問題**：ML訓練數據無法正確保存，導致模型無法學習改進
+
+**發現的4個關鍵問題**：
+1. ❌ 文件擴展名不一致（配置`.json`但實現JSON Lines格式）
+2. ❌ Flush門檻過高（需累積25筆交易才保存，重啟時丟失最多24筆數據）
+3. ❌ 缺少Graceful Shutdown（Railway重啟時內存數據丟失）
+4. ❌ Signal Handler未正確掛載到event loop
+
+**修復**：
+1. ✅ 統一文件格式：`trades.json` → `trades.jsonl`（正確的JSON Lines擴展名）
+2. ✅ 實時保存：`ML_FLUSH_COUNT: 25 → 1`（每筆交易立即保存，零數據丟失）
+3. ✅ Graceful Shutdown：系統關閉時調用`force_flush()`保存所有ML數據
+4. ✅ Signal Handler修復：使用`loop.call_soon_threadsafe`確保正確執行
+5. ✅ `force_flush()`修復：無條件保存`pending_entries`（即使`completed_trades`為空）
+
+**結果**：
+- ✅ 零數據丟失風險（修復前最多丟失24筆）
+- ✅ 實時ML特徵記錄（修復前需等待25筆累積）
+- ✅ Railway重啟安全（修復前會丟失內存數據）
+- ✅ 模型可持續學習（修復前無法獲取完整訓練數據）
+
+**測試驗證**：所有測試通過 ✅
+- test_ml_data_save.py：配置、實時保存、force_flush ✅
+- test_shutdown_signal.py：Signal handling、Event loop integration ✅
+
+📄 **完整報告**：
+- [ML_LEARNING_AUDIT_REPORT.md](./ML_LEARNING_AUDIT_REPORT.md) - 問題分析
+- [ML_LEARNING_FIX_SUMMARY.md](./ML_LEARNING_FIX_SUMMARY.md) - 修復總結
+
+---
+
+## 🔥 Hotfix歷史（2025-10-31 01:45 UTC）
 
 ### v3.18.4-hotfix：全倉保護計算修復 ✅
 
