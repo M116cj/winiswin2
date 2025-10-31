@@ -432,30 +432,41 @@ class UnifiedScheduler:
                 amt = float(pos['positionAmt'])
                 direction = "LONG" if amt > 0 else "SHORT"
                 entry_price = float(pos.get('entryPrice', 0))
-                mark_price = float(pos.get('markPrice', 0))
                 # 🔥 支持兩種字段名稱 (Binance API不一致)
                 unrealized_pnl = float(pos.get('unrealizedProfit', pos.get('unRealizedProfit', 0)))
-                leverage = int(pos.get('leverage', 1))
                 
                 # 計算盈虧百分比
                 position_value = abs(amt) * entry_price
                 pnl_pct = (unrealized_pnl / position_value * 100) if position_value > 0 else 0
                 
-                # 獲取進場理由（從trade_recorder查詢）
-                entry_reason = await self._get_entry_reason(symbol, direction)
-                entry_reason_status = "✅ 有效" if entry_reason else "❌ 已失效"
+                # 🔥 v3.18.4+：獲取模型信心值和勝率（從trade_recorder元數據）
+                confidence = 0
+                win_rate = 0
                 
-                # 判斷趨勢狀態
-                trend_status = "📈 多頭" if mark_price > entry_price and direction == "LONG" else \
-                               "📉 空頭" if mark_price < entry_price and direction == "SHORT" else \
-                               "⚠️ 逆勢"
+                try:
+                    if self.trade_recorder:
+                        all_trades = self.trade_recorder.get_trades()
+                        open_trades = [
+                            t for t in all_trades 
+                            if t.get('symbol') == symbol 
+                            and t.get('direction') == direction
+                            and t.get('status') == 'open'
+                        ]
+                        
+                        if open_trades:
+                            latest_trade = open_trades[-1]
+                            metadata = latest_trade.get('metadata', {})
+                            confidence = metadata.get('confidence', 0)
+                            win_rate = metadata.get('win_probability', 0)
+                except Exception as e:
+                    logger.debug(f"獲取 {symbol} 信心值/勝率失敗: {e}")
                 
+                # 🎯 簡化日誌：只顯示信心值、勝率、盈虧
                 logger.info(
-                    f"   • {symbol} {direction} @ ${entry_price:.4f} | "
-                    f"槓桿={leverage}x | "
-                    f"盈虧=${unrealized_pnl:+.2f} ({pnl_pct:+.2f}%) | "
-                    f"{trend_status} | "
-                    f"進場理由{entry_reason_status}"
+                    f"   • {symbol} {direction} | "
+                    f"信心值={confidence:.1f}% | "
+                    f"勝率={win_rate:.1f}% | "
+                    f"盈虧=${unrealized_pnl:+.2f} ({pnl_pct:+.2f}%)"
                 )
             
             logger.info("=" * 80)
