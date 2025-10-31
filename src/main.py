@@ -275,14 +275,22 @@ class SelfLearningTradingSystem:
             logger.error(f"❌ 關閉失敗: {e}", exc_info=True)
     
     def _setup_signal_handlers(self):
-        """設置信號處理器"""
+        """
+        設置信號處理器（v3.18.4-hotfix）
+        
+        使用loop.call_soon_threadsafe確保shutdown在event loop中執行
+        """
+        loop = asyncio.get_running_loop()
+        
         def signal_handler(sig, frame):
             logger.info(f"\n收到信號 {sig}，準備關閉...")
             if self.running:
-                asyncio.create_task(self.shutdown())
+                # 使用call_soon_threadsafe在event loop中調度shutdown
+                loop.call_soon_threadsafe(lambda: asyncio.create_task(self.shutdown()))
         
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
+        logger.info("✅ 信號處理器已註冊（SIGINT, SIGTERM）")
 
 
 async def main():

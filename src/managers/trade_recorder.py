@@ -553,10 +553,15 @@ class TradeRecorder:
         return all_trades
     
     def force_flush(self):
-        """強制保存所有數據"""
-        if self.completed_trades:
-            self._flush_to_disk()
-            logger.info("強制保存完成")
+        """
+        強制保存所有數據（v3.18.4-hotfix）
+        
+        即使completed_trades為空，也要保存pending_entries
+        這確保系統關閉時不會丟失開倉記錄
+        """
+        # 總是調用_flush_to_disk，因為pending_entries可能有數據
+        self._flush_to_disk()
+        logger.info(f"✅ 強制保存完成: {len(self.completed_trades)} 條完成交易, {len(self.pending_entries)} 條待配對")
     
     async def save_competition_log(self, competition_log: Dict):
         """
