@@ -393,6 +393,13 @@ class PositionMonitor24x7:
                             f"勝率{current_win_prob:.1%}，5%回撤觸發"
                         )
                         self.trailing_tp_adjustments += 1
+                else:
+                    # 盈利>20%但條件不符合，說明原因
+                    logger.info(
+                        f"💡 {symbol} 盈利{pnl_pct:.1%} 但未啟動追蹤止盈 | "
+                        f"趨勢持續:{trend_continue_prob:.1%}(<70%?) 勝率:{current_win_prob:.1%}(<80%?) | "
+                        f"等待條件滿足或信心值/勝率降20%觸發強制止盈"
+                    )
             
             # 6️⃣ OCO訂單觸發 - Binance API自動處理，無需額外邏輯
             
@@ -402,6 +409,13 @@ class PositionMonitor24x7:
                     f"⚠️ {symbol} 虧損 {pnl_pct:.1%} "
                     f"(PnL: ${unrealized_pnl:.2f} / 風險: ${risk_amount:.2f}) | "
                     f"信心值:{current_confidence:.1%} 勝率:{current_win_prob:.1%}"
+                )
+            elif pnl_pct > 0.10:  # 盈利>10%時也記錄當前狀態
+                logger.info(
+                    f"📈 {symbol} 盈利 {pnl_pct:.1%} | "
+                    f"PnL: ${unrealized_pnl:+.2f} | "
+                    f"信心值:{current_confidence:.1%} 勝率:{current_win_prob:.1%} | "
+                    f"趨勢穩定，繼續持有"
                 )
                     
         except Exception as e:
