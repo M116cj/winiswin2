@@ -79,6 +79,7 @@ class TradeRecorder:
             'entry_price': signal['entry_price'],
             'entry_timestamp': signal['timestamp'].isoformat(),
             'confidence': signal['confidence'],
+            'win_probability': signal.get('win_probability', 0.5),  # 🔥 v3.18.4+ Critical: 保存勝率
             'leverage': position_info['leverage'],
             'position_value': position_info['position_value'],
             'timeframes': signal.get('timeframes', {}),

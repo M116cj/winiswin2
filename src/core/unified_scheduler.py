@@ -439,7 +439,7 @@ class UnifiedScheduler:
                 position_value = abs(amt) * entry_price
                 pnl_pct = (unrealized_pnl / position_value * 100) if position_value > 0 else 0
                 
-                # 🔥 v3.18.4+：獲取模型信心值和勝率（從trade_recorder元數據）
+                # 🔥 v3.18.4+：獲取模型信心值和勝率（從trade_recorder頂層字段）
                 confidence = 0
                 win_rate = 0
                 
@@ -455,9 +455,9 @@ class UnifiedScheduler:
                         
                         if open_trades:
                             latest_trade = open_trades[-1]
-                            metadata = latest_trade.get('metadata', {})
-                            confidence = metadata.get('confidence', 0)
-                            win_rate = metadata.get('win_probability', 0)
+                            # 🔥 Critical Fix: 信心值和勝率存儲在頂層，不是metadata中
+                            confidence = latest_trade.get('confidence', 0) * 100  # 0-1 → 0-100
+                            win_rate = latest_trade.get('win_probability', 0) * 100  # 0-1 → 0-100
                 except Exception as e:
                     logger.debug(f"獲取 {symbol} 信心值/勝率失敗: {e}")
                 
