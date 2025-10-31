@@ -144,7 +144,36 @@ class PositionMonitor24x7:
             positions: PositionController提供的倉位列表（格式已標準化）
         """
         if not positions:
+            # 🔥 v3.18.4+：無倉位時清空部分平倉追蹤字典
+            if self._partial_closed_positions:
+                logger.debug("📭 無持倉，清空部分平倉追蹤字典")
+                self._partial_closed_positions.clear()
             return
+        
+        # 🔥 v3.18.4+：清理已不存在倉位的部分平倉追蹤記錄
+        current_position_keys = set()
+        for position in positions:
+            symbol = position.get('symbol')
+            # 從raw_data或轉換後的數據獲取方向
+            if 'raw_data' in position:
+                position_amt = float(position['raw_data'].get('positionAmt', 0))
+            else:
+                position_amt = position['size'] if position['side'] == 'LONG' else -position['size']
+            
+            # 🔥 Critical Fix: 跳過已平倉的倉位（positionAmt=0）
+            # 確保完全平倉後可以重新觸發60%部分平倉
+            if abs(position_amt) < 0.00001:  # 考慮浮點誤差
+                continue
+            
+            direction = 'LONG' if position_amt > 0 else 'SHORT'
+            current_position_keys.add((symbol, direction))
+        
+        # 清理已平倉的倉位記錄
+        keys_to_remove = [key for key in self._partial_closed_positions if key not in current_position_keys]
+        if keys_to_remove:
+            for key in keys_to_remove:
+                del self._partial_closed_positions[key]
+            logger.debug(f"🧹 清理 {len(keys_to_remove)} 個已平倉的部分平倉追蹤記錄")
         
         # 🔥 不再更新 total_checks（由PositionController統一計數）
         # 僅更新時間戳
