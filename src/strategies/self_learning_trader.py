@@ -655,11 +655,12 @@ class SelfLearningTrader:
             await self.trade_recorder.save_competition_log(competition_log)
         
         logger.info(
-            f"🏆 選中 {best['signal']['symbol']} | "
-            f"評分: {best['score']:.3f} | "
-            f"信心: {best['details']['confidence']:.1%} | "
-            f"勝率: {best['details']['win_rate']:.1%} | "
-            f"R:R: {best['details']['rr_ratio']:.2f}"
+            f"🏆 信號競價選中: {best['signal']['symbol']} {best['signal']['direction']} | "
+            f"綜合評分: {best['score']:.3f} | "
+            f"信心: {best['details']['confidence']:.1%} (40%) | "
+            f"勝率: {best['details']['win_rate']:.1%} (40%) | "
+            f"R:R: {best['details']['rr_ratio']:.2f} (20%) | "
+            f"槓桿: {best['signal']['leverage']:.1f}x"
         )
 
     async def _place_order_and_monitor(
@@ -754,7 +755,8 @@ class SelfLearningTrader:
             logger.info(
                 f"✅ 下單成功: {signal['symbol']} {signal['direction']} | "
                 f"數量={size:.6f} | 槓桿={signal['leverage']:.1f}x | "
-                f"價值=${position_value:.2f}"
+                f"價值=${position_value:.2f} | "
+                f"信心值={signal.get('confidence', 0):.1%} 勝率={signal.get('win_probability', 0):.1%}"
             )
             
             return position
