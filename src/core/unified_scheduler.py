@@ -540,28 +540,61 @@ class UnifiedScheduler:
             return ""
     
     async def _display_model_rating(self):
-        """顯示模型評分狀態"""
+        """顯示模型評分狀態（v3.18.4+：顯示當前持倉平均信心值和勝率）"""
         try:
-            # 獲取交易記錄
             if not self.trade_recorder:
                 return
             
+            # 🔥 v3.18.4+：優先顯示已平倉交易的歷史評分
             trades = self.trade_recorder.get_trades(days=1)
+            closed_trades = [t for t in trades if t.get('status') == 'closed']
             
-            if not trades:
+            if closed_trades:
+                # 有已平倉交易，顯示歷史評分
+                evaluation = self.model_evaluator.evaluate_model(trades, period_days=1)
+                
+                score = evaluation.get('final_score', 0)
+                grade = evaluation.get('grade', 'N/A')
+                action = evaluation.get('action', 'N/A')
+                total_trades = evaluation.get('total_trades', 0)
+                win_rate = evaluation.get('win_rate', 0) * 100
+                
+                logger.info(f"🎯 模型評分: {score:.1f}/100 ({grade} 級) | 勝率: {win_rate:.1f}% | 交易: {total_trades} 筆 | 建議: {action}")
+                return
+            
+            # 🔥 v3.18.4+：沒有已平倉交易時，顯示當前持倉的平均信心值和勝率
+            open_trades = [t for t in trades if t.get('status') == 'open']
+            
+            if not open_trades:
                 logger.info("🎯 模型評分: 無交易記錄")
                 return
             
-            # 評估模型
-            evaluation = self.model_evaluator.evaluate_model(trades, period_days=1)
+            # 計算當前持倉的平均信心值和勝率
+            total_confidence = 0
+            total_win_prob = 0
+            valid_count = 0
             
-            score = evaluation.get('final_score', 0)
-            grade = evaluation.get('grade', 'N/A')
-            action = evaluation.get('action', 'N/A')
-            total_trades = evaluation.get('total_trades', 0)
-            win_rate = evaluation.get('win_rate', 0) * 100
+            for trade in open_trades:
+                metadata = trade.get('metadata', {})
+                confidence = metadata.get('confidence', 0)
+                win_prob = metadata.get('win_probability', 0)
+                
+                if confidence > 0 and win_prob > 0:
+                    total_confidence += confidence
+                    total_win_prob += win_prob
+                    valid_count += 1
             
-            logger.info(f"🎯 模型評分: {score:.1f}/100 ({grade} 級) | 勝率: {win_rate:.1f}% | 交易: {total_trades} 筆 | 建議: {action}")
+            if valid_count > 0:
+                avg_confidence = total_confidence / valid_count
+                avg_win_rate = total_win_prob / valid_count
+                
+                logger.info(
+                    f"🎯 當前持倉: {len(open_trades)} 個 | "
+                    f"平均信心值: {avg_confidence:.1f}% | "
+                    f"平均勝率: {avg_win_rate:.1f}%"
+                )
+            else:
+                logger.info(f"🎯 當前持倉: {len(open_trades)} 個（無模型數據）")
             
         except Exception as e:
             logger.debug(f"模型評分跳過: {e}")
