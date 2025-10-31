@@ -172,7 +172,16 @@ class RuleBasedSignalGenerator:
                     m15_trend,
                     m5_trend
                 ),
-                'timestamp': pd.Timestamp.now()
+                'timestamp': pd.Timestamp.now(),
+                # 🔥 v3.18.4+ Critical: 完整特徵記錄（確保TradeRecorder可以捕獲所有ML特徵）
+                'market_structure': market_structure,
+                'order_blocks': len(order_blocks),
+                'liquidity_zones': len(liquidity_zones),
+                'timeframes': {
+                    '1h_trend': h1_trend,
+                    '15m_trend': m15_trend,
+                    '5m_trend': m5_trend
+                }
             }
             
             # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
