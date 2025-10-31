@@ -494,22 +494,28 @@ class PositionController:
                     f"✅ 全倉保護平倉訂單提交成功: {symbol} (訂單ID: {result.get('orderId')})"
                 )
                 
-                # 記錄到TradeRecorder
+                # 🔥 v3.18.4+：記錄到TradeRecorder（使用record_exit）
                 if self.trade_recorder:
                     try:
-                        self.trade_recorder.record_forced_closure(
-                            symbol=symbol,
-                            side=side,
-                            quantity=quantity,
-                            price=position['current_price'],
-                            reason=f"全倉保護（虧損${position['pnl']:.2f}）",
-                            order_id=result.get('orderId')
-                        )
-                    except AttributeError:
+                        trade_result = {
+                            'symbol': symbol,
+                            'direction': side,
+                            'entry_price': position.get('entry_price'),
+                            'exit_price': position.get('current_price'),
+                            'pnl': position.get('pnl', 0),
+                            'pnl_pct': position.get('pnl_pct', 0),
+                            'close_reason': f"cross_margin_protection (loss ${position['pnl']:.2f})",
+                            'close_timestamp': datetime.now(),
+                            'order_id': result.get('orderId')
+                        }
+                        
+                        self.trade_recorder.record_exit(trade_result)
                         logger.info(
-                            f"📝 全倉保護平倉記錄: {symbol} {side} {quantity} @ "
+                            f"📝 全倉保護平倉已記錄: {symbol} {side} {quantity} @ "
                             f"{position['current_price']} | 虧損${position['pnl']:.2f}"
                         )
+                    except Exception as e:
+                        logger.warning(f"⚠️ 記錄全倉保護平倉失敗: {e}")
                 
                 return True
             else:
@@ -546,7 +552,11 @@ class PositionController:
             
             elif decision == 'CLOSE':
                 # 平倉
-                await self._close_position(position)
+                decision_info = {
+                    'reason': 'auto_close',
+                    'decision_type': decision
+                }
+                await self._close_position(position, decision=decision_info)
                 self.stats['total_closes'] += 1
                 
                 # 檢查是否為緊急平倉
@@ -569,7 +579,7 @@ class PositionController:
         except Exception as e:
             logger.error(f"❌ 執行決策失敗 ({position_id}): {e}", exc_info=True)
     
-    async def _close_position(self, position: Dict):
+    async def _close_position(self, position: Dict, decision: Optional[Dict] = None):
         """
         平倉（使用優先通道，符合Binance API協議）
         
@@ -579,6 +589,7 @@ class PositionController:
         
         Args:
             position: 持倉信息
+            decision: 決策信息（包含close_reason等）
         """
         try:
             symbol = position['symbol']
@@ -617,6 +628,26 @@ class PositionController:
             )
             
             logger.info(f"✅ 平倉成功: {symbol} | 訂單 ID={result.get('orderId')}")
+            
+            # 🔥 v3.18.4+：記錄平倉數據到TradeRecorder（ML學習關鍵）
+            if self.trade_recorder and result:
+                try:
+                    trade_result = {
+                        'symbol': symbol,
+                        'direction': side,
+                        'entry_price': position.get('entry_price'),
+                        'exit_price': position.get('current_price'),
+                        'pnl': position.get('pnl', 0),
+                        'pnl_pct': position.get('pnl_pct', 0),
+                        'close_reason': decision.get('reason', 'manual_close') if decision else 'manual_close',
+                        'close_timestamp': datetime.now(),
+                        'order_id': result.get('orderId')
+                    }
+                    
+                    self.trade_recorder.record_exit(trade_result)
+                    logger.info(f"📝 已記錄平倉: {symbol} | PnL: {position.get('pnl', 0):+.2f} USDT ({position.get('pnl_pct', 0):+.2%})")
+                except Exception as e:
+                    logger.warning(f"⚠️ 記錄平倉數據失敗: {e}")
             
         except Exception as e:
             logger.error(f"❌ 平倉失敗 ({position['symbol']}): {e}", exc_info=True)

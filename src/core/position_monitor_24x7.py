@@ -509,21 +509,52 @@ class PositionMonitor24x7:
                 self.forced_closures += 1
                 logger.critical(f"✅ 強制平倉成功: {symbol} (訂單: {result.get('orderId')})")
                 
-                # 記錄到交易記錄
+                # 🔥 v3.18.4+：記錄到交易記錄（使用record_exit）
                 if self.trade_recorder:
-                    # 🔥 使用傳入的reason參數
                     try:
-                        self.trade_recorder.record_forced_closure(
-                            symbol=symbol,
-                            side=side,
-                            quantity=quantity,
-                            price=current_price,
-                            reason=reason,
-                            order_id=result.get('orderId')
-                        )
-                    except AttributeError:
-                        # 如果record_forced_closure方法不存在，記錄到日誌
-                        logger.info(f"📝 平倉記錄: {symbol} {side} {quantity} @ {current_price} | {reason}")
+                        # 🔥 從trade_recorder獲取entry_price和PnL信息
+                        entry_price = None
+                        pnl = 0
+                        pnl_pct = 0
+                        
+                        try:
+                            active_trades = self.trade_recorder.get_active_trades(symbol)
+                            if active_trades and len(active_trades) > 0:
+                                latest_trade = active_trades[0]
+                                entry_price = latest_trade.get('entry_price', current_price)
+                                
+                                # 計算PnL
+                                if position_amt > 0:  # LONG
+                                    pnl_per_unit = current_price - entry_price
+                                else:  # SHORT
+                                    pnl_per_unit = entry_price - current_price
+                                
+                                pnl = pnl_per_unit * quantity
+                                
+                                # 計算PnL百分比（基於初始風險）
+                                risk_amount = latest_trade.get('risk_amount', 0)
+                                if risk_amount and risk_amount > 0:
+                                    pnl_pct = pnl / risk_amount
+                        except Exception as e:
+                            logger.debug(f"獲取 {symbol} entry_price 失敗: {e}")
+                            entry_price = current_price  # 備援
+                        
+                        trade_result = {
+                            'symbol': symbol,
+                            'direction': position_side,
+                            'entry_price': entry_price,
+                            'exit_price': current_price,
+                            'pnl': pnl,
+                            'pnl_pct': pnl_pct,
+                            'close_reason': reason,
+                            'close_timestamp': datetime.now(),
+                            'order_id': result.get('orderId')
+                        }
+                        
+                        self.trade_recorder.record_exit(trade_result)
+                        logger.info(f"📝 平倉已記錄: {symbol} {side} {quantity} @ {current_price} | {reason} | PnL: ${pnl:+.2f}")
+                    except Exception as e:
+                        logger.warning(f"⚠️ 記錄平倉失敗: {e}")
             else:
                 logger.error(f"❌ 強制平倉失敗: {symbol}")
                 
