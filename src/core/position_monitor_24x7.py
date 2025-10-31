@@ -552,12 +552,14 @@ class PositionMonitor24x7:
                 # 🔥 記錄到交易記錄（使用record_partial_close）
                 if self.trade_recorder:
                     try:
-                        # 從trade_recorder獲取entry_price
+                        # 從trade_recorder獲取entry_price和risk_amount
                         entry_price = current_price  # 默認值
+                        risk_amount = None
                         try:
                             active_trades = self.trade_recorder.get_active_trades(symbol)
                             if active_trades and len(active_trades) > 0:
                                 entry_price = active_trades[0].get('entry_price', current_price)
+                                risk_amount = active_trades[0].get('risk_amount', None)
                         except Exception as e:
                             logger.debug(f"獲取 {symbol} entry_price 失敗: {e}")
                         
@@ -567,14 +569,15 @@ class PositionMonitor24x7:
                         else:  # SHORT
                             partial_pnl = (entry_price - current_price) * quantity
                         
-                        # 記錄部分平倉
+                        # 記錄部分平倉（傳遞risk_amount用於計算實際pnl_pct）
                         self.trade_recorder.record_partial_exit(
                             symbol=symbol,
                             direction=position_side,
                             exit_price=current_price,
                             closed_quantity=quantity,
                             reason=reason,
-                            pnl=partial_pnl
+                            pnl=partial_pnl,
+                            risk_amount=risk_amount
                         )
                         logger.info(f"  ✅ 部分平倉已記錄到交易記錄")
                     except Exception as e:

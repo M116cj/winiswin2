@@ -33,6 +33,10 @@ class TradeRecorder:
         self.pending_entries: List[Dict] = []
         self.completed_trades: List[Dict] = []
         
+        # 🔥 v3.18.4+：部分平倉記錄（單獨存儲，不污染ML訓練數據）
+        self.partial_exits: List[Dict] = []
+        self.partial_exits_file = "data/partial_exits.json"
+        
         # 🔥 v3.17.10+：特徵工程引擎（競價上下文特徵）
         self.feature_engine = FeatureEngine()
         logger.info("✅ 特徵工程引擎已啟用（v3.17.10+）")
@@ -184,10 +188,11 @@ class TradeRecorder:
         exit_price: float,
         closed_quantity: float,
         reason: str,
-        pnl: float
+        pnl: float,
+        risk_amount: Optional[float] = None
     ):
         """
-        🔥 v3.18.4+：記錄部分平倉（不配對，僅記錄）
+        🔥 v3.18.4+：記錄部分平倉（單獨存儲，不污染ML訓練數據）
         
         Args:
             symbol: 交易對符號
@@ -195,9 +200,17 @@ class TradeRecorder:
             exit_price: 平倉價格
             closed_quantity: 平倉數量
             reason: 平倉原因
-            pnl: 部分平倉盈虧
+            pnl: 部分平倉盈虧（USDT）
+            risk_amount: 初始風險金額（用於計算實際pnl_pct）
         """
         try:
+            # 🔥 計算實際pnl_pct（基於部分平倉的實現盈虧）
+            pnl_pct = 0.60  # 默認值（觸發條件）
+            if risk_amount and risk_amount > 0:
+                # 實際回報率 = 部分平倉盈虧 / 初始風險金額
+                # 注意：這是部分平倉的實現回報率，不是整體倉位的回報率
+                pnl_pct = pnl / risk_amount
+            
             partial_exit_record = {
                 'symbol': symbol,
                 'direction': direction,
@@ -205,21 +218,57 @@ class TradeRecorder:
                 'closed_quantity': closed_quantity,
                 'reason': reason,
                 'pnl': pnl,
+                'pnl_pct': pnl_pct,  # 實際部分平倉回報率
+                'trigger_pnl_pct': 0.60,  # 觸發條件（整體倉位達到60%）
+                'risk_amount': risk_amount,
                 'exit_timestamp': datetime.now().isoformat(),
-                'is_partial': True
+                'is_partial': True,
+                'partial_close_type': '60pct_profit'
             }
             
-            # 可以選擇記錄到單獨的文件或添加標記
+            # 🔥 v3.18.4+ Critical Fix: 存儲到單獨的partial_exits列表
+            # 避免污染completed_trades（ML訓練數據）
+            self.partial_exits.append(partial_exit_record)
+            
             logger.info(
-                f"📝 部分平倉記錄: {symbol} {direction} 平{closed_quantity:.6f} @ ${exit_price:.2f} | "
-                f"PnL: ${pnl:+.2f} | {reason}"
+                f"📝 部分平倉記錄已持久化（單獨存儲）: {symbol} {direction} 平{closed_quantity:.6f} @ ${exit_price:.2f} | "
+                f"PnL: ${pnl:+.2f} ({pnl_pct:+.1%}) | {reason}"
             )
             
-            # 🔥 v3.18.4+：可選：追加到completed_trades作為部分平倉標記
-            # 暫時僅記錄日誌，不持久化（避免影響ML訓練數據）
+            # 立即flush到單獨的文件
+            self._flush_partial_exits()
             
         except Exception as e:
             logger.error(f"❌ 記錄部分平倉失敗: {e}", exc_info=True)
+    
+    def _flush_partial_exits(self):
+        """🔥 v3.18.4+：將部分平倉記錄持久化到單獨文件"""
+        if not self.partial_exits:
+            return
+        
+        try:
+            # 確保目錄存在
+            os.makedirs(os.path.dirname(self.partial_exits_file), exist_ok=True)
+            
+            # 讀取現有記錄
+            existing_records = []
+            if os.path.exists(self.partial_exits_file):
+                try:
+                    with open(self.partial_exits_file, 'r') as f:
+                        existing_records = json.load(f)
+                except Exception as e:
+                    logger.warning(f"讀取部分平倉記錄失敗，將創建新文件: {e}")
+            
+            # 合併並保存
+            all_records = existing_records + self.partial_exits
+            with open(self.partial_exits_file, 'w') as f:
+                json.dump(all_records, f, indent=2, ensure_ascii=False)
+            
+            logger.debug(f"✅ 已保存 {len(self.partial_exits)} 條部分平倉記錄到 {self.partial_exits_file}")
+            self.partial_exits = []
+            
+        except Exception as e:
+            logger.error(f"❌ 持久化部分平倉記錄失敗: {e}", exc_info=True)
     
     def _create_ml_record(self, entry: Dict, exit_data: Dict) -> Dict:
         """
