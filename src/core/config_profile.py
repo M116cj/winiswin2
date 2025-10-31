@@ -13,7 +13,7 @@ class ConfigProfile:
     """v3.17+ 配置檔案（環境變量驅動，不可變）"""
     
     # ===== 槓桿與風險配置 (v3.17+) =====
-    min_win_probability: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.55"))
+    min_win_probability: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.70"))  # 🔥 v3.18.4+：提升至70%
     min_confidence: float = float(os.getenv("MIN_CONFIDENCE", "0.50"))
     min_rr_ratio: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
     max_rr_ratio: float = float(os.getenv("MAX_RR_RATIO", "2.0"))
