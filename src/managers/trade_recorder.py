@@ -399,8 +399,20 @@ class TradeRecorder:
         return reward / risk if risk > 0 else 0.0
     
     def _check_and_flush(self):
-        """檢查並執行智能 Flush"""
-        if len(self.completed_trades) >= self.config.ML_FLUSH_COUNT:
+        """
+        檢查並執行智能 Flush
+        
+        🔥 v3.18.4-Critical: 立即保存pending_entries到磁盤
+        - 確保每次開倉/平倉後都寫入磁盤
+        - 防止系統重啟時丟失original_signal
+        """
+        # 總是保存pending_entries（開倉記錄）到磁盤
+        should_flush = (
+            len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or  # 有平倉交易
+            len(self.pending_entries) > 0  # 🔥 Critical: 或有待配對的開倉記錄
+        )
+        
+        if should_flush:
             self._flush_to_disk()
     
     def _flush_to_disk(self):
