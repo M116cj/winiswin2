@@ -353,7 +353,7 @@ class PerformanceManager:
             # 夏普比率（简化版：假设无风险利率=0）
             import numpy as np
             pnls = [t.get('pnl', 0.0) for t in closed_trades]
-            sharpe = (np.mean(pnls) / np.std(pnls)) if np.std(pnls) > 0 else 0.0
+            sharpe = float((np.mean(pnls) / np.std(pnls)) if np.std(pnls) > 0 else 0.0)
             
             expectancy, _ = self.calculate_expectancy()
             
