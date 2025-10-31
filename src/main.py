@@ -263,9 +263,11 @@ class SelfLearningTradingSystem:
             if self.binance_client:
                 await self.binance_client.close()
             
-            # 清理交易記錄器
+            # 🔥 v3.18.4-hotfix: 強制保存ML訓練數據（防止數據丟失）
             if self.trade_recorder:
-                pass  # TradeRecorder 無需特殊清理
+                logger.info("💾 正在保存ML訓練數據...")
+                self.trade_recorder.force_flush()
+                logger.info("✅ ML訓練數據已保存")
             
             logger.info("✅ 系統已安全關閉")
             
