@@ -530,14 +530,32 @@ class TradeRecorder:
     
     def _load_data(self):
         """從文件加載數據"""
+        # 🔥 v3.18.4+：確保數據目錄存在
+        os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
+        
+        # 🔥 v3.18.4+：確保trades.jsonl存在（即使是空文件）
+        if not os.path.exists(self.trades_file):
+            with open(self.trades_file, 'w', encoding='utf-8') as f:
+                pass  # 創建空文件
+            logger.debug(f"✅ 創建交易記錄文件: {self.trades_file}")
+        
+        # 加載待配對記錄
         if os.path.exists(self.ml_pending_file):
             try:
                 with open(self.ml_pending_file, 'r', encoding='utf-8') as f:
                     self.pending_entries = json.load(f)
-                logger.info(f"加載 {len(self.pending_entries)} 條待配對記錄")
+                logger.info(f"✅ 加載 {len(self.pending_entries)} 條待配對記錄")
             except Exception as e:
-                logger.error(f"加載待配對記錄失敗: {e}")
+                logger.error(f"❌ 加載待配對記錄失敗: {e}")
                 self.pending_entries = []
+        else:
+            # 🔥 v3.18.4+：初始化空的pending entries文件
+            try:
+                with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
+                    json.dump([], f)
+                logger.debug(f"✅ 創建待配對記錄文件: {self.ml_pending_file}")
+            except Exception as e:
+                logger.error(f"❌ 創建待配對記錄文件失敗: {e}")
     
     def get_statistics(self) -> Dict:
         """獲取記錄統計"""
