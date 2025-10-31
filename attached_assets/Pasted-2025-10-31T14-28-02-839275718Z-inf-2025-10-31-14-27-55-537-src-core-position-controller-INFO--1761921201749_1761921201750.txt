@@ -1,0 +1,118 @@
+2025-10-31T14:28:02.839275718Z [inf]  2025-10-31 14:27:55,537 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:28:02.839285521Z [inf]  2025-10-31 14:27:55,645 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:28:02.839293037Z [inf]  2025-10-31 14:27:55,645 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-15.9% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:28:02.839300132Z [inf]  2025-10-31 14:27:55,645 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-18.3% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:28:02.839306457Z [inf]  2025-10-31 14:27:55,645 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 3.57 USDT, 保證金 32.28 USDT, 未實現盈虧 +2.89 USDT
+2025-10-31T14:28:02.839314975Z [inf]  2025-10-31 14:27:55,645 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 90.0% | 閾值: 85% | 總金額: $35.85 | 總保證金: $32.28
+2025-10-31T14:28:02.839321439Z [inf]  2025-10-31 14:27:55,645 - src.core.position_controller - INFO - 🛡️ 保證金使用率 90.0% > 85% 但無虧損倉位，無需保護
+2025-10-31T14:28:42.780122803Z [inf]  2025-10-31 14:28:35,395 - src.core.unified_scheduler - INFO - ⏸️  本週期無新信號
+2025-10-31T14:28:42.780132082Z [inf]  2025-10-31 14:28:35,395 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 64.5s | 新成交: 0
+2025-10-31T14:28:42.780137890Z [inf]  2025-10-31 14:28:35,395 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:02.785897067Z [inf]  2025-10-31 14:28:55,646 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:29:02.785904607Z [inf]  2025-10-31 14:28:55,759 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:29:02.785912385Z [inf]  2025-10-31 14:28:55,759 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-15.0% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:29:02.785917513Z [inf]  2025-10-31 14:28:55,759 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-17.6% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:29:02.785922013Z [inf]  2025-10-31 14:28:55,759 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 3.96 USDT, 保證金 31.89 USDT, 未實現盈虧 +3.19 USDT
+2025-10-31T14:29:02.785926338Z [inf]  2025-10-31 14:28:55,759 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 89.0% | 閾值: 85% | 總金額: $35.85 | 總保證金: $31.89
+2025-10-31T14:29:02.785930614Z [inf]  2025-10-31 14:28:55,759 - src.core.position_controller - INFO - 🛡️ 保證金使用率 89.0% > 85% 但無虧損倉位，無需保護
+2025-10-31T14:29:42.310669664Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO - 📦 當前持倉: 9 個 | 總未實現盈虧: $+3.35
+2025-10-31T14:29:42.310683074Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:42.310692329Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • MTLUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.09 (-0.44%)
+2025-10-31T14:29:42.310700187Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • 2ZUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+1.82 (+1.08%)
+2025-10-31T14:29:42.310706834Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • LINEAUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.11 (-1.05%)
+2025-10-31T14:29:42.310713834Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • BTCDOMUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.03 (-0.33%)
+2025-10-31T14:29:42.310721244Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.03 (+0.28%)
+2025-10-31T14:29:42.310728209Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • SQDUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+1.88 (+3.14%)
+2025-10-31T14:29:42.310772741Z [inf]  2025-10-31 14:29:35,395 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:42.310779258Z [inf]  2025-10-31 14:29:35,396 - src.core.unified_scheduler - INFO - 🔄 交易週期 #6 | 2025-10-31 14:29:35 UTC
+2025-10-31T14:29:42.310785491Z [inf]  2025-10-31 14:29:35,396 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:42.310790638Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-31T14:29:42.312208876Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • JSTUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.19 (+0.39%)
+2025-10-31T14:29:42.312218168Z [inf]  2025-10-31 14:29:35,642 - src.core.unified_scheduler - INFO -    • ASTRUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.53 (-1.34%)
+2025-10-31T14:29:42.312223705Z [inf]  2025-10-31 14:29:35,643 - src.core.unified_scheduler - INFO -    • SUNUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.18 (+0.23%)
+2025-10-31T14:29:42.312230051Z [inf]  2025-10-31 14:29:35,643 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:42.312235900Z [inf]  2025-10-31 14:29:35,643 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.14 USDT, 保證金 31.71 USDT, 未實現盈虧 +3.35 USDT
+2025-10-31T14:29:42.312244201Z [inf]  2025-10-31 14:29:35,643 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$35.85 | 可用=$4.14 | 保證金=$31.71 | 未實現盈虧=$+3.35
+2025-10-31T14:29:42.312252433Z [inf]  2025-10-31 14:29:35,643 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-31T14:29:42.312258610Z [inf]  2025-10-31 14:29:35,643 - src.core.unified_scheduler - INFO - 📊 掃描 530 個交易對中...
+2025-10-31T14:29:48.058739315Z [inf]  2025-10-31 14:29:48,054 - src.core.unified_scheduler - INFO - ⏸️  本週期無新信號
+2025-10-31T14:29:48.058746460Z [inf]  2025-10-31 14:29:48,054 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 12.7s | 新成交: 0
+2025-10-31T14:29:48.058752214Z [inf]  2025-10-31 14:29:48,054 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:29:53.143059725Z [inf]  2025-10-31 14:29:53,141 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-10-31T14:29:55.841006259Z [inf]  2025-10-31 14:29:55,759 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:29:55.858453538Z [inf]  2025-10-31 14:29:55,856 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:29:55.858462376Z [inf]  2025-10-31 14:29:55,857 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-12.8% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:29:55.858468906Z [inf]  2025-10-31 14:29:55,857 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-16.5% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:29:55.858473753Z [inf]  2025-10-31 14:29:55,857 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.33 USDT, 保證金 31.52 USDT, 未實現盈虧 +3.51 USDT
+2025-10-31T14:29:55.858478647Z [inf]  2025-10-31 14:29:55,857 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 87.9% | 閾值: 85% | 總金額: $35.85 | 總保證金: $31.52
+2025-10-31T14:29:55.858484084Z [inf]  2025-10-31 14:29:55,857 - src.core.position_controller - INFO - 🛡️ 保證金使用率 87.9% > 85% 但無虧損倉位，無需保護
+2025-10-31T14:30:56.064999816Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.02 (+0.18%)
+2025-10-31T14:30:56.065012241Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • SQDUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+2.00 (+3.34%)
+2025-10-31T14:30:56.065064131Z [inf]  2025-10-31 14:30:48,055 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:30:56.065074043Z [inf]  2025-10-31 14:30:48,055 - src.core.unified_scheduler - INFO - 🔄 交易週期 #7 | 2025-10-31 14:30:48 UTC
+2025-10-31T14:30:56.065081791Z [inf]  2025-10-31 14:30:48,055 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:30:56.065089579Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-31T14:30:56.065097661Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO - 📦 當前持倉: 9 個 | 總未實現盈虧: $+3.60
+2025-10-31T14:30:56.065106336Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:30:56.065113540Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • MTLUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.07 (-0.36%)
+2025-10-31T14:30:56.065121729Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • 2ZUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+1.96 (+1.16%)
+2025-10-31T14:30:56.065129456Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • LINEAUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.10 (-0.96%)
+2025-10-31T14:30:56.065143514Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • BTCDOMUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.03 (-0.38%)
+2025-10-31T14:30:56.067445741Z [inf]  2025-10-31 14:30:48,160 - src.core.unified_scheduler - INFO -    • JSTUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.13 (+0.26%)
+2025-10-31T14:30:56.067460906Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO -    • ASTRUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.48 (-1.19%)
+2025-10-31T14:30:56.067471571Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO -    • SUNUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.17 (+0.21%)
+2025-10-31T14:30:56.067479132Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:30:56.067487189Z [inf]  2025-10-31 14:30:48,161 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.43 USDT, 保證金 31.41 USDT, 未實現盈虧 +3.60 USDT
+2025-10-31T14:30:56.067493917Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$35.85 | 可用=$4.43 | 保證金=$31.41 | 未實現盈虧=$+3.60
+2025-10-31T14:30:56.067501229Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-31T14:30:56.067507632Z [inf]  2025-10-31 14:30:48,161 - src.core.unified_scheduler - INFO - 📊 掃描 530 個交易對中...
+2025-10-31T14:30:56.067515076Z [inf]  2025-10-31 14:30:55,868 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:30:56.067522122Z [inf]  2025-10-31 14:30:55,869 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:30:56.067527301Z [inf]  2025-10-31 14:30:55,869 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-12.5% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:30:56.067532687Z [inf]  2025-10-31 14:30:55,870 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-15.5% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:30:56.069310131Z [inf]  2025-10-31 14:30:55,870 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.43 USDT, 保證金 31.41 USDT, 未實現盈虧 +3.60 USDT
+2025-10-31T14:30:56.069318420Z [inf]  2025-10-31 14:30:55,870 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 87.6% | 閾值: 85% | 總金額: $35.85 | 總保證金: $31.41
+2025-10-31T14:30:56.069323803Z [inf]  2025-10-31 14:30:55,870 - src.core.position_controller - INFO - 🛡️ 保證金使用率 87.6% > 85% 但無虧損倉位，無需保護
+2025-10-31T14:31:00.159540739Z [inf]  2025-10-31 14:31:00,081 - src.core.unified_scheduler - INFO - ⏸️  本週期無新信號
+2025-10-31T14:31:00.159545503Z [inf]  2025-10-31 14:31:00,081 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 12.0s | 新成交: 0
+2025-10-31T14:31:00.159550945Z [inf]  2025-10-31 14:31:00,081 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:31:04.185639828Z [inf]  2025-10-31 14:31:03,603 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-10-31T14:32:04.256259151Z [inf]  2025-10-31 14:31:55,996 - src.core.position_controller - INFO - 🛡️ 保證金使用率 88.5% > 85% 但無虧損倉位，無需保護
+2025-10-31T14:32:04.256262486Z [inf]  2025-10-31 14:31:55,871 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:32:04.256275781Z [inf]  2025-10-31 14:31:55,995 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:32:04.256276531Z [inf]  2025-10-31 14:32:00,083 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:32:04.256302031Z [inf]  2025-10-31 14:32:00,083 - src.core.unified_scheduler - INFO - 🔄 交易週期 #8 | 2025-10-31 14:32:00 UTC
+2025-10-31T14:32:04.256308959Z [inf]  2025-10-31 14:31:55,995 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-12.5% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:32:04.256312564Z [inf]  2025-10-31 14:32:00,083 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:32:04.256324652Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-10-31T14:32:04.256325412Z [inf]  2025-10-31 14:31:55,995 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-14.8% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:32:04.256334200Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO - 📦 當前持倉: 9 個 | 總未實現盈虧: $+3.40
+2025-10-31T14:32:04.256337761Z [inf]  2025-10-31 14:31:55,996 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.12 USDT, 保證金 31.73 USDT, 未實現盈虧 +3.40 USDT
+2025-10-31T14:32:04.256345731Z [inf]  2025-10-31 14:31:55,996 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 88.5% | 閾值: 85% | 總金額: $35.85 | 總保證金: $31.73
+2025-10-31T14:32:04.258386118Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO -    • JSTUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.14 (+0.29%)
+2025-10-31T14:32:04.258397698Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO -    • ASTRUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.45 (-1.14%)
+2025-10-31T14:32:04.258407577Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO -    • SUNUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.15 (+0.19%)
+2025-10-31T14:32:04.258422906Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:32:04.258428616Z [inf]  2025-10-31 14:32:00,085 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 4.12 USDT, 保證金 31.73 USDT, 未實現盈虧 +3.40 USDT
+2025-10-31T14:32:04.258499960Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:32:04.258508339Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO -    • MTLUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.09 (-0.45%)
+2025-10-31T14:32:04.258515591Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO -    • 2ZUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+1.88 (+1.12%)
+2025-10-31T14:32:04.258522564Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO -    • LINEAUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.10 (-0.96%)
+2025-10-31T14:32:04.258529473Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO -    • BTCDOMUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.04 (-0.41%)
+2025-10-31T14:32:04.258537530Z [inf]  2025-10-31 14:32:00,084 - src.core.unified_scheduler - INFO -    • AEROUSDT LONG | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.02 (+0.16%)
+2025-10-31T14:32:04.258543773Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO -    • SQDUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+1.88 (+3.15%)
+2025-10-31T14:32:04.260539795Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$35.85 | 可用=$4.12 | 保證金=$31.73 | 未實現盈虧=$+3.40
+2025-10-31T14:32:04.260549049Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-10-31T14:32:04.260557571Z [inf]  2025-10-31 14:32:00,085 - src.core.unified_scheduler - INFO - 📊 掃描 530 個交易對中...
+2025-10-31T14:32:11.540048994Z [inf]  2025-10-31 14:32:11,534 - src.core.unified_scheduler - INFO - ⏸️  本週期無新信號
+2025-10-31T14:32:11.540055960Z [inf]  2025-10-31 14:32:11,535 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 11.5s | 新成交: 0
+2025-10-31T14:32:11.540062805Z [inf]  2025-10-31 14:32:11,535 - src.core.unified_scheduler - INFO - ================================================================================
+2025-10-31T14:32:14.314602682Z [inf]  2025-10-31 14:32:14,188 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-10-31T14:32:20.186977524Z [inf]  2025-10-31 14:32:19,896 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-10-31T14:32:59.816845949Z [inf]  2025-10-31 14:32:56,008 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-10-31T14:32:59.816857060Z [inf]  2025-10-31 14:32:56,120 - src.core.position_controller - INFO -    📊 監控 9 個持倉
+2025-10-31T14:32:59.816865190Z [inf]  2025-10-31 14:32:56,120 - src.core.position_monitor_24x7 - WARNING - ⚠️ LINEAUSDT 虧損-16.6% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:32:59.816870891Z [inf]  2025-10-31 14:32:56,120 - src.core.position_monitor_24x7 - WARNING - ⚠️ ASTRUSDT 虧損-17.2% 但無original_signal，無法執行智能出場 | 將在虧損達-30%時強制平倉
+2025-10-31T14:32:59.816876202Z [inf]  2025-10-31 14:32:56,120 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 35.85 USDT, 可用 3.71 USDT, 保證金 32.14 USDT, 未實現盈虧 +2.93 USDT
+2025-10-31T14:32:59.816882721Z [inf]  2025-10-31 14:32:56,120 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 89.7% | 閾值: 85% | 總金額: $35.85 | 總保證金: $32.14
+2025-10-31T14:32:59.816887384Z [inf]  2025-10-31 14:32:56,120 - src.core.position_controller - INFO - 🛡️ 保證金使用率 89.7% > 85% 但無虧損倉位，無需保護
