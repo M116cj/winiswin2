@@ -1,0 +1,158 @@
+ 整體修正原則
+「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+所有模塊必須使用 同一套邏輯與參數 
+ 1. 多時間框架趨勢對齊 × 信心度分級 一致性修正
+問題
+生成條件：三框架對齊（硬性）
+評分主軸：EMA 偏差（40%）
+✅ 修正方案：統一以「時間框架對齊度」為核心
+# Step 6 & 7 合併：時間框架對齊度 = 信心度核心
+def calculate_alignment_score(timeframes: dict) -> (float, str):
+    """
+    對齊度分數 = f(1h, 15m, 5m 趨勢一致性)
+    返回: (分數0-40, 等級)
+    """
+    h1, m15, m5 = timeframes['1h'], timeframes['15m'], timeframes['5m']
+    
+    # 嚴格模式（RELAXED_SIGNAL_MODE=false）
+    if not config.RELAXED_SIGNAL_MODE:
+        if h1 == m15 == m5 == "bullish":
+            return 40.0, "Excellent"
+        elif h1 == m15 == "bullish" and m5 != "bearish":
+            return 32.0, "Good"
+        elif h1 == "bullish" and m15 == "neutral" and m5 == "bullish":
+            return 24.0, "Fair"
+        else:
+            return 0.0, "Rejected"
+    
+    # 寬鬆模式（RELAXED_SIGNAL_MODE=true）
+    else:
+        bullish_count = sum(1 for t in [h1, m15] if t == "bullish")
+        if bullish_count == 2:
+            return 32.0, "Good"
+        elif bullish_count == 1 and m5 != "bearish":
+            return 24.0, "Fair"
+        else:
+            return 16.0, "Poor"
+
+2. 動態 SL/TP 調整 × 勝率計算 一致性修正
+問題
+評分用原始 SL/TP
+執行用調整後 SL/TP
+✅ 修正方案：評分與執行使用同一組 SL/TP
+# Step 8 修正：先計算調整後 SL/TP，再評分
+def generate_signal_with_adjusted_sltp(base_signal, leverage):
+    # 1. 先計算調整後 SL/TP
+    adjusted_sl, adjusted_tp = adjust_sltp(
+        base_signal.entry, 
+        base_signal.sl, 
+        base_signal.tp, 
+        leverage
+    )
+    
+    # 2. 用調整後 SL/TP 計算 RR 和勝率
+    rr_ratio = abs(adjusted_tp - base_signal.entry) / abs(adjusted_sl - base_signal.entry)
+    win_prob = estimate_win_probability(
+        base_signal, 
+        rr_ratio,  # 使用調整後 RR
+        adjusted_sl  # 使用調整後 SL
+    )
+    
+    return Signal(
+        entry=base_signal.entry,
+        sl=adjusted_sl,    # 執行用調整後
+        tp=adjusted_tp,    # 執行用調整後
+        rr_ratio=rr_ratio, # 評分用調整後
+        win_probability=win_prob
+    )
+ 3. ML 模型介入 × 信號篩選 一致性修正
+問題
+ML 僅覆蓋勝率
+信心度仍用規則計算
+✅ 修正方案：ML 輸出統一覆蓋「綜合質量分數」
+# Step 7 修正：ML 直接輸出綜合分數
+def enhance_signal_with_ml(base_signal):
+    if ml_model:
+        # ML 輸出: [綜合分數0-100, 勝率0-1, 信心度0-1]
+        ml_score, ml_win, ml_conf = ml_model.predict(base_signal.features)
+        
+        # 統一覆蓋
+        base_signal.confidence = ml_conf
+        base_signal.win_probability = ml_win
+        base_signal.ml_score = ml_score  # 新增綜合分數
+    
+    # 篩選門檻改用綜合分數
+    if hasattr(base_signal, 'ml_score'):
+        return base_signal.ml_score >= 60  # ML 模式用綜合分數
+    else:
+        return (base_signal.confidence >= 0.6 and 
+                base_signal.win_probability >= 0.6)  # 規則模式用雙門檻
+
+ 4. 豁免期 × 信號分級 一致性修正
+問題
+豁免期接受 Poor/Fair
+但分級邏輯可能仍標記 Rejected
+✅ 修正方案：豁免期動態調整分級門檻
+# Step 7 修正：分級門檻與豁免期同步
+def classify_signal(signal, is_bootstrap: bool):
+    if is_bootstrap:
+        # 豁免期：僅拒絕極低質量
+        if signal.confidence < 0.3 or signal.win_probability < 0.3:
+            return "Rejected"
+        elif signal.confidence >= 0.6:
+            return "Excellent"
+        elif signal.confidence >= 0.5:
+            return "Good"
+        else:
+            return "Fair"  # Poor 也接受
+    else:
+        # 正常期：嚴格分級
+        if signal.confidence < 0.6:
+            return "Rejected"
+        elif signal.confidence >= 0.8:
+            return "Excellent"
+        else:
+            return "Good"
+ 5. Order Block/Liquidity Zone 時效 × 分數評判 一致性修正
+問題
+衰減邏輯不明確
+強度評分失真
+✅ 修正方案：量化時效與強度
+# Step 4 & 5 修正：明確衰減公式
+def calculate_ob_score(ob, current_time):
+    age_hours = (current_time - ob.created_time) / 3600
+    
+    if age_hours > 72:  # 72小時後失效
+        return 0.0
+    elif age_hours > 48:  # 48-72小時線性衰減
+        decay_factor = 1 - (age_hours - 48) / 24
+        return ob.base_score * decay_factor
+    else:
+        return ob.base_score  # 48小時內全效
+
+def calculate_liquidity_score(zones):
+    # 處理重疊區域：合併相鄰區域
+    merged_zones = merge_overlapping_zones(zones)
+    return sum(zone.strength for zone in merged_zones)
+6. 嚴格/寬鬆模式 × 信號分佈 一致性修正
+問題
+分佈預期未反映模式差異
+✅ 修正方案：動態分佈預測
+# Step 6 修正：根據模式動態預測分佈
+def predict_signal_distribution(mode: str) -> dict:
+    if mode == "strict":
+        return {
+            "Excellent": 0.3,
+            "Good": 0.4,
+            "Fair": 0.3,
+            "Poor": 0.0,
+            "Rejected": 0.0
+        }
+    else:  # relaxed
+        return {
+            "Excellent": 0.15,
+            "Good": 0.25,
+            "Fair": 0.35,
+            "Poor": 0.25,
+            "Rejected": 0.0
+        }
