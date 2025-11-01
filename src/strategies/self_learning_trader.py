@@ -70,14 +70,21 @@ class SelfLearningTrader:
             self.ml_model = None
             self.ml_enabled = False
         
+        # 🔥 v3.18.7+ 模型啟動豁免機制
+        self.bootstrap_enabled = self.config.BOOTSTRAP_TRADE_LIMIT > 0
+        self._completed_trades_cache = None  # 緩存交易計數（避免重複讀取文件）
+        self._bootstrap_ended_logged = False  # 標記豁免期結束日誌是否已輸出
+        
         logger.info("=" * 80)
-        logger.info(f"✅ SelfLearningTrader v3.18.6 初始化完成（ML整合）")
+        logger.info(f"✅ SelfLearningTrader v3.18.7 初始化完成（模型啟動豁免）")
         logger.info("   🎯 模式: 無限制槓桿（基於勝率 × 信心度）")
         logger.info(f"   🧠 決策引擎: {'ML模型 + 規則混合' if self.ml_enabled else '純規則驅動'}")
         logger.info(f"   🤖 ML狀態: {'✅ 已加載（44個特徵）' if self.ml_enabled else '❌ 未加載（使用規則fallback）'}")
         logger.info("   📡 WebSocket: {}".format("已啟用（即時市場數據）" if websocket_monitor else "未啟用"))
         logger.info("   🛡️  風險控制: 動態 SL/TP + 10 USDT 最小倉位")
         logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
+        if self.bootstrap_enabled:
+            logger.info(f"   🎓 啟動豁免: 前{self.config.BOOTSTRAP_TRADE_LIMIT}筆 勝率≥{self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.0%} 信心≥{self.config.BOOTSTRAP_MIN_CONFIDENCE:.0%}")
         logger.info("=" * 80)
     
     def analyze(
@@ -134,14 +141,28 @@ class SelfLearningTrader:
             confidence = base_signal['confidence']
             rr_ratio = base_signal['rr_ratio']
             
-            # 步驟 3：驗證開倉條件
+            # 🔥 v3.18.7+ 步驟 3.5：獲取當前門檻（支持啟動豁免）
+            thresholds = self._get_current_thresholds()
+            
+            # 步驟 4：驗證開倉條件（使用動態門檻）
             is_valid, reject_reason = self.leverage_engine.validate_signal_conditions(
-                win_probability, confidence, rr_ratio
+                win_probability, 
+                confidence, 
+                rr_ratio,
+                min_win_probability=thresholds['min_win_probability'],
+                min_confidence=thresholds['min_confidence']
             )
             
             if not is_valid:
                 logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
                 return None
+            
+            # 🔥 v3.18.7+ 步驟 4.5：記錄啟動豁免狀態
+            if thresholds.get('is_bootstrap', False):
+                logger.info(
+                    f"🎓 {symbol} 啟動豁免期: 已完成 {thresholds['completed_trades']}/{self.config.BOOTSTRAP_TRADE_LIMIT} 筆 | "
+                    f"當前門檻 勝率≥{thresholds['min_win_probability']:.0%} 信心≥{thresholds['min_confidence']:.0%}"
+                )
             
             # 步驟 4：計算槓桿（無上限）
             leverage = self.calculate_leverage(
@@ -1171,3 +1192,108 @@ class SelfLearningTrader:
                     logger.error(
                         f"❌ 創建虛擬倉位失敗 {signal.get('symbol', 'UNKNOWN')}: {e}"
                     )
+    
+    def _count_completed_trades(self, use_cache: bool = True) -> int:
+        """
+        統計已完成的交易數（v3.18.7+ 從持久化文件讀取，支持緩存）
+        
+        Args:
+            use_cache: 是否使用緩存（默認True，避免重複讀取文件）
+        
+        Returns:
+            已完成交易的總數量（從trades.jsonl計算）
+        """
+        # 🔥 使用緩存避免重複讀取文件（性能優化）
+        if use_cache and self._completed_trades_cache is not None:
+            return self._completed_trades_cache
+        
+        # 🔥 Critical Fix: 從 trades.jsonl 文件讀取總交易數
+        # 因為 completed_trades 列表會在每次 flush 時被清空（ML_FLUSH_COUNT=1）
+        from pathlib import Path
+        
+        trades_file = Path("data/trades.jsonl")
+        
+        if not trades_file.exists():
+            self._completed_trades_cache = 0
+            return 0
+        
+        try:
+            count = 0
+            with open(trades_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    if line.strip():
+                        count += 1
+            
+            # 更新緩存
+            self._completed_trades_cache = count
+            return count
+            
+        except Exception as e:
+            logger.warning(f"⚠️ 讀取trades.jsonl失敗: {e}")
+            # 容錯：如果有trade_recorder，使用內存計數
+            if self.trade_recorder:
+                fallback_count = len(self.trade_recorder.completed_trades)
+                self._completed_trades_cache = fallback_count
+                return fallback_count
+            else:
+                self._completed_trades_cache = 0
+                return 0
+    
+    def invalidate_trades_cache(self):
+        """
+        使交易計數緩存失效（在交易完成後調用）
+        
+        這個方法應該在trade_recorder.record_exit()後調用
+        """
+        self._completed_trades_cache = None
+    
+    def _get_current_thresholds(self) -> Dict[str, float]:
+        """
+        獲取當前應使用的門檻值（v3.18.7+ 啟動豁免機制）
+        
+        Returns:
+            包含當前門檻的字典 {
+                'min_win_probability': float,
+                'min_confidence': float,
+                'is_bootstrap': bool,
+                'completed_trades': int
+            }
+        """
+        if not self.bootstrap_enabled or not self.trade_recorder:
+            # 豁免未啟用或無記錄器，使用正常門檻
+            return {
+                'min_win_probability': self.config.MIN_WIN_PROBABILITY,
+                'min_confidence': self.config.MIN_CONFIDENCE,
+                'is_bootstrap': False,
+                'completed_trades': 0
+            }
+        
+        # 🔥 強制重新讀取交易數（use_cache=False）確保計數最新
+        # 這個方法只在有新信號時才調用，不會造成性能問題
+        completed_trades = self._count_completed_trades(use_cache=False)
+        
+        # 前N筆交易使用豁免門檻
+        if completed_trades < self.config.BOOTSTRAP_TRADE_LIMIT:
+            return {
+                'min_win_probability': self.config.BOOTSTRAP_MIN_WIN_PROBABILITY,
+                'min_confidence': self.config.BOOTSTRAP_MIN_CONFIDENCE,
+                'is_bootstrap': True,
+                'completed_trades': completed_trades,
+                'remaining': self.config.BOOTSTRAP_TRADE_LIMIT - completed_trades
+            }
+        else:
+            # 已完成豁免期，使用正常門檻
+            # 🔥 在豁免期結束時記錄一次（避免重複輸出）
+            if not self._bootstrap_ended_logged:
+                self._bootstrap_ended_logged = True
+                logger.info("=" * 80)
+                logger.info(f"🎓 啟動豁免期已結束！已完成 {completed_trades} 筆交易")
+                logger.info(f"   切換至正常門檻: 勝率≥{self.config.MIN_WIN_PROBABILITY:.0%} 信心≥{self.config.MIN_CONFIDENCE:.0%}")
+                logger.info("=" * 80)
+            
+            return {
+                'min_win_probability': self.config.MIN_WIN_PROBABILITY,
+                'min_confidence': self.config.MIN_CONFIDENCE,
+                'is_bootstrap': False,
+                'completed_trades': completed_trades
+            }

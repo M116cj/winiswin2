@@ -86,28 +86,36 @@ class LeverageEngine:
         self, 
         win_probability: float, 
         confidence: float,
-        rr_ratio: float
+        rr_ratio: float,
+        min_win_probability: Optional[float] = None,
+        min_confidence: Optional[float] = None
     ) -> tuple[bool, Optional[str]]:
         """
-        驗證信號是否滿足開倉條件
+        驗證信號是否滿足開倉條件（v3.18.7+ 支持動態門檻）
         
         Args:
             win_probability: 勝率預測
             confidence: 信心度
             rr_ratio: 風險回報比
+            min_win_probability: 可選的動態勝率門檻（用於啟動豁免）
+            min_confidence: 可選的動態信心度門檻（用於啟動豁免）
             
         Returns:
             (is_valid, reject_reason)
         """
+        # 🔥 v3.18.7+ 使用動態門檻（如果提供）
+        actual_min_win_prob = min_win_probability if min_win_probability is not None else self.config.min_win_probability
+        actual_min_confidence = min_confidence if min_confidence is not None else self.config.min_confidence
+        
         # 檢查勝率
-        if win_probability < self.config.min_win_probability:
-            return False, f"勝率不足: {win_probability:.1%} < {self.config.min_win_probability:.1%}"
+        if win_probability < actual_min_win_prob:
+            return False, f"勝率不足: {win_probability:.1%} < {actual_min_win_prob:.1%}"
         
         # 檢查信心度
-        if confidence < self.config.min_confidence:
-            return False, f"信心度不足: {confidence:.1%} < {self.config.min_confidence:.1%}"
+        if confidence < actual_min_confidence:
+            return False, f"信心度不足: {confidence:.1%} < {actual_min_confidence:.1%}"
         
-        # 檢查風險回報比
+        # 檢查風險回報比（固定門檻）
         if rr_ratio < self.config.min_rr_ratio:
             return False, f"R:R 過低: {rr_ratio:.2f} < {self.config.min_rr_ratio:.2f}"
         

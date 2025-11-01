@@ -59,6 +59,15 @@ class Config:
     MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
     MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18+：調整上限為3.0
     
+    # ========================================
+    # 🎓 模型啟動豁免方案 (v3.18.7+)
+    # ========================================
+    # 前N筆交易使用降低的門檻，加速初期數據採集
+    # 所有交易資料和44個特徵仍會被完整保存到訓練檔案
+    BOOTSTRAP_TRADE_LIMIT: int = int(os.getenv("BOOTSTRAP_TRADE_LIMIT", "100"))  # 豁免期：前100筆交易
+    BOOTSTRAP_MIN_WIN_PROBABILITY: float = float(os.getenv("BOOTSTRAP_MIN_WIN_PROBABILITY", "0.40"))  # 豁免期最低勝率40%
+    BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.40"))  # 豁免期最低信心值40%
+    
     # ===== v3.18+ 資金分配配置（動態預算池 + 質量加權）=====
     SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 最低質量門檻
     MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.8"))  # 總預算 = 80% 可用保證金
