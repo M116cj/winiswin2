@@ -175,14 +175,17 @@ class KlineFeed(BaseFeed):
         
         # 🔥 v3.17.2+：僅保存閉盤K線（is_final=True）
         if kline.get('x', False):  # x = is_final
-            # 時間戳標準化（關鍵升級）
-            server_ts = self.get_server_timestamp_ms(kline, 't')  # K線開盤時間
+            # 🔥 v3.18.8+ Critical Fix: 使用事件時間計算延遲，而非開盤時間
+            # 修復前：server_ts = kline['t']（開盤時間，60秒前）→ 延遲顯示60,000ms ❌
+            # 修復後：server_ts = kline['E']（事件時間，當前）→ 延遲顯示100-500ms ✅
+            event_ts = self.get_server_timestamp_ms(kline, 'E')  # WebSocket事件時間（最準確）
+            open_ts = int(kline['t'])  # K線開盤時間（用於時間對齊聚合）
             local_ts = self.get_local_timestamp_ms()
-            latency_ms = self.calculate_latency_ms(server_ts, local_ts)
+            latency_ms = self.calculate_latency_ms(event_ts, local_ts)  # 真實網路延遲
             
             kline_data = {
                 'symbol': kline.get('s'),
-                'timestamp': server_ts,               # 🔥 新增：用於聚合時間對齊
+                'timestamp': open_ts,                 # ✅ K線開盤時間（用於聚合時間對齊）
                 'open': float(kline['o']),
                 'high': float(kline['h']),
                 'low': float(kline['l']),
@@ -190,9 +193,9 @@ class KlineFeed(BaseFeed):
                 'volume': float(kline['v']),
                 'quote_volume': float(kline['q']),
                 'trades': int(kline['n']),
-                'server_timestamp': server_ts,        # Binance伺服器時間（毫秒）
+                'server_timestamp': event_ts,         # ✅ WebSocket事件時間（用於延遲計算）
                 'local_timestamp': local_ts,          # 本地接收時間（毫秒）
-                'latency_ms': latency_ms,             # 網路延遲（毫秒）
+                'latency_ms': latency_ms,             # ✅ 真實網路延遲（100-500ms）
                 'close_time': int(kline['T']),       # K線閉盤時間
                 'shard_id': self.shard_id             # 分片ID
             }
