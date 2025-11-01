@@ -76,15 +76,19 @@ class SelfLearningTrader:
         self._bootstrap_ended_logged = False  # 標記豁免期結束日誌是否已輸出
         
         logger.info("=" * 80)
-        logger.info(f"✅ SelfLearningTrader v3.18.7 初始化完成（模型啟動豁免）")
-        logger.info("   🎯 模式: 無限制槓桿（基於勝率 × 信心度）")
+        logger.info(f"✅ SelfLearningTrader v3.18.7+ 初始化完成（豁免期策略）")
         logger.info(f"   🧠 決策引擎: {'ML模型 + 規則混合' if self.ml_enabled else '純規則驅動'}")
         logger.info(f"   🤖 ML狀態: {'✅ 已加載（44個特徵）' if self.ml_enabled else '❌ 未加載（使用規則fallback）'}")
         logger.info("   📡 WebSocket: {}".format("已啟用（即時市場數據）" if websocket_monitor else "未啟用"))
-        logger.info("   🛡️  風險控制: 動態 SL/TP + 10 USDT 最小倉位")
+        logger.info("   🛡️  風險控制: 6層防護（質量門檻+方向驗證+RR控制+倉位限制+動態槓桿+智能出場）")
         logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
         if self.bootstrap_enabled:
-            logger.info(f"   🎓 啟動豁免: 前{self.config.BOOTSTRAP_TRADE_LIMIT}筆 勝率≥{self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.0%} 信心≥{self.config.BOOTSTRAP_MIN_CONFIDENCE:.0%}")
+            logger.info("")
+            logger.info("   🎓 豁免期策略（前100筆交易）:")
+            logger.info(f"      ├─ 勝率門檻: {self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.0%} (正常期: {self.config.MIN_WIN_PROBABILITY:.0%})")
+            logger.info(f"      ├─ 信心門檻: {self.config.BOOTSTRAP_MIN_CONFIDENCE:.0%} (正常期: {self.config.MIN_CONFIDENCE:.0%})")
+            logger.info(f"      ├─ 質量門檻: {self.config.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD:.0%} (正常期: {self.config.SIGNAL_QUALITY_THRESHOLD:.0%})")
+            logger.info(f"      └─ 槓桿範圍: 1-3x（強制壓制）(正常期: 無上限)")
         logger.info("=" * 80)
     
     def analyze(
@@ -191,21 +195,25 @@ class SelfLearningTrader:
                     logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
                     return None
             
-            # 🔥 v3.18.7+ 步驟 4.5：記錄啟動豁免狀態
-            if thresholds.get('is_bootstrap', False):
+            # 🔥 v3.18.7+ 步驟 4：獲取豁免期狀態並記錄
+            is_bootstrap = thresholds.get('is_bootstrap', False)
+            
+            if is_bootstrap:
                 logger.info(
-                    f"🎓 {symbol} 啟動豁免期: 已完成 {thresholds['completed_trades']}/{self.config.BOOTSTRAP_TRADE_LIMIT} 筆 | "
-                    f"當前門檻 勝率≥{thresholds['min_win_probability']:.0%} 信心≥{thresholds['min_confidence']:.0%}"
+                    f"🎓 {symbol} 豁免期: 已完成 {thresholds['completed_trades']}/{self.config.BOOTSTRAP_TRADE_LIMIT} 筆 | "
+                    f"門檻 勝率≥{thresholds['min_win_probability']:.0%} 信心≥{thresholds['min_confidence']:.0%} | "
+                    f"槓桿限制: 1-3x"
                 )
             
-            # 步驟 4：計算槓桿（無上限）
+            # 步驟 5：計算槓桿（豁免期壓制至1-3x，正常期無上限）
             leverage = self.calculate_leverage(
                 win_probability,
                 confidence,
+                is_bootstrap_period=is_bootstrap,
                 verbose=True
             )
             
-            # 步驟 5：獲取入場價格和基礎 SL/TP
+            # 步驟 6：獲取入場價格和基礎 SL/TP
             entry_price = base_signal['entry_price']
             base_sl = base_signal['stop_loss']
             base_tp = base_signal['take_profit']
@@ -284,10 +292,14 @@ class SelfLearningTrader:
         self,
         win_probability: float,
         confidence: float,
+        is_bootstrap_period: bool = False,
         verbose: bool = False
     ) -> float:
         """
-        計算槓桿（無上限）
+        計算槓桿（v3.18.7+ 豁免期壓制）
+        
+        豁免期（0-100筆）：1-3x（強制壓制）
+        正常期（101+筆）：無上限（模型自行判定）
         
         公式：
         1. win_factor = (win_prob - 0.55) / 0.15
@@ -302,42 +314,25 @@ class SelfLearningTrader:
         
         4. leverage = base × win_leverage × conf_factor
         
+        豁免期壓制：
+        - 前100筆：強制限制 1-3x（基於信心度線性映射）
+        - 101+筆：無上限（模型自行判定）
+        
         Args:
             win_probability: 勝率（0-1）
             confidence: 信心度（0-1）
+            is_bootstrap_period: 是否在豁免期（前100筆交易）
             verbose: 是否輸出詳細日誌
         
         Returns:
-            計算的槓桿倍數（無上限，最低 0.5x）
+            槓桿倍數
+            - 豁免期：1-3x（強制壓制）
+            - 正常期：0.5x ~ ∞（模型自行判定）
         """
-        base = 1.0
-        
-        # 勝率因子
-        win_factor = max(0, (win_probability - 0.55) / 0.15)
-        win_leverage = 1 + win_factor * 11  # 最高 12x（當 win_prob = 0.70）
-        
-        # 信心度因子
-        conf_factor = max(1.0, confidence / 0.5)  # 最低 1.0，最高 2.0
-        
-        # 最終槓桿
-        leverage = base * win_leverage * conf_factor
-        
-        # 確保最低 0.5x
-        leverage = max(0.5, leverage)
-        
-        if verbose:
-            # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
-            signal_logger = get_signal_details_logger()
-            signal_logger.log_leverage_calculation(
-                symbol="UNKNOWN",  # 在analyze方法中會有完整信號記錄，這裡僅記錄計算細節
-                win_rate=win_probability,
-                confidence=confidence,
-                win_leverage=win_leverage,
-                conf_factor=conf_factor,
-                final_leverage=leverage
-            )
-        
-        return leverage
+        # 🔥 v3.18.7+ 委托给 LeverageEngine 处理（包含豁免期逻辑）
+        return self.leverage_engine.calculate_leverage(
+            win_probability, confidence, is_bootstrap_period, verbose
+        )
     
     async def calculate_position_size(
         self,
@@ -1301,7 +1296,7 @@ class SelfLearningTrader:
         """
         self._completed_trades_cache = None
     
-    def _get_current_thresholds(self) -> Dict[str, float]:
+    def _get_current_thresholds(self) -> Dict:
         """
         獲取當前應使用的門檻值（v3.18.7+ 啟動豁免機制）
         
@@ -1310,7 +1305,8 @@ class SelfLearningTrader:
                 'min_win_probability': float,
                 'min_confidence': float,
                 'is_bootstrap': bool,
-                'completed_trades': int
+                'completed_trades': int,
+                'remaining': int (僅豁免期)
             }
         """
         if not self.bootstrap_enabled or not self.trade_recorder:
