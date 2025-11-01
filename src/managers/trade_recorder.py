@@ -537,7 +537,9 @@ class TradeRecorder:
                 json.dump(self.pending_entries, f, ensure_ascii=False, indent=2, default=str)
             
             # 🔥 v3.18.6+ Critical Fix: 檢查是否需要重訓練模型
-            if num_trades > 0 and self.model_initializer:
+            # 🔒 v3.18.7+: 檢查模型訓練鎖定開關
+            from src.config import Config
+            if num_trades > 0 and self.model_initializer and not getattr(Config, 'DISABLE_MODEL_TRAINING', False):
                 self.trades_since_last_retrain += num_trades
                 
                 if self.trades_since_last_retrain >= self.retrain_interval:

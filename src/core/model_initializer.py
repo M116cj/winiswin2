@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 import json
+from src.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +102,23 @@ class ModelInitializer:
         Returns:
             是否已初始化（True=已存在或訓練成功，False=訓練失敗）
         """
+        # 🔒 v3.18.7+：檢查模型訓練鎖定開關
+        if getattr(Config, 'DISABLE_MODEL_TRAINING', False):
+            logger.info("🔒 模型訓練已鎖定（DISABLE_MODEL_TRAINING=True）")
+            logger.info("   ✅ 系統將使用現有模型，不進行初始訓練或重訓練")
+            
+            # 檢查是否已有模型文件
+            if self.model_file.exists():
+                logger.info(f"   ✅ 檢測到現有模型: {self.model_file}")
+                # 即使沒有flag文件，也創建一個（防止下次檢查）
+                if not self.flag_file.exists():
+                    self._create_flag_file()
+                return True
+            else:
+                logger.warning(f"   ⚠️ 未檢測到模型文件: {self.model_file}")
+                logger.warning("   ⚠️ 請確保已有預訓練模型，或臨時關閉DISABLE_MODEL_TRAINING")
+                return False
+        
         # 檢查標記文件
         if self.flag_file.exists():
             logger.info("✅ 模型已初始化（檢測到 initialized.flag）")

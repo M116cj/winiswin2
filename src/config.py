@@ -21,6 +21,14 @@ class Config:
     BINANCE_TRADING_API_SECRET: str = os.getenv("BINANCE_TRADING_API_SECRET", "") or BINANCE_API_SECRET
     BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
     
+    # ========================================
+    # 🔒 功能锁定开关 (v3.18.7+)
+    # ========================================
+    # 当设置为True时，禁用对应功能（生产环境稳定性优先）
+    DISABLE_MODEL_TRAINING: bool = os.getenv("DISABLE_MODEL_TRAINING", "true").lower() == "true"  # 禁用模型训练（初始训练+重训练）
+    DISABLE_WEBSOCKET: bool = os.getenv("DISABLE_WEBSOCKET", "true").lower() == "true"  # 禁用WebSocket（使用REST API）
+    DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "false").lower() == "true"  # 禁用REST API fallback（仅在WebSocket稳定时使用）
+    
     # ===== Discord 配置（可選）=====
     DISCORD_TOKEN: str = (
         os.getenv("DISCORD_TOKEN", "") or 

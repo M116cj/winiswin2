@@ -70,20 +70,27 @@ class UnifiedScheduler:
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
         # 🔥 v3.18.6+：初始化WebSocketManager（監控所有可交易的USDT永續合約）
-        # 注意：初始化時使用空列表，稍後在start()中加載所有交易對
-        self.websocket_manager = WebSocketManager(
-            binance_client=binance_client,
-            symbols=[],  # 🔥 v3.18.6+：初始化為空，稍後動態加載
-            kline_interval="1m",
-            shard_size=getattr(config, 'WEBSOCKET_SHARD_SIZE', 50),
-            enable_kline_feed=getattr(config, 'WEBSOCKET_ENABLE_KLINE_FEED', True),
-            enable_price_feed=getattr(config, 'WEBSOCKET_ENABLE_PRICE_FEED', True),
-            enable_account_feed=getattr(config, 'WEBSOCKET_ENABLE_ACCOUNT_FEED', True),
-            auto_fetch_symbols=False  # 🔥 v3.18+：不自動獲取，由scheduler控制
-        )
-        
-        # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）
-        self.websocket_monitor = self.websocket_manager
+        # 🔒 v3.18.7+：檢查WebSocket鎖定開關
+        if getattr(config, 'DISABLE_WEBSOCKET', False):
+            logger.info("🔒 WebSocket已鎖定（DISABLE_WEBSOCKET=True）")
+            logger.info("   ✅ 系統將使用REST API獲取數據（純REST模式）")
+            self.websocket_manager = None
+            self.websocket_monitor = None
+        else:
+            # 注意：初始化時使用空列表，稍後在start()中加載所有交易對
+            self.websocket_manager = WebSocketManager(
+                binance_client=binance_client,
+                symbols=[],  # 🔥 v3.18.6+：初始化為空，稍後動態加載
+                kline_interval="1m",
+                shard_size=getattr(config, 'WEBSOCKET_SHARD_SIZE', 50),
+                enable_kline_feed=getattr(config, 'WEBSOCKET_ENABLE_KLINE_FEED', True),
+                enable_price_feed=getattr(config, 'WEBSOCKET_ENABLE_PRICE_FEED', True),
+                enable_account_feed=getattr(config, 'WEBSOCKET_ENABLE_ACCOUNT_FEED', True),
+                auto_fetch_symbols=False  # 🔥 v3.18+：不自動獲取，由scheduler控制
+            )
+            
+            # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）
+            self.websocket_monitor = self.websocket_manager
         
         # 初始化核心組件（注入websocket_manager）
         self.self_learning_trader = SelfLearningTrader(
@@ -143,19 +150,23 @@ class UnifiedScheduler:
             logger.info("🚀 UnifiedScheduler 啟動中...")
             
             # 🔥 v3.18+：先獲取掃描交易對列表，再啟動WebSocket
-            logger.info("📡 步驟1：獲取掃描交易對列表...")
-            trading_symbols = await self._get_trading_symbols()
-            if trading_symbols:
-                logger.info(f"✅ 獲取 {len(trading_symbols)} 個交易對（掃描規則）")
-                # 更新WebSocket監控列表
-                self.websocket_manager.symbols = trading_symbols
+            # 🔒 v3.18.7+：只在WebSocket啟用時執行
+            if self.websocket_manager:
+                logger.info("📡 步驟1：獲取掃描交易對列表...")
+                trading_symbols = await self._get_trading_symbols()
+                if trading_symbols:
+                    logger.info(f"✅ 獲取 {len(trading_symbols)} 個交易對（掃描規則）")
+                    # 更新WebSocket監控列表
+                    self.websocket_manager.symbols = trading_symbols
+                else:
+                    logger.warning("⚠️ 無法獲取交易對列表，WebSocket將使用fallback")
+                
+                # 啟動WebSocketManager（包含K線Feed和帳戶Feed）
+                logger.info("📡 步驟2：啟動WebSocketManager...")
+                await self.websocket_manager.start()
+                logger.info(f"✅ WebSocketManager已啟動（監控{len(self.websocket_manager.symbols)}個交易對）")
             else:
-                logger.warning("⚠️ 無法獲取交易對列表，WebSocket將使用fallback")
-            
-            # 啟動WebSocketManager（包含K線Feed和帳戶Feed）
-            logger.info("📡 步驟2：啟動WebSocketManager...")
-            await self.websocket_manager.start()
-            logger.info(f"✅ WebSocketManager已啟動（監控{len(self.websocket_manager.symbols)}個交易對）")
+                logger.info("📡 步驟1-2：跳過WebSocket（已鎖定，使用純REST API模式）")
             
             # 啟動任務
             tasks = [
@@ -179,7 +190,8 @@ class UnifiedScheduler:
         self.is_running = False
         
         # 🔥 v3.17.2+：停止WebSocketManager
-        await self.websocket_manager.stop()
+        if self.websocket_manager:
+            await self.websocket_manager.stop()
         
         # 停止 PositionController
         await self.position_controller.stop_monitoring()
@@ -193,12 +205,13 @@ class UnifiedScheduler:
         logger.info(f"   總報告: {self.stats['total_reports']}")
         
         # 🔥 v3.17.2+：WebSocketManager統計
-        ws_stats = self.websocket_manager.get_stats()
-        if 'kline_feed' in ws_stats:
-            logger.info(f"   K線Feed更新: {ws_stats['kline_feed']['total_updates']} 次")
-            logger.info(f"   K線Feed重連: {ws_stats['kline_feed']['reconnections']} 次")
-        if 'account_feed' in ws_stats:
-            logger.info(f"   帳戶Feed更新: {ws_stats['account_feed']['total_updates']} 次")
+        if self.websocket_manager:
+            ws_stats = self.websocket_manager.get_stats()
+            if 'kline_feed' in ws_stats:
+                logger.info(f"   K線Feed更新: {ws_stats['kline_feed']['total_updates']} 次")
+                logger.info(f"   K線Feed重連: {ws_stats['kline_feed']['reconnections']} 次")
+            if 'account_feed' in ws_stats:
+                logger.info(f"   帳戶Feed更新: {ws_stats['account_feed']['total_updates']} 次")
             logger.info(f"   帳戶Feed重連: {ws_stats['account_feed']['reconnections']} 次")
         logger.info("=" * 80)
     
