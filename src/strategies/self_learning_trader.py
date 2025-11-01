@@ -109,21 +109,38 @@ class SelfLearningTrader:
             if base_signal is None:
                 return None
             
-            # 🔥 v3.18.6+ 步驟 2：ML模型預測（優先）
+            # 🔥 v3.19+ 修正3：ML模型統一輸出（支持未來多輸出模型）
             win_probability = base_signal['win_probability']  # 規則引擎的默認值
+            confidence = base_signal['confidence']  # 規則引擎的默認值
+            ml_score = None  # 綜合分數（僅ML模型提供）
             
             if self.ml_enabled and self.ml_model:
                 try:
-                    # 使用ML模型預測獲勝概率
+                    # 使用ML模型預測（支持單輸出或多輸出）
                     ml_prediction = self.ml_model.predict_from_signal(base_signal)
                     
                     if ml_prediction is not None:
-                        # 🔥 使用ML預測覆蓋規則引擎的勝率
-                        win_probability = ml_prediction
-                        base_signal['win_probability'] = ml_prediction
-                        base_signal['prediction_source'] = 'ml_model'
-                        
-                        logger.debug(f"🤖 {symbol} ML預測勝率: {ml_prediction:.3f}")
+                        # 🔥 v3.19+ 修正3：支持多輸出模型
+                        # 檢查返回值類型：單值（舊模型）或三元組（新模型）
+                        if isinstance(ml_prediction, (tuple, list)) and len(ml_prediction) == 3:
+                            # 新型多輸出模型：[綜合分數0-100, 勝率0-1, 信心度0-1]
+                            ml_score, ml_win, ml_conf = ml_prediction
+                            win_probability = float(ml_win)
+                            confidence = float(ml_conf)
+                            base_signal['ml_score'] = float(ml_score)
+                            base_signal['win_probability'] = win_probability
+                            base_signal['confidence'] = confidence
+                            base_signal['prediction_source'] = 'ml_model_multi'
+                            logger.debug(
+                                f"🤖 {symbol} ML多輸出: 綜合={ml_score:.1f} "
+                                f"勝率={ml_win:.3f} 信心={ml_conf:.3f}"
+                            )
+                        else:
+                            # 舊型單輸出模型：僅返回勝率
+                            win_probability = float(ml_prediction)
+                            base_signal['win_probability'] = win_probability
+                            base_signal['prediction_source'] = 'ml_model_single'
+                            logger.debug(f"🤖 {symbol} ML單輸出勝率: {ml_prediction:.3f}")
                     else:
                         # ML預測失敗，使用規則引擎fallback
                         base_signal['prediction_source'] = 'rule_engine_fallback'
@@ -144,18 +161,35 @@ class SelfLearningTrader:
             # 🔥 v3.18.7+ 步驟 3.5：獲取當前門檻（支持啟動豁免）
             thresholds = self._get_current_thresholds()
             
-            # 步驟 4：驗證開倉條件（使用動態門檻）
-            is_valid, reject_reason = self.leverage_engine.validate_signal_conditions(
-                win_probability, 
-                confidence, 
-                rr_ratio,
-                min_win_probability=thresholds['min_win_probability'],
-                min_confidence=thresholds['min_confidence']
-            )
-            
-            if not is_valid:
-                logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
-                return None
+            # 🔥 v3.19+ 修正3：ML綜合分數篩選（優先於雙門檻）
+            # 原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+            if 'ml_score' in base_signal and base_signal['ml_score'] is not None:
+                # ML多輸出模型模式：使用綜合分數篩選
+                ml_score_value = base_signal['ml_score']
+                ml_threshold = 60.0  # ML綜合分數門檻
+                
+                if ml_score_value < ml_threshold:
+                    logger.debug(
+                        f"❌ {symbol} ML綜合分數過低: {ml_score_value:.1f} < {ml_threshold}"
+                    )
+                    return None
+                
+                logger.debug(
+                    f"✅ {symbol} ML綜合分數通過: {ml_score_value:.1f} >= {ml_threshold}"
+                )
+            else:
+                # 規則模式或ML單輸出模式：使用雙門檻驗證
+                is_valid, reject_reason = self.leverage_engine.validate_signal_conditions(
+                    win_probability, 
+                    confidence, 
+                    rr_ratio,
+                    min_win_probability=thresholds['min_win_probability'],
+                    min_confidence=thresholds['min_confidence']
+                )
+                
+                if not is_valid:
+                    logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
+                    return None
             
             # 🔥 v3.18.7+ 步驟 4.5：記錄啟動豁免狀態
             if thresholds.get('is_bootstrap', False):
@@ -200,6 +234,15 @@ class SelfLearningTrader:
                     entry_price, direction, safe_sl_pct, leverage, verbose=False
                 )
             
+            # 🔥 v3.19+ 修正2：用調整後 SL/TP 重新計算 RR（統一評分與執行）
+            # 原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+            risk = abs(entry_price - stop_loss)
+            reward = abs(take_profit - entry_price)
+            adjusted_rr_ratio = reward / risk if risk > 0 else 1.5
+            
+            # 記錄基礎與調整後的 RR 比率供對比
+            base_rr_ratio = base_signal.get('rr_ratio', 1.5)
+            
             # 步驟 8：計算倉位數量（含 10 USDT 下限）
             # 注意：這裡需要賬戶權益，暫時返回信號，由 PositionController 調用
             
@@ -209,6 +252,8 @@ class SelfLearningTrader:
                 'leverage': leverage,
                 'adjusted_stop_loss': stop_loss,
                 'adjusted_take_profit': take_profit,
+                'rr_ratio': adjusted_rr_ratio,  # 🔥 v3.19+ 修正2：使用調整後RR
+                'base_rr_ratio': base_rr_ratio,  # 保留基礎RR供對比
                 'leverage_info': {
                     'win_probability': win_probability,
                     'confidence': confidence,

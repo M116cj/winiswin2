@@ -474,6 +474,187 @@ class RuleBasedSignalGenerator:
         # 無法確定方向（拒絕對立信號）
         return None
     
+    def _calculate_alignment_score(
+        self,
+        timeframes: dict,
+        direction: str
+    ) -> tuple:
+        """
+        📊 v3.19+ 修正1：時間框架對齊度評分（統一評分標準與生成條件）
+        
+        對齊度分數 = f(1h, 15m, 5m 趨勢一致性)
+        
+        核心原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+        
+        Args:
+            timeframes: {'1h': trend, '15m': trend, '5m': trend}
+            direction: 'LONG' or 'SHORT'
+        
+        Returns:
+            (分數0-40, 等級字符串)
+        """
+        h1 = timeframes['1h']
+        m15 = timeframes['15m']
+        m5 = timeframes['5m']
+        
+        # 根據信號方向確定目標趨勢
+        target_trend = 'bullish' if direction == 'LONG' else 'bearish'
+        opposite_trend = 'bearish' if direction == 'LONG' else 'bullish'
+        
+        # 嚴格模式（RELAXED_SIGNAL_MODE=false）
+        if not self.config.RELAXED_SIGNAL_MODE:
+            # 完美對齊：三框架全部一致
+            if h1 == target_trend and m15 == target_trend and m5 == target_trend:
+                return 40.0, "Excellent"
+            # 強對齊：1h+15m對齊，5m不對立
+            elif h1 == target_trend and m15 == target_trend and m5 != opposite_trend:
+                return 32.0, "Good"
+            # 弱對齊：1h+5m對齊，15m中性
+            elif h1 == target_trend and m15 == "neutral" and m5 == target_trend:
+                return 24.0, "Fair"
+            else:
+                return 0.0, "Rejected"
+        
+        # 寬鬆模式（RELAXED_SIGNAL_MODE=true）
+        else:
+            # 計算1h+15m對齊度（主要決策框架）
+            aligned_count = sum(1 for t in [h1, m15] if t == target_trend)
+            
+            if aligned_count == 2:
+                # 1h+15m完美對齊
+                return 32.0, "Good"
+            elif aligned_count == 1 and m5 != opposite_trend:
+                # 部分對齊且5m不對立
+                return 24.0, "Fair"
+            else:
+                # 對齊度不足但仍可交易
+                return 16.0, "Poor"
+    
+    def _classify_signal(
+        self,
+        signal: Dict,
+        is_bootstrap: bool
+    ) -> str:
+        """
+        📊 v3.19+ 修正4：信號分級（豁免期動態調整門檻）
+        
+        核心原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+        
+        Args:
+            signal: 信號字典（包含confidence和win_probability）
+            is_bootstrap: 是否處於豁免期
+        
+        Returns:
+            信號等級: "Excellent"/"Good"/"Fair"/"Poor"/"Rejected"
+        """
+        confidence = signal.get('confidence', 0.0)
+        win_probability = signal.get('win_probability', 0.0)
+        
+        if is_bootstrap:
+            # 豁免期（前100筆交易）：僅拒絕極低質量
+            # 目標：快速採集數據，接受Poor/Fair級別信號
+            if confidence < 0.3 or win_probability < 0.3:
+                return "Rejected"  # 極低質量，拒絕
+            elif confidence >= 0.6:
+                return "Excellent"  # 高質量
+            elif confidence >= 0.5:
+                return "Good"  # 中高質量
+            else:
+                return "Fair"  # Poor也接受（0.4-0.5範圍）
+        else:
+            # 正常期（100筆交易後）：嚴格分級
+            # 目標：只接受高質量信號
+            if confidence < 0.6:
+                return "Rejected"  # 不符合最低標準
+            elif confidence >= 0.8:
+                return "Excellent"  # 卓越質量
+            else:
+                return "Good"  # 良好質量（0.6-0.8範圍）
+    
+    def _calculate_ob_score_with_decay(
+        self,
+        ob: Dict,
+        current_time: pd.Timestamp
+    ) -> float:
+        """
+        📊 v3.19+ 修正5：Order Block 時效衰減邏輯
+        
+        核心原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+        
+        明確衰減公式：
+        - <48小時：全效（base_score × 1.0）
+        - 48-72小時：線性衰減（base_score × decay_factor）
+        - >72小時：失效（0.0）
+        
+        Args:
+            ob: Order Block字典（包含created_at和quality_score）
+            current_time: 當前時間戳
+        
+        Returns:
+            調整後的OB分數（0-1）
+        """
+        # 提取創建時間
+        ob_created = ob.get('created_at', ob.get('timestamp'))
+        if ob_created is None:
+            # 無時間信息，使用基礎分數
+            return ob.get('quality_score', 0.5)
+        
+        # 確保時間戳格式一致
+        if not isinstance(ob_created, pd.Timestamp):
+            try:
+                ob_created = pd.Timestamp(ob_created)
+            except:
+                return ob.get('quality_score', 0.5)
+        
+        # 計算年齡（小時）
+        age_hours = (current_time - ob_created).total_seconds() / 3600
+        
+        # 基礎分數
+        base_score = ob.get('quality_score', 0.5)
+        
+        # 應用時效衰減
+        if age_hours > 72:
+            # 72小時後失效
+            return 0.0
+        elif age_hours > 48:
+            # 48-72小時線性衰減
+            decay_factor = 1 - (age_hours - 48) / 24  # 線性從1.0衰減到0.0
+            return base_score * decay_factor
+        else:
+            # 48小時內全效
+            return base_score
+    
+    def _predict_signal_distribution(self, mode: str) -> Dict[str, float]:
+        """
+        📊 v3.19+ 修正6：動態預測信號分佈（嚴格/寬鬆模式）
+        
+        核心原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+        
+        Args:
+            mode: "strict"（嚴格模式）或 "relaxed"（寬鬆模式）
+        
+        Returns:
+            預期信號分佈字典 {等級: 占比}
+        """
+        if mode == "strict":
+            # 嚴格模式：高質量信號占主導
+            return {
+                "Excellent": 0.30,  # 30% 卓越
+                "Good": 0.40,       # 40% 良好
+                "Fair": 0.30,       # 30% 中等
+                "Poor": 0.00,       # 0% 低質（拒絕）
+                "Rejected": 0.00    # 0% 拒絕
+            }
+        else:  # relaxed
+            # 寬鬆模式：接受更多中低質量信號
+            return {
+                "Excellent": 0.15,  # 15% 卓越
+                "Good": 0.25,       # 25% 良好
+                "Fair": 0.35,       # 35% 中等
+                "Poor": 0.25,       # 25% 低質（豁免期接受）
+                "Rejected": 0.00    # 0% 拒絕
+            }
+    
     def _calculate_confidence(
         self,
         h1_trend: str,
@@ -491,43 +672,31 @@ class RuleBasedSignalGenerator:
         deviation_metrics: Optional[Dict] = None  # 🔥 v3.18.8+ 新增EMA偏差指標
     ) -> tuple:
         """
-        計算五維 ICT 信心度評分（v3.18.8+ 優化）
+        計算五維 ICT 信心度評分
         
-        🔥 v3.18.8+ 改進：
-        - 1️⃣ 趨勢對齊 (40%) → EMA偏差評分 (40%)
-        - 精細化量化價格與EMA的相對位置，比簡單的bullish/neutral/bearish更準確
+        🔥 v3.19+ 修正1：統一評分標準
+        - 1️⃣ 時間框架對齊度 (40%) ← 統一「評分標準 = 生成條件」
+        - 2️⃣ 市場結構 (20%)
+        - 3️⃣ Order Block質量 (20%)
+        - 4️⃣ 動量指標 (10%)
+        - 5️⃣ 波動率 (10%)
         
         Returns:
             (總分, 子分數字典)
         """
         sub_scores = {}
         
-        # 1️⃣ EMA偏差評分 (40%) - v3.18.8+ 替換舊的趨勢對齊
+        # 1️⃣ v3.19+ 修正1：時間框架對齊度評分 (40%)
+        # 統一「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+        timeframes = {'1h': h1_trend, '15m': m15_trend, '5m': m5_trend}
+        alignment_score, alignment_grade = self._calculate_alignment_score(timeframes, direction)
+        sub_scores['timeframe_alignment'] = alignment_score
+        sub_scores['alignment_grade'] = alignment_grade
+        
+        # 保留EMA偏差數據供參考（但不計入主評分）
         if deviation_metrics:
-            # 使用新的EMA偏差評分（更精細）
-            trend_score = deviation_metrics['deviation_score']  # 0-40分
-            sub_scores['ema_deviation'] = trend_score
-            sub_scores['deviation_quality'] = deviation_metrics['deviation_quality']
-            # 保留舊的趨勢對齊數據供調試（但不計入分數）
-            sub_scores['trend_alignment_legacy'] = f"{h1_trend}/{m15_trend}/{m5_trend}"
-        else:
-            # 降級方案：使用舊的趨勢對齊邏輯（僅作備份）
-            trend_score = 0.0
-            if direction == 'LONG':
-                if h1_trend == 'bullish':
-                    trend_score += 15
-                if m15_trend == 'bullish':
-                    trend_score += 15
-                if m5_trend == 'bullish':
-                    trend_score += 10
-            elif direction == 'SHORT':
-                if h1_trend == 'bearish':
-                    trend_score += 15
-                if m15_trend == 'bearish':
-                    trend_score += 15
-                if m5_trend == 'bearish':
-                    trend_score += 10
-            sub_scores['trend_alignment'] = trend_score
+            sub_scores['ema_deviation_reference'] = deviation_metrics['deviation_score']
+            sub_scores['deviation_quality_reference'] = deviation_metrics['deviation_quality']
         
         # 2️⃣ 市場結構 (20%)
         structure_score = 0.0
@@ -537,8 +706,10 @@ class RuleBasedSignalGenerator:
         
         sub_scores['market_structure'] = structure_score
         
-        # 3️⃣ Order Block 質量 (20%)
+        # 3️⃣ v3.19+ 修正5：Order Block 質量（含時效衰減）(20%)
         ob_score = 0.0
+        current_time = pd.Timestamp.now()
+        
         if order_blocks:
             relevant_obs = [
                 ob for ob in order_blocks
@@ -559,15 +730,23 @@ class RuleBasedSignalGenerator:
                 ob_price = get_ob_price(nearest_ob)
                 ob_distance = abs(ob_price - current_price) / current_price
                 
-                # 距離越近分數越高
+                # 距離分數（基礎分數）
                 if ob_distance < 0.005:  # <0.5%
-                    ob_score = 20.0
+                    base_ob_score = 20.0
                 elif ob_distance < 0.01:  # <1%
-                    ob_score = 15.0
+                    base_ob_score = 15.0
                 elif ob_distance < 0.02:  # <2%
-                    ob_score = 10.0
+                    base_ob_score = 10.0
                 else:
-                    ob_score = 5.0
+                    base_ob_score = 5.0
+                
+                # 🔥 v3.19+ 修正5：應用時效衰減
+                # 原則：「評分標準 = 生成條件 = 執行依據 = 學習標籤」
+                ob_quality_decayed = self._calculate_ob_score_with_decay(nearest_ob, current_time)
+                decay_multiplier = ob_quality_decayed / max(nearest_ob.get('quality_score', 0.5), 0.01)
+                
+                # 最終分數 = 距離分數 × 時效衰減係數
+                ob_score = base_ob_score * decay_multiplier
         
         sub_scores['order_block'] = ob_score
         
