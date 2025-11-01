@@ -79,13 +79,14 @@ def calculate_signal_score(signal: Dict, config: Config) -> float:
 
 class CapitalAllocator:
     """
-    資金分配器（v3.18+ 動態預算池版本）
+    資金分配器（v3.18.7+ 動態預算池版本 + 豁免期質量門檻）
     
     核心理念：
     - 競價排名：質量分數越高，越優先分配資金
     - 動態預算池：高分信號優先扣減預算，預算耗盡拒絕低分信號
     - 單倉上限：單個倉位不超過帳戶權益的50%
     - 總預算控制：使用可用保證金的80%
+    - 🔥 v3.18.7+ 豁免期質量門檻：前100筆使用0.4，第101筆起使用0.6
     """
     
     def __init__(
@@ -93,7 +94,8 @@ class CapitalAllocator:
         config: Config,
         total_account_equity: float,
         total_balance: float = 0.0,
-        total_margin: float = 0.0
+        total_margin: float = 0.0,
+        total_trades: int = 0
     ):
         """
         初始化資金分配器
@@ -103,16 +105,28 @@ class CapitalAllocator:
             total_account_equity: 帳戶總權益（用於單倉上限檢查）
             total_balance: 帳戶總金額（不含浮盈浮虧，用於90%上限檢查）
             total_margin: 已佔用保證金（用於90%上限檢查）
+            total_trades: 已完成交易數（用於豁免期判斷，v3.18.7+）
         """
         self.config = config
         self.total_account_equity = total_account_equity
         self.total_balance = total_balance
         self.total_margin = total_margin
+        self.total_trades = total_trades
         
-        logger.debug(
-            f"💰 CapitalAllocator初始化 | 帳戶權益: ${total_account_equity:.2f} | "
-            f"總金額: ${total_balance:.2f} | 已佔用保證金: ${total_margin:.2f} | "
-            f"單倉上限: {self.config.MAX_SINGLE_POSITION_RATIO:.0%}"
+        # 🔥 v3.18.7+ 動態質量門檻（豁免期0.4，正常期0.6）
+        if total_trades < config.BOOTSTRAP_TRADE_LIMIT:
+            self.quality_threshold = config.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD
+            threshold_mode = f"豁免期模式（交易數:{total_trades}/{config.BOOTSTRAP_TRADE_LIMIT}）"
+        else:
+            self.quality_threshold = config.SIGNAL_QUALITY_THRESHOLD
+            threshold_mode = f"正常模式（交易數:{total_trades}≥{config.BOOTSTRAP_TRADE_LIMIT}）"
+        
+        logger.info(
+            f"💰 CapitalAllocator初始化 | "
+            f"帳戶權益: ${total_account_equity:.2f} | "
+            f"總金額: ${total_balance:.2f} | "
+            f"已佔用保證金: ${total_margin:.2f} | "
+            f"質量門檻: {self.quality_threshold:.2f} ({threshold_mode})"
         )
     
     def allocate_capital(
@@ -150,18 +164,18 @@ class CapitalAllocator:
         for signal in signals:
             score = calculate_signal_score(signal, self.config)
             
-            # 過濾低質量信號
-            if score >= self.config.SIGNAL_QUALITY_THRESHOLD:
+            # 🔥 v3.18.7+ 使用動態質量門檻（豁免期0.4，正常期0.6）
+            if score >= self.quality_threshold:
                 scored_signals.append((signal, score))
             else:
                 logger.debug(
                     f"💰 質量不足，拒絕信號 {signal.get('symbol', 'UNKNOWN')} | "
-                    f"分數: {score:.3f} < 門檻: {self.config.SIGNAL_QUALITY_THRESHOLD:.3f}"
+                    f"分數: {score:.3f} < 門檻: {self.quality_threshold:.3f}"
                 )
         
         if not scored_signals:
             logger.info(
-                f"💰 所有信號質量不足（門檻: {self.config.SIGNAL_QUALITY_THRESHOLD:.3f}），"
+                f"💰 所有信號質量不足（門檻: {self.quality_threshold:.3f}），"
                 f"無信號獲批"
             )
             return []

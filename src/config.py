@@ -69,7 +69,8 @@ class Config:
     BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.40"))  # 豁免期最低信心值40%
     
     # ===== v3.18+ 資金分配配置（動態預算池 + 質量加權）=====
-    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 最低質量門檻
+    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 正常期最低質量門檻（豁免期自動降至0.4）
+    BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.4"))  # 豁免期質量門檻（適配40%/40%）
     MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.8"))  # 總預算 = 80% 可用保證金
     MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.5"))  # 單倉 ≤ 50% 帳戶權益
     MAX_TOTAL_MARGIN_RATIO: float = float(os.getenv("MAX_TOTAL_MARGIN_RATIO", "0.9"))  # 總倉位保證金 ≤ 90% 帳戶總金額（不含浮盈浮虧）

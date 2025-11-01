@@ -991,14 +991,23 @@ class SelfLearningTrader:
             logger.error(f"❌ 獲取帳戶信息失敗: {e}")
             return []
         
-        # ===== 步驟2：動態分配資金（v3.18+ 含90%總倉位保證金上限）=====
+        # ===== 步驟2：動態分配資金（v3.18.7+ 含豁免期質量門檻）=====
+        # 🔥 v3.18.7+ 獲取已完成交易數（用於豁免期判斷）
+        # 防御性檢查：如果trade_recorder未初始化，默認total_trades=0
+        if self.trade_recorder:
+            total_trades = await self.trade_recorder.get_trade_count()
+        else:
+            total_trades = 0
+            logger.warning("⚠️ TradeRecorder未初始化，使用total_trades=0（豁免期模式）")
+        
         # 確保使用Config實例（self.config可能是類或實例）
         config_instance = self.config if not isinstance(self.config, type) else self.config()
         allocator = CapitalAllocator(
             config_instance,
             total_equity,
             total_balance=total_balance,
-            total_margin=total_margin
+            total_margin=total_margin,
+            total_trades=total_trades  # 🔥 v3.18.7+ 豁免期邏輯
         )
         allocated_signals = allocator.allocate_capital(signals, available_margin)
         

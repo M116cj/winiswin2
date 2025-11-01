@@ -314,6 +314,13 @@ CYCLE_INTERVAL: int = 60
 
 ## 🎉 最新更新
 
+### v3.18.7+ (2025-11-01) - 重大BUG修復
+- 🐛 **修復0信號BUG**：SIGNAL_QUALITY_THRESHOLD動態門檻（豁免期0.4，正常期0.6）
+- 🎯 **預期效果**：信號數量從0提升到30-50個/周期（530個交易對中）
+- 📊 **數學證明**：40%/40%門檻質量分數=0.480，原門檻0.6全部拒絕
+- ✅ **完整修復**：Config + CapitalAllocator + SelfLearningTrader
+- 📚 **詳細文檔**：BUG_FIX_SIGNAL_QUALITY_THRESHOLD.md
+
 ### v3.18.7 (2025-11-01)
 - ✨ 新增功能鎖定開關（3個）
 - 🔒 生產環境靈活控制
