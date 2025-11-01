@@ -579,6 +579,12 @@ class TradeRecorder:
         🔥 v3.18.6+ 異步重訓練模型
         """
         try:
+            # 🔥 Critical Fix: 檢查model_initializer是否存在
+            if self.model_initializer is None:
+                logger.warning("⚠️ ModelInitializer未設置，跳過重訓練")
+                logger.info("💡 提示：系統將在下次啟動時使用最新交易數據訓練")
+                return
+            
             logger.info("🧠 開始後台模型重訓練...")
             
             # 調用ModelInitializer重訓練
