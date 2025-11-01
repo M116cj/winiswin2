@@ -818,7 +818,8 @@ class DataService:
         
         # 從WebSocket獲取所有1m K線歷史
         all_klines = self.websocket_monitor.get_all_klines()
-        klines_1m = all_klines.get(symbol, [])
+        # 🔥 v3.18.5+ Critical Fix: WebSocket緩存使用小寫symbol，必須轉換
+        klines_1m = all_klines.get(symbol.lower(), [])
         
         # 🔥 v3.17.2+修復：部分可用策略（返回有足夠數據的時間框架）
         # 5m需要5根、15m需要15根、1h需要60根
