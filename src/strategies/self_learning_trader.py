@@ -37,7 +37,7 @@ class SelfLearningTrader:
     
     def __init__(self, config=None, binance_client=None, trade_recorder=None, virtual_position_manager=None, websocket_monitor=None):
         """
-        初始化 SelfLearningTrader
+        🔥 v3.18.6+ 初始化 SelfLearningTrader（整合ML模型）
         
         Args:
             config: 配置對象
@@ -60,10 +60,21 @@ class SelfLearningTrader:
         self.position_sizer = PositionSizer(config, binance_client)
         self.sltp_adjuster = SLTPAdjuster(config)
         
+        # 🔥 v3.18.6+ 初始化ML模型包装器
+        try:
+            from src.ml.model_wrapper import MLModelWrapper
+            self.ml_model = MLModelWrapper()
+            self.ml_enabled = self.ml_model.is_loaded
+        except Exception as e:
+            logger.warning(f"⚠️ ML模型加载失败: {e}")
+            self.ml_model = None
+            self.ml_enabled = False
+        
         logger.info("=" * 80)
-        logger.info("✅ SelfLearningTrader v3.17.11 初始化完成（WebSocket整合）")
+        logger.info(f"✅ SelfLearningTrader v3.18.6 初始化完成（ML整合）")
         logger.info("   🎯 模式: 無限制槓桿（基於勝率 × 信心度）")
-        logger.info("   🧠 決策依據: win_probability × confidence")
+        logger.info(f"   🧠 決策引擎: {'ML模型 + 規則混合' if self.ml_enabled else '純規則驅動'}")
+        logger.info(f"   🤖 ML狀態: {'✅ 已加載（44個特徵）' if self.ml_enabled else '❌ 未加載（使用規則fallback）'}")
         logger.info("   📡 WebSocket: {}".format("已啟用（即時市場數據）" if websocket_monitor else "未啟用"))
         logger.info("   🛡️  風險控制: 動態 SL/TP + 10 USDT 最小倉位")
         logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
@@ -75,7 +86,7 @@ class SelfLearningTrader:
         multi_tf_data: Dict[str, pd.DataFrame]
     ) -> Optional[Dict]:
         """
-        分析並生成交易信號（含槓桿、倉位、SL/TP 計算）
+        🔥 v3.18.6+ 分析並生成交易信號（ML預測 + 規則混合）
         
         Args:
             symbol: 交易對
@@ -85,14 +96,41 @@ class SelfLearningTrader:
             完整的交易信號（可直接執行），或 None
         """
         try:
-            # 步驟 1：生成基礎信號
+            # 步驟 1：生成基礎信號（規則引擎）
             base_signal = self.signal_generator.generate_signal(symbol, multi_tf_data)
             
             if base_signal is None:
                 return None
             
-            # 步驟 2：提取決策參數
-            win_probability = base_signal['win_probability']
+            # 🔥 v3.18.6+ 步驟 2：ML模型預測（優先）
+            win_probability = base_signal['win_probability']  # 規則引擎的默認值
+            
+            if self.ml_enabled and self.ml_model:
+                try:
+                    # 使用ML模型預測獲勝概率
+                    ml_prediction = self.ml_model.predict_from_signal(base_signal)
+                    
+                    if ml_prediction is not None:
+                        # 🔥 使用ML預測覆蓋規則引擎的勝率
+                        win_probability = ml_prediction
+                        base_signal['win_probability'] = ml_prediction
+                        base_signal['prediction_source'] = 'ml_model'
+                        
+                        logger.debug(f"🤖 {symbol} ML預測勝率: {ml_prediction:.3f}")
+                    else:
+                        # ML預測失敗，使用規則引擎fallback
+                        base_signal['prediction_source'] = 'rule_engine_fallback'
+                        logger.debug(f"⚠️ {symbol} ML預測失敗，使用規則引擎: {win_probability:.3f}")
+                        
+                except Exception as e:
+                    # ML預測異常，使用規則引擎fallback
+                    base_signal['prediction_source'] = 'rule_engine_fallback'
+                    logger.warning(f"⚠️ {symbol} ML預測異常: {e}，使用規則引擎")
+            else:
+                # ML未啟用，使用規則引擎
+                base_signal['prediction_source'] = 'rule_engine'
+            
+            # 步驟 3：提取決策參數
             confidence = base_signal['confidence']
             rr_ratio = base_signal['rr_ratio']
             

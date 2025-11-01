@@ -146,47 +146,37 @@ class ModelInitializer:
     
     async def _collect_training_data(self) -> List[Dict[str, Any]]:
         """
-        收集訓練數據
+        🔥 v3.18.6+ Critical Fix: 收集訓練數據（優先使用trades.jsonl）
         
         策略：
-        1. 優先使用歷史交易記錄（若有 TradeRecorder）
-        2. 否則使用市場數據生成合成樣本
+        1. 🔥 優先從 trades.jsonl 加載真實交易數據（44個特徵）
+        2. 若數據不足，使用市場數據生成合成樣本
         
         Returns:
             訓練數據列表
         """
         training_data = []
         
-        # 策略 1: 從交易記錄收集
-        if self.trade_recorder:
-            try:
-                cutoff_date = datetime.now() - timedelta(days=self.training_params['lookback_days'])
-                
-                # 獲取所有交易記錄
-                all_trades = await self._get_historical_trades()
-                
-                # 過濾高品質交易（已平倉，有明確結果）
-                quality_trades = [
-                    t for t in all_trades
-                    if t.get('status') == 'closed' and
-                       t.get('pnl') is not None and
-                       datetime.fromisoformat(str(t.get('timestamp', cutoff_date))) >= cutoff_date
-                ]
-                
-                if quality_trades:
-                    logger.info(f"📊 從交易記錄收集到 {len(quality_trades)} 筆高品質樣本")
-                    training_data.extend(quality_trades)
-                
-            except Exception as e:
-                logger.warning(f"⚠️ 無法從交易記錄收集數據: {e}")
+        # 🔥 v3.18.6+ 策略 1: 從 trades.jsonl 直接加載（最高優先級）
+        logger.info("📊 從 trades.jsonl 加載真實交易數據...")
+        real_trades = self._load_training_data_from_trades()
         
-        # 策略 2: 生成合成樣本（若數據不足）
+        if real_trades:
+            logger.info(f"✅ 從 trades.jsonl 加載 {len(real_trades)} 筆真實交易數據")
+            training_data.extend(real_trades)
+        else:
+            logger.warning("⚠️ trades.jsonl 無數據或不存在")
+        
+        # 策略 2: 若數據不足，生成合成樣本
         if len(training_data) < self.training_params['min_samples']:
-            logger.info("📊 從市場數據生成合成樣本...")
-            synthetic_samples = await self._generate_synthetic_samples(
-                target_count=self.training_params['min_samples'] - len(training_data)
-            )
+            needed = self.training_params['min_samples'] - len(training_data)
+            logger.info(f"📊 數據不足，從市場數據生成 {needed} 個合成樣本...")
+            synthetic_samples = await self._generate_synthetic_samples(target_count=needed)
             training_data.extend(synthetic_samples)
+        
+        logger.info(f"✅ 總計收集 {len(training_data)} 筆訓練數據")
+        logger.info(f"   真實交易: {len(real_trades)}")
+        logger.info(f"   合成樣本: {len(training_data) - len(real_trades)}")
         
         return training_data
     
@@ -382,12 +372,135 @@ class ModelInitializer:
         
         return samples
     
-    async def _train_xgboost_model(self, training_data: List[Dict]) -> bool:
+    def _load_training_data_from_trades(self) -> List[Dict]:
         """
-        訓練 XGBoost 模型
+        🔥 v3.18.6+ Critical Fix: 從 trades.jsonl 加載真實交易數據
+        
+        這是真正的ML訓練數據來源，使用TradeRecorder記錄的44個特徵
+        
+        Returns:
+            訓練數據列表（每個元素包含完整的44個特徵 + label）
+        """
+        training_data = []
+        trades_file = Path("data/trades.jsonl")
+        
+        if not trades_file.exists():
+            logger.warning(f"⚠️ 訓練數據文件不存在: {trades_file}")
+            return training_data
+        
+        try:
+            with open(trades_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    if line.strip():
+                        try:
+                            trade = json.loads(line)
+                            # 確保有必要的字段
+                            if 'label' in trade and 'confidence' in trade:
+                                training_data.append(trade)
+                        except json.JSONDecodeError as e:
+                            logger.debug(f"跳過無效JSON行: {e}")
+                            continue
+            
+            logger.info(f"✅ 從 {trades_file} 加載 {len(training_data)} 筆訓練數據")
+            
+        except Exception as e:
+            logger.error(f"❌ 加載訓練數據失敗: {e}")
+        
+        return training_data
+    
+    def _extract_44_features(self, trade: Dict) -> Optional[List[float]]:
+        """
+        🔥 v3.18.6+ Critical Fix: 從交易記錄提取44個特徵（容錯處理）
+        
+        使用默認值處理缺失字段，確保歷史數據可用性
         
         Args:
-            training_data: 訓練數據
+            trade: 交易記錄（可能缺少部分字段）
+        
+        Returns:
+            44個特徵的數值列表（總是成功返回，除非發生異常）
+        """
+        try:
+            # 🔥 v3.18.6+ Critical Fix: 所有字段都使用默認值，確保歷史數據不被跳過
+            features = [
+                # 基本特徵 (8) - 核心字段優先從trade讀取
+                float(trade.get('confidence', trade.get('confidence_score', 0.5))),
+                float(trade.get('leverage', 1.0)),
+                float(trade.get('position_value', 0.0)),
+                float(trade.get('risk_reward_ratio', trade.get('rr_ratio', 1.5))),
+                float(trade.get('order_blocks_count', trade.get('order_blocks', 0))),
+                float(trade.get('liquidity_zones_count', trade.get('liquidity_zones', 0))),
+                float(trade.get('entry_price', 0.0)),
+                float(trade.get('win_probability', 0.5)),
+                
+                # 技術指標 (10) - 使用中性默認值
+                float(trade.get('rsi', 50.0)),
+                float(trade.get('macd', 0.0)),
+                float(trade.get('macd_signal', 0.0)),
+                float(trade.get('macd_histogram', 0.0)),
+                float(trade.get('atr', 0.0)),
+                float(trade.get('bb_width', 0.0)),
+                float(trade.get('volume_sma_ratio', 1.0)),
+                float(trade.get('ema50', 0.0)),
+                float(trade.get('ema200', 0.0)),
+                float(trade.get('volatility_24h', 0.0)),
+                
+                # 趨勢特徵 (6) - 使用中性默認值
+                float(trade.get('trend_1h', 0)),
+                float(trade.get('trend_15m', 0)),
+                float(trade.get('trend_5m', 0)),
+                float(trade.get('market_structure', 0)),
+                float(trade.get('direction', 1)),  # LONG=1, SHORT=-1
+                float(trade.get('trend_alignment', 0.0)),
+                
+                # 其他特徵 (14) - 所有可選字段使用默認值
+                float(trade.get('ema50_slope', 0.0)),
+                float(trade.get('ema200_slope', 0.0)),
+                float(trade.get('higher_highs', 0)),
+                float(trade.get('lower_lows', 0)),
+                float(trade.get('support_strength', 0.5)),
+                float(trade.get('resistance_strength', 0.5)),
+                float(trade.get('fvg_count', 0)),
+                float(trade.get('swing_high_distance', 0.0)),
+                float(trade.get('swing_low_distance', 0.0)),
+                float(trade.get('volume_profile', 0.5)),
+                float(trade.get('price_momentum', 0.0)),
+                float(trade.get('order_flow', 0.0)),
+                float(trade.get('liquidity_grab', 0)),
+                float(trade.get('institutional_candle', 0)),
+                
+                # 競價上下文特徵 (3) - 新字段使用默認值
+                float(trade.get('competition_rank', 1)),
+                float(trade.get('score_gap_to_best', 0.0)),
+                float(trade.get('num_competing_signals', 1)),
+                
+                # WebSocket專屬特徵 (3) - 新字段使用默認值
+                float(trade.get('latency_zscore', 0.0)),
+                float(trade.get('shard_load', 0.0)),
+                float(trade.get('timestamp_consistency', 1))
+            ]
+            
+            # 驗證長度
+            if len(features) != 44:
+                logger.error(f"特徵數量錯誤: {len(features)} != 44")
+                return None
+            
+            return features
+            
+        except (ValueError, TypeError) as e:
+            # 只在類型轉換失敗時返回None
+            logger.warning(f"特徵提取失敗（數據類型錯誤）: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"特徵提取異常: {e}")
+            return None
+    
+    async def _train_xgboost_model(self, training_data: List[Dict]) -> bool:
+        """
+        🔥 v3.18.6+ Critical Fix: 訓練 XGBoost 模型（使用44個特徵）
+        
+        Args:
+            training_data: 訓練數據（從trades.jsonl加載的真實交易）
             
         Returns:
             訓練是否成功
@@ -396,23 +509,21 @@ class ModelInitializer:
             import xgboost as xgb
             import numpy as np
             
-            # 提取特徵和標籤
+            # 🔥 v3.18.6+: 從真實交易數據提取44個特徵
             X = []
             y = []
             
-            for sample in training_data:
-                if 'features' in sample and 'label' in sample:
-                    features = sample['features']
-                    # 轉換為數值列表
-                    feature_vector = [
-                        float(features.get('ema_20', 0)),
-                        float(features.get('ema_50', 0)),
-                        float(features.get('rsi', 50)),
-                        float(features.get('atr', 0)),
-                        float(features.get('volume', 0)),
-                    ]
-                    X.append(feature_vector)
-                    y.append(int(sample['label']))
+            for trade in training_data:
+                # 提取44個特徵
+                features = self._extract_44_features(trade)
+                if features is None:
+                    continue
+                
+                # 提取標籤
+                label = int(trade.get('label', 0))
+                
+                X.append(features)
+                y.append(label)
             
             if len(X) < 10:
                 logger.error(f"❌ 特徵數據不足: {len(X)} < 10")
@@ -422,6 +533,8 @@ class ModelInitializer:
             y = np.array(y)
             
             logger.info(f"📊 訓練數據: X.shape={X.shape}, y.shape={y.shape}")
+            logger.info(f"   ✅ 使用 44 個特徵（FeatureEngine完整特徵集）")
+            logger.info(f"   📈 正樣本: {np.sum(y)} / {len(y)} ({np.mean(y)*100:.1f}%)")
             
             # 創建 DMatrix
             dtrain = xgb.DMatrix(X, label=y)

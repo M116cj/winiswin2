@@ -126,10 +126,6 @@ class SelfLearningTradingSystem:
             await self.data_service.initialize()
             logger.info("✅ 數據服務初始化完成")
             
-            # 交易記錄器
-            self.trade_recorder = TradeRecorder()
-            logger.info("✅ 交易記錄器初始化完成")
-            
             # 🔥 v3.17.10+：模型評估器（用於特徵重要性分析）
             self.model_evaluator = ModelEvaluator(
                 config=self.config,
@@ -137,14 +133,25 @@ class SelfLearningTradingSystem:
             )
             logger.info("✅ 模型評估器初始化完成（v3.17.10+）")
             
-            # 🔥 v3.17.10+：模型初始化器（動態重訓練觸發）
+            # 🔥 v3.18.6+：先創建模型初始化器（用於重訓練）
+            # 注意：暫時不傳trade_recorder（避免循環依賴）
             self.model_initializer = ModelInitializer(
                 binance_client=self.binance_client,
-                trade_recorder=self.trade_recorder,
+                trade_recorder=None,  # 稍後設置
                 config_profile=self.config,
                 model_evaluator=self.model_evaluator
             )
             logger.info("✅ 模型初始化器已創建（v3.17.10+）")
+            
+            # 🔥 v3.18.6+ 交易記錄器（現在可以傳遞model_initializer）
+            self.trade_recorder = TradeRecorder(
+                model_initializer=self.model_initializer
+            )
+            logger.info("✅ 交易記錄器初始化完成（v3.18.6+，支持模型重訓練）")
+            
+            # 🔥 v3.18.6+ 設置ModelInitializer的trade_recorder引用
+            self.model_initializer.trade_recorder = self.trade_recorder
+            logger.info("✅ 模型初始化器與交易記錄器已關聯")
             
             # UnifiedScheduler（核心調度器）
             self.scheduler = UnifiedScheduler(
