@@ -729,21 +729,6 @@ class RuleBasedSignalGenerator:
         
         return deviations
     
-    def _calculate_ema_based_confidence(
-        self,
-        deviation_metrics: Dict,
-        direction: str
-    ) -> float:
-        """
-        基於EMA偏差值計算基礎信心值（v3.18.8+）
-        
-        取代舊的趨勢對齊分數（40%），改用精細化偏差評分
-        
-        Returns:
-            基礎信心值 (0-40分)
-        """
-        return deviation_metrics['deviation_score']
-    
     def _calculate_ema_based_win_probability(
         self,
         deviation_metrics: Dict,
@@ -801,48 +786,6 @@ class RuleBasedSignalGenerator:
                 deviation_bonus = 0.0
         
         win_probability = base_win_rate + rr_adjustment + structure_bonus + deviation_bonus
-        
-        # 限制範圍
-        return max(0.50, min(0.75, win_probability))
-    
-    def _estimate_win_probability(
-        self,
-        confidence_score: float,
-        rr_ratio: float,
-        direction: str,
-        market_structure: str
-    ) -> float:
-        """
-        預估勝率（基於歷史統計）- 舊版兼容保留
-        
-        ⚠️  v3.18.8+：建議使用 _calculate_ema_based_win_probability 替代
-        
-        邏輯：
-        - 信心度 90+ → 勝率 65-70%
-        - 信心度 70-90 → 勝率 60-65%
-        - 信心度 50-70 → 勝率 55-60%
-        - R:R 越高，勝率應略低（風險補償）
-        """
-        # 基礎勝率（基於信心度）
-        if confidence_score >= 90:
-            base_win_rate = 0.675
-        elif confidence_score >= 70:
-            base_win_rate = 0.625
-        elif confidence_score >= 50:
-            base_win_rate = 0.575
-        else:
-            base_win_rate = 0.55
-        
-        # R:R 調整
-        rr_adjustment = -0.02 * (rr_ratio - 1.5)  # R:R 每高 1.0，勝率降 2%
-        
-        # 市場結構調整
-        structure_bonus = 0.02 if (
-            (direction == 'LONG' and market_structure == 'bullish') or
-            (direction == 'SHORT' and market_structure == 'bearish')
-        ) else 0.0
-        
-        win_probability = base_win_rate + rr_adjustment + structure_bonus
         
         # 限制範圍
         return max(0.50, min(0.75, win_probability))
