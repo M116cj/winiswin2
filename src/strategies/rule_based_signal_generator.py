@@ -773,8 +773,15 @@ class RuleBasedSignalGenerator:
         else:  # poor
             base_win_rate = 0.525  # 52.5%
         
-        # R:R 調整
-        rr_adjustment = -0.02 * (rr_ratio - 1.5)  # R:R 每高 1.0，勝率降 2%
+        # 🔥 v3.18.9+ 修復：R:R 調整（改為獎勵合理風報比）
+        # 修復前：R:R > 2.5 → 懲罰（-2%/單位）→ 高風報比被低估
+        # 修復後：1.5-2.5最佳區間 → 獎勵（+5%）→ 鼓勵合理風報比
+        if 1.5 <= rr_ratio <= 2.5:
+            rr_adjustment = 0.05  # 最佳區間，獎勵+5%
+        elif rr_ratio > 2.5:
+            rr_adjustment = 0.02  # 高風報比仍獎勵+2%
+        else:  # rr_ratio < 1.5
+            rr_adjustment = -0.05  # 低風報比懲罰-5%
         
         # 市場結構調整
         structure_bonus = 0.02 if (
