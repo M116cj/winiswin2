@@ -5,7 +5,7 @@
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 import logging
 
 from src.utils.indicators import (
@@ -169,7 +169,16 @@ class RuleBasedSignalGenerator:
                 
                 return None
             
-            # 計算基礎信心度（五維 ICT 評分）
+            # 🔥 v3.18.8+ 計算EMA偏差值指標
+            deviation_metrics = self._calculate_ema_deviation_metrics(
+                current_price=current_price,
+                h1_data=h1_data,
+                m15_data=m15_data,
+                m5_data=m5_data,
+                direction=signal_direction
+            )
+            
+            # 計算基礎信心度（五維 ICT 評分，其中趨勢對齊40%替換為EMA偏差評分）
             confidence_score, sub_scores = self._calculate_confidence(
                 h1_trend=h1_trend,
                 m15_trend=m15_trend,
@@ -182,7 +191,8 @@ class RuleBasedSignalGenerator:
                 m15_data=m15_data,
                 m5_data=m5_data,
                 direction=signal_direction,
-                indicators=indicators
+                indicators=indicators,
+                deviation_metrics=deviation_metrics  # 🔥 v3.18.8+ 新增EMA偏差指標
             )
             
             # 計算 SL/TP
@@ -199,12 +209,13 @@ class RuleBasedSignalGenerator:
             reward = abs(take_profit - current_price)
             rr_ratio = reward / risk if risk > 0 else 1.5
             
-            # 預估勝率（基於歷史統計 + 信心度）
-            win_probability = self._estimate_win_probability(
-                confidence_score,
-                rr_ratio,
-                signal_direction,
-                market_structure
+            # 🔥 v3.18.8+ 預估勝率（基於EMA偏差值 + 歷史統計）
+            win_probability = self._calculate_ema_based_win_probability(
+                deviation_metrics=deviation_metrics,
+                confidence_score=confidence_score,
+                rr_ratio=rr_ratio,
+                direction=signal_direction,
+                market_structure=market_structure
             )
             
             # 構建標準化信號
@@ -236,6 +247,19 @@ class RuleBasedSignalGenerator:
                     '1h_trend': h1_trend,
                     '15m_trend': m15_trend,
                     '5m_trend': m5_trend
+                },
+                # 🔥 v3.18.8+ EMA偏差指標（用於ML訓練和日誌）
+                'ema_deviation': {
+                    'h1_ema20_dev': deviation_metrics['h1_ema20_dev'],
+                    'h1_ema50_dev': deviation_metrics['h1_ema50_dev'],
+                    'm15_ema20_dev': deviation_metrics['m15_ema20_dev'],
+                    'm15_ema50_dev': deviation_metrics['m15_ema50_dev'],
+                    'm5_ema20_dev': deviation_metrics['m5_ema20_dev'],
+                    'm5_ema50_dev': deviation_metrics['m5_ema50_dev'],
+                    'avg_ema20_dev': deviation_metrics['avg_ema20_dev'],
+                    'avg_ema50_dev': deviation_metrics['avg_ema50_dev'],
+                    'deviation_score': deviation_metrics['deviation_score'],
+                    'deviation_quality': deviation_metrics['deviation_quality']
                 }
             }
             
@@ -445,34 +469,47 @@ class RuleBasedSignalGenerator:
         m15_data: pd.DataFrame,
         m5_data: pd.DataFrame,
         direction: str,
-        indicators: Dict
+        indicators: Dict,
+        deviation_metrics: Optional[Dict] = None  # 🔥 v3.18.8+ 新增EMA偏差指標
     ) -> tuple:
         """
-        計算五維 ICT 信心度評分
+        計算五維 ICT 信心度評分（v3.18.8+ 優化）
+        
+        🔥 v3.18.8+ 改進：
+        - 1️⃣ 趨勢對齊 (40%) → EMA偏差評分 (40%)
+        - 精細化量化價格與EMA的相對位置，比簡單的bullish/neutral/bearish更準確
         
         Returns:
             (總分, 子分數字典)
         """
         sub_scores = {}
         
-        # 1️⃣ 趨勢對齊 (40%)
-        trend_score = 0.0
-        if direction == 'LONG':
-            if h1_trend == 'bullish':
-                trend_score += 15
-            if m15_trend == 'bullish':
-                trend_score += 15
-            if m5_trend == 'bullish':
-                trend_score += 10
-        elif direction == 'SHORT':
-            if h1_trend == 'bearish':
-                trend_score += 15
-            if m15_trend == 'bearish':
-                trend_score += 15
-            if m5_trend == 'bearish':
-                trend_score += 10
-        
-        sub_scores['trend_alignment'] = trend_score
+        # 1️⃣ EMA偏差評分 (40%) - v3.18.8+ 替換舊的趨勢對齊
+        if deviation_metrics:
+            # 使用新的EMA偏差評分（更精細）
+            trend_score = deviation_metrics['deviation_score']  # 0-40分
+            sub_scores['ema_deviation'] = trend_score
+            sub_scores['deviation_quality'] = deviation_metrics['deviation_quality']
+            # 保留舊的趨勢對齊數據供調試（但不計入分數）
+            sub_scores['trend_alignment_legacy'] = f"{h1_trend}/{m15_trend}/{m5_trend}"
+        else:
+            # 降級方案：使用舊的趨勢對齊邏輯（僅作備份）
+            trend_score = 0.0
+            if direction == 'LONG':
+                if h1_trend == 'bullish':
+                    trend_score += 15
+                if m15_trend == 'bullish':
+                    trend_score += 15
+                if m5_trend == 'bullish':
+                    trend_score += 10
+            elif direction == 'SHORT':
+                if h1_trend == 'bearish':
+                    trend_score += 15
+                if m15_trend == 'bearish':
+                    trend_score += 15
+                if m5_trend == 'bearish':
+                    trend_score += 10
+            sub_scores['trend_alignment'] = trend_score
         
         # 2️⃣ 市場結構 (20%)
         structure_score = 0.0
@@ -577,6 +614,197 @@ class RuleBasedSignalGenerator:
         
         return stop_loss, take_profit
     
+    def _calculate_ema_deviation_metrics(
+        self,
+        current_price: float,
+        h1_data: pd.DataFrame,
+        m15_data: pd.DataFrame,
+        m5_data: pd.DataFrame,
+        direction: str
+    ) -> Dict:
+        """
+        計算EMA偏差值指標（v3.18.8+）
+        
+        核心邏輯：
+        - 價格越接近EMA（偏差小）→ 趨勢確認度高 → 信心值和勝率提升
+        - 價格遠離EMA（偏差大）→ 可能是極端回撤或假突破 → 信心值和勝率降低
+        
+        Returns:
+            {
+                'h1_ema20_dev': 偏差百分比,
+                'h1_ema50_dev': 偏差百分比,
+                'm15_ema20_dev': 偏差百分比,
+                'm15_ema50_dev': 偏差百分比,
+                'm5_ema20_dev': 偏差百分比,
+                'm5_ema50_dev': 偏差百分比,
+                'avg_ema20_dev': 平均EMA20偏差,
+                'avg_ema50_dev': 平均EMA50偏差,
+                'deviation_score': 偏差評分 (0-100),
+                'deviation_quality': 偏差質量等級 ('excellent'/'good'/'fair'/'poor')
+            }
+        """
+        deviations = {}
+        
+        # 計算各時間框架的EMA偏差
+        for timeframe, df in [('h1', h1_data), ('m15', m15_data), ('m5', m5_data)]:
+            ema_20 = calculate_ema(df, period=20)
+            ema_50 = calculate_ema(df, period=50)
+            
+            ema_20_val = float(ema_20.iloc[-1])
+            ema_50_val = float(ema_50.iloc[-1])
+            
+            # 計算偏差百分比（正值=價格高於EMA，負值=價格低於EMA）
+            dev_20 = ((current_price - ema_20_val) / ema_20_val) * 100
+            dev_50 = ((current_price - ema_50_val) / ema_50_val) * 100
+            
+            deviations[f'{timeframe}_ema20_dev'] = dev_20
+            deviations[f'{timeframe}_ema50_dev'] = dev_50
+        
+        # 計算平均偏差
+        avg_ema20_dev = (deviations['h1_ema20_dev'] + deviations['m15_ema20_dev'] + deviations['m5_ema20_dev']) / 3
+        avg_ema50_dev = (deviations['h1_ema50_dev'] + deviations['m15_ema50_dev'] + deviations['m5_ema50_dev']) / 3
+        
+        deviations['avg_ema20_dev'] = avg_ema20_dev
+        deviations['avg_ema50_dev'] = avg_ema50_dev
+        
+        # 🔥 偏差評分邏輯（基於趨勢方向）
+        deviation_score = 0.0
+        
+        if direction == 'LONG':
+            # LONG：期待價格在EMA上方但不過遠（理想偏差：+0.5% ~ +3%）
+            for dev in [deviations['h1_ema20_dev'], deviations['m15_ema20_dev'], deviations['m5_ema20_dev']]:
+                if 0.5 <= dev <= 3.0:
+                    deviation_score += 12.0  # 理想區間
+                elif 0 <= dev < 0.5:
+                    deviation_score += 8.0   # 接近EMA（稍弱）
+                elif 3.0 < dev <= 5.0:
+                    deviation_score += 6.0   # 偏離稍大（風險增加）
+                elif dev < 0:
+                    deviation_score += 2.0   # 價格低於EMA（逆勢）
+                else:  # dev > 5.0
+                    deviation_score += 1.0   # 極端偏離（假突破風險）
+            
+            # EMA50額外確認（權重較低）
+            avg_ema50 = avg_ema50_dev
+            if 1.0 <= avg_ema50 <= 5.0:
+                deviation_score += 4.0
+            elif avg_ema50 > 5.0:
+                deviation_score -= 2.0  # 過度偏離扣分
+        
+        elif direction == 'SHORT':
+            # SHORT：期待價格在EMA下方但不過遠（理想偏差：-3% ~ -0.5%）
+            for dev in [deviations['h1_ema20_dev'], deviations['m15_ema20_dev'], deviations['m5_ema20_dev']]:
+                if -3.0 <= dev <= -0.5:
+                    deviation_score += 12.0  # 理想區間
+                elif -0.5 < dev <= 0:
+                    deviation_score += 8.0   # 接近EMA（稍弱）
+                elif -5.0 <= dev < -3.0:
+                    deviation_score += 6.0   # 偏離稍大（風險增加）
+                elif dev > 0:
+                    deviation_score += 2.0   # 價格高於EMA（逆勢）
+                else:  # dev < -5.0
+                    deviation_score += 1.0   # 極端偏離（假突破風險）
+            
+            # EMA50額外確認（權重較低）
+            avg_ema50 = avg_ema50_dev
+            if -5.0 <= avg_ema50 <= -1.0:
+                deviation_score += 4.0
+            elif avg_ema50 < -5.0:
+                deviation_score -= 2.0  # 過度偏離扣分
+        
+        # 限制分數範圍 (0-40，對應40%權重)
+        deviation_score = max(0.0, min(40.0, deviation_score))
+        
+        deviations['deviation_score'] = deviation_score
+        
+        # 偏差質量等級
+        if deviation_score >= 35:
+            deviations['deviation_quality'] = 'excellent'  # 理想偏差
+        elif deviation_score >= 28:
+            deviations['deviation_quality'] = 'good'       # 良好偏差
+        elif deviation_score >= 20:
+            deviations['deviation_quality'] = 'fair'       # 中等偏差
+        else:
+            deviations['deviation_quality'] = 'poor'       # 偏差過大或逆勢
+        
+        return deviations
+    
+    def _calculate_ema_based_confidence(
+        self,
+        deviation_metrics: Dict,
+        direction: str
+    ) -> float:
+        """
+        基於EMA偏差值計算基礎信心值（v3.18.8+）
+        
+        取代舊的趨勢對齊分數（40%），改用精細化偏差評分
+        
+        Returns:
+            基礎信心值 (0-40分)
+        """
+        return deviation_metrics['deviation_score']
+    
+    def _calculate_ema_based_win_probability(
+        self,
+        deviation_metrics: Dict,
+        confidence_score: float,
+        rr_ratio: float,
+        direction: str,
+        market_structure: str
+    ) -> float:
+        """
+        基於EMA偏差值計算勝率（v3.18.8+）
+        
+        核心邏輯：
+        - 偏差質量優秀（excellent）→ 基礎勝率65-70%
+        - 偏差質量良好（good）→ 基礎勝率60-65%
+        - 偏差質量中等（fair）→ 基礎勝率55-60%
+        - 偏差質量差（poor）→ 基礎勝率50-55%
+        
+        Returns:
+            勝率 (0.50-0.75)
+        """
+        # 🔥 基礎勝率（基於偏差質量）
+        quality = deviation_metrics['deviation_quality']
+        
+        if quality == 'excellent':
+            base_win_rate = 0.675  # 67.5%
+        elif quality == 'good':
+            base_win_rate = 0.625  # 62.5%
+        elif quality == 'fair':
+            base_win_rate = 0.575  # 57.5%
+        else:  # poor
+            base_win_rate = 0.525  # 52.5%
+        
+        # R:R 調整
+        rr_adjustment = -0.02 * (rr_ratio - 1.5)  # R:R 每高 1.0，勝率降 2%
+        
+        # 市場結構調整
+        structure_bonus = 0.02 if (
+            (direction == 'LONG' and market_structure == 'bullish') or
+            (direction == 'SHORT' and market_structure == 'bearish')
+        ) else 0.0
+        
+        # 精細化偏差調整（額外加成）
+        avg_ema20_dev = abs(deviation_metrics['avg_ema20_dev'])
+        if direction == 'LONG':
+            # LONG最佳偏差：+0.5% ~ +3%
+            if 0.5 <= deviation_metrics['avg_ema20_dev'] <= 3.0:
+                deviation_bonus = 0.03  # 額外+3%勝率
+            else:
+                deviation_bonus = 0.0
+        else:  # SHORT
+            # SHORT最佳偏差：-3% ~ -0.5%
+            if -3.0 <= deviation_metrics['avg_ema20_dev'] <= -0.5:
+                deviation_bonus = 0.03  # 額外+3%勝率
+            else:
+                deviation_bonus = 0.0
+        
+        win_probability = base_win_rate + rr_adjustment + structure_bonus + deviation_bonus
+        
+        # 限制範圍
+        return max(0.50, min(0.75, win_probability))
+    
     def _estimate_win_probability(
         self,
         confidence_score: float,
@@ -585,7 +813,9 @@ class RuleBasedSignalGenerator:
         market_structure: str
     ) -> float:
         """
-        預估勝率（基於歷史統計）
+        預估勝率（基於歷史統計）- 舊版兼容保留
+        
+        ⚠️  v3.18.8+：建議使用 _calculate_ema_based_win_probability 替代
         
         邏輯：
         - 信心度 90+ → 勝率 65-70%
