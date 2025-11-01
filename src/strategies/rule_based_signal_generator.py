@@ -37,7 +37,35 @@ class RuleBasedSignalGenerator:
     def __init__(self, config=None):
         """初始化信號生成器"""
         self.config = config or Config
+        self._debug_stats = {
+            'total_scanned': 0,
+            'h1_bullish': 0, 'h1_bearish': 0, 'h1_neutral': 0,
+            'm15_bullish': 0, 'm15_bearish': 0, 'm15_neutral': 0,
+            'm5_bullish': 0, 'm5_bearish': 0, 'm5_neutral': 0,
+            'structure_bullish': 0, 'structure_bearish': 0, 'structure_neutral': 0,
+            'last_print_count': 0,
+            'signals_generated': 0,
+            'signals_passed_confidence': 0
+        }
         logger.info("✅ RuleBasedSignalGenerator 初始化完成")
+        logger.info(f"   🎚️ 信號模式: {'寬鬆模式' if self.config.RELAXED_SIGNAL_MODE else '嚴格模式'}")
+    
+    def get_debug_stats(self) -> dict:
+        """獲取調試統計數據"""
+        return self._debug_stats.copy()
+    
+    def reset_debug_stats(self):
+        """重置調試統計（每個週期開始時調用）"""
+        self._debug_stats = {
+            'total_scanned': 0,
+            'h1_bullish': 0, 'h1_bearish': 0, 'h1_neutral': 0,
+            'm15_bullish': 0, 'm15_bearish': 0, 'm15_neutral': 0,
+            'm5_bullish': 0, 'm5_bearish': 0, 'm5_neutral': 0,
+            'structure_bullish': 0, 'structure_bearish': 0, 'structure_neutral': 0,
+            'last_print_count': 0,
+            'signals_generated': 0,
+            'signals_passed_confidence': 0
+        }
     
     def generate_signal(
         self,
@@ -111,7 +139,7 @@ class RuleBasedSignalGenerator:
                 current_price
             )
             
-            # 🔥 v3.18.7+ Debug: 記錄無信號原因（每20個交易對打印一次統計）
+            # 🔥 v3.18.7+ Debug: 記錄無信號原因（每50個交易對打印一次統計）
             if not signal_direction:
                 if not hasattr(self, '_debug_stats'):
                     self._debug_stats = {
@@ -119,7 +147,8 @@ class RuleBasedSignalGenerator:
                         'h1_bullish': 0, 'h1_bearish': 0, 'h1_neutral': 0,
                         'm15_bullish': 0, 'm15_bearish': 0, 'm15_neutral': 0,
                         'm5_bullish': 0, 'm5_bearish': 0, 'm5_neutral': 0,
-                        'structure_bullish': 0, 'structure_bearish': 0, 'structure_neutral': 0
+                        'structure_bullish': 0, 'structure_bearish': 0, 'structure_neutral': 0,
+                        'last_print_count': 0  # 追蹤上次打印時的計數
                     }
                 
                 self._debug_stats['total_scanned'] += 1
@@ -128,13 +157,15 @@ class RuleBasedSignalGenerator:
                 self._debug_stats[f'm5_{m5_trend}'] += 1
                 self._debug_stats[f'structure_{market_structure}'] += 1
                 
-                # 每50個交易對打印一次統計
+                # 每50個交易對打印一次統計（強制輸出）
                 if self._debug_stats['total_scanned'] % 50 == 0:
-                    logger.info(f"🔍 信號生成統計（已掃描{self._debug_stats['total_scanned']}個）：")
-                    logger.info(f"   H1趨勢: bullish={self._debug_stats['h1_bullish']}, bearish={self._debug_stats['h1_bearish']}, neutral={self._debug_stats['h1_neutral']}")
-                    logger.info(f"   M15趨勢: bullish={self._debug_stats['m15_bullish']}, bearish={self._debug_stats['m15_bearish']}, neutral={self._debug_stats['m15_neutral']}")
-                    logger.info(f"   M5趨勢: bullish={self._debug_stats['m5_bullish']}, bearish={self._debug_stats['m5_bearish']}, neutral={self._debug_stats['m5_neutral']}")
-                    logger.info(f"   市場結構: bullish={self._debug_stats['structure_bullish']}, bearish={self._debug_stats['structure_bearish']}, neutral={self._debug_stats['structure_neutral']}")
+                    logger.warning(f"🔍 信號生成統計（已掃描{self._debug_stats['total_scanned']}個，0信號）：")
+                    logger.warning(f"   H1趨勢: bullish={self._debug_stats['h1_bullish']}, bearish={self._debug_stats['h1_bearish']}, neutral={self._debug_stats['h1_neutral']}")
+                    logger.warning(f"   M15趨勢: bullish={self._debug_stats['m15_bullish']}, bearish={self._debug_stats['m15_bearish']}, neutral={self._debug_stats['m15_neutral']}")
+                    logger.warning(f"   M5趨勢: bullish={self._debug_stats['m5_bullish']}, bearish={self._debug_stats['m5_bearish']}, neutral={self._debug_stats['m5_neutral']}")
+                    logger.warning(f"   市場結構: bullish={self._debug_stats['structure_bullish']}, bearish={self._debug_stats['structure_bearish']}, neutral={self._debug_stats['structure_neutral']}")
+                    logger.warning(f"   ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量")
+                    self._debug_stats['last_print_count'] = self._debug_stats['total_scanned']
                 
                 return None
             
