@@ -54,27 +54,44 @@ class ModelInitializer:
         self.flag_file = self.model_dir / "initialized.flag"
         self.model_file = self.model_dir / "xgboost_model.json"
         
-        # 訓練參數（中性化，零偏見）
+        # 🔥 v3.18.6+ 生產級 XGBoost 參數
         self.training_params = {
-            # XGBoost 中性參數
-            'n_estimators': int(os.getenv("XGBOOST_N_ESTIMATORS", "50")),
-            'max_depth': int(os.getenv("XGBOOST_MAX_DEPTH", "4")),
-            'learning_rate': float(os.getenv("XGBOOST_LEARNING_RATE", "0.1")),
-            'subsample': float(os.getenv("XGBOOST_SUBSAMPLE", "0.8")),
-            'colsample_bytree': float(os.getenv("XGBOOST_COLSAMPLE", "0.8")),
-            'min_child_weight': int(os.getenv("XGBOOST_MIN_CHILD_WEIGHT", "1")),
-            'gamma': float(os.getenv("XGBOOST_GAMMA", "0")),
+            # 🌱 樹結構（控制複雜度）
+            'n_estimators': int(os.getenv("XGBOOST_N_ESTIMATORS", "100")),        # 樹數量：足夠學習，不過度
+            'max_depth': int(os.getenv("XGBOOST_MAX_DEPTH", "6")),                # 樹深度：平衡偏差與方差
+            'min_child_weight': int(os.getenv("XGBOOST_MIN_CHILD_WEIGHT", "10")), # 葉節點最小樣本權重：防止過擬合噪音
             
-            # 訓練配置
+            # ⚖️ 正則化（提升泛化）
+            'gamma': float(os.getenv("XGBOOST_GAMMA", "0.1")),                    # 分裂最小損失減少：避免無意義分裂
+            'subsample': float(os.getenv("XGBOOST_SUBSAMPLE", "0.8")),            # 訓練樣本採樣率：引入隨機性
+            'colsample_bytree': float(os.getenv("XGBOOST_COLSAMPLE", "0.8")),     # 特徵採樣率：降低特徵相關性
+            
+            # 🚀 學習率（穩定收斂）
+            'learning_rate': float(os.getenv("XGBOOST_LEARNING_RATE", "0.1")),    # 學習步長：平衡速度與穩定性
+            
+            # 🎯 目標函數（二分類）
+            'objective': 'binary:logistic',     # 邏輯迴歸損失
+            'eval_metric': 'logloss',           # 評估指標：對概率預測更敏感
+            
+            # 🧠 其他配置
+            'random_state': 42,                 # 可重現性
+            'n_jobs': -1,                       # 多核心加速
+            'verbosity': 0,                     # 靜默模式（適合生產）
+            
+            # 訓練數據配置
             'min_samples': int(os.getenv("INITIAL_TRAINING_SAMPLES", "200")),
             'lookback_days': int(os.getenv("INITIAL_TRAINING_LOOKBACK_DAYS", "30")),
         }
         
         logger.info("=" * 60)
-        logger.info("✅ 模型自動初始化器已創建（v3.17+）")
+        logger.info("✅ 模型自動初始化器已創建（v3.18.6+生產級）")
         logger.info(f"   📁 模型目錄: {self.model_dir}")
         logger.info(f"   🎯 訓練參數: n_estimators={self.training_params['n_estimators']}, "
-                   f"max_depth={self.training_params['max_depth']}")
+                   f"max_depth={self.training_params['max_depth']}, "
+                   f"min_child_weight={self.training_params['min_child_weight']}, "
+                   f"gamma={self.training_params['gamma']}")
+        logger.info(f"   🎯 目標函數: {self.training_params['objective']}, "
+                   f"評估指標: {self.training_params['eval_metric']}")
         logger.info("=" * 60)
     
     async def check_and_initialize(self) -> bool:
@@ -539,17 +556,28 @@ class ModelInitializer:
             # 創建 DMatrix
             dtrain = xgb.DMatrix(X, label=y)
             
-            # 訓練參數（中性化）
+            # 🔥 v3.18.6+ 生產級訓練參數
             params = {
-                'objective': 'binary:logistic',
-                'eval_metric': 'logloss',
+                # 目標函數與評估
+                'objective': self.training_params['objective'],
+                'eval_metric': self.training_params['eval_metric'],
+                
+                # 樹結構
                 'max_depth': self.training_params['max_depth'],
-                'learning_rate': self.training_params['learning_rate'],
+                'min_child_weight': self.training_params['min_child_weight'],
+                
+                # 正則化
+                'gamma': self.training_params['gamma'],
                 'subsample': self.training_params['subsample'],
                 'colsample_bytree': self.training_params['colsample_bytree'],
-                'min_child_weight': self.training_params['min_child_weight'],
-                'gamma': self.training_params['gamma'],
-                'seed': 42,
+                
+                # 學習率
+                'learning_rate': self.training_params['learning_rate'],
+                
+                # 其他
+                'seed': self.training_params['random_state'],
+                'n_jobs': self.training_params['n_jobs'],
+                'verbosity': self.training_params['verbosity'],
             }
             
             # 訓練模型

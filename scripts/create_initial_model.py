@@ -148,26 +148,39 @@ def create_minimal_model():
     print(f"   标签分布: min={y.min():.3f}, max={y.max():.3f}, mean={y.mean():.3f}")
     
     # 创建DMatrix
-    print("\n🧠 训练XGBoost模型...")
+    print("\n🧠 训练XGBoost模型（生产级参数）...")
     dtrain = xgb.DMatrix(X, label=y)
     
-    # 训练参数（中性化）
+    # 🔥 v3.18.6+ 生产级训练参数
     params = {
-        'objective': 'reg:squarederror',
-        'max_depth': 4,
-        'learning_rate': 0.1,
-        'subsample': 0.8,
-        'colsample_bytree': 0.8,
-        'min_child_weight': 1,
-        'gamma': 0,
-        'seed': 42
+        # 🎯 目标函数（二分类）
+        'objective': 'binary:logistic',     # 逻辑回归损失
+        'eval_metric': 'logloss',           # 评估指标：对概率预测更敏感
+        
+        # 🌱 树结构（控制复杂度）
+        'max_depth': 6,                     # 树深度：平衡偏差与方差
+        'min_child_weight': 10,             # 叶节点最小样本权重：防止过拟合噪音
+        
+        # ⚖️ 正则化（提升泛化）
+        'gamma': 0.1,                       # 分裂最小损失减少：避免无意义分裂
+        'subsample': 0.8,                   # 训练样本采样率：引入随机性
+        'colsample_bytree': 0.8,            # 特征采样率：降低特征相关性
+        
+        # 🚀 学习率（稳定收敛）
+        'learning_rate': 0.1,               # 学习步长：平衡速度与稳定性
+        
+        # 🧠 其他配置
+        'seed': 42,                         # 可重现性
+        'n_jobs': -1,                       # 多核心加速
+        'verbosity': 0                      # 静默模式（适合生产）
     }
     
     # 训练模型
+    n_estimators = 100  # 树数量：足够学习，不过度
     model = xgb.train(
         params,
         dtrain,
-        num_boost_round=50,
+        num_boost_round=n_estimators,
         verbose_eval=False
     )
     
@@ -178,9 +191,11 @@ def create_minimal_model():
     model_size = model_path.stat().st_size / 1024
     
     print(f"✅ 模型训练完成")
-    print(f"   参数: n_estimators=50, max_depth=4")
-    print(f"   保存路径: {model_path}")
-    print(f"   文件大小: {model_size:.2f} KB")
+    print(f"   🌱 树结构: n_estimators={n_estimators}, max_depth=6, min_child_weight=10")
+    print(f"   ⚖️ 正则化: gamma=0.1, subsample=0.8, colsample_bytree=0.8")
+    print(f"   🎯 目标函数: binary:logistic, eval_metric=logloss")
+    print(f"   💾 保存路径: {model_path}")
+    print(f"   📊 文件大小: {model_size:.2f} KB")
     
     # 创建初始化标记
     flag_file = model_dir / "initialized.flag"
