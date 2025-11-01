@@ -632,15 +632,15 @@ class ModelInitializer:
             if not returns:
                 return 0.0
             
-            mean_return = np.mean(returns)
-            std_return = np.std(returns)
+            mean_return = float(np.mean(returns))
+            std_return = float(np.std(returns))
             
             if std_return == 0:
                 return 0.0
             
             sharpe = mean_return / std_return
             
-            return sharpe
+            return float(sharpe)
             
         except Exception as e:
             logger.error(f"計算 Sharpe 失敗: {e}")
