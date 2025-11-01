@@ -298,19 +298,31 @@ class RuleBasedSignalGenerator:
         return indicators
     
     def _determine_trend(self, df: pd.DataFrame) -> str:
-        """確定趨勢方向"""
+        """
+        確定趨勢方向（v3.18.8+ 優化版）
+        
+        🔥 修復：簡化EMA排列要求，從4個嚴格不等號降至2個
+        - 舊邏輯：價格 > EMA20 > EMA50 > EMA100（完美排列，極罕見）
+        - 新邏輯：價格 > EMA20 AND EMA20 > EMA50（常見趨勢）
+        
+        預估改善：
+        - Bullish: 1.6% → 25-35%
+        - Bearish: 1.6% → 25-35%
+        - Neutral: 96.8% → 30-50%
+        """
         ema_20 = calculate_ema(df, period=20)
         ema_50 = calculate_ema(df, period=50)
-        ema_100 = calculate_ema(df, period=100)
         
         current_price = float(df['close'].iloc[-1])
         ema_20_val = float(ema_20.iloc[-1])
         ema_50_val = float(ema_50.iloc[-1])
-        ema_100_val = float(ema_100.iloc[-1])
         
-        if current_price > ema_20_val > ema_50_val > ema_100_val:
+        # 🔥 v3.18.8+ 簡化邏輯：只看價格與EMA20/50的關係
+        # Bullish: 價格 > EMA20 AND EMA20 > EMA50
+        if current_price > ema_20_val and ema_20_val > ema_50_val:
             return 'bullish'
-        elif current_price < ema_20_val < ema_50_val < ema_100_val:
+        # Bearish: 價格 < EMA20 AND EMA20 < EMA50
+        elif current_price < ema_20_val and ema_20_val < ema_50_val:
             return 'bearish'
         else:
             return 'neutral'
