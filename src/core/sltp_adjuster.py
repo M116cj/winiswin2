@@ -57,7 +57,7 @@ class SLTPAdjuster:
         
         # 調整後的 SL/TP 百分比
         adjusted_sl_pct = base_sl_pct * scale_factor
-        adjusted_tp_pct = adjusted_sl_pct * 1.5  # TP = SL × 1.5
+        adjusted_tp_pct = adjusted_sl_pct * self.config.sltp_tp_to_sl_ratio  # TP = SL × ratio
         
         # 計算實際價格
         if side == "LONG":

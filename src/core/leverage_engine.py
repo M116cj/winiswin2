@@ -67,12 +67,11 @@ class LeverageEngine:
         # 綜合槓桿
         leverage = base * win_leverage * conf_factor
         
-        # 🔥 v3.18+ 新增：最小槓桿0.5x（防止過低導致倉位無意義）
-        MIN_LEVERAGE = 0.5
-        if leverage < MIN_LEVERAGE:
+        # 🔥 v3.18+ 新增：最小槓桿（防止過低導致倉位無意義）
+        if leverage < self.config.min_leverage:
             if verbose:
-                logger.debug(f"  ⚠️ 槓桿過低 ({leverage:.2f}x)，調整至最小值 {MIN_LEVERAGE}x")
-            leverage = MIN_LEVERAGE
+                logger.debug(f"  ⚠️ 槓桿過低 ({leverage:.2f}x)，調整至最小值 {self.config.min_leverage}x")
+            leverage = self.config.min_leverage
         
         if verbose:
             logger.debug(f"槓桿計算詳情:")

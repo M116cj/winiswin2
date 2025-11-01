@@ -5,7 +5,7 @@ v3.17+ 精簡配置管理
 
 import os
 import sys
-from typing import Optional
+from typing import Optional, List
 import logging
 
 class Config:
@@ -89,6 +89,9 @@ class Config:
     WEBSOCKET_SHARD_SIZE: int = int(os.getenv("WEBSOCKET_SHARD_SIZE", "50"))  # 每分片50個符號（200/50 = 4個分片）
     WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))  # 心跳超時30秒
     REST_COOLDOWN_BASE: int = int(os.getenv("REST_COOLDOWN_BASE", "60"))  # REST備援基礎冷卻60秒
+    
+    # ===== 時間框架配置 =====
+    TIMEFRAMES: List[str] = ["1h", "15m", "5m"]  # 多時間框架分析：1h主趨勢, 15m中期, 5m入場
     
     # ===== 技術指標配置 =====
     EMA_FAST: int = 20
@@ -250,6 +253,10 @@ class Config:
     # ===== v3.17+ 動態 SL/TP 配置 =====
     SLTP_SCALE_FACTOR: float = float(os.getenv("SLTP_SCALE_FACTOR", "0.05"))
     SLTP_MAX_SCALE: float = float(os.getenv("SLTP_MAX_SCALE", "3.0"))
+    SLTP_TP_TO_SL_RATIO: float = float(os.getenv("SLTP_TP_TO_SL_RATIO", "1.5"))  # TP = SL × 1.5
+    
+    # ===== v3.18+ 槓桿限制配置 =====
+    MIN_LEVERAGE: float = float(os.getenv("MIN_LEVERAGE", "0.5"))  # 最小槓桿0.5x（防止過低導致倉位無意義）
     
     # ===== v3.17+: ThreadPool 配置（避免序列化錯誤）=====
     MAX_WORKERS: int = min(
@@ -296,6 +303,8 @@ class Config:
     min_stop_distance_pct: float = MIN_STOP_DISTANCE_PCT
     sltp_scale_factor: float = SLTP_SCALE_FACTOR
     sltp_max_scale: float = SLTP_MAX_SCALE
+    sltp_tp_to_sl_ratio: float = SLTP_TP_TO_SL_RATIO
+    min_leverage: float = MIN_LEVERAGE
     position_monitor_enabled: bool = POSITION_MONITOR_ENABLED
     position_monitor_interval: int = POSITION_MONITOR_INTERVAL
     risk_kill_threshold: float = RISK_KILL_THRESHOLD
@@ -315,7 +324,6 @@ class Config:
     leverage_win_scale: float = 0.15
     leverage_win_multiplier: float = 11.0
     leverage_conf_scale: float = 0.5
-    min_leverage: float = 0.0  # 無限制：允許任意槓桿（包括低於 1x）
     
     # 模型評級權重（ConfigProfile 兼容）
     rating_rr_weight: float = 0.25
