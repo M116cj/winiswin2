@@ -68,6 +68,72 @@ SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統�
 - **生產配置**：`false` - 保持備援（推薦）
 - **極端場景**：`true` - 僅WebSocket（不推薦）
 
+---
+
+## 🎚️ 信號生成模式配置 (v3.18.7+)
+
+### `RELAXED_SIGNAL_MODE` - ICT/SMC信號寬鬆度控制
+
+#### ⚠️ **重要診斷結果（2025-11-01）**：
+
+**問題**：530個交易對掃描但0信號產生  
+**根本原因**：嚴格模式（RELAXED_SIGNAL_MODE=false）的ICT/SMC過濾器過於苛刻
+
+**嚴格模式要求**：
+- ✅ H1 + M15 **必須完全同向**（都bullish或都bearish）
+- ✅ Market Structure不對立
+- ✅ Order Blocks精確對齊
+- ✅ 結果：530個交易對中可能只有5-10個符合條件
+
+**寬鬆模式優勢**：
+- ✅ 允許H1主導（H1明確，M15可neutral）
+- ✅ 允許M15+M5短期對齊（H1可neutral）
+- ✅ 預期信號數量提升10-20倍
+
+#### 配置選項：
+
+##### 嚴格模式（默認）
+```env
+RELAXED_SIGNAL_MODE=false
+```
+- **適用場景**：追求高質量、低頻率信號
+- **信號數量**：極少（530個中可能5-10個）
+- **勝率要求**：多時間框架完美對齊
+- **推薦情況**：資金充足，追求高勝率
+
+##### 寬鬆模式（推薦初期使用）
+```env
+RELAXED_SIGNAL_MODE=true
+```
+- **適用場景**：增加信號數量，加速模型訓練
+- **信號數量**：中等（530個中可能50-100個）
+- **勝率要求**：主導時間框架對齊即可
+- **推薦情況**：初期啟動，數據採集階段
+
+#### 建議配置（按階段）：
+
+**階段1：數據採集期（前100筆交易）**
+```env
+RELAXED_SIGNAL_MODE=true
+BOOTSTRAP_TRADE_LIMIT=100
+BOOTSTRAP_MIN_WIN_PROBABILITY=0.40
+BOOTSTRAP_MIN_CONFIDENCE=0.40
+```
+
+**階段2：正常運行期（100筆後）**
+```env
+RELAXED_SIGNAL_MODE=true  # 保持寬鬆模式
+MIN_WIN_PROBABILITY=0.60
+MIN_CONFIDENCE=0.50
+```
+
+**階段3：高質量期（有足夠歷史數據後）**
+```env
+RELAXED_SIGNAL_MODE=false  # 可切換回嚴格模式
+MIN_WIN_PROBABILITY=0.65
+MIN_CONFIDENCE=0.60
+```
+
 **詳細文檔**：[FEATURE_LOCKS.md](FEATURE_LOCKS.md)
 
 ---
