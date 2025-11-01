@@ -55,7 +55,7 @@ class Config:
     IMMEDIATE_EXECUTION_RANK: int = 3
     
     # ===== v3.17+ SelfLearningTrader 開倉條件 =====
-    MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.70"))  # 🔥 v3.18.4+：提升至70%（更嚴格篩選）
+    MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.60"))  # 最低勝率60%
     MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
     MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18+：調整上限為3.0
     
