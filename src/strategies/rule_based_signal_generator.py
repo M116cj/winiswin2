@@ -645,7 +645,7 @@ class RuleBasedSignalGenerator:
         """
         deviations = {}
         
-        # 計算各時間框架的EMA偏差
+        # 🔥 v3.18.9+ 修復：計算各時間框架的EMA偏差（僅計算同方向偏差）
         for timeframe, df in [('h1', h1_data), ('m15', m15_data), ('m5', m5_data)]:
             ema_20 = calculate_ema(df, period=20)
             ema_50 = calculate_ema(df, period=50)
@@ -653,19 +653,31 @@ class RuleBasedSignalGenerator:
             ema_20_val = float(ema_20.iloc[-1])
             ema_50_val = float(ema_50.iloc[-1])
             
-            # 計算偏差百分比（正值=價格高於EMA，負值=價格低於EMA）
-            dev_20 = ((current_price - ema_20_val) / ema_20_val) * 100
-            dev_50 = ((current_price - ema_50_val) / ema_50_val) * 100
+            # 🔥 修復：僅計算同方向偏差（負值視為0）
+            if direction == 'LONG':
+                # LONG: 僅計算價格高於EMA的正偏差
+                dev_20 = max(0.0, ((current_price - ema_20_val) / ema_20_val) * 100)
+                dev_50 = max(0.0, ((current_price - ema_50_val) / ema_50_val) * 100)
+            else:  # SHORT
+                # SHORT: 僅計算價格低於EMA的正偏差（取反後為正）
+                dev_20 = max(0.0, ((ema_20_val - current_price) / ema_20_val) * 100)
+                dev_50 = max(0.0, ((ema_50_val - current_price) / ema_50_val) * 100)
             
             deviations[f'{timeframe}_ema20_dev'] = dev_20
             deviations[f'{timeframe}_ema50_dev'] = dev_50
         
-        # 計算平均偏差
-        avg_ema20_dev = (deviations['h1_ema20_dev'] + deviations['m15_ema20_dev'] + deviations['m5_ema20_dev']) / 3
-        avg_ema50_dev = (deviations['h1_ema50_dev'] + deviations['m15_ema50_dev'] + deviations['m5_ema50_dev']) / 3
+        # 🔥 v3.18.9+ 修復：計算平均偏差（僅使用1h+15m，與信號決策邏輯對齊）
+        # 修復前：使用1h+15m+5m → 5m可能與信號方向衝突，拉低評分
+        # 修復後：僅使用1h+15m → 與_determine_signal_direction邏輯一致
+        avg_ema20_dev = (deviations['h1_ema20_dev'] + deviations['m15_ema20_dev']) / 2
+        avg_ema50_dev = (deviations['h1_ema50_dev'] + deviations['m15_ema50_dev']) / 2
         
         deviations['avg_ema20_dev'] = avg_ema20_dev
         deviations['avg_ema50_dev'] = avg_ema50_dev
+        
+        # 保留5m數據供調試（但不計入平均值）
+        deviations['m5_ema20_dev_excluded'] = deviations['m5_ema20_dev']
+        deviations['m5_ema50_dev_excluded'] = deviations['m5_ema50_dev']
         
         # 🔥 偏差評分邏輯（基於趨勢方向）
         deviation_score = 0.0
