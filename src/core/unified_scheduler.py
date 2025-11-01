@@ -69,11 +69,11 @@ class UnifiedScheduler:
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
         
-        # 🔥 v3.18+：初始化WebSocketManager（根據掃描規則動態監控）
-        # 修復：不自動獲取交易對，而是根據scan_market結果動態更新
+        # 🔥 v3.18.6+：初始化WebSocketManager（監控所有可交易的USDT永續合約）
+        # 注意：初始化時使用空列表，稍後在start()中加載所有交易對
         self.websocket_manager = WebSocketManager(
             binance_client=binance_client,
-            symbols=config.TRADING_SYMBOLS if config.TRADING_SYMBOLS else [],
+            symbols=[],  # 🔥 v3.18.6+：初始化為空，稍後動態加載
             kline_interval="1m",
             shard_size=getattr(config, 'WEBSOCKET_SHARD_SIZE', 50),
             enable_kline_feed=getattr(config, 'WEBSOCKET_ENABLE_KLINE_FEED', True),
@@ -126,9 +126,9 @@ class UnifiedScheduler:
         }
         
         logger.info("=" * 80)
-        logger.info("✅ UnifiedScheduler v3.17.2+ 初始化完成（WebSocket整合）")
+        logger.info("✅ UnifiedScheduler v3.18.6+ 初始化完成（WebSocket整合）")
         logger.info("   🎯 模式: SelfLearningTrader")
-        logger.info("   📡 WebSocketManager: {} 個幣種即時監控".format(len(config.TRADING_SYMBOLS) if config.TRADING_SYMBOLS else 0))
+        logger.info("   📡 WebSocketManager: 動態加載所有可交易USDT永續合約")
         logger.info("   📈 K線Feed: @kline_1m（取代REST輪詢）")
         logger.info("   📊 帳戶Feed: listenKey（即時倉位）")
         logger.info("   ⏱️  交易週期: 每 {} 秒".format(config.CYCLE_INTERVAL))
@@ -375,25 +375,32 @@ class UnifiedScheduler:
     
     async def _get_trading_symbols(self) -> list:
         """
-        獲取交易對列表（v3.17.2+修復：使用scan_market 1小時緩存）
+        獲取交易對列表（v3.18.6+ 監控所有可交易USDT永續合約）
         
-        🔥 v3.17.2+修復：
-        - 修復前：每次調用get_exchange_info（REST API請求）
-        - 修復後：使用scan_market（1小時緩存，減少99% REST請求）
+        🔥 v3.18.6+改進：
+        - 優先使用DataService已加載的所有交易對（所有可交易USDT永續合約）
+        - 備選1：配置文件中的TRADING_SYMBOLS
+        - 備選2：scan_market（使用1小時緩存）
         """
         try:
-            # 從配置獲取交易對列表
+            # 🔥 v3.18.6+：優先使用DataService已加載的所有交易對
+            if self.data_service and hasattr(self.data_service, 'all_symbols') and self.data_service.all_symbols:
+                logger.info(f"✅ 使用DataService已加載的 {len(self.data_service.all_symbols)} 個交易對（所有可交易USDT永續合約）")
+                return self.data_service.all_symbols
+            
+            # 備選1：從配置獲取交易對列表
             if hasattr(self.config, 'TRADING_SYMBOLS') and self.config.TRADING_SYMBOLS:
+                logger.info(f"✅ 使用配置文件中的 {len(self.config.TRADING_SYMBOLS)} 個交易對")
                 return self.config.TRADING_SYMBOLS
             
-            # 🔥 v3.17.2+修復：使用scan_market（有1小時緩存，僅首次調用REST API）
+            # 備選2：使用scan_market（有1小時緩存，僅首次調用REST API）
             max_symbols = getattr(self.config, 'TOP_VOLATILITY_SYMBOLS', 200)
             market_data = await self.data_service.scan_market(top_n=max_symbols)
             
             # 提取symbol列表
             symbols = [item['symbol'] for item in market_data]
             
-            logger.debug(f"📊 使用市場掃描結果：{len(symbols)} 個高流動性交易對（來自緩存）")
+            logger.info(f"✅ 使用市場掃描結果：{len(symbols)} 個高流動性交易對（來自緩存）")
             return symbols
             
         except Exception as e:

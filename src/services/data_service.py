@@ -336,7 +336,12 @@ class DataService:
         
         except Exception as e:
             logger.debug(f"动态TTL计算失败，使用基础TTL: {e}")
-            return ttl_map.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+            # 🔥 v3.18.5+: 确保ttl_map在except块中可用
+            return {
+                '1h': Config.CACHE_TTL_KLINES_1H,
+                '15m': Config.CACHE_TTL_KLINES_15M,
+                '5m': Config.CACHE_TTL_KLINES_5M
+            }.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
     
     async def _fetch_full_klines(
         self,
@@ -406,7 +411,7 @@ class DataService:
             df[col] = pd.to_numeric(df[col], errors='coerce')
         
         # 保留 close_time（用于增量更新）
-        result = df[['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time']].copy()
+        result: pd.DataFrame = df[['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time']].copy()
         
         return result
     
@@ -487,7 +492,7 @@ class DataService:
             if new_klines.empty:
                 # 没有新数据，更新时间戳
                 cached['timestamp'] = current_time
-                self.cache.set(cache_key, cached, ttl=dynamic_ttl)
+                self.cache.set(cache_key, cached, ttl=int(dynamic_ttl))
                 logger.debug(f"✅ 无新数据，更新时间戳: {symbol} {interval}")
                 return cached_data
             
@@ -501,7 +506,7 @@ class DataService:
                 'data': updated_df,
                 'timestamp': current_time,
                 'last_close_time': updated_df.iloc[-1]['close_time']
-            }, ttl=dynamic_ttl)
+            }, ttl=int(dynamic_ttl))
             
             logger.debug(
                 f"✅ 增量更新成功: {symbol} {interval} "
