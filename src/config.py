@@ -26,7 +26,6 @@ class Config:
     # ========================================
     # 当设置为True时，禁用对应功能（生产环境稳定性优先）
     DISABLE_MODEL_TRAINING: bool = os.getenv("DISABLE_MODEL_TRAINING", "true").lower() == "true"  # 禁用模型训练（初始训练+重训练）
-    DISABLE_WEBSOCKET: bool = os.getenv("DISABLE_WEBSOCKET", "true").lower() == "true"  # 禁用WebSocket（使用REST API）
     DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "false").lower() == "true"  # 禁用REST API fallback（仅在WebSocket稳定时使用）
     
     # ========================================
