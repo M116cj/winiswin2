@@ -111,7 +111,31 @@ class RuleBasedSignalGenerator:
                 current_price
             )
             
+            # 🔥 v3.18.7+ Debug: 記錄無信號原因（每20個交易對打印一次統計）
             if not signal_direction:
+                if not hasattr(self, '_debug_stats'):
+                    self._debug_stats = {
+                        'total_scanned': 0,
+                        'h1_bullish': 0, 'h1_bearish': 0, 'h1_neutral': 0,
+                        'm15_bullish': 0, 'm15_bearish': 0, 'm15_neutral': 0,
+                        'm5_bullish': 0, 'm5_bearish': 0, 'm5_neutral': 0,
+                        'structure_bullish': 0, 'structure_bearish': 0, 'structure_neutral': 0
+                    }
+                
+                self._debug_stats['total_scanned'] += 1
+                self._debug_stats[f'h1_{h1_trend}'] += 1
+                self._debug_stats[f'm15_{m15_trend}'] += 1
+                self._debug_stats[f'm5_{m5_trend}'] += 1
+                self._debug_stats[f'structure_{market_structure}'] += 1
+                
+                # 每50個交易對打印一次統計
+                if self._debug_stats['total_scanned'] % 50 == 0:
+                    logger.info(f"🔍 信號生成統計（已掃描{self._debug_stats['total_scanned']}個）：")
+                    logger.info(f"   H1趨勢: bullish={self._debug_stats['h1_bullish']}, bearish={self._debug_stats['h1_bearish']}, neutral={self._debug_stats['h1_neutral']}")
+                    logger.info(f"   M15趨勢: bullish={self._debug_stats['m15_bullish']}, bearish={self._debug_stats['m15_bearish']}, neutral={self._debug_stats['m15_neutral']}")
+                    logger.info(f"   M5趨勢: bullish={self._debug_stats['m5_bullish']}, bearish={self._debug_stats['m5_bearish']}, neutral={self._debug_stats['m5_neutral']}")
+                    logger.info(f"   市場結構: bullish={self._debug_stats['structure_bullish']}, bearish={self._debug_stats['structure_bearish']}, neutral={self._debug_stats['structure_neutral']}")
+                
                 return None
             
             # 計算基礎信心度（五維 ICT 評分）
@@ -310,13 +334,18 @@ class RuleBasedSignalGenerator:
         current_price: float
     ) -> Optional[str]:
         """
-        🔥 v3.18.6+ Critical Fix: 確定信號方向（放寬條件，確保SMC合規）
+        🔥 v3.18.7+: 確定信號方向（支持嚴格/寬松兩種模式）
         
-        策略分層（所有層級都要求market_structure不對立）：
+        嚴格模式策略分層：
         1. 完美對齊：h1+m15+m5+market_structure完全一致（最高置信度）
         2. 強趨勢信號：h1+m15一致，market_structure支持（neutral可接受）
         3. 趨勢初期：h1明確，m15 neutral，m5確認，structure支持
+        
+        寬松模式策略分層（RELAXED_SIGNAL_MODE=true）：
+        4. 單時間框架主導：H1明確趨勢，其他框架neutral可接受
+        5. M15+M5對齊：短期趨勢，H1可以neutral
         """
+        # ============ 嚴格模式（默認） ============
         # 優先級1: 四者完全一致（完美信號，最高置信度）
         if (h1_trend == 'bullish' and m15_trend == 'bullish' and 
             m5_trend == 'bullish' and market_structure == 'bullish'):
@@ -339,6 +368,22 @@ class RuleBasedSignalGenerator:
                 return 'LONG'
         if (h1_trend == 'bearish' and m15_trend == 'neutral' and m5_trend == 'bearish'):
             if market_structure in ['bearish', 'neutral']:
+                return 'SHORT'
+        
+        # ============ 寬松模式（可選）============
+        if self.config.RELAXED_SIGNAL_MODE:
+            # 優先級4: H1主導（H1明確，其他可neutral，structure不對立）
+            if h1_trend == 'bullish' and m15_trend != 'bearish' and market_structure != 'bearish':
+                return 'LONG'
+            if h1_trend == 'bearish' and m15_trend != 'bullish' and market_structure != 'bullish':
+                return 'SHORT'
+            
+            # 優先級5: M15+M5短期對齊（H1可neutral，structure支持）
+            if (m15_trend == 'bullish' and m5_trend == 'bullish' and 
+                h1_trend != 'bearish' and market_structure in ['bullish', 'neutral']):
+                return 'LONG'
+            if (m15_trend == 'bearish' and m5_trend == 'bearish' and 
+                h1_trend != 'bullish' and market_structure in ['bearish', 'neutral']):
                 return 'SHORT'
         
         # 無法確定方向（拒絕對立信號）
