@@ -72,7 +72,7 @@ class Config:
     
     # ===== 掃描配置（監控所有 U 本位合約）=====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
-    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_LIQUIDITY_SYMBOLS", "999"))
+    TOP_VOLATILITY_SYMBOLS: int = int(os.getenv("TOP_VOLATILITY_SYMBOLS", "999"))
     
     # ===== WebSocket 優化配置（v3.17.2+）=====
     WEBSOCKET_SYMBOL_LIMIT: int = int(os.getenv("WEBSOCKET_SYMBOL_LIMIT", "200"))  # 🔥 v3.17.2+ 優化：監控前200個高品質交易對（流動性×波動率）
