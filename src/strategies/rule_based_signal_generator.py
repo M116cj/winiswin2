@@ -309,27 +309,40 @@ class RuleBasedSignalGenerator:
         liquidity_zones: list,
         current_price: float
     ) -> Optional[str]:
-        """確定信號方向"""
-        # 多頭條件
-        long_conditions = (
-            h1_trend == 'bullish' and
-            m15_trend == 'bullish' and
-            market_structure == 'bullish'
-        )
+        """
+        🔥 v3.18.6+ Critical Fix: 確定信號方向（放寬條件，確保SMC合規）
         
-        # 空頭條件
-        short_conditions = (
-            h1_trend == 'bearish' and
-            m15_trend == 'bearish' and
-            market_structure == 'bearish'
-        )
-        
-        if long_conditions:
+        策略分層（所有層級都要求market_structure不對立）：
+        1. 完美對齊：h1+m15+m5+market_structure完全一致（最高置信度）
+        2. 強趨勢信號：h1+m15一致，market_structure支持（neutral可接受）
+        3. 趨勢初期：h1明確，m15 neutral，m5確認，structure支持
+        """
+        # 優先級1: 四者完全一致（完美信號，最高置信度）
+        if (h1_trend == 'bullish' and m15_trend == 'bullish' and 
+            m5_trend == 'bullish' and market_structure == 'bullish'):
             return 'LONG'
-        elif short_conditions:
+        if (h1_trend == 'bearish' and m15_trend == 'bearish' and 
+            m5_trend == 'bearish' and market_structure == 'bearish'):
             return 'SHORT'
-        else:
-            return None
+        
+        # 優先級2: h1+m15強趨勢，market_structure不對立（允許neutral和m5分歧）
+        if (h1_trend == 'bullish' and m15_trend == 'bullish'):
+            if market_structure in ['bullish', 'neutral']:
+                return 'LONG'
+        if (h1_trend == 'bearish' and m15_trend == 'bearish'):
+            if market_structure in ['bearish', 'neutral']:
+                return 'SHORT'
+        
+        # 優先級3: 趨勢初期場景（h1明確，m15 neutral，m5確認，structure支持）
+        if (h1_trend == 'bullish' and m15_trend == 'neutral' and m5_trend == 'bullish'):
+            if market_structure in ['bullish', 'neutral']:
+                return 'LONG'
+        if (h1_trend == 'bearish' and m15_trend == 'neutral' and m5_trend == 'bearish'):
+            if market_structure in ['bearish', 'neutral']:
+                return 'SHORT'
+        
+        # 無法確定方向（拒絕對立信號）
+        return None
     
     def _calculate_confidence(
         self,
