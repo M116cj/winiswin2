@@ -54,22 +54,15 @@ def main():
     mock_client = MockBinanceClient(initial_balance=10000.0)
     
     # 3. 初始化核心组件
-    feature_engine = FeatureEngine(config)
-    trade_recorder = TradeRecorder(
-        config=config,
-        feature_engine=feature_engine
-    )
+    feature_engine = FeatureEngine()
+    # TradeRecorder不需要传参，会使用默认值
+    trade_recorder = TradeRecorder()
     
-    leverage_engine = LeverageEngine(config)
-    sltp_adjuster = SLTPAdjuster(config)
-    
-    # 4. 初始化交易策略
+    # 4. 初始化交易策略（会自动创建leverage_engine和sltp_adjuster）
     trader = SelfLearningTrader(
         config=config,
-        leverage_engine=leverage_engine,
-        sltp_adjuster=sltp_adjuster,
-        trade_recorder=trade_recorder,
-        bootstrap_enabled=True  # 启用豁免期
+        binance_client=mock_client,  # 使用模拟客户端
+        trade_recorder=trade_recorder
     )
     
     logger.info(f"✅ 交易策略初始化完成（豁免期: 启用）")
