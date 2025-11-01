@@ -175,7 +175,7 @@ class E2ESignalTester:
                            f"5m={signal['timeframes'].get('5m', 'N/A')}")
         else:
             logger.warning(f"   ⚠️  未生成信号")
-            return None
+            return {}
         
         # 步骤4: ML预测增强
         logger.info("步骤4: ML预测增强...")
