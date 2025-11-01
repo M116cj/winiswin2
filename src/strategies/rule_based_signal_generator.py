@@ -169,6 +169,21 @@ class RuleBasedSignalGenerator:
                 
                 return None
             
+            # 🔥 v3.18.9+ 修復：ADX 過濾條件（放寬以適應高波動市場）
+            # 修復前：ADX < 20 → 直接拒絕（過於嚴格）
+            # 修復後：ADX < 15 → 拒絕；15-20 → 降低信心度但不拒絕
+            adx_value = indicators.get('adx', 25.0)
+            adx_penalty = 1.0  # 默認無懲罰
+            
+            if adx_value < 15:
+                # 純震盪市，拒絕信號
+                logger.debug(f"{symbol} ADX={adx_value:.1f}<15，純震盪市，拒絕信號")
+                return None
+            elif adx_value < 20:
+                # 低趨勢強度，降低信心度但不拒絕
+                adx_penalty = 0.8  # 信心度×0.8
+                logger.debug(f"{symbol} ADX={adx_value:.1f}<20，低趨勢強度，信心度×0.8")
+            
             # 🔥 v3.18.8+ 計算EMA偏差值指標
             deviation_metrics = self._calculate_ema_deviation_metrics(
                 current_price=current_price,
@@ -209,10 +224,13 @@ class RuleBasedSignalGenerator:
             reward = abs(take_profit - current_price)
             rr_ratio = reward / risk if risk > 0 else 1.5
             
+            # 🔥 v3.18.9+ 應用ADX懲罰（如果適用）
+            final_confidence_score = confidence_score * adx_penalty
+            
             # 🔥 v3.18.8+ 預估勝率（基於EMA偏差值 + 歷史統計）
             win_probability = self._calculate_ema_based_win_probability(
                 deviation_metrics=deviation_metrics,
-                confidence_score=confidence_score,
+                confidence_score=final_confidence_score,
                 rr_ratio=rr_ratio,
                 direction=signal_direction,
                 market_structure=market_structure
@@ -225,7 +243,7 @@ class RuleBasedSignalGenerator:
                 'entry_price': current_price,
                 'stop_loss': stop_loss,
                 'take_profit': take_profit,
-                'confidence': confidence_score / 100.0,  # 轉換為 0-1
+                'confidence': final_confidence_score / 100.0,  # 轉換為 0-1（已應用ADX懲罰）
                 'win_probability': win_probability,
                 'rr_ratio': rr_ratio,
                 'indicators': indicators,
