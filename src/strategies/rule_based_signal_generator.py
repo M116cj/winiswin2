@@ -51,6 +51,19 @@ class RuleBasedSignalGenerator:
                 from src.ml.feature_engine import FeatureEngine
                 self.feature_engine = FeatureEngine()
                 logger.info(f"✅ FeatureEngine已初始化（純ICT/SMC模式）")
+                
+                # 🔍 v3.19+ 診斷：測試FeatureEngine功能
+                logger.info(f"🧪 測試FeatureEngine._build_ict_smc_features()方法...")
+                test_result = self.feature_engine._build_ict_smc_features(
+                    signal={'symbol': 'TEST', 'direction': 'NEUTRAL'},
+                    klines_data={'1h': None, '15m': None, '5m': None}
+                )
+                if test_result is None:
+                    logger.warning(f"⚠️ FeatureEngine測試返回None（可能在數據為None時正常）")
+                elif isinstance(test_result, dict):
+                    logger.info(f"✅ FeatureEngine測試成功，返回字典（{len(test_result)}個key）")
+                else:
+                    logger.warning(f"⚠️ FeatureEngine測試返回異常類型: {type(test_result)}")
             except Exception as e:
                 logger.error(f"❌ FeatureEngine初始化失敗: {e}", exc_info=True)
                 self.feature_engine = None
@@ -376,24 +389,58 @@ class RuleBasedSignalGenerator:
             
             # 🔥 v3.19 Phase 2: 根據模式選擇計算方法
             if self.use_pure_ict:
+                # 🔍 診斷：檢查FeatureEngine狀態
+                if self.feature_engine is None:
+                    logger.error(f"🚨 {symbol}: FeatureEngine為None，但use_pure_ict=True!")
+                    return None, 0.0, 0.0
+                
                 # 純ICT/SMC模式：計算12個ICT特徵
-                ict_features = self.feature_engine._build_ict_smc_features(
-                    signal={'symbol': symbol, 'direction': signal_direction},
-                    klines_data={
-                        '1h': h1_data,
-                        '15m': m15_data,
-                        '5m': m5_data
-                    }
-                )
+                logger.debug(f"🔧 {symbol}: 開始構建ICT/SMC特徵...")
+                try:
+                    ict_features = self.feature_engine._build_ict_smc_features(
+                        signal={'symbol': symbol, 'direction': signal_direction},
+                        klines_data={
+                            '1h': h1_data,
+                            '15m': m15_data,
+                            '5m': m5_data
+                        }
+                    )
+                    
+                    # 🔍 診斷：檢查特徵質量
+                    if not ict_features:
+                        logger.warning(f"⚠️ {symbol}: ICT特徵為空字典")
+                    else:
+                        feature_count = len(ict_features)
+                        logger.debug(f"✅ {symbol}: 成功構建{feature_count}個ICT特徵")
+                        if feature_count > 0 and symbol in ['BTCUSDT', 'ETHUSDT', 'BNBUSDT']:
+                            # 只為主流幣種輸出關鍵特徵值
+                            logger.info(f"📊 {symbol} ICT特徵樣本: market_structure={ict_features.get('market_structure')}, "
+                                      f"order_blocks={ict_features.get('order_blocks_count')}, "
+                                      f"structure_integrity={ict_features.get('structure_integrity', 0):.2f}")
+                except Exception as e:
+                    logger.error(f"❌ {symbol}: ICT特徵構建失敗: {e}", exc_info=True)
+                    return None, 0.0, 0.0
                 
                 # 使用純ICT/SMC信心值計算
-                confidence_score, sub_scores = self._calculate_confidence_pure_ict(
-                    ict_features=ict_features,
-                    direction=signal_direction,
-                    market_structure=market_structure,
-                    order_blocks=order_blocks,
-                    current_price=current_price
-                )
+                logger.debug(f"🧮 {symbol}: 開始計算ICT信心值...")
+                try:
+                    confidence_score, sub_scores = self._calculate_confidence_pure_ict(
+                        ict_features=ict_features,
+                        direction=signal_direction,
+                        market_structure=market_structure,
+                        order_blocks=order_blocks,
+                        current_price=current_price
+                    )
+                    
+                    # 🔍 診斷：檢查信心值
+                    if confidence_score == 0.0:
+                        logger.warning(f"⚠️ {symbol}: ICT信心值為0 (子分數={sub_scores})")
+                    elif symbol in ['BTCUSDT', 'ETHUSDT', 'BNBUSDT']:
+                        logger.info(f"📈 {symbol}: ICT信心值={confidence_score:.1f}, 子分數={sub_scores}")
+                except Exception as e:
+                    logger.error(f"❌ {symbol}: ICT信心值計算失敗: {e}", exc_info=True)
+                    return None, 0.0, 0.0
+                
                 deviation_metrics = None  # 純ICT模式不需要EMA偏差
             else:
                 # 傳統指標模式：計算EMA偏差
