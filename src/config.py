@@ -61,18 +61,19 @@ class Config:
     MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18+：調整上限為3.0
     
     # ========================================
-    # 🎓 模型啟動豁免方案 (v3.18.7+)
+    # 🎓 模型啟動豁免方案 (v3.19+ 優化)
     # ========================================
+    # 🔥 v3.19：大幅降低門檻以解決0信號問題（特別是小資金賬戶）
     # 前N筆交易使用降低的門檻，加速初期數據採集
-    # 所有交易資料和44個特徵仍會被完整保存到訓練檔案
-    BOOTSTRAP_TRADE_LIMIT: int = int(os.getenv("BOOTSTRAP_TRADE_LIMIT", "100"))  # 豁免期：前100筆交易
-    BOOTSTRAP_MIN_WIN_PROBABILITY: float = float(os.getenv("BOOTSTRAP_MIN_WIN_PROBABILITY", "0.40"))  # 豁免期最低勝率40%
-    BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.40"))  # 豁免期最低信心值40%
+    # 所有交易資料和56個特徵仍會被完整保存到訓練檔案
+    BOOTSTRAP_TRADE_LIMIT: int = int(os.getenv("BOOTSTRAP_TRADE_LIMIT", "50"))  # 🔥 v3.19：豁免期縮短至50筆（100→50）
+    BOOTSTRAP_MIN_WIN_PROBABILITY: float = float(os.getenv("BOOTSTRAP_MIN_WIN_PROBABILITY", "0.20"))  # 🔥 v3.19：豁免期最低勝率20%（40%→20%）
+    BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.25"))  # 🔥 v3.19：豁免期最低信心值25%（40%→25%）
     
-    # ===== v3.18+ 資金分配配置（動態預算池 + 質量加權）=====
-    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 正常期最低質量門檻（豁免期自動降至0.4）
-    BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.4"))  # 豁免期質量門檻（適配40%/40%）
-    MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.8"))  # 總預算 = 80% 可用保證金
+    # ===== v3.19+ 資金分配配置（動態預算池 + 質量加權）=====
+    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 正常期最低質量門檻
+    BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.25"))  # 🔥 v3.19：豁免期質量門檻25%（40%→25%）
+    MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.90"))  # 🔥 v3.19：總預算提升至90%（80%→90%，小資金優化）
     MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.5"))  # 單倉 ≤ 50% 帳戶權益
     MAX_TOTAL_MARGIN_RATIO: float = float(os.getenv("MAX_TOTAL_MARGIN_RATIO", "0.9"))  # 總倉位保證金 ≤ 90% 帳戶總金額（不含浮盈浮虧）
     
@@ -110,9 +111,9 @@ class Config:
     ADX_STRONG_TREND: float = 25.0
     EMA_SLOPE_THRESHOLD: float = 0.01
     
-    # 🔥 v3.18.10+ ADX專項調整（降低硬拒絕門檻，增強動態懲罰）
-    ADX_HARD_REJECT_THRESHOLD: float = float(os.getenv("ADX_HARD_REJECT_THRESHOLD", "10.0"))  # 硬拒絕門檻（原15.0 → 10.0）
-    ADX_WEAK_TREND_THRESHOLD: float = float(os.getenv("ADX_WEAK_TREND_THRESHOLD", "15.0"))   # 弱趨勢門檻（10-15: 強懲罰×0.6）
+    # 🔥 v3.19+ ADX激進優化（進一步降低門檻，解決0信號問題）
+    ADX_HARD_REJECT_THRESHOLD: float = float(os.getenv("ADX_HARD_REJECT_THRESHOLD", "5.0"))  # 🔥 v3.19：硬拒絕門檻降至5.0（10.0→5.0）
+    ADX_WEAK_TREND_THRESHOLD: float = float(os.getenv("ADX_WEAK_TREND_THRESHOLD", "10.0"))   # 🔥 v3.19：弱趨勢門檻降至10.0（15.0→10.0）
     
     # Order Blocks 配置
     OB_REJECTION_PCT: float = 0.03
@@ -252,7 +253,7 @@ class Config:
     
     # ===== v3.17+ 倉位計算配置 =====
     EQUITY_USAGE_RATIO: float = float(os.getenv("EQUITY_USAGE_RATIO", "0.8"))
-    MIN_NOTIONAL_VALUE: float = float(os.getenv("MIN_NOTIONAL_VALUE", "10.0"))
+    MIN_NOTIONAL_VALUE: float = float(os.getenv("MIN_NOTIONAL_VALUE", "5.0"))  # 🔥 v3.19：降低最小交易額至5 USDT（10→5，適配小資金）
     MIN_STOP_DISTANCE_PCT: float = float(os.getenv("MIN_STOP_DISTANCE_PCT", "0.003"))
     
     # ===== v3.17+ 動態 SL/TP 配置 =====
