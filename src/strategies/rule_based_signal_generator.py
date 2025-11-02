@@ -89,7 +89,10 @@ class RuleBasedSignalGenerator:
             'stage1_rejected_data': 0,
             'stage2_trend_ok': 0,
             'stage3_signal_direction': 0,
+            'stage3_with_direction': 0,
             'stage3_no_direction': 0,
+            'feature_calculation_success': 0,
+            'feature_calculation_failed': 0,
             'stage3_priority1': 0,
             'stage3_priority2': 0,
             'stage3_priority3': 0,
@@ -145,7 +148,10 @@ class RuleBasedSignalGenerator:
             'stage1_rejected_data': 0,
             'stage2_trend_ok': 0,
             'stage3_signal_direction': 0,
+            'stage3_with_direction': 0,
             'stage3_no_direction': 0,
+            'feature_calculation_success': 0,
+            'feature_calculation_failed': 0,
             'stage3_priority1': 0,
             'stage3_priority2': 0,
             'stage3_priority3': 0,
@@ -300,6 +306,16 @@ class RuleBasedSignalGenerator:
                 logger.info(f"   1h數據: {len(h1_data)}行, 最新收盤={h1_data['close'].iloc[-1]:.2f}")
                 logger.info(f"   15m數據: {len(m15_data)}行, 最新收盤={m15_data['close'].iloc[-1]:.2f}")
                 logger.info(f"   5m數據: {len(m5_data)}行, 最新收盤={m5_data['close'].iloc[-1]:.2f}")
+                
+                # 🔧 v3.19.2 特徵計算診斷
+                from src.features.technical_indicators import TechnicalIndicatorCalculator
+                h1_indicators = TechnicalIndicatorCalculator.calculate_basic_indicators(h1_data['close'])
+                logger.info(f"   🔧 技術指標計算: {len([k for k, v in h1_indicators.items() if v is not None])}個成功")
+                for ind_name in ['ema_20', 'ema_50', 'rsi_14', 'sma_10']:
+                    ind_val = h1_indicators.get(ind_name)
+                    status = "✅" if ind_val is not None else "❌"
+                    count = len(ind_val) if ind_val is not None else 0
+                    logger.info(f"     {status} {ind_name}: {count}個值")
             
             # 計算所有指標
             indicators = self._calculate_all_indicators(h1_data, m15_data, m5_data)
