@@ -192,7 +192,7 @@ class SelfLearningTrader:
                 )
                 
                 if not is_valid:
-                    logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
+                    logger.info(f"❌ {symbol} 拒絕開倉: {reject_reason} | 勝率={win_probability:.1%} 信心={confidence:.1%} R:R={rr_ratio:.2f}")
                     return None
             
             # 🔥 v3.18.7+ 步驟 4：獲取豁免期狀態並記錄

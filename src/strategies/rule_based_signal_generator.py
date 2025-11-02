@@ -159,12 +159,12 @@ class RuleBasedSignalGenerator:
                 
                 # 每50個交易對打印一次統計（強制輸出）
                 if self._debug_stats['total_scanned'] % 50 == 0:
-                    logger.warning(f"🔍 信號生成統計（已掃描{self._debug_stats['total_scanned']}個，0信號）：")
-                    logger.warning(f"   H1趨勢: bullish={self._debug_stats['h1_bullish']}, bearish={self._debug_stats['h1_bearish']}, neutral={self._debug_stats['h1_neutral']}")
-                    logger.warning(f"   M15趨勢: bullish={self._debug_stats['m15_bullish']}, bearish={self._debug_stats['m15_bearish']}, neutral={self._debug_stats['m15_neutral']}")
-                    logger.warning(f"   M5趨勢: bullish={self._debug_stats['m5_bullish']}, bearish={self._debug_stats['m5_bearish']}, neutral={self._debug_stats['m5_neutral']}")
-                    logger.warning(f"   市場結構: bullish={self._debug_stats['structure_bullish']}, bearish={self._debug_stats['structure_bearish']}, neutral={self._debug_stats['structure_neutral']}")
-                    logger.warning(f"   ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量")
+                    logger.info(f"🔍 信號生成統計（已掃描{self._debug_stats['total_scanned']}個，0信號）：")
+                    logger.info(f"   H1趨勢: bullish={self._debug_stats['h1_bullish']}, bearish={self._debug_stats['h1_bearish']}, neutral={self._debug_stats['h1_neutral']}")
+                    logger.info(f"   M15趨勢: bullish={self._debug_stats['m15_bullish']}, bearish={self._debug_stats['m15_bearish']}, neutral={self._debug_stats['m15_neutral']}")
+                    logger.info(f"   M5趨勢: bullish={self._debug_stats['m5_bullish']}, bearish={self._debug_stats['m5_bearish']}, neutral={self._debug_stats['m5_neutral']}")
+                    logger.info(f"   市場結構: bullish={self._debug_stats['structure_bullish']}, bearish={self._debug_stats['structure_bearish']}, neutral={self._debug_stats['structure_neutral']}")
+                    logger.info(f"   ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量")
                     self._debug_stats['last_print_count'] = self._debug_stats['total_scanned']
                 
                 return None
