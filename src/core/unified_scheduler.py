@@ -314,6 +314,30 @@ class UnifiedScheduler:
             
             logger.info(f"📊 掃描 {len(symbols)} 個交易對中...")
             
+            # 🔧 v3.19+ 修復：重置Pipeline統計計數器（防止多次掃描累加）
+            if hasattr(self.self_learning_trader, 'signal_generator'):
+                self.self_learning_trader.signal_generator._pipeline_stats = {
+                    'stage0_total_symbols': 0,
+                    'stage1_valid_data': 0,
+                    'stage1_rejected_data': 0,
+                    'stage2_trend_ok': 0,
+                    'stage3_signal_direction': 0,
+                    'stage3_no_direction': 0,
+                    'stage3_priority1': 0,
+                    'stage3_priority2': 0,
+                    'stage3_priority3': 0,
+                    'stage3_priority4_relaxed': 0,
+                    'stage3_priority5_relaxed': 0,
+                    'stage4_adx_rejected_lt10': 0,
+                    'stage4_adx_penalty_10_15': 0,
+                    'stage4_adx_penalty_15_20': 0,
+                    'stage4_adx_ok_gte20': 0,
+                    'stage5_confidence_calculated': 0,
+                    'stage6_win_prob_calculated': 0,
+                    'stage7_passed_double_gate': 0,
+                }
+                logger.info("🔧 Pipeline統計計數器已重置")
+            
             # 步驟 5：批量分析並生成信號
             signals = []
             data_unavailable_count = 0
