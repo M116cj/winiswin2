@@ -316,15 +316,20 @@ class UnifiedScheduler:
             
             # 步驟 5：批量分析並生成信號
             signals = []
+            data_unavailable_count = 0
+            analyzed_count = 0
+            
             for symbol in symbols:
                 try:
                     # 獲取多時間框架數據
                     multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
                     
                     if not multi_tf_data:
+                        data_unavailable_count += 1
                         continue
                     
                     # 調用 SelfLearningTrader 分析
+                    analyzed_count += 1
                     signal = self.self_learning_trader.analyze(symbol, multi_tf_data)
                     
                     if signal:
@@ -334,10 +339,16 @@ class UnifiedScheduler:
                 except Exception as e:
                     logger.debug(f"分析 {symbol} 跳過: {e}")
             
+            # 🔥 v3.19+：輸出掃描統計
+            logger.info(f"📊 掃描統計: 總數={len(symbols)} | 數據可用={analyzed_count} | 數據缺失={data_unavailable_count}")
+            
             if signals:
                 logger.info(f"✅ 發現 {len(signals)} 個交易信號")
             else:
-                logger.info("⏸️  本週期無新信號")
+                if data_unavailable_count == len(symbols):
+                    logger.warning("⚠️  所有交易對數據缺失（WebSocket可能未就緒或API不可用）")
+                else:
+                    logger.info("⏸️  本週期無新信號")
             
             # 步驟 6：執行信號（開倉）
             # 🔥 v3.18+: 使用動態預算池 + 質量加權分配
