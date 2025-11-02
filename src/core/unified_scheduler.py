@@ -343,6 +343,7 @@ class UnifiedScheduler:
             data_unavailable_count = 0
             analyzed_count = 0
             signal_candidates = []  # 🔥 v3.19+：收集所有交易對的信心值/勝率用於診斷
+            diagnostic_count = 0  # 🔥 v3.19.1: 數據診斷計數器
             
             # 🔥 v3.19+ 診斷：時間分析
             import time
@@ -365,6 +366,19 @@ class UnifiedScheduler:
                     if not multi_tf_data:
                         data_unavailable_count += 1
                         continue
+                    
+                    # 🔥 v3.19.1: 診斷前3個symbol的實際數據情況
+                    if diagnostic_count < 3:
+                        diagnostic_count += 1
+                        logger.info(f"🔍 數據診斷 #{diagnostic_count} - {symbol}:")
+                        for tf, df in multi_tf_data.items():
+                            if df is not None and len(df) > 0:
+                                logger.info(f"   {tf}: {len(df)}行, 列={list(df.columns)[:5]}...")
+                                logger.info(f"      最新價格: {df['close'].iloc[-1]:.2f}")
+                            elif df is not None:
+                                logger.info(f"   {tf}: DataFrame為空（0行）")
+                            else:
+                                logger.warning(f"   {tf}: DataFrame為None")
                     
                     # 測量分析時間
                     analysis_start = time.time()

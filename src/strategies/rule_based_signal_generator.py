@@ -614,9 +614,11 @@ class RuleBasedSignalGenerator:
     
     def _validate_data(self, multi_tf_data: Dict[str, pd.DataFrame]) -> bool:
         """
-        v3.19+ 放寬數據驗證（50→20行）並添加詳細診斷
+        v3.19+ 緊急放寬數據驗證（50→20→10行）並添加詳細診斷
         
-        修改原因：Stage1拒絕率100%（530/530），數據長度要求過嚴
+        修改歷史：
+        - v3.19.0: 50→20行（Stage1拒絕率100%）
+        - v3.19.1: 20→10行（Railway日誌顯示499/500仍被拒絕）
         """
         required_tfs = ['1h', '15m', '5m']
         
@@ -634,9 +636,9 @@ class RuleBasedSignalGenerator:
                 logger.debug(f"⚠️ 數據驗證失敗: {tf} DataFrame為None")
                 return False
             
-            # 檢查3: 數據長度（🔥 放寬：50→20）
-            if len(df) < 20:
-                logger.debug(f"⚠️ 數據驗證失敗: {tf} 只有{len(df)}行數據 (<20)")
+            # 檢查3: 數據長度（🔥🔥 緊急放寬：50→20→10）
+            if len(df) < 10:
+                logger.debug(f"⚠️ 數據驗證失敗: {tf} 只有{len(df)}行數據 (<10)")
                 return False
             
             # 檢查4: 必要列是否存在
