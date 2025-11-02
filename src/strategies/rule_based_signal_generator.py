@@ -47,8 +47,41 @@ class RuleBasedSignalGenerator:
             'signals_generated': 0,
             'signals_passed_confidence': 0
         }
+        
+        self._pipeline_stats = {
+            'stage0_total_symbols': 0,
+            'stage1_valid_data': 0,
+            'stage1_rejected_data': 0,
+            'stage2_trend_ok': 0,
+            'stage3_signal_direction': 0,
+            'stage3_no_direction': 0,
+            'stage3_priority1': 0,
+            'stage3_priority2': 0,
+            'stage3_priority3': 0,
+            'stage3_priority4_relaxed': 0,
+            'stage3_priority5_relaxed': 0,
+            'stage4_adx_rejected_lt15': 0,
+            'stage4_adx_penalty_15_20': 0,
+            'stage4_adx_ok_gte20': 0,
+            'stage5_confidence_calculated': 0,
+            'stage6_win_prob_calculated': 0,
+            'stage7_passed_double_gate': 0,
+            'stage7_rejected_win_prob': 0,
+            'stage7_rejected_confidence': 0,
+            'stage7_rejected_rr': 0,
+            'stage8_passed_quality': 0,
+            'stage8_rejected_quality': 0,
+            'stage9_ranked_signals': 0,
+            'stage9_executed_signals': 0,
+            'adx_distribution_lt15': 0,
+            'adx_distribution_15_20': 0,
+            'adx_distribution_20_25': 0,
+            'adx_distribution_gte25': 0
+        }
+        
         logger.info("✅ RuleBasedSignalGenerator 初始化完成")
         logger.info(f"   🎚️ 信號模式: {'寬鬆模式' if self.config.RELAXED_SIGNAL_MODE else '嚴格模式'}")
+        logger.info(f"   📊 10階段Pipeline診斷: 已啟用（每100個符號輸出統計）")
     
     def get_debug_stats(self) -> dict:
         """獲取調試統計數據"""
@@ -66,6 +99,104 @@ class RuleBasedSignalGenerator:
             'signals_generated': 0,
             'signals_passed_confidence': 0
         }
+        
+        self._pipeline_stats = {
+            'stage0_total_symbols': 0,
+            'stage1_valid_data': 0,
+            'stage1_rejected_data': 0,
+            'stage2_trend_ok': 0,
+            'stage3_signal_direction': 0,
+            'stage3_no_direction': 0,
+            'stage3_priority1': 0,
+            'stage3_priority2': 0,
+            'stage3_priority3': 0,
+            'stage3_priority4_relaxed': 0,
+            'stage3_priority5_relaxed': 0,
+            'stage4_adx_rejected_lt15': 0,
+            'stage4_adx_penalty_15_20': 0,
+            'stage4_adx_ok_gte20': 0,
+            'stage5_confidence_calculated': 0,
+            'stage6_win_prob_calculated': 0,
+            'stage7_passed_double_gate': 0,
+            'stage7_rejected_win_prob': 0,
+            'stage7_rejected_confidence': 0,
+            'stage7_rejected_rr': 0,
+            'stage8_passed_quality': 0,
+            'stage8_rejected_quality': 0,
+            'stage9_ranked_signals': 0,
+            'stage9_executed_signals': 0,
+            'adx_distribution_lt15': 0,
+            'adx_distribution_15_20': 0,
+            'adx_distribution_20_25': 0,
+            'adx_distribution_gte25': 0
+        }
+    
+    def get_pipeline_stats(self) -> dict:
+        """獲取Pipeline統計數據"""
+        return self._pipeline_stats.copy()
+    
+    def _print_pipeline_stats(self):
+        """打印Pipeline統計數據（每100個符號）"""
+        stats = self._pipeline_stats
+        logger.info("=" * 80)
+        logger.info(f"📊 Pipeline診斷報告（已掃描{stats['stage0_total_symbols']}個交易對）")
+        logger.info("=" * 80)
+        
+        logger.info(f"Stage0 - 總掃描數: {stats['stage0_total_symbols']}")
+        logger.info(f"Stage1 - 數據驗證: 有效={stats['stage1_valid_data']}, 拒絕={stats['stage1_rejected_data']}")
+        if stats['stage1_valid_data'] > 0:
+            reject_rate = stats['stage1_rejected_data'] / (stats['stage1_valid_data'] + stats['stage1_rejected_data']) * 100
+            logger.info(f"         拒絕率: {reject_rate:.1f}%")
+        
+        logger.info(f"Stage2 - 趨勢判斷: 成功={stats['stage2_trend_ok']}")
+        
+        logger.info(f"Stage3 - 信號方向:")
+        logger.info(f"         有方向={stats['stage3_signal_direction']}, 無方向={stats['stage3_no_direction']}")
+        logger.info(f"         優先級1(完美對齊)={stats['stage3_priority1']}")
+        logger.info(f"         優先級2(H1+M15)={stats['stage3_priority2']}")
+        logger.info(f"         優先級3(趨勢初期)={stats['stage3_priority3']}")
+        if self.config.RELAXED_SIGNAL_MODE:
+            logger.info(f"         優先級4(H1主導-寬鬆)={stats['stage3_priority4_relaxed']}")
+            logger.info(f"         優先級5(M15+M5-寬鬆)={stats['stage3_priority5_relaxed']}")
+        
+        logger.info(f"Stage4 - ADX過濾:")
+        logger.info(f"         ADX<15(拒絕)={stats['stage4_adx_rejected_lt15']}")
+        logger.info(f"         ADX 15-20(懲罰×0.8)={stats['stage4_adx_penalty_15_20']}")
+        logger.info(f"         ADX≥20(通過)={stats['stage4_adx_ok_gte20']}")
+        
+        logger.info(f"ADX分布:")
+        logger.info(f"         <15: {stats['adx_distribution_lt15']}")
+        logger.info(f"         15-20: {stats['adx_distribution_15_20']}")
+        logger.info(f"         20-25: {stats['adx_distribution_20_25']}")
+        logger.info(f"         ≥25: {stats['adx_distribution_gte25']}")
+        
+        if stats['adx_distribution_lt15'] + stats['adx_distribution_15_20'] + stats['adx_distribution_20_25'] + stats['adx_distribution_gte25'] > 0:
+            total_adx = stats['adx_distribution_lt15'] + stats['adx_distribution_15_20'] + stats['adx_distribution_20_25'] + stats['adx_distribution_gte25']
+            lt15_pct = stats['adx_distribution_lt15'] / total_adx * 100
+            logger.info(f"         🔥 ADX<15占比: {lt15_pct:.1f}% ← 主要過濾原因！" if lt15_pct > 50 else f"         ADX<15占比: {lt15_pct:.1f}%")
+        
+        logger.info(f"Stage5 - 信心度計算: {stats['stage5_confidence_calculated']}")
+        logger.info(f"Stage6 - 勝率計算: {stats['stage6_win_prob_calculated']}")
+        
+        logger.info(f"Stage7 - 雙門檻驗證:")
+        logger.info(f"         通過={stats['stage7_passed_double_gate']}")
+        logger.info(f"         拒絕(勝率不足)={stats['stage7_rejected_win_prob']}")
+        logger.info(f"         拒絕(信心不足)={stats['stage7_rejected_confidence']}")
+        logger.info(f"         拒絕(R:R超範圍)={stats['stage7_rejected_rr']}")
+        
+        logger.info(f"Stage8 - 質量評分:")
+        logger.info(f"         通過(quality≥門檻)={stats['stage8_passed_quality']}")
+        logger.info(f"         拒絕(quality<門檻)={stats['stage8_rejected_quality']}")
+        
+        logger.info(f"Stage9 - 排序&執行:")
+        logger.info(f"         排序候選={stats['stage9_ranked_signals']}")
+        logger.info(f"         最終執行={stats['stage9_executed_signals']}")
+        
+        if stats['stage0_total_symbols'] > 0:
+            funnel_rate = stats['stage9_executed_signals'] / stats['stage0_total_symbols'] * 100
+            logger.info(f"")
+            logger.info(f"🎯 Pipeline完整漏斗轉化率: {funnel_rate:.2f}% ({stats['stage9_executed_signals']}/{stats['stage0_total_symbols']})")
+        logger.info("=" * 80)
     
     def generate_signal(
         self,
@@ -93,8 +224,11 @@ class RuleBasedSignalGenerator:
             - reasoning: 信號原因
         """
         try:
+            self._pipeline_stats['stage0_total_symbols'] += 1
+            
             # 驗證數據
             if not self._validate_data(multi_tf_data):
+                self._pipeline_stats['stage1_rejected_data'] += 1
                 return None
             
             # 🔥 添加類型安全檢查 - 確保數據不為None
@@ -104,7 +238,10 @@ class RuleBasedSignalGenerator:
             
             if h1_data is None or m15_data is None or m5_data is None:
                 logger.warning(f"{symbol} 數據不完整，跳過信號生成")
+                self._pipeline_stats['stage1_rejected_data'] += 1
                 return None
+            
+            self._pipeline_stats['stage1_valid_data'] += 1
             
             # 計算所有指標
             indicators = self._calculate_all_indicators(h1_data, m15_data, m5_data)
@@ -113,6 +250,8 @@ class RuleBasedSignalGenerator:
             h1_trend = self._determine_trend(h1_data)
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
+            
+            self._pipeline_stats['stage2_trend_ok'] += 1
             
             # 市場結構
             market_structure = determine_market_structure(m15_data)
@@ -129,7 +268,7 @@ class RuleBasedSignalGenerator:
             current_price = float(m5_data['close'].iloc[-1])
             
             # 確定信號方向
-            signal_direction = self._determine_signal_direction(
+            signal_direction, priority_level = self._determine_signal_direction(
                 h1_trend,
                 m15_trend,
                 m5_trend,
@@ -141,6 +280,7 @@ class RuleBasedSignalGenerator:
             
             # 🔥 v3.18.7+ Debug: 記錄無信號原因（每50個交易對打印一次統計）
             if not signal_direction:
+                self._pipeline_stats['stage3_no_direction'] += 1
                 if not hasattr(self, '_debug_stats'):
                     self._debug_stats = {
                         'total_scanned': 0,
@@ -169,6 +309,8 @@ class RuleBasedSignalGenerator:
                 
                 return None
             
+            self._pipeline_stats['stage3_signal_direction'] += 1
+            
             # 🔥 v3.18.9+ 修復：ADX 過濾條件（放寬以適應高波動市場）
             # 修復前：ADX < 20 → 直接拒絕（過於嚴格）
             # 修復後：ADX < 15 → 拒絕；15-20 → 降低信心度但不拒絕
@@ -176,13 +318,21 @@ class RuleBasedSignalGenerator:
             adx_penalty = 1.0  # 默認無懲罰
             
             if adx_value < 15:
-                # 純震盪市，拒絕信號
-                logger.debug(f"{symbol} ADX={adx_value:.1f}<15，純震盪市，拒絕信號")
+                self._pipeline_stats['adx_distribution_lt15'] += 1
+                self._pipeline_stats['stage4_adx_rejected_lt15'] += 1
+                logger.info(f"❌ {symbol} ADX過濾: ADX={adx_value:.1f}<15，純震盪市，拒絕信號（優先級{priority_level}）")
                 return None
             elif adx_value < 20:
-                # 低趨勢強度，降低信心度但不拒絕
+                self._pipeline_stats['adx_distribution_15_20'] += 1
+                self._pipeline_stats['stage4_adx_penalty_15_20'] += 1
                 adx_penalty = 0.8  # 信心度×0.8
                 logger.debug(f"{symbol} ADX={adx_value:.1f}<20，低趨勢強度，信心度×0.8")
+            elif adx_value < 25:
+                self._pipeline_stats['adx_distribution_20_25'] += 1
+                self._pipeline_stats['stage4_adx_ok_gte20'] += 1
+            else:
+                self._pipeline_stats['adx_distribution_gte25'] += 1
+                self._pipeline_stats['stage4_adx_ok_gte20'] += 1
             
             # 🔥 v3.18.8+ 計算EMA偏差值指標
             deviation_metrics = self._calculate_ema_deviation_metrics(
@@ -210,6 +360,8 @@ class RuleBasedSignalGenerator:
                 deviation_metrics=deviation_metrics  # 🔥 v3.18.8+ 新增EMA偏差指標
             )
             
+            self._pipeline_stats['stage5_confidence_calculated'] += 1
+            
             # 計算 SL/TP
             atr = indicators['atr']
             stop_loss, take_profit = self._calculate_sl_tp(
@@ -235,6 +387,11 @@ class RuleBasedSignalGenerator:
                 direction=signal_direction,
                 market_structure=market_structure
             )
+            
+            self._pipeline_stats['stage6_win_prob_calculated'] += 1
+            
+            if self._pipeline_stats['stage0_total_symbols'] % 100 == 0:
+                self._print_pipeline_stats()
             
             # 構建標準化信號
             signal = {
@@ -417,7 +574,7 @@ class RuleBasedSignalGenerator:
         order_blocks: list,
         liquidity_zones: list,
         current_price: float
-    ) -> Optional[str]:
+    ) -> tuple:
         """
         🔥 v3.18.7+: 確定信號方向（支持嚴格/寬松兩種模式）
         
@@ -429,50 +586,63 @@ class RuleBasedSignalGenerator:
         寬松模式策略分層（RELAXED_SIGNAL_MODE=true）：
         4. 單時間框架主導：H1明確趨勢，其他框架neutral可接受
         5. M15+M5對齊：短期趨勢，H1可以neutral
+        
+        Returns:
+            (signal_direction, priority_level) or (None, None)
         """
         # ============ 嚴格模式（默認） ============
         # 優先級1: 四者完全一致（完美信號，最高置信度）
         if (h1_trend == 'bullish' and m15_trend == 'bullish' and 
             m5_trend == 'bullish' and market_structure == 'bullish'):
-            return 'LONG'
+            self._pipeline_stats['stage3_priority1'] += 1
+            return 'LONG', 1
         if (h1_trend == 'bearish' and m15_trend == 'bearish' and 
             m5_trend == 'bearish' and market_structure == 'bearish'):
-            return 'SHORT'
+            self._pipeline_stats['stage3_priority1'] += 1
+            return 'SHORT', 1
         
         # 優先級2: h1+m15強趨勢，market_structure不對立（允許neutral和m5分歧）
         if (h1_trend == 'bullish' and m15_trend == 'bullish'):
             if market_structure in ['bullish', 'neutral']:
-                return 'LONG'
+                self._pipeline_stats['stage3_priority2'] += 1
+                return 'LONG', 2
         if (h1_trend == 'bearish' and m15_trend == 'bearish'):
             if market_structure in ['bearish', 'neutral']:
-                return 'SHORT'
+                self._pipeline_stats['stage3_priority2'] += 1
+                return 'SHORT', 2
         
         # 優先級3: 趨勢初期場景（h1明確，m15 neutral，m5確認，structure支持）
         if (h1_trend == 'bullish' and m15_trend == 'neutral' and m5_trend == 'bullish'):
             if market_structure in ['bullish', 'neutral']:
-                return 'LONG'
+                self._pipeline_stats['stage3_priority3'] += 1
+                return 'LONG', 3
         if (h1_trend == 'bearish' and m15_trend == 'neutral' and m5_trend == 'bearish'):
             if market_structure in ['bearish', 'neutral']:
-                return 'SHORT'
+                self._pipeline_stats['stage3_priority3'] += 1
+                return 'SHORT', 3
         
         # ============ 寬松模式（可選）============
         if self.config.RELAXED_SIGNAL_MODE:
             # 優先級4: H1主導（H1明確，其他可neutral，structure不對立）
             if h1_trend == 'bullish' and m15_trend != 'bearish' and market_structure != 'bearish':
-                return 'LONG'
+                self._pipeline_stats['stage3_priority4_relaxed'] += 1
+                return 'LONG', 4
             if h1_trend == 'bearish' and m15_trend != 'bullish' and market_structure != 'bullish':
-                return 'SHORT'
+                self._pipeline_stats['stage3_priority4_relaxed'] += 1
+                return 'SHORT', 4
             
             # 優先級5: M15+M5短期對齊（H1可neutral，structure支持）
             if (m15_trend == 'bullish' and m5_trend == 'bullish' and 
                 h1_trend != 'bearish' and market_structure in ['bullish', 'neutral']):
-                return 'LONG'
+                self._pipeline_stats['stage3_priority5_relaxed'] += 1
+                return 'LONG', 5
             if (m15_trend == 'bearish' and m5_trend == 'bearish' and 
                 h1_trend != 'bullish' and market_structure in ['bearish', 'neutral']):
-                return 'SHORT'
+                self._pipeline_stats['stage3_priority5_relaxed'] += 1
+                return 'SHORT', 5
         
         # 無法確定方向（拒絕對立信號）
-        return None
+        return None, None
     
     def _calculate_alignment_score(
         self,

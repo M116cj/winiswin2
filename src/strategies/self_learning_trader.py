@@ -55,6 +55,9 @@ class SelfLearningTrader:
         # 初始化信號生成器
         self.signal_generator = RuleBasedSignalGenerator(config)
         
+        # 添加对signal_generator的pipeline统计访问
+        self._pipeline_stats = self.signal_generator._pipeline_stats
+        
         # 初始化三大引擎
         self.leverage_engine = LeverageEngine(config)
         self.position_sizer = PositionSizer(config, binance_client)

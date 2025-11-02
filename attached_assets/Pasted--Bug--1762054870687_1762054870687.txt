@@ -1,0 +1,73 @@
+在整個十階段過濾流程中任一階段若過濾比例過高（或邏輯有Bug）就會把候選信號殺光。要做的是「抓住每個階段的輸出計數與樣本」，找出哪一階段把所有候選信號拒絕掉，然後深入該階段的邏輯。
+
+一、最可能的問題（按概率與影響排序）
+
+ADX 過濾/懲罰把所有候選拒絕
+規則：ADX < 15 直接 return None；15-20 信心×0.8；ADX_TREND_THRESHOLD = 20.
+若市場為震盪（多數對 ADX < 15），會直接拒絕大量信號。26萬週期仍為零信號很可能是此原因。
+三時間框架要求「完全同向」（嚴格模式）導致過濾過高
+預設 RELAXED_SIGNAL_MODE=false。若市場不一直完美對齊（H1 + M15 + M5），會產生非常少的優先級1-3信號。
+EMA 斜率閾值 (EMA_SLOPE_THRESHOLD = 0.01) 單位/計算錯誤
+0.01 是百分比還是絕對價格斜率？如果實作單位不一致（例如你計算的斜率是每小時變化 0.001），判斷永遠為 false。
+時間框架/對齊問題（你監控是 1m）
+文件以 1h/15m/5m 為基礎，但你說「監控為1m監控一次」：可能沒有正確拉取/緩存 5m/15m/1h 的 K 線，或時間戳不同步（UTC vs exchange time）導致取到不完整/空數據。
+指標計算失敗（NaN / 無效值）導致被過濾
+指標計算例外/回傳 NaN → 被視為「數據不完整」或直接拒絕。
+參數/環境變數錯誤（例如 RELAXED_SIGNAL_MODE 實際為 true/false 與預期相反）
+若程式讀 env 失敗或型別錯誤（"false" 字串 vs boolean），可能造成不預期邏輯路徑。
+比較/邏輯寫錯（嚴格使用 == 而非方向相同的判斷，或用 >/< 的方向錯誤）
+例如把 H1 trend 設為 "bullish" 但程式判斷為 True only if trend == "bull"。
+全局早期 return（在 pipeline 第一個 check 就 return None）
+例如一個錯誤的 guard：if not candles_ok: return None，但 candles_ok 檢查過於嚴格或出錯。
+符合門檻但後續門檻（雙門檻、質量評分）被過度折算或乘上 0 之類的 Bug
+e.g., 將 score × 0.01 或誤用百分比/0-1 vs 0-100 的單位換算錯誤，導致所有信號 quality < threshold。
+二、逐步排查清單（具體要執行的檢查） 按順序從資料輸入到最終篩選，逐步打點與記錄數量與樣本：
+
+全局計數器與分段日誌（必做）
+
+在 pipeline 每個階段輸出：輸入候選數、被拒絕數、通過數。至少包括：
+Stage0: 總監控對數 (應為 530)
+Stage1: 有效 K 線數 (三 timeframe 都有資料) 的對數
+Stage2: 趨勢判斷通過（H1/M15/M5 trend 可判定）的對數
+Stage3: 初步 direction signal（按優先級1-5產生候選）的數量
+Stage4: ADX 過濾後的數量（分 ADX <15, 15-20, >=20）
+Stage5: 信心度計算成功/失敗數與平均信心度
+Stage6: 勝率計算成功/失敗數與平均勝率
+Stage7: 雙門檻（豁免/正常）過濾結果
+Stage8: 最終質量/排序與選擇數
+讓系統每 100~1000 週期輸出一次這些統計，或在問題出現時手動觸發 snapshot。
+取樣檢查：抓 N 個被拒絕的 symbol 的完整原始輸入（candles, indicators, trends）
+
+例如取 20 個被拒絕的 symbol，輸出它們的 H1/M15/M5 EMA20/EMA50/ADX/ATR/market_structure/raw_prices。
+看看實際數值是否真不符合條件，或是否為 NaN/0/空。
+檢查 ADX 分布
+
+在日誌上繪製或輸出 ADX 的分佈（counts per bucket <15, 15-20, 20-25, >=25）。
+若 <15 占大多數，則 ADX 規則是主因。
+時間框架與資料完整性
+
+驗證你的 1m 監控 loop 是否定期去拉 5m/15m/1h candles，並且使用的是完整 K 線（非當前未封閉 K）。
+檢查對齊：確保在 1m tick 時仍然使用最近完整的 5m/15m/1h candle，不要用正在形成的 candle 作趨勢判斷（會導致不穩定或 NaN）。
+檢查 UTC vs exchange 時間 offset，確保 timeframe 辨識正確且沒有跨日/跨小時錯誤。
+檢查斜率與閾值單位匹配
+
+日誌顯示 EMA20 斜率計算值與 EMA_SLOPE_THRESHOLD 的比較結果。輸出實際斜率與閾值，檢查是否有單位錯誤（0.01 ≈ 1%？）。
+如果斜率以 price-per-period 表示，EMA_SLOPE_THRESHOLD 可能太大。
+檢查 RELAXED_SIGNAL_MODE 與優先級邏輯
+
+確認是否真的走嚴格模式。臨時強制 RELAXED_SIGNAL_MODE=true 看是否立刻產生更多候選（快速驗證）。
+若開啟後仍為 0，則問題不是嚴格/寬鬆切換。
+檢查指標計算函式的錯誤處理
+
+若 RSI/ATR/ADX 計算在資料不足時回傳 None 或拋錯，確認 pipeline 正確處理並記錄具體錯誤（不是 swallow 掉）。
+增加指標計算的 fallback（例如在資料不足時跳過該 symbol 或延後判斷，而不是全域失敗）。
+單元模擬測試（最可靠）
+
+對已知歷史行情（例如某天 H1 明顯趨勢的 BTCUSDT）做回放（回放引擎或把歷史 candles 當作輸入）看系統是否能在該條件下生成信號。若回放能生成信號，則問題為實時資料或時間/對齊問題；若回放也不能，則邏輯實作或閾值錯誤。
+檢查百分比 vs 小數的錯誤
+
+例如 confidence 計算有時用 0-1 或 0-100，混用會讓 quality 計算永遠低於 threshold。輸出中間變數（confidence raw, total_score, final_confidence）以確認單位是否一致。
+日誌等級與訊號抑制
+
+確認你沒有在生成信號的地方加上額外的「僅模擬 log，不真的 log 生成結果」的 guard（例如只在 debug 模式記錄，prod 不記錄）。
+有沒有一層 sandbox: true 導致信號僅存在 memory 並不輸出？
