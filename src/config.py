@@ -32,9 +32,10 @@ class Config:
     # 🎚️ 信号生成模式 (v3.18.7+)
     # ========================================
     # RELAXED_SIGNAL_MODE: 宽松信号生成模式（增加信号数量，降低精度要求）
-    # - false（默认）: 严格模式 - 只在多时间框架完美对齐时生成信号（高质量，低频率）
-    # - true: 宽松模式 - 允许部分时间框架对齐（中等质量，中等频率）
-    RELAXED_SIGNAL_MODE: bool = os.getenv("RELAXED_SIGNAL_MODE", "false").lower() == "true"
+    # - false: 严格模式 - 只在多时间框架完美对齐时生成信号（高质量，低频率）
+    # - true（默认）: 宽松模式 - 允许部分时间框架对齐（中等质量，中等频率）
+    # 🔥 v3.18.10+ 默认启用宽松模式以解决0信号问题
+    RELAXED_SIGNAL_MODE: bool = os.getenv("RELAXED_SIGNAL_MODE", "true").lower() == "true"
     
     # ===== Discord 配置（可選）=====
     DISCORD_TOKEN: str = (
