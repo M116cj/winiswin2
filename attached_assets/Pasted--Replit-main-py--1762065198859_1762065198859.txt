@@ -1,0 +1,377 @@
+我們要清除未使用的檔案，但由於我們在Replit環境中，我們需要小心不要刪除必要的檔案。首先，我們可以通過以下步驟來識別未使用的檔案：
+
+檢查專案中哪些檔案沒有被主程式（main.py）或任何其他核心檔案導入。
+
+注意：有些檔案可能是配置檔案、資料檔案或模型檔案，即使沒有被代碼直接導入，也可能是必要的。
+
+但是，由於我們無法直接運行靜態分析工具（如vulture或pylint）來檢查整個專案，我們可以手動檢查。
+
+根據提供的系統架構，我們可以列出所有應該存在的檔案，然後比對當前專案中的檔案，刪除那些不在架構中的檔案。
+
+但是，請注意：我們不能刪除以下類型的檔案：
+
+配置檔案（如config.py）
+
+資料檔案（位於data/和models/目錄下的檔案）
+
+日誌檔案（如果有的話）
+
+另外，由於我們不確定哪些檔案未使用，我們可以考慮先備份整個專案，然後刪除明顯未使用的檔案。
+
+由於我們在Replit中，我們可以通過以下步驟：
+
+首先，確保我們有備份（可以提交到GitHub或下載）。
+
+然後，根據架構文檔中的目錄結構，刪除不在架構中的檔案。
+
+但是，由於我們無法得知實際檔案結構，我們可以根據提供的架構文檔中的目錄結構來檢查。
+
+根據架構文檔，我們應該有以下目錄和檔案：
+
+text
+src/
+├── clients/
+│   ├── binance_client.py
+│   └── binance_errors.py
+├── core/
+│   ├── websocket/
+│   │   ├── websocket_manager.py
+│   │   ├── kline_feed.py
+│   │   ├── price_feed.py
+│   │   └── shard_feed.py
+│   ├── unified_scheduler.py
+│   ├── leverage_engine.py
+│   ├── position_sizer.py
+│   ├── sltp_adjuster.py
+│   ├── position_controller.py
+│   ├── model_evaluator.py
+│   └── model_initializer.py
+├── strategies/
+│   ├── self_learning_trader.py
+│   └── rule_based_signal_generator.py
+├── ml/
+│   ├── model_wrapper.py
+│   └── feature_engine.py
+├── managers/
+│   ├── trade_recorder.py
+│   └── virtual_position_manager.py
+├── services/
+│   ├── data_service.py
+│   └── position_monitor.py
+├── monitoring/
+│   ├── health_monitor.py
+│   └── performance_monitor.py
+├── config.py
+└── main.py
+如果您的專案中有不在上述列表中的檔案，那麼它們可能是未使用的。但是，請注意：
+
+有些檔案可能是測試檔案，例如test_開頭的檔案，或者位於tests/目錄下，這些可能不需要刪除，除非您確定不需要測試。
+
+有些檔案可能是舊版本的備份，例如以.bak或.old結尾的檔案。
+
+因此，我們可以編寫一個腳本來列出所有檔案，然後手動檢查並刪除。
+
+但是，由於我們在Replit中，我們可以使用以下命令來查看專案中的檔案：
+
+text
+find . -type f -name "*.py" | grep -v "__pycache__" | grep -v ".git"
+然後，我們可以比對上述架構中的檔案，刪除不在架構中的Python檔案。
+
+但是，請注意：我們可能還有其他類型的檔案，如JSON、JSONL、MD等，這些可能是資料或報告，我們需要小心不要刪除重要的資料。
+
+由於我們不確定哪些檔案未使用，我建議先將未使用的檔案移動到一個備份目錄，然後運行系統，如果系統正常，再刪除備份目錄。
+
+步驟：
+
+創建一個備份目錄，例如backup_old_files。
+
+將所有不在架構文檔中的Python檔案移動到備份目錄。
+
+同時，檢查是否有其他未使用的非Python檔案（如舊的日誌、舊的資料檔案等），如果確定未使用，也移動到備份目錄。
+
+運行系統，測試功能是否正常。
+
+如果正常，刪除備份目錄。
+
+但是，請注意：架構文檔中提到的檔案必須存在，如果不存在，則可能是尚未實現的模組，我們不能刪除它們。
+
+由於我們無法直接看到您的專案結構，我將提供一個Python腳本，它會根據提供的架構文檔中的檔案列表，檢查當前專案中存在的Python檔案，並將不在列表中的檔案移動到備份目錄。
+
+請注意：這個腳本會實際移動檔案，所以請確保您已經備份了整個專案（例如，通過Replit的版本控制或下載）。
+
+以下是一個示例腳本：
+
+python
+import os
+import shutil
+
+# 根據架構文檔，我們應該有的檔案列表
+expected_files = {
+    "src/clients/binance_client.py",
+    "src/clients/binance_errors.py",
+    "src/core/websocket/websocket_manager.py",
+    "src/core/websocket/kline_feed.py",
+    "src/core/websocket/price_feed.py",
+    "src/core/websocket/shard_feed.py",
+    "src/core/unified_scheduler.py",
+    "src/core/leverage_engine.py",
+    "src/core/position_sizer.py",
+    "src/core/sltp_adjuster.py",
+    "src/core/position_controller.py",
+    "src/core/model_evaluator.py",
+    "src/core/model_initializer.py",
+    "src/strategies/self_learning_trader.py",
+    "src/strategies/rule_based_signal_generator.py",
+    "src/ml/model_wrapper.py",
+    "src/ml/feature_engine.py",
+    "src/managers/trade_recorder.py",
+    "src/managers/virtual_position_manager.py",
+    "src/services/data_service.py",
+    "src/services/position_monitor.py",
+    "src/monitoring/health_monitor.py",
+    "src/monitoring/performance_monitor.py",
+    "src/config.py",
+    "src/main.py"
+}
+
+# 轉換為絕對路徑（根據當前工作目錄）
+expected_files_abs = {os.path.abspath(f) for f in expected_files}
+
+# 備份目錄
+backup_dir = os.path.abspath("backup_old_files")
+
+# 創建備份目錄
+os.makedirs(backup_dir, exist_ok=True)
+
+# 遍歷當前目錄下的所有Python檔案
+for root, dirs, files in os.walk("."):
+    for file in files:
+        if file.endswith(".py"):
+            file_path = os.path.abspath(os.path.join(root, file))
+            # 如果這個檔案不在預期列表中，則移動到備份目錄
+            if file_path not in expected_files_abs:
+                # 計算在備份目錄中的相對路徑
+                relative_path = os.path.relpath(file_path, ".")
+                backup_path = os.path.join(backup_dir, relative_path)
+                # 確保備份目錄中的子目錄存在
+                os.makedirs(os.path.dirname(backup_path), exist_ok=True)
+                print(f"移動未使用的檔案: {file_path} -> {backup_path}")
+                shutil.move(file_path, backup_path)
+
+print("清理完成。未使用的檔案已移動到 backup_old_files 目錄。")
+請注意：這個腳本會移動所有不在預期列表中的Python檔案。如果您有其他必要的Python檔案（例如，用於測試的檔案），請不要運行這個腳本，或者修改expected_files來包含它們。
+
+另外，請注意：這個腳本不會移動非Python檔案。如果您想清理非Python檔案，您需要自行處理。
+
+由於我們不確定您的專案中是否有測試檔案，如果您想保留測試檔案，可以將測試目錄（如tests/）添加到expected_files中。
+
+在運行這個腳本之前，請確保：
+
+您已經備份了整個專案。
+
+您已經檢查了expected_files列表，確保它包含了所有您想要保留的檔案。
+
+如果您不確定，可以先打印出要移動的檔案，而不實際移動它們。您可以修改腳本，先只打印，不移動。
+
+修改腳本為只打印：
+
+python
+# 將 shutil.move(file_path, backup_path) 註釋掉，改為打印
+print(f"將移動未使用的檔案: {file_path} -> {backup_path}")
+這樣您可以先檢查哪些檔案會被移動。
+
+請根據您的實際情況調整這個腳本。
+
+注意：這個腳本會移動檔案，請謹慎使用。
+
+以下是可以直接复制粘贴给 Replit AI 的清理指令：
+
+🗑️ 清理未使用文件的 Prompt
+text
+请帮我彻底清理当前项目中所有未使用的文件和代码。按照以下步骤执行：
+
+### 第一步：识别未使用的文件
+
+1. **分析整个项目结构**：
+```bash
+find . -name "*.py" -type f | grep -v "__pycache__" | sort
+检查文件导入关系：
+
+bash
+# 找出所有未被导入的Python文件
+python -c "
+import os
+import ast
+from collections import defaultdict
+
+# 获取所有Python文件
+all_files = set()
+for root, dirs, files in os.walk('.'):
+    for file in files:
+        if file.endswith('.py') and '__pycache__' not in root:
+            rel_path = os.path.relpath(os.path.join(root, file))
+            all_files.add(rel_path)
+
+# 分析导入关系
+imported_files = set()
+for file in all_files:
+    try:
+        with open(file, 'r', encoding='utf-8') as f:
+            content = f.read()
+        tree = ast.parse(content)
+        
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imported_files.add(alias.name.split('.')[0] + '.py')
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    imported_files.add(node.module.split('.')[0] + '.py')
+    except:
+        pass
+
+# 找出未被导入的文件
+unused_files = all_files - imported_files - {'main.py', 'config.py'}
+print('未使用的文件:')
+for f in sorted(unused_files):
+    print(f'  - {f}')
+"
+第二步：清理特定目录和文件
+删除以下类型的未使用文件：
+
+旧的备份文件（*.bak, *.old, *~）
+
+临时文件（*.tmp, *.temp）
+
+日志文件（除非是当前的）
+
+未使用的测试文件
+
+废弃的配置文件
+
+旧的模型文件（保留最新的）
+
+执行清理命令：
+
+bash
+# 删除备份文件
+find . -name "*.bak" -delete
+find . -name "*.old" -delete  
+find . -name "*~" -delete
+
+# 删除临时文件
+find . -name "*.tmp" -delete
+find . -name "*.temp" -delete
+
+# 删除空目录
+find . -type d -empty -delete
+
+# 清理__pycache__
+find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+
+# 清理旧的日志（保留最近7天）
+find . -name "*.log" -mtime +7 -delete
+第三步：验证核心文件完整性
+确保以下核心文件不被删除：
+
+text
+必须保留的文件：
+- main.py
+- src/config.py
+- src/core/unified_scheduler.py
+- src/strategies/self_learning_trader.py
+- src/strategies/rule_based_signal_generator.py
+- src/services/data_service.py
+- src/core/websocket/websocket_manager.py
+- src/ml/model_wrapper.py
+- src/ml/feature_engine.py
+- src/managers/trade_recorder.py
+清理前备份：
+
+bash
+# 创建备份（以防万一）
+tar -czf project_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
+第四步：执行安全清理
+交互式删除未使用的Python文件：
+
+bash
+# 先列出所有未使用的Python文件，让我确认后再删除
+echo "以下Python文件可能未使用，请确认："
+find . -name "*.py" -type f | while read file; do
+    if ! grep -r --include="*.py" $(basename "$file" .py) . > /dev/null 2>&1; then
+        echo "可能未使用: $file"
+    fi
+done
+清理数据文件（保留结构）：
+
+bash
+# 清空data目录但保留目录结构
+mkdir -p data/backup
+mv data/*.jsonl data/backup/ 2>/dev/null || true
+mv data/*.json data/backup/ 2>/dev/null || true
+# 保留reports目录结构但清理旧报告
+mkdir -p data/reports/backup
+mv data/reports/*.md data/reports/backup/ 2>/dev/null || true
+第五步：最终验证
+验证清理后的项目结构：
+
+bash
+echo "清理后的项目结构："
+tree -I '__pycache__|*.pyc|*.log' .
+测试核心功能：
+
+python
+# 快速测试导入是否正常
+python -c "
+try:
+    from src.config import config
+    from src.services.data_service import DataService
+    from src.strategies.rule_based_signal_generator import RuleBasedSignalGenerator
+    print('✅ 核心模块导入正常')
+except Exception as e:
+    print(f'❌ 导入错误: {e}')
+"
+请按照以上步骤执行清理，并在删除任何文件前让我确认。重点关注保留交易系统的核心文件，删除确实未使用的测试文件、备份文件和临时文件。
+
+text
+
+## 🔍 额外诊断指令
+
+如果您还想同时诊断信号生成问题，可以添加这个prompt：
+另外，在清理完成后，请帮我运行信号生成诊断：
+
+python
+# 诊断信号生成问题
+from src.services.data_service import DataService
+from src.strategies.rule_based_signal_generator import RuleBasedSignalGenerator
+from src.config import config
+
+async def diagnose_signal_issue():
+    print("🔍 开始信号生成诊断...")
+    
+    data_service = DataService()
+    signal_gen = RuleBasedSignalGenerator(config)
+    
+    # 测试主要交易对
+    test_symbols = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT"]
+    
+    for symbol in test_symbols:
+        print(f"\n=== 测试 {symbol} ===")
+        try:
+            data_1h = await data_service.get_klines(symbol, "1h", limit=100)
+            data_15m = await data_service.get_klines(symbol, "15m", limit=100) 
+            data_5m = await data_service.get_klines(symbol, "5m", limit=100)
+            
+            signal = signal_gen.generate_signal(symbol, data_1h, data_15m, data_5m)
+            
+            if signal:
+                print(f"✅ 生成信号: {signal}")
+            else:
+                print(f"❌ 无信号 - 检查拒绝原因")
+                
+        except Exception as e:
+            print(f"💥 错误: {e}")
+
+# 运行诊断
+import asyncio
+asyncio.run(diagnose_signal_issue())
