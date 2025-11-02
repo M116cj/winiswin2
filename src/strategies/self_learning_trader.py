@@ -52,8 +52,8 @@ class SelfLearningTrader:
         self.virtual_position_manager = virtual_position_manager
         self.websocket_monitor = websocket_monitor  # 🔥 v3.17.11
         
-        # 初始化信號生成器
-        self.signal_generator = RuleBasedSignalGenerator(config)
+        # 初始化信號生成器（🔥 v3.19+：強制啟用純ICT/SMC模式）
+        self.signal_generator = RuleBasedSignalGenerator(config, use_pure_ict=True)
         
         # 添加对signal_generator的pipeline统计访问
         self._pipeline_stats = self.signal_generator._pipeline_stats

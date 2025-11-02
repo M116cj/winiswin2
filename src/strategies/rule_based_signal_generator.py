@@ -47,10 +47,17 @@ class RuleBasedSignalGenerator:
         
         # 🔥 v3.19 Phase 2: 純ICT/SMC模式下需要feature_engine
         if use_pure_ict:
-            from src.ml.feature_engine import FeatureEngine
-            self.feature_engine = FeatureEngine()
+            try:
+                from src.ml.feature_engine import FeatureEngine
+                self.feature_engine = FeatureEngine()
+                logger.info(f"✅ FeatureEngine已初始化（純ICT/SMC模式）")
+            except Exception as e:
+                logger.error(f"❌ FeatureEngine初始化失敗: {e}", exc_info=True)
+                self.feature_engine = None
+                raise RuntimeError(f"純ICT模式需要FeatureEngine，但初始化失敗: {e}")
         else:
             self.feature_engine = None
+            logger.info(f"ℹ️  使用傳統指標模式（不加載FeatureEngine）")
         
         self._debug_stats = {
             'total_scanned': 0,
