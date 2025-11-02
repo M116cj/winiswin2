@@ -1,6 +1,7 @@
 """
-🔥 v3.18.6+ ML模型包装器
+🔥 v3.19 ML模型包装器
 职责：加载XGBoost模型并提供预测接口
+v3.19更新：支持56个特征（44→56，新增12个ICT/SMC特征）
 """
 
 import os
@@ -14,12 +15,13 @@ logger = logging.getLogger(__name__)
 
 class MLModelWrapper:
     """
-    ML模型包装器（v3.18.6+）
+    ML模型包装器（v3.19）
     
     职责：
     1. 加载训练好的XGBoost模型
-    2. 提供44个特征的预测接口
+    2. 提供56个特征的预测接口（v3.19：44→56）
     3. 处理模型不存在的fallback
+    4. 向后兼容44特征模型
     """
     
     def __init__(self, model_path: str = "models/xgboost_model.json"):
@@ -61,7 +63,7 @@ class MLModelWrapper:
             logger.info("=" * 60)
             logger.info(f"✅ ML模型已加载: {self.model_path}")
             logger.info(f"   模型大小: {model_size:.2f} KB")
-            logger.info(f"   使用44个特征进行预测")
+            logger.info(f"   🔥 v3.19：使用56个特征进行预测（44→56）")
             logger.info("=" * 60)
             
             return True
@@ -79,7 +81,7 @@ class MLModelWrapper:
         预测获胜概率
         
         Args:
-            features: 44个特征的数值列表
+            features: 56个特征的数值列表（v3.19）
         
         Returns:
             获胜概率（0-1），或None（如果模型未加载）
@@ -90,10 +92,15 @@ class MLModelWrapper:
         try:
             import xgboost as xgb
             
-            # 验证特征数量
-            if len(features) != 44:
-                logger.warning(f"⚠️ 特征数量错误: {len(features)} != 44")
+            # 验证特征数量（支持44或56）
+            if len(features) not in [44, 56]:
+                logger.warning(f"⚠️ 特征数量错误: {len(features)} != 56（或44向后兼容）")
                 return None
+            
+            # 如果是44特征，补齐到56特征（向后兼容）
+            if len(features) == 44:
+                logger.debug("向后兼容：补齐44→56特征")
+                features = features + [0.0] * 12  # 补齐12个ICT/SMC特征为默认值
             
             # 创建DMatrix
             dmatrix = xgb.DMatrix([features])
@@ -112,7 +119,7 @@ class MLModelWrapper:
         从信号字典预测获胜概率
         
         Args:
-            signal: 包含所有44个特征字段的信号字典
+            signal: 包含所有56个特征字段的信号字典（v3.19）
         
         Returns:
             获胜概率（0-1），或None（如果模型未加载或特征不完整）
@@ -136,15 +143,15 @@ class MLModelWrapper:
     
     def _extract_features_from_signal(self, signal: Dict) -> Optional[List[float]]:
         """
-        🔥 v3.18.6+ Critical Fix: 从信号字典提取44个特征（容错处理）
+        🔥 v3.19: 从信号字典提取56个特征（容错处理）
         
-        与ModelInitializer._extract_44_features()保持一致的容错逻辑
+        与FeatureEngine.get_feature_names()保持一致的容错逻辑
         
         Args:
             signal: 信号字典（可能缺少部分字段）
         
         Returns:
-            44个特征的数值列表（总是成功返回，除非发生异常）
+            56个特征的数值列表（v3.19：44→56）
         """
         try:
             # 🔥 优先使用FeatureEngine已生成的特征（如果存在）
@@ -207,12 +214,28 @@ class MLModelWrapper:
                 # WebSocket專屬特徵 (3)
                 float(signal.get('latency_zscore', 0.0)),
                 float(signal.get('shard_load', 0.0)),
-                float(signal.get('timestamp_consistency', 1))
+                float(signal.get('timestamp_consistency', 1)),
+                
+                # 🔥 v3.19 ICT/SMC高級特徵 - 基礎特徵 (8)
+                float(signal.get('market_structure', 0)),
+                float(signal.get('order_blocks_count', 0)),
+                float(signal.get('institutional_candle', 0)),
+                float(signal.get('liquidity_grab', 0)),
+                float(signal.get('order_flow', 0.0)),
+                float(signal.get('fvg_count', 0)),
+                float(signal.get('trend_alignment_enhanced', 0.0)),
+                float(signal.get('swing_high_distance', 0.0)),
+                
+                # 🔥 v3.19 ICT/SMC高級特徵 - 合成特徵 (4)
+                float(signal.get('structure_integrity', 0.0)),
+                float(signal.get('institutional_participation', 0.0)),
+                float(signal.get('timeframe_convergence', 0.0)),
+                float(signal.get('liquidity_context', 0.0))
             ]
             
-            # 验证长度
-            if len(features) != 44:
-                logger.error(f"特徵數量錯誤: {len(features)} != 44")
+            # 验证长度（支持44或56）
+            if len(features) not in [44, 56]:
+                logger.error(f"特徵數量錯誤: {len(features)} != 56（或44向后兼容）")
                 return None
             
             return features

@@ -1,72 +1,78 @@
 """
-特徵工程引擎 v3.17.2+
-職責：加入競價上下文特徵 + WebSocket專屬特徵
+特徵工程引擎 v3.19
+職責：加入競價上下文特徵 + WebSocket專屬特徵 + ICT/SMC高級特徵
 
-解決「數據浪費」問題：
-- signal_competitions.jsonl 僅用於審計，未用於改進模型
-- 競價上下文包含重要信息（排名、分數差距、競爭強度）
-- WebSocket元數據包含網路品質資訊（延遲、時間戳一致性、分片負載）
+v3.19 新增12個ICT/SMC特徵：
+- 8個基礎特徵：market_structure, order_blocks_count, institutional_candle, 
+                liquidity_grab, order_flow, fvg_count, trend_alignment_enhanced, swing_high_distance
+- 4個合成特徵：structure_integrity, institutional_participation, 
+                timeframe_convergence, liquidity_context
+
+總特徵數：44 → 56
 """
 
 import logging
-from typing import Dict, Optional, Deque
+import numpy as np
+from typing import Dict, Optional, Deque, List
 from collections import deque
+from src.utils.ict_tools import ICTTools
 
 logger = logging.getLogger(__name__)
 
 
 class FeatureEngine:
     """
-    特徵工程引擎
+    特徵工程引擎 v3.19
     
     核心功能：
     1. 構建基礎特徵（38個原有特徵）
-    2. 加入競價上下文特徵（3個新特徵）
-    3. 加入WebSocket專屬特徵（3個新特徵）
-    4. 總計 44 個特徵
+    2. 競價上下文特徵（3個）
+    3. WebSocket專屬特徵（3個）
+    4. 🔥 v3.19 ICT/SMC高級特徵（12個）
+       - 基礎特徵（8個）
+       - 合成特徵（4個）
+    5. 總計 56 個特徵
     """
     
     def __init__(self):
         """初始化特徵工程引擎"""
-        # 🔥 v3.17.2+：追蹤延遲統計（用於計算Z-score）
-        self.latency_history: Deque[float] = deque(maxlen=1000)  # 保留最近1000次延遲
-        self.shard_load_counter: Dict[int, int] = {}  # {shard_id: request_count}
+        # v3.17.2+：追蹤延遲統計（用於計算Z-score）
+        self.latency_history: Deque[float] = deque(maxlen=1000)
+        self.shard_load_counter: Dict[int, int] = {}
+        
+        # 🔥 v3.19：訂單流緩衝（用於計算實時訂單流）
+        self.trade_buffer: Deque[Dict] = deque(maxlen=1000)
         
         logger.info("=" * 60)
-        logger.info("✅ 特徵工程引擎已創建 v3.17.2+")
-        logger.info("   🎯 功能：基礎特徵 + 競價上下文特徵 + WebSocket特徵")
+        logger.info("✅ 特徵工程引擎已創建 v3.19")
+        logger.info("   🎯 功能：基礎特徵 + 競價 + WebSocket + ICT/SMC高級特徵")
+        logger.info("   📊 總特徵數：56個（44→56，新增12個ICT/SMC特徵）")
         logger.info("=" * 60)
     
     def build_enhanced_features(
         self, 
         signal: Dict, 
         competition_context: Optional[Dict] = None,
-        websocket_metadata: Optional[Dict] = None
+        websocket_metadata: Optional[Dict] = None,
+        klines_data: Optional[Dict] = None,
+        trade_data: Optional[List[Dict]] = None,
+        depth_data: Optional[Dict] = None
     ) -> Dict:
         """
-        加入競價上下文特徵 + WebSocket專屬特徵
+        構建增強特徵（56個）
         
         Args:
             signal: 交易信號（包含所有基礎特徵）
-            competition_context: 競價上下文
-                {
-                    'rank': 1,              # 信號排名
-                    'my_score': 0.782,      # 該信號評分
-                    'best_score': 0.782,    # 最高評分
-                    'total_signals': 5      # 總信號數
-                }
-            websocket_metadata: WebSocket元數據（v3.17.2+）
-                {
-                    'latency_ms': 23,         # 網路延遲（毫秒）
-                    'server_timestamp': 1730177520000,  # 伺服器時間
-                    'local_timestamp': 1730177520023,   # 本地時間
-                    'shard_id': 0             # 分片ID
-                }
+            competition_context: 競價上下文（3個特徵）
+            websocket_metadata: WebSocket元數據（3個特徵）
+            klines_data: K線數據（用於ICT/SMC特徵）
+            trade_data: 交易流數據（用於訂單流特徵）
+            depth_data: 深度數據（用於流動性特徵）
         
         Returns:
-            增強的特徵字典（44個特徵）
+            增強的特徵字典（56個特徵）
         """
-        # 構建基礎特徵
+        # 構建基礎特徵（38個）
         base_features = self._build_base_features(signal)
         
         # 如果沒有競價上下文，使用默認值
@@ -85,18 +91,30 @@ class FeatureEngine:
             'num_competing_signals': competition_context['total_signals']
         }
         
-        # 🔥 v3.17.2+：新增WebSocket專屬特徵
+        # WebSocket專屬特徵（3個）
         websocket_features = self._build_websocket_features(websocket_metadata)
         
-        # 合併特徵
-        enhanced_features = {**base_features, **rank_features, **websocket_features}
+        # 🔥 v3.19：ICT/SMC高級特徵（12個）
+        ict_smc_features = self._build_ict_smc_features(
+            signal, 
+            klines_data=klines_data,
+            trade_data=trade_data,
+            depth_data=depth_data
+        )
+        
+        # 合併所有特徵（38 + 3 + 3 + 12 = 56個）
+        enhanced_features = {
+            **base_features,           # 38個
+            **rank_features,            # 3個
+            **websocket_features,       # 3個
+            **ict_smc_features          # 12個
+        }
         
         logger.debug(
-            f"✅ 構建增強特徵: {signal['symbol']} "
+            f"✅ 構建56個增強特徵: {signal['symbol']} "
             f"Rank={rank_features['competition_rank']} "
-            f"Gap={rank_features['score_gap_to_best']:.4f} "
-            f"Total={rank_features['num_competing_signals']} "
-            f"Latency={websocket_features.get('latency_zscore', 0):.2f}σ"
+            f"MarketStructure={ict_smc_features.get('market_structure', 0)} "
+            f"OrderBlocks={ict_smc_features.get('order_blocks_count', 0)}"
         )
         
         return enhanced_features
@@ -118,7 +136,7 @@ class FeatureEngine:
                 'leverage': signal.get('leverage', 1.0),
                 'position_value': signal.get('position_value', 0.0),
                 'risk_reward_ratio': signal.get('rr_ratio', 1.5),
-                'order_blocks_count': signal.get('order_blocks', 0),
+                'order_blocks_count_legacy': signal.get('order_blocks', 0),
                 'liquidity_zones_count': signal.get('liquidity_zones', 0),
                 'entry_price': signal.get('entry_price', 0.0),
                 'win_probability': signal.get('win_probability', 0.5)
@@ -145,7 +163,7 @@ class FeatureEngine:
                 'trend_1h': self._encode_trend(timeframes.get('1h', 'neutral')),
                 'trend_15m': self._encode_trend(timeframes.get('15m', 'neutral')),
                 'trend_5m': self._encode_trend(timeframes.get('5m', 'neutral')),
-                'market_structure': self._encode_structure(signal.get('market_structure', 'neutral')),
+                'market_structure_legacy': self._encode_structure(signal.get('market_structure', 'neutral')),
                 'direction': 1 if signal.get('direction') == 'LONG' else -1,
                 'trend_alignment': self._calculate_trend_alignment(timeframes)
             }
@@ -158,14 +176,14 @@ class FeatureEngine:
                 'lower_lows': 0,
                 'support_strength': 0.5,
                 'resistance_strength': 0.5,
-                'fvg_count': 0,
-                'swing_high_distance': 0.0,
+                'fvg_count_legacy': 0,
+                'swing_high_distance_legacy': 0.0,
                 'swing_low_distance': 0.0,
                 'volume_profile': 0.5,
                 'price_momentum': 0.0,
-                'order_flow': 0.0,
-                'liquidity_grab': 0,
-                'institutional_candle': 0
+                'order_flow_legacy': 0.0,
+                'liquidity_grab_legacy': 0,
+                'institutional_candle_legacy': 0
             }
             
             # 合併所有基礎特徵
@@ -239,34 +257,42 @@ class FeatureEngine:
     
     def get_feature_names(self) -> list:
         """
-        獲取所有特徵名稱（44個）
+        獲取所有特徵名稱（56個）
         
         Returns:
-            特徵名稱列表
+            特徵名稱列表（v3.19：56個特徵）
         """
         return [
             # 基本特徵 (8)
             'confidence', 'leverage', 'position_value', 'risk_reward_ratio',
-            'order_blocks_count', 'liquidity_zones_count', 'entry_price', 'win_probability',
+            'order_blocks_count_legacy', 'liquidity_zones_count', 'entry_price', 'win_probability',
             
             # 技術指標 (10)
             'rsi', 'macd', 'macd_signal', 'macd_histogram', 'atr', 'bb_width',
             'volume_sma_ratio', 'ema50', 'ema200', 'volatility_24h',
             
             # 趨勢特徵 (6)
-            'trend_1h', 'trend_15m', 'trend_5m', 'market_structure', 'direction', 'trend_alignment',
+            'trend_1h', 'trend_15m', 'trend_5m', 'market_structure_legacy', 'direction', 'trend_alignment',
             
             # 其他特徵 (14)
             'ema50_slope', 'ema200_slope', 'higher_highs', 'lower_lows',
-            'support_strength', 'resistance_strength', 'fvg_count',
-            'swing_high_distance', 'swing_low_distance', 'volume_profile',
-            'price_momentum', 'order_flow', 'liquidity_grab', 'institutional_candle',
+            'support_strength', 'resistance_strength', 'fvg_count_legacy',
+            'swing_high_distance_legacy', 'swing_low_distance', 'volume_profile',
+            'price_momentum', 'order_flow_legacy', 'liquidity_grab_legacy', 'institutional_candle_legacy',
             
-            # 競價上下文特徵 (3) - v3.17.10+
+            # 競價上下文特徵 (3)
             'competition_rank', 'score_gap_to_best', 'num_competing_signals',
             
-            # 🔥 WebSocket專屬特徵 (3) - v3.17.2+
-            'latency_zscore', 'shard_load', 'timestamp_consistency'
+            # WebSocket專屬特徵 (3)
+            'latency_zscore', 'shard_load', 'timestamp_consistency',
+            
+            # 🔥 v3.19 ICT/SMC高級特徵 - 基礎特徵 (8)
+            'market_structure', 'order_blocks_count', 'institutional_candle', 'liquidity_grab',
+            'order_flow', 'fvg_count', 'trend_alignment_enhanced', 'swing_high_distance',
+            
+            # 🔥 v3.19 ICT/SMC高級特徵 - 合成特徵 (4)
+            'structure_integrity', 'institutional_participation', 
+            'timeframe_convergence', 'liquidity_context'
         ]
     
     # ==================== v3.17.2+ WebSocket專屬特徵方法 ====================
@@ -374,3 +400,272 @@ class FeatureEngine:
         
         # 差異小於1秒視為一致
         return 1 if timestamp_diff < 1000 else 0
+    
+    # ==================== v3.19 ICT/SMC高級特徵方法 ====================
+    
+    def _build_ict_smc_features(
+        self,
+        signal: Dict,
+        klines_data: Optional[Dict] = None,
+        trade_data: Optional[List[Dict]] = None,
+        depth_data: Optional[Dict] = None
+    ) -> Dict:
+        """
+        構建ICT/SMC高級特徵（12個）
+        
+        Args:
+            signal: 交易信號
+            klines_data: K線數據 {'1h': [...], '15m': [...], '5m': [...]}
+            trade_data: 交易流數據
+            depth_data: 深度數據
+        
+        Returns:
+            ICT/SMC特徵字典（12個）
+        """
+        # 獲取K線數據
+        if klines_data is None:
+            klines_data = {
+                '1h': signal.get('klines_1h', []),
+                '15m': signal.get('klines_15m', []),
+                '5m': signal.get('klines_5m', [])
+            }
+        
+        klines_1h = klines_data.get('1h', [])
+        klines_15m = klines_data.get('15m', [])
+        klines_5m = klines_data.get('5m', [])
+        
+        # 獲取當前價格和ATR
+        current_price = signal.get('entry_price', 0)
+        atr = signal.get('indicators', {}).get('atr', 0)
+        
+        # === 8個基礎特徵 ===
+        
+        # 1. market_structure（市場結構）
+        market_structure = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
+        
+        # 2. order_blocks_count（訂單塊數量）
+        order_blocks_count = ICTTools.detect_order_blocks(klines_15m) if klines_15m else 0
+        
+        # 3. institutional_candle（機構K線）
+        institutional_candle = 0
+        if klines_5m and len(klines_5m) > 20:
+            institutional_candle = ICTTools.detect_institutional_candle(
+                klines_5m[-1], 
+                klines_5m
+            )
+        
+        # 4. liquidity_grab（流動性抓取）
+        liquidity_grab = 0
+        if klines_5m and atr > 0:
+            liquidity_grab = ICTTools.detect_liquidity_grab(klines_5m, atr)
+        
+        # 5. order_flow（訂單流）
+        order_flow = self._calculate_order_flow(trade_data) if trade_data else 0.0
+        
+        # 6. fvg_count（FVG數量）
+        fvg_count = ICTTools.detect_fvg(klines_5m) if klines_5m else 0
+        
+        # 7. trend_alignment_enhanced（趨勢對齊度增強版）
+        trend_alignment_enhanced = self._calculate_trend_alignment_enhanced(
+            klines_1h, klines_15m, klines_5m
+        )
+        
+        # 8. swing_high_distance（擺動高點距離）
+        swing_high_distance = 0.0
+        if klines_15m and current_price > 0 and atr > 0:
+            swing_high_distance = ICTTools.calculate_swing_distance(
+                klines_15m, current_price, atr, 'high'
+            )
+        
+        # === 4個合成特徵 ===
+        
+        # 1. structure_integrity（結構完整性）
+        structure_integrity = self._calculate_structure_integrity(
+            market_structure, fvg_count, order_blocks_count
+        )
+        
+        # 2. institutional_participation（機構參與度）
+        institutional_participation = self._calculate_institutional_participation(
+            institutional_candle, order_flow, liquidity_grab
+        )
+        
+        # 3. timeframe_convergence（時間框架收斂度）
+        timeframe_convergence = self._calculate_timeframe_convergence(
+            klines_1h, klines_15m, klines_5m
+        )
+        
+        # 4. liquidity_context（流動性情境）
+        liquidity_context = self._calculate_liquidity_context(
+            depth_data, liquidity_grab
+        )
+        
+        return {
+            # 基礎特徵（8個）
+            'market_structure': market_structure,
+            'order_blocks_count': order_blocks_count,
+            'institutional_candle': institutional_candle,
+            'liquidity_grab': liquidity_grab,
+            'order_flow': order_flow,
+            'fvg_count': fvg_count,
+            'trend_alignment_enhanced': trend_alignment_enhanced,
+            'swing_high_distance': swing_high_distance,
+            
+            # 合成特徵（4個）
+            'structure_integrity': structure_integrity,
+            'institutional_participation': institutional_participation,
+            'timeframe_convergence': timeframe_convergence,
+            'liquidity_context': liquidity_context
+        }
+    
+    def _calculate_order_flow(self, trade_data: Optional[List[Dict]]) -> float:
+        """
+        計算訂單流（買賣壓力平衡）
+        
+        Returns:
+            訂單流值（-1到1）
+        """
+        if not trade_data:
+            return 0.0
+        
+        buy_volume = sum(t.get('q', 0) for t in trade_data if not t.get('m', True))
+        sell_volume = sum(t.get('q', 0) for t in trade_data if t.get('m', True))
+        total_volume = buy_volume + sell_volume
+        
+        if total_volume > 0:
+            order_flow = (buy_volume - sell_volume) / total_volume
+        else:
+            order_flow = 0.0
+        
+        return order_flow
+    
+    def _calculate_trend_alignment_enhanced(
+        self,
+        klines_1h: List[Dict],
+        klines_15m: List[Dict],
+        klines_5m: List[Dict]
+    ) -> float:
+        """
+        計算趨勢對齊度（增強版）
+        
+        Returns:
+            對齊度（0到1）
+        """
+        trend_1h = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m) if klines_15m else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m) if klines_5m else 0
+        
+        trends = [trend_1h, trend_15m, trend_5m]
+        
+        # 計算對齊度
+        if len(set(trends)) == 1 and trends[0] != 0:
+            return 1.0  # 完全對齊
+        elif len([t for t in trends if t == trends[0]]) == 2:
+            return 0.5  # 部分對齊
+        else:
+            return 0.0  # 不對齊
+    
+    def _calculate_structure_integrity(
+        self,
+        market_structure: int,
+        fvg_count: int,
+        order_blocks_count: int
+    ) -> float:
+        """
+        計算結構完整性
+        
+        公式: 0.4 * I(結構明確) + 0.3 * (1 - FVG懲罰) + 0.3 * tanh(訂單塊/3)
+        
+        Returns:
+            結構完整性（0到1）
+        """
+        structure_clear = 1 if market_structure != 0 else 0
+        fvg_penalty = 1 - min(1, fvg_count / 5)
+        ob_score = np.tanh(order_blocks_count / 3) if order_blocks_count > 0 else 0
+        
+        integrity = 0.4 * structure_clear + 0.3 * fvg_penalty + 0.3 * ob_score
+        
+        return integrity
+    
+    def _calculate_institutional_participation(
+        self,
+        institutional_candle: int,
+        order_flow: float,
+        liquidity_grab: int
+    ) -> float:
+        """
+        計算機構參與度
+        
+        公式: 0.5 * 機構K線 + 0.3 * |訂單流| + 0.2 * 流動性抓取
+        
+        Returns:
+            機構參與度（0到1）
+        """
+        participation = (
+            0.5 * institutional_candle +
+            0.3 * abs(order_flow) +
+            0.2 * liquidity_grab
+        )
+        
+        return participation
+    
+    def _calculate_timeframe_convergence(
+        self,
+        klines_1h: List[Dict],
+        klines_15m: List[Dict],
+        klines_5m: List[Dict]
+    ) -> float:
+        """
+        計算時間框架收斂度
+        
+        公式: 1 - (std(趨勢向量) / 2)
+        
+        Returns:
+            收斂度（0到1）
+        """
+        trend_1h = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m) if klines_15m else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m) if klines_5m else 0
+        
+        trends = np.array([trend_1h, trend_15m, trend_5m])
+        std = np.std(trends)
+        convergence = 1 - (std / 2)
+        
+        return max(0, min(1, convergence))
+    
+    def _calculate_liquidity_context(
+        self,
+        depth_data: Optional[Dict],
+        liquidity_grab: int
+    ) -> float:
+        """
+        計算流動性情境
+        
+        公式: 0.7 * 流動性得分 + 0.3 * 流動性抓取
+        
+        Returns:
+            流動性情境（0到1）
+        """
+        if not depth_data:
+            # 無深度數據時，僅基於流動性抓取
+            return 0.3 * liquidity_grab
+        
+        try:
+            best_bid_qty = depth_data.get('bids', [[0, 0]])[0][1]
+            best_ask_qty = depth_data.get('asks', [[0, 0]])[0][1]
+            depth = (best_bid_qty + best_ask_qty) / 2
+            
+            best_bid_price = depth_data.get('bids', [[0, 0]])[0][0]
+            best_ask_price = depth_data.get('asks', [[1, 1]])[0][0]
+            spread = (best_ask_price - best_bid_price) / best_bid_price if best_bid_price > 0 else 0
+            
+            liquidity_score = (
+                0.6 * np.tanh(depth / 100) +
+                0.4 * (1 - min(1, spread / 0.001))
+            )
+            
+            context = 0.7 * liquidity_score + 0.3 * liquidity_grab
+            
+            return context
+        except (IndexError, KeyError, TypeError):
+            # 深度數據格式錯誤時的fallback
+            return 0.3 * liquidity_grab
