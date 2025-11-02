@@ -1,14 +1,14 @@
 """
-特徵工程引擎 v3.19
-職責：加入競價上下文特徵 + WebSocket專屬特徵 + ICT/SMC高級特徵
+特徵工程引擎 v3.19 (Pure ICT/SMC)
+職責：純ICT/SMC高級特徵（移除傳統技術指標）
 
-v3.19 新增12個ICT/SMC特徵：
+v3.19 特徵構成：
 - 8個基礎特徵：market_structure, order_blocks_count, institutional_candle, 
                 liquidity_grab, order_flow, fvg_count, trend_alignment_enhanced, swing_high_distance
 - 4個合成特徵：structure_integrity, institutional_participation, 
                 timeframe_convergence, liquidity_context
 
-總特徵數：44 → 56
+總特徵數：56 → 12（純ICT/SMC）
 """
 
 import logging
@@ -22,31 +22,24 @@ logger = logging.getLogger(__name__)
 
 class FeatureEngine:
     """
-    特徵工程引擎 v3.19
+    特徵工程引擎 v3.19 (Pure ICT/SMC)
     
     核心功能：
-    1. 構建基礎特徵（38個原有特徵）
-    2. 競價上下文特徵（3個）
-    3. WebSocket專屬特徵（3個）
-    4. 🔥 v3.19 ICT/SMC高級特徵（12個）
+    1. 🔥 純ICT/SMC高級特徵（12個）
        - 基礎特徵（8個）
        - 合成特徵（4個）
-    5. 總計 56 個特徵
+    2. 移除傳統技術指標（簡化為純機構交易邏輯）
     """
     
     def __init__(self):
         """初始化特徵工程引擎"""
-        # v3.17.2+：追蹤延遲統計（用於計算Z-score）
-        self.latency_history: Deque[float] = deque(maxlen=1000)
-        self.shard_load_counter: Dict[int, int] = {}
-        
         # 🔥 v3.19：訂單流緩衝（用於計算實時訂單流）
         self.trade_buffer: Deque[Dict] = deque(maxlen=1000)
         
         logger.info("=" * 60)
-        logger.info("✅ 特徵工程引擎已創建 v3.19")
-        logger.info("   🎯 功能：基礎特徵 + 競價 + WebSocket + ICT/SMC高級特徵")
-        logger.info("   📊 總特徵數：56個（44→56，新增12個ICT/SMC特徵）")
+        logger.info("✅ 特徵工程引擎已創建 v3.19 (Pure ICT/SMC)")
+        logger.info("   🎯 功能：純ICT/SMC機構交易特徵")
+        logger.info("   📊 總特徵數：12個（8基礎 + 4合成）")
         logger.info("=" * 60)
     
     def build_enhanced_features(
@@ -59,42 +52,18 @@ class FeatureEngine:
         depth_data: Optional[Dict] = None
     ) -> Dict:
         """
-        構建增強特徵（56個）
+        構建純ICT/SMC特徵（12個）
         
         Args:
-            signal: 交易信號（包含所有基礎特徵）
-            competition_context: 競價上下文（3個特徵）
-            websocket_metadata: WebSocket元數據（3個特徵）
+            signal: 交易信號
             klines_data: K線數據（用於ICT/SMC特徵）
             trade_data: 交易流數據（用於訂單流特徵）
             depth_data: 深度數據（用於流動性特徵）
         
         Returns:
-            增強的特徵字典（56個特徵）
+            純ICT/SMC特徵字典（12個特徵）
         """
-        # 構建基礎特徵（38個）
-        base_features = self._build_base_features(signal)
-        
-        # 如果沒有競價上下文，使用默認值
-        if competition_context is None:
-            competition_context = {
-                'rank': 1,
-                'my_score': signal.get('confidence', 0.5),
-                'best_score': signal.get('confidence', 0.5),
-                'total_signals': 1
-            }
-        
-        # 新增特徵：信號在競價中的相對排名
-        rank_features = {
-            'competition_rank': competition_context['rank'],  # 1, 2, 3...
-            'score_gap_to_best': competition_context['best_score'] - competition_context['my_score'],
-            'num_competing_signals': competition_context['total_signals']
-        }
-        
-        # WebSocket專屬特徵（3個）
-        websocket_features = self._build_websocket_features(websocket_metadata)
-        
-        # 🔥 v3.19：ICT/SMC高級特徵（12個）
+        # 🔥 v3.19：只構建ICT/SMC特徵（12個）
         ict_smc_features = self._build_ict_smc_features(
             signal, 
             klines_data=klines_data,
@@ -102,22 +71,14 @@ class FeatureEngine:
             depth_data=depth_data
         )
         
-        # 合併所有特徵（38 + 3 + 3 + 12 = 56個）
-        enhanced_features = {
-            **base_features,           # 38個
-            **rank_features,            # 3個
-            **websocket_features,       # 3個
-            **ict_smc_features          # 12個
-        }
-        
         logger.debug(
-            f"✅ 構建56個增強特徵: {signal['symbol']} "
-            f"Rank={rank_features['competition_rank']} "
+            f"✅ 構建12個ICT/SMC特徵: {signal.get('symbol', 'UNKNOWN')} "
             f"MarketStructure={ict_smc_features.get('market_structure', 0)} "
-            f"OrderBlocks={ict_smc_features.get('order_blocks_count', 0)}"
+            f"OrderBlocks={ict_smc_features.get('order_blocks_count', 0)} "
+            f"StructureIntegrity={ict_smc_features.get('structure_integrity', 0):.2f}"
         )
         
-        return enhanced_features
+        return ict_smc_features
     
     def _build_base_features(self, signal: Dict) -> Dict:
         """
@@ -257,42 +218,27 @@ class FeatureEngine:
     
     def get_feature_names(self) -> list:
         """
-        獲取所有特徵名稱（56個）
+        獲取所有特徵名稱（12個純ICT/SMC特徵）
         
         Returns:
-            特徵名稱列表（v3.19：56個特徵）
+            特徵名稱列表（v3.19：僅12個ICT/SMC特徵）
         """
         return [
-            # 基本特徵 (8)
-            'confidence', 'leverage', 'position_value', 'risk_reward_ratio',
-            'order_blocks_count_legacy', 'liquidity_zones_count', 'entry_price', 'win_probability',
+            # 🔥 ICT/SMC基礎特徵 (8)
+            'market_structure',           # 市场结构
+            'order_blocks_count',         # 订单块数量
+            'institutional_candle',       # 机构K线
+            'liquidity_grab',             # 流动性抓取
+            'order_flow',                 # 订单流
+            'fvg_count',                  # FVG数量
+            'trend_alignment_enhanced',   # 多时间框架对齐
+            'swing_high_distance',        # 价格位置上下文
             
-            # 技術指標 (10)
-            'rsi', 'macd', 'macd_signal', 'macd_histogram', 'atr', 'bb_width',
-            'volume_sma_ratio', 'ema50', 'ema200', 'volatility_24h',
-            
-            # 趨勢特徵 (6)
-            'trend_1h', 'trend_15m', 'trend_5m', 'market_structure_legacy', 'direction', 'trend_alignment',
-            
-            # 其他特徵 (14)
-            'ema50_slope', 'ema200_slope', 'higher_highs', 'lower_lows',
-            'support_strength', 'resistance_strength', 'fvg_count_legacy',
-            'swing_high_distance_legacy', 'swing_low_distance', 'volume_profile',
-            'price_momentum', 'order_flow_legacy', 'liquidity_grab_legacy', 'institutional_candle_legacy',
-            
-            # 競價上下文特徵 (3)
-            'competition_rank', 'score_gap_to_best', 'num_competing_signals',
-            
-            # WebSocket專屬特徵 (3)
-            'latency_zscore', 'shard_load', 'timestamp_consistency',
-            
-            # 🔥 v3.19 ICT/SMC高級特徵 - 基礎特徵 (8)
-            'market_structure', 'order_blocks_count', 'institutional_candle', 'liquidity_grab',
-            'order_flow', 'fvg_count', 'trend_alignment_enhanced', 'swing_high_distance',
-            
-            # 🔥 v3.19 ICT/SMC高級特徵 - 合成特徵 (4)
-            'structure_integrity', 'institutional_participation', 
-            'timeframe_convergence', 'liquidity_context'
+            # 🔥 ICT/SMC合成特徵 (4)
+            'structure_integrity',        # 结构完整性
+            'institutional_participation', # 机构参与度
+            'timeframe_convergence',      # 时间框架收敛
+            'liquidity_context'           # 流动性情境
         ]
     
     # ==================== v3.17.2+ WebSocket專屬特徵方法 ====================

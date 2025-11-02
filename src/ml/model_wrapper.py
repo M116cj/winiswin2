@@ -1,7 +1,7 @@
 """
-🔥 v3.19 ML模型包装器
+🔥 v3.19 ML模型包装器 (Pure ICT/SMC)
 职责：加载XGBoost模型并提供预测接口
-v3.19更新：支持56个特征（44→56，新增12个ICT/SMC特征）
+v3.19更新：纯12个ICT/SMC特征（56→12，移除传统技术指标）
 """
 
 import os
@@ -15,13 +15,12 @@ logger = logging.getLogger(__name__)
 
 class MLModelWrapper:
     """
-    ML模型包装器（v3.19）
+    ML模型包装器（v3.19 Pure ICT/SMC）
     
     职责：
     1. 加载训练好的XGBoost模型
-    2. 提供56个特征的预测接口（v3.19：44→56）
+    2. 提供12个ICT/SMC特征的预测接口
     3. 处理模型不存在的fallback
-    4. 向后兼容44特征模型
     """
     
     def __init__(self, model_path: str = "models/xgboost_model.json"):
@@ -63,7 +62,7 @@ class MLModelWrapper:
             logger.info("=" * 60)
             logger.info(f"✅ ML模型已加载: {self.model_path}")
             logger.info(f"   模型大小: {model_size:.2f} KB")
-            logger.info(f"   🔥 v3.19：使用56个特征进行预测（44→56）")
+            logger.info(f"   🔥 v3.19：使用12个ICT/SMC特征进行预测")
             logger.info("=" * 60)
             
             return True
@@ -81,7 +80,7 @@ class MLModelWrapper:
         预测获胜概率
         
         Args:
-            features: 56个特征的数值列表（v3.19）
+            features: 12个ICT/SMC特征的数值列表
         
         Returns:
             获胜概率（0-1），或None（如果模型未加载）
@@ -92,15 +91,10 @@ class MLModelWrapper:
         try:
             import xgboost as xgb
             
-            # 验证特征数量（支持44或56）
-            if len(features) not in [44, 56]:
-                logger.warning(f"⚠️ 特征数量错误: {len(features)} != 56（或44向后兼容）")
+            # 验证特征数量
+            if len(features) != 12:
+                logger.warning(f"⚠️ 特征数量错误: {len(features)} != 12")
                 return None
-            
-            # 如果是44特征，补齐到56特征（向后兼容）
-            if len(features) == 44:
-                logger.debug("向后兼容：补齐44→56特征")
-                features = features + [0.0] * 12  # 补齐12个ICT/SMC特征为默认值
             
             # 创建DMatrix
             dmatrix = xgb.DMatrix([features])
@@ -119,7 +113,7 @@ class MLModelWrapper:
         从信号字典预测获胜概率
         
         Args:
-            signal: 包含所有56个特征字段的信号字典（v3.19）
+            signal: 包含12个ICT/SMC特征字段的信号字典
         
         Returns:
             获胜概率（0-1），或None（如果模型未加载或特征不完整）
@@ -143,80 +137,18 @@ class MLModelWrapper:
     
     def _extract_features_from_signal(self, signal: Dict) -> Optional[List[float]]:
         """
-        🔥 v3.19: 从信号字典提取56个特征（容错处理）
-        
-        与FeatureEngine.get_feature_names()保持一致的容错逻辑
+        🔥 v3.19: 从信号字典提取12个ICT/SMC特征
         
         Args:
-            signal: 信号字典（可能缺少部分字段）
+            signal: 信号字典（包含ICT/SMC特征）
         
         Returns:
-            56个特征的数值列表（v3.19：44→56）
+            12个ICT/SMC特征的数值列表
         """
         try:
-            # 🔥 优先使用FeatureEngine已生成的特征（如果存在）
-            indicators = signal.get('indicators', {})
-            timeframes = signal.get('timeframes', {})
-            
-            # 🔥 v3.18.6+ Critical Fix: 所有字段都使用默认值
+            # 🔥 v3.19：只提取ICT/SMC特征（12个）
             features = [
-                # 基本特徵 (8) - 核心字段优先从signal读取
-                float(signal.get('confidence', 0.5)),
-                float(signal.get('leverage', 1.0)),
-                float(signal.get('position_value', 0.0)),
-                float(signal.get('rr_ratio', 1.5)),
-                float(signal.get('order_blocks', 0)),
-                float(signal.get('liquidity_zones', 0)),
-                float(signal.get('entry_price', 0.0)),
-                float(signal.get('win_probability', 0.5)),
-                
-                # 技術指標 (10) - 从indicators字典或直接从signal读取
-                float(indicators.get('rsi', signal.get('rsi', 50.0))),
-                float(indicators.get('macd', signal.get('macd', 0.0))),
-                float(indicators.get('macd_signal', signal.get('macd_signal', 0.0))),
-                float(indicators.get('macd_histogram', signal.get('macd_histogram', 0.0))),
-                float(indicators.get('atr', signal.get('atr', 0.0))),
-                float(indicators.get('bb_width', signal.get('bb_width', 0.0))),
-                float(indicators.get('volume_sma_ratio', signal.get('volume_sma_ratio', 1.0))),
-                float(indicators.get('ema50', signal.get('ema50', 0.0))),
-                float(indicators.get('ema200', signal.get('ema200', 0.0))),
-                float(indicators.get('volatility_24h', signal.get('volatility_24h', 0.0))),
-                
-                # 趨勢特徵 (6) - 需要编码
-                self._encode_trend(timeframes.get('1h', signal.get('trend_1h', 'neutral'))),
-                self._encode_trend(timeframes.get('15m', signal.get('trend_15m', 'neutral'))),
-                self._encode_trend(timeframes.get('5m', signal.get('trend_5m', 'neutral'))),
-                self._encode_structure(signal.get('market_structure', 'neutral')),
-                1.0 if signal.get('direction') == 'LONG' else -1.0,
-                self._calculate_trend_alignment(timeframes) if timeframes else float(signal.get('trend_alignment', 0.0)),
-                
-                # 其他特徵 (14) - 使用默认值
-                float(signal.get('ema50_slope', 0.0)),
-                float(signal.get('ema200_slope', 0.0)),
-                float(signal.get('higher_highs', 0)),
-                float(signal.get('lower_lows', 0)),
-                float(signal.get('support_strength', 0.5)),
-                float(signal.get('resistance_strength', 0.5)),
-                float(signal.get('fvg_count', 0)),
-                float(signal.get('swing_high_distance', 0.0)),
-                float(signal.get('swing_low_distance', 0.0)),
-                float(signal.get('volume_profile', 0.5)),
-                float(signal.get('price_momentum', 0.0)),
-                float(signal.get('order_flow', 0.0)),
-                float(signal.get('liquidity_grab', 0)),
-                float(signal.get('institutional_candle', 0)),
-                
-                # 競價上下文特徵 (3)
-                float(signal.get('competition_rank', 1)),
-                float(signal.get('score_gap_to_best', 0.0)),
-                float(signal.get('num_competing_signals', 1)),
-                
-                # WebSocket專屬特徵 (3)
-                float(signal.get('latency_zscore', 0.0)),
-                float(signal.get('shard_load', 0.0)),
-                float(signal.get('timestamp_consistency', 1)),
-                
-                # 🔥 v3.19 ICT/SMC高級特徵 - 基礎特徵 (8)
+                # ICT/SMC基礎特徵 (8)
                 float(signal.get('market_structure', 0)),
                 float(signal.get('order_blocks_count', 0)),
                 float(signal.get('institutional_candle', 0)),
@@ -226,16 +158,16 @@ class MLModelWrapper:
                 float(signal.get('trend_alignment_enhanced', 0.0)),
                 float(signal.get('swing_high_distance', 0.0)),
                 
-                # 🔥 v3.19 ICT/SMC高級特徵 - 合成特徵 (4)
+                # ICT/SMC合成特徵 (4)
                 float(signal.get('structure_integrity', 0.0)),
                 float(signal.get('institutional_participation', 0.0)),
                 float(signal.get('timeframe_convergence', 0.0)),
                 float(signal.get('liquidity_context', 0.0))
             ]
             
-            # 验证长度（支持44或56）
-            if len(features) not in [44, 56]:
-                logger.error(f"特徵數量錯誤: {len(features)} != 56（或44向后兼容）")
+            # 验证长度
+            if len(features) != 12:
+                logger.error(f"特徵數量錯誤: {len(features)} != 12")
                 return None
             
             return features
