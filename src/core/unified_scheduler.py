@@ -320,33 +320,90 @@ class UnifiedScheduler:
             analyzed_count = 0
             signal_candidates = []  # 🔥 v3.19+：收集所有交易對的信心值/勝率用於診斷
             
-            for symbol in symbols:
+            # 🔥 v3.19+ 診斷：時間分析
+            import time
+            total_data_time = 0
+            total_analysis_time = 0
+            analysis_times = []
+            data_times = []
+            scan_start = time.time()
+            logger.info("⏱️  ===== 開始掃描時間分析 =====")
+            
+            for i, symbol in enumerate(symbols):
                 try:
-                    # 獲取多時間框架數據
+                    # 測量數據獲取時間
+                    data_start = time.time()
                     multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
+                    data_elapsed = time.time() - data_start
+                    data_times.append(data_elapsed)
+                    total_data_time += data_elapsed
                     
                     if not multi_tf_data:
                         data_unavailable_count += 1
                         continue
                     
-                    # 調用 SelfLearningTrader 分析（返回詳細診斷信息）
-                    analyzed_count += 1
+                    # 測量分析時間
+                    analysis_start = time.time()
                     signal, confidence, win_prob = self.self_learning_trader.analyze(symbol, multi_tf_data)
+                    analysis_elapsed = time.time() - analysis_start
+                    analysis_times.append(analysis_elapsed)
+                    total_analysis_time += analysis_elapsed
+                    
+                    analyzed_count += 1
                     
                     # 🔥 v3.19+：收集所有交易對的診斷信息
                     signal_candidates.append({
                         'symbol': symbol,
                         'confidence': confidence,
                         'win_probability': win_prob,
-                        'has_signal': signal is not None
+                        'has_signal': signal is not None,
+                        'analysis_time_ms': analysis_elapsed * 1000,
+                        'data_time_ms': data_elapsed * 1000
                     })
                     
                     if signal:
                         signals.append(signal)
                         self.stats['total_signals'] += 1
                     
+                    # 每100個交易對輸出進度
+                    if (i + 1) % 100 == 0:
+                        avg_analysis = (total_analysis_time / analyzed_count * 1000) if analyzed_count > 0 else 0
+                        avg_data = (total_data_time / len(data_times) * 1000) if data_times else 0
+                        logger.info(f"⏱️  進度: {i+1}/{len(symbols)} | "
+                                  f"已分析={analyzed_count} | "
+                                  f"平均分析={avg_analysis:.1f}ms | "
+                                  f"平均數據={avg_data:.1f}ms")
+                    
                 except Exception as e:
                     logger.debug(f"分析 {symbol} 跳過: {e}")
+            
+            # 🔥 v3.19+ 診斷：時間分析報告
+            total_scan_time = time.time() - scan_start
+            if analyzed_count > 0 and analysis_times:
+                avg_analysis_ms = (total_analysis_time / analyzed_count) * 1000
+                avg_data_ms = (total_data_time / len(data_times)) * 1000 if data_times else 0
+                min_analysis_ms = min(analysis_times) * 1000
+                max_analysis_ms = max(analysis_times) * 1000
+                
+                logger.info("=" * 80)
+                logger.info("⏱️  ===== 掃描時間分析報告 =====")
+                logger.info(f"📊 分析交易對: {analyzed_count}/{len(symbols)}")
+                logger.info(f"📭 數據缺失: {data_unavailable_count}")
+                logger.info(f"⏱️  總掃描時間: {total_scan_time:.1f}s")
+                logger.info(f"📈 平均分析時間: {avg_analysis_ms:.1f}ms")
+                logger.info(f"🚀 最快分析: {min_analysis_ms:.1f}ms")
+                logger.info(f"🐌 最慢分析: {max_analysis_ms:.1f}ms")
+                logger.info(f"💾 平均數據獲取: {avg_data_ms:.1f}ms")
+                
+                # 🔍 診斷異常情況
+                if avg_analysis_ms < 10:
+                    logger.error(f"🚨 嚴重問題: 平均分析時間僅{avg_analysis_ms:.1f}ms，系統在快速跳過！")
+                    logger.error(f"   → 可能原因：數據驗證過嚴、方向判斷快速返回None、特徵計算失敗")
+                elif avg_analysis_ms < 50:
+                    logger.warning(f"⚠️  警告: 平均分析時間{avg_analysis_ms:.1f}ms，可能分析深度不足")
+                else:
+                    logger.info(f"✅ 合理: 平均分析時間{avg_analysis_ms:.1f}ms")
+                logger.info("=" * 80)
             
             # 🔥 v3.19+：輸出掃描統計
             logger.info(f"📊 掃描統計: 總數={len(symbols)} | 數據可用={analyzed_count} | 數據缺失={data_unavailable_count}")
