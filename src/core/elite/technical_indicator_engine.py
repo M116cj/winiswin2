@@ -381,8 +381,8 @@ class EliteTechnicalEngine:
         return IndicatorResult(
             value={
                 'adx': adx,
-                'plus_di': plus_di,
-                'minus_di': minus_di
+                'di_plus': plus_di,
+                'di_minus': minus_di
             },
             period_used=period,
             data_points=len(close)

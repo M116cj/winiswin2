@@ -8,10 +8,8 @@ import numpy as np
 from typing import Dict, Optional, Any
 import logging
 
+from src.core.elite import EliteTechnicalEngine
 from src.utils.indicators import (
-    calculate_ema,
-    calculate_macd,
-    calculate_rsi,
     calculate_atr,
     calculate_bollinger_bands,
     calculate_adx,
@@ -44,6 +42,9 @@ class RuleBasedSignalGenerator:
         """
         self.config = config or Config
         self.use_pure_ict = use_pure_ict
+        
+        self.tech_engine = EliteTechnicalEngine()
+        logger.info("✅ v3.20: 使用 EliteTechnicalEngine 统一技术指标计算")
         
         # 🔥 v3.19 Phase 2: 純ICT/SMC模式下需要feature_engine
         if use_pure_ict:
@@ -669,33 +670,39 @@ class RuleBasedSignalGenerator:
         return True
     
     def _calculate_all_indicators(self, h1_data, m15_data, m5_data) -> Dict:
-        """計算所有技術指標"""
+        """
+        計算所有技術指標
+        
+        ✅ v3.20: 使用 EliteTechnicalEngine 统一计算（缓存优化）
+        """
         indicators = {}
         
         # ATR（用於 SL/TP）
-        indicators['atr'] = calculate_atr(m5_data, period=14).iloc[-1]
+        atr_result = self.tech_engine.calculate('atr', m5_data, period=14)
+        indicators['atr'] = atr_result.value.iloc[-1]
         
         # RSI
-        indicators['rsi'] = calculate_rsi(m5_data, period=14).iloc[-1]
+        rsi_result = self.tech_engine.calculate('rsi', m5_data, period=14)
+        indicators['rsi'] = rsi_result.value.iloc[-1]
         
         # MACD
-        macd_data = calculate_macd(m5_data)
-        indicators['macd'] = macd_data['macd'].iloc[-1]
-        indicators['macd_signal'] = macd_data['signal'].iloc[-1]
-        indicators['macd_hist'] = macd_data['histogram'].iloc[-1]
+        macd_result = self.tech_engine.calculate('macd', m5_data)
+        indicators['macd'] = macd_result.value['macd'].iloc[-1]
+        indicators['macd_signal'] = macd_result.value['signal'].iloc[-1]
+        indicators['macd_hist'] = macd_result.value['histogram'].iloc[-1]
         
         # 布林帶
-        bb_data = calculate_bollinger_bands(m5_data)
-        indicators['bb_upper'] = bb_data['upper'].iloc[-1]
-        indicators['bb_middle'] = bb_data['middle'].iloc[-1]
-        indicators['bb_lower'] = bb_data['lower'].iloc[-1]
-        indicators['bb_width'] = bb_data['width'].iloc[-1]
+        bb_result = self.tech_engine.calculate('bb', m5_data, period=20, std_dev=2.0)
+        indicators['bb_upper'] = bb_result.value['upper'].iloc[-1]
+        indicators['bb_middle'] = bb_result.value['middle'].iloc[-1]
+        indicators['bb_lower'] = bb_result.value['lower'].iloc[-1]
+        indicators['bb_width'] = bb_result.value['width'].iloc[-1]
         
         # ADX（趨勢強度）
-        adx_data = calculate_adx(m5_data)
-        indicators['adx'] = adx_data['adx'].iloc[-1]
-        indicators['di_plus'] = adx_data['di_plus'].iloc[-1]
-        indicators['di_minus'] = adx_data['di_minus'].iloc[-1]
+        adx_result = self.tech_engine.calculate('adx', m5_data, period=14)
+        indicators['adx'] = adx_result.value['adx'].iloc[-1]
+        indicators['di_plus'] = adx_result.value['di_plus'].iloc[-1]
+        indicators['di_minus'] = adx_result.value['di_minus'].iloc[-1]
         
         return indicators
     
@@ -711,13 +718,15 @@ class RuleBasedSignalGenerator:
         - Bullish: 1.6% → 25-35%
         - Bearish: 1.6% → 25-35%
         - Neutral: 96.8% → 30-50%
+        
+        ✅ v3.20: 使用 EliteTechnicalEngine（缓存优化）
         """
-        ema_20 = calculate_ema(df, period=20)
-        ema_50 = calculate_ema(df, period=50)
+        ema_20_result = self.tech_engine.calculate('ema', df, period=20)
+        ema_50_result = self.tech_engine.calculate('ema', df, period=50)
         
         current_price = float(df['close'].iloc[-1])
-        ema_20_val = float(ema_20.iloc[-1])
-        ema_50_val = float(ema_50.iloc[-1])
+        ema_20_val = float(ema_20_result.value.iloc[-1])
+        ema_50_val = float(ema_50_result.value.iloc[-1])
         
         # 🔥 v3.18.8+ 簡化邏輯：只看價格與EMA20/50的關係
         # Bullish: 價格 > EMA20 AND EMA20 > EMA50
@@ -1456,12 +1465,13 @@ class RuleBasedSignalGenerator:
         deviations = {}
         
         # 🔥 v3.18.9+ 修復：計算各時間框架的EMA偏差（僅計算同方向偏差）
+        # ✅ v3.20: 使用 EliteTechnicalEngine（缓存优化）
         for timeframe, df in [('h1', h1_data), ('m15', m15_data), ('m5', m5_data)]:
-            ema_20 = calculate_ema(df, period=20)
-            ema_50 = calculate_ema(df, period=50)
+            ema_20_result = self.tech_engine.calculate('ema', df, period=20)
+            ema_50_result = self.tech_engine.calculate('ema', df, period=50)
             
-            ema_20_val = float(ema_20.iloc[-1])
-            ema_50_val = float(ema_50.iloc[-1])
+            ema_20_val = float(ema_20_result.value.iloc[-1])
+            ema_50_val = float(ema_50_result.value.iloc[-1])
             
             # 🔥 修復：僅計算同方向偏差（負值視為0）
             if direction == 'LONG':

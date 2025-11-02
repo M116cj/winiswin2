@@ -2,25 +2,42 @@
 核心技术指标计算模块 (v3.13.0 策略1)
 职责：所有技术指标的单一真相来源，向量化实现
 
-✅ 为什么统一计算函数：
+⚠️⚠️⚠️ DEPRECATED v3.20.0 ⚠️⚠️⚠️
+
+本模块已被 src.core.elite.EliteTechnicalEngine 替代。
+
+请使用新的统一引擎：
+    from src.core.elite import EliteTechnicalEngine
+    
+    engine = EliteTechnicalEngine()
+    result = engine.calculate('ema', data, period=20)
+    
+优势：
+- ✅ 智能缓存：减少60-80%重复计算
+- ✅ 统一接口：所有指标统一调用方式
+- ✅ 批量计算：支持多指标并行计算
+- ✅ 安全降级：数据不足时自动调整
+
+本文件将在 v3.21.0 移除。
+
+✅ v3.13.0 原有优化：
 1. 消除重复代码（indicators.py、ict_strategy.py 中的重复逻辑）
 2. 统一优化（一次优化，所有调用都受益）
 3. 向量化计算（使用 NumPy/Pandas 加速）
 4. 无状态设计（便于测试和并行）
-
-使用示例：
-    from src.utils.core_calculations import ema_fast, atr_fast, rsi_fast
-    
-    # 替代 data.ewm(span=20, adjust=False).mean()
-    ema20 = ema_fast(close_prices, period=20)
-    
-    # 替代复杂的ATR计算
-    atr14 = atr_fast(high, low, close, period=14)
 """
 
+import warnings
 import numpy as np
 import pandas as pd
 from typing import Union, Tuple, Optional
+
+# 发出弃用警告
+warnings.warn(
+    "src.utils.core_calculations 已弃用，请使用 src.core.elite.EliteTechnicalEngine",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 # ============================================================================
 # 移动平均类指标 (MA, EMA, SMA)
