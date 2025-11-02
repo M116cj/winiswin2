@@ -98,6 +98,7 @@ class RuleBasedSignalGenerator:
         
         logger.info("✅ RuleBasedSignalGenerator 初始化完成")
         logger.info(f"   🎚️ 信號模式: {'寬鬆模式' if self.config.RELAXED_SIGNAL_MODE else '嚴格模式'}")
+        logger.info(f"   🔥 計算模式: {'純ICT/SMC (12特徵)' if self.use_pure_ict else '傳統指標'}")
         logger.info(f"   📊 10階段Pipeline診斷: 已啟用（每100個符號輸出統計）")
         logger.info(f"   🔧 ADX過濾: 硬拒絕<{self.config.ADX_HARD_REJECT_THRESHOLD} | 強懲罰<{self.config.ADX_WEAK_TREND_THRESHOLD} | 中懲罰<20")
     
