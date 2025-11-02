@@ -46,9 +46,9 @@
 
 ## 🔥 发现的问题（按概率排序）
 
-### 问题1: ADX过滤过严（最可能，概率70%）
+### 问题1: ADX过滤过严（最可能，概率70%）✅ 已修复
 
-**症状**：
+**症状**（v3.18.9）：
 ```python
 if adx_value < 15:
     return None  # 直接拒绝
@@ -59,14 +59,25 @@ if adx_value < 15:
 - 即使生成了优先级4-5信号（宽松模式），仍会被ADX直接拒绝
 - **关键发现**：宽松模式优先级4-5可能产生30-50个候选信号，但ADX<15直接全部杀光
 
-**验证方法**：
+**✅ v3.18.10修复方案**：
+```python
+# 3层惩罚机制
+if adx_value < 10:      # 硬拒绝门槛降至10
+    return None
+elif adx_value < 15:    # 10-15区间：强惩罚×0.6（原本被拒绝）
+    confidence *= 0.6
+elif adx_value < 20:    # 15-20区间：中惩罚×0.8
+    confidence *= 0.8
+```
+
+**验证方法**（v3.18.10+）：
 ```
 查看Pipeline诊断报告中：
-- stage3_signal_direction: 30-50个
-- stage4_adx_rejected_lt15: 25-45个
-- adx_distribution_lt15: >60%
+- stage4_adx_rejected_lt10: 应该<10%（硬拒绝大幅减少）
+- stage4_adx_penalty_10_15: 应该>15%（原本被拒绝的信号）
+- adx_distribution_10_15: >15%（关键改进区间）
 
-如果ADX<15占比>60%，这就是主要原因！
+如果ADX 10-15区间有信号通过，说明修复生效！
 ```
 
 ---
