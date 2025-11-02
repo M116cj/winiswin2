@@ -1030,6 +1030,201 @@ class RuleBasedSignalGenerator:
         
         return total_score, sub_scores
     
+    def _calculate_confidence_pure_ict(
+        self,
+        ict_features: Dict,
+        direction: str,
+        market_structure: str,
+        order_blocks: list,
+        current_price: float
+    ) -> tuple:
+        """
+        🔥 v3.19 Phase 2：純ICT/SMC信心值計算（基於12特徵）
+        
+        權重分配：
+        - 1️⃣ 市場結構 (30%) - 基於structure_integrity
+        - 2️⃣ 訂單塊質量 (25%) - 基於order_blocks_count + 距離
+        - 3️⃣ 流動性情境 (20%) - 基於liquidity_context + liquidity_grab
+        - 4️⃣ 機構參與 (15%) - 基於institutional_participation
+        - 5️⃣ 時間框架收敛 (10%) - 基於timeframe_convergence
+        
+        Returns:
+            (總分0-100, 子分數字典)
+        """
+        sub_scores = {}
+        
+        # 1️⃣ 市場結構完整性 (30%)
+        structure_score = 0.0
+        structure_integrity = ict_features.get('structure_integrity', 0.0)
+        market_structure_value = ict_features.get('market_structure', 0)
+        
+        # 結構完整性基礎分（最多20分）
+        structure_score += structure_integrity * 20.0
+        
+        # 方向匹配獎勵（最多10分）
+        if (direction == 'LONG' and market_structure_value > 0) or \
+           (direction == 'SHORT' and market_structure_value < 0):
+            structure_score += 10.0
+        
+        sub_scores['market_structure_ict'] = min(30.0, structure_score)
+        
+        # 2️⃣ 訂單塊質量 (25%)
+        ob_score = 0.0
+        order_blocks_count = ict_features.get('order_blocks_count', 0)
+        
+        # 訂單塊數量分（最多15分）
+        if order_blocks_count > 0:
+            ob_score += min(15.0, order_blocks_count * 5.0)
+        
+        # 訂單塊距離分（最多10分）
+        if order_blocks:
+            relevant_obs = [
+                ob for ob in order_blocks
+                if (direction == 'LONG' and ob['type'] == 'bullish') or
+                   (direction == 'SHORT' and ob['type'] == 'bearish')
+            ]
+            if relevant_obs:
+                def get_ob_price(ob):
+                    if 'price' in ob:
+                        return ob['price']
+                    elif 'zone_low' in ob and 'zone_high' in ob:
+                        return (ob['zone_low'] + ob['zone_high']) / 2
+                    return current_price
+                
+                nearest_ob = min(relevant_obs, key=lambda x: abs(get_ob_price(x) - current_price))
+                ob_distance = abs(get_ob_price(nearest_ob) - current_price) / current_price
+                
+                if ob_distance < 0.005:  # 0.5%內
+                    ob_score += 10.0
+                elif ob_distance < 0.01:  # 1%內
+                    ob_score += 7.0
+                elif ob_distance < 0.02:  # 2%內
+                    ob_score += 4.0
+        
+        sub_scores['order_block_ict'] = min(25.0, ob_score)
+        
+        # 3️⃣ 流動性情境 (20%)
+        liquidity_score = 0.0
+        liquidity_context = ict_features.get('liquidity_context', 0.0)
+        liquidity_grab = ict_features.get('liquidity_grab', 0)
+        
+        # 流動性情境分（最多12分）
+        liquidity_score += liquidity_context * 12.0
+        
+        # 流動性抓取獎勵（最多8分）
+        if liquidity_grab == 1:
+            liquidity_score += 8.0
+        
+        sub_scores['liquidity_ict'] = min(20.0, liquidity_score)
+        
+        # 4️⃣ 機構參與度 (15%)
+        institutional_score = 0.0
+        institutional_participation = ict_features.get('institutional_participation', 0.0)
+        institutional_candle = ict_features.get('institutional_candle', 0)
+        
+        # 機構參與度分（最多10分）
+        institutional_score += institutional_participation * 10.0
+        
+        # 機構K線獎勵（最多5分）
+        if institutional_candle == 1:
+            institutional_score += 5.0
+        
+        sub_scores['institutional_ict'] = min(15.0, institutional_score)
+        
+        # 5️⃣ 時間框架收斂度 (10%)
+        convergence_score = 0.0
+        timeframe_convergence = ict_features.get('timeframe_convergence', 0.0)
+        trend_alignment_enhanced = ict_features.get('trend_alignment_enhanced', 0.0)
+        
+        # 時間框架收斂分（最多6分）
+        convergence_score += timeframe_convergence * 6.0
+        
+        # 趨勢對齊增強分（最多4分）
+        convergence_score += trend_alignment_enhanced * 4.0
+        
+        sub_scores['timeframe_ict'] = min(10.0, convergence_score)
+        
+        # 總分
+        total_score = sum(sub_scores.values())
+        
+        return total_score, sub_scores
+    
+    def _calculate_win_probability_pure_ict(
+        self,
+        ict_features: Dict,
+        confidence_score: float,
+        direction: str,
+        rr_ratio: float
+    ) -> float:
+        """
+        🔥 v3.19 Phase 2：純ICT/SMC勝率計算
+        
+        核心邏輯：
+        - 基礎勝率從信心值衍生（避免重複計算）
+        - 加成基於ICT/SMC未使用的特徵維度
+        
+        Returns:
+            勝率 (0.45-0.75)
+        """
+        # 基礎勝率（基於信心值）
+        # 信心值60分 → 55%，80分 → 65%，100分 → 70%
+        base_win_rate = 0.55 + (confidence_score / 100.0 - 0.6) * 0.3
+        
+        # 1. 訂單流加成（-5%到+5%）
+        order_flow = ict_features.get('order_flow', 0.0)
+        if direction == 'LONG':
+            order_flow_adjustment = order_flow * 0.05  # 正向訂單流增加勝率
+        else:  # SHORT
+            order_flow_adjustment = -order_flow * 0.05  # 負向訂單流（賣壓）增加勝率
+        
+        # 2. FVG情境加成（最多+3%）
+        fvg_count = ict_features.get('fvg_count', 0)
+        if fvg_count > 0 and fvg_count <= 3:
+            # 適量FVG是好事（價格磁吸效應）
+            fvg_adjustment = 0.03
+        elif fvg_count > 3:
+            # 過多FVG可能意味著市場混亂
+            fvg_adjustment = -0.02
+        else:
+            fvg_adjustment = 0.0
+        
+        # 3. 價格位置加成（基於swing_high_distance）
+        swing_distance = ict_features.get('swing_high_distance', 0.0)
+        if direction == 'LONG':
+            # LONG時，距離擺動高點遠（負值大）是好事（回撤買入）
+            if swing_distance < -2.0:
+                position_adjustment = 0.03
+            elif swing_distance < -1.0:
+                position_adjustment = 0.02
+            else:
+                position_adjustment = 0.0
+        else:  # SHORT
+            # SHORT時，距離擺動低點遠（正值大）是好事（反彈賣出）
+            if swing_distance > 2.0:
+                position_adjustment = 0.03
+            elif swing_distance > 1.0:
+                position_adjustment = 0.02
+            else:
+                position_adjustment = 0.0
+        
+        # 4. 風險回報比調整（保持原邏輯）
+        if 1.5 <= rr_ratio <= 2.5:
+            rr_adjustment = 0.05  # +5%
+        elif rr_ratio > 2.5:
+            rr_adjustment = 0.02  # +2%
+        else:
+            rr_adjustment = -0.05  # -5%
+        
+        # 綜合勝率
+        win_probability = (base_win_rate + 
+                          order_flow_adjustment + 
+                          fvg_adjustment + 
+                          position_adjustment + 
+                          rr_adjustment)
+        
+        # 限制範圍（45%-75%）
+        return max(0.45, min(0.75, win_probability))
+    
     def _calculate_sl_tp(
         self,
         entry_price: float,
