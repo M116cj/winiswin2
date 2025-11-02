@@ -1164,7 +1164,7 @@ class RuleBasedSignalGenerator:
         else:  # poor
             base_win_rate = 0.525  # 52.5%
         
-        # 🔥 v3.18.9+ 修復：R:R 調整（改為獎勵合理風報比）
+        # 🔥 v3.19 Phase 1 修復：R:R 調整（改為獎勵合理風報比）
         # 修復前：R:R > 2.5 → 懲罰（-2%/單位）→ 高風報比被低估
         # 修復後：1.5-2.5最佳區間 → 獎勵（+5%）→ 鼓勵合理風報比
         if 1.5 <= rr_ratio <= 2.5:
@@ -1174,28 +1174,15 @@ class RuleBasedSignalGenerator:
         else:  # rr_ratio < 1.5
             rr_adjustment = -0.05  # 低風報比懲罰-5%
         
-        # 市場結構調整
-        structure_bonus = 0.02 if (
-            (direction == 'LONG' and market_structure == 'bullish') or
-            (direction == 'SHORT' and market_structure == 'bearish')
-        ) else 0.0
+        # 🔥 v3.19 Phase 1 修復：移除市場結構重複計算
+        # 原因：信心值計算中已包含市場結構（20分），此處重複加成會過度加權
+        # structure_bonus = 0.02 (已刪除)
         
-        # 精細化偏差調整（額外加成）
-        avg_ema20_dev = abs(deviation_metrics['avg_ema20_dev'])
-        if direction == 'LONG':
-            # LONG最佳偏差：+0.5% ~ +3%
-            if 0.5 <= deviation_metrics['avg_ema20_dev'] <= 3.0:
-                deviation_bonus = 0.03  # 額外+3%勝率
-            else:
-                deviation_bonus = 0.0
-        else:  # SHORT
-            # SHORT最佳偏差：-3% ~ -0.5%
-            if -3.0 <= deviation_metrics['avg_ema20_dev'] <= -0.5:
-                deviation_bonus = 0.03  # 額外+3%勝率
-            else:
-                deviation_bonus = 0.0
+        # 🔥 v3.19 Phase 1 修復：移除精細化偏差重複加成
+        # 原因：base_win_rate已基於偏差質量分檔，此處重複加成會導致EMA偏差過度加權
+        # deviation_bonus = 0.03 (已刪除)
         
-        win_probability = base_win_rate + rr_adjustment + structure_bonus + deviation_bonus
+        win_probability = base_win_rate + rr_adjustment
         
         # 限制範圍
         return max(0.50, min(0.75, win_probability))
