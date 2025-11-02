@@ -34,9 +34,24 @@ class RuleBasedSignalGenerator:
     3. 計算基礎信心度（不含槓桿決策）
     """
     
-    def __init__(self, config=None):
-        """初始化信號生成器"""
+    def __init__(self, config=None, use_pure_ict: bool = True):
+        """
+        初始化信號生成器
+        
+        Args:
+            config: 配置字典
+            use_pure_ict: 🔥 v3.19 Phase 2 - 是否使用純ICT/SMC計算（默認True）
+        """
         self.config = config or Config
+        self.use_pure_ict = use_pure_ict
+        
+        # 🔥 v3.19 Phase 2: 純ICT/SMC模式下需要feature_engine
+        if use_pure_ict:
+            from src.ml.feature_engine import FeatureEngine
+            self.feature_engine = FeatureEngine()
+        else:
+            self.feature_engine = None
+        
         self._debug_stats = {
             'total_scanned': 0,
             'h1_bullish': 0, 'h1_bearish': 0, 'h1_neutral': 0,
@@ -358,31 +373,54 @@ class RuleBasedSignalGenerator:
                 self._pipeline_stats['adx_distribution_gte25'] += 1
                 self._pipeline_stats['stage4_adx_ok_gte20'] += 1
             
-            # 🔥 v3.18.8+ 計算EMA偏差值指標
-            deviation_metrics = self._calculate_ema_deviation_metrics(
-                current_price=current_price,
-                h1_data=h1_data,
-                m15_data=m15_data,
-                m5_data=m5_data,
-                direction=signal_direction
-            )
-            
-            # 計算基礎信心度（五維 ICT 評分，其中趨勢對齊40%替換為EMA偏差評分）
-            confidence_score, sub_scores = self._calculate_confidence(
-                h1_trend=h1_trend,
-                m15_trend=m15_trend,
-                m5_trend=m5_trend,
-                market_structure=market_structure,
-                order_blocks=order_blocks,
-                liquidity_zones=liquidity_zones,
-                current_price=current_price,
-                h1_data=h1_data,
-                m15_data=m15_data,
-                m5_data=m5_data,
-                direction=signal_direction,
-                indicators=indicators,
-                deviation_metrics=deviation_metrics  # 🔥 v3.18.8+ 新增EMA偏差指標
-            )
+            # 🔥 v3.19 Phase 2: 根據模式選擇計算方法
+            if self.use_pure_ict:
+                # 純ICT/SMC模式：計算12個ICT特徵
+                ict_features = self.feature_engine._build_ict_smc_features(
+                    signal={'symbol': symbol, 'direction': signal_direction},
+                    klines_data={
+                        '1h': h1_data,
+                        '15m': m15_data,
+                        '5m': m5_data
+                    }
+                )
+                
+                # 使用純ICT/SMC信心值計算
+                confidence_score, sub_scores = self._calculate_confidence_pure_ict(
+                    ict_features=ict_features,
+                    direction=signal_direction,
+                    market_structure=market_structure,
+                    order_blocks=order_blocks,
+                    current_price=current_price
+                )
+                deviation_metrics = None  # 純ICT模式不需要EMA偏差
+            else:
+                # 傳統指標模式：計算EMA偏差
+                deviation_metrics = self._calculate_ema_deviation_metrics(
+                    current_price=current_price,
+                    h1_data=h1_data,
+                    m15_data=m15_data,
+                    m5_data=m5_data,
+                    direction=signal_direction
+                )
+                
+                # 使用傳統信心值計算
+                confidence_score, sub_scores = self._calculate_confidence(
+                    h1_trend=h1_trend,
+                    m15_trend=m15_trend,
+                    m5_trend=m5_trend,
+                    market_structure=market_structure,
+                    order_blocks=order_blocks,
+                    liquidity_zones=liquidity_zones,
+                    current_price=current_price,
+                    h1_data=h1_data,
+                    m15_data=m15_data,
+                    m5_data=m5_data,
+                    direction=signal_direction,
+                    indicators=indicators,
+                    deviation_metrics=deviation_metrics
+                )
+                ict_features = None
             
             self._pipeline_stats['stage5_confidence_calculated'] += 1
             
@@ -403,21 +441,31 @@ class RuleBasedSignalGenerator:
             # 🔥 v3.18.9+ 應用ADX懲罰（如果適用）
             final_confidence_score = confidence_score * adx_penalty
             
-            # 🔥 v3.18.8+ 預估勝率（基於EMA偏差值 + 歷史統計）
-            win_probability = self._calculate_ema_based_win_probability(
-                deviation_metrics=deviation_metrics,
-                confidence_score=final_confidence_score,
-                rr_ratio=rr_ratio,
-                direction=signal_direction,
-                market_structure=market_structure
-            )
+            # 🔥 v3.19 Phase 2: 根據模式選擇勝率計算方法
+            if self.use_pure_ict:
+                # 純ICT/SMC勝率計算
+                win_probability = self._calculate_win_probability_pure_ict(
+                    ict_features=ict_features,
+                    confidence_score=final_confidence_score,
+                    direction=signal_direction,
+                    rr_ratio=rr_ratio
+                )
+            else:
+                # 傳統EMA偏差勝率計算
+                win_probability = self._calculate_ema_based_win_probability(
+                    deviation_metrics=deviation_metrics,
+                    confidence_score=final_confidence_score,
+                    rr_ratio=rr_ratio,
+                    direction=signal_direction,
+                    market_structure=market_structure
+                )
             
             self._pipeline_stats['stage6_win_prob_calculated'] += 1
             
             if self._pipeline_stats['stage0_total_symbols'] % 100 == 0:
                 self._print_pipeline_stats()
             
-            # 構建標準化信號
+            # 🔥 v3.19 Phase 2: 構建標準化信號
             signal = {
                 'symbol': symbol,
                 'direction': signal_direction,
@@ -438,7 +486,7 @@ class RuleBasedSignalGenerator:
                     m5_trend
                 ),
                 'timestamp': pd.Timestamp.now(),
-                # 🔥 v3.18.4+ Critical: 完整特徵記錄（確保TradeRecorder可以捕獲所有ML特徵）
+                # 完整特徵記錄
                 'market_structure': market_structure,
                 'order_blocks': len(order_blocks),
                 'liquidity_zones': len(liquidity_zones),
@@ -447,8 +495,17 @@ class RuleBasedSignalGenerator:
                     '15m_trend': m15_trend,
                     '5m_trend': m5_trend
                 },
-                # 🔥 v3.18.8+ EMA偏差指標（用於ML訓練和日誌）
-                'ema_deviation': {
+                # 🔥 v3.19 Phase 2: 模式標識
+                'calculation_mode': 'pure_ict' if self.use_pure_ict else 'traditional'
+            }
+            
+            # 🔥 v3.19 Phase 2: 根據模式添加相應特徵
+            if self.use_pure_ict:
+                # 純ICT模式：添加12個ICT/SMC特徵
+                signal['ict_features'] = ict_features
+            else:
+                # 傳統模式：添加EMA偏差指標
+                signal['ema_deviation'] = {
                     'h1_ema20_dev': deviation_metrics['h1_ema20_dev'],
                     'h1_ema50_dev': deviation_metrics['h1_ema50_dev'],
                     'm15_ema20_dev': deviation_metrics['m15_ema20_dev'],
@@ -460,7 +517,6 @@ class RuleBasedSignalGenerator:
                     'deviation_score': deviation_metrics['deviation_score'],
                     'deviation_quality': deviation_metrics['deviation_quality']
                 }
-            }
             
             # 🔥 記錄到專屬日誌文件（不在Railway主日誌中顯示）
             signal_logger = get_signal_details_logger()
