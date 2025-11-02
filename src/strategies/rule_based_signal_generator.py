@@ -229,26 +229,19 @@ class RuleBasedSignalGenerator:
         self,
         symbol: str,
         multi_tf_data: Dict[str, pd.DataFrame]
-    ) -> Optional[Dict]:
+    ) -> tuple[Optional[Dict], float, float]:
         """
-        生成交易信號
+        生成交易信號（v3.19+ 返回詳細診斷信息）
         
         Args:
             symbol: 交易對
             multi_tf_data: 多時間框架數據
         
         Returns:
-            標準化信號字典，包含：
-            - symbol: 交易對
-            - direction: 'LONG' 或 'SHORT'
-            - entry_price: 入場價格
-            - stop_loss: 止損價格
-            - take_profit: 止盈價格
-            - confidence: 基礎信心度（0-1）
-            - win_probability: 預估勝率（0-1）
-            - rr_ratio: 風報比
-            - indicators: 所有技術指標
-            - reasoning: 信號原因
+            三元組 (signal, confidence, win_probability)：
+            - signal: 標準化信號字典（如果滿足條件），否則為None
+            - confidence: 信心值（0-100），即使無信號也返回
+            - win_probability: 勝率（0-100），即使無信號也返回
         """
         try:
             self._pipeline_stats['stage0_total_symbols'] += 1
@@ -256,7 +249,7 @@ class RuleBasedSignalGenerator:
             # 驗證數據
             if not self._validate_data(multi_tf_data):
                 self._pipeline_stats['stage1_rejected_data'] += 1
-                return None
+                return None, 0.0, 0.0
             
             # 🔥 添加類型安全檢查 - 確保數據不為None
             h1_data = multi_tf_data.get('1h')
@@ -266,7 +259,7 @@ class RuleBasedSignalGenerator:
             if h1_data is None or m15_data is None or m5_data is None:
                 logger.warning(f"{symbol} 數據不完整，跳過信號生成")
                 self._pipeline_stats['stage1_rejected_data'] += 1
-                return None
+                return None, 0.0, 0.0
             
             self._pipeline_stats['stage1_valid_data'] += 1
             
@@ -334,7 +327,7 @@ class RuleBasedSignalGenerator:
                     logger.info(f"   ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量")
                     self._debug_stats['last_print_count'] = self._debug_stats['total_scanned']
                 
-                return None
+                return None, 0.0, 0.0
             
             self._pipeline_stats['stage3_signal_direction'] += 1
             
@@ -352,7 +345,7 @@ class RuleBasedSignalGenerator:
                 self._pipeline_stats['adx_distribution_lt10'] += 1
                 self._pipeline_stats['stage4_adx_rejected_lt10'] += 1
                 logger.info(f"❌ {symbol} ADX硬拒絕: ADX={adx_value:.1f}<{self.config.ADX_HARD_REJECT_THRESHOLD}，極端震盪市（優先級{priority_level}）")
-                return None
+                return None, 0.0, 0.0
             elif adx_value < self.config.ADX_WEAK_TREND_THRESHOLD:
                 # 10 ≤ ADX < 15: 強懲罰×0.6
                 self._pipeline_stats['adx_distribution_10_15'] += 1
@@ -529,11 +522,12 @@ class RuleBasedSignalGenerator:
                 rr_ratio=rr_ratio
             )
             
-            return signal
+            # 🔥 v3.19+：返回三元組（signal, confidence, win_probability）
+            return signal, final_confidence_score, win_probability * 100
             
         except Exception as e:
             logger.error(f"❌ {symbol} 信號生成失敗: {e}", exc_info=True)
-            return None
+            return None, 0.0, 0.0
     
     def _validate_data(self, multi_tf_data: Dict[str, pd.DataFrame]) -> bool:
         """驗證數據完整性"""

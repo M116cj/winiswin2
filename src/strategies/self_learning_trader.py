@@ -98,23 +98,26 @@ class SelfLearningTrader:
         self,
         symbol: str,
         multi_tf_data: Dict[str, pd.DataFrame]
-    ) -> Optional[Dict]:
+    ) -> tuple[Optional[Dict], float, float]:
         """
-        🔥 v3.18.6+ 分析並生成交易信號（ML預測 + 規則混合）
+        🔥 v3.19+ 分析並生成交易信號（ML預測 + 規則混合）+ 診斷信息
         
         Args:
             symbol: 交易對
             multi_tf_data: 多時間框架數據
         
         Returns:
-            完整的交易信號（可直接執行），或 None
+            三元組 (signal, confidence, win_probability):
+            - signal: 完整的交易信號（可直接執行），或 None
+            - confidence: 信心值（0-100）
+            - win_probability: 勝率（0-100）
         """
         try:
-            # 步驟 1：生成基礎信號（規則引擎）
-            base_signal = self.signal_generator.generate_signal(symbol, multi_tf_data)
+            # 步驟 1：生成基礎信號（規則引擎）- 返回三元組
+            base_signal, base_confidence, base_win_prob = self.signal_generator.generate_signal(symbol, multi_tf_data)
             
             if base_signal is None:
-                return None
+                return None, base_confidence, base_win_prob
             
             # 🔥 v3.19+ 修正3：ML模型統一輸出（支持未來多輸出模型）
             win_probability = base_signal['win_probability']  # 規則引擎的默認值
@@ -179,7 +182,7 @@ class SelfLearningTrader:
                     logger.debug(
                         f"❌ {symbol} ML綜合分數過低: {ml_score_value:.1f} < {ml_threshold}"
                     )
-                    return None
+                    return None, confidence * 100, win_probability * 100
                 
                 logger.debug(
                     f"✅ {symbol} ML綜合分數通過: {ml_score_value:.1f} >= {ml_threshold}"
@@ -196,7 +199,7 @@ class SelfLearningTrader:
                 
                 if not is_valid:
                     logger.info(f"❌ {symbol} 拒絕開倉: {reject_reason} | 勝率={win_probability:.1%} 信心={confidence:.1%} R:R={rr_ratio:.2f}")
-                    return None
+                    return None, confidence * 100, win_probability * 100
             
             # 🔥 v3.18.7+ 步驟 4：獲取豁免期狀態並記錄
             is_bootstrap = thresholds.get('is_bootstrap', False)
@@ -285,11 +288,12 @@ class SelfLearningTrader:
                 confidence=confidence
             )
             
-            return final_signal
+            # 🔥 v3.19+：返回增強信號 + 診斷信息（confidence/win_probability）
+            return final_signal, confidence * 100, win_probability * 100
             
         except Exception as e:
             logger.error(f"❌ {symbol} 分析失敗: {e}", exc_info=True)
-            return None
+            return None, 0.0, 0.0
     
     def calculate_leverage(
         self,

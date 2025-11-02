@@ -318,6 +318,7 @@ class UnifiedScheduler:
             signals = []
             data_unavailable_count = 0
             analyzed_count = 0
+            signal_candidates = []  # 🔥 v3.19+：收集所有交易對的信心值/勝率用於診斷
             
             for symbol in symbols:
                 try:
@@ -328,9 +329,17 @@ class UnifiedScheduler:
                         data_unavailable_count += 1
                         continue
                     
-                    # 調用 SelfLearningTrader 分析
+                    # 調用 SelfLearningTrader 分析（返回詳細診斷信息）
                     analyzed_count += 1
-                    signal = self.self_learning_trader.analyze(symbol, multi_tf_data)
+                    signal, confidence, win_prob = self.self_learning_trader.analyze(symbol, multi_tf_data)
+                    
+                    # 🔥 v3.19+：收集所有交易對的診斷信息
+                    signal_candidates.append({
+                        'symbol': symbol,
+                        'confidence': confidence,
+                        'win_probability': win_prob,
+                        'has_signal': signal is not None
+                    })
                     
                     if signal:
                         signals.append(signal)
@@ -341,6 +350,24 @@ class UnifiedScheduler:
             
             # 🔥 v3.19+：輸出掃描統計
             logger.info(f"📊 掃描統計: 總數={len(symbols)} | 數據可用={analyzed_count} | 數據缺失={data_unavailable_count}")
+            
+            # 🔥 v3.19+：輸出信心值最高的前10個交易對（用於診斷）
+            if signal_candidates:
+                sorted_candidates = sorted(signal_candidates, key=lambda x: x['confidence'], reverse=True)
+                top_10 = sorted_candidates[:10]
+                
+                logger.info("=" * 80)
+                logger.info("📊 信號分析診斷（信心值Top 10）")
+                logger.info("=" * 80)
+                for i, candidate in enumerate(top_10, 1):
+                    signal_status = "✅ 信號" if candidate['has_signal'] else "❌ 無信號"
+                    logger.info(
+                        f"{i:2}. {candidate['symbol']:12} | "
+                        f"信心={candidate['confidence']:5.1f} | "
+                        f"勝率={candidate['win_probability']:5.1f}% | "
+                        f"{signal_status}"
+                    )
+                logger.info("=" * 80)
             
             if signals:
                 logger.info(f"✅ 發現 {len(signals)} 個交易信號")
