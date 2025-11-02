@@ -73,6 +73,11 @@ class Config:
     # ===== v3.19+ 資金分配配置（動態預算池 + 質量加權）=====
     SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 正常期最低質量門檻
     BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.25"))  # 🔥 v3.19：豁免期質量門檻25%（40%→25%）
+    
+    # ========================================
+    # 🗄️ 數據庫增強系統 (v3.20+)
+    # ========================================
+    ENABLE_DATABASE_ENHANCEMENTS: bool = os.getenv("ENABLE_DATABASE_ENHANCEMENTS", "false").lower() == "true"  # 數據庫增強功能（默認禁用）
     MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.90"))  # 🔥 v3.19：總預算提升至90%（80%→90%，小資金優化）
     MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.5"))  # 單倉 ≤ 50% 帳戶權益
     MAX_TOTAL_MARGIN_RATIO: float = float(os.getenv("MAX_TOTAL_MARGIN_RATIO", "0.9"))  # 總倉位保證金 ≤ 90% 帳戶總金額（不含浮盈浮虧）
