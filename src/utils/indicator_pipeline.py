@@ -1,8 +1,27 @@
 """
 共享指标计算管道（v3.18.8+）
 职责：统一技术指标计算，避免重复代码，提供缓存机制
+
+⚠️⚠️⚠️ DEPRECATED v3.20.0 ⚠️⚠️⚠️
+
+本模块已被 src.core.elite.EliteTechnicalEngine 替代。
+
+请使用新的统一引擎：
+    from src.core.elite import EliteTechnicalEngine
+    
+    engine = EliteTechnicalEngine()
+    result = engine.calculate('ema', data, period=20)
+    
+优势：
+- ✅ 智能缓存：L1内存缓存（5000条目）
+- ✅ 统一接口：所有指标统一调用方式
+- ✅ 批量计算：支持多指标并行计算
+- ✅ 安全降级：数据不足时自动调整
+
+本文件将在 v3.21.0 移除。
 """
 
+import warnings
 import pandas as pd
 import numpy as np
 from typing import Dict, Tuple, Optional
@@ -12,6 +31,13 @@ import time
 from functools import lru_cache
 
 logger = logging.getLogger(__name__)
+
+# 发出弃用警告
+warnings.warn(
+    "src.utils.indicator_pipeline.IndicatorPipeline 已弃用，请使用 src.core.elite.EliteTechnicalEngine",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 
 class IndicatorPipeline:
