@@ -266,9 +266,19 @@ class RuleBasedSignalGenerator:
         try:
             self._pipeline_stats['stage0_total_symbols'] += 1
             
+            # 🔥 v3.19+ 診斷：追蹤早期返回點
+            # 每50個符號輸出一次pipeline統計
+            if self._pipeline_stats['stage0_total_symbols'] % 50 == 0:
+                logger.info(f"📊 Pipeline進度快照（已掃描{self._pipeline_stats['stage0_total_symbols']}個）")
+                logger.info(f"   Stage1驗證: 有效={self._pipeline_stats['stage1_valid_data']}, "
+                          f"拒絕={self._pipeline_stats['stage1_rejected_data']}")
+                logger.info(f"   Stage3方向: 有={self._pipeline_stats['stage3_signal_direction']}, "
+                          f"無={self._pipeline_stats['stage3_no_direction']}")
+            
             # 驗證數據
             if not self._validate_data(multi_tf_data):
                 self._pipeline_stats['stage1_rejected_data'] += 1
+                logger.debug(f"🚫 {symbol} 早期返回點1: _validate_data失敗")
                 return None, 0.0, 0.0
             
             # 🔥 添加類型安全檢查 - 確保數據不為None
@@ -277,8 +287,9 @@ class RuleBasedSignalGenerator:
             m5_data = multi_tf_data.get('5m')
             
             if h1_data is None or m15_data is None or m5_data is None:
-                logger.warning(f"{symbol} 數據不完整，跳過信號生成")
                 self._pipeline_stats['stage1_rejected_data'] += 1
+                logger.debug(f"🚫 {symbol} 早期返回點2: 時間框架數據缺失 "
+                           f"(1h={h1_data is not None}, 15m={m15_data is not None}, 5m={m5_data is not None})")
                 return None, 0.0, 0.0
             
             self._pipeline_stats['stage1_valid_data'] += 1
@@ -321,6 +332,9 @@ class RuleBasedSignalGenerator:
             # 🔥 v3.18.7+ Debug: 記錄無信號原因（每50個交易對打印一次統計）
             if not signal_direction:
                 self._pipeline_stats['stage3_no_direction'] += 1
+                logger.debug(f"🚫 {symbol} 早期返回點3: _determine_signal_direction無方向 "
+                           f"(h1={h1_trend}, m15={m15_trend}, m5={m5_trend}, structure={market_structure})")
+                
                 if not hasattr(self, '_debug_stats'):
                     self._debug_stats = {
                         'total_scanned': 0,
@@ -364,7 +378,7 @@ class RuleBasedSignalGenerator:
                 # ADX < 10: 硬拒絕（極端震盪市）
                 self._pipeline_stats['adx_distribution_lt10'] += 1
                 self._pipeline_stats['stage4_adx_rejected_lt10'] += 1
-                logger.info(f"❌ {symbol} ADX硬拒絕: ADX={adx_value:.1f}<{self.config.ADX_HARD_REJECT_THRESHOLD}，極端震盪市（優先級{priority_level}）")
+                logger.debug(f"🚫 {symbol} 早期返回點4: ADX硬拒絕 (ADX={adx_value:.1f}<{self.config.ADX_HARD_REJECT_THRESHOLD}, 方向={signal_direction}, 優先級={priority_level})")
                 return None, 0.0, 0.0
             elif adx_value < self.config.ADX_WEAK_TREND_THRESHOLD:
                 # 10 ≤ ADX < 15: 強懲罰×0.6
@@ -432,9 +446,17 @@ class RuleBasedSignalGenerator:
                         current_price=current_price
                     )
                     
-                    # 🔍 診斷：檢查信心值
+                    # 🔍 v3.19+ 診斷：檢查信心值並輸出完整特徵診斷
                     if confidence_score == 0.0:
-                        logger.warning(f"⚠️ {symbol}: ICT信心值為0 (子分數={sub_scores})")
+                        # 🚨 關鍵診斷：信心值為0時輸出完整特徵信息
+                        logger.warning(f"⚠️ {symbol}: ICT信心值為0！")
+                        logger.warning(f"   → 子分數: {sub_scores}")
+                        logger.warning(f"   → ICT特徵字典長度: {len(ict_features) if ict_features else 0}")
+                        if ict_features:
+                            logger.warning(f"   → ICT特徵鍵: {list(ict_features.keys())}")
+                            logger.warning(f"   → market_structure={ict_features.get('market_structure')}, "
+                                         f"order_blocks_count={ict_features.get('order_blocks_count')}, "
+                                         f"structure_integrity={ict_features.get('structure_integrity')}")
                     elif symbol in ['BTCUSDT', 'ETHUSDT', 'BNBUSDT']:
                         logger.info(f"📈 {symbol}: ICT信心值={confidence_score:.1f}, 子分數={sub_scores}")
                 except Exception as e:
