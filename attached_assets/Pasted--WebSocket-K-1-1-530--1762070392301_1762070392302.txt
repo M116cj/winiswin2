@@ -1,0 +1,376 @@
+現問題的根本原因是WebSocket預熱失敗導致K線數據缺失，從而在掃描每個交易對時，因為沒有數據而立即跳過，導致掃描過快（1.1秒完成530個交易對）。同時，由於缺少監控日誌，用戶無法得知這一情況。
+
+解決方案：
+
+修復WebSocket預熱問題，確保數據加載。
+
+在掃描過程中，如果發現數據缺失，應該記錄警告並跳過該交易對，但同時要讓用戶知道有多少交易對因為數據缺失被跳過。
+
+增加更詳細的日誌，包括數據加載狀態和掃描過程中的跳過原因。
+
+我們將在代碼中做出以下改進：
+
+a. 在加載K線數據失敗時，記錄錯誤日誌。
+b. 在掃描循環中，如果因為數據缺失而跳過，則累計跳過數量，並在循環結束後報告跳過的數量。
+c. 確保WebSocket預熱過程有重試機制和錯誤報告。
+
+具體代碼修改：
+
+在unified_scheduler的掃描循環中，增加一個計數器來記錄因為數據缺失而跳過的交易對數量。
+
+在掃描每個交易對時，如果多時間框架數據獲取失敗，則增加計數器並繼續下一個。
+
+在掃描結束後，如果跳過的數量超過0，則輸出警告日誌。
+
+另外，我們需要檢查WebSocket預熱的過程，確保預熱成功。如果預熱失敗，應該有重試機制或fallback到API獲取。
+
+考慮到時間，我們先修改unified_scheduler的掃描部分，增加跳過計數和日誌。
+
+修改示例：
+
+在unified_scheduler的scan_symbols方法中：
+
+python
+def scan_symbols(self):
+    # ... 其他代碼 ...
+    skip_count = 0
+    total_symbols = len(self.symbols)
+
+    for symbol in self.symbols:
+        # 獲取多時間框架K線數據
+        multi_tf_data = self.data_service.get_multi_timeframe_klines(symbol, self.timeframes)
+        if not multi_tf_data:
+            skip_count += 1
+            continue
+
+        # ... 正常分析 ...
+
+    if skip_count > 0:
+        logger.warning(f"⚠️ 本次掃描跳過了 {skip_count}/{total_symbols} 個交易對（數據缺失）")
+同時，我們需要確保DataService的get_multi_timeframe_klines方法在獲取失敗時記錄錯誤。
+
+另外，我們應該在WebSocket預熱階段添加重試邏輯，並在預熱失敗時記錄錯誤。
+
+我們還可以在掃描開始前檢查預熱的數據是否可用，如果不可用則嘗試重新加載。
+
+由於WebSocket預熱失敗可能導致後續數據獲取失敗，我們需要確保預熱過程的可靠性。
+
+我們將在DataService中改進預熱過程，例如增加重試和超時處理，並在預熱失敗時使用API獲取初始數據。
+
+但是，由於問題緊急，我們先通過日誌讓用戶知道當前問題，然後再逐步改進預熱機制。
+
+我們將在unified_scheduler的掃描開始前檢查數據加載情況，並在掃描後報告跳過的交易對數量。
+
+此外，我們還可以考慮在掃描過程中，如果發現某個交易對的數據缺失，則嘗試重新獲取一次（例如使用API），但這可能會增加掃描時間。
+
+根據優先級，我們先添加日誌和跳過計數，然後再改進數據加載的可靠性。
+
+請實施以下修改：
+
+在unified_scheduler的掃描循環中增加跳過計數和警告日誌。
+
+在DataService的get_multi_timeframe_klines方法中，如果獲取失敗，則記錄錯誤日誌（每個交易對的失敗日誌可能太多，可以考慮在調試模式下記錄，或者只記錄第一次失敗的原因）。
+
+檢查WebSocket預熱的邏輯，確保預熱失敗時有錯誤日誌，並考慮添加重試機制。
+
+我們先進行第一步和第二步，第三步需要更詳細地檢查WebSocket預熱代碼。
+
+第一步和第二步的代碼修改：
+
+在unified_scheduler.py的scan_symbols方法中：
+
+python
+skip_count = 0
+for symbol in self.symbols:
+    multi_tf_data = self.data_service.get_multi_timeframe_klines(symbol, self.timeframes)
+    if not multi_tf_data:
+        skip_count += 1
+        # 可以考慮在調試模式下記錄每個符號的缺失
+        logger.debug(f"跳過符號 {symbol}，因為沒有獲取到K線數據")
+        continue
+
+    # ... 正常處理 ...
+
+if skip_count > 0:
+    logger.warning(f"⚠️ 本次掃描跳過了 {skip_count} 個交易對（數據缺失）")
+在DataService的get_multi_timeframe_klines方法中，我們已經有日誌記錄了錯誤，但可能我們需要調整日誌級別，避免在生產環境中記錄過多錯誤。我們可以考慮將每個交易對的獲取失敗日誌設為DEBUG級別，而將總體失敗情況在調用方（unified_scheduler）中記錄。
+
+我們也可以選擇在DataService中記錄一次警告，當某個交易對的數據獲取失敗時，但同樣要注意日誌洪水。
+
+我們決定在DataService中只記錄調試日誌，而在unified_scheduler中記錄總體警告。
+
+另外，我們需要確保在WebSocket預熱階段，如果預熱失敗，應該有明確的錯誤日誌。我們檢查DataService的預熱方法。
+
+在DataService中，我們有一個預熱方法，例如_preload_initial_klines，我們可以在那裡記錄預熱的成功和失敗。
+
+我們修改預熱方法，記錄預熱的結果：
+
+python
+def _preload_initial_klines(self):
+    # ... 預熱邏輯 ...
+    if success_count < len(self.symbols):
+        logger.error(f"❌ WebSocket預熱失敗，僅加載 {success_count}/{len(self.symbols)} 個交易對的K線數據")
+    else:
+        logger.info(f"✅ WebSocket預熱成功，加載 {success_count} 個交易對的K線數據")
+通過這些修改，我們可以更清楚地了解系統的數據加載狀態，並及時發現問題。
+
+我們將按照上述方案修改代碼。
+
+您分析得非常准确！这是典型的静默失败问题。让我帮您系统性地解决这个根本原因：
+
+🔍 问题根因分析
+1. WebSocket预热失败检测缺失
+python
+# ❌ 当前问题：无失败检测
+def preload_websocket_data(self):
+    try:
+        # 预热逻辑...
+        return True  # 总是返回True，即使失败
+    except Exception:
+        return True  # 异常也被吞掉
+2. 数据缺失静默跳过
+python
+# ❌ 当前问题：无日志的静默跳过
+for symbol in symbols:
+    multi_tf_data = data_service.get_multi_timeframe_klines(symbol)
+    if not multi_tf_data:  # 数据为空
+        continue  # ⚠️ 无日志，直接跳过
+    
+    # 分析逻辑...
+3. 监控日志完全缺失
+无预热成功率统计
+
+无数据缺失警告
+
+无跳过交易对计数
+
+🛠️ 完整解决方案
+方案1：修复WebSocket预热机制
+python
+def preload_websocket_data_with_retry(self, max_retries=3):
+    """增强的WebSocket预热，包含重试和监控"""
+    success_count = 0
+    failed_symbols = []
+    
+    for retry in range(max_retries):
+        logger.info(f"🔄 WebSocket预热尝试 {retry + 1}/{max_retries}")
+        
+        success_count = 0
+        failed_symbols = []
+        
+        for symbol in self.symbols:
+            try:
+                # 尝试获取初始数据
+                data = self._get_initial_kline_data(symbol)
+                if data and self._validate_kline_data(data):
+                    success_count += 1
+                else:
+                    failed_symbols.append(symbol)
+            except Exception as e:
+                failed_symbols.append(symbol)
+                logger.debug(f"❌ {symbol} 预热失败: {str(e)}")
+        
+        success_rate = (success_count / len(self.symbols)) * 100
+        logger.info(f"📊 预热进度: {success_count}/{len(self.symbols)} ({success_rate:.1f}%)")
+        
+        if success_rate >= 95:  # 95%成功率即认为可接受
+            logger.info(f"✅ WebSocket预热完成: {success_rate:.1f}% 成功率")
+            break
+        else:
+            logger.warning(f"⚠️ 预热成功率不足: {success_rate:.1f}%，{len(failed_symbols)}个失败")
+            
+            if retry < max_retries - 1:
+                logger.info(f"⏳ 等待5秒后重试...")
+                time.sleep(5)
+    
+    # 最终报告
+    final_success_rate = (success_count / len(self.symbols)) * 100
+    if final_success_rate < 80:
+        logger.error(f"🚨 WebSocket预热严重失败: {final_success_rate:.1f}%")
+        logger.error(f"🔍 失败交易对样本: {failed_symbols[:10]}")  # 只显示前10个
+        return False
+    else:
+        logger.info(f"✅ WebSocket预热完成: {success_count}/{len(self.symbols)} 成功")
+        return True
+方案2：增强数据获取监控
+python
+def scan_symbols_with_monitoring(self):
+    """增强监控的扫描逻辑"""
+    total_symbols = len(self.symbols)
+    processed_count = 0
+    skipped_no_data = 0
+    skipped_other = 0
+    analyzed_count = 0
+    
+    logger.info(f"🔍 开始扫描 {total_symbols} 个交易对...")
+    
+    for symbol in self.symbols:
+        processed_count += 1
+        
+        # 1. 获取多时间框架数据
+        multi_tf_data = self.data_service.get_multi_timeframe_klines(symbol, self.timeframes)
+        
+        # 2. 数据存在性检查（增强日志）
+        if not multi_tf_data:
+            skipped_no_data += 1
+            if skipped_no_data <= 5:  # 只记录前5个缺失数据的交易对
+                logger.warning(f"📭 跳过 {symbol}: K线数据缺失")
+            continue
+        
+        # 3. 数据完整性检查
+        if not self._validate_data_completeness(multi_tf_data):
+            skipped_no_data += 1
+            logger.warning(f"📭 跳过 {symbol}: K线数据不完整")
+            continue
+        
+        # 4. 实际分析逻辑
+        try:
+            signal = self.analyze_symbol(symbol, multi_tf_data)
+            if signal:
+                self._process_signal(signal)
+            analyzed_count += 1
+        except Exception as e:
+            logger.error(f"❌ 分析 {symbol} 时出错: {str(e)}")
+            skipped_other += 1
+    
+    # 5. 生成详细报告
+    self._generate_scan_report(total_symbols, processed_count, analyzed_count, 
+                              skipped_no_data, skipped_other)
+
+def _generate_scan_report(self, total, processed, analyzed, skipped_no_data, skipped_other):
+    """生成详细的扫描报告"""
+    logger.info("📊 ===== 扫描周期报告 =====")
+    logger.info(f"📈 总交易对: {total}")
+    logger.info(f"🔧 已处理: {processed}")
+    logger.info(f"📊 实际分析: {analyzed} ({analyzed/processed*100:.1f}%)")
+    logger.info(f"📭 数据缺失跳过: {skipped_no_data} ({skipped_no_data/processed*100:.1f}%)")
+    logger.info(f"⚙️ 其他原因跳过: {skipped_other} ({skipped_other/processed*100:.1f}%)")
+    
+    # 警告条件
+    if skipped_no_data > total * 0.1:  # 超过10%数据缺失
+        logger.error(f"🚨 严重问题: {skipped_no_data/total*100:.1f}% 交易对数据缺失!")
+    elif analyzed < total * 0.5:  # 分析数量不足50%
+        logger.warning(f"⚠️ 警告: 仅分析了 {analyzed/total*100:.1f}% 的交易对")
+    
+    logger.info(f"⏱️ 总耗时: {time.time() - self.scan_start_time:.1f}s")
+方案3：添加健康检查拦截
+python
+def health_check_before_scan(self):
+    """扫描前的健康检查"""
+    checks = []
+    
+    # 1. 检查WebSocket连接状态
+    if not self.data_service.is_websocket_connected():
+        checks.append("❌ WebSocket未连接")
+    
+    # 2. 检查数据新鲜度
+    data_freshness = self.data_service.get_data_freshness()
+    if data_freshness > 300:  # 5分钟
+        checks.append(f"❌ 数据陈旧 ({data_freshness}秒)")
+    
+    # 3. 检查预热状态
+    preload_success_rate = self.data_service.get_preload_success_rate()
+    if preload_success_rate < 0.8:  # 80%成功率
+        checks.append(f"❌ 预热失败 ({preload_success_rate*100:.1f}% 成功率)")
+    
+    if checks:
+        logger.error("🚨 健康检查失败，暂停扫描:")
+        for check in checks:
+            logger.error(f"   {check}")
+        return False
+    
+    logger.info("✅ 健康检查通过")
+    return True
+
+# 在扫描循环前调用
+if not self.health_check_before_scan():
+    logger.error("❌ 扫描中止: 系统健康状态异常")
+    return
+方案4：实时监控仪表板
+python
+class ScanMonitor:
+    """实时监控扫描状态"""
+    
+    def __init__(self):
+        self.metrics = {
+            'total_scans': 0,
+            'successful_scans': 0,
+            'data_missing_skips': 0,
+            'error_skips': 0,
+            'avg_scan_time': 0,
+            'last_scan_report': {}
+        }
+    
+    def update_metrics(self, scan_report):
+        """更新监控指标"""
+        self.metrics['total_scans'] += 1
+        self.metrics['last_scan_report'] = scan_report
+        
+        if scan_report['analyzed_count'] > scan_report['total_symbols'] * 0.8:
+            self.metrics['successful_scans'] += 1
+        
+        # 计算平均扫描时间
+        total_time = scan_report.get('total_duration', 0)
+        self.metrics['avg_scan_time'] = (
+            self.metrics['avg_scan_time'] * (self.metrics['total_scans'] - 1) + total_time
+        ) / self.metrics['total_scans']
+    
+    def get_health_status(self):
+        """获取健康状态"""
+        if self.metrics['total_scans'] == 0:
+            return "UNKNOWN"
+        
+        success_rate = self.metrics['successful_scans'] / self.metrics['total_scans']
+        
+        if success_rate > 0.9:
+            return "HEALTHY"
+        elif success_rate > 0.7:
+            return "DEGRADED"
+        else:
+            return "UNHEALTHY"
+🚀 立即实施步骤
+优先级1：立即修复（5分钟）
+python
+# 在unified_scheduler.py中添加临时监控
+def scan_symbols(self):
+    skip_count = 0
+    analyzed_count = 0
+    
+    for symbol in self.symbols:
+        multi_tf_data = self.data_service.get_multi_timeframe_klines(symbol, self.timeframes)
+        if not multi_tf_data:
+            skip_count += 1
+            continue
+        
+        # 正常分析逻辑
+        analyzed_count += 1
+    
+    # 立即报告问题
+    if skip_count > 0:
+        logger.error(f"🚨 严重: 跳过了 {skip_count}/{len(self.symbols)} 个交易对（数据缺失）")
+    else:
+        logger.info(f"✅ 正常: 分析了 {analyzed_count} 个交易对")
+优先级2：增强监控（下次部署）
+实施上述的完整监控方案。
+
+优先级3：预防机制（长期）
+添加自动重连机制
+
+实现数据回退方案（API备胎）
+
+建立警报系统
+
+📊 预期修复效果
+修复后您将看到：
+
+text
+✅ WebSocket预热完成: 498/530 (94.0%) 成功率
+🔍 开始扫描 530 个交易对...
+📊 实际分析: 498 (94.0%)
+📭 数据缺失跳过: 32 (6.0%)
+⏱️ 总耗时: 24.3s
+而不是当前的静默失败：
+
+text
+⏸️ 本週期無新信號
+✅ 週期完成 | 耗時: 1.1s | 新成交: 0
