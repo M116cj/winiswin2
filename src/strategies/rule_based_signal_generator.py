@@ -294,6 +294,13 @@ class RuleBasedSignalGenerator:
             
             self._pipeline_stats['stage1_valid_data'] += 1
             
+            # 🔍 v3.19+ 診斷：前3個驗證成功的symbol輸出數據樣本
+            if self._pipeline_stats['stage1_valid_data'] <= 3:
+                logger.info(f"✅ {symbol} 數據驗證通過 (#{self._pipeline_stats['stage1_valid_data']})")
+                logger.info(f"   1h數據: {len(h1_data)}行, 最新收盤={h1_data['close'].iloc[-1]:.2f}")
+                logger.info(f"   15m數據: {len(m15_data)}行, 最新收盤={m15_data['close'].iloc[-1]:.2f}")
+                logger.info(f"   5m數據: {len(m5_data)}行, 最新收盤={m5_data['close'].iloc[-1]:.2f}")
+            
             # 計算所有指標
             indicators = self._calculate_all_indicators(h1_data, m15_data, m5_data)
             
@@ -606,14 +613,41 @@ class RuleBasedSignalGenerator:
             return None, 0.0, 0.0
     
     def _validate_data(self, multi_tf_data: Dict[str, pd.DataFrame]) -> bool:
-        """驗證數據完整性"""
+        """
+        v3.19+ 放寬數據驗證（50→20行）並添加詳細診斷
+        
+        修改原因：Stage1拒絕率100%（530/530），數據長度要求過嚴
+        """
         required_tfs = ['1h', '15m', '5m']
+        
         for tf in required_tfs:
+            # 檢查1: 時間框架是否存在
             if tf not in multi_tf_data:
+                logger.debug(f"⚠️ 數據驗證失敗: 缺失時間框架 {tf}")
+                logger.debug(f"   可用時間框架: {list(multi_tf_data.keys())}")
                 return False
+            
             df = multi_tf_data[tf]
-            if df is None or len(df) < 50:
+            
+            # 檢查2: DataFrame是否為None
+            if df is None:
+                logger.debug(f"⚠️ 數據驗證失敗: {tf} DataFrame為None")
                 return False
+            
+            # 檢查3: 數據長度（🔥 放寬：50→20）
+            if len(df) < 20:
+                logger.debug(f"⚠️ 數據驗證失敗: {tf} 只有{len(df)}行數據 (<20)")
+                return False
+            
+            # 檢查4: 必要列是否存在
+            required_cols = {'open', 'high', 'low', 'close', 'volume'}
+            missing_cols = required_cols - set(df.columns)
+            if missing_cols:
+                logger.debug(f"⚠️ 數據驗證失敗: {tf} 缺失列 {missing_cols}")
+                logger.debug(f"   現有列: {list(df.columns)}")
+                return False
+        
+        # ✅ 所有檢查通過
         return True
     
     def _calculate_all_indicators(self, h1_data, m15_data, m5_data) -> Dict:
