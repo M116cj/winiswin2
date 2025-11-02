@@ -493,33 +493,50 @@ class VirtualPositionManager:
         # v3.13.0修复：构造函数中始终使用同步加载，确保初始化完成
         self._load_positions_sync()
     
+    def _transform_position_data(self, positions_dict: Dict) -> Dict[str, Any]:
+        """
+        统一数据转换逻辑（v3.20：消除同步/异步重复）
+        
+        将JSON字典转换为VirtualPosition对象
+        
+        Args:
+            positions_dict: 从JSON加载的字典
+            
+        Returns:
+            symbol → VirtualPosition 映射
+        """
+        transformed_positions = {}
+        
+        for symbol, pos_data in positions_dict.items():
+            # 展平 timeframes 和 indicators（如果存在）
+            if 'timeframes' in pos_data:
+                pos_data['h1_trend'] = pos_data['timeframes'].get('h1', 'neutral')
+                pos_data['m15_trend'] = pos_data['timeframes'].get('m15', 'neutral')
+                pos_data['m5_trend'] = pos_data['timeframes'].get('m5', 'neutral')
+            
+            if 'indicators' in pos_data:
+                pos_data['rsi'] = pos_data['indicators'].get('rsi')
+                pos_data['macd'] = pos_data['indicators'].get('macd')
+                pos_data['atr'] = pos_data['indicators'].get('atr')
+            
+            # 创建 VirtualPosition 对象
+            transformed_positions[symbol] = VirtualPosition(**pos_data)
+        
+        return transformed_positions
+    
     def _load_positions_sync(self):
         """
         從文件加載虛擬倉位（同步版本）
         
-        ✅ 加载流程：JSON dict → VirtualPosition object
+        ✅ v3.20：使用统一转换逻辑（消除重复）
         """
         if os.path.exists(self.positions_file):
             try:
                 with open(self.positions_file, 'r', encoding='utf-8') as f:
                     positions_dict = json.load(f)
                 
-                # ✅ v3.12.0：将字典转换为 VirtualPosition 对象
-                self.virtual_positions = {}
-                for symbol, pos_data in positions_dict.items():
-                    # 展平 timeframes 和 indicators（如果存在）
-                    if 'timeframes' in pos_data:
-                        pos_data['h1_trend'] = pos_data['timeframes'].get('h1', 'neutral')
-                        pos_data['m15_trend'] = pos_data['timeframes'].get('m15', 'neutral')
-                        pos_data['m5_trend'] = pos_data['timeframes'].get('m5', 'neutral')
-                    
-                    if 'indicators' in pos_data:
-                        pos_data['rsi'] = pos_data['indicators'].get('rsi')
-                        pos_data['macd'] = pos_data['indicators'].get('macd')
-                        pos_data['atr'] = pos_data['indicators'].get('atr')
-                    
-                    # 创建 VirtualPosition 对象
-                    self.virtual_positions[symbol] = VirtualPosition(**pos_data)
+                # ✅ v3.20：使用统一转换函数
+                self.virtual_positions = self._transform_position_data(positions_dict)
                 
                 logger.info(f"加載 {len(self.virtual_positions)} 個虛擬倉位（VirtualPosition对象）")
             except Exception as e:
@@ -532,7 +549,7 @@ class VirtualPositionManager:
         """
         從文件加載虛擬倉位（v3.13.0异步版本）
         
-        ✅ 加载流程：JSON dict → VirtualPosition object
+        ✅ v3.20：使用统一转换逻辑（消除重复）
         """
         if not os.path.exists(self.positions_file):
             self.virtual_positions = {}
@@ -543,22 +560,8 @@ class VirtualPositionManager:
                 content = await f.read()
                 positions_dict = json.loads(content)
             
-            # ✅ 将字典转换为 VirtualPosition 对象
-            self.virtual_positions = {}
-            for symbol, pos_data in positions_dict.items():
-                # 展平 timeframes 和 indicators（如果存在）
-                if 'timeframes' in pos_data:
-                    pos_data['h1_trend'] = pos_data['timeframes'].get('h1', 'neutral')
-                    pos_data['m15_trend'] = pos_data['timeframes'].get('m15', 'neutral')
-                    pos_data['m5_trend'] = pos_data['timeframes'].get('m5', 'neutral')
-                
-                if 'indicators' in pos_data:
-                    pos_data['rsi'] = pos_data['indicators'].get('rsi')
-                    pos_data['macd'] = pos_data['indicators'].get('macd')
-                    pos_data['atr'] = pos_data['indicators'].get('atr')
-                
-                # 创建 VirtualPosition 对象
-                self.virtual_positions[symbol] = VirtualPosition(**pos_data)
+            # ✅ v3.20：使用统一转换函数
+            self.virtual_positions = self._transform_position_data(positions_dict)
             
             logger.info(f"异步加载 {len(self.virtual_positions)} 個虛擬倉位")
         except Exception as e:
