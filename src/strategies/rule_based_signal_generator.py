@@ -60,9 +60,10 @@ class RuleBasedSignalGenerator:
             'stage3_priority3': 0,
             'stage3_priority4_relaxed': 0,
             'stage3_priority5_relaxed': 0,
-            'stage4_adx_rejected_lt15': 0,
-            'stage4_adx_penalty_15_20': 0,
-            'stage4_adx_ok_gte20': 0,
+            'stage4_adx_rejected_lt10': 0,      # ADX<10 硬拒絕
+            'stage4_adx_penalty_10_15': 0,      # ADX 10-15 強懲罰×0.6
+            'stage4_adx_penalty_15_20': 0,      # ADX 15-20 中懲罰×0.8
+            'stage4_adx_ok_gte20': 0,           # ADX≥20 通過
             'stage5_confidence_calculated': 0,
             'stage6_win_prob_calculated': 0,
             'stage7_passed_double_gate': 0,
@@ -73,15 +74,17 @@ class RuleBasedSignalGenerator:
             'stage8_rejected_quality': 0,
             'stage9_ranked_signals': 0,
             'stage9_executed_signals': 0,
-            'adx_distribution_lt15': 0,
-            'adx_distribution_15_20': 0,
-            'adx_distribution_20_25': 0,
-            'adx_distribution_gte25': 0
+            'adx_distribution_lt10': 0,         # ADX<10 分布
+            'adx_distribution_10_15': 0,        # ADX 10-15 分布
+            'adx_distribution_15_20': 0,        # ADX 15-20 分布
+            'adx_distribution_20_25': 0,        # ADX 20-25 分布
+            'adx_distribution_gte25': 0         # ADX≥25 分布
         }
         
         logger.info("✅ RuleBasedSignalGenerator 初始化完成")
         logger.info(f"   🎚️ 信號模式: {'寬鬆模式' if self.config.RELAXED_SIGNAL_MODE else '嚴格模式'}")
         logger.info(f"   📊 10階段Pipeline診斷: 已啟用（每100個符號輸出統計）")
+        logger.info(f"   🔧 ADX過濾: 硬拒絕<{self.config.ADX_HARD_REJECT_THRESHOLD} | 強懲罰<{self.config.ADX_WEAK_TREND_THRESHOLD} | 中懲罰<20")
     
     def get_debug_stats(self) -> dict:
         """獲取調試統計數據"""
@@ -112,9 +115,10 @@ class RuleBasedSignalGenerator:
             'stage3_priority3': 0,
             'stage3_priority4_relaxed': 0,
             'stage3_priority5_relaxed': 0,
-            'stage4_adx_rejected_lt15': 0,
-            'stage4_adx_penalty_15_20': 0,
-            'stage4_adx_ok_gte20': 0,
+            'stage4_adx_rejected_lt10': 0,      # ADX<10 硬拒絕
+            'stage4_adx_penalty_10_15': 0,      # ADX 10-15 強懲罰×0.6
+            'stage4_adx_penalty_15_20': 0,      # ADX 15-20 中懲罰×0.8
+            'stage4_adx_ok_gte20': 0,           # ADX≥20 通過
             'stage5_confidence_calculated': 0,
             'stage6_win_prob_calculated': 0,
             'stage7_passed_double_gate': 0,
@@ -125,10 +129,11 @@ class RuleBasedSignalGenerator:
             'stage8_rejected_quality': 0,
             'stage9_ranked_signals': 0,
             'stage9_executed_signals': 0,
-            'adx_distribution_lt15': 0,
-            'adx_distribution_15_20': 0,
-            'adx_distribution_20_25': 0,
-            'adx_distribution_gte25': 0
+            'adx_distribution_lt10': 0,         # ADX<10 分布
+            'adx_distribution_10_15': 0,        # ADX 10-15 分布
+            'adx_distribution_15_20': 0,        # ADX 15-20 分布
+            'adx_distribution_20_25': 0,        # ADX 20-25 分布
+            'adx_distribution_gte25': 0         # ADX≥25 分布
         }
     
     def get_pipeline_stats(self) -> dict:
@@ -159,21 +164,27 @@ class RuleBasedSignalGenerator:
             logger.info(f"         優先級4(H1主導-寬鬆)={stats['stage3_priority4_relaxed']}")
             logger.info(f"         優先級5(M15+M5-寬鬆)={stats['stage3_priority5_relaxed']}")
         
-        logger.info(f"Stage4 - ADX過濾:")
-        logger.info(f"         ADX<15(拒絕)={stats['stage4_adx_rejected_lt15']}")
-        logger.info(f"         ADX 15-20(懲罰×0.8)={stats['stage4_adx_penalty_15_20']}")
+        logger.info(f"Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:")
+        logger.info(f"         ADX<10(硬拒絕)={stats['stage4_adx_rejected_lt10']}")
+        logger.info(f"         ADX 10-15(強懲罰×0.6)={stats['stage4_adx_penalty_10_15']}")
+        logger.info(f"         ADX 15-20(中懲罰×0.8)={stats['stage4_adx_penalty_15_20']}")
         logger.info(f"         ADX≥20(通過)={stats['stage4_adx_ok_gte20']}")
         
         logger.info(f"ADX分布:")
-        logger.info(f"         <15: {stats['adx_distribution_lt15']}")
+        logger.info(f"         <10: {stats['adx_distribution_lt10']}")
+        logger.info(f"         10-15: {stats['adx_distribution_10_15']}")
         logger.info(f"         15-20: {stats['adx_distribution_15_20']}")
         logger.info(f"         20-25: {stats['adx_distribution_20_25']}")
         logger.info(f"         ≥25: {stats['adx_distribution_gte25']}")
         
-        if stats['adx_distribution_lt15'] + stats['adx_distribution_15_20'] + stats['adx_distribution_20_25'] + stats['adx_distribution_gte25'] > 0:
-            total_adx = stats['adx_distribution_lt15'] + stats['adx_distribution_15_20'] + stats['adx_distribution_20_25'] + stats['adx_distribution_gte25']
-            lt15_pct = stats['adx_distribution_lt15'] / total_adx * 100
-            logger.info(f"         🔥 ADX<15占比: {lt15_pct:.1f}% ← 主要過濾原因！" if lt15_pct > 50 else f"         ADX<15占比: {lt15_pct:.1f}%")
+        total_adx = (stats['adx_distribution_lt10'] + stats['adx_distribution_10_15'] + 
+                     stats['adx_distribution_15_20'] + stats['adx_distribution_20_25'] + 
+                     stats['adx_distribution_gte25'])
+        if total_adx > 0:
+            lt10_pct = stats['adx_distribution_lt10'] / total_adx * 100
+            lt15_pct = (stats['adx_distribution_lt10'] + stats['adx_distribution_10_15']) / total_adx * 100
+            logger.info(f"         🔥 ADX<10占比: {lt10_pct:.1f}% ← 硬拒絕")
+            logger.info(f"         🔥 ADX<15占比: {lt15_pct:.1f}% ← 包含強懲罰區間")
         
         logger.info(f"Stage5 - 信心度計算: {stats['stage5_confidence_calculated']}")
         logger.info(f"Stage6 - 勝率計算: {stats['stage6_win_prob_calculated']}")
@@ -311,26 +322,39 @@ class RuleBasedSignalGenerator:
             
             self._pipeline_stats['stage3_signal_direction'] += 1
             
-            # 🔥 v3.18.9+ 修復：ADX 過濾條件（放寬以適應高波動市場）
-            # 修復前：ADX < 20 → 直接拒絕（過於嚴格）
-            # 修復後：ADX < 15 → 拒絕；15-20 → 降低信心度但不拒絕
+            # 🔥 v3.18.10+ ADX專項調整：3層懲罰機制（降低硬拒絕門檻，增強動態懲罰）
+            # Stage4 - ADX過濾（基於config.ADX_HARD_REJECT_THRESHOLD和ADX_WEAK_TREND_THRESHOLD）
+            # - ADX < 10: 硬拒絕（極端震盪市，無趨勢）
+            # - 10 ≤ ADX < 15: 強懲罰×0.6（弱趨勢，高風險）
+            # - 15 ≤ ADX < 20: 中懲罰×0.8（中等趨勢）
+            # - ADX ≥ 20: 無懲罰（趨勢明確）
             adx_value = indicators.get('adx', 25.0)
             adx_penalty = 1.0  # 默認無懲罰
             
-            if adx_value < 15:
-                self._pipeline_stats['adx_distribution_lt15'] += 1
-                self._pipeline_stats['stage4_adx_rejected_lt15'] += 1
-                logger.info(f"❌ {symbol} ADX過濾: ADX={adx_value:.1f}<15，純震盪市，拒絕信號（優先級{priority_level}）")
+            if adx_value < self.config.ADX_HARD_REJECT_THRESHOLD:
+                # ADX < 10: 硬拒絕（極端震盪市）
+                self._pipeline_stats['adx_distribution_lt10'] += 1
+                self._pipeline_stats['stage4_adx_rejected_lt10'] += 1
+                logger.info(f"❌ {symbol} ADX硬拒絕: ADX={adx_value:.1f}<{self.config.ADX_HARD_REJECT_THRESHOLD}，極端震盪市（優先級{priority_level}）")
                 return None
+            elif adx_value < self.config.ADX_WEAK_TREND_THRESHOLD:
+                # 10 ≤ ADX < 15: 強懲罰×0.6
+                self._pipeline_stats['adx_distribution_10_15'] += 1
+                self._pipeline_stats['stage4_adx_penalty_10_15'] += 1
+                adx_penalty = 0.6
+                logger.info(f"⚠️ {symbol} ADX弱趨勢: ADX={adx_value:.1f}，信心度×0.6（優先級{priority_level}）")
             elif adx_value < 20:
+                # 15 ≤ ADX < 20: 中懲罰×0.8
                 self._pipeline_stats['adx_distribution_15_20'] += 1
                 self._pipeline_stats['stage4_adx_penalty_15_20'] += 1
-                adx_penalty = 0.8  # 信心度×0.8
-                logger.debug(f"{symbol} ADX={adx_value:.1f}<20，低趨勢強度，信心度×0.8")
+                adx_penalty = 0.8
+                logger.debug(f"{symbol} ADX中等趨勢: ADX={adx_value:.1f}，信心度×0.8")
             elif adx_value < 25:
+                # 20 ≤ ADX < 25: 無懲罰
                 self._pipeline_stats['adx_distribution_20_25'] += 1
                 self._pipeline_stats['stage4_adx_ok_gte20'] += 1
             else:
+                # ADX ≥ 25: 強趨勢，無懲罰
                 self._pipeline_stats['adx_distribution_gte25'] += 1
                 self._pipeline_stats['stage4_adx_ok_gte20'] += 1
             

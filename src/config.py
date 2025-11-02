@@ -103,11 +103,15 @@ class Config:
     ATR_MULTIPLIER: float = 2.0
     RISK_REWARD_RATIO: float = 2.0
     
-    # ADX 趨勢過濾器
+    # ===== ADX 趨勢過濾器（v3.18.10+ 專項優化）=====
     ADX_PERIOD: int = 14
     ADX_TREND_THRESHOLD: float = 20.0
     ADX_STRONG_TREND: float = 25.0
     EMA_SLOPE_THRESHOLD: float = 0.01
+    
+    # 🔥 v3.18.10+ ADX專項調整（降低硬拒絕門檻，增強動態懲罰）
+    ADX_HARD_REJECT_THRESHOLD: float = float(os.getenv("ADX_HARD_REJECT_THRESHOLD", "10.0"))  # 硬拒絕門檻（原15.0 → 10.0）
+    ADX_WEAK_TREND_THRESHOLD: float = float(os.getenv("ADX_WEAK_TREND_THRESHOLD", "15.0"))   # 弱趨勢門檻（10-15: 強懲罰×0.6）
     
     # Order Blocks 配置
     OB_REJECTION_PCT: float = 0.03
