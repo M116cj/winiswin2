@@ -868,23 +868,24 @@ class RuleBasedSignalGenerator:
         """
         計算五維 ICT 信心度評分
         
-        🔥 v3.19+ 修正1：統一評分標準
-        - 1️⃣ 時間框架對齊度 (40%) ← 統一「評分標準 = 生成條件」
-        - 2️⃣ 市場結構 (20%)
-        - 3️⃣ Order Block質量 (20%)
-        - 4️⃣ 動量指標 (10%)
-        - 5️⃣ 波動率 (10%)
+        🔥 v3.19 Phase 1：調整權重分配（降低時間框架依賴）
+        - 1️⃣ 時間框架對齊度 (30%) ← 從40%降低
+        - 2️⃣ 市場結構 (25%) ← 從20%提高
+        - 3️⃣ Order Block質量 (20%) ← 保持
+        - 4️⃣ 動量指標 (15%) ← 從10%提高
+        - 5️⃣ 波動率 (10%) ← 保持
         
         Returns:
             (總分, 子分數字典)
         """
         sub_scores = {}
         
-        # 1️⃣ v3.19+ 修正1：時間框架對齊度評分 (40%)
+        # 1️⃣ v3.19 Phase 1：時間框架對齊度評分 (30%)
         # 統一「評分標準 = 生成條件 = 執行依據 = 學習標籤」
         timeframes = {'1h': h1_trend, '15m': m15_trend, '5m': m5_trend}
         alignment_score, alignment_grade = self._calculate_alignment_score(timeframes, direction)
-        sub_scores['timeframe_alignment'] = alignment_score
+        # 從40%降低到30%
+        sub_scores['timeframe_alignment'] = alignment_score * 0.75  # 40→30的調整係數
         sub_scores['alignment_grade'] = alignment_grade
         
         # 保留EMA偏差數據供參考（但不計入主評分）
@@ -892,11 +893,12 @@ class RuleBasedSignalGenerator:
             sub_scores['ema_deviation_reference'] = deviation_metrics['deviation_score']
             sub_scores['deviation_quality_reference'] = deviation_metrics['deviation_quality']
         
-        # 2️⃣ 市場結構 (20%)
+        # 2️⃣ v3.19 Phase 1：市場結構 (25%)
+        # 從20%提高到25%，提升市場結構權重
         structure_score = 0.0
         if (direction == 'LONG' and market_structure == 'bullish') or \
            (direction == 'SHORT' and market_structure == 'bearish'):
-            structure_score = 20.0
+            structure_score = 25.0  # 從20提高到25
         
         sub_scores['market_structure'] = structure_score
         
@@ -944,41 +946,84 @@ class RuleBasedSignalGenerator:
         
         sub_scores['order_block'] = ob_score
         
-        # 4️⃣ 動量指標 (10%)
+        # 4️⃣ v3.19 Phase 1：動量指標 (15%)
+        # 從10%提高到15%，增加動量確認重要性
         momentum_score = 0.0
         rsi = indicators['rsi']
         macd_hist = indicators['macd_hist']
+        macd = indicators['macd']
+        macd_signal = indicators['macd_signal']
         
+        # 擴大RSI範圍，增加趨勢確認
         if direction == 'LONG':
-            if 50 <= rsi <= 70:
+            # RSI範圍從50-70擴大到45-75
+            if 45 <= rsi <= 75:
                 momentum_score += 5.0
-            if macd_hist > 0:
+            # RSI上升動量確認（新增）
+            if rsi > 30:
+                momentum_score += 2.0
+            # MACD交叉確認（增強）
+            if macd_hist > 0 and macd > macd_signal:
+                momentum_score += 8.0
+            elif macd_hist > 0:
                 momentum_score += 5.0
         elif direction == 'SHORT':
-            if 30 <= rsi <= 50:
+            # RSI範圍從30-50擴大到25-55
+            if 25 <= rsi <= 55:
                 momentum_score += 5.0
-            if macd_hist < 0:
+            # RSI下降動量確認（新增）
+            if rsi < 70:
+                momentum_score += 2.0
+            # MACD交叉確認（增強）
+            if macd_hist < 0 and macd < macd_signal:
+                momentum_score += 8.0
+            elif macd_hist < 0:
                 momentum_score += 5.0
         
-        sub_scores['momentum'] = momentum_score
+        # 限制最大15分
+        sub_scores['momentum'] = min(15.0, momentum_score)
         
-        # 5️⃣ 波動率 (10%)
+        # 5️⃣ v3.19 Phase 1：波動率 (10%) - 基於市場環境動態閾值
         volatility_score = 0.0
         bb_width = indicators['bb_width']
+        atr = indicators['atr']
         
         # 計算波動率分位數
         bb_width_series = calculate_bollinger_bands(m5_data)['width']
         bb_percentile = (bb_width_series <= bb_width).sum() / len(bb_width_series)
         
-        # 中等波動率最佳
-        if 0.3 <= bb_percentile <= 0.7:
-            volatility_score = 10.0
-        elif 0.2 <= bb_percentile <= 0.8:
-            volatility_score = 7.0
-        else:
-            volatility_score = 4.0
+        # 計算ATR相對價格百分比
+        current_price = m5_data['close'].iloc[-1]
+        atr_percent = atr / current_price
         
-        sub_scores['volatility'] = volatility_score
+        # 判斷市場環境（基於趨勢一致性）
+        trend_consistency = abs(sum([
+            1 if h1_trend == direction.lower() else -1,
+            1 if m15_trend == direction.lower() else -1,
+            1 if m5_trend == direction.lower() else -1
+        ]))
+        
+        # 趨勢市場（一致性>=2）vs 震盪市場（一致性<2）
+        if trend_consistency >= 2:
+            # 趨勢市場：需要更高波動率
+            ideal_range = (0.4, 0.8)
+        else:
+            # 震盪市場：適中波動率更佳
+            ideal_range = (0.2, 0.6)
+        
+        # 波動率適宜度評分
+        if ideal_range[0] <= bb_percentile <= ideal_range[1]:
+            volatility_score += 6.0
+        elif 0.1 <= bb_percentile <= 0.9:
+            volatility_score += 3.0
+        
+        # ATR相對水平評分
+        if 0.005 <= atr_percent <= 0.03:  # 0.5%-3%日波動率
+            volatility_score += 4.0
+        elif 0.03 < atr_percent <= 0.05:  # 3%-5%仍可接受
+            volatility_score += 2.0
+        
+        sub_scores['volatility'] = min(10.0, volatility_score)
         
         # 總分
         total_score = sum(sub_scores.values())
