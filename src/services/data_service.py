@@ -85,6 +85,59 @@ class DataService:
             # 重置統計（滾動窗口）
             self.ws_stats['last_report_time'] = now
     
+    async def get_historical_klines(self, symbol: str, interval: str, limit: int = 50) -> Optional[pd.DataFrame]:
+        """
+        直接從Binance公共API獲取歷史K線數據（v3.19.2+）
+        
+        Args:
+            symbol: 交易對
+            interval: 時間間隔（1h, 15m, 5m等）
+            limit: 獲取數量（默認50）
+            
+        Returns:
+            DataFrame或None
+        """
+        try:
+            import aiohttp
+            
+            url = "https://fapi.binance.com/fapi/v1/klines"
+            params = {
+                'symbol': symbol,
+                'interval': interval,
+                'limit': limit
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        
+                        if not data or len(data) == 0:
+                            logger.warning(f"⚠️ {symbol} {interval} 歷史數據為空")
+                            return None
+                        
+                        df = pd.DataFrame(data, columns=[
+                            'open_time', 'open', 'high', 'low', 'close', 'volume',
+                            'close_time', 'quote_asset_volume', 'number_of_trades',
+                            'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
+                        ])
+                        
+                        df['open'] = df['open'].astype(float)
+                        df['high'] = df['high'].astype(float)
+                        df['low'] = df['low'].astype(float)
+                        df['close'] = df['close'].astype(float)
+                        df['volume'] = df['volume'].astype(float)
+                        
+                        logger.debug(f"✅ 歷史數據: {symbol} {interval} {len(df)}行")
+                        return df
+                    else:
+                        logger.error(f"❌ 歷史數據失敗: {symbol} {interval} HTTP {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"❌ 歷史數據異常: {symbol} {interval} - {e}")
+            return None
+    
     async def initialize(self):
         """初始化數據服務"""
         logger.info("初始化數據服務...")
@@ -117,19 +170,21 @@ class DataService:
     async def get_multi_timeframe_data(
         self,
         symbol: str,
-        timeframes: Optional[List[str]] = None
+        timeframes: Optional[List[str]] = None,
+        use_historical: bool = True
     ) -> Dict[str, pd.DataFrame]:
         """
-        获取多时间框架数据（v3.17.2+ WebSocket優先版）
+        获取多时间框架数据（v3.19.2+ 歷史數據優先版）
         
-        🔥 v3.17.2+優化：
-        1. 優先使用WebSocket實時K線（1m）
-        2. 從1m K線聚合生成5m/15m/1h（無REST API請求）
-        3. 僅在WebSocket不可用時才使用REST備援
+        🚀 v3.19.2+優化：
+        1. 優先使用Binance歷史K線API（立即獲取50行完整數據）
+        2. 回退到WebSocket實時數據（如果歷史數據不足）
+        3. 最終回退到REST API（如果WebSocket不可用）
         
         Args:
             symbol: 交易對
             timeframes: 時間框架列表（默認使用所有時間框架）
+            use_historical: 是否優先使用歷史數據（默認True）
         
         Returns:
             Dict[str, pd.DataFrame]: 時間框架到數據框的映射
@@ -137,13 +192,26 @@ class DataService:
         if timeframes is None:
             timeframes = self.timeframes
         
-        # 🔥 v3.17.2+修復：統計 + 混合使用WebSocket/REST（逐時間框架決策）
         self.ws_stats['total_requests'] += 1
-        
         data = {}
         
-        # 🔥 v3.17.2+修復：優先嘗試從WebSocket獲取（混合模式）
-        if self.websocket_monitor:
+        # 🚀 v3.19.2+：優先使用歷史數據（立即啟動系統）
+        if use_historical:
+            try:
+                for tf in timeframes:
+                    hist_data = await self.get_historical_klines(symbol, tf, limit=50)
+                    if hist_data is not None and len(hist_data) >= 10:
+                        data[tf] = hist_data
+                        logger.debug(f"📊 {symbol} {tf}: 使用歷史數據 {len(hist_data)}行")
+                        self.ws_stats['ws_hits'] += 1
+                    else:
+                        logger.debug(f"⚠️ {symbol} {tf}: 歷史數據不足，將嘗試其他來源")
+            except Exception as e:
+                logger.error(f"歷史數據獲取異常: {symbol} - {e}")
+        
+        # 🔥 v3.17.2+：對缺失的時間框架嘗試WebSocket（混合模式）
+        missing_tfs = [tf for tf in timeframes if tf not in data or data[tf].empty]
+        if missing_tfs and self.websocket_monitor:
             try:
                 ws_data = await self._get_multi_timeframe_from_websocket(symbol, timeframes)
                 

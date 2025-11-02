@@ -1,0 +1,201 @@
+立即解決方案：直接獲取歷史數據
+方案1: 修改數據獲取邏輯（推薦）
+在 src/core/data_fetcher.py 中添加歷史數據獲取功能：
+
+python
+import aiohttp
+import pandas as pd
+from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
+
+class DataFetcher:
+    def __init__(self, config):
+        self.config = config
+        self.binance_base_url = "https://api.binance.com/api/v3"
+        
+    async def get_historical_klines(self, symbol: str, interval: str, limit: int = 50) -> pd.DataFrame:
+        """直接從Binance獲取歷史K線數據"""
+        try:
+            url = f"{self.binance_base_url}/klines"
+            params = {
+                'symbol': symbol,
+                'interval': interval,
+                'limit': limit
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        df = pd.DataFrame(data, columns=[
+                            'open_time', 'open', 'high', 'low', 'close', 'volume',
+                            'close_time', 'quote_asset_volume', 'number_of_trades',
+                            'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
+                        ])
+                        
+                        # 轉換數據類型
+                        df['open'] = df['open'].astype(float)
+                        df['high'] = df['high'].astype(float)
+                        df['low'] = df['low'].astype(float)
+                        df['close'] = df['close'].astype(float)
+                        df['volume'] = df['volume'].astype(float)
+                        
+                        logger.info(f"✅ 歷史數據獲取成功: {symbol} {interval} {len(df)}行")
+                        return df
+                    else:
+                        logger.error(f"❌ 歷史數據獲取失敗: {symbol} {interval} - HTTP {response.status}")
+                        return None
+                        
+        except Exception as e:
+            logger.error(f"❌ 歷史數據獲取異常: {symbol} {interval} - {e}")
+            return None
+    
+    async def get_multi_timeframe_data_with_history(self, symbol: str, timeframes: List[str] = None) -> Dict[str, pd.DataFrame]:
+        """獲取多時間框架數據（包含歷史數據）"""
+        if timeframes is None:
+            timeframes = ['1h', '15m', '5m']
+            
+        result = {}
+        
+        for tf in timeframes:
+            # 先嘗試獲取歷史數據
+            historical_data = await self.get_historical_klines(symbol, tf, limit=50)
+            
+            if historical_data is not None and len(historical_data) >= 10:
+                result[tf] = historical_data
+                logger.info(f"✅ {symbol} {tf}: 使用歷史數據 {len(historical_data)}行")
+            else:
+                # 備用方案：使用WebSocket實時數據
+                realtime_data = await self.get_realtime_data(symbol, tf)
+                result[tf] = realtime_data
+                logger.warning(f"⚠️ {symbol} {tf}: 歷史數據不足，使用實時數據 {len(realtime_data) if realtime_data else 0}行")
+                
+        return result
+方案2: 更新統一調度器
+在 src/core/unified_scheduler.py 中更新數據獲取邏輯：
+
+python
+async def scan_symbols(self, symbols: List[str]) -> List[Dict]:
+    """掃描所有交易對（使用歷史數據立即啟動）"""
+    valid_signals = []
+    
+    logger.info("🚀 使用Binance歷史數據立即啟動系統...")
+    
+    for i, symbol in enumerate(symbols):
+        try:
+            # 使用包含歷史數據的獲取方法
+            multi_tf_data = await self.data_fetcher.get_multi_timeframe_data_with_history(symbol)
+            
+            # 數據診斷（前3個symbol）
+            if i < 3:
+                logger.info(f"🔍 數據診斷 #{i+1} - {symbol}:")
+                for tf, df in multi_tf_data.items():
+                    if df is not None:
+                        logger.info(f"   {tf}: {len(df)}行, 最新收盤={df['close'].iloc[-1]:.2f}")
+                    else:
+                        logger.warning(f"   {tf}: 數據為None")
+            
+            # 生成信號
+            signal = self.signal_generator.generate_signal(symbol, multi_tf_data)
+            
+            if signal and signal.get('direction') != 'NONE':
+                valid_signals.append(signal)
+                
+        except Exception as e:
+            logger.error(f"❌ 掃描{symbol}時出錯: {e}")
+            continue
+            
+    return valid_signals
+方案3: 緊急部署腳本
+bash
+#!/bin/bash
+echo "🚀 緊急部署：使用Binance歷史數據立即啟動系統..."
+
+# 更新data_fetcher.py
+cat >> src/core/data_fetcher.py << 'EOF'
+
+# 添加歷史數據獲取方法（上面的代碼）
+EOF
+
+# 部署到Railway
+git add src/core/data_fetcher.py
+git add src/core/unified_scheduler.py
+git commit -m "feat: 添加Binance歷史數據獲取，立即啟動系統"
+git push origin main
+
+echo "✅ 部署完成！系統將立即開始工作（無需等待10小時）"
+📊 Binance API 時間框架對應表
+時間框架	API參數	獲取50根K線的時間跨度	數據量
+1小時	1h	50小時	50行
+15分鐘	15m	12.5小時	50行
+5分鐘	5m	4.2小時	50行
+1分鐘	1m	50分鐘	50行
+🎯 預期立即效果
+部署後立即看到的日誌：
+text
+🚀 使用Binance歷史數據立即啟動系統...
+🔍 數據診斷 #1 - BTCUSDT:
+   1h: 50行, 最新收盤=95234.50
+   15m: 50行, 最新收盤=95236.20  
+   5m: 50行, 最新收盤=95238.10
+✅ BTCUSDT 數據驗證通過 (#1)
+
+🔍 特徵計算診斷 - BTCUSDT:
+   數據形狀: 1h=(50,5), 15m=(50,5), 5m=(50,5)
+   1h技術指標: 8個計算成功
+     ✅ ema_20: 50
+     ✅ ema_50: 50
+     ✅ rsi_14: 50
+     ✅ 布林帶: 50
+   ✅ 信號生成成功: LONG
+
+📊 Pipeline進度快照（已掃描50個）
+   Stage1驗證: 有效=50, 拒絕=0
+   Stage3方向: 有=15, 無=35
+
+⏱️  平均分析時間: 45.9ms  ← ✅ 立即正常！
+🔧 優勢分析
+傳統方式（等待10小時）：
+❌ 需要真實等待10小時
+
+❌ WebSocket數據可能不完整
+
+❌ 系統無法立即測試
+
+歷史數據方式（立即啟動）：
+✅ 立即啟動：部署後5分鐘內開始工作
+
+✅ 數據完整：確保50行完整歷史數據
+
+✅ 指標準確：EMA50、RSI等需要長週期的指標可正確計算
+
+✅ 混合模式：歷史數據 + 實時WebSocket更新
+
+🚀 立即執行步驟
+bash
+# 1. 添加歷史數據獲取功能到 data_fetcher.py
+# 2. 更新 unified_scheduler.py 使用新方法
+# 3. 部署到Railway
+
+git add src/core/data_fetcher.py
+git add src/core/unified_scheduler.py
+git commit -m "緊急修復: 使用Binance歷史數據立即啟動，跳過10小時等待"
+git push origin main
+
+# 4. 監控日誌（5分鐘內應該看到效果）
+railway logs --follow | grep -E "歷史數據|數據診斷|Pipeline|平均分析時間"
+📋 驗證清單
+部署後檢查：
+
+看到"使用Binance歷史數據立即啟動系統"
+
+數據診斷顯示每個時間框架都有≥50行數據
+
+Stage1驗證: 有效=530, 拒絕=0
+
+平均分析時間 >10ms（不再是0.0ms）
+
+生成3-10個交易信號
+
