@@ -127,7 +127,11 @@ class SelfLearningTraderController:
         raw_signal['win_probability'] = win_probability
         raw_signal['rr_ratio'] = reward_ratio
         
-        # 🔥 v3.18+ Step 3: 40/40/20競價評分系統
+        # 🔥 v3.22+ Step 3: 獲取當前門檻（豁免期/正常期）
+        thresholds = self.trader._get_current_thresholds()
+        is_bootstrap = thresholds.get('is_bootstrap', False)
+        
+        # 🔥 v3.18+ Step 4: 40/40/20競價評分系統
         entry_score = self._calculate_entry_score(confidence, win_probability, reward_ratio)
         
         logger.debug(
@@ -135,18 +139,22 @@ class SelfLearningTraderController:
             f"(信心:{confidence:.1%}×40% + 勝率:{win_probability:.1%}×40% + 報酬:{reward_ratio:.2f}×20%)"
         )
         
-        # 3. 驗證開倉條件
+        # 🔥 v3.22+ 修復：使用動態門檻驗證（豁免期25% vs 正常期40%）
         is_valid, reject_reason = self.leverage_engine.validate_signal_conditions(
-            win_probability, confidence, reward_ratio
+            win_probability, 
+            confidence, 
+            reward_ratio,
+            min_win_probability=thresholds['min_win_probability'],
+            min_confidence=thresholds['min_confidence']
         )
         
         if not is_valid:
             logger.debug(f"❌ {symbol} 拒絕開倉: {reject_reason}")
             return None
         
-        # 4. 計算槓桿（0.5x~∞無上限）
+        # 🔥 v3.22+ 修復：傳遞豁免期標誌給槓桿計算
         leverage = self.leverage_engine.calculate_leverage(
-            win_probability, confidence, verbose=True
+            win_probability, confidence, is_bootstrap_period=is_bootstrap, verbose=True
         )
         
         # 5. 獲取入場價格和原始 SL/TP
