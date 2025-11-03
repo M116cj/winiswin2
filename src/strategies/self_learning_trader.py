@@ -1074,6 +1074,40 @@ class SelfLearningTrader:
         
         if not allocated_signals:
             logger.info("💰 無信號獲得資金分配")
+            
+            # 🔥 v3.21+ 智能汰換系統：當保證金不足時，嘗試用高品質新信號替換低品質舊持倉
+            logger.info("🔄 檢查智能汰換機會...")
+            
+            # 找到最高品質的新信號
+            high_quality_signals = [
+                s for s in signals 
+                if self._evaluate_signal_quality(s) >= 80
+            ]
+            
+            if high_quality_signals:
+                # 按品質排序，取最好的
+                best_new_signal = max(
+                    high_quality_signals, 
+                    key=lambda x: self._evaluate_signal_quality(x)
+                )
+                
+                logger.info(
+                    f"🎯 發現高品質信號: {best_new_signal['symbol']} | "
+                    f"品質: {self._evaluate_signal_quality(best_new_signal):.1f}"
+                )
+                
+                # 嘗試智能汰換
+                replacement_success = await self.execute_smart_replacement(best_new_signal)
+                
+                if replacement_success:
+                    logger.info("✅ 智能汰換成功，已優化持倉組合")
+                    # 返回空列表（因為是汰換而非新增）
+                    return []
+                else:
+                    logger.info("⚠️ 智能汰換未執行（品質提升不足或無可替換持倉）")
+            else:
+                logger.info("⚠️ 無高品質信號（≥80）可用於汰換")
+            
             # 創建虛擬倉位（所有信號都未執行）
             await self._create_virtual_positions_from_dict(signals, None, total_equity)
             return []
