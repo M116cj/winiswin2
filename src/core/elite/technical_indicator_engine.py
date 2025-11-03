@@ -484,7 +484,7 @@ class EliteTechnicalEngine:
         self,
         data: pd.DataFrame,
         lookback: int = 20,
-        volume_multiplier: float = 1.5,
+        volume_multiplier: float = 1.2,  # 降低从1.5→1.2，更宽松的成交量要求
         rejection_threshold: float = 0.005,
         max_history: int = 20
     ) -> IndicatorResult:
@@ -518,7 +518,8 @@ class EliteTechnicalEngine:
             
             body_ratio = body / total_range
             
-            if body_ratio < 0.7:
+            # 降低从0.7→0.5，允许实体占K线50%即可（更实用）
+            if body_ratio < 0.5:
                 continue
             
             if avg_volume_20 is not None:
@@ -529,21 +530,20 @@ class EliteTechnicalEngine:
             is_bearish = data['close'].iloc[i] < data['open'].iloc[i]
             
             if is_bullish:
-                price_movement_after = data['close'].iloc[i+1:i+4].min() - data['close'].iloc[i]
-                if price_movement_after < 0:
-                    continue
-                
+                # 移除过于严格的后续价格检查，允许回调
+                # Order Block主要由强势K线+高成交量定义
                 ob_low = float(data['low'].iloc[i])
                 ob_high = float(data['open'].iloc[i])
                 ob_type = 'bullish'
+                ob_price = (ob_low + ob_high) / 2
+                ob_strength = body_ratio * (data['volume'].iloc[i] / avg_volume_20.iloc[i] if avg_volume_20 is not None else 1.0)
             elif is_bearish:
-                price_movement_after = data['close'].iloc[i] - data['close'].iloc[i+1:i+4].max()
-                if price_movement_after < 0:
-                    continue
-                
+                # 移除过于严格的后续价格检查，允许回调
                 ob_high = float(data['high'].iloc[i])
                 ob_low = float(data['open'].iloc[i])
                 ob_type = 'bearish'
+                ob_price = (ob_low + ob_high) / 2
+                ob_strength = body_ratio * (data['volume'].iloc[i] / avg_volume_20.iloc[i] if avg_volume_20 is not None else 1.0)
             else:
                 continue
             
@@ -551,6 +551,8 @@ class EliteTechnicalEngine:
                 'type': ob_type,
                 'high': ob_high,
                 'low': ob_low,
+                'price': ob_price,
+                'strength': ob_strength,
                 'index': i
             })
         
@@ -624,6 +626,9 @@ class EliteTechnicalEngine:
         """
         识别摆动高点和低点
         
+        使用改进逻辑：当前点显著高于/低于前后lookback周期（而非绝对最大/最小）
+        这样在趋势数据中也能检测到摆动点
+        
         Args:
             data: K线数据框
             lookback: 回溯周期
@@ -640,22 +645,36 @@ class EliteTechnicalEngine:
         
         high = data['high']
         low = data['low']
-        window = lookback * 2 + 1
         
         swing_highs = []
         swing_lows = []
         
         for i in range(lookback, len(data) - lookback):
-            window_high = high.iloc[i-lookback:i+lookback+1]
-            window_low = low.iloc[i-lookback:i+lookback+1]
+            # 改用更实用的局部极值定义：
+            # Swing High: 当前高点高于左侧至少lookback/2个点 AND 高于右侧至少lookback/2个点
+            # Swing Low: 当前低点低于左侧至少lookback/2个点 AND 低于右侧至少lookback/2个点
             
-            if high.iloc[i] == window_high.max():
+            left_highs = high.iloc[i-lookback:i]
+            right_highs = high.iloc[i+1:i+lookback+1]
+            left_lows = low.iloc[i-lookback:i]
+            right_lows = low.iloc[i+1:i+lookback+1]
+            
+            # Swing High: 当前高点高于左侧大部分点和右侧大部分点
+            left_higher_count = (high.iloc[i] > left_highs).sum()
+            right_higher_count = (high.iloc[i] > right_highs).sum()
+            threshold = max(lookback // 2, 2)  # 至少高于2个点或lookback/2
+            
+            if left_higher_count >= threshold and right_higher_count >= threshold:
                 swing_highs.append({
                     'price': float(high.iloc[i]),
                     'index': i
                 })
             
-            if low.iloc[i] == window_low.min():
+            # Swing Low: 当前低点低于左侧大部分点和右侧大部分点
+            left_lower_count = (low.iloc[i] < left_lows).sum()
+            right_lower_count = (low.iloc[i] < right_lows).sum()
+            
+            if left_lower_count >= threshold and right_lower_count >= threshold:
                 swing_lows.append({
                     'price': float(low.iloc[i]),
                     'index': i

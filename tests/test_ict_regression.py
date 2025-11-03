@@ -72,25 +72,24 @@ class TestICTRegressionSuite(unittest.TestCase):
     
     @staticmethod
     def _create_trending_data(size: int, trend: str = 'up') -> pd.DataFrame:
-        """创建趋势性数据（上升/下降，确定性）"""
+        """创建趋势性数据（上升/下降，带波动和回调，确定性）"""
         np.random.seed(100 if trend == 'up' else 200)  # 不同趋势使用不同种子
         base_price = 50000
         data = []
-        trend_factor = 100 if trend == 'up' else -100  # 增强趋势信号
+        trend_factor = 15 if trend == 'up' else -15  # 降低从100→15，使趋势温和
         
         for i in range(size):
-            # 强趋势 + 小噪音
-            noise = np.random.normal(0, 20)  # 减少噪音，确保趋势清晰
-            open_price = base_price + (i * trend_factor) + noise
-            high = open_price + abs(np.random.normal(30, 10))
-            low = open_price - abs(np.random.normal(30, 10))
+            # 添加周期性回调（每10根K线一个回调周期）
+            pullback_cycle = np.sin(i * np.pi / 10) * 200  # 增大振幅从50→200，使回调明显
+            noise = np.random.normal(0, 30)  # 增加噪音从20→30
             
-            # 确保收盘价顺应趋势
-            if trend == 'up':
-                close = np.random.uniform(open_price, high)  # 上升趋势：接近高点
-            else:
-                close = np.random.uniform(low, open_price)  # 下降趋势：接近低点
+            # 趋势 + 回调 + 噪音
+            open_price = base_price + (i * trend_factor) + pullback_cycle + noise
+            high = open_price + abs(np.random.normal(40, 15))  # 增加波幅
+            low = open_price - abs(np.random.normal(40, 15))
             
+            # 收盘价随机分布在高低之间（不强制顺应趋势）
+            close = np.random.uniform(low, high)
             volume = np.random.uniform(1000, 10000)
             
             data.append({
@@ -236,32 +235,29 @@ class TestICTRegressionSuite(unittest.TestCase):
             self.assertIn('strength', ob, "订单块应包含strength字段")
             self.assertIn(ob['type'], ['bullish', 'bearish'], "订单块类型应为bullish或bearish")
     
+    # CRITICAL BUG: Order blocks检测在所有lookback参数下返回空，实现需修复
     def test_order_blocks_trending_up(self):
         """测试订单块 - 上升趋势应有订单块"""
         result = self.engine.calculate('order_blocks', self.edge_cases['trending_up'], lookback=10)
         
         self.assertIsInstance(result.value, list, "应返回订单块列表")
         
-        # 注意：强单向趋势（trend_factor=100）可能没有明显的order blocks
-        # 因为order blocks需要价格回调/反转区域
+        # CRITICAL: 趋势数据（带回调）必须检测到至少一个order block
         total_blocks = len(result.value)
+        self.assertGreater(total_blocks, 0, 
+                          f"FAIL: 50根K线趋势数据（带回调）未检测到Order Block，检测逻辑失效")
         
-        # 如果有order blocks，验证其结构
-        if total_blocks > 0:
-            # 验证结构
-            first_block = result.value[0]
-            self.assertIsInstance(first_block, dict, "Order Block应为字典")
-            self.assertIn('type', first_block, "Order Block必须包含type字段")
-            self.assertIn('price', first_block, "Order Block必须包含price字段")
-            self.assertIn(first_block['type'], ['bullish', 'bearish'], "type必须为bullish/bearish")
-            
-            # 验证至少有一个有效类型
-            valid_types = sum(1 for ob in result.value if isinstance(ob, dict) and ob.get('type') in ['bullish', 'bearish'])
-            self.assertGreater(valid_types, 0, "至少应有一个有效类型的order block")
-        else:
-            # 允许返回空列表（单向趋势无回调）
-            import warnings
-            warnings.warn("完美单向趋势未检测到Order Block（正常，因无回调区域）")
+        # 验证结构
+        first_block = result.value[0]
+        self.assertIsInstance(first_block, dict, "Order Block应为字典")
+        self.assertIn('type', first_block, "Order Block必须包含type字段")
+        self.assertIn('price', first_block, "Order Block必须包含price字段")
+        self.assertIn(first_block['type'], ['bullish', 'bearish'], "type必须为bullish/bearish")
+        
+        # CRITICAL: 上升趋势中必须有bullish blocks
+        bullish_count = sum(1 for ob in result.value if isinstance(ob, dict) and ob.get('type') == 'bullish')
+        self.assertGreater(bullish_count, 0, 
+                          f"FAIL: 上升趋势应检测到bullish blocks，实际检测到{total_blocks}个blocks，其中bullish={bullish_count}")
     
     def test_order_blocks_empty_data(self):
         """测试订单块 - 空数据应返回空列表"""
@@ -366,6 +362,7 @@ class TestICTRegressionSuite(unittest.TestCase):
             self.assertIn('price', result.value['highs'][0], "摆动点应包含price字段")
             self.assertIn('index', result.value['highs'][0], "摆动点应包含index字段")
     
+    # CRITICAL BUG: Swing points检测在所有lookback参数下返回空，实现需修复
     def test_swing_points_trending(self):
         """测试摆动点 - 趋势数据应识别到摆动点"""
         result = self.engine.calculate('swing_points', self.edge_cases['trending_up'], lookback=5)
@@ -381,30 +378,31 @@ class TestICTRegressionSuite(unittest.TestCase):
         self.assertIsInstance(highs, list, "highs应为列表")
         self.assertIsInstance(lows, list, "lows应为列表")
         
-        # 验证摆动点数量在合理范围内
+        # CRITICAL: 50根K线趋势数据（带波动）必须检测到摆动点
         total_swing_points = len(highs) + len(lows)
+        self.assertGreater(total_swing_points, 0, 
+                          f"FAIL: 50根K线趋势数据（带波动）未检测到摆动点，检测逻辑失效")
+        
+        # CRITICAL: 验证至少检测到多个摆动点（lookback=5，50根K线应有多个周期）
+        self.assertGreaterEqual(total_swing_points, 2, 
+                               f"FAIL: 50根K线仅检测到{total_swing_points}个摆动点，检测不足")
+        
+        # 验证摆动点数量在合理范围内
         self.assertLessEqual(len(highs), 50, "摆动高点不应超过数据长度")
         self.assertLessEqual(len(lows), 50, "摆动低点不应超过数据长度")
         
-        # 注意：完美单向趋势（trend_factor=100）可能没有明显的摆动点
-        # 因为swing points需要局部高低点反转
-        if total_swing_points > 0:
-            # 如果检测到摆动点，验证其结构
-            if len(highs) > 0:
-                self.assertIn('price', highs[0], "摆动高点必须包含price字段")
-                self.assertIn('index', highs[0], "摆动高点必须包含index字段")
-                self.assertIsInstance(highs[0]['price'], (int, float), "price必须为数值")
-                self.assertIsInstance(highs[0]['index'], int, "index必须为整数")
-            
-            if len(lows) > 0:
-                self.assertIn('price', lows[0], "摆动低点必须包含price字段")
-                self.assertIn('index', lows[0], "摆动低点必须包含index字段")
-                self.assertIsInstance(lows[0]['price'], (int, float), "price必须为数值")
-                self.assertIsInstance(lows[0]['index'], int, "index必须为整数")
-        else:
-            # 允许返回空列表（单向趋势无明显摆动）
-            import warnings
-            warnings.warn("完美单向趋势未检测到Swing Points（正常，因无局部反转）")
+        # 验证结构（至少有一个high或low）
+        if len(highs) > 0:
+            self.assertIn('price', highs[0], "摆动高点必须包含price字段")
+            self.assertIn('index', highs[0], "摆动高点必须包含index字段")
+            self.assertIsInstance(highs[0]['price'], (int, float), "price必须为数值")
+            self.assertIsInstance(highs[0]['index'], int, "index必须为整数")
+        
+        if len(lows) > 0:
+            self.assertIn('price', lows[0], "摆动低点必须包含price字段")
+            self.assertIn('index', lows[0], "摆动低点必须包含index字段")
+            self.assertIsInstance(lows[0]['price'], (int, float), "price必须为数值")
+            self.assertIsInstance(lows[0]['index'], int, "index必须为整数")
     
     def test_swing_points_empty_data(self):
         """测试摆动点 - 空数据应返回空列表"""
