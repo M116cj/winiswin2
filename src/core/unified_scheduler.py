@@ -518,6 +518,68 @@ class UnifiedScheduler:
                     )
                 logger.info("=" * 80)
             
+            # 🔥 v3.20.7 Bug #6修復：詳細Stage7雙門檻驗證診斷
+            if signal_candidates and not signals:
+                logger.info("=" * 80)
+                logger.info("🔍 Stage7 - 雙門檻驗證詳細診斷（前15個候選信號）")
+                logger.info("=" * 80)
+                
+                # 當前門檻設置
+                logger.info(f"📋 當前門檻設置:")
+                logger.info(f"   信心度  ≥ {self.config.MIN_CONFIDENCE*100:.0f}%")
+                logger.info(f"   勝率    ≥ {self.config.MIN_WIN_PROBABILITY*100:.0f}%")
+                logger.info(f"   R:R比   在 {self.config.MIN_RR_RATIO:.1f}-{self.config.MAX_RR_RATIO:.1f} 範圍內")
+                logger.info("")
+                
+                # 顯示前15個候選信號的詳細信息
+                sorted_candidates = sorted(signal_candidates, 
+                                          key=lambda x: (x['confidence'] + x['win_probability']), 
+                                          reverse=True)
+                
+                rejection_stats = {
+                    'confidence_too_low': 0,
+                    'win_rate_too_low': 0,
+                    'total_candidates': len(signal_candidates),
+                    'passed': len(signals)
+                }
+                
+                logger.info("📊 前15個候選信號詳情:")
+                for i, candidate in enumerate(sorted_candidates[:15], 1):
+                    symbol = candidate['symbol']
+                    confidence = candidate['confidence']
+                    win_rate = candidate['win_probability']
+                    has_signal = candidate['has_signal']
+                    
+                    # 判斷拒絕原因
+                    reasons = []
+                    if confidence < self.config.MIN_CONFIDENCE * 100:
+                        reasons.append(f"信心{confidence:.1f}<{self.config.MIN_CONFIDENCE*100:.0f}")
+                        rejection_stats['confidence_too_low'] += 1
+                    if win_rate < self.config.MIN_WIN_PROBABILITY * 100:
+                        reasons.append(f"勝率{win_rate:.1f}<{self.config.MIN_WIN_PROBABILITY*100:.0f}")
+                        rejection_stats['win_rate_too_low'] += 1
+                    
+                    status = "✅ 通過" if has_signal else f"❌ 拒絕({', '.join(reasons) if reasons else '未知'})"
+                    
+                    logger.info(
+                        f"  {i:2}. {symbol:12} | "
+                        f"信心={confidence:5.1f}% | "
+                        f"勝率={win_rate:5.1f}% | "
+                        f"{status}"
+                    )
+                
+                logger.info("")
+                logger.info("📊 Stage7 拒絕統計:")
+                logger.info(f"   總候選信號: {rejection_stats['total_candidates']}")
+                logger.info(f"   通過驗證: {rejection_stats['passed']}")
+                logger.info(f"   被拒絕: {rejection_stats['total_candidates'] - rejection_stats['passed']}")
+                if rejection_stats['confidence_too_low'] > 0:
+                    logger.info(f"     - 信心度不足: {rejection_stats['confidence_too_low']}")
+                if rejection_stats['win_rate_too_low'] > 0:
+                    logger.info(f"     - 勝率不足: {rejection_stats['win_rate_too_low']}")
+                
+                logger.info("=" * 80)
+            
             if signals:
                 logger.info(f"✅ 發現 {len(signals)} 個交易信號")
             else:

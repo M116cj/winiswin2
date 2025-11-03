@@ -51,14 +51,14 @@ class Config:
     VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))
     
     # ===== v3.17+ 核心策略配置 =====
-    MIN_CONFIDENCE: float = float(os.getenv("MIN_CONFIDENCE", "0.50"))
+    MIN_CONFIDENCE: float = float(os.getenv("MIN_CONFIDENCE", "0.40"))  # 🔥 v3.20.7: 50%→40% (Bug #6修復)
     MAX_SIGNALS: int = 10
     IMMEDIATE_EXECUTION_RANK: int = 3
     
     # ===== v3.17+ SelfLearningTrader 開倉條件 =====
-    MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.60"))  # 最低勝率60%
-    MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "1.0"))
-    MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "3.0"))  # 🔥 v3.18+：調整上限為3.0
+    MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.45"))  # 🔥 v3.20.7: 60%→45% (Bug #6修復)
+    MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "0.8"))  # 🔥 v3.20.7: 1.0→0.8 (擴大接受範圍)
+    MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "5.0"))  # 🔥 v3.20.7: 3.0→5.0 (擴大接受範圍)
     
     # ========================================
     # 🎓 模型啟動豁免方案 (v3.19+ 優化)
@@ -71,7 +71,7 @@ class Config:
     BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.25"))  # 🔥 v3.19：豁免期最低信心值25%（40%→25%）
     
     # ===== v3.19+ 資金分配配置（動態預算池 + 質量加權）=====
-    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.6"))  # 正常期最低質量門檻
+    SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.40"))  # 🔥 v3.20.7: 60%→40% (Bug #6修復)
     BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.25"))  # 🔥 v3.19：豁免期質量門檻25%（40%→25%）
     
     # ========================================
