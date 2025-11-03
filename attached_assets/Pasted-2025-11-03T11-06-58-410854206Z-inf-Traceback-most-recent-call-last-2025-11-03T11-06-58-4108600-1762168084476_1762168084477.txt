@@ -1,0 +1,1001 @@
+2025-11-03T11:06:58.410854206Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.410860018Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.410865873Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.410870845Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.410875208Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.410879534Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.410884438Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.410890000Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.438925636Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.438939325Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.438947288Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.438960548Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.438968189Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.438982319Z [inf]  2025-11-03 11:06:58,426 - src.strategies.rule_based_signal_generator - ERROR - ❌ RENDERUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.438987904Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.438994436Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.439000317Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.455070849Z [inf]  2025-11-03 11:06:58,451 - src.strategies.rule_based_signal_generator - ERROR - ❌ BANANAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.455077234Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.455082321Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.455087521Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.455092217Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.455097116Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.455101265Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.455106313Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.455111348Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.883975752Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.883983728Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.883989658Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.883994740Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.884000110Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.884006950Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.884013301Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.884018180Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.884024613Z [inf]  2025-11-03 11:06:58,552 - src.strategies.rule_based_signal_generator - ERROR - ❌ SYSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.884026090Z [inf]  2025-11-03 11:06:58,495 - src.strategies.rule_based_signal_generator - ERROR - ❌ GUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.884031743Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.884038951Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.884049083Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.884055549Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.884061994Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.884068908Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.884075231Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.884081704Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.884088164Z [inf]  2025-11-03 11:06:58,528 - src.strategies.rule_based_signal_generator - ERROR - ❌ SYNUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.888927321Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.888934691Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.888943821Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.888950349Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.888957095Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.888962474Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.888968425Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.888974331Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.888980354Z [inf]  2025-11-03 11:06:58,575 - src.strategies.rule_based_signal_generator - ERROR - ❌ VOXELUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.888986377Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.888992690Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.888998868Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.889005197Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889011224Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.889019676Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.889026379Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889033746Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.889040428Z [inf]  2025-11-03 11:06:58,602 - src.strategies.rule_based_signal_generator - ERROR - ❌ BRETTUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.889046587Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.889052801Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.889874137Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.889879755Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889885732Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.889891964Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.889898269Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889904064Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.889909784Z [inf]  2025-11-03 11:06:58,628 - src.strategies.rule_based_signal_generator - ERROR - ❌ POPCATUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.889914627Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.889919249Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.889923948Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.889930057Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889934604Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.889939207Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.889944731Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.889950517Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.889958459Z [inf]  2025-11-03 11:06:58,655 - src.strategies.rule_based_signal_generator - ERROR - ❌ SUNUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.889964332Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.889968594Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.889972474Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.889976238Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.890989276Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.891001537Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.891007360Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.891013056Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.891018750Z [inf]  2025-11-03 11:06:58,680 - src.strategies.rule_based_signal_generator - ERROR - ❌ DOGSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.891033831Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.891040567Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.891046998Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.891053590Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.891058837Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.891064944Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.891070636Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.891076412Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.891081217Z [inf]  2025-11-03 11:06:58,703 - src.strategies.rule_based_signal_generator - ERROR - ❌ MBOXUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.891086437Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.891092047Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.891097979Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.891103204Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.891108351Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.891114780Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.893192180Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.893206585Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.893213984Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.893215087Z [inf]  2025-11-03 11:06:58,728 - src.strategies.rule_based_signal_generator - ERROR - ❌ CHESSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.893223466Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.893226147Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.893232339Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.893232553Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.893238992Z [inf]  2025-11-03 11:06:58,780 - src.strategies.rule_based_signal_generator - ERROR - ❌ QUICKUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.893241611Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.893248615Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.893255556Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.893264025Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.893271519Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.893280054Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.893286653Z [inf]  2025-11-03 11:06:58,754 - src.strategies.rule_based_signal_generator - ERROR - ❌ FLUXUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.893292663Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.893298982Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.893305987Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.893313175Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.893319505Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.896539428Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.896548419Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.896556222Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.896563236Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.896569149Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.896575070Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.896581074Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.896586805Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.896593666Z [inf]  2025-11-03 11:06:58,807 - src.strategies.rule_based_signal_generator - ERROR - ❌ RPLUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.896601058Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.896606813Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.896612949Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.896618608Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.896624834Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.896631653Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.896638089Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.896646377Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.896683761Z [inf]  2025-11-03 11:06:58,827 - src.strategies.rule_based_signal_generator - ERROR - ❌ POLUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.897153091Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.897160710Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.900959109Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.900969601Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.900976368Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.900983095Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.900989902Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.900997222Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.901010415Z [inf]  2025-11-03 11:06:58,847 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1MBABYDOGEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.901018179Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.901024935Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.901031841Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.901039517Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.901046592Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.901053088Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.901059287Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.901065670Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.901071752Z [inf]  2025-11-03 11:06:58,869 - src.strategies.rule_based_signal_generator - ERROR - ❌ NEIROUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.901078064Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.901084764Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.901093327Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.901102193Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.902756940Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.902765965Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.902772106Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.902778578Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.902785073Z [inf]  2025-11-03 11:06:58,870 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描250個）
+2025-11-03T11:06:58.902792443Z [inf]  2025-11-03 11:06:58,870 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=249, 拒絕=0
+2025-11-03T11:06:58.902798993Z [inf]  2025-11-03 11:06:58,870 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=211, 無=38
+2025-11-03T11:06:58.902805233Z [inf]  2025-11-03 11:06:58,896 - src.strategies.rule_based_signal_generator - ERROR - ❌ KDAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.902811280Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.902817670Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.902824281Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.902830694Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.902836816Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.902842559Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.902848769Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.902854775Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.922809569Z [inf]  2025-11-03 11:06:58,919 - src.strategies.rule_based_signal_generator - ERROR - ❌ FIDAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.922813154Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.922822512Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.922825837Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.922831194Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.922834550Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.922842238Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.922843751Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.922852267Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.948518246Z [inf]  2025-11-03 11:06:58,943 - src.strategies.rule_based_signal_generator - ERROR - ❌ FIOUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.948530926Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.948537710Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.948544084Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.948550657Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.948556414Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.948561477Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.948566161Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.948571079Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:58.971297022Z [inf]  2025-11-03 11:06:58,965 - src.strategies.rule_based_signal_generator - ERROR - ❌ CATIUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:58.971306954Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:58.971313930Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:58.971319203Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:58.971325687Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.971334184Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:58.971339492Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:58.971344491Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:58.971349210Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.006577683Z [inf]  2025-11-03 11:06:59,002 - src.strategies.rule_based_signal_generator - ERROR - ❌ HMSTRUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.006584908Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.006588995Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.006593537Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.006598781Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.006603175Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.006607017Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.006610921Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.006614820Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.032571107Z [inf]  2025-11-03 11:06:59,025 - src.strategies.rule_based_signal_generator - ERROR - ❌ REIUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.032584759Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.032593442Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.032601470Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.032610570Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.032618903Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.032625737Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.032632311Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.032640370Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.032671008Z [inf]  2025-11-03 11:06:59,026 - src.core.unified_scheduler - INFO - ⏱️  進度: 256/530 | 已分析=256 | 平均分析=24.6ms | 平均數據=14.8ms
+2025-11-03T11:06:59.853648049Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853657551Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.853663997Z [inf]  2025-11-03 11:06:59,793 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000CATUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.853665044Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.853670564Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.853679948Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.853681126Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.853684488Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.853690887Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.853691333Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853697632Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853701136Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.853705894Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.853709021Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.853710593Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853715003Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853715322Z [inf]  2025-11-03 11:06:59,836 - src.strategies.rule_based_signal_generator - ERROR - ❌ GOATUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.853719582Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.853723777Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.853732689Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.853845978Z [inf]  2025-11-03 11:06:59,707 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.68秒 | 平均10.6ms/symbol
+2025-11-03T11:06:59.853850361Z [inf]  2025-11-03 11:06:59,707 - src.core.unified_scheduler - INFO - ⏱️  批次 5: 64个symbols数据获取完成，耗时0.68秒
+2025-11-03T11:06:59.853854859Z [inf]  2025-11-03 11:06:59,730 - src.strategies.rule_based_signal_generator - ERROR - ❌ COSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.853860515Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.853865713Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.853870355Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.853875371Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853879578Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.853888115Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.853892657Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853896983Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.853901725Z [inf]  2025-11-03 11:06:59,770 - src.strategies.rule_based_signal_generator - ERROR - ❌ DIAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.853906614Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.853912059Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.853916880Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.853922389Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.853927446Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.853933085Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.865683852Z [inf]  2025-11-03 11:06:59,862 - src.strategies.rule_based_signal_generator - ERROR - ❌ MOODENGUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.865691563Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.865697752Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.865703145Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.865709162Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.865714682Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.865720337Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.865725602Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.865731832Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.892361997Z [inf]  2025-11-03 11:06:59,885 - src.strategies.rule_based_signal_generator - ERROR - ❌ SAFEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.892372336Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.892379099Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.892385989Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.892391941Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.892398822Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.892405359Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.892412436Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.892570254Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.913488366Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.913498080Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.913507721Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.913515638Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.913524076Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.913530340Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.913550601Z [inf]  2025-11-03 11:06:59,911 - src.strategies.rule_based_signal_generator - ERROR - ❌ SANTOSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.913557709Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.913564794Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.949996866Z [inf]  2025-11-03 11:06:59,946 - src.strategies.rule_based_signal_generator - ERROR - ❌ PONKEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.950021647Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.950030958Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.950037937Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.950046447Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.950053595Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.950059956Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.950067018Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.950073638Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.972893627Z [inf]  2025-11-03 11:06:59,968 - src.strategies.rule_based_signal_generator - ERROR - ❌ COWUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.972906419Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.972913762Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.972919735Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.972927717Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.972934871Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:06:59.972941589Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.972947817Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.972954101Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.993157821Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:06:59.993171335Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.993179049Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:06:59.993192016Z [inf]  2025-11-03 11:06:59,989 - src.strategies.rule_based_signal_generator - ERROR - ❌ CETUSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:06:59.993197347Z [inf]  Traceback (most recent call last):
+2025-11-03T11:06:59.993201801Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:06:59.993207990Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:06:59.993214198Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:06:59.993219875Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.020460644Z [inf]  2025-11-03 11:07:00,015 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000000MOGUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.020482884Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.020492459Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.020499642Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.020506938Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.020514491Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.020524316Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.020531750Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.020540625Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.862794185Z [inf]  2025-11-03 11:07:00,525 - src.strategies.rule_based_signal_generator - ERROR - ❌ RAYSOLUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.862809969Z [inf]  2025-11-03 11:07:00,483 - src.strategies.rule_based_signal_generator - ERROR - ❌ ORCAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.862826890Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.862836232Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.862849132Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.862858327Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.862863396Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.862868559Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.863040658Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.863052086Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.863060641Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.863066439Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.863075494Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.863082200Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.863089452Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.863095420Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.863102298Z [inf]  2025-11-03 11:07:00,505 - src.strategies.rule_based_signal_generator - ERROR - ❌ MOVEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.863108681Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.863115341Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.864704726Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.864711168Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.864717197Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.864725308Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.864731200Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.864737443Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.864744752Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.864751951Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.864757800Z [inf]  2025-11-03 11:07:00,546 - src.strategies.rule_based_signal_generator - ERROR - ❌ KOMAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.864763624Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.864796040Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.864804842Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.864811063Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.864816739Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.864823060Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.864829703Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.864835560Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.864841914Z [inf]  2025-11-03 11:07:00,566 - src.strategies.rule_based_signal_generator - ERROR - ❌ VIRTUALUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.864848875Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.864854432Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.865752699Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.865762341Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.865773025Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.865781500Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.865784783Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.865789149Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.865795905Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.865796975Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.865804501Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.865805574Z [inf]  2025-11-03 11:07:00,606 - src.strategies.rule_based_signal_generator - ERROR - ❌ MEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.865810357Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.865813705Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.865817318Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.865817970Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.865822613Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.865835079Z [inf]  2025-11-03 11:07:00,647 - src.strategies.rule_based_signal_generator - ERROR - ❌ DEGOUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.865845906Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.865863239Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.865869704Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.865878426Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.867008997Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.867016905Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.867024606Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.867025263Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.867032376Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.867032746Z [inf]  2025-11-03 11:07:00,693 - src.strategies.rule_based_signal_generator - ERROR - ❌ MOCAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.867040781Z [inf]  2025-11-03 11:07:00,669 - src.strategies.rule_based_signal_generator - ERROR - ❌ VELODROMEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:00.867040872Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.867046527Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.867050100Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:00.867055027Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.867058463Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:00.867064214Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.867066604Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:00.867072497Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.867075205Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.867079623Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.867083937Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:00.867090479Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:00.867096754Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.868747533Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:00.868756234Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:00.868763452Z [inf]  2025-11-03 11:07:00,694 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描300個）
+2025-11-03T11:07:00.868792470Z [inf]  2025-11-03 11:07:00,694 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=299, 拒絕=0
+2025-11-03T11:07:00.868799856Z [inf]  2025-11-03 11:07:00,694 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=255, 無=44
+2025-11-03T11:07:00.868805919Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-03T11:07:00.868811348Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描300個交易對）
+2025-11-03T11:07:00.868815772Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-03T11:07:00.868819487Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 300
+2025-11-03T11:07:00.868824256Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=300, 拒絕=0
+2025-11-03T11:07:00.868829051Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-03T11:07:00.868832983Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=300
+2025-11-03T11:07:00.868836733Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-03T11:07:00.868840393Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          有方向=256, 無方向=44
+2025-11-03T11:07:00.870568569Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=37
+2025-11-03T11:07:00.870577636Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=210
+2025-11-03T11:07:00.870584999Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=2
+2025-11-03T11:07:00.870592004Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=5
+2025-11-03T11:07:00.870599736Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=2
+2025-11-03T11:07:00.870606103Z [inf]  2025-11-03 11:07:00,714 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-03T11:07:01.836909835Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.836922126Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.836928315Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.836934213Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.836939028Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.837139387Z [inf]  2025-11-03 11:07:01,762 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.56秒 | 平均8.7ms/symbol
+2025-11-03T11:07:01.837156027Z [inf]  2025-11-03 11:07:01,762 - src.core.unified_scheduler - INFO - ⏱️  批次 6: 64个symbols数据获取完成，耗时0.56秒
+2025-11-03T11:07:01.837163589Z [inf]  2025-11-03 11:07:01,804 - src.strategies.rule_based_signal_generator - ERROR - ❌ SUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.837171103Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.837179346Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.837187414Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.852385828Z [inf]  2025-11-03 11:07:01,848 - src.strategies.rule_based_signal_generator - ERROR - ❌ ARCUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.852394194Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.852400335Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.852405180Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.852411474Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.852418062Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.852423040Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.852427841Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.852434311Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.906823515Z [inf]  2025-11-03 11:07:01,893 - src.strategies.rule_based_signal_generator - ERROR - ❌ TRUMPUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.906839573Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.906848766Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.906855983Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.906862939Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.906868689Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.906874726Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.906881482Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.906890669Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.921330963Z [inf]  2025-11-03 11:07:01,917 - src.strategies.rule_based_signal_generator - ERROR - ❌ MELANIAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.921340217Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.921349715Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.921355728Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.921360829Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.921366348Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.921371651Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.921377059Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.921382721Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.949524802Z [inf]  2025-11-03 11:07:01,943 - src.strategies.rule_based_signal_generator - ERROR - ❌ VTHOUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.949537362Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.949548566Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.949556296Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.949562510Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.949570262Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.949576382Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.949582700Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.949589315Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.969600317Z [inf]  2025-11-03 11:07:01,965 - src.strategies.rule_based_signal_generator - ERROR - ❌ ANIMEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.969616367Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.969625908Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.969634260Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.969643215Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.969651658Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.969664472Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.969672087Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.969681121Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:01.996484105Z [inf]  2025-11-03 11:07:01,989 - src.strategies.rule_based_signal_generator - ERROR - ❌ VINEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:01.996491682Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:01.996500097Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:01.996506842Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:01.996517637Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.996525622Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:01.996536462Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:01.996543183Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:01.996549767Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.017365725Z [inf]  2025-11-03 11:07:02,015 - src.strategies.rule_based_signal_generator - ERROR - ❌ PIPPINUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.017370874Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.017375489Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.017382592Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.017387458Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.017391929Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.017396119Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.017400128Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.017405446Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.046789528Z [inf]  2025-11-03 11:07:02,039 - src.strategies.rule_based_signal_generator - ERROR - ❌ VVVUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.046798834Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.046805142Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.046811523Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.046818780Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.046825442Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.046834406Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.046842097Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.046849009Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.067696660Z [inf]  2025-11-03 11:07:02,065 - src.strategies.rule_based_signal_generator - ERROR - ❌ BERAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.067706670Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.067715915Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.067722501Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.067731500Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.067739628Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.067746302Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.067753454Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.067760030Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.099168621Z [inf]  2025-11-03 11:07:02,093 - src.strategies.rule_based_signal_generator - ERROR - ❌ TSTUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.099185809Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.099194236Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.099201939Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.099209952Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.099217574Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.099227790Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.099236769Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.904101075Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.904115353Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.904123930Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.904127044Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.904135844Z [inf]  2025-11-03 11:07:02,518 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=293, 無=56
+2025-11-03T11:07:02.904140111Z [inf]  2025-11-03 11:07:02,518 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描350個）
+2025-11-03T11:07:02.904152126Z [inf]  2025-11-03 11:07:02,518 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=349, 拒絕=0
+2025-11-03T11:07:02.904155246Z [inf]  2025-11-03 11:07:02,540 - src.strategies.rule_based_signal_generator - ERROR - ❌ BROCCOLI714USDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.904160977Z [inf]  2025-11-03 11:07:02,517 - src.strategies.rule_based_signal_generator - ERROR - ❌ TUTUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.904167415Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.904177943Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.904179196Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.904180061Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.904192366Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.904195754Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.904204159Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.904209728Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.904219536Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.908762012Z [inf]  2025-11-03 11:07:02,625 - src.strategies.rule_based_signal_generator - ERROR - ❌ BANANAS31USDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.908788846Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.908814262Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.908819546Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.908827943Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.908834284Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.908837829Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.908843489Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.908848134Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.908854141Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.908855040Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.908859113Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.908859539Z [inf]  2025-11-03 11:07:02,648 - src.strategies.rule_based_signal_generator - ERROR - ❌ BRUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.908868116Z [inf]  2025-11-03 11:07:02,677 - src.strategies.rule_based_signal_generator - ERROR - ❌ PLUMEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.908872100Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.908881920Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.908906126Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.908928975Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.908932173Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.908941129Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.909288485Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.909297241Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.909304127Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.909310759Z [inf]  2025-11-03 11:07:02,568 - src.strategies.rule_based_signal_generator - ERROR - ❌ BROCCOLIF3BUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.909319022Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.909325243Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.909330928Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.909344840Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.909353241Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.909358983Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.909365450Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.909372026Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:02.909379400Z [inf]  2025-11-03 11:07:02,594 - src.strategies.rule_based_signal_generator - ERROR - ❌ SIRENUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:02.909385975Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.909393123Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.909400636Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.909410437Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.909417986Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:02.909425588Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:02.909432166Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:02.911090202Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:02.911113243Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:02.911127179Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:02.911136923Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.470188270Z [inf]  2025-11-03 11:07:03,465 - src.strategies.rule_based_signal_generator - ERROR - ❌ DOLOUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.470195083Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.470200084Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.470204745Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.470208869Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.470214235Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.470218243Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.470222155Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.470227058Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.895370414Z [inf]  2025-11-03 11:07:03,499 - src.strategies.rule_based_signal_generator - ERROR - ❌ HAEDALUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.895379909Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.895388677Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.895567413Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.895576100Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.895583849Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896087560Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896092350Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896097709Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896103980Z [inf]  2025-11-03 11:07:03,530 - src.strategies.rule_based_signal_generator - ERROR - ❌ SXTUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896109294Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896114251Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896119367Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896123820Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896129934Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896135401Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896140526Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896146083Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896151935Z [inf]  2025-11-03 11:07:03,558 - src.strategies.rule_based_signal_generator - ERROR - ❌ ASRUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896187973Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896203753Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896208372Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896213753Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896219059Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896224081Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896229176Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896236143Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896241872Z [inf]  2025-11-03 11:07:03,597 - src.strategies.rule_based_signal_generator - ERROR - ❌ B2USDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896246977Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896252297Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896257976Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896263919Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896272373Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896276259Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896286435Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896288369Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896294636Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896303104Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896308691Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896316928Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896322946Z [inf]  2025-11-03 11:07:03,626 - src.strategies.rule_based_signal_generator - ERROR - ❌ MILKUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896329745Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896336620Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896342281Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896348158Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896353070Z [inf]  2025-11-03 11:07:03,654 - src.strategies.rule_based_signal_generator - ERROR - ❌ SYRUPUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896359583Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896366807Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896374300Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896380588Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896389979Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.896399664Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.896408487Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.896419224Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.896428522Z [inf]  2025-11-03 11:07:03,675 - src.strategies.rule_based_signal_generator - ERROR - ❌ OBOLUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.896435854Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.896443530Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.896450000Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.896457583Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.897740924Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.897750727Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.897757862Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.897765359Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.897771123Z [inf]  2025-11-03 11:07:03,778 - src.strategies.rule_based_signal_generator - ERROR - ❌ NXPCUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:03.897778092Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:03.897784989Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:03.897793228Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:03.897800550Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.897807199Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:03.897813544Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:03.897819527Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:03.897826666Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:03.897832755Z [inf]  2025-11-03 11:07:03,779 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描400個）
+2025-11-03T11:07:03.897838872Z [inf]  2025-11-03 11:07:03,779 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=399, 拒絕=0
+2025-11-03T11:07:03.897844034Z [inf]  2025-11-03 11:07:03,779 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=334, 無=65
+2025-11-03T11:07:03.897851160Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-03T11:07:03.897857863Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描400個交易對）
+2025-11-03T11:07:03.899344338Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-03T11:07:03.899354296Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 400
+2025-11-03T11:07:03.899361969Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=400, 拒絕=0
+2025-11-03T11:07:03.899369148Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-03T11:07:03.899376600Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=400
+2025-11-03T11:07:03.899384845Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-03T11:07:03.899392306Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          有方向=335, 無方向=65
+2025-11-03T11:07:03.899399182Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=60
+2025-11-03T11:07:03.899412778Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=262
+2025-11-03T11:07:03.899420219Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=4
+2025-11-03T11:07:03.899426853Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=6
+2025-11-03T11:07:03.899433800Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=3
+2025-11-03T11:07:03.899440740Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-03T11:07:03.901044100Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-03T11:07:03.901052607Z [inf]  2025-11-03 11:07:03,808 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-03T11:07:04.516274547Z [inf]  2025-11-03 11:07:04,507 - src.strategies.rule_based_signal_generator - ERROR - ❌ TANSSIUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.516281706Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.516287954Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.516292573Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.516296883Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.516301146Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.516309684Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.516314332Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.516318349Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.924756061Z [inf]  2025-11-03 11:07:04,575 - src.strategies.rule_based_signal_generator - ERROR - ❌ AINUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.924788616Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.924797625Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.924805145Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.924812064Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.924818735Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.924825968Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.924837541Z [inf]  2025-11-03 11:07:04,550 - src.strategies.rule_based_signal_generator - ERROR - ❌ CROSSUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.924845793Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.924852839Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.924859937Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.924866283Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.924876300Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.924885389Z [inf]  2025-11-03 11:07:04,529 - src.strategies.rule_based_signal_generator - ERROR - ❌ PUMPUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.924885666Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.924893226Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.924901576Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.924907267Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.924918345Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.926762493Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.926771830Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.926777108Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.926784370Z [inf]  2025-11-03 11:07:04,598 - src.strategies.rule_based_signal_generator - ERROR - ❌ CUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.926786345Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.926790097Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.926795515Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.926797151Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.926801468Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.926804673Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.926809517Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.926814157Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.926819361Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.926828408Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.926833427Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.926838466Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.926844615Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.926937000Z [inf]  2025-11-03 11:07:04,621 - src.strategies.rule_based_signal_generator - ERROR - ❌ VELVETUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.926944034Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.926949253Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.928445173Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.928453767Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.928454906Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.928464661Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.928470101Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.928471827Z [inf]  2025-11-03 11:07:04,669 - src.strategies.rule_based_signal_generator - ERROR - ❌ ERAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.928478317Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.928484469Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.928485570Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.928498829Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.928506568Z [inf]  2025-11-03 11:07:04,645 - src.strategies.rule_based_signal_generator - ERROR - ❌ TACUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.928512683Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.928519727Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.928524730Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.928530966Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.928536266Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.928541529Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.928599704Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.928605009Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.928611117Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.931476143Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.931488191Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.931496544Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931509739Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.931517031Z [inf]  2025-11-03 11:07:04,690 - src.strategies.rule_based_signal_generator - ERROR - ❌ TAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.931525400Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.931531825Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.931538085Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.931543513Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931549821Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.931555602Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.931562218Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931575560Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.931581933Z [inf]  2025-11-03 11:07:04,712 - src.strategies.rule_based_signal_generator - ERROR - ❌ CVXUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.931587972Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.931597620Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.931603910Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.931611154Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931616702Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.931622128Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.931810138Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931816174Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:04.931822094Z [inf]  2025-11-03 11:07:04,734 - src.strategies.rule_based_signal_generator - ERROR - ❌ SLPUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:04.931827735Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:04.931835460Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:04.931842101Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:04.931850551Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931856738Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:04.931863143Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:04.931869547Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:04.931875819Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.338238561Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.472164936Z [inf]  2025-11-03 11:07:05,469 - src.strategies.rule_based_signal_generator - ERROR - ❌ PTBUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.472179923Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.472187542Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.472193774Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.472200496Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.472207437Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.472213294Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.472219288Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.472225329Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.827546485Z [inf]  2025-11-03 11:07:05,515 - src.strategies.rule_based_signal_generator - ERROR - ❌ FLOCKUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.827550781Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.827555167Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.827559363Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.827563456Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.827567846Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.827572212Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.827576607Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.827581799Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.827587632Z [inf]  2025-11-03 11:07:05,545 - src.strategies.rule_based_signal_generator - ERROR - ❌ SKYUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.827592451Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.827597845Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.827603973Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.827610432Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.827616712Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.827622842Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.827629395Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.827634505Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.827640480Z [inf]  2025-11-03 11:07:05,574 - src.strategies.rule_based_signal_generator - ERROR - ❌ AVNTUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.829350290Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.829363053Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.829369585Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.829372438Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.829380473Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.829380579Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.829388546Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.829391370Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.829398121Z [inf]  2025-11-03 11:07:05,655 - src.strategies.rule_based_signal_generator - ERROR - ❌ UBUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.829398589Z [inf]  2025-11-03 11:07:05,623 - src.strategies.rule_based_signal_generator - ERROR - ❌ XPINUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.829405259Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.829412721Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.829414111Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.829421786Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.829422099Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.829433459Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.829439493Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.829446252Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.829451423Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.829456941Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.832096149Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.832106178Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.832113516Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.832121093Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.832127660Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.832135969Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.832141950Z [inf]  2025-11-03 11:07:05,683 - src.strategies.rule_based_signal_generator - ERROR - ❌ ZKCUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.832148600Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.832154944Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.832163159Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.832169515Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.832175924Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.832182369Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.832188730Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.832197018Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.832203521Z [inf]  2025-11-03 11:07:05,711 - src.strategies.rule_based_signal_generator - ERROR - ❌ TOSHIUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.832211295Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.832217447Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.832223635Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.832230097Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.834445210Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.834448788Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.834451087Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.834457945Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.834460301Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.834468359Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.834470798Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.834476720Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.834479752Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.834481425Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.834484587Z [inf]  2025-11-03 11:07:05,764 - src.strategies.rule_based_signal_generator - ERROR - ❌ 0GUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.834491142Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.834492514Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.834494865Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.834500082Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.834506659Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.834509773Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.834518910Z [inf]  2025-11-03 11:07:05,795 - src.strategies.rule_based_signal_generator - ERROR - ❌ AIAUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.834519006Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.834527511Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.836198912Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.836206240Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:05.881831246Z [inf]  2025-11-03 11:07:05,870 - src.strategies.rule_based_signal_generator - ERROR - ❌ TRADOORUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:05.881837676Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:05.881844295Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:05.881850379Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:05.881856843Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.881870167Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:05.881876207Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:05.881882680Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:05.881888023Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.058256685Z [inf]  2025-11-03 11:07:06,045 - src.strategies.rule_based_signal_generator - ERROR - ❌ ORDERUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.472382642Z [inf]  2025-11-03 11:07:06,467 - src.core.position_controller - INFO -    📭 當前無持倉
+2025-11-03T11:07:06.841151976Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.841165815Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.841176756Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.841188661Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.841196978Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.841206709Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.841214061Z [inf]  2025-11-03 11:07:06,558 - src.strategies.rule_based_signal_generator - ERROR - ❌ EULUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.841231173Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.841240339Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.841249429Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.841256568Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.841263917Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.841270675Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.841344453Z [inf]  2025-11-03 11:07:06,512 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 18个symbols | 成功18 | 失败0 | 耗时0.06秒 | 平均3.3ms/symbol
+2025-11-03T11:07:06.841348801Z [inf]  2025-11-03 11:07:06,512 - src.core.unified_scheduler - INFO - ⏱️  批次 9: 18个symbols数据获取完成，耗时0.06秒
+2025-11-03T11:07:06.841352740Z [inf]  2025-11-03 11:07:06,539 - src.strategies.rule_based_signal_generator - ERROR - ❌ METUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.841356569Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.841362257Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.842201519Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.842210225Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.842218122Z [inf]  2025-11-03 11:07:06,583 - src.strategies.rule_based_signal_generator - ERROR - ❌ ENSOUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.842225175Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.842231957Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.842241001Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.842249475Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.842256515Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.842262954Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.842269778Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.842276527Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.842283832Z [inf]  2025-11-03 11:07:06,634 - src.strategies.rule_based_signal_generator - ERROR - ❌ RECALLUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.842290579Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.842297021Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.842303445Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.842310939Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.842319348Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.842326054Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.842334751Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.842341217Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.842348071Z [inf]  2025-11-03 11:07:06,711 - src.strategies.rule_based_signal_generator - ERROR - ❌ RIVERUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.843569875Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.843573039Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.843577776Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.843584326Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.843584613Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.843589451Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.843594361Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.843599204Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.843603525Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.843607619Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.843611903Z [inf]  2025-11-03 11:07:06,749 - src.strategies.rule_based_signal_generator - ERROR - ❌ RVVUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.843616026Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.843619961Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.843624427Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.843629237Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.843633401Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.843638078Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.843641770Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.843645938Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.843651381Z [inf]  2025-11-03 11:07:06,779 - src.strategies.rule_based_signal_generator - ERROR - ❌ BLUAIUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.845262777Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.845264154Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.845271595Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.845274148Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.845274187Z [inf]  2025-11-03 11:07:06,840 - src.strategies.rule_based_signal_generator - ERROR - ❌ APRUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.845282453Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.845287564Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.845291023Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.845296392Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.845299666Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.845307553Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.845316012Z [inf]  2025-11-03 11:07:06,809 - src.strategies.rule_based_signal_generator - ERROR - ❌ TURTLEUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.845324717Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.845335177Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.845336846Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.845346157Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.845354526Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.845364625Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.845375851Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.845486883Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.846442445Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.846450797Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.846457675Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.846464690Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.875705802Z [inf]  2025-11-03 11:07:06,873 - src.strategies.rule_based_signal_generator - ERROR - ❌ ONUSDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.875711466Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.875716269Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.875720482Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.875725036Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.875729563Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.875734385Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.875739404Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.875744501Z [inf]  KeyError: 'trend_alignment'
+2025-11-03T11:07:06.920708942Z [inf]  2025-11-03 11:07:06,905 - src.strategies.rule_based_signal_generator - ERROR - ❌ 42USDT 信號生成失敗: 'trend_alignment'
+2025-11-03T11:07:06.920718842Z [inf]  Traceback (most recent call last):
+2025-11-03T11:07:06.920725202Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 567, in generate_signal
+2025-11-03T11:07:06.920732471Z [inf]      'reasoning': self._generate_reasoning(
+2025-11-03T11:07:06.920739280Z [inf]                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:06.920747562Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 1625, in _generate_reasoning
+2025-11-03T11:07:06.920753598Z [inf]      if sub_scores['trend_alignment'] >= 35:
+2025-11-03T11:07:06.920759780Z [inf]         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+2025-11-03T11:07:07.478931282Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 449
+2025-11-03T11:07:07.878319326Z [inf]  2025-11-03 11:07:07,570 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:11.163437664Z [inf]  2025-11-03 11:07:11,150 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard7 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:12.279646497Z [inf]  2025-11-03 11:07:12,259 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:12.373952870Z [inf]  2025-11-03 11:07:12,358 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard5 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:12.987704786Z [inf]  2025-11-03 11:07:12,970 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard4 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:13.300224830Z [inf]  2025-11-03 11:07:13,287 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard10 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:15.061273548Z [inf]  2025-11-03 11:07:15,052 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T11:07:21.232209284Z [inf]  2025-11-03 11:07:21,176 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
