@@ -45,11 +45,21 @@ class DataQualityMonitor:
                 return False
             
             kline_data = data.get('data', {})
-            kline = kline_data.get('k', {})
             
-            if not kline:
-                # 可能是价格数据，不是K线数据
+            # 如果是K线流，检查K线数据
+            if 'kline' in data.get('stream', ''):
+                kline = kline_data.get('k', {})
+                
+                if not kline:
+                    self.metrics['missing_fields'] += 1
+                    self.metrics['total_rejected'] += 1
+                    logger.debug(f"⚠️ K线流缺少K线数据")
+                    return False
+            else:
+                # 非K线数据（价格、账户等），只验证基本字段即可
                 return True
+            
+            kline = kline_data.get('k', {})
             
             # 检查K线字段
             kline_fields = ['t', 'o', 'h', 'l', 'c', 'v', 'x']
