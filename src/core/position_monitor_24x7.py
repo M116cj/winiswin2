@@ -56,6 +56,10 @@ class PositionMonitor24x7:
         # 🔥 v3.18+ 新增：統一評估引擎
         self.evaluation_engine = evaluation_engine or EvaluationEngine(model=None)
         
+        # 🔥 v3.20.2 Phase 6: 共享EliteTechnicalEngine實例（避免重複初始化+共享緩存）
+        from src.core.elite import EliteTechnicalEngine
+        self.tech_engine = EliteTechnicalEngine()
+        
         self.is_running = False
         self.monitor_task: Optional[asyncio.Task] = None
         
@@ -908,13 +912,9 @@ class PositionMonitor24x7:
             if data.empty or len(data) < 20:
                 return False
             
-            # ✅ v3.20.2: 使用 EliteTechnicalEngine
-            from src.core.elite import EliteTechnicalEngine
-            
-            tech_engine = EliteTechnicalEngine()
-            
+            # ✅ v3.20.2 Phase 6: 使用共享 EliteTechnicalEngine 實例
             # RSI反彈信號
-            rsi_result = tech_engine.calculate('rsi', data, period=14)
+            rsi_result = self.tech_engine.calculate('rsi', data, period=14)
             rsi = rsi_result.value
             if rsi.empty:
                 return False
@@ -932,7 +932,7 @@ class PositionMonitor24x7:
                 return True
             
             # MACD反彈信號（簡化版：只檢查MACD柱狀圖方向變化）
-            macd_result = tech_engine.calculate('macd', data, fast=12, slow=26, signal=9)
+            macd_result = self.tech_engine.calculate('macd', data, fast=12, slow=26, signal=9)
             macd_line = macd_result.value['macd']
             signal_line = macd_result.value['signal']
             histogram = macd_result.value['histogram']
@@ -1037,16 +1037,12 @@ class PositionMonitor24x7:
                     macd=0.0
                 )
             
-            # ✅ v3.20.2: 使用 EliteTechnicalEngine
-            from src.core.elite import EliteTechnicalEngine
-            
-            tech_engine = EliteTechnicalEngine()
-            
-            rsi_result = tech_engine.calculate('rsi', klines, period=14)
+            # ✅ v3.20.2 Phase 6: 使用共享 EliteTechnicalEngine 實例
+            rsi_result = self.tech_engine.calculate('rsi', klines, period=14)
             rsi = rsi_result.value
             latest_rsi = float(rsi.iloc[-1]) if not rsi.empty else 50.0
             
-            macd_result = tech_engine.calculate('macd', klines, fast=12, slow=26, signal=9)
+            macd_result = self.tech_engine.calculate('macd', klines, fast=12, slow=26, signal=9)
             macd_line = macd_result.value['macd']
             signal_line = macd_result.value['signal']
             histogram = macd_result.value['histogram']
@@ -1055,9 +1051,9 @@ class PositionMonitor24x7:
                 latest_macd_hist = float(histogram.iloc[-1])
             
             # EMA趨勢判斷
-            ema20_result = tech_engine.calculate('ema', klines, period=20)
+            ema20_result = self.tech_engine.calculate('ema', klines, period=20)
             ema20 = ema20_result.value
-            ema50_result = tech_engine.calculate('ema', klines, period=50)
+            ema50_result = self.tech_engine.calculate('ema', klines, period=50)
             ema50 = ema50_result.value
             
             trend_direction = "neutral"
@@ -1127,11 +1123,8 @@ class PositionMonitor24x7:
             if klines.empty or len(klines) < 20:
                 return 0.40
             
-            # ✅ v3.20.2: 使用 EliteTechnicalEngine
-            from src.core.elite import EliteTechnicalEngine
-            
-            tech_engine = EliteTechnicalEngine()
-            rsi_result = tech_engine.calculate('rsi', klines, period=14)
+            # ✅ v3.20.2 Phase 6: 使用共享 EliteTechnicalEngine 實例
+            rsi_result = self.tech_engine.calculate('rsi', klines, period=14)
             rsi = rsi_result.value
             
             if rsi.empty:
@@ -1194,13 +1187,10 @@ class PositionMonitor24x7:
             if klines.empty or len(klines) < 50:
                 return 0.50
             
-            # ✅ v3.20.2: 使用 EliteTechnicalEngine
-            from src.core.elite import EliteTechnicalEngine
-            
-            tech_engine = EliteTechnicalEngine()
-            ema20_result = tech_engine.calculate('ema', klines, period=20)
+            # ✅ v3.20.2 Phase 6: 使用共享 EliteTechnicalEngine 實例
+            ema20_result = self.tech_engine.calculate('ema', klines, period=20)
             ema20 = ema20_result.value
-            ema50_result = tech_engine.calculate('ema', klines, period=50)
+            ema50_result = self.tech_engine.calculate('ema', klines, period=50)
             ema50 = ema50_result.value
             
             if ema20.empty or ema50.empty:
