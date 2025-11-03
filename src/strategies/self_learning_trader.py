@@ -1368,3 +1368,419 @@ class SelfLearningTrader:
                 'is_bootstrap': False,
                 'completed_trades': completed_trades
             }
+    
+    # ========== 智能汰換系統 (Smart Replacement System) ==========
+    
+    async def execute_smart_replacement(self, new_signal: Dict) -> bool:
+        """
+        🔄 智能汰換：用高品質新信號替換最低品質舊持倉
+        
+        策略：
+        1. 評估新信號質量（必須 ≥80 才考慮汰換）
+        2. 獲取當前所有持倉
+        3. 找到品質最差的持倉
+        4. 比較品質差異（新信號必須明顯優於舊持倉，至少+15點）
+        5. 執行汰換（關閉舊倉 + 開啟新倉）
+        
+        Args:
+            new_signal: 新的交易信號
+            
+        Returns:
+            True表示汰換成功，False表示無法汰換
+        """
+        try:
+            logger.info("🔄 啟動智能汰換系統")
+            
+            # 1. 評估新信號質量
+            new_quality = self._evaluate_signal_quality(new_signal)
+            if new_quality < 80:  # 高品質門檻
+                logger.info(f"⚠️ 新信號質量 {new_quality:.1f} 未達汰換標準（需≥80）")
+                return False
+            
+            logger.info(f"✅ 新信號 {new_signal['symbol']} 質量: {new_quality:.1f}（達標）")
+            
+            # 2. 獲取當前持倉
+            current_positions = await self._get_current_positions_from_api()
+            if not current_positions:
+                logger.info("✅ 無當前持倉，無需汰換（可直接執行新信號）")
+                return False  # 返回False讓調用者知道應該直接執行新信號
+            
+            # 3. 找到品質最差的持倉
+            worst_position = self._find_lowest_quality_position(current_positions)
+            if not worst_position:
+                logger.warning("⚠️ 找不到可替換的持倉")
+                return False
+            
+            # 4. 比較品質差異（新信號必須明顯優於舊持倉）
+            worst_quality = self._calculate_position_quality(worst_position)
+            quality_improvement = new_quality - worst_quality
+            
+            if quality_improvement < 15:  # 至少提升15點品質
+                logger.info(
+                    f"⚠️ 品質提升不足: {quality_improvement:.1f}點 (<15) | "
+                    f"新:{new_quality:.1f} vs 舊:{worst_quality:.1f}"
+                )
+                return False
+            
+            # 5. 執行汰換
+            return await self._execute_quality_replacement(
+                worst_position, 
+                new_signal, 
+                quality_improvement
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ 智能汰換失敗: {e}", exc_info=True)
+            return False
+    
+    def _evaluate_signal_quality(self, signal: Dict) -> float:
+        """
+        評估信號品質分數（0-100）
+        
+        計算公式：
+        - 基礎品質 = (信心值 + 勝率) / 2
+        - 風險獎勵加成 = min(RR/3.0, 1.0) * 10
+        - 最終品質 = 基礎品質 + RR加成
+        
+        Args:
+            signal: 交易信號
+            
+        Returns:
+            品質分數（0-100）
+        """
+        try:
+            confidence = signal.get('confidence', 0)  # 0-100
+            win_probability = signal.get('win_probability', 0)  # 0-100
+            rr_ratio = signal.get('rr_ratio', signal.get('risk_reward_ratio', 1.0))
+            
+            # 基礎品質：信心值和勝率的平均
+            base_quality = (confidence + win_probability) / 2
+            
+            # 風險獎勵比加成（RR越高，加分越多，最多+10分）
+            rr_bonus = min(rr_ratio / 3.0, 1.0) * 10
+            
+            final_quality = base_quality + rr_bonus
+            
+            return max(0, min(100, final_quality))  # 限制在0-100範圍
+            
+        except Exception as e:
+            logger.error(f"❌ 信號品質評估失敗: {e}")
+            return 0
+    
+    def _find_lowest_quality_position(self, positions: List[Dict]) -> Optional[Dict]:
+        """
+        找到品質最低的持倉（基於信心值、勝率、時間衰減、浮虧）
+        
+        Args:
+            positions: 持倉列表
+            
+        Returns:
+            品質最低的持倉，或None
+        """
+        try:
+            if not positions:
+                return None
+            
+            # 為每個持倉計算當前品質分數
+            quality_scores = []
+            for position in positions:
+                quality = self._calculate_position_quality(position)
+                quality_scores.append((quality, position))
+                
+                logger.debug(
+                    f"📊 持倉品質評估: {position.get('symbol')} | "
+                    f"方向: {position.get('side')} | "
+                    f"品質分數: {quality:.1f}"
+                )
+            
+            # 按品質分數排序（升序），取最低的
+            quality_scores.sort(key=lambda x: x[0])
+            lowest_quality, worst_position = quality_scores[0]
+            
+            logger.info(
+                f"📉 找到最低品質持倉: {worst_position.get('symbol')} | "
+                f"品質分數: {lowest_quality:.1f} | "
+                f"方向: {worst_position.get('side')}"
+            )
+            
+            return worst_position
+            
+        except Exception as e:
+            logger.error(f"❌ 尋找最低品質持倉失敗: {e}")
+            return None
+    
+    def _calculate_position_quality(self, position: Dict) -> float:
+        """
+        計算持倉當前品質分數（0-100）
+        
+        考慮因素：
+        1. 基礎品質：原始信心值和勝率（如果有記錄）
+        2. 時間衰減：持倉越久，品質衰減越多（72小時線性衰減到0.5）
+        3. 浮虧懲罰：虧損超過2%則扣分
+        
+        Args:
+            position: 持倉信息
+            
+        Returns:
+            品質分數（0-100）
+        """
+        try:
+            from datetime import datetime, timezone, timedelta
+            
+            # 基礎品質：如果有原始信號數據則使用，否則使用保守估計50分
+            original_confidence = position.get('confidence', position.get('original_confidence', 50))
+            original_win_rate = position.get('win_probability', position.get('original_win_rate', 50))
+            base_quality = (original_confidence + original_win_rate) / 2
+            
+            # 時間衰減懲罰（持倉越久，品質衰減越多）
+            entry_time = position.get('entry_time')
+            if entry_time:
+                if isinstance(entry_time, str):
+                    try:
+                        entry_time = datetime.fromisoformat(entry_time.replace('Z', '+00:00'))
+                    except:
+                        entry_time = datetime.now(timezone.utc)
+                
+                hours_held = (datetime.now(timezone.utc) - entry_time).total_seconds() / 3600
+                time_decay = max(0.5, 1.0 - (hours_held / 72))  # 72小時線性衰減到0.5
+            else:
+                time_decay = 0.8  # 無時間數據時使用保守衰減
+            
+            # 浮虧懲罰（基於PnL百分比）
+            pnl_penalty = 0
+            pnl_pct = position.get('pnl_pct', 0)
+            
+            if pnl_pct < -0.02:  # 虧損超過2%
+                pnl_penalty = abs(pnl_pct) * 100  # 虧損懲罰（-10% → -10分）
+            
+            # 最終品質分數
+            final_quality = (base_quality * time_decay) - pnl_penalty
+            
+            return max(0, min(100, final_quality))  # 限制在0-100範圍
+            
+        except Exception as e:
+            logger.error(f"❌ 持倉品質計算失敗: {e}")
+            return 0
+    
+    async def _get_current_positions_from_api(self) -> List[Dict]:
+        """
+        從Binance API獲取當前持倉列表
+        
+        Returns:
+            持倉列表，每個持倉包含：
+            - symbol: 交易對
+            - side: 方向（'LONG' 或 'SHORT'）
+            - size: 數量
+            - entry_price: 入場價格
+            - current_price: 當前價格（通過markPrice獲取）
+            - pnl: 盈虧（USDT）
+            - pnl_pct: 盈虧百分比
+            - leverage: 槓桿
+        """
+        try:
+            if not self.binance_client:
+                logger.error("❌ Binance客戶端未初始化")
+                return []
+            
+            # 獲取持倉信息
+            raw_positions = await self.binance_client.get_position_info_async()
+            
+            positions = []
+            for raw_pos in raw_positions:
+                position_amt = float(raw_pos.get('positionAmt', 0))
+                
+                # 跳過空倉位
+                if abs(position_amt) < 1e-8:
+                    continue
+                
+                symbol = raw_pos.get('symbol')
+                entry_price = float(raw_pos.get('entryPrice', 0))
+                unrealized_pnl = float(raw_pos.get('unRealizedProfit', 0))
+                leverage = int(raw_pos.get('leverage', 1))
+                
+                # 計算當前價格（通過markPrice）
+                mark_price = float(raw_pos.get('markPrice', entry_price))
+                
+                # 計算PnL百分比
+                if entry_price > 0:
+                    if position_amt > 0:  # LONG
+                        pnl_pct = (mark_price - entry_price) / entry_price
+                    else:  # SHORT
+                        pnl_pct = (entry_price - mark_price) / entry_price
+                else:
+                    pnl_pct = 0
+                
+                positions.append({
+                    'symbol': symbol,
+                    'side': 'LONG' if position_amt > 0 else 'SHORT',
+                    'size': abs(position_amt),
+                    'entry_price': entry_price,
+                    'current_price': mark_price,
+                    'pnl': unrealized_pnl,
+                    'pnl_pct': pnl_pct,
+                    'leverage': leverage,
+                    'raw_position': raw_pos  # 保留原始數據以備後用
+                })
+            
+            logger.debug(f"📊 獲取到 {len(positions)} 個持倉")
+            return positions
+            
+        except Exception as e:
+            logger.error(f"❌ 獲取持倉失敗: {e}")
+            return []
+    
+    async def _close_position_for_replacement(self, position: Dict) -> Optional[float]:
+        """
+        關閉持倉（用於汰換）
+        
+        Args:
+            position: 要關閉的持倉
+            
+        Returns:
+            釋放的保證金金額，失敗則返回None
+        """
+        try:
+            symbol = position.get('symbol')
+            side = position.get('side')
+            size = position.get('size')
+            
+            logger.info(f"🗑️ 關閉持倉: {symbol} {side} {size}")
+            
+            # 平倉方向：多頭平倉用SELL，空頭平倉用BUY
+            close_side = 'SELL' if side == 'LONG' else 'BUY'
+            
+            # 市價平倉
+            order_result = await self.binance_client.place_order(
+                symbol=symbol,
+                side=close_side,
+                order_type='MARKET',
+                quantity=size,
+                reduce_only=True  # 僅平倉
+            )
+            
+            if not order_result:
+                logger.error(f"❌ 平倉失敗: {symbol}")
+                return None
+            
+            # 計算釋放的保證金（入場價 × 數量 / 槓桿）
+            entry_price = position.get('entry_price', 0)
+            leverage = position.get('leverage', 1)
+            released_margin = (entry_price * size) / leverage
+            
+            logger.info(f"💰 釋放保證金: ${released_margin:.2f}")
+            
+            return released_margin
+            
+        except Exception as e:
+            logger.error(f"❌ 關閉持倉失敗 {position.get('symbol')}: {e}")
+            return None
+    
+    async def _execute_quality_replacement(
+        self,
+        old_position: Dict,
+        new_signal: Dict,
+        quality_improvement: float
+    ) -> bool:
+        """
+        執行品質汰換（關閉舊倉 + 開啟新倉）
+        
+        Args:
+            old_position: 要關閉的舊持倉
+            new_signal: 要執行的新信號
+            quality_improvement: 品質提升幅度
+            
+        Returns:
+            True表示汰換成功，False表示失敗
+        """
+        try:
+            old_symbol = old_position.get('symbol')
+            new_symbol = new_signal.get('symbol')
+            
+            logger.info(
+                f"🔄 執行品質汰換: {old_symbol} → {new_symbol} | "
+                f"品質提升: +{quality_improvement:.1f}點"
+            )
+            
+            # 1. 關閉舊持倉
+            released_margin = await self._close_position_for_replacement(old_position)
+            if released_margin is None:
+                logger.error(f"❌ 關閉舊持倉失敗: {old_symbol}")
+                return False
+            
+            # 2. 等待訂單結算（給交易所一點時間更新帳戶狀態）
+            import asyncio
+            await asyncio.sleep(0.5)
+            
+            # 3. 獲取最新帳戶狀態
+            account_balance = await self.binance_client.get_account_balance()
+            available_margin = account_balance['available_balance']
+            
+            # 4. 計算新頭寸（使用可用保證金的一部分，基於信號品質）
+            new_quality = self._evaluate_signal_quality(new_signal)
+            position_percentage = self._calculate_aggressive_position_percentage(new_quality)
+            max_position_value = available_margin * position_percentage
+            
+            # 5. 計算實際倉位大小
+            position_size = await self.calculate_position_size(
+                account_equity=available_margin,
+                entry_price=new_signal['entry_price'],
+                stop_loss=new_signal['adjusted_stop_loss'],
+                leverage=new_signal['leverage'],
+                symbol=new_symbol,
+                verbose=False
+            )
+            
+            # 限制倉位大小不超過最大值
+            position_notional = position_size * new_signal['entry_price']
+            if position_notional > max_position_value:
+                position_size = max_position_value / new_signal['entry_price']
+            
+            # 6. 執行新交易
+            logger.info(
+                f"📝 執行新交易: {new_symbol} | "
+                f"倉位: {position_size:.4f} | "
+                f"保證金使用率: {position_percentage:.0%}"
+            )
+            
+            # 調用原有的下單方法
+            order_result = await self._place_order_and_monitor(
+                signal=new_signal,
+                position_size=position_size
+            )
+            
+            if order_result:
+                logger.info(
+                    f"✅ 品質汰換成功: {old_symbol} → {new_symbol} | "
+                    f"釋放保證金: ${released_margin:.2f} | "
+                    f"新頭寸名義價值: ${position_notional:.2f} | "
+                    f"品質提升: +{quality_improvement:.1f}點"
+                )
+                return True
+            else:
+                logger.error(f"❌ 新交易執行失敗: {new_symbol}")
+                return False
+            
+        except Exception as e:
+            logger.error(f"❌ 品質汰換執行失敗: {e}", exc_info=True)
+            return False
+    
+    def _calculate_aggressive_position_percentage(self, quality: float) -> float:
+        """
+        根據信號品質計算激進倉位百分比
+        
+        高品質信號使用更高比例的保證金
+        
+        Args:
+            quality: 信號品質分數（0-100）
+            
+        Returns:
+            保證金使用百分比（0-1）
+        """
+        if quality >= 90:
+            return 0.35  # 35%保證金
+        elif quality >= 85:
+            return 0.30  # 30%保證金
+        elif quality >= 80:
+            return 0.25  # 25%保證金
+        else:
+            return 0.20  # 20%保證金
