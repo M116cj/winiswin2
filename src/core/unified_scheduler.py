@@ -323,6 +323,7 @@ class UnifiedScheduler:
             logger.info(f"📊 掃描 {len(symbols)} 個交易對中...")
             
             # 🔧 v3.19+ 修復：重置Pipeline統計計數器（防止多次掃描累加）
+            # 🔥 v3.20.3 Phase 6: 修復缺失的ADX分布鍵，防止KeyError
             if hasattr(self.self_learning_trader, 'signal_generator'):
                 self.self_learning_trader.signal_generator._pipeline_stats = {
                     'stage0_total_symbols': 0,
@@ -346,8 +347,20 @@ class UnifiedScheduler:
                     'stage5_confidence_calculated': 0,
                     'stage6_win_prob_calculated': 0,
                     'stage7_passed_double_gate': 0,
+                    'stage7_rejected_win_prob': 0,
+                    'stage7_rejected_confidence': 0,
+                    'stage7_rejected_rr': 0,
+                    'stage8_passed_quality': 0,
+                    'stage8_rejected_quality': 0,
+                    'stage9_ranked_signals': 0,
+                    'stage9_executed_signals': 0,
+                    'adx_distribution_lt10': 0,
+                    'adx_distribution_10_15': 0,
+                    'adx_distribution_15_20': 0,
+                    'adx_distribution_20_25': 0,
+                    'adx_distribution_gte25': 0
                 }
-                logger.info("🔧 Pipeline統計計數器已重置")
+                logger.info("✅ Pipeline統計計數器已完整重置（包含所有ADX分布鍵）")
             
             # 步驟 5：批量分析並生成信號
             signals = []

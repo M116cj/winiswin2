@@ -1,0 +1,1001 @@
+2025-11-03T04:12:57.302241566Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.302251788Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302253741Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.302256294Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.302263415Z [inf]  2025-11-03 04:12:56,764 - src.strategies.rule_based_signal_generator - ERROR - ❌ PONKEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302267415Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.302274414Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.302318223Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302331238Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302331796Z [inf]  2025-11-03 04:12:56,803 - src.strategies.rule_based_signal_generator - ERROR - ❌ CETUSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302344512Z [inf]  2025-11-03 04:12:56,785 - src.strategies.rule_based_signal_generator - ERROR - ❌ COWUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302350347Z [inf]  2025-11-03 04:12:56,737 - src.strategies.rule_based_signal_generator - ERROR - ❌ SANTOSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.302356816Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.302362411Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.302370456Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.302379299Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307299930Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307307845Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307315006Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307325027Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307331414Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307334451Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307339794Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307340652Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307350139Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307352864Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307353680Z [inf]  2025-11-03 04:12:56,821 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000000MOGUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307358969Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307369878Z [inf]  2025-11-03 04:12:56,977 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000XUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307372474Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307377467Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307382823Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307388195Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307390276Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307394382Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307398457Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307402723Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307405438Z [inf]  2025-11-03 04:12:56,951 - src.strategies.rule_based_signal_generator - ERROR - ❌ HIPPOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307409025Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307415677Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307416842Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307420018Z [inf]  2025-11-03 04:12:57,002 - src.strategies.rule_based_signal_generator - ERROR - ❌ DEGENUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307428130Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307428315Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307429518Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307439295Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307440420Z [inf]  2025-11-03 04:12:56,839 - src.strategies.rule_based_signal_generator - ERROR - ❌ GRASSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307447952Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307455270Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307462775Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307469730Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307477245Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307484119Z [inf]  2025-11-03 04:12:56,862 - src.strategies.rule_based_signal_generator - ERROR - ❌ DRIFTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307491158Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307762300Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307771002Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307782907Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307792145Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307798839Z [inf]  2025-11-03 04:12:56,882 - src.strategies.rule_based_signal_generator - ERROR - ❌ SWELLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307806253Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307813380Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307822072Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307828891Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307835987Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307844034Z [inf]  2025-11-03 04:12:56,904 - src.strategies.rule_based_signal_generator - ERROR - ❌ ACTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307852259Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307860021Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.307867012Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.307874547Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.307881703Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307891447Z [inf]  2025-11-03 04:12:56,926 - src.strategies.rule_based_signal_generator - ERROR - ❌ PNUTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.307898558Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.307906230Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.309292052Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.309298637Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309305522Z [inf]  2025-11-03 04:12:57,058 - src.strategies.rule_based_signal_generator - ERROR - ❌ AKTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309311554Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.309317154Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.309323286Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.309330585Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.309337847Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309345029Z [inf]  2025-11-03 04:12:57,116 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000CHEEMSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309353613Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.309359569Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.309371227Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.309379306Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.309386823Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309394347Z [inf]  2025-11-03 04:12:57,143 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000WHYUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.309401140Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.309409391Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.309416658Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.309423357Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.311436871Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.311451650Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.311461410Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.311469048Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.311479756Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311479979Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311490565Z [inf]  2025-11-03 04:12:57,168 - src.strategies.rule_based_signal_generator - ERROR - ❌ THEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311498955Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.311506024Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.311516322Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.311521813Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.311527932Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311535418Z [inf]  2025-11-03 04:12:57,193 - src.strategies.rule_based_signal_generator - ERROR - ❌ MORPHOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311542294Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.311548479Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.311554315Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.311560227Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.311564908Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.311571977Z [inf]  2025-11-03 04:12:57,219 - src.strategies.rule_based_signal_generator - ERROR - ❌ CHILLGUYUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.312658426Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.312665280Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.312670649Z [inf]  2025-11-03 04:12:57,289 - src.strategies.rule_based_signal_generator - ERROR - ❌ AEROUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.312676360Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.312681665Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.312688917Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.312694245Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.312700197Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.312715662Z [inf]  2025-11-03 04:12:57,245 - src.strategies.rule_based_signal_generator - ERROR - ❌ KAIAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.312725224Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.312731876Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.312740510Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.320161670Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.320258630Z [inf]  2025-11-03 04:12:57,317 - src.strategies.rule_based_signal_generator - ERROR - ❌ ACXUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.320264923Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.320272269Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.320278593Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.320285041Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.350391833Z [inf]  2025-11-03 04:12:57,348 - src.strategies.rule_based_signal_generator - ERROR - ❌ ORCAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.350402812Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.350413131Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.350420968Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.350430509Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.350437674Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.373093369Z [inf]  2025-11-03 04:12:57,367 - src.strategies.rule_based_signal_generator - ERROR - ❌ MOVEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.373101672Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.373109087Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.373115132Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.373121381Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.373127622Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.391272548Z [inf]  2025-11-03 04:12:57,388 - src.strategies.rule_based_signal_generator - ERROR - ❌ RAYSOLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.391279647Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.391286540Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.391292084Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.391298410Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.391303787Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.416048722Z [inf]  2025-11-03 04:12:57,407 - src.strategies.rule_based_signal_generator - ERROR - ❌ KOMAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.416058767Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.416069690Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.416079302Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.416087252Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.416097521Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.432913381Z [inf]  2025-11-03 04:12:57,426 - src.strategies.rule_based_signal_generator - ERROR - ❌ VIRTUALUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.432920935Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.432928234Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.432935893Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.432953605Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.432973982Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.451250188Z [inf]  2025-11-03 04:12:57,447 - src.strategies.rule_based_signal_generator - ERROR - ❌ SPXUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.451261766Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.451268014Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.451275224Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.451283008Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.451291697Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.476244763Z [inf]  2025-11-03 04:12:57,471 - src.strategies.rule_based_signal_generator - ERROR - ❌ MEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.476255212Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.476264053Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.476274211Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.476283142Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.476290870Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.491790424Z [inf]  2025-11-03 04:12:57,488 - src.strategies.rule_based_signal_generator - ERROR - ❌ AVAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.491796119Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.491802720Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.491809226Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.491815852Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.491822280Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.513347907Z [inf]  2025-11-03 04:12:57,510 - src.strategies.rule_based_signal_generator - ERROR - ❌ DEGOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.513358216Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.513365127Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.513372239Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.513379798Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.513389137Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.533284027Z [inf]  2025-11-03 04:12:57,530 - src.strategies.rule_based_signal_generator - ERROR - ❌ VELODROMEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.533292173Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.533302265Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.533309268Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.533317287Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.533325758Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.557409246Z [inf]  2025-11-03 04:12:57,550 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描300個）
+2025-11-03T04:12:57.557420172Z [inf]  2025-11-03 04:12:57,550 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=299, 拒絕=0
+2025-11-03T04:12:57.557428384Z [inf]  2025-11-03 04:12:57,550 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=273, 無=26
+2025-11-03T04:12:57.573753824Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.573764444Z [inf]  2025-11-03 04:12:57,569 - src.strategies.rule_based_signal_generator - ERROR - ❌ VANAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.573767623Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.573771224Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.573777398Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.573782081Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.593647869Z [inf]  2025-11-03 04:12:57,590 - src.strategies.rule_based_signal_generator - ERROR - ❌ PENGUUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.593656007Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.593663653Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.593672486Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.593674920Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.593680481Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.618190193Z [inf]  2025-11-03 04:12:57,610 - src.strategies.rule_based_signal_generator - ERROR - ❌ LUMIAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.618202084Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.618210526Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.618223416Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.618231835Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.618255002Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.638414243Z [inf]  2025-11-03 04:12:57,632 - src.strategies.rule_based_signal_generator - ERROR - ❌ USUALUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.638420931Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.638427448Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.638434725Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.638440381Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.638446812Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.658957683Z [inf]  2025-11-03 04:12:57,656 - src.strategies.rule_based_signal_generator - ERROR - ❌ AIXBTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.658963239Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.658968225Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.658972670Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.658978961Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.658983932Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.689390665Z [inf]  2025-11-03 04:12:57,678 - src.strategies.rule_based_signal_generator - ERROR - ❌ FARTCOINUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.689397265Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.689402012Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.689406240Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.689411580Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.689421889Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.706141031Z [inf]  2025-11-03 04:12:57,703 - src.strategies.rule_based_signal_generator - ERROR - ❌ KMNOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.706146889Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.706153541Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.706158574Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.706164688Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.706172159Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.725128696Z [inf]  2025-11-03 04:12:57,723 - src.strategies.rule_based_signal_generator - ERROR - ❌ CGPTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.725136568Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.725144848Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.725152687Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.725162397Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.725170045Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:57.744558193Z [inf]  2025-11-03 04:12:57,742 - src.strategies.rule_based_signal_generator - ERROR - ❌ HIVEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:57.744569070Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:57.744577419Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:57.744585645Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:57.744594661Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:57.744602452Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312506398Z [inf]  2025-11-03 04:12:57,761 - src.strategies.rule_based_signal_generator - ERROR - ❌ DEXEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312592825Z [inf]  2025-11-03 04:12:57,834 - src.strategies.rule_based_signal_generator - ERROR - ❌ AI16ZUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312624543Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.312630888Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.312636910Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.312660925Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.312662477Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.312672421Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.312680867Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.312681918Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.312682812Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.312696598Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312698181Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.312700447Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312710916Z [inf]  2025-11-03 04:12:57,796 - src.strategies.rule_based_signal_generator - ERROR - ❌ DFUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312715034Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312716651Z [inf]  2025-11-03 04:12:57,815 - src.strategies.rule_based_signal_generator - ERROR - ❌ GRIFFAINUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.312734249Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.312743923Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319166443Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319212991Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319224142Z [inf]  2025-11-03 04:12:57,956 - src.strategies.rule_based_signal_generator - ERROR - ❌ SONICUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319234840Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319241712Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319265219Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319272174Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319280113Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.319287807Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319295774Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319303177Z [inf]  2025-11-03 04:12:57,852 - src.strategies.rule_based_signal_generator - ERROR - ❌ ZEREBROUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319312628Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319323065Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319330550Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.319337325Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319343845Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319349142Z [inf]  2025-11-03 04:12:57,875 - src.strategies.rule_based_signal_generator - ERROR - ❌ BIOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319355476Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319362583Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319369439Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.319376273Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319383524Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319389885Z [inf]  2025-11-03 04:12:57,896 - src.strategies.rule_based_signal_generator - ERROR - ❌ COOKIEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319396527Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319693381Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319702487Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.319711188Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319718319Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319726109Z [inf]  2025-11-03 04:12:57,915 - src.strategies.rule_based_signal_generator - ERROR - ❌ ALCHUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319734087Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319740890Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319748808Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.319758275Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.319765510Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319772991Z [inf]  2025-11-03 04:12:57,936 - src.strategies.rule_based_signal_generator - ERROR - ❌ SWARMSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.319781857Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.319789403Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.319799335Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.321454240Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.321460435Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.321464635Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.321470168Z [inf]  2025-11-03 04:12:57,976 - src.strategies.rule_based_signal_generator - ERROR - ❌ DUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.321475057Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.321480600Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.321484925Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.321490967Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.321495786Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.321501104Z [inf]  2025-11-03 04:12:57,976 - src.core.unified_scheduler - INFO - ⏱️  進度: 320/530 | 已分析=320 | 平均分析=22.1ms | 平均數據=8.0ms
+2025-11-03T04:12:58.321506025Z [inf]  2025-11-03 04:12:57,978 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-11-03T04:12:58.321510623Z [inf]  2025-11-03 04:12:57,979 - src.core.position_controller - INFO -    📭 當前無持倉
+2025-11-03T04:12:58.321515622Z [inf]  2025-11-03 04:12:57,997 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.02秒 | 平均0.3ms/symbol
+2025-11-03T04:12:58.321521799Z [inf]  2025-11-03 04:12:57,997 - src.core.unified_scheduler - INFO - ⏱️  批次 6: 64个symbols数据获取完成，耗时0.02秒
+2025-11-03T04:12:58.321526767Z [inf]  2025-11-03 04:12:58,036 - src.strategies.rule_based_signal_generator - ERROR - ❌ SUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.321532298Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.323704299Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.323720445Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.323729401Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.323741555Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323754361Z [inf]  2025-11-03 04:12:58,081 - src.strategies.rule_based_signal_generator - ERROR - ❌ ARCUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323755402Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.323764673Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.323769914Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.323772212Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.323779096Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323787618Z [inf]  2025-11-03 04:12:58,059 - src.strategies.rule_based_signal_generator - ERROR - ❌ SOLVUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323788566Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.323798960Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.323802475Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.323865478Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.323874969Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323885417Z [inf]  2025-11-03 04:12:58,102 - src.strategies.rule_based_signal_generator - ERROR - ❌ AVAAIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.323893212Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.323901357Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.327380893Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.327388072Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.327392645Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.327405569Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.327407509Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327422025Z [inf]  2025-11-03 04:12:58,122 - src.strategies.rule_based_signal_generator - ERROR - ❌ TRUMPUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327424928Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327434218Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.327439609Z [inf]  2025-11-03 04:12:58,142 - src.strategies.rule_based_signal_generator - ERROR - ❌ MELANIAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327446908Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.327463770Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.327470551Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.327476900Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.327483501Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.327492000Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327498236Z [inf]  2025-11-03 04:12:58,161 - src.strategies.rule_based_signal_generator - ERROR - ❌ VTHOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.327504054Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.327510864Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.327516750Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.328674299Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.328679556Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328685637Z [inf]  2025-11-03 04:12:58,180 - src.strategies.rule_based_signal_generator - ERROR - ❌ ANIMEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328694199Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.328699092Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.328704976Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.328712974Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.328717760Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328722600Z [inf]  2025-11-03 04:12:58,201 - src.strategies.rule_based_signal_generator - ERROR - ❌ VINEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328727970Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.328733840Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.328741240Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.328747063Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.328752964Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328759798Z [inf]  2025-11-03 04:12:58,236 - src.strategies.rule_based_signal_generator - ERROR - ❌ VVVUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.328766001Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.328770179Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.328774988Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.328779254Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.330815643Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330825003Z [inf]  2025-11-03 04:12:58,296 - src.strategies.rule_based_signal_generator - ERROR - ❌ LAYERUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330834183Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.330841631Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.330850433Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.330854100Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330862039Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.330864892Z [inf]  2025-11-03 04:12:58,259 - src.strategies.rule_based_signal_generator - ERROR - ❌ BERAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330871949Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330872230Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.330877648Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.330883253Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.330887532Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.330893695Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330899024Z [inf]  2025-11-03 04:12:58,277 - src.strategies.rule_based_signal_generator - ERROR - ❌ TSTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.330903565Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.330908001Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.330912510Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.330918345Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.332789804Z [inf]  2025-11-03 04:12:58,320 - src.strategies.rule_based_signal_generator - ERROR - ❌ HEIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.332794415Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.332799774Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.332804065Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.332808189Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.332812927Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.344290995Z [inf]  2025-11-03 04:12:58,341 - src.strategies.rule_based_signal_generator - ERROR - ❌ B3USDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.344299624Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.344306778Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.344315863Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.344322586Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.344329029Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.368268156Z [inf]  2025-11-03 04:12:58,363 - src.strategies.rule_based_signal_generator - ERROR - ❌ IPUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.368273610Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.368280595Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.368287889Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.368294795Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.368304093Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.384265860Z [inf]  2025-11-03 04:12:58,382 - src.strategies.rule_based_signal_generator - ERROR - ❌ GPSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.384271825Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.384276572Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.384281554Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.384286519Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.384290349Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.422846371Z [inf]  2025-11-03 04:12:58,420 - src.strategies.rule_based_signal_generator - ERROR - ❌ KAITOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.422859465Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.422865867Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.422871996Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.422877984Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.422885233Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.441668586Z [inf]  2025-11-03 04:12:58,439 - src.strategies.rule_based_signal_generator - ERROR - ❌ REDUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.441684105Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.441695589Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.441704561Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.441712774Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.441722627Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.462786215Z [inf]  2025-11-03 04:12:58,458 - src.strategies.rule_based_signal_generator - ERROR - ❌ VICUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.462799715Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.462810365Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.462818767Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.462826708Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.462834578Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.485295570Z [inf]  2025-11-03 04:12:58,478 - src.strategies.rule_based_signal_generator - ERROR - ❌ EPICUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.485300431Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.485305322Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.485309534Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.485313910Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.485317738Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.501718475Z [inf]  2025-11-03 04:12:58,497 - src.strategies.rule_based_signal_generator - ERROR - ❌ BMTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.501724292Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.501730940Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.501736221Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.501742286Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.501753364Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.524109167Z [inf]  2025-11-03 04:12:58,519 - src.strategies.rule_based_signal_generator - ERROR - ❌ MUBARAKUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.524116737Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.524123818Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.524129398Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.524134673Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.524139675Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.550798499Z [inf]  2025-11-03 04:12:58,540 - src.strategies.rule_based_signal_generator - ERROR - ❌ FORMUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.550803271Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.550807812Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.550813509Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.550817835Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.550823917Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.563462135Z [inf]  2025-11-03 04:12:58,561 - src.strategies.rule_based_signal_generator - ERROR - ❌ BIDUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.563467715Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.563473601Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.563480316Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.563486193Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.563491422Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.591851155Z [inf]  2025-11-03 04:12:58,580 - src.strategies.rule_based_signal_generator - ERROR - ❌ TUTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.591856159Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.591861814Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.591866665Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.591872314Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.591877046Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.591881913Z [inf]  2025-11-03 04:12:58,581 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描350個）
+2025-11-03T04:12:58.591886863Z [inf]  2025-11-03 04:12:58,581 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=349, 拒絕=0
+2025-11-03T04:12:58.591892093Z [inf]  2025-11-03 04:12:58,581 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=319, 無=30
+2025-11-03T04:12:58.606525314Z [inf]  2025-11-03 04:12:58,602 - src.strategies.rule_based_signal_generator - ERROR - ❌ BROCCOLI714USDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.606647504Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.606658441Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.606667572Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.606674334Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.606681003Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.631146384Z [inf]  2025-11-03 04:12:58,623 - src.strategies.rule_based_signal_generator - ERROR - ❌ BROCCOLIF3BUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.631151783Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.631157374Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.631162871Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.631168608Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.631173188Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.647840567Z [inf]  2025-11-03 04:12:58,642 - src.strategies.rule_based_signal_generator - ERROR - ❌ SIRENUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.647849100Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.647855700Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.647861174Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.647866905Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.647883687Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.664309695Z [inf]  2025-11-03 04:12:58,661 - src.strategies.rule_based_signal_generator - ERROR - ❌ BANANAS31USDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.664319275Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.664327025Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.664332263Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.664337010Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.664341480Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.693723980Z [inf]  2025-11-03 04:12:58,684 - src.strategies.rule_based_signal_generator - ERROR - ❌ BRUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.693732003Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.693739058Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.693745957Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.693756678Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.693765012Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.708048057Z [inf]  2025-11-03 04:12:58,704 - src.strategies.rule_based_signal_generator - ERROR - ❌ PLUMEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.708125739Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.708133240Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.708140999Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.708148403Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.708156081Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:58.726119136Z [inf]  2025-11-03 04:12:58,723 - src.strategies.rule_based_signal_generator - ERROR - ❌ NILUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:58.726128045Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:58.726136739Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:58.726144255Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:58.726151526Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:58.726158282Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237064947Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.237078483Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.237085616Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.237094951Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.237103323Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237111753Z [inf]  2025-11-03 04:12:58,785 - src.strategies.rule_based_signal_generator - ERROR - ❌ MAVIAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237119233Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.237126278Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.237133712Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.237141367Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.237148924Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237157290Z [inf]  2025-11-03 04:12:58,827 - src.strategies.rule_based_signal_generator - ERROR - ❌ WALUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237164859Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.237171698Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.237179526Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.237191593Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.237200227Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237208236Z [inf]  2025-11-03 04:12:58,849 - src.strategies.rule_based_signal_generator - ERROR - ❌ FUNUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.237302053Z [inf]  2025-11-03 04:12:58,744 - src.strategies.rule_based_signal_generator - ERROR - ❌ PARTIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.241867222Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.241879368Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.241887154Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.241894578Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.241901252Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.241907318Z [inf]  2025-11-03 04:12:58,871 - src.strategies.rule_based_signal_generator - ERROR - ❌ MLNUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.241914098Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.241922465Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.241930365Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.241959201Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.241966432Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.241973305Z [inf]  2025-11-03 04:12:58,890 - src.strategies.rule_based_signal_generator - ERROR - ❌ GUNUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.241983235Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.241990652Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242007639Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242013938Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242017491Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242027048Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242034603Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242041232Z [inf]  2025-11-03 04:12:58,911 - src.strategies.rule_based_signal_generator - ERROR - ❌ ATHUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242051524Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242053905Z [inf]  2025-11-03 04:12:59,041 - src.strategies.rule_based_signal_generator - ERROR - ❌ FHEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242266197Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242273088Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242292063Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242301555Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242308802Z [inf]  2025-11-03 04:12:58,932 - src.strategies.rule_based_signal_generator - ERROR - ❌ BABYUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242316604Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242322930Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242332362Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242338293Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242346465Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242350822Z [inf]  2025-11-03 04:12:58,956 - src.strategies.rule_based_signal_generator - ERROR - ❌ FORTHUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242357545Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242362293Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242367220Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242372045Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242377246Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242382490Z [inf]  2025-11-03 04:12:58,981 - src.strategies.rule_based_signal_generator - ERROR - ❌ PROMPTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242387154Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242391514Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242549201Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242558017Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242565578Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242573479Z [inf]  2025-11-03 04:12:58,999 - src.strategies.rule_based_signal_generator - ERROR - ❌ XCNUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242581439Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242588307Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242594645Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.242600618Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.242607665Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242614770Z [inf]  2025-11-03 04:12:59,021 - src.strategies.rule_based_signal_generator - ERROR - ❌ STOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.242674820Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.242686163Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.242693108Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.285444759Z [inf]  2025-11-03 04:12:59,281 - src.strategies.rule_based_signal_generator - ERROR - ❌ SIGNUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:12:59.285450496Z [inf]  Traceback (most recent call last):
+2025-11-03T04:12:59.285456063Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:12:59.285461686Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:12:59.285465692Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:12:59.285470212Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.316354314Z [inf]  2025-11-03 04:12:59,803 - src.strategies.rule_based_signal_generator - ERROR - ❌ PUNDIXUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.316362259Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.316372015Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.316382190Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.316389508Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.316407339Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.316415585Z [inf]  2025-11-03 04:12:59,821 - src.strategies.rule_based_signal_generator - ERROR - ❌ CTKUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.316422702Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.316430698Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.316438223Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.316447294Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.316456949Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.316463755Z [inf]  2025-11-03 04:12:59,822 - src.core.unified_scheduler - INFO - ⏱️  進度: 384/530 | 已分析=384 | 平均分析=23.2ms | 平均數據=6.7ms
+2025-11-03T04:13:00.316470564Z [inf]  2025-11-03 04:12:59,864 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.04秒 | 平均0.7ms/symbol
+2025-11-03T04:13:00.316479032Z [inf]  2025-11-03 04:12:59,865 - src.core.unified_scheduler - INFO - ⏱️  批次 7: 64个symbols数据获取完成，耗时0.04秒
+2025-11-03T04:13:00.316495896Z [inf]  2025-11-03 04:12:59,902 - src.strategies.rule_based_signal_generator - ERROR - ❌ DOLOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321202195Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.321212234Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.321220123Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.321229175Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.321235666Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321243315Z [inf]  2025-11-03 04:12:59,920 - src.strategies.rule_based_signal_generator - ERROR - ❌ HAEDALUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321250000Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.321257305Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.321264342Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.321283376Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.321291924Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321298527Z [inf]  2025-11-03 04:12:59,941 - src.strategies.rule_based_signal_generator - ERROR - ❌ SXTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321304412Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.321311021Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.321317851Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.321324138Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.321343042Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321353864Z [inf]  2025-11-03 04:12:59,961 - src.strategies.rule_based_signal_generator - ERROR - ❌ ASRUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.321361652Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.322035491Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.322041657Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.322047252Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.322052561Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322058799Z [inf]  2025-11-03 04:12:59,981 - src.strategies.rule_based_signal_generator - ERROR - ❌ ALPINEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322064670Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.322070465Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.322076229Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.322083043Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.322089380Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322094927Z [inf]  2025-11-03 04:13:00,003 - src.strategies.rule_based_signal_generator - ERROR - ❌ B2USDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322100137Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.322103859Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.322108157Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.322113717Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.322119977Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322126734Z [inf]  2025-11-03 04:13:00,027 - src.strategies.rule_based_signal_generator - ERROR - ❌ MILKUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.322133835Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.322139560Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.324273210Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324287443Z [inf]  2025-11-03 04:13:00,088 - src.strategies.rule_based_signal_generator - ERROR - ❌ DOODUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324297030Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.324297612Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.324305609Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.324314506Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.324316786Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.324329691Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324338802Z [inf]  2025-11-03 04:13:00,049 - src.strategies.rule_based_signal_generator - ERROR - ❌ SYRUPUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324347142Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.324355765Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.324362108Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.324370041Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.324376013Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324383006Z [inf]  2025-11-03 04:13:00,069 - src.strategies.rule_based_signal_generator - ERROR - ❌ OBOLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.324388890Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.324413647Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.324420686Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.324430839Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.326747797Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.326757571Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326765526Z [inf]  2025-11-03 04:13:00,108 - src.strategies.rule_based_signal_generator - ERROR - ❌ OGUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326774115Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.326782244Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.326785604Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326791128Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.326801784Z [inf]  2025-11-03 04:13:00,129 - src.strategies.rule_based_signal_generator - ERROR - ❌ ZKJUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326808449Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.326811957Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.326819932Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.326827017Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.326828006Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.326838105Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.326838416Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.326847178Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.326847372Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326854494Z [inf]  2025-11-03 04:13:00,149 - src.strategies.rule_based_signal_generator - ERROR - ❌ SKYAIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.326860463Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.329699979Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.329709580Z [inf]  2025-11-03 04:13:00,170 - src.strategies.rule_based_signal_generator - ERROR - ❌ NXPCUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.329715100Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.329719985Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.329725322Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.329738971Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.329744880Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.329750165Z [inf]  2025-11-03 04:13:00,171 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描400個）
+2025-11-03T04:13:00.329758199Z [inf]  2025-11-03 04:13:00,171 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=399, 拒絕=0
+2025-11-03T04:13:00.329763435Z [inf]  2025-11-03 04:13:00,171 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=365, 無=34
+2025-11-03T04:13:00.329768891Z [inf]  2025-11-03 04:13:00,191 - src.strategies.rule_based_signal_generator - ERROR - ❌ CVCUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.329774646Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.329778970Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.329783406Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.329788637Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.329793346Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.329799836Z [inf]  2025-11-03 04:13:00,212 - src.strategies.rule_based_signal_generator - ERROR - ❌ AGTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332700307Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.332713395Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.332720725Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.332728187Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.332736078Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332752117Z [inf]  2025-11-03 04:13:00,231 - src.strategies.rule_based_signal_generator - ERROR - ❌ AWEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332761566Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.332769936Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.332776351Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.332785132Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.332791981Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332798195Z [inf]  2025-11-03 04:13:00,273 - src.strategies.rule_based_signal_generator - ERROR - ❌ SOONUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332804617Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.332810082Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.332818436Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.332824794Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.332831231Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332837861Z [inf]  2025-11-03 04:13:00,301 - src.strategies.rule_based_signal_generator - ERROR - ❌ HUMAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.332846817Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.334884953Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.334893186Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.334902385Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.334910081Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.334920082Z [inf]  2025-11-03 04:13:00,324 - src.strategies.rule_based_signal_generator - ERROR - ❌ AUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.334928391Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.334935886Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.334944161Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.334951320Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.334961552Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.350212547Z [inf]  2025-11-03 04:13:00,347 - src.strategies.rule_based_signal_generator - ERROR - ❌ SOPHUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.350222435Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.350229610Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.350236579Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.350243664Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.350250194Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.373346442Z [inf]  2025-11-03 04:13:00,370 - src.strategies.rule_based_signal_generator - ERROR - ❌ MERLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.373353059Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.373361319Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.373368727Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.373375793Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.373381835Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.392165044Z [inf]  2025-11-03 04:13:00,388 - src.strategies.rule_based_signal_generator - ERROR - ❌ HYPEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.392175214Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.392182398Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.392248890Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.392254164Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.392259831Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.431681888Z [inf]  2025-11-03 04:13:00,429 - src.strategies.rule_based_signal_generator - ERROR - ❌ PUFFERUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.431692484Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.431699628Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.431708218Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.431714896Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.431722471Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.470260253Z [inf]  2025-11-03 04:13:00,467 - src.strategies.rule_based_signal_generator - ERROR - ❌ 1000000BOBUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.470269469Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.470276039Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.470280980Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.470285523Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.470292215Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.490051695Z [inf]  2025-11-03 04:13:00,487 - src.strategies.rule_based_signal_generator - ERROR - ❌ LAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.490059222Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.490064057Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.490068658Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.490073765Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.490082981Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.510106051Z [inf]  2025-11-03 04:13:00,508 - src.strategies.rule_based_signal_generator - ERROR - ❌ SKATEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.510119492Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.510128805Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.510137232Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.510165361Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.510172154Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.532881089Z [inf]  2025-11-03 04:13:00,529 - src.strategies.rule_based_signal_generator - ERROR - ❌ HOMEUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.532889397Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.532896758Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.532902494Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.532907877Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.532913255Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.567342935Z [inf]  2025-11-03 04:13:00,563 - src.strategies.rule_based_signal_generator - ERROR - ❌ RESOLVUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.567352912Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.567359247Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.567365272Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.567372598Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.567378600Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.587032591Z [inf]  2025-11-03 04:13:00,584 - src.strategies.rule_based_signal_generator - ERROR - ❌ TAIKOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.587042903Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.587048526Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.587053647Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.587057860Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.587062129Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.608688918Z [inf]  2025-11-03 04:13:00,605 - src.strategies.rule_based_signal_generator - ERROR - ❌ SQDUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.608705001Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.608715142Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.608722862Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.608733247Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.608742330Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.630029888Z [inf]  2025-11-03 04:13:00,628 - src.strategies.rule_based_signal_generator - ERROR - ❌ PUMPBTCUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.630034469Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.630039206Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.630043261Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.630048061Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.630052911Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.657102422Z [inf]  2025-11-03 04:13:00,653 - src.strategies.rule_based_signal_generator - ERROR - ❌ SPKUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.657114392Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.657125254Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.657132980Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.657139809Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.657146966Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.679340422Z [inf]  2025-11-03 04:13:00,675 - src.strategies.rule_based_signal_generator - ERROR - ❌ MYXUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.679345485Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.679350932Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.679355802Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.679361220Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.679365585Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.697419220Z [inf]  2025-11-03 04:13:00,695 - src.strategies.rule_based_signal_generator - ERROR - ❌ FUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.697442473Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.697450038Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.697455695Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.697461317Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.697466562Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:00.719426419Z [inf]  2025-11-03 04:13:00,716 - src.strategies.rule_based_signal_generator - ERROR - ❌ NEWTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:00.719434771Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:00.719444142Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:00.719450794Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:00.719456608Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:00.719463310Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393178342Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.393188671Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.393199412Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393206713Z [inf]  2025-11-03 04:13:00,775 - src.strategies.rule_based_signal_generator - ERROR - ❌ OLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393212909Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.393217593Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.393222559Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.393226693Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.393231844Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393238310Z [inf]  2025-11-03 04:13:00,796 - src.strategies.rule_based_signal_generator - ERROR - ❌ SAHARAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393242753Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.393247819Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.393252544Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.393258528Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.393263452Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393268480Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描500個，0信號）：
+2025-11-03T04:13:01.393432982Z [inf]  2025-11-03 04:13:00,757 - src.strategies.rule_based_signal_generator - ERROR - ❌ HUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.393437906Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.393443188Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.398907719Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=75, bearish=28, neutral=397
+2025-11-03T04:13:01.398909194Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.398923231Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=57, bearish=56, neutral=387
+2025-11-03T04:13:01.398927836Z [inf]  2025-11-03 04:13:01,022 - src.strategies.rule_based_signal_generator - ERROR - ❌ VELVETUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.398932379Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=74, bearish=253, neutral=173
+2025-11-03T04:13:01.398940192Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.398945167Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=67, bearish=365, neutral=68
+2025-11-03T04:13:01.398953498Z [inf]  2025-11-03 04:13:00,819 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-03T04:13:01.398953921Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.398963671Z [inf]  2025-11-03 04:13:00,839 - src.strategies.rule_based_signal_generator - ERROR - ❌ BULLAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.398970806Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.398981270Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.398988741Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.398995413Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399004705Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399011881Z [inf]  2025-11-03 04:13:00,884 - src.strategies.rule_based_signal_generator - ERROR - ❌ MUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399019265Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399026601Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399031594Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399036631Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399045875Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399046023Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399055813Z [inf]  2025-11-03 04:13:01,043 - src.strategies.rule_based_signal_generator - ERROR - ❌ TACUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399056140Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399264544Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399270857Z [inf]  2025-11-03 04:13:00,905 - src.strategies.rule_based_signal_generator - ERROR - ❌ TANSSIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399278267Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399283453Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399289959Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399297125Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399303916Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399309373Z [inf]  2025-11-03 04:13:00,931 - src.strategies.rule_based_signal_generator - ERROR - ❌ PUMPUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399314791Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399319974Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399325555Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399332508Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399338523Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399344684Z [inf]  2025-11-03 04:13:00,956 - src.strategies.rule_based_signal_generator - ERROR - ❌ CROSSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399349927Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399356276Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399361756Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399366993Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399373358Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399550805Z [inf]  2025-11-03 04:13:00,982 - src.strategies.rule_based_signal_generator - ERROR - ❌ AINUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399557213Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399563341Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399569757Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399575838Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.399581239Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399593387Z [inf]  2025-11-03 04:13:01,003 - src.strategies.rule_based_signal_generator - ERROR - ❌ CUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.399602172Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.399607923Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.399613517Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.399621259Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.400932954Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.400941152Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.400946371Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.400950888Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.400971388Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.400977687Z [inf]  2025-11-03 04:13:01,064 - src.strategies.rule_based_signal_generator - ERROR - ❌ ERAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.400983671Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.400989235Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:01.400994951Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:01.401001505Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:01.401006970Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:01.401012842Z [inf]  2025-11-03 04:13:01,086 - src.strategies.rule_based_signal_generator - ERROR - ❌ TAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:01.401018661Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:01.401025078Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368381502Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368394634Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368402417Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368409460Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368416184Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368424419Z [inf]  2025-11-03 04:13:01,866 - src.strategies.rule_based_signal_generator - ERROR - ❌ FLOCKUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368434377Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368441903Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368449690Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368457249Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368464625Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368471665Z [inf]  2025-11-03 04:13:01,885 - src.strategies.rule_based_signal_generator - ERROR - ❌ SKYUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368480788Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368487402Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368493546Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368500220Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368506797Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368513361Z [inf]  2025-11-03 04:13:01,905 - src.strategies.rule_based_signal_generator - ERROR - ❌ AVNTUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368520330Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368717265Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368724359Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368731799Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368784459Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368792049Z [inf]  2025-11-03 04:13:01,926 - src.strategies.rule_based_signal_generator - ERROR - ❌ HOLOUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368798618Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368805968Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368812405Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368824253Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368831006Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368837609Z [inf]  2025-11-03 04:13:01,947 - src.strategies.rule_based_signal_generator - ERROR - ❌ XPINUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368844360Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368850866Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.368857381Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.368863610Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.368869983Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368876317Z [inf]  2025-11-03 04:13:01,989 - src.strategies.rule_based_signal_generator - ERROR - ❌ ZKCUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.368884656Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.368890036Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.369823000Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.369832051Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.369837281Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369843970Z [inf]  2025-11-03 04:13:02,009 - src.strategies.rule_based_signal_generator - ERROR - ❌ TOSHIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369850417Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.369855734Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.369860415Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.369865448Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.369869948Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369874619Z [inf]  2025-11-03 04:13:02,029 - src.strategies.rule_based_signal_generator - ERROR - ❌ STBLUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369878596Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.369883929Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.369889852Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.369897633Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.369905358Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369910158Z [inf]  2025-11-03 04:13:02,125 - src.strategies.rule_based_signal_generator - ERROR - ❌ TRADOORUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.369914004Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.369921113Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.369926129Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.371425467Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.371431681Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371436885Z [inf]  2025-11-03 04:13:02,147 - src.strategies.rule_based_signal_generator - ERROR - ❌ BLESSUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371441563Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.371446467Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.371456199Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.371460568Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.371464715Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371468598Z [inf]  2025-11-03 04:13:02,166 - src.strategies.rule_based_signal_generator - ERROR - ❌ FLUIDUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371472339Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.371477377Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.371481049Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.371484806Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.371488357Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371492158Z [inf]  2025-11-03 04:13:02,186 - src.strategies.rule_based_signal_generator - ERROR - ❌ COAIUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.371495713Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.371499519Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:02.371503315Z [inf]      self._pipeline_stats['adx_distribution_gte25'] += 1
+2025-11-03T04:13:02.371507693Z [inf]      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-03T04:13:02.374427885Z [inf]  KeyError: 'adx_distribution_gte25'
+2025-11-03T04:13:02.374434308Z [inf]  2025-11-03 04:13:02,206 - src.strategies.rule_based_signal_generator - ERROR - ❌ HANAUSDT 信號生成失敗: 'adx_distribution_gte25'
+2025-11-03T04:13:02.374439279Z [inf]  Traceback (most recent call last):
+2025-11-03T04:13:02.374443957Z [inf]    File "/app/src/strategies/rule_based_signal_generator.py", line 418, in generate_signal
+2025-11-03T04:13:09.327883791Z [inf]  2025-11-03 04:13:08,840 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-03T04:13:09.641305893Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 925
+2025-11-03T04:13:10.354403544Z [inf]  2025-11-03 04:13:10,044 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received

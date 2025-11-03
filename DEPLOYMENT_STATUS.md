@@ -1,10 +1,11 @@
 # SelfLearningTrader Deployment Status
 
-## Latest Version: v3.20.3
+## Latest Version: v3.20.3 Hotfix
 
-**Status**: ✅ Ready for Railway Deployment  
+**Status**: ✅ Critical Fix Applied - Ready for Railway Deployment  
 **Date**: 2025-11-03  
-**Phase**: Phase 6 Complete
+**Phase**: Phase 6 Complete + Critical Hotfix  
+**Critical Fix**: Railway KeyError 'adx_distribution_gte25' 已修复
 
 ---
 
