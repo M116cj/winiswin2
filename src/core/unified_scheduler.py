@@ -85,6 +85,14 @@ class UnifiedScheduler:
         # 向後兼容：保留websocket_monitor屬性（指向websocket_manager）
         self.websocket_monitor = self.websocket_manager
         
+        # ✅ v3.20 Phase 3: 初始化UnifiedDataPipeline（批量并行优化）
+        from src.core.elite import UnifiedDataPipeline
+        self.data_pipeline = UnifiedDataPipeline(
+            binance_client=binance_client,
+            websocket_monitor=self.websocket_manager
+        )
+        logger.info("✅ UnifiedDataPipeline已初始化（批量并行数据获取）")
+        
         # 初始化核心組件（注入websocket_manager）
         self.self_learning_trader = SelfLearningTrader(
             config=config,
@@ -355,68 +363,89 @@ class UnifiedScheduler:
             analysis_times = []
             data_times = []
             scan_start = time.time()
-            logger.info("⏱️  ===== 開始掃描時間分析 =====")
+            logger.info("⏱️  ===== 開始掃描時間分析（v3.20 批量並行模式） =====")
             
-            for i, symbol in enumerate(symbols):
+            # ✅ v3.20 Phase 3: 批量並行數據獲取優化
+            BATCH_SIZE = 64  # 每批64個symbols
+            
+            for batch_start in range(0, len(symbols), BATCH_SIZE):
+                batch_end = min(batch_start + BATCH_SIZE, len(symbols))
+                batch_symbols = symbols[batch_start:batch_end]
+                
                 try:
-                    # 測量數據獲取時間
+                    # 測量數據獲取時間（批量）
                     data_start = time.time()
-                    multi_tf_data = await self.data_service.get_multi_timeframe_data(symbol)
+                    batch_data = await self.data_pipeline.batch_get_multi_timeframe_data(
+                        batch_symbols,
+                        timeframes=['1h', '15m', '5m']
+                    )
                     data_elapsed = time.time() - data_start
-                    data_times.append(data_elapsed)
                     total_data_time += data_elapsed
                     
-                    if not multi_tf_data:
-                        data_unavailable_count += 1
-                        continue
+                    logger.info(
+                        f"⏱️  批次 {batch_start//BATCH_SIZE + 1}: "
+                        f"{len(batch_symbols)}个symbols数据获取完成，耗时{data_elapsed:.2f}秒"
+                    )
                     
-                    # 🔥 v3.19.1: 診斷前3個symbol的實際數據情況
-                    if diagnostic_count < 3:
-                        diagnostic_count += 1
-                        logger.info(f"🔍 數據診斷 #{diagnostic_count} - {symbol}:")
-                        for tf, df in multi_tf_data.items():
-                            if df is not None and len(df) > 0:
-                                logger.info(f"   {tf}: {len(df)}行, 列={list(df.columns)[:5]}...")
-                                logger.info(f"      最新價格: {df['close'].iloc[-1]:.2f}")
-                            elif df is not None:
-                                logger.info(f"   {tf}: DataFrame為空（0行）")
-                            else:
-                                logger.warning(f"   {tf}: DataFrame為None")
+                    # 逐个分析每个symbol（数据已批量获取）
+                    for i, symbol in enumerate(batch_symbols):
+                        try:
+                            multi_tf_data = batch_data.get(symbol, {})
+                            
+                            if not multi_tf_data:
+                                data_unavailable_count += 1
+                                continue
+                            
+                            # 🔥 v3.19.1: 診斷前3個symbol的實際數據情況
+                            if diagnostic_count < 3:
+                                diagnostic_count += 1
+                                logger.info(f"🔍 數據診斷 #{diagnostic_count} - {symbol}:")
+                                for tf, df in multi_tf_data.items():
+                                    if df is not None and len(df) > 0:
+                                        logger.info(f"   {tf}: {len(df)}行, 列={list(df.columns)[:5]}...")
+                                        logger.info(f"      最新價格: {df['close'].iloc[-1]:.2f}")
+                                    elif df is not None:
+                                        logger.info(f"   {tf}: DataFrame為空（0行）")
+                                    else:
+                                        logger.warning(f"   {tf}: DataFrame為None")
+                            
+                            # 測量分析時間
+                            analysis_start = time.time()
+                            signal, confidence, win_prob = self.self_learning_trader.analyze(symbol, multi_tf_data)
+                            analysis_elapsed = time.time() - analysis_start
+                            analysis_times.append(analysis_elapsed)
+                            total_analysis_time += analysis_elapsed
+                            
+                            analyzed_count += 1
+                            
+                            # 🔥 v3.19+：收集所有交易對的診斷信息
+                            signal_candidates.append({
+                                'symbol': symbol,
+                                'confidence': confidence,
+                                'win_probability': win_prob,
+                                'has_signal': signal is not None,
+                                'analysis_time_ms': analysis_elapsed * 1000,
+                                'data_time_ms': data_elapsed / len(batch_symbols) * 1000  # 平均每个symbol的数据时间
+                            })
+                            
+                            if signal:
+                                signals.append(signal)
+                                self.stats['total_signals'] += 1
+                            
+                        except Exception as e:
+                            logger.debug(f"分析 {symbol} 跳過: {e}")
                     
-                    # 測量分析時間
-                    analysis_start = time.time()
-                    signal, confidence, win_prob = self.self_learning_trader.analyze(symbol, multi_tf_data)
-                    analysis_elapsed = time.time() - analysis_start
-                    analysis_times.append(analysis_elapsed)
-                    total_analysis_time += analysis_elapsed
-                    
-                    analyzed_count += 1
-                    
-                    # 🔥 v3.19+：收集所有交易對的診斷信息
-                    signal_candidates.append({
-                        'symbol': symbol,
-                        'confidence': confidence,
-                        'win_probability': win_prob,
-                        'has_signal': signal is not None,
-                        'analysis_time_ms': analysis_elapsed * 1000,
-                        'data_time_ms': data_elapsed * 1000
-                    })
-                    
-                    if signal:
-                        signals.append(signal)
-                        self.stats['total_signals'] += 1
-                    
-                    # 每100個交易對輸出進度
-                    if (i + 1) % 100 == 0:
+                    # 每批输出进度
+                    if analyzed_count > 0:
                         avg_analysis = (total_analysis_time / analyzed_count * 1000) if analyzed_count > 0 else 0
-                        avg_data = (total_data_time / len(data_times) * 1000) if data_times else 0
-                        logger.info(f"⏱️  進度: {i+1}/{len(symbols)} | "
+                        avg_data = (total_data_time / (batch_start + len(batch_symbols)) * 1000) if batch_start + len(batch_symbols) > 0 else 0
+                        logger.info(f"⏱️  進度: {batch_start + len(batch_symbols)}/{len(symbols)} | "
                                   f"已分析={analyzed_count} | "
                                   f"平均分析={avg_analysis:.1f}ms | "
                                   f"平均數據={avg_data:.1f}ms")
                     
                 except Exception as e:
-                    logger.debug(f"分析 {symbol} 跳過: {e}")
+                    logger.error(f"批次處理失敗: {e}")
             
             # 🔥 v3.19+ 診斷：時間分析報告
             total_scan_time = time.time() - scan_start

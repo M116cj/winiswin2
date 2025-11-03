@@ -344,6 +344,78 @@ class UnifiedDataPipeline:
             logger.error(f"❌ K线解析失败: {e}")
             return pd.DataFrame()
     
+    async def batch_get_multi_timeframe_data(
+        self,
+        symbols: List[str],
+        timeframes: List[str] = ['1h', '15m', '5m'],
+        limit: int = 50
+    ) -> Dict[str, Dict[str, pd.DataFrame]]:
+        """
+        批量获取多个symbols的多时间框架数据（v3.20 Phase 3优化）
+        
+        性能优化：
+        1. 批量并行获取（减少串行等待时间）
+        2. 智能缓存检查（避免重复请求）
+        3. 统一错误处理
+        
+        预期收益：
+        - 530 symbols数据获取：53秒 → 8-10秒（5-6x加速）
+        
+        Args:
+            symbols: 交易对列表
+            timeframes: 时间框架列表
+            limit: K线数量
+            
+        Returns:
+            {symbol: {timeframe: DataFrame}}
+            
+        示例：
+            pipeline = UnifiedDataPipeline(client, ws_monitor)
+            batch_data = await pipeline.batch_get_multi_timeframe_data(
+                ['BTCUSDT', 'ETHUSDT'],
+                ['1h', '15m', '5m']
+            )
+            btc_h1 = batch_data['BTCUSDT']['1h']
+        """
+        import time
+        
+        # 创建所有任务
+        tasks = []
+        for symbol in symbols:
+            task = self.get_multi_timeframe_data(symbol, timeframes, limit)
+            tasks.append((symbol, task))
+        
+        # 批量并行执行
+        start_time = time.time()
+        results = await asyncio.gather(
+            *[t[1] for t in tasks],
+            return_exceptions=True
+        )
+        elapsed = time.time() - start_time
+        
+        # 组装结果
+        batch_data = {}
+        success_count = 0
+        error_count = 0
+        
+        for (symbol, _), result in zip(tasks, results):
+            if isinstance(result, Exception):
+                logger.warning(f"⚠️  {symbol} 数据获取失败: {result}")
+                batch_data[symbol] = {}
+                error_count += 1
+            else:
+                batch_data[symbol] = result
+                success_count += 1
+        
+        logger.info(
+            f"✅ 批量数据获取完成: {len(symbols)}个symbols | "
+            f"成功{success_count} | 失败{error_count} | "
+            f"耗时{elapsed:.2f}秒 | "
+            f"平均{elapsed/len(symbols)*1000:.1f}ms/symbol"
+        )
+        
+        return batch_data
+    
     def get_stats(self) -> Dict[str, Any]:
         """获取管道统计"""
         return {
