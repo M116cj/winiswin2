@@ -43,7 +43,8 @@ class TestICTRegressionSuite(unittest.TestCase):
     
     @staticmethod
     def _create_test_data(size: int) -> pd.DataFrame:
-        """创建标准测试K线数据"""
+        """创建标准测试K线数据（确定性）"""
+        np.random.seed(42)  # 固定种子确保可重现
         base_price = 50000
         data = []
         
@@ -71,16 +72,25 @@ class TestICTRegressionSuite(unittest.TestCase):
     
     @staticmethod
     def _create_trending_data(size: int, trend: str = 'up') -> pd.DataFrame:
-        """创建趋势性数据（上升/下降）"""
+        """创建趋势性数据（上升/下降，确定性）"""
+        np.random.seed(100 if trend == 'up' else 200)  # 不同趋势使用不同种子
         base_price = 50000
         data = []
-        trend_factor = 50 if trend == 'up' else -50
+        trend_factor = 100 if trend == 'up' else -100  # 增强趋势信号
         
         for i in range(size):
-            open_price = base_price + (i * trend_factor)
+            # 强趋势 + 小噪音
+            noise = np.random.normal(0, 20)  # 减少噪音，确保趋势清晰
+            open_price = base_price + (i * trend_factor) + noise
             high = open_price + abs(np.random.normal(30, 10))
             low = open_price - abs(np.random.normal(30, 10))
-            close = np.random.uniform(low, high)
+            
+            # 确保收盘价顺应趋势
+            if trend == 'up':
+                close = np.random.uniform(open_price, high)  # 上升趋势：接近高点
+            else:
+                close = np.random.uniform(low, open_price)  # 下降趋势：接近低点
+            
             volume = np.random.uniform(1000, 10000)
             
             data.append({
@@ -97,7 +107,8 @@ class TestICTRegressionSuite(unittest.TestCase):
     
     @staticmethod
     def _create_sideways_data(size: int) -> pd.DataFrame:
-        """创建横盘数据"""
+        """创建横盘数据（确定性）"""
+        np.random.seed(300)  # 固定种子
         base_price = 50000
         data = []
         
@@ -122,7 +133,8 @@ class TestICTRegressionSuite(unittest.TestCase):
     
     @staticmethod
     def _create_volatile_data(size: int) -> pd.DataFrame:
-        """创建高波动数据"""
+        """创建高波动数据（确定性）"""
+        np.random.seed(400)  # 固定种子
         base_price = 50000
         data = []
         
