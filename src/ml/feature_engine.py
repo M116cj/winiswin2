@@ -371,6 +371,25 @@ class FeatureEngine:
         # 其他类型默认为有效
         return True
     
+    @staticmethod
+    def _convert_to_dict_list(data):
+        """
+        將DataFrame轉換為字典列表（ICTTools需要此格式）
+        
+        Args:
+            data: DataFrame或List[Dict]
+        
+        Returns:
+            List[Dict] or original data if not DataFrame
+        """
+        if data is None:
+            return []
+        # 如果是DataFrame，轉換為字典列表
+        if hasattr(data, 'to_dict'):
+            return data.to_dict('records')
+        # 如果已經是列表，直接返回
+        return data
+    
     def _build_ict_smc_features(
         self,
         signal: Dict,
@@ -402,6 +421,11 @@ class FeatureEngine:
         klines_15m = klines_data.get('15m', [])
         klines_5m = klines_data.get('5m', [])
         
+        # 轉換DataFrame為字典列表（ICTTools需要此格式）
+        klines_1h_list = self._convert_to_dict_list(klines_1h)
+        klines_15m_list = self._convert_to_dict_list(klines_15m)
+        klines_5m_list = self._convert_to_dict_list(klines_5m)
+        
         # 獲取當前價格和ATR
         current_price = signal.get('entry_price', 0)
         atr = signal.get('indicators', {}).get('atr', 0)
@@ -409,29 +433,29 @@ class FeatureEngine:
         # === 8個基礎特徵 ===
         
         # 1. market_structure（市場結構）
-        market_structure = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
+        market_structure = ICTTools.calculate_market_structure(klines_1h_list) if self._is_valid_data(klines_1h) else 0
         
         # 2. order_blocks_count（訂單塊數量）
-        order_blocks_count = ICTTools.detect_order_blocks(klines_15m) if self._is_valid_data(klines_15m) else 0
+        order_blocks_count = ICTTools.detect_order_blocks(klines_15m_list) if self._is_valid_data(klines_15m) else 0
         
         # 3. institutional_candle（機構K線）
         institutional_candle = 0
         if self._is_valid_data(klines_5m) and len(klines_5m) > 20:
             institutional_candle = ICTTools.detect_institutional_candle(
-                klines_5m[-1], 
-                klines_5m
+                klines_5m_list[-1], 
+                klines_5m_list
             )
         
         # 4. liquidity_grab（流動性抓取）
         liquidity_grab = 0
         if self._is_valid_data(klines_5m) and atr > 0:
-            liquidity_grab = ICTTools.detect_liquidity_grab(klines_5m, atr)
+            liquidity_grab = ICTTools.detect_liquidity_grab(klines_5m_list, atr)
         
         # 5. order_flow（訂單流）
         order_flow = self._calculate_order_flow(trade_data) if trade_data else 0.0
         
         # 6. fvg_count（FVG數量）
-        fvg_count = ICTTools.detect_fvg(klines_5m) if self._is_valid_data(klines_5m) else 0
+        fvg_count = ICTTools.detect_fvg(klines_5m_list) if self._is_valid_data(klines_5m) else 0
         
         # 7. trend_alignment_enhanced（趨勢對齊度增強版）
         trend_alignment_enhanced = self._calculate_trend_alignment_enhanced(
@@ -442,7 +466,7 @@ class FeatureEngine:
         swing_high_distance = 0.0
         if self._is_valid_data(klines_15m) and current_price > 0 and atr > 0:
             swing_high_distance = ICTTools.calculate_swing_distance(
-                klines_15m, current_price, atr, 'high'
+                klines_15m_list, current_price, atr, 'high'
             )
         
         # === 4個合成特徵 ===
@@ -518,9 +542,14 @@ class FeatureEngine:
         Returns:
             對齊度（0到1）
         """
-        trend_1h = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
-        trend_15m = ICTTools.calculate_market_structure(klines_15m) if self._is_valid_data(klines_15m) else 0
-        trend_5m = ICTTools.calculate_market_structure(klines_5m) if self._is_valid_data(klines_5m) else 0
+        # 轉換為字典列表
+        klines_1h_list = self._convert_to_dict_list(klines_1h)
+        klines_15m_list = self._convert_to_dict_list(klines_15m)
+        klines_5m_list = self._convert_to_dict_list(klines_5m)
+        
+        trend_1h = ICTTools.calculate_market_structure(klines_1h_list) if self._is_valid_data(klines_1h) else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m_list) if self._is_valid_data(klines_15m) else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m_list) if self._is_valid_data(klines_5m) else 0
         
         trends = [trend_1h, trend_15m, trend_5m]
         
@@ -590,9 +619,14 @@ class FeatureEngine:
         Returns:
             收斂度（0到1）
         """
-        trend_1h = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
-        trend_15m = ICTTools.calculate_market_structure(klines_15m) if self._is_valid_data(klines_15m) else 0
-        trend_5m = ICTTools.calculate_market_structure(klines_5m) if self._is_valid_data(klines_5m) else 0
+        # 轉換為字典列表
+        klines_1h_list = self._convert_to_dict_list(klines_1h)
+        klines_15m_list = self._convert_to_dict_list(klines_15m)
+        klines_5m_list = self._convert_to_dict_list(klines_5m)
+        
+        trend_1h = ICTTools.calculate_market_structure(klines_1h_list) if self._is_valid_data(klines_1h) else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m_list) if self._is_valid_data(klines_15m) else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m_list) if self._is_valid_data(klines_5m) else 0
         
         trends = np.array([trend_1h, trend_15m, trend_5m])
         std = np.std(trends)
