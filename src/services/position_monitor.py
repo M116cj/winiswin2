@@ -923,6 +923,7 @@ class PositionMonitor:
         获取当前技术指标（用于ML反弹预测）
         
         🎯 v3.9.2.5新增：简化版指标获取
+        ✅ v3.20: 使用 EliteTechnicalEngine 统一计算
         
         Args:
             symbol: 交易对
@@ -931,8 +932,8 @@ class PositionMonitor:
             Optional[Dict]: 技术指标字典
         """
         try:
-            # 尝试获取15m K线数据计算指标
-            from src.utils.indicators import TechnicalIndicators
+            # ✅ v3.20: 使用 EliteTechnicalEngine
+            from src.core.elite import EliteTechnicalEngine
             
             # 获取最近50根15m K线
             klines = await self.client.get_klines(symbol, '15m', limit=50)
@@ -943,7 +944,6 @@ class PositionMonitor:
             
             # 转换为DataFrame
             import pandas as pd
-            # 🔧 显式定义列名以避免LSP类型推断问题
             column_names = [
                 'timestamp', 'open', 'high', 'low', 'close', 'volume',
                 'close_time', 'quote_volume', 'trades', 'taker_buy_base',
@@ -955,28 +955,24 @@ class PositionMonitor:
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
             
-            # 计算指标
-            indicators_calc = TechnicalIndicators()
-            close_prices = df['close'].values
-            high_prices = df['high'].values
-            low_prices = df['low'].values
-            volumes = df['volume'].values
+            # ✅ v3.20: 使用 EliteTechnicalEngine 统一计算指标
+            tech_engine = EliteTechnicalEngine()
             
             # RSI
-            rsi = indicators_calc.calculate_rsi(close_prices, period=14)
+            rsi = tech_engine.calculate('rsi', df, period=14).value
             
             # MACD
-            macd_data = indicators_calc.calculate_macd(close_prices)
-            macd_line = macd_data['macd']
-            signal_line = macd_data['signal']
-            histogram = macd_data['histogram']
+            macd_result = tech_engine.calculate('macd', df).value
+            macd_line = macd_result['macd']
+            signal_line = macd_result['signal']
+            histogram = macd_result['histogram']
             
             # 布林帶
-            bb_data = indicators_calc.calculate_bollinger_bands(close_prices)
-            bb_upper = bb_data['upper']
-            bb_middle = bb_data['middle']
-            bb_lower = bb_data['lower']
-            current_price = close_prices[-1]
+            bb_result = tech_engine.calculate('bb', df).value
+            bb_upper = bb_result['upper']
+            bb_middle = bb_result['middle']
+            bb_lower = bb_result['lower']
+            current_price = df['close'].iloc[-1]
             bb_width_pct = (bb_upper.iloc[-1] - bb_lower.iloc[-1]) / bb_middle.iloc[-1] * 100 if bb_middle.iloc[-1] > 0 else 0
             
             # 价格相对布林带位置 (0=下轨, 1=上轨)

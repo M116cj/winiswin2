@@ -9,13 +9,8 @@ from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 import logging
 
+from src.core.elite import EliteTechnicalEngine
 from src.utils.indicators import (
-    calculate_ema,
-    calculate_macd,
-    calculate_rsi,
-    calculate_atr,
-    calculate_bollinger_bands,
-    calculate_adx,
     calculate_ema_slope,
     identify_order_blocks,
     identify_swing_points,
@@ -32,6 +27,8 @@ class ICTStrategy:
     def __init__(self):
         """初始化策略引擎"""
         self.config = Config
+        self.tech_engine = EliteTechnicalEngine()
+        logger.info("✅ v3.20: ICTStrategy 使用 EliteTechnicalEngine 统一技术指标计算")
     
     def analyze(
         self,
@@ -187,8 +184,11 @@ class ICTStrategy:
         if df.empty or len(df) < self.config.EMA_SLOW:
             return "neutral"
         
-        ema_fast = calculate_ema(df['close'], self.config.EMA_FAST)
-        ema_slow = calculate_ema(df['close'], self.config.EMA_SLOW)
+        # ✅ v3.20: 使用 EliteTechnicalEngine
+        ema_fast_result = self.tech_engine.calculate('ema', df, period=self.config.EMA_FAST)
+        ema_slow_result = self.tech_engine.calculate('ema', df, period=self.config.EMA_SLOW)
+        ema_fast = ema_fast_result.value
+        ema_slow = ema_slow_result.value
         
         if ema_fast.empty or ema_slow.empty:
             return "neutral"
@@ -198,7 +198,12 @@ class ICTStrategy:
         
         # ✨ v3.10.0: ADX趨勢強度過濾（避免震盪市假信號）
         try:
-            adx, plus_di, minus_di = calculate_adx(df, self.config.ADX_PERIOD)
+            # ✅ v3.20: 使用 EliteTechnicalEngine（键名：di_plus/di_minus）
+            adx_result = self.tech_engine.calculate('adx', df, period=self.config.ADX_PERIOD)
+            adx_dict = adx_result.value
+            adx = adx_dict['adx']
+            plus_di = adx_dict['di_plus']
+            minus_di = adx_dict['di_minus']
             if not adx.empty:
                 adx_val = float(adx.iloc[-1])
                 
@@ -393,7 +398,8 @@ class ICTStrategy:
         trend_alignment_count = 0
         h1_lower = h1_trend.lower()
         
-        ema20_5m = calculate_ema(m5_data['close'], 20)
+        # ✅ v3.20: 使用 EliteTechnicalEngine
+        ema20_5m = self.tech_engine.calculate('ema', m5_data, period=20).value
         if not ema20_5m.empty:
             current_price = m5_data['close'].iloc[-1]
             ema_val = ema20_5m.iloc[-1]
@@ -402,7 +408,7 @@ class ICTStrategy:
                (h1_lower == "bearish" and current_price < ema_val):
                 trend_alignment_count += 1
         
-        ema50_15m = calculate_ema(m15_data['close'], 50)
+        ema50_15m = self.tech_engine.calculate('ema', m15_data, period=50).value
         if not ema50_15m.empty:
             current_price = m15_data['close'].iloc[-1]
             ema_val = ema50_15m.iloc[-1]
@@ -411,7 +417,7 @@ class ICTStrategy:
                (h1_lower == "bearish" and current_price < ema_val):
                 trend_alignment_count += 1
         
-        ema100_1h = calculate_ema(h1_data['close'], 100)
+        ema100_1h = self.tech_engine.calculate('ema', h1_data, period=100).value
         if not ema100_1h.empty:
             current_price = h1_data['close'].iloc[-1]
             ema_val = ema100_1h.iloc[-1]
@@ -438,7 +444,8 @@ class ICTStrategy:
         
         position_score = 0.0
         if order_blocks and direction:
-            atr = calculate_atr(m15_data)
+            # ✅ v3.20: 使用 EliteTechnicalEngine
+            atr = self.tech_engine.calculate('atr', m15_data).value
             atr_value = atr.iloc[-1] if not atr.empty else current_price * 0.01
             
             relevant_obs = [ob for ob in order_blocks if ob['type'] == direction.lower()]
@@ -480,11 +487,13 @@ class ICTStrategy:
         
         scores['price_position'] = position_score
         
-        rsi = calculate_rsi(m5_data['close'])
-        macd_data = calculate_macd(m5_data['close'])
+        # ✅ v3.20: 使用 EliteTechnicalEngine
+        rsi = self.tech_engine.calculate('rsi', m5_data).value
+        macd_result = self.tech_engine.calculate('macd', m5_data).value
         
         momentum_score = 0.0
-        if not rsi.empty and not macd_data['macd'].empty:
+        if not rsi.empty and not macd_result['macd'].empty:
+            macd_data = macd_result  # 兼容原代码
             rsi_val = rsi.iloc[-1]
             macd_val = macd_data['macd'].iloc[-1]
             signal_val = macd_data['signal'].iloc[-1]
@@ -508,7 +517,9 @@ class ICTStrategy:
         
         scores['momentum'] = momentum_score
         
-        bb_data = calculate_bollinger_bands(m15_data['close'])
+        # ✅ v3.20: 使用 EliteTechnicalEngine
+        bb_result = self.tech_engine.calculate('bb', m15_data)
+        bb_data = bb_result.value
         bb_upper = bb_data['upper']
         bb_middle = bb_data['middle']
         bb_lower = bb_data['lower']
@@ -587,26 +598,27 @@ class ICTStrategy:
         indicators = {}
         
         try:
-            rsi = calculate_rsi(m5_data['close'])
+            # ✅ v3.20: 使用 EliteTechnicalEngine
+            rsi = self.tech_engine.calculate('rsi', m5_data).value
             if not rsi.empty:
                 indicators['rsi'] = float(rsi.iloc[-1])
             
-            macd_data = calculate_macd(m5_data['close'])
-            if not macd_data['macd'].empty:
-                indicators['macd'] = float(macd_data['macd'].iloc[-1])
-                indicators['macd_signal'] = float(macd_data['signal'].iloc[-1])
-                indicators['macd_histogram'] = float(macd_data['histogram'].iloc[-1])
+            macd_result = self.tech_engine.calculate('macd', m5_data).value
+            if not macd_result['macd'].empty:
+                indicators['macd'] = float(macd_result['macd'].iloc[-1])
+                indicators['macd_signal'] = float(macd_result['signal'].iloc[-1])
+                indicators['macd_histogram'] = float(macd_result['histogram'].iloc[-1])
             
-            atr = calculate_atr(m15_data)
+            atr = self.tech_engine.calculate('atr', m15_data).value
             if not atr.empty:
                 indicators['atr'] = float(atr.iloc[-1])
             
-            bb_data = calculate_bollinger_bands(m15_data['close'])
-            if not bb_data['upper'].empty:
-                indicators['bb_upper'] = float(bb_data['upper'].iloc[-1])
-                indicators['bb_middle'] = float(bb_data['middle'].iloc[-1])
-                indicators['bb_lower'] = float(bb_data['lower'].iloc[-1])
-                bb_width = (bb_data['upper'].iloc[-1] - bb_data['lower'].iloc[-1]) / bb_data['middle'].iloc[-1]
+            bb_result = self.tech_engine.calculate('bb', m15_data).value
+            if not bb_result['upper'].empty:
+                indicators['bb_upper'] = float(bb_result['upper'].iloc[-1])
+                indicators['bb_middle'] = float(bb_result['middle'].iloc[-1])
+                indicators['bb_lower'] = float(bb_result['lower'].iloc[-1])
+                bb_width = (bb_result['upper'].iloc[-1] - bb_result['lower'].iloc[-1]) / bb_result['middle'].iloc[-1]
                 indicators['bb_width_pct'] = float(bb_width)
             
             if len(m15_data) >= 20 and 'volume' in m15_data.columns:
@@ -614,12 +626,12 @@ class ICTStrategy:
                 if not volume_sma.empty and volume_sma.iloc[-1] > 0:
                     indicators['volume_sma_ratio'] = float(m15_data['volume'].iloc[-1] / volume_sma.iloc[-1])
             
-            ema50 = calculate_ema(m15_data['close'], 50)
+            ema50 = self.tech_engine.calculate('ema', m15_data, period=50).value
             if not ema50.empty:
                 price = float(m15_data['close'].iloc[-1])
                 indicators['price_vs_ema50'] = (price - float(ema50.iloc[-1])) / float(ema50.iloc[-1])
             
-            ema200 = calculate_ema(m15_data['close'], 200)
+            ema200 = self.tech_engine.calculate('ema', m15_data, period=200).value
             if not ema200.empty:
                 price = float(m15_data['close'].iloc[-1])
                 indicators['price_vs_ema200'] = (price - float(ema200.iloc[-1])) / float(ema200.iloc[-1])
