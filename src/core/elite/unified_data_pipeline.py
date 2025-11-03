@@ -80,7 +80,13 @@ class UnifiedDataPipeline:
         """
         self.client = binance_client
         self.ws_monitor = websocket_monitor
-        self.cache = cache or IntelligentCache(l1_max_size=5000)
+        
+        # ✅ v3.20 Phase 3: 启用L2持久化缓存
+        self.cache = cache or IntelligentCache(
+            l1_max_size=5000,
+            enable_l2=True,  # 启用L2持久化
+            l2_cache_dir='/tmp/elite_cache'
+        )
         
         # 统计
         self._total_requests = 0
@@ -92,7 +98,7 @@ class UnifiedDataPipeline:
         logger.info(
             "✅ UnifiedDataPipeline 初始化完成\n"
             "   🎯 3层Fallback: 历史API → WebSocket → REST\n"
-            "   💾 智能缓存已启用\n"
+            "   💾 智能缓存已启用（L1内存 + L2持久化）\n"
             f"   📡 WebSocket: {'启用' if websocket_monitor else '禁用'}"
         )
     

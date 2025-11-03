@@ -23,6 +23,8 @@ import time
 import hashlib
 import pickle
 import logging
+import os
+from pathlib import Path
 from typing import Any, Optional, Dict, Tuple
 from collections import OrderedDict
 from dataclasses import dataclass, field
@@ -148,22 +150,34 @@ class IntelligentCache:
     5. 统计监控
     """
     
-    def __init__(self, l1_max_size: int = 5000, enable_l2: bool = False):
+    def __init__(
+        self, 
+        l1_max_size: int = 5000, 
+        enable_l2: bool = True,
+        l2_cache_dir: str = '/tmp/elite_cache'
+    ):
         """
         初始化智能缓存
         
         Args:
             l1_max_size: L1缓存最大条目数
-            enable_l2: 是否启用L2持久化（暂时禁用，v3.21实现）
+            enable_l2: 是否启用L2持久化（v3.20 Phase 3已实现）
+            l2_cache_dir: L2缓存目录路径
         """
         self.l1_cache = LRUCache(max_size=l1_max_size)
         self.enable_l2 = enable_l2
         self.stats = CacheStats()
         
+        # ✅ v3.20 Phase 3: L2持久化缓存目录
+        self.l2_cache_dir = Path(l2_cache_dir)
+        if self.enable_l2:
+            self.l2_cache_dir.mkdir(parents=True, exist_ok=True)
+            self._clean_expired_l2()  # 启动时清理过期缓存
+        
         logger.info(
             f"✅ IntelligentCache 初始化完成\n"
             f"   📦 L1内存缓存: {l1_max_size} 条目\n"
-            f"   💾 L2持久化: {'启用' if enable_l2 else '禁用（v3.21）'}"
+            f"   💾 L2持久化: {'启用 (' + str(self.l2_cache_dir) + ')' if enable_l2 else '禁用'}"
         )
     
     def get(self, key: str) -> Optional[Any]:
@@ -184,17 +198,14 @@ class IntelligentCache:
             self.stats.l1_hits += 1
             return value
         
-        # 暂时不实现L2（v3.21）
-        if not self.enable_l2:
-            self.stats.misses += 1
-            return None
-        
-        # TODO v3.21: L2持久化查找
-        # if (l2_value := self._get_from_l2(key)) is not None:
-        #     self.stats.l2_hits += 1
-        #     # 提升到L1
-        #     self.l1_cache.set(key, l2_value, ttl=300)
-        #     return l2_value
+        # ✅ v3.20 Phase 3: L2持久化查找
+        if self.enable_l2:
+            l2_value = self._get_from_l2(key)
+            if l2_value is not None:
+                self.stats.l2_hits += 1
+                # 提升到L1（热数据）
+                self.l1_cache.set(key, l2_value, ttl=300)
+                return l2_value
         
         self.stats.misses += 1
         return None
@@ -232,9 +243,9 @@ class IntelligentCache:
         if level in ('l1', 'both'):
             self.l1_cache.set(key, value, ttl=ttl)
         
-        # 写入L2（v3.21实现）
+        # ✅ v3.20 Phase 3: 写入L2持久化
         if level in ('l2', 'both') and self.enable_l2:
-            pass  # TODO: 实现L2持久化
+            self._set_to_l2(key, value, ttl)
     
     def _calculate_smart_ttl(self, key: str, value: Any) -> int:
         """
@@ -255,10 +266,126 @@ class IntelligentCache:
         else:
             return 180  # 默认3分钟
     
+    def _get_cache_file_path(self, key: str) -> Path:
+        """
+        获取缓存文件路径（安全哈希）
+        
+        Args:
+            key: 缓存键（可能包含不安全字符）
+            
+        Returns:
+            安全的文件路径
+        """
+        # 使用MD5哈希确保文件名安全（避免 / .. 等不安全字符）
+        safe_key = hashlib.md5(key.encode()).hexdigest()
+        return self.l2_cache_dir / f"{safe_key}.pkl"
+    
+    def _get_from_l2(self, key: str) -> Optional[Any]:
+        """
+        从L2持久化缓存读取
+        
+        Args:
+            key: 缓存键
+            
+        Returns:
+            缓存值或None
+        """
+        try:
+            cache_file = self._get_cache_file_path(key)
+            
+            if not cache_file.exists():
+                return None
+            
+            # 读取缓存文件
+            with open(cache_file, 'rb') as f:
+                cache_data = pickle.load(f)
+            
+            # 检查过期时间
+            expiry = cache_data.get('expiry', 0)
+            if expiry > 0 and time.time() > expiry:
+                # 过期，删除文件
+                cache_file.unlink()
+                return None
+            
+            return cache_data.get('value')
+            
+        except Exception as e:
+            logger.debug(f"L2缓存读取失败 {key}: {e}")
+            return None
+    
+    def _set_to_l2(self, key: str, value: Any, ttl: Optional[int] = None):
+        """
+        写入L2持久化缓存
+        
+        Args:
+            key: 缓存键
+            value: 缓存值
+            ttl: 过期时间（秒）
+        """
+        try:
+            cache_file = self._get_cache_file_path(key)
+            
+            # 计算过期时间
+            expiry = time.time() + ttl if ttl else 0
+            
+            # 序列化数据
+            cache_data = {
+                'value': value,
+                'expiry': expiry,
+                'created_at': time.time()
+            }
+            
+            # 写入文件
+            with open(cache_file, 'wb') as f:
+                pickle.dump(cache_data, f)
+                
+        except Exception as e:
+            logger.warning(f"⚠️  L2缓存写入失败 {key}: {e}")
+    
+    def _clean_expired_l2(self):
+        """清理过期的L2缓存文件"""
+        if not self.enable_l2:
+            return
+        
+        try:
+            cleaned_count = 0
+            current_time = time.time()
+            
+            for cache_file in self.l2_cache_dir.glob('*.pkl'):
+                try:
+                    with open(cache_file, 'rb') as f:
+                        cache_data = pickle.load(f)
+                    
+                    expiry = cache_data.get('expiry', 0)
+                    if expiry > 0 and current_time > expiry:
+                        cache_file.unlink()
+                        cleaned_count += 1
+                        
+                except Exception:
+                    # 损坏的文件也删除
+                    cache_file.unlink()
+                    cleaned_count += 1
+            
+            if cleaned_count > 0:
+                logger.info(f"🗑️  清理了 {cleaned_count} 个过期L2缓存文件")
+                
+        except Exception as e:
+            logger.warning(f"⚠️  L2缓存清理失败: {e}")
+    
     def clear(self):
         """清空所有缓存"""
         self.l1_cache.clear()
-        logger.info("🗑️  缓存已清空")
+        
+        # 清空L2缓存
+        if self.enable_l2:
+            try:
+                for cache_file in self.l2_cache_dir.glob('*.pkl'):
+                    cache_file.unlink()
+                logger.info("🗑️  L1+L2缓存已清空")
+            except Exception as e:
+                logger.warning(f"⚠️  L2缓存清空失败: {e}")
+        else:
+            logger.info("🗑️  L1缓存已清空")
     
     def get_stats(self) -> CacheStats:
         """获取缓存统计"""
@@ -266,13 +393,21 @@ class IntelligentCache:
     
     def print_stats(self):
         """打印缓存统计"""
+        l2_size = 0
+        if self.enable_l2:
+            try:
+                l2_size = len(list(self.l2_cache_dir.glob('*.pkl')))
+            except Exception:
+                l2_size = 0
+        
         logger.info(
             f"📊 缓存统计:\n"
             f"   ✅ L1命中: {self.stats.l1_hits} ({self.stats.l1_hit_rate:.1%})\n"
             f"   ✅ L2命中: {self.stats.l2_hits}\n"
             f"   ❌ 未命中: {self.stats.misses}\n"
             f"   🎯 总命中率: {self.stats.hit_rate:.1%}\n"
-            f"   📦 L1大小: {self.l1_cache.size()}/{self.l1_cache.max_size}"
+            f"   📦 L1大小: {self.l1_cache.size()}/{self.l1_cache.max_size}\n"
+            f"   💾 L2大小: {l2_size if self.enable_l2 else 'N/A'}"
         )
 
 
