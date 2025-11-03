@@ -441,9 +441,18 @@ class UnifiedScheduler:
                                 'data_time_ms': data_elapsed / len(batch_symbols) * 1000  # 平均每个symbol的数据时间
                             })
                             
+                            # 🔥 Bug #6 診斷：記錄信號拒絕原因
                             if signal:
                                 signals.append(signal)
                                 self.stats['total_signals'] += 1
+                            else:
+                                # 檢查為什麼信號為None（雖然confidence和win_prob有值）
+                                if confidence > 0 or win_prob > 0:
+                                    if analyzed_count <= 5:  # 只診斷前5個
+                                        logger.warning(
+                                            f"⚠️ {symbol}: 有分數但無信號 | "
+                                            f"confidence={confidence:.1f} | win_prob={win_prob:.1f}%"
+                                        )
                             
                         except Exception as e:
                             logger.debug(f"分析 {symbol} 跳過: {e}")
