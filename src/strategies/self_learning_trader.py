@@ -37,20 +37,34 @@ class SelfLearningTrader:
     
     def __init__(self, config=None, binance_client=None, trade_recorder=None, virtual_position_manager=None, websocket_monitor=None):
         """
-        🔥 v3.18.6+ 初始化 SelfLearningTrader（整合ML模型）
+        🔥 v3.20.7+ 初始化 SelfLearningTrader（整合ML模型 + SQLite TradeRecorder）
         
         Args:
             config: 配置對象
             binance_client: Binance 客戶端（用於獲取交易規格）
-            trade_recorder: 交易記錄器（用於記錄競價結果）
+            trade_recorder: 交易記錄器（可選，如未提供則自動創建SQLite版本）
             virtual_position_manager: 虛擬倉位管理器（用於創建虛擬倉位）
             websocket_monitor: WebSocket監控器（v3.17.11，用於獲取即時市場數據）
         """
         self.config = config or Config
         self.binance_client = binance_client
-        self.trade_recorder = trade_recorder
         self.virtual_position_manager = virtual_position_manager
         self.websocket_monitor = websocket_monitor  # 🔥 v3.17.11
+        
+        # 🔥 v3.20.7+ SQLite TradeRecorder支持（如果未提供則自動創建）
+        if trade_recorder is None:
+            try:
+                from src.core.trade_recorder import TradeRecorder as SQLiteTradeRecorder
+                self.trade_recorder = SQLiteTradeRecorder(self.config)
+                self._using_sqlite_recorder = True
+                logger.info("✅ 自動創建SQLite TradeRecorder")
+            except Exception as e:
+                logger.warning(f"⚠️ SQLite TradeRecorder創建失敗，TradeRecorder將為None: {e}")
+                self.trade_recorder = None
+                self._using_sqlite_recorder = False
+        else:
+            self.trade_recorder = trade_recorder
+            self._using_sqlite_recorder = False
         
         # 初始化信號生成器（🔥 v3.19+：強制啟用純ICT/SMC模式）
         self.signal_generator = RuleBasedSignalGenerator(config, use_pure_ict=True)
