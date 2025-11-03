@@ -12,11 +12,14 @@ import json
 logger = logging.getLogger(__name__)
 
 class TradeRecorder:
-    """SQLite数据库交易记录器"""
+    """SQLite数据库交易记录器（v3.20.7+ 兼容原有JSON TradeRecorder接口）"""
     
     def __init__(self, config):
         self.config = config
         self.db_path = 'trading_data.db'
+        
+        self.completed_trades = []
+        
         self._init_database()
         
     def _init_database(self):
@@ -165,3 +168,78 @@ class TradeRecorder:
                 'avg_pnl': 0,
                 'total_pnl': 0
             }
+    
+    def record_entry(
+        self, 
+        signal: Dict, 
+        position_info: Dict, 
+        competition_context: Optional[Dict] = None,
+        websocket_metadata: Optional[Dict] = None
+    ):
+        """
+        記錄開倉信號（兼容原有接口）
+        
+        Args:
+            signal: 交易信號
+            position_info: 倉位信息
+            competition_context: 競價上下文
+            websocket_metadata: WebSocket元數據
+        """
+        try:
+            entry_record = {
+                'symbol': signal.get('symbol'),
+                'direction': signal.get('direction'),
+                'entry_price': signal.get('current_price', 0),
+                'position_size': position_info.get('size', 0),
+                'confidence': signal.get('confidence', 0),
+                'win_probability': signal.get('win_probability', 0),
+                'status': 'OPEN',
+                'risk_reward_ratio': signal.get('risk_reward_ratio', 0)
+            }
+            
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO trade_history 
+                (symbol, direction, entry_price, position_size, confidence, win_probability, status, risk_reward_ratio)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                entry_record['symbol'],
+                entry_record['direction'],
+                entry_record['entry_price'],
+                entry_record['position_size'],
+                entry_record['confidence'],
+                entry_record['win_probability'],
+                entry_record['status'],
+                entry_record['risk_reward_ratio']
+            ))
+            
+            conn.commit()
+            conn.close()
+            
+            logger.debug(f"📝 記錄開倉: {entry_record['symbol']}")
+            
+        except Exception as e:
+            logger.error(f"❌ 記錄開倉失敗: {e}")
+    
+    async def save_competition_log(self, competition_log: Dict):
+        """
+        保存多信號競價記錄（兼容原有接口）
+        
+        Args:
+            competition_log: 競價記錄數據
+        """
+        try:
+            competition_file = 'data/signal_competitions.jsonl'
+            
+            import os
+            os.makedirs(os.path.dirname(competition_file), exist_ok=True)
+            
+            with open(competition_file, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(competition_log, ensure_ascii=False, default=str) + '\n')
+            
+            logger.debug("📝 競價記錄已保存")
+            
+        except Exception as e:
+            logger.error(f"❌ 保存競價記錄失敗: {e}")
