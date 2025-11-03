@@ -1,0 +1,292 @@
+完整整合方案
+1. 核心 WebSocket 管理器
+python
+# src/core/websocket/advanced_feed_manager.py
+
+import asyncio
+import websockets
+import logging
+import json
+import time
+from typing import Set, Callable, Dict, List, Optional
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
+
+class AdvancedWebSocketManager:
+    """高級 WebSocket 管理器 - 整合所有修復方案"""
+    
+    def __init__(self, config):
+        self.config = config
+        self.feeds = {}
+        self.data_buffers = {}
+        self.quality_monitor = DataQualityMonitor()
+        self.gap_handler = DataGapHandler()
+        
+        # Railway 優化配置
+        self.ws_config = {
+            'max_symbols_per_connection': 150,
+            'ping_interval': 20,
+            'ping_timeout': 10, 
+            'reconnect_base_delay': 1,
+            'max_reconnect_delay': 30,
+            'connection_timeout': 180,
+            'health_check_interval': 30,
+            'heartbeat_interval': 180,
+        }
+        
+        # 統計信息
+        self.stats = {
+            'total_messages': 0,
+            'successful_reconnects': 0,
+            'data_gaps_fixed': 0,
+            'quality_issues': 0
+        }
+
+    async def initialize_feeds(self, all_symbols: Set[str]):
+        """初始化所有 WebSocket 饋送"""
+        try:
+            logger.info("🚀 初始化高級 WebSocket 管理器")
+            
+            # 分批交易對
+            symbol_batches = self._create_optimized_batches(all_symbols)
+            
+            for i, batch in enumerate(symbol_batches):
+                feed_name = f"PriceFeed-Shard{i}"
+                feed = RobustPriceFeed(feed_name, batch, self.ws_config)
+                self.feeds[feed_name] = feed
+                
+                # 初始化數據緩衝區
+                for symbol in batch:
+                    self.data_buffers[symbol] = {
+                        'kline_1m': [],
+                        'kline_5m': [], 
+                        'kline_15m': [],
+                        'kline_1h': [],
+                        'last_update': None,
+                        'message_count': 0
+                    }
+                
+                logger.info(f"📡 創建 {feed_name}: {len(batch)}個交易對")
+            
+            logger.info(f"✅ WebSocket 初始化完成: {len(self.feeds)}個分片")
+            
+        except Exception as e:
+            logger.error(f"❌ WebSocket 初始化失敗: {e}")
+            raise
+
+    def _create_optimized_batches(self, symbols: Set[str]) -> List[Set[str]]:
+        """創建優化的交易對批次"""
+        symbol_list = list(symbols)
+        batches = []
+        
+        # 按交易對活躍度排序（如果有的話）
+        # 暫時簡單分批
+        for i in range(0, len(symbol_list), self.ws_config['max_symbols_per_connection']):
+            batch = set(symbol_list[i:i + self.ws_config['max_symbols_per_connection']])
+            batches.append(batch)
+            
+        return batches
+
+    async def start_all_feeds(self, message_callback: Callable):
+        """啟動所有饋送"""
+        try:
+            logger.info("🎯 啟動所有 WebSocket 饋送")
+            
+            tasks = []
+            for feed_name, feed in self.feeds.items():
+                # 包裝回調函數，加入數據處理邏輯
+                wrapped_callback = self._create_wrapped_callback(message_callback)
+                task = asyncio.create_task(feed.listen(wrapped_callback))
+                tasks.append(task)
+                
+            # 啟動監控任務
+            monitor_task = asyncio.create_task(self._start_monitoring_tasks())
+            tasks.append(monitor_task)
+            
+            logger.info("✅ 所有饋送和監控任務已啟動")
+            
+            # 等待所有任務
+            await asyncio.gather(*tasks, return_exceptions=True)
+            
+        except Exception as e:
+            logger.error(f"❌ 啟動饋送失敗: {e}")
+
+    def _create_wrapped_callback(self, original_callback: Callable) -> Callable:
+        """創建包裝的回調函數，整合數據處理邏輯"""
+        async def wrapped_callback(data: Dict):
+            try:
+                # 1. 數據質量檢查
+                if not self.quality_monitor.validate_message(data):
+                    self.stats['quality_issues'] += 1
+                    return
+                
+                # 2. 更新數據緩衝區
+                symbol = self._extract_symbol(data)
+                if symbol:
+                    await self._update_data_buffers(symbol, data)
+                
+                # 3. 連續性檢查
+                self.quality_monitor.check_continuity(symbol, data)
+                
+                # 4. 調用原始回調
+                await original_callback(data)
+                
+                # 5. 更新統計
+                self.stats['total_messages'] += 1
+                
+            except Exception as e:
+                logger.error(f"❌ 回調處理失敗: {e}")
+                
+        return wrapped_callback
+
+    async def _update_data_buffers(self, symbol: str, data: Dict):
+        """更新數據緩衝區"""
+        try:
+            if symbol not in self.data_buffers:
+                return
+                
+            buffer = self.data_buffers[symbol]
+            buffer['last_update'] = datetime.now()
+            buffer['message_count'] += 1
+            
+            # 根據數據類型存儲到相應緩衝區
+            stream_type = data.get('stream', '')
+            if 'kline_1m' in stream_type:
+                self._add_to_kline_buffer(buffer['kline_1m'], data)
+            elif 'kline_5m' in stream_type:
+                self._add_to_kline_buffer(buffer['kline_5m'], data)
+            elif 'kline_15m' in stream_type:
+                self._add_to_kline_buffer(buffer['kline_15m'], data)
+            elif 'kline_1h' in stream_type:
+                self._add_to_kline_buffer(buffer['kline_1h'], data)
+                
+            # 限制緩衝區大小
+            self._trim_buffers(buffer)
+            
+        except Exception as e:
+            logger.error(f"❌ 更新數據緩衝區失敗 {symbol}: {e}")
+
+    def _add_to_kline_buffer(self, buffer: List, data: Dict):
+        """添加數據到K線緩衝區"""
+        try:
+            kline_data = data.get('data', {})
+            kline = kline_data.get('k', {})
+            
+            if not kline:
+                return
+                
+            buffer.append({
+                'timestamp': kline_data.get('t'),
+                'open': float(kline.get('o', 0)),
+                'high': float(kline.get('h', 0)),
+                'low': float(kline.get('l', 0)),
+                'close': float(kline.get('c', 0)),
+                'volume': float(kline.get('v', 0)),
+                'is_final': kline.get('x', False)
+            })
+            
+        except Exception as e:
+            logger.error(f"❌ 添加K線數據失敗: {e}")
+
+    async def _start_monitoring_tasks(self):
+        """啟動監控任務"""
+        try:
+            while True:
+                # 1. 健康檢查
+                await self._perform_health_checks()
+                
+                # 2. 數據質量報告
+                await self._log_quality_report()
+                
+                # 3. 檢查數據缺口
+                await self._check_data_gaps()
+                
+                await asyncio.sleep(60)  # 每分鐘檢查一次
+                
+        except Exception as e:
+            logger.error(f"❌ 監控任務失敗: {e}")
+
+    async def _perform_health_checks(self):
+        """執行健康檢查"""
+        try:
+            healthy_feeds = 0
+            for feed_name, feed in self.feeds.items():
+                if feed.is_connected and not feed.ws.closed:
+                    healthy_feeds += 1
+                else:
+                    logger.warning(f"⚠️ {feed_name} 不健康，觸發重連")
+                    asyncio.create_task(feed._handle_reconnect())
+            
+            logger.debug(f"📊 WebSocket 健康狀態: {healthy_feeds}/{len(self.feeds)} 正常")
+            
+        except Exception as e:
+            logger.error(f"❌ 健康檢查失敗: {e}")
+
+    async def _log_quality_report(self):
+        """記錄質量報告"""
+        try:
+            active_symbols = sum(1 for buf in self.data_buffers.values() 
+                               if buf['last_update'] and 
+                               (datetime.now() - buf['last_update']).total_seconds() < 300)
+            
+            logger.info(
+                f"📈 WebSocket 質量報告: "
+                f"消息={self.stats['total_messages']}, "
+                f"活躍交易對={active_symbols}/{len(self.data_buffers)}, "
+                f"重連成功={self.stats['successful_reconnects']}, "
+                f數據缺口修復={self.stats['data_gaps_fixed']}, "
+                f"質量問題={self.stats['quality_issues']}"
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ 質量報告失敗: {e}")
+
+    async def _check_data_gaps(self):
+        """檢查數據缺口"""
+        try:
+            current_time = datetime.now()
+            for symbol, buffer in self.data_buffers.items():
+                if not buffer['last_update']:
+                    continue
+                    
+                time_since_update = (current_time - buffer['last_update']).total_seconds()
+                
+                if time_since_update > 120:  # 2分鐘無數據
+                    logger.warning(f"⚠️ {symbol} 數據缺口: {time_since_update:.1f}秒無更新")
+                    await self.gap_handler.handle_gap(symbol, buffer)
+                    self.stats['data_gaps_fixed'] += 1
+                    
+        except Exception as e:
+            logger.error(f"❌ 數據缺口檢查失敗: {e}")
+
+    def _extract_symbol(self, data: Dict) -> Optional[str]:
+        """從數據中提取交易對"""
+        try:
+            stream = data.get('stream', '')
+            if not stream:
+                return None
+                
+            # 格式: btcusdt@kline_1m
+            return stream.split('@')[0].upper()
+        except:
+            return None
+
+    def _trim_buffers(self, buffer: Dict):
+        """修剪緩衝區大小"""
+        for key in ['kline_1m', 'kline_5m', 'kline_15m', 'kline_1h']:
+            if len(buffer[key]) > 1000:  # 保留最近1000條
+                buffer[key] = buffer[key][-1000:]
+
+    def get_symbol_data(self, symbol: str, timeframe: str) -> List:
+        """獲取指定交易對和時間框架的數據"""
+        try:
+            if symbol not in self.data_buffers:
+                return []
+                
+            buffer_key = f'kline_{timeframe}'
+            return self.data_buffers[symbol].get(buffer_key, [])
+            
+        except Exception as e:
+            logger.error(f"❌ 獲取交易對數據失敗 {symbol}: {e}")
+            return []
