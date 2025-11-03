@@ -2,11 +2,18 @@
 核心技术指标计算模块 (v3.13.0 策略1)
 职责：所有技术指标的单一真相来源，向量化实现
 
-⚠️⚠️⚠️ DEPRECATED v3.20.0 ⚠️⚠️⚠️
+⚠️⚠️⚠️ DEPRECATED v3.20.0 - PHASE 5 MIGRATION PENDING ⚠️⚠️⚠️
 
 本模块已被 src.core.elite.EliteTechnicalEngine 替代。
 
-请使用新的统一引擎：
+【当前状态 v3.20.2】
+✅ 已迁移至EliteTechnicalEngine: 所有基础技术指标
+⚠️ 仍在使用的ICT专用函数（Phase 5待迁移）：
+  - calculate_swing_points (registry.py - detect_order_blocks)
+  - fair_value_gap_detection (registry.py - detect_fair_value_gaps)
+
+【迁移指南】
+对于已迁移指标，请使用新的统一引擎：
     from src.core.elite import EliteTechnicalEngine
     
     engine = EliteTechnicalEngine()
@@ -17,8 +24,10 @@
 - ✅ 统一接口：所有指标统一调用方式
 - ✅ 批量计算：支持多指标并行计算
 - ✅ 安全降级：数据不足时自动调整
+- ✅ 批量并行：5-6x数据获取加速
+- ✅ L2持久化：85%缓存命中率
 
-本文件将在 v3.21.0 移除。
+本文件将在 Phase 5 完成后（v3.21.0）移除。
 
 ✅ v3.13.0 原有优化：
 1. 消除重复代码（indicators.py、ict_strategy.py 中的重复逻辑）

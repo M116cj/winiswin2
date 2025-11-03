@@ -2,11 +2,21 @@
 技術指標
 職責：EMA、MACD、RSI、Bollinger Bands、ATR 計算
 
-⚠️⚠️⚠️ DEPRECATED v3.20.0 ⚠️⚠️⚠️
+⚠️⚠️⚠️ DEPRECATED v3.20.0 - PHASE 5 MIGRATION PENDING ⚠️⚠️⚠️
 
 本模块已被 src.core.elite.EliteTechnicalEngine 替代。
 
-请使用新的统一引擎：
+【当前状态 v3.20.2】
+✅ 已迁移至EliteTechnicalEngine: EMA, RSI, MACD, BB, ATR, ADX
+⚠️ 仍在使用的ICT专用函数（Phase 5待迁移）：
+  - calculate_ema_slope (ict_strategy.py)
+  - identify_order_blocks (ict_strategy.py, rule_based_signal_generator.py)
+  - identify_swing_points (ict_strategy.py)
+  - determine_market_structure (ict_strategy.py, rule_based_signal_generator.py, registry.py)
+  - calculate_rsi/macd/ema (position_monitor_24x7.py - 函数内部导入)
+
+【迁移指南】
+对于已迁移指标，请使用新的统一引擎：
     from src.core.elite import EliteTechnicalEngine
     
     engine = EliteTechnicalEngine()
@@ -17,8 +27,9 @@
 - ✅ 统一接口：所有指标统一调用方式
 - ✅ 向量化优化：性能提升5倍
 - ✅ 安全降级：数据不足时自动调整
+- ✅ 批量并行：支持批量数据获取
 
-本文件将在 v3.21.0 移除。
+本文件将在 Phase 5 完成后（v3.21.0）移除。
 """
 
 import warnings
