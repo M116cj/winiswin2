@@ -349,6 +349,28 @@ class FeatureEngine:
     
     # ==================== v3.19 ICT/SMC高級特徵方法 ====================
     
+    @staticmethod
+    def _is_valid_data(data) -> bool:
+        """
+        檢查數據是否有效（不為None且不為空）
+        
+        Args:
+            data: 數據對象（可能是DataFrame、List或None）
+        
+        Returns:
+            True if data is valid and non-empty, False otherwise
+        """
+        if data is None:
+            return False
+        # DataFrame检查
+        if hasattr(data, 'empty'):
+            return not data.empty
+        # List/Tuple检查
+        if isinstance(data, (list, tuple)):
+            return len(data) > 0
+        # 其他类型默认为有效
+        return True
+    
     def _build_ict_smc_features(
         self,
         signal: Dict,
@@ -387,14 +409,14 @@ class FeatureEngine:
         # === 8個基礎特徵 ===
         
         # 1. market_structure（市場結構）
-        market_structure = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
+        market_structure = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
         
         # 2. order_blocks_count（訂單塊數量）
-        order_blocks_count = ICTTools.detect_order_blocks(klines_15m) if klines_15m else 0
+        order_blocks_count = ICTTools.detect_order_blocks(klines_15m) if self._is_valid_data(klines_15m) else 0
         
         # 3. institutional_candle（機構K線）
         institutional_candle = 0
-        if klines_5m and len(klines_5m) > 20:
+        if self._is_valid_data(klines_5m) and len(klines_5m) > 20:
             institutional_candle = ICTTools.detect_institutional_candle(
                 klines_5m[-1], 
                 klines_5m
@@ -402,14 +424,14 @@ class FeatureEngine:
         
         # 4. liquidity_grab（流動性抓取）
         liquidity_grab = 0
-        if klines_5m and atr > 0:
+        if self._is_valid_data(klines_5m) and atr > 0:
             liquidity_grab = ICTTools.detect_liquidity_grab(klines_5m, atr)
         
         # 5. order_flow（訂單流）
         order_flow = self._calculate_order_flow(trade_data) if trade_data else 0.0
         
         # 6. fvg_count（FVG數量）
-        fvg_count = ICTTools.detect_fvg(klines_5m) if klines_5m else 0
+        fvg_count = ICTTools.detect_fvg(klines_5m) if self._is_valid_data(klines_5m) else 0
         
         # 7. trend_alignment_enhanced（趨勢對齊度增強版）
         trend_alignment_enhanced = self._calculate_trend_alignment_enhanced(
@@ -418,7 +440,7 @@ class FeatureEngine:
         
         # 8. swing_high_distance（擺動高點距離）
         swing_high_distance = 0.0
-        if klines_15m and current_price > 0 and atr > 0:
+        if self._is_valid_data(klines_15m) and current_price > 0 and atr > 0:
             swing_high_distance = ICTTools.calculate_swing_distance(
                 klines_15m, current_price, atr, 'high'
             )
@@ -496,9 +518,9 @@ class FeatureEngine:
         Returns:
             對齊度（0到1）
         """
-        trend_1h = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
-        trend_15m = ICTTools.calculate_market_structure(klines_15m) if klines_15m else 0
-        trend_5m = ICTTools.calculate_market_structure(klines_5m) if klines_5m else 0
+        trend_1h = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m) if self._is_valid_data(klines_15m) else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m) if self._is_valid_data(klines_5m) else 0
         
         trends = [trend_1h, trend_15m, trend_5m]
         
@@ -568,9 +590,9 @@ class FeatureEngine:
         Returns:
             收斂度（0到1）
         """
-        trend_1h = ICTTools.calculate_market_structure(klines_1h) if klines_1h else 0
-        trend_15m = ICTTools.calculate_market_structure(klines_15m) if klines_15m else 0
-        trend_5m = ICTTools.calculate_market_structure(klines_5m) if klines_5m else 0
+        trend_1h = ICTTools.calculate_market_structure(klines_1h) if self._is_valid_data(klines_1h) else 0
+        trend_15m = ICTTools.calculate_market_structure(klines_15m) if self._is_valid_data(klines_15m) else 0
+        trend_5m = ICTTools.calculate_market_structure(klines_5m) if self._is_valid_data(klines_5m) else 0
         
         trends = np.array([trend_1h, trend_15m, trend_5m])
         std = np.std(trends)
