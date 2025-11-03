@@ -570,7 +570,8 @@ class RuleBasedSignalGenerator:
                     market_structure,
                     h1_trend,
                     m15_trend,
-                    m5_trend
+                    m5_trend,
+                    use_pure_ict=self.use_pure_ict  # 🔥 Bug #5修復：傳入模式參數
                 ),
                 'timestamp': pd.Timestamp.now(),
                 # 完整特徵記錄
@@ -1616,29 +1617,80 @@ class RuleBasedSignalGenerator:
         market_structure: str,
         h1_trend: str,
         m15_trend: str,
-        m5_trend: str
+        m5_trend: str,
+        use_pure_ict: bool = False
     ) -> str:
-        """生成信號推理說明"""
+        """
+        生成信號推理說明（修復KeyError版本）
+        
+        🔥 v3.20.7 Bug #5修復：統一處理兩種模式的鍵名
+        - 傳統模式：timeframe_alignment, market_structure, order_block, momentum, volatility
+        - 純ICT模式：timeframe_ict, market_structure_ict, order_block_ict, liquidity_ict, institutional_ict
+        
+        Args:
+            direction: 信號方向
+            sub_scores: 子分數字典
+            market_structure: 市場結構
+            h1_trend: 1小時趨勢
+            m15_trend: 15分鐘趨勢
+            m5_trend: 5分鐘趨勢
+            use_pure_ict: 是否使用純ICT模式
+            
+        Returns:
+            推理說明字符串
+        """
+        from src.strategies.score_key_mapper import ScoreKeyMapper
+        
         reasons = []
         
-        # 趨勢對齊
-        if sub_scores['trend_alignment'] >= 35:
-            reasons.append(f"三時間框架趨勢強勁對齊({h1_trend}/{m15_trend}/{m5_trend})")
+        try:
+            # 🔥 使用ScoreKeyMapper安全獲取分數值
+            trend_score = ScoreKeyMapper.get_unified_score(sub_scores, use_pure_ict, 'trend_alignment')
+            market_structure_score = ScoreKeyMapper.get_unified_score(sub_scores, use_pure_ict, 'market_structure')
+            order_block_score = ScoreKeyMapper.get_unified_score(sub_scores, use_pure_ict, 'order_block')
+            momentum_score = ScoreKeyMapper.get_unified_score(sub_scores, use_pure_ict, 'momentum')
+            volatility_score = ScoreKeyMapper.get_unified_score(sub_scores, use_pure_ict, 'volatility')
+            
+            # 趨勢對齊（支持多級判斷）
+            if trend_score >= 35:
+                reasons.append(f"三時間框架趨勢強勁對齊({h1_trend}/{m15_trend}/{m5_trend})")
+            elif trend_score >= 20:
+                reasons.append(f"時間框架趨勢部分對齊({h1_trend}/{m15_trend}/{m5_trend})")
+            
+            # 市場結構
+            if market_structure_score >= 15:
+                reasons.append(f"市場結構支持{direction}({market_structure})")
+            elif market_structure_score >= 8:
+                reasons.append(f"市場結構初步支持{direction}")
+            
+            # OB 質量
+            if order_block_score >= 15:
+                reasons.append("Order Block 距離理想")
+            elif order_block_score >= 8:
+                reasons.append("Order Block 存在")
+            
+            # 動量/流動性
+            if momentum_score >= 8:
+                reasons.append("動量指標確認" if not use_pure_ict else "流動性情境良好")
+            elif momentum_score >= 4:
+                reasons.append("動量指標初步確認" if not use_pure_ict else "流動性情境可接受")
+            
+            # 波動率/機構參與
+            if volatility_score >= 8:
+                reasons.append("波動率適中" if not use_pure_ict else "機構參與度高")
+            elif volatility_score >= 4:
+                reasons.append("波動率可接受" if not use_pure_ict else "機構參與度適中")
+            
+            # 如果沒有足夠的理由，添加默認說明
+            if not reasons:
+                primary_reason = f"基於ICT市場結構的{direction}信號"
+                if use_pure_ict:
+                    primary_reason += " (純ICT模式)"
+                reasons.append(primary_reason)
         
-        # 市場結構
-        if sub_scores['market_structure'] >= 15:
-            reasons.append(f"市場結構支持{direction}({market_structure})")
+        except Exception as e:
+            logger.error(f"❌ 生成推理說明失敗: {e}")
+            # 提供安全的默認推理
+            reasons = [f"基於市場分析的{direction}信號 ({'ICT模式' if use_pure_ict else '傳統模式'})"]
         
-        # OB 質量
-        if sub_scores['order_block'] >= 15:
-            reasons.append("Order Block 距離理想")
-        
-        # 動量
-        if sub_scores['momentum'] >= 8:
-            reasons.append("動量指標確認")
-        
-        # 波動率
-        if sub_scores['volatility'] >= 8:
-            reasons.append("波動率適中")
-        
-        return " | ".join(reasons)
+        return " | ".join(reasons) if reasons else "信號生成"

@@ -201,9 +201,7 @@ class AccountFeed(BaseFeed):
                     ping_interval=15,      # 啟用自動ping（從None改為15秒，雙重保障）
                     ping_timeout=10,       # 10秒等待pong回應
                     close_timeout=10,      # 10秒關閉超時
-                    max_size=2**20,        # 1MB消息緩衝區
-                    read_limit=2**18,      # 256KB讀取限制
-                    write_limit=2**18      # 256KB寫入限制
+                    max_size=2**20         # 1MB消息緩衝區
                 ) as ws:  # type: ignore
                     logger.info("✅ 帳戶WebSocket已連接")
                     self.ws_connection = ws  # 保存連接供健康檢查使用

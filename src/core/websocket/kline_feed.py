@@ -136,9 +136,7 @@ class KlineFeed(BaseFeed):
                     ping_interval=15,      # 每15秒發送ping（從20秒縮短，提升穩定性）
                     ping_timeout=10,       # 10秒等待pong回應
                     close_timeout=10,      # 10秒關閉超時
-                    max_size=2**20,        # 1MB消息緩衝區
-                    read_limit=2**18,      # 256KB讀取限制
-                    write_limit=2**18      # 256KB寫入限制
+                    max_size=2**20         # 1MB消息緩衝區
                 ) as ws:  # type: ignore
                     logger.debug(f"✅ {self.name} WebSocket已連接 ({len(self.symbols)}個幣種)")
                     
