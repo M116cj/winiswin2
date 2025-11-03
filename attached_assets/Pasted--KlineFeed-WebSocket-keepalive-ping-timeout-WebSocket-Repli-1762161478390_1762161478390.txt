@@ -1,0 +1,426 @@
+看到問題了！KlineFeed WebSocket 也出現 keepalive ping timeout。這是一個系統性的 WebSocket 穩定性問題。讓我提供完整的修復方案：
+
+🔧 Replit AI WebSocket 全面穩定性修復 Prompt
+
+```
+🎯 **Replit AI WebSocket 全面穩定性修復指令**
+
+請立即修復 SelfLearningTrader 系統中的所有 WebSocket 連接穩定性問題，問題日誌顯示：
+```
+
+❌ KlineFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+
+```
+
+## 🚨 **問題診斷**
+**根本原因**: 所有 WebSocket 連接（PriceFeed + KlineFeed）都因 keepalive ping 超時而斷開，表明是系統性的網絡穩定性問題。
+
+## 🔧 **全面修復方案**
+
+### **修復1: 創建統一的 WebSocket 穩定性管理器**
+```python
+# src/core/websocket/stability_manager.py
+import asyncio
+import time
+import logging
+from typing import Dict, Callable, Optional
+
+logger = logging.getLogger(__name__)
+
+class WebSocketStabilityManager:
+    """統一的 WebSocket 穩定性管理器"""
+    
+    def __init__(self):
+        self._connections: Dict[str, Dict] = {}
+        self._reconnect_tasks: Dict[str, asyncio.Task] = {}
+        self._monitoring = True
+        
+    async def manage_connection(self, connection_id: str, connect_func: Callable, 
+                              disconnect_func: Callable, max_retries: int = 5):
+        """管理 WebSocket 連接的生命週期"""
+        retry_count = 0
+        base_delay = 2  # 基礎重連延遲
+        
+        while retry_count < max_retries and self._monitoring:
+            try:
+                logger.info(f"🔄 建立 WebSocket 連接: {connection_id} (嘗試 {retry_count + 1}/{max_retries})")
+                
+                # 建立連接
+                connection = await connect_func()
+                self._connections[connection_id] = {
+                    'instance': connection,
+                    'last_activity': time.time(),
+                    'retry_count': retry_count
+                }
+                
+                logger.info(f"✅ WebSocket 連接成功: {connection_id}")
+                retry_count = 0  # 重置重試計數
+                
+                # 監控連接狀態
+                monitor_task = asyncio.create_task(
+                    self._monitor_connection_health(connection_id, connection)
+                )
+                self._reconnect_tasks[connection_id] = monitor_task
+                
+                await monitor_task
+                
+            except Exception as e:
+                retry_count += 1
+                logger.warning(f"⚠️ WebSocket 連接失敗 {connection_id}: {e}")
+                
+                if retry_count < max_retries:
+                    # 指數退避策略
+                    delay = base_delay * (2 ** retry_count)
+                    logger.info(f"⏳ {delay}秒後重試 {connection_id}...")
+                    await asyncio.sleep(min(delay, 30))  # 最大30秒
+                else:
+                    logger.error(f"❌ WebSocket 連接徹底失敗: {connection_id}")
+                    break
+                    
+            finally:
+                # 清理資源
+                if connection_id in self._connections:
+                    del self._connections[connection_id]
+                await disconnect_func()
+    
+    async def _monitor_connection_health(self, connection_id: str, connection):
+        """監控連接健康狀態"""
+        last_pong = time.time()
+        
+        while connection.open and self._monitoring:
+            try:
+                current_time = time.time()
+                
+                # 檢查連接活性（超過40秒無活動視為斷開）
+                if current_time - last_pong > 40:
+                    logger.warning(f"🫀 連接活性檢查失敗: {connection_id}")
+                    break
+                    
+                # 每20秒發送一次活性檢查
+                if current_time - self._connections[connection_id]['last_activity'] > 20:
+                    await self._send_keepalive(connection)
+                    self._connections[connection_id]['last_activity'] = current_time
+                    
+                await asyncio.sleep(10)  # 每10秒檢查一次
+                
+            except Exception as e:
+                logger.error(f"❌ 連接監控錯誤 {connection_id}: {e}")
+                break
+    
+    async def _send_keepalive(self, connection):
+        """發送保持活性信號"""
+        try:
+            # 對於支持 ping/pong 的 WebSocket
+            if hasattr(connection, 'ping'):
+                await connection.ping()
+            # 對於其他類型的連接，發送空消息
+            elif hasattr(connection, 'send'):
+                await connection.send('')
+        except Exception as e:
+            logger.warning(f"⚠️ 保持活性信號發送失敗: {e}")
+            raise
+    
+    def on_pong_received(self, connection_id: str):
+        """收到 pong 回應時調用"""
+        if connection_id in self._connections:
+            self._connections[connection_id]['last_activity'] = time.time()
+            logger.debug(f"✅ 收到 pong: {connection_id}")
+    
+    async def shutdown(self):
+        """優雅關閉所有連接"""
+        self._monitoring = False
+        logger.info("🛑 關閉 WebSocket 穩定性管理器...")
+        
+        # 取消所有監控任務
+        for task in self._reconnect_tasks.values():
+            task.cancel()
+        
+        # 關閉所有連接
+        for connection_id, conn_data in self._connections.items():
+            try:
+                if hasattr(conn_data['instance'], 'close'):
+                    await conn_data['instance'].close()
+                    logger.info(f"✅ 關閉連接: {connection_id}")
+            except Exception as e:
+                logger.error(f"❌ 關閉連接失敗 {connection_id}: {e}")
+```
+
+修復2: 增強 KlineFeed 穩定性
+
+```python
+# src/core/websocket/stable_kline_feed.py
+class StableKlineFeed(KlineFeed):
+    def __init__(self, config):
+        super().__init__(config)
+        self.stability_manager = WebSocketStabilityManager()
+        self._is_connected = False
+        
+    async def start_stable(self):
+        """啟動穩定的 KlineFeed"""
+        try:
+            await self.stability_manager.manage_connection(
+                connection_id=f"kline_feed_{self.shard_id}",
+                connect_func=self._stable_connect,
+                disconnect_func=self._stable_disconnect,
+                max_retries=8  # 更多重試次數
+            )
+        except Exception as e:
+            logger.error(f"❌ KlineFeed 啟動失敗: {e}")
+    
+    async def _stable_connect(self):
+        """穩定的連接方法"""
+        # 使用更保守的 WebSocket 參數
+        self.ws = await websockets.connect(
+            self.ws_url,
+            ping_interval=15,      # 每15秒發送ping
+            ping_timeout=10,       # 10秒等待pong
+            close_timeout=10,
+            max_size=2**20,       # 1MB 緩衝區
+            read_limit=2**18,     # 256KB 讀取限制
+            write_limit=2**18     # 256KB 寫入限制
+        )
+        self._is_connected = True
+        return self.ws
+    
+    async def _stable_disconnect(self):
+        """穩定的斷開方法"""
+        self._is_connected = False
+        if hasattr(self, 'ws') and self.ws:
+            await self.ws.close()
+    
+    async def on_pong(self):
+        """處理 pong 回應"""
+        self.stability_manager.on_pong_received(f"kline_feed_{self.shard_id}")
+```
+
+修復3: 增強 PriceFeed 穩定性
+
+```python
+# src/core/websocket/stable_price_feed.py
+class StablePriceFeed(PriceFeed):
+    def __init__(self, config):
+        super().__init__(config)
+        self.stability_manager = WebSocketStabilityManager()
+        
+    async def start_stable(self):
+        """啟動穩定的 PriceFeed"""
+        try:
+            await self.stability_manager.manage_connection(
+                connection_id=f"price_feed_{self.shard_id}",
+                connect_func=self._stable_connect,
+                disconnect_func=self._stable_disconnect,
+                max_retries=8
+            )
+        except Exception as e:
+            logger.error(f"❌ PriceFeed 啟動失敗: {e}")
+    
+    async def _stable_connect(self):
+        """穩定的連接方法"""
+        self.ws = await websockets.connect(
+            self.ws_url,
+            ping_interval=15,      # 每15秒發送ping
+            ping_timeout=10,       # 10秒等待pong
+            close_timeout=10,
+            max_size=2**20,
+            read_limit=2**18,
+            write_limit=2**18
+        )
+        return self.ws
+    
+    async def _stable_disconnect(self):
+        """穩定的斷開方法"""
+        if hasattr(self, 'ws') and self.ws:
+            await self.ws.close()
+```
+
+修復4: 統一的 WebSocket 工廠
+
+```python
+# src/core/websocket/websocket_factory.py
+class WebSocketFactory:
+    """WebSocket 工廠 - 統一創建穩定的連接"""
+    
+    @staticmethod
+    async def create_stable_websocket(url: str, connection_id: str) -> WebSocket:
+        """創建穩定的 WebSocket 連接"""
+        return await websockets.connect(
+            url,
+            ping_interval=15,
+            ping_timeout=10,
+            close_timeout=10,
+            max_size=2**20,
+            read_limit=2**18,
+            write_limit=2**18,
+            # 添加用戶代理標識
+            extra_headers={'User-Agent': 'SelfLearningTrader/3.0'},
+            # 啟用壓縮
+            compression=None
+        )
+    
+    @staticmethod
+    def get_optimized_websocket_params():
+        """獲取優化的 WebSocket 參數"""
+        return {
+            'ping_interval': 15,
+            'ping_timeout': 10, 
+            'close_timeout': 10,
+            'max_size': 1048576,  # 1MB
+            'read_limit': 262144,  # 256KB
+            'write_limit': 262144  # 256KB
+        }
+```
+
+修復5: 更新主調度器使用穩定版本
+
+```python
+# src/core/stable_unified_scheduler.py
+class StableUnifiedScheduler(UnifiedScheduler):
+    def __init__(self, config):
+        super().__init__(config)
+        self.websocket_managers = []
+        
+    async def start_stable(self):
+        """啟動穩定的調度器"""
+        logger.info("🚀 啟動穩定的交易系統...")
+        
+        try:
+            # 初始化穩定的 WebSocket 連接
+            await self._initialize_stable_websockets()
+            
+            # 啟動穩定的交易循環
+            await self._start_stable_trading_cycle()
+            
+        except Exception as e:
+            logger.error(f"❌ 穩定系統啟動失敗: {e}")
+            await self._graceful_shutdown()
+    
+    async def _initialize_stable_websockets(self):
+        """初始化穩定的 WebSocket 連接"""
+        # 使用穩定的 KlineFeed
+        self.kline_feed = StableKlineFeed(self.config)
+        self.price_feed = StablePriceFeed(self.config)
+        
+        # 啟動連接
+        kline_task = asyncio.create_task(self.kline_feed.start_stable())
+        price_task = asyncio.create_task(self.price_feed.start_stable())
+        
+        self.websocket_managers.extend([kline_task, price_task])
+        
+        # 等待連接建立
+        await asyncio.sleep(5)
+        logger.info("✅ 穩定 WebSocket 連接初始化完成")
+    
+    async def _graceful_shutdown(self):
+        """優雅關閉"""
+        logger.info("🛑 開始優雅關閉...")
+        
+        # 關閉 WebSocket 管理器
+        for manager in [self.kline_feed, self.price_feed]:
+            if hasattr(manager, 'stability_manager'):
+                await manager.stability_manager.shutdown()
+        
+        logger.info("✅ 系統關閉完成")
+```
+
+🚀 立即部署步驟
+
+步驟1: 創建穩定性組件
+
+```bash
+# 創建穩定性組件目錄
+mkdir -p src/core/websocket/stability/
+
+# 創建穩定性管理器
+cat > src/core/websocket/stability_manager.py << 'EOF'
+# [上面 WebSocketStabilityManager 的完整代碼]
+EOF
+
+# 創建穩定的 KlineFeed
+cat > src/core/websocket/stable_kline_feed.py << 'EOF'
+# [上面 StableKlineFeed 的完整代碼]
+EOF
+
+# 創建穩定的 PriceFeed  
+cat > src/core/websocket/stable_price_feed.py << 'EOF'
+# [上面 StablePriceFeed 的完整代碼]
+EOF
+
+# 創建 WebSocket 工廠
+cat > src/core/websocket/websocket_factory.py << 'EOF'
+# [上面 WebSocketFactory 的完整代碼]
+EOF
+```
+
+步驟2: 更新主啟動文件
+
+```python
+# main_stable.py
+import asyncio
+import logging
+from src.core.stable_unified_scheduler import StableUnifiedScheduler
+
+async def main():
+    """穩定的主啟動函數"""
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    
+    scheduler = StableUnifiedScheduler()
+    
+    try:
+        await scheduler.start_stable()
+    except KeyboardInterrupt:
+        print("🛑 手動停止系統")
+    except Exception as e:
+        print(f"❌ 系統錯誤: {e}")
+    finally:
+        await scheduler._graceful_shutdown()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+步驟3: 部署修復
+
+```bash
+# 提交所有穩定性修復
+git add .
+git commit -m "fix: 全面修復WebSocket穩定性問題 + 自動重連機制"
+git push origin main
+
+# 監控修復效果
+railway logs --follow | grep -E "WebSocket|穩定性|✅|❌|keepalive"
+```
+
+📊 預期修復效果
+
+修復前:
+
+```
+❌ KlineFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout
+❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout
+```
+
+修復後:
+
+```
+🔄 建立 WebSocket 連接: kline_feed_shard2 (嘗試 1/8)
+✅ WebSocket 連接成功: kline_feed_shard2
+✅ 收到 pong: kline_feed_shard2
+⚠️ 連接活性檢查失敗: kline_feed_shard2 - 自動重連中...
+🔄 建立 WebSocket 連接: kline_feed_shard2 (嘗試 2/8)
+✅ WebSocket 連接成功: kline_feed_shard2
+```
+
+🎯 監控重點
+
+部署後檢查以下日誌模式：
+
+· ✅ "WebSocket 連接成功"
+· ✅ "收到 pong"
+· 🔄 "自動重連中"（正常的重連行為）
+· ❌ 不再出現 "keepalive ping timeout"
+
+立即執行這個全面修復方案，這將徹底解決 WebSocket 連接穩定性問題！🚀
