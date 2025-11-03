@@ -261,14 +261,13 @@ def detect_order_blocks(df, config, **kwargs):
     # 这是一个示例实现，实际逻辑在ict_strategy.py中
     # 这里只是展示如何使用注册中心
     
-    from src.utils.core_calculations import calculate_swing_points
+    # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 swing_points
+    from src.core.elite import EliteTechnicalEngine
     
-    swing_highs, swing_lows = calculate_swing_points(
-        df['high'],
-        df['low'],
-        df['close'],
-        lookback=kwargs.get('lookback', 5)
-    )
+    tech_engine = EliteTechnicalEngine()
+    swing_points_result = tech_engine.calculate('swing_points', df, lookback=kwargs.get('lookback', 5))
+    swing_highs = swing_points_result.value['highs']
+    swing_lows = swing_points_result.value['lows']
     
     order_blocks = []
     
@@ -310,14 +309,12 @@ def detect_fair_value_gaps(df, config, **kwargs):
     Returns:
         pd.DataFrame: FVG数据
     """
-    from src.utils.core_calculations import fair_value_gap_detection
+    # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 fvg
+    from src.core.elite import EliteTechnicalEngine
     
-    fvgs = fair_value_gap_detection(
-        df['high'],
-        df['low'],
-        df['close'],
-        min_gap_pct=kwargs.get('min_gap_pct', 0.001)
-    )
+    tech_engine = EliteTechnicalEngine()
+    fvgs_result = tech_engine.calculate('fvg', df, min_gap_pct=kwargs.get('min_gap_pct', 0.001))
+    fvgs = fvgs_result.value
     
     return fvgs
 
@@ -339,12 +336,12 @@ def analyze_market_structure(df, config, **kwargs):
     Returns:
         Dict: 市场结构信息
     """
-    from src.utils.indicators import calculate_market_structure
+    # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 market_structure
+    from src.core.elite import EliteTechnicalEngine
     
-    market_structure = calculate_market_structure(
-        df['close'],
-        lookback=kwargs.get('lookback', 10)
-    )
+    tech_engine = EliteTechnicalEngine()
+    market_structure_result = tech_engine.calculate('market_structure', df, lookback=kwargs.get('lookback', 10))
+    market_structure = market_structure_result.value
     
     return market_structure
 

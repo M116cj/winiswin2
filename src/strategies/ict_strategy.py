@@ -10,12 +10,6 @@ from datetime import datetime
 import logging
 
 from src.core.elite import EliteTechnicalEngine
-from src.utils.indicators import (
-    calculate_ema_slope,
-    identify_order_blocks,
-    identify_swing_points,
-    determine_market_structure
-)
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -60,12 +54,12 @@ class ICTStrategy:
             # v3.0.2: 移除過嚴的 neutral 過濾，讓信號生成邏輯自行判斷
             logger.debug(f"{symbol}: 趨勢檢測 - 1h:{h1_trend}, 15m:{m15_trend}, 5m:{m5_trend}")
             
-            market_structure = determine_market_structure(m15_data)
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 ICT 函数
+            market_structure_result = self.tech_engine.calculate('market_structure', m15_data, lookback=10)
+            market_structure = market_structure_result.value.get('trend', 'neutral')
             
-            order_blocks = identify_order_blocks(
-                m15_data,
-                lookback=self.config.OB_LOOKBACK
-            )
+            order_blocks_result = self.tech_engine.calculate('order_blocks', m15_data, lookback=self.config.OB_LOOKBACK)
+            order_blocks = order_blocks_result.value
             
             liquidity_zones = self._identify_liquidity_zones(m15_data)
             
@@ -215,8 +209,10 @@ class ICTStrategy:
             logger.debug(f"ADX計算失敗（降級使用EMA）: {e}")
         
         # ✨ v3.10.0: EMA斜率確認（確保趨勢有動能）
+        # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 ema_slope
         try:
-            ema_fast_slope = calculate_ema_slope(ema_fast, lookback=3)
+            ema_fast_slope_result = self.tech_engine.calculate('ema_slope', ema_fast, lookback=3)
+            ema_fast_slope = ema_fast_slope_result.value
             if not ema_fast_slope.empty:
                 slope_val = float(ema_fast_slope.iloc[-1])
                 slope_threshold = self.config.EMA_SLOPE_THRESHOLD
@@ -256,7 +252,10 @@ class ICTStrategy:
         if df.empty or len(df) < self.config.LZ_LOOKBACK:
             return []
         
-        highs, lows = identify_swing_points(df, lookback=5)
+        # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 swing_points
+        swing_points_result = self.tech_engine.calculate('swing_points', df, lookback=5)
+        highs = swing_points_result.value['highs']
+        lows = swing_points_result.value['lows']
         
         liquidity_zones = []
         

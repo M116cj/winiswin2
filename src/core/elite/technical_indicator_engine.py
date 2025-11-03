@@ -93,7 +93,9 @@ class EliteTechnicalEngine:
         计算单个技术指标
         
         Args:
-            indicator: 指标名称（'ema', 'rsi', 'macd', 'atr', 'bb', 'adx'）
+            indicator: 指标名称
+                基础指标: 'ema', 'rsi', 'macd', 'atr', 'bb', 'adx'
+                ICT指标: 'ema_slope', 'order_blocks', 'market_structure', 'swing_points', 'fvg'
             data: 价格数据（Series或DataFrame）
             **params: 指标参数（如period=20）
             
@@ -138,6 +140,16 @@ class EliteTechnicalEngine:
                 result = self._calculate_bollinger_bands(data, **params)
             elif indicator == 'adx':
                 result = self._calculate_adx(data, **params)
+            elif indicator == 'ema_slope':
+                result = self._calculate_ema_slope(data, **params)
+            elif indicator == 'order_blocks':
+                result = self._identify_order_blocks(data, **params)
+            elif indicator == 'market_structure':
+                result = self._determine_market_structure(data, **params)
+            elif indicator == 'swing_points':
+                result = self._identify_swing_points(data, **params)
+            elif indicator == 'fvg':
+                result = self._detect_fair_value_gaps(data, **params)
             else:
                 raise ValueError(f"不支持的指标: {indicator}")
             
@@ -439,6 +451,277 @@ class EliteTechnicalEngine:
             data_str = f"{len(data)}_{data.iloc[-1] if len(data) > 0 else ''}"
         
         return hashlib.md5(data_str.encode()).hexdigest()[:8]
+    
+    def _calculate_ema_slope(
+        self,
+        data: pd.Series,
+        lookback: int = 3
+    ) -> IndicatorResult:
+        """
+        计算EMA斜率（用于判断趋势强度）
+        
+        Args:
+            data: EMA序列
+            lookback: 回溯期（默认3根K线）
+            
+        Returns:
+            EMA斜率（正数=上升，负数=下降）
+        """
+        if len(data) < lookback + 1:
+            slope = pd.Series(0.0, index=data.index)
+        else:
+            slope = (data - data.shift(lookback)) / lookback
+            slope_pct = (slope / data) * 100
+            slope = slope_pct
+        
+        return IndicatorResult(
+            value=slope,
+            period_used=lookback,
+            data_points=len(data)
+        )
+    
+    def _identify_order_blocks(
+        self,
+        data: pd.DataFrame,
+        lookback: int = 20,
+        volume_multiplier: float = 1.5,
+        rejection_threshold: float = 0.005,
+        max_history: int = 20
+    ) -> IndicatorResult:
+        """
+        识别Order Blocks（订单块）
+        
+        Args:
+            data: K线数据框
+            lookback: 回溯周期
+            volume_multiplier: 成交量倍数阈值
+            rejection_threshold: 拒绝率阈值
+            max_history: 最多保留的OB历史数量
+            
+        Returns:
+            Order Blocks列表
+        """
+        if data.empty or len(data) < lookback + 4:
+            return IndicatorResult(value=[], period_used=lookback, data_points=len(data))
+        
+        order_blocks = []
+        avg_volume_20 = None
+        if 'volume' in data.columns:
+            avg_volume_20 = data['volume'].rolling(20).mean()
+        
+        for i in range(lookback, len(data) - 3):
+            body = abs(data['close'].iloc[i] - data['open'].iloc[i])
+            total_range = data['high'].iloc[i] - data['low'].iloc[i]
+            
+            if total_range == 0:
+                continue
+            
+            body_ratio = body / total_range
+            
+            if body_ratio < 0.7:
+                continue
+            
+            if avg_volume_20 is not None:
+                if data['volume'].iloc[i] < volume_multiplier * avg_volume_20.iloc[i]:
+                    continue
+            
+            is_bullish = data['close'].iloc[i] > data['open'].iloc[i]
+            is_bearish = data['close'].iloc[i] < data['open'].iloc[i]
+            
+            if is_bullish:
+                price_movement_after = data['close'].iloc[i+1:i+4].min() - data['close'].iloc[i]
+                if price_movement_after < 0:
+                    continue
+                
+                ob_low = float(data['low'].iloc[i])
+                ob_high = float(data['open'].iloc[i])
+                ob_type = 'bullish'
+            elif is_bearish:
+                price_movement_after = data['close'].iloc[i] - data['close'].iloc[i+1:i+4].max()
+                if price_movement_after < 0:
+                    continue
+                
+                ob_high = float(data['high'].iloc[i])
+                ob_low = float(data['open'].iloc[i])
+                ob_type = 'bearish'
+            else:
+                continue
+            
+            order_blocks.append({
+                'type': ob_type,
+                'high': ob_high,
+                'low': ob_low,
+                'index': i
+            })
+        
+        if len(order_blocks) > max_history:
+            order_blocks = order_blocks[-max_history:]
+        
+        return IndicatorResult(
+            value=order_blocks,
+            period_used=lookback,
+            data_points=len(data)
+        )
+    
+    def _determine_market_structure(
+        self,
+        data: Union[pd.Series, pd.DataFrame],
+        lookback: int = 10
+    ) -> IndicatorResult:
+        """
+        判断市场结构（更高高点/更低低点）
+        
+        Args:
+            data: 价格数据
+            lookback: 回溯周期
+            
+        Returns:
+            市场结构信息
+        """
+        close = self._extract_close(data)
+        
+        if len(close) < lookback + 1:
+            structure = {"trend": "neutral", "structure_valid": False}
+        else:
+            recent_high = close.iloc[-lookback:].max()
+            previous_high = close.iloc[-(lookback*2):-lookback].max() if len(close) >= lookback * 2 else recent_high
+            
+            recent_low = close.iloc[-lookback:].min()
+            previous_low = close.iloc[-(lookback*2):-lookback].min() if len(close) >= lookback * 2 else recent_low
+            
+            higher_high = recent_high > previous_high
+            higher_low = recent_low > previous_low
+            lower_high = recent_high < previous_high
+            lower_low = recent_low < previous_low
+            
+            if higher_high and higher_low:
+                trend = "bullish"
+            elif lower_high and lower_low:
+                trend = "bearish"
+            else:
+                trend = "neutral"
+            
+            structure = {
+                "trend": trend,
+                "structure_valid": True,
+                "higher_high": higher_high,
+                "higher_low": higher_low,
+                "lower_high": lower_high,
+                "lower_low": lower_low
+            }
+        
+        return IndicatorResult(
+            value=structure,
+            period_used=lookback,
+            data_points=len(close)
+        )
+    
+    def _identify_swing_points(
+        self,
+        data: pd.DataFrame,
+        lookback: int = 5
+    ) -> IndicatorResult:
+        """
+        识别摆动高点和低点
+        
+        Args:
+            data: K线数据框
+            lookback: 回溯周期
+            
+        Returns:
+            (swing_highs, swing_lows)
+        """
+        if data.empty or len(data) < lookback * 2 + 1:
+            return IndicatorResult(
+                value={'highs': [], 'lows': []},
+                period_used=lookback,
+                data_points=len(data)
+            )
+        
+        high = data['high']
+        low = data['low']
+        window = lookback * 2 + 1
+        
+        swing_highs = []
+        swing_lows = []
+        
+        for i in range(lookback, len(data) - lookback):
+            window_high = high.iloc[i-lookback:i+lookback+1]
+            window_low = low.iloc[i-lookback:i+lookback+1]
+            
+            if high.iloc[i] == window_high.max():
+                swing_highs.append({
+                    'price': float(high.iloc[i]),
+                    'index': i
+                })
+            
+            if low.iloc[i] == window_low.min():
+                swing_lows.append({
+                    'price': float(low.iloc[i]),
+                    'index': i
+                })
+        
+        return IndicatorResult(
+            value={'highs': swing_highs, 'lows': swing_lows},
+            period_used=lookback,
+            data_points=len(data)
+        )
+    
+    def _detect_fair_value_gaps(
+        self,
+        data: pd.DataFrame,
+        min_gap_pct: float = 0.001
+    ) -> IndicatorResult:
+        """
+        检测公平价值缺口（Fair Value Gap）
+        
+        Args:
+            data: K线数据框
+            min_gap_pct: 最小缺口百分比
+            
+        Returns:
+            FVG列表
+        """
+        if data.empty or len(data) < 3:
+            return IndicatorResult(value=[], period_used=3, data_points=len(data))
+        
+        high = data['high']
+        low = data['low']
+        close = data['close']
+        
+        bullish_mask = low > high.shift(2)
+        bullish_gap_size = (low - high.shift(2)) / close
+        bullish_valid = bullish_mask & (bullish_gap_size >= min_gap_pct)
+        
+        bearish_mask = high < low.shift(2)
+        bearish_gap_size = (low.shift(2) - high) / close
+        bearish_valid = bearish_mask & (bearish_gap_size >= min_gap_pct)
+        
+        fvgs = []
+        
+        for idx in bullish_valid[bullish_valid].index:
+            fvgs.append({
+                'type': 'bullish',
+                'gap_high': float(low.loc[idx]),
+                'gap_low': float(high.shift(2).loc[idx]),
+                'gap_size': float(bullish_gap_size.loc[idx]),
+                'index': idx
+            })
+        
+        for idx in bearish_valid[bearish_valid].index:
+            fvgs.append({
+                'type': 'bearish',
+                'gap_high': float(low.shift(2).loc[idx]),
+                'gap_low': float(high.loc[idx]),
+                'gap_size': float(bearish_gap_size.loc[idx]),
+                'index': idx
+            })
+        
+        return IndicatorResult(
+            value=fvgs,
+            period_used=3,
+            data_points=len(data)
+        )
     
     def get_stats(self) -> Dict[str, int]:
         """获取引擎统计"""

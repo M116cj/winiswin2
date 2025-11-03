@@ -908,11 +908,14 @@ class PositionMonitor24x7:
             if data.empty or len(data) < 20:
                 return False
             
-            # 計算簡單指標
-            from src.utils.indicators import calculate_rsi, calculate_macd
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine
+            from src.core.elite import EliteTechnicalEngine
+            
+            tech_engine = EliteTechnicalEngine()
             
             # RSI反彈信號
-            rsi = calculate_rsi(data, period=14)
+            rsi_result = tech_engine.calculate('rsi', data, period=14)
+            rsi = rsi_result.value
             if rsi.empty:
                 return False
             
@@ -929,7 +932,10 @@ class PositionMonitor24x7:
                 return True
             
             # MACD反彈信號（簡化版：只檢查MACD柱狀圖方向變化）
-            macd_line, signal_line, histogram = calculate_macd(data)
+            macd_result = tech_engine.calculate('macd', data, fast=12, slow=26, signal=9)
+            macd_line = macd_result.value['macd']
+            signal_line = macd_result.value['signal']
+            histogram = macd_result.value['histogram']
             # 🔥 類型安全：確保histogram是DataFrame
             if isinstance(histogram, str) or histogram is None:
                 return False
@@ -1031,20 +1037,28 @@ class PositionMonitor24x7:
                     macd=0.0
                 )
             
-            # 計算技術指標
-            from src.utils.indicators import calculate_rsi, calculate_macd, calculate_ema
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine
+            from src.core.elite import EliteTechnicalEngine
             
-            rsi = calculate_rsi(klines, period=14)
+            tech_engine = EliteTechnicalEngine()
+            
+            rsi_result = tech_engine.calculate('rsi', klines, period=14)
+            rsi = rsi_result.value
             latest_rsi = float(rsi.iloc[-1]) if not rsi.empty else 50.0
             
-            macd_line, signal_line, histogram = calculate_macd(klines)
+            macd_result = tech_engine.calculate('macd', klines, fast=12, slow=26, signal=9)
+            macd_line = macd_result.value['macd']
+            signal_line = macd_result.value['signal']
+            histogram = macd_result.value['histogram']
             latest_macd_hist = 0.0
             if not isinstance(histogram, str) and histogram is not None and not histogram.empty:
                 latest_macd_hist = float(histogram.iloc[-1])
             
             # EMA趨勢判斷
-            ema20 = calculate_ema(klines, period=20)
-            ema50 = calculate_ema(klines, period=50)
+            ema20_result = tech_engine.calculate('ema', klines, period=20)
+            ema20 = ema20_result.value
+            ema50_result = tech_engine.calculate('ema', klines, period=50)
+            ema50 = ema50_result.value
             
             trend_direction = "neutral"
             if not ema20.empty and not ema50.empty:
@@ -1113,9 +1127,12 @@ class PositionMonitor24x7:
             if klines.empty or len(klines) < 20:
                 return 0.40
             
-            # 計算RSI
-            from src.utils.indicators import calculate_rsi
-            rsi = calculate_rsi(klines, period=14)
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine
+            from src.core.elite import EliteTechnicalEngine
+            
+            tech_engine = EliteTechnicalEngine()
+            rsi_result = tech_engine.calculate('rsi', klines, period=14)
+            rsi = rsi_result.value
             
             if rsi.empty:
                 return 0.40
@@ -1177,10 +1194,14 @@ class PositionMonitor24x7:
             if klines.empty or len(klines) < 50:
                 return 0.50
             
-            # 計算EMA
-            from src.utils.indicators import calculate_ema
-            ema20 = calculate_ema(klines, period=20)
-            ema50 = calculate_ema(klines, period=50)
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine
+            from src.core.elite import EliteTechnicalEngine
+            
+            tech_engine = EliteTechnicalEngine()
+            ema20_result = tech_engine.calculate('ema', klines, period=20)
+            ema20 = ema20_result.value
+            ema50_result = tech_engine.calculate('ema', klines, period=50)
+            ema50 = ema50_result.value
             
             if ema20.empty or ema50.empty:
                 return 0.50

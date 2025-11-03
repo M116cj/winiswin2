@@ -9,13 +9,6 @@ from typing import Dict, Optional, Any
 import logging
 
 from src.core.elite import EliteTechnicalEngine
-from src.utils.indicators import (
-    calculate_atr,
-    calculate_bollinger_bands,
-    calculate_adx,
-    identify_order_blocks,
-    determine_market_structure
-)
 from src.config import Config
 from src.utils.signal_details_logger import get_signal_details_logger
 
@@ -328,14 +321,14 @@ class RuleBasedSignalGenerator:
             
             self._pipeline_stats['stage2_trend_ok'] += 1
             
+            # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 ICT 函数
             # 市場結構
-            market_structure = determine_market_structure(m15_data)
+            market_structure_result = self.tech_engine.calculate('market_structure', m15_data, lookback=10)
+            market_structure = market_structure_result.value.get('trend', 'neutral')
             
             # Order Blocks
-            order_blocks = identify_order_blocks(
-                m15_data,
-                lookback=self.config.OB_LOOKBACK
-            )
+            order_blocks_result = self.tech_engine.calculate('order_blocks', m15_data, lookback=self.config.OB_LOOKBACK)
+            order_blocks = order_blocks_result.value
             
             # 流動性區域
             liquidity_zones = self._identify_liquidity_zones(m15_data)
