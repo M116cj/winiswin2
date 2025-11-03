@@ -130,7 +130,14 @@ class DataQualityMonitor:
         """
         try:
             kline_data = data.get('data', {})
-            current_timestamp = kline_data.get('t')
+            
+            # 优先从K线数据中获取时间戳 data['k']['t']
+            kline = kline_data.get('k', {})
+            current_timestamp = kline.get('t')
+            
+            # 如果K线中没有，尝试从data层获取
+            if not current_timestamp:
+                current_timestamp = kline_data.get('t')
             
             if not current_timestamp:
                 return
