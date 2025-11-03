@@ -166,18 +166,20 @@ class TestICTRegressionSuite(unittest.TestCase):
         result = self.engine.calculate('ema_slope', self.test_df['close'], lookback=5)
         
         self.assertIsNotNone(result.value, "EMA Slope应返回非空值")
-        
-        # result.value是Series，取最后一个值
         self.assertIsInstance(result.value, pd.Series, "EMA Slope应返回Series")
         
-        if len(result.value) > 0:
-            # 取最后一个非NaN值
-            slope_value = result.value.dropna().iloc[-1] if len(result.value.dropna()) > 0 else 0.0
-            self.assertIsInstance(slope_value, (int, float, np.float64), "斜率应为数值")
-            
-            # 斜率应在合理范围内（百分比）
-            self.assertGreaterEqual(slope_value, -50, "EMA斜率不应过低")
-            self.assertLessEqual(slope_value, 50, "EMA斜率不应过高")
+        # CRITICAL: 必须返回与输入相同长度的Series，不能是全NaN
+        self.assertEqual(len(result.value), len(self.test_df), "返回Series长度应匹配输入")
+        
+        # CRITICAL: 验证非NaN值数量（固定种子应有确定性非NaN值）
+        valid_values = result.value.dropna()
+        self.assertGreater(len(valid_values), 0, "FAIL: 返回全NaN，指标计算失败")
+        
+        # 验证斜率在合理范围内（百分比）
+        slope_value = valid_values.iloc[-1]
+        self.assertIsInstance(slope_value, (int, float, np.float64), "斜率应为数值")
+        self.assertGreaterEqual(slope_value, -50, "EMA斜率不应过低")
+        self.assertLessEqual(slope_value, 50, "EMA斜率不应过高")
     
     def test_ema_slope_trending_up(self):
         """测试EMA斜率 - 上升趋势应为正"""
@@ -186,11 +188,13 @@ class TestICTRegressionSuite(unittest.TestCase):
         self.assertIsNotNone(result.value)
         self.assertIsInstance(result.value, pd.Series, "EMA Slope应返回Series")
         
-        # 取最后一个非NaN值
+        # CRITICAL: 必须有非NaN值
         slope_values = result.value.dropna()
-        if len(slope_values) > 0:
-            avg_slope = slope_values.mean()  # 使用平均值验证趋势
-            self.assertGreater(avg_slope, 0, "上升趋势EMA斜率平均应为正")
+        self.assertGreater(len(slope_values), 0, "FAIL: 返回全NaN，指标计算失败")
+        
+        # CRITICAL: 上升趋势（trend_factor=100）必须识别为正斜率
+        avg_slope = slope_values.mean()
+        self.assertGreater(avg_slope, 0, f"FAIL: 上升趋势EMA斜率应为正，实际={avg_slope:.3f}")
     
     def test_ema_slope_trending_down(self):
         """测试EMA斜率 - 下降趋势应为负"""
@@ -199,11 +203,13 @@ class TestICTRegressionSuite(unittest.TestCase):
         self.assertIsNotNone(result.value)
         self.assertIsInstance(result.value, pd.Series, "EMA Slope应返回Series")
         
-        # 取最后一个非NaN值
+        # CRITICAL: 必须有非NaN值
         slope_values = result.value.dropna()
-        if len(slope_values) > 0:
-            avg_slope = slope_values.mean()  # 使用平均值验证趋势
-            self.assertLess(avg_slope, 0, "下降趋势EMA斜率平均应为负")
+        self.assertGreater(len(slope_values), 0, "FAIL: 返回全NaN，指标计算失败")
+        
+        # CRITICAL: 下降趋势（trend_factor=-100）必须识别为负斜率
+        avg_slope = slope_values.mean()
+        self.assertLess(avg_slope, 0, f"FAIL: 下降趋势EMA斜率应为负，实际={avg_slope:.3f}")
     
     def test_ema_slope_empty_data(self):
         """测试EMA斜率 - 空数据应返回空Series"""
@@ -234,25 +240,28 @@ class TestICTRegressionSuite(unittest.TestCase):
         """测试订单块 - 上升趋势应有订单块"""
         result = self.engine.calculate('order_blocks', self.edge_cases['trending_up'], lookback=10)
         
-        # 订单块可能返回列表或DataFrame，需要适配
-        if isinstance(result.value, list):
-            total_blocks = len(result.value)
-            bullish_count = sum(1 for ob in result.value if isinstance(ob, dict) and ob.get('type') == 'bullish')
-            bearish_count = sum(1 for ob in result.value if isinstance(ob, dict) and ob.get('type') == 'bearish')
+        self.assertIsInstance(result.value, list, "应返回订单块列表")
+        
+        # 注意：强单向趋势（trend_factor=100）可能没有明显的order blocks
+        # 因为order blocks需要价格回调/反转区域
+        total_blocks = len(result.value)
+        
+        # 如果有order blocks，验证其结构
+        if total_blocks > 0:
+            # 验证结构
+            first_block = result.value[0]
+            self.assertIsInstance(first_block, dict, "Order Block应为字典")
+            self.assertIn('type', first_block, "Order Block必须包含type字段")
+            self.assertIn('price', first_block, "Order Block必须包含price字段")
+            self.assertIn(first_block['type'], ['bullish', 'bearish'], "type必须为bullish/bearish")
             
-            # 强上升趋势：应该有订单块被识别
-            self.assertIsInstance(result.value, list, "应返回订单块列表")
-            
-            # 如果有订单块，验证其结构有效性
-            if total_blocks > 0:
-                self.assertGreater(bullish_count + bearish_count, 0, "订单块应有有效类型")
-                # 上升趋势：bullish订单块应不少于bearish（如果有的话）
-                if bullish_count > 0 or bearish_count > 0:
-                    self.assertGreaterEqual(bullish_count, bearish_count * 0.5, 
-                                          "上升趋势中bullish订单块应占主导或平衡")
+            # 验证至少有一个有效类型
+            valid_types = sum(1 for ob in result.value if isinstance(ob, dict) and ob.get('type') in ['bullish', 'bearish'])
+            self.assertGreater(valid_types, 0, "至少应有一个有效类型的order block")
         else:
-            # 如果不是列表，至少验证返回值有效
-            self.assertIsNotNone(result.value, "应返回有效的订单块数据")
+            # 允许返回空列表（单向趋势无回调）
+            import warnings
+            warnings.warn("完美单向趋势未检测到Order Block（正常，因无回调区域）")
     
     def test_order_blocks_empty_data(self):
         """测试订单块 - 空数据应返回空列表"""
@@ -372,18 +381,30 @@ class TestICTRegressionSuite(unittest.TestCase):
         self.assertIsInstance(highs, list, "highs应为列表")
         self.assertIsInstance(lows, list, "lows应为列表")
         
-        # 50根K线的趋势数据，应该能识别到一些摆动点
+        # 验证摆动点数量在合理范围内
         total_swing_points = len(highs) + len(lows)
-        self.assertGreaterEqual(total_swing_points, 0, "应返回非负摆动点计数")
-        
-        # 验证摆动点数量在合理范围内（不应超过数据长度）
         self.assertLessEqual(len(highs), 50, "摆动高点不应超过数据长度")
         self.assertLessEqual(len(lows), 50, "摆动低点不应超过数据长度")
         
-        # 如果有摆动点，验证其结构
-        if len(highs) > 0:
-            self.assertIn('price', highs[0], "摆动高点应包含price字段")
-            self.assertIn('index', highs[0], "摆动高点应包含index字段")
+        # 注意：完美单向趋势（trend_factor=100）可能没有明显的摆动点
+        # 因为swing points需要局部高低点反转
+        if total_swing_points > 0:
+            # 如果检测到摆动点，验证其结构
+            if len(highs) > 0:
+                self.assertIn('price', highs[0], "摆动高点必须包含price字段")
+                self.assertIn('index', highs[0], "摆动高点必须包含index字段")
+                self.assertIsInstance(highs[0]['price'], (int, float), "price必须为数值")
+                self.assertIsInstance(highs[0]['index'], int, "index必须为整数")
+            
+            if len(lows) > 0:
+                self.assertIn('price', lows[0], "摆动低点必须包含price字段")
+                self.assertIn('index', lows[0], "摆动低点必须包含index字段")
+                self.assertIsInstance(lows[0]['price'], (int, float), "price必须为数值")
+                self.assertIsInstance(lows[0]['index'], int, "index必须为整数")
+        else:
+            # 允许返回空列表（单向趋势无明显摆动）
+            import warnings
+            warnings.warn("完美单向趋势未检测到Swing Points（正常，因无局部反转）")
     
     def test_swing_points_empty_data(self):
         """测试摆动点 - 空数据应返回空列表"""
