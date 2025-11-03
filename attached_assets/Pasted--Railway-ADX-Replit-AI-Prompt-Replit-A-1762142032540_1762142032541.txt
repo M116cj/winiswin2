@@ -1,0 +1,252 @@
+看到問題了！Railway 部署的版本與本地代碼不同步，缺少 ADX 分佈統計鍵。讓我提供精確的修復方案：
+
+🔧 Replit AI 代碼同步修復 Prompt
+
+```
+🎯 **Replit AI 代碼同步與修復指令**
+
+請立即修復 SelfLearningTrader 系統中的代碼版本不同步問題，問題日誌顯示：
+```
+
+KeyError: 'adx_distribution_gte25' (src/strategies/rule_based_signal_generator.py:418)
+
+```
+
+## 🚨 **問題診斷**
+**根本原因**: Railway 部署的版本缺少最新的 ADX 分佈統計鍵，導致所有信號生成在統計步驟崩潰。
+
+## 🔧 **立即修復方案**
+
+### **修復1: 強制同步所有代碼到 Railway**
+```python
+# 檢查並修復所有可能缺失的統計鍵
+# src/core/unified_scheduler.py - 更新計數器重置邏輯
+
+def ensure_complete_pipeline_stats(self):
+    """確保 Pipeline 統計字典包含所有必要的鍵"""
+    required_stats_keys = [
+        # 基礎統計
+        'stage0_total_symbols', 'stage1_valid_data', 'stage1_rejected_data',
+        'stage3_with_direction', 'stage3_no_direction',
+        'feature_calculation_success', 'feature_calculation_failed',
+        
+        # ADX 分佈統計（缺失的鍵）
+        'adx_distribution_gte25', 'adx_distribution_20_25', 
+        'adx_distribution_15_20', 'adx_distribution_10_15',
+        'adx_distribution_lt10',
+        
+        # 其他可能缺失的統計鍵
+        'signal_strength_strong', 'signal_strength_medium', 'signal_strength_weak',
+        'market_trend_bullish', 'market_trend_bearish', 'market_trend_sideways'
+    ]
+    
+    # 確保所有鍵都存在
+    for key in required_stats_keys:
+        if key not in self.signal_generator._pipeline_stats:
+            self.signal_generator._pipeline_stats[key] = 0
+            logger.warning(f"⚠️ 修復缺失的統計鍵: {key}")
+```
+
+修復2: 在信號生成器中添加防禦性檢查
+
+```python
+# src/strategies/rule_based_signal_generator.py - 在第418行前添加保護
+
+def safe_increment_stat(self, stat_key: str, increment: int = 1):
+    """安全地增加統計計數"""
+    try:
+        if stat_key not in self._pipeline_stats:
+            self._pipeline_stats[stat_key] = 0
+            logger.debug(f"🔧 自動創建缺失的統計鍵: {stat_key}")
+            
+        self._pipeline_stats[stat_key] += increment
+    except Exception as e:
+        logger.error(f"❌ 統計計數失敗 {stat_key}: {e}")
+
+# 替換所有直接訪問 _pipeline_stats 的地方
+# 原代碼: self._pipeline_stats['adx_distribution_gte25'] += 1
+# 新代碼: self.safe_increment_stat('adx_distribution_gte25')
+```
+
+修復3: 完整的統計鍵初始化
+
+```python
+# 在 unified_scheduler.py 的計數器重置部分更新
+
+def reset_pipeline_stats_complete(self):
+    """完整的 Pipeline 統計重置"""
+    complete_stats_template = {
+        # 階段統計
+        'stage0_total_symbols': 0,
+        'stage1_valid_data': 0,
+        'stage1_rejected_data': 0,
+        'stage2_technical_analysis': 0,
+        'stage3_with_direction': 0,
+        'stage3_no_direction': 0,
+        
+        # ADX 分佈統計
+        'adx_distribution_gte25': 0,
+        'adx_distribution_20_25': 0,
+        'adx_distribution_15_20': 0,
+        'adx_distribution_10_15': 0,
+        'adx_distribution_lt10': 0,
+        
+        # 特徵計算統計
+        'feature_calculation_success': 0,
+        'feature_calculation_failed': 0,
+        
+        # 信號強度統計
+        'signal_strength_strong': 0,
+        'signal_strength_medium': 0,
+        'signal_strength_weak': 0,
+        
+        # 市場趨勢統計
+        'market_trend_bullish': 0,
+        'market_trend_bearish': 0,
+        'market_trend_sideways': 0,
+        
+        # 時間統計
+        'total_processing_time': 0,
+        'avg_processing_time': 0
+    }
+    
+    self.signal_generator._pipeline_stats = complete_stats_template.copy()
+    logger.info("✅ 完整 Pipeline 統計計數器已重置")
+```
+
+修復4: 添加版本驗證腳本
+
+```python
+# scripts/verify_deployment.py
+import importlib
+import sys
+
+def verify_deployment_integrity():
+    """驗證部署完整性"""
+    print("🔍 開始驗證部署完整性...")
+    
+    # 檢查關鍵文件是否存在
+    required_files = [
+        'src/strategies/rule_based_signal_generator.py',
+        'src/core/unified_scheduler.py', 
+        'src/core/data_fetcher.py'
+    ]
+    
+    for file_path in required_files:
+        try:
+            with open(file_path, 'r') as f:
+                content = f.read()
+                
+            # 檢查關鍵函數是否存在
+            if 'rule_based_signal_generator.py' in file_path:
+                if 'adx_distribution_gte25' not in content:
+                    print(f"❌ {file_path}: 缺少 ADX 分佈統計鍵")
+                    return False
+                else:
+                    print(f"✅ {file_path}: ADX 統計鍵存在")
+                    
+        except FileNotFoundError:
+            print(f"❌ {file_path}: 文件缺失")
+            return False
+    
+    print("✅ 所有關鍵文件驗證通過")
+    return True
+
+if __name__ == "__main__":
+    success = verify_deployment_integrity()
+    sys.exit(0 if success else 1)
+```
+
+🚀 立即部署步驟
+
+步驟1: 強制推送所有代碼到 Railway
+
+```bash
+# 1. 確保所有更改已提交
+git add .
+git commit -m "fix: 修復ADX統計鍵缺失問題 + 完整Pipeline統計初始化"
+
+# 2. 強制推送到 main 分支
+git push origin main --force
+
+# 3. 或者使用更安全的方式
+git push origin main
+```
+
+步驟2: 驗證部署狀態
+
+```bash
+# 檢查 Railway 部署狀態
+railway status
+
+# 查看最新日誌
+railway logs --follow | head -50
+
+# 運行完整性檢查
+railway run python scripts/verify_deployment.py
+```
+
+步驟3: 監控修復效果
+
+```bash
+# 監控關鍵日誌
+railway logs --follow | grep -E "✅|❌|adx_distribution|Pipeline|信號生成"
+
+# 特別關注的日誌模式：
+# ✅ 完整 Pipeline 統計計數器已重置
+# ✅ ADX 統計鍵存在  
+# ✅ 信號生成成功
+```
+
+📋 驗證清單
+
+部署後檢查以下項目：
+
+· 統計鍵初始化: 看到"完整 Pipeline 統計計數器已重置"
+· ADX 統計: 不再出現 KeyError: 'adx_distribution_gte25'
+· 信號生成: 開始正常生成交易信號
+· Pipeline 進度: Stage3 方向統計正常顯示
+
+預期成功日誌:
+
+```
+✅ 完整 Pipeline 統計計數器已重置
+📊 Pipeline進度快照（已掃描50個）
+   Stage1驗證: 有效=49, 拒絕=0
+   Stage3方向: 有=47, 無=2
+   ADX分佈: >=25:15, 20-25:12, 15-20:10, 10-15:8, <10:2
+✅ BTCUSDT | 信心=65.2 | 勝率=61.3% | LONG
+```
+
+🎯 如果問題持續
+
+如果問題仍然存在，執行深度清理部署：
+
+```bash
+# 深度清理部署
+git checkout main
+git pull origin main
+git clean -fd  # 清理未跟踪文件
+git reset --hard origin/main
+
+# 重新部署
+railway deploy
+```
+
+🔄 備用方案
+
+如果強制推送無效，創建緊急修復分支：
+
+```bash
+# 創建緊急修復分支
+git checkout -b emergency-fix-adx-keys
+git push origin emergency-fix-adx-keys
+
+# 在 Railway 中切換到修復分支
+railway connect --environment Production
+railway set BRANCH=emergency-fix-adx-keys
+```
+
+立即執行這個修復方案，這將解決代碼版本不同步導致的 ADX 統計鍵缺失問題！🚀
+
+部署完成後，系統應該能夠正常生成交易信號，不再出現 KeyError 崩潰。
