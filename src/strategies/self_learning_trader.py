@@ -1674,6 +1674,10 @@ class SelfLearningTrader:
             釋放的保證金金額，失敗則返回None
         """
         try:
+            if not self.binance_client:
+                logger.error("❌ Binance 客戶端未初始化")
+                return None
+            
             symbol = position.get('symbol')
             side = position.get('side')
             size = position.get('size')
@@ -1746,6 +1750,10 @@ class SelfLearningTrader:
             await asyncio.sleep(0.5)
             
             # 3. 獲取最新帳戶狀態
+            if not self.binance_client:
+                logger.error("❌ Binance 客戶端未初始化")
+                return False
+            
             account_balance = await self.binance_client.get_account_balance()
             available_margin = account_balance['available_balance']
             
@@ -1755,6 +1763,10 @@ class SelfLearningTrader:
             max_position_value = available_margin * position_percentage
             
             # 5. 計算實際倉位大小
+            if not new_symbol:
+                logger.error("❌ 新信號缺少交易對符號")
+                return False
+            
             position_size = await self.calculate_position_size(
                 account_equity=available_margin,
                 entry_price=new_signal['entry_price'],
@@ -1776,10 +1788,11 @@ class SelfLearningTrader:
                 f"保證金使用率: {position_percentage:.0%}"
             )
             
-            # 調用原有的下單方法
+            # 調用原有的下單方法（修正參數名稱）
             order_result = await self._place_order_and_monitor(
                 signal=new_signal,
-                position_size=position_size
+                size=position_size,
+                available_balance=available_margin
             )
             
             if order_result:
