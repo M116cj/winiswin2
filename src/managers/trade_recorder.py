@@ -1042,7 +1042,9 @@ class TradeRecorder:
     
     async def get_trade_count(self, timeframe: str = '24h', symbol: Optional[str] = None) -> int:
         """
-        🔥 v3.23: 獲取交易數量（Bootstrap門槛判断）
+        🔥 v3.23+ 修復：獲取交易數量（Bootstrap門槛判断）
+        
+        **修復：使用get_all_completed_trades()讀取文件+內存，確保計數正確**
         
         Args:
             timeframe: 時間範圍（'24h', '7d', 'all'）
@@ -1052,8 +1054,11 @@ class TradeRecorder:
             交易數量
         """
         try:
-            # 從 completed_trades 中統計
-            if not self.completed_trades:
+            # 🔥 v3.23+ 修復：使用get_all_completed_trades()讀取文件+內存
+            all_trades = self.get_all_completed_trades()
+            
+            if not all_trades:
+                logger.debug(f"📊 TradeRecorder.get_trade_count: 無歷史交易記錄")
                 return 0
             
             # 計算時間範圍
@@ -1071,7 +1076,7 @@ class TradeRecorder:
             
             # 統計符合條件的交易
             count = 0
-            for trade in self.completed_trades:
+            for trade in all_trades:
                 # 檢查時間範圍
                 if cutoff:
                     exit_time = trade.get('exit_timestamp')
@@ -1090,9 +1095,12 @@ class TradeRecorder:
                 
                 count += 1
             
-            logger.debug(f"📊 TradeRecorder.get_trade_count: {timeframe} {symbol or 'ALL'} = {count}")
+            logger.debug(
+                f"📊 TradeRecorder.get_trade_count: {timeframe} {symbol or 'ALL'} = {count} "
+                f"(文件+內存: {len(all_trades)} 條總記錄)"
+            )
             return count
             
         except Exception as e:
-            logger.error(f"❌ TradeRecorder.get_trade_count 失敗: {e}")
+            logger.error(f"❌ TradeRecorder.get_trade_count 失敗: {e}", exc_info=True)
             return 0

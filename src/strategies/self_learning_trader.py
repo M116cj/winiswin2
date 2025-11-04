@@ -1066,16 +1066,22 @@ class SelfLearningTrader:
             return []
         
         # ===== 步驟2：動態分配資金（v3.18.7+ 含豁免期質量門檻）=====
+        # 確保使用Config實例（self.config可能是類或實例）
+        config_instance = self.config if not isinstance(self.config, type) else self.config()
+        
         # 🔥 v3.18.7+ 獲取已完成交易數（用於豁免期判斷）
         # 防御性檢查：如果trade_recorder未初始化，默認total_trades=0
         if self.trade_recorder:
-            total_trades = await self.trade_recorder.get_trade_count('all')  # 🔧 修復：統計所有歷史交易
+            total_trades = await self.trade_recorder.get_trade_count('all')  # 🔧 v3.23+ 修復：統計所有歷史交易
+            logger.info(
+                f"📊 豁免期檢查 | "
+                f"已完成交易: {total_trades} 筆 | "
+                f"豁免期門檻: {config_instance.BOOTSTRAP_TRADE_LIMIT} 筆 | "
+                f"狀態: {'🎓 豁免期' if total_trades < config_instance.BOOTSTRAP_TRADE_LIMIT else '📊 正常期'}"
+            )
         else:
             total_trades = 0
             logger.warning("⚠️ TradeRecorder未初始化，使用total_trades=0（豁免期模式）")
-        
-        # 確保使用Config實例（self.config可能是類或實例）
-        config_instance = self.config if not isinstance(self.config, type) else self.config()
         allocator = CapitalAllocator(
             config_instance,
             total_equity,

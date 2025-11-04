@@ -113,20 +113,26 @@ class CapitalAllocator:
         self.total_margin = total_margin
         self.total_trades = total_trades
         
-        # 🔥 v3.18.7+ 動態質量門檻（豁免期0.4，正常期0.6）
+        # 🔥 v3.18.7+ 動態質量門檻（豁免期0.25，正常期0.40）
         if total_trades < config.BOOTSTRAP_TRADE_LIMIT:
             self.quality_threshold = config.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD
             threshold_mode = f"豁免期模式（交易數:{total_trades}/{config.BOOTSTRAP_TRADE_LIMIT}）"
+            progress_pct = (total_trades / config.BOOTSTRAP_TRADE_LIMIT) * 100
         else:
             self.quality_threshold = config.SIGNAL_QUALITY_THRESHOLD
             threshold_mode = f"正常模式（交易數:{total_trades}≥{config.BOOTSTRAP_TRADE_LIMIT}）"
+            progress_pct = 100.0
         
         logger.info(
             f"💰 CapitalAllocator初始化 | "
             f"帳戶權益: ${total_account_equity:.2f} | "
             f"總金額: ${total_balance:.2f} | "
-            f"已佔用保證金: ${total_margin:.2f} | "
-            f"質量門檻: {self.quality_threshold:.2f} ({threshold_mode})"
+            f"已佔用保證金: ${total_margin:.2f}"
+        )
+        logger.info(
+            f"🎯 質量門檻: {self.quality_threshold:.2%} | "
+            f"模式: {threshold_mode} | "
+            f"進度: {progress_pct:.1f}%"
         )
     
     def allocate_capital(
