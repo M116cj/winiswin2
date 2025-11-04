@@ -1,0 +1,1001 @@
+2025-11-04T06:14:59.923119951Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:14:59.923132167Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:14:59.923140153Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:14:59.923147705Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 455
+2025-11-04T06:14:59.923154293Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:14:59.923161196Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:14:59.923168977Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 455
+2025-11-04T06:14:59.923175784Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 455
+2025-11-04T06:14:59.923182387Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:14:59.923188555Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:14:59.923194415Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:14:59.923200540Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:14:59.923207941Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:14:59.923215266Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:14:59.924255014Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:14:59.924262646Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:14:59.924265485Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:14:59.924274233Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:14:59.924274550Z [inf]  2025-11-04 06:14:59,611 - src.strategies.self_learning_trader - INFO - ❌ FFUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=45.0% 信心=33.2% R:R=1.50
+2025-11-04T06:14:59.924282839Z [inf]  2025-11-04 06:14:59,634 - src.strategies.self_learning_trader - INFO - ❌ VFYUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=45.0% 信心=31.8% R:R=1.50
+2025-11-04T06:14:59.924283466Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:14:59.924290686Z [inf]  2025-11-04 06:14:59,658 - src.strategies.self_learning_trader - INFO - ❌ EDENUSDT 拒絕開倉: 信心度不足: 34.2% < 40.0% | 勝率=45.3% 信心=34.2% R:R=1.50
+2025-11-04T06:14:59.924293778Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:14:59.924298210Z [inf]  2025-11-04 06:14:59,684 - src.strategies.self_learning_trader - INFO - 🎓 NOMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:14:59.924302245Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:14:59.924309529Z [inf]  2025-11-04 06:14:59,610 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/500)
+2025-11-04T06:14:59.925342540Z [inf]  2025-11-04 06:14:59,710 - src.strategies.self_learning_trader - INFO - ❌ TRUTHUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=48.0% 信心=26.8% R:R=1.50
+2025-11-04T06:14:59.925356838Z [inf]  2025-11-04 06:14:59,734 - src.strategies.self_learning_trader - INFO - ❌ 2ZUSDT 拒絕開倉: 信心度不足: 29.5% < 40.0% | 勝率=48.9% 信心=29.5% R:R=1.50
+2025-11-04T06:14:59.925365387Z [inf]  2025-11-04 06:14:59,759 - src.strategies.self_learning_trader - INFO - ❌ EVAAUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=46.6% 信心=38.6% R:R=1.50
+2025-11-04T06:14:59.925374073Z [inf]  2025-11-04 06:14:59,786 - src.strategies.self_learning_trader - INFO - 🎓 LYNUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:14:59.925382239Z [inf]  2025-11-04 06:14:59,813 - src.strategies.self_learning_trader - INFO - ❌ KGENUSDT 拒絕開倉: 信心度不足: 31.0% < 40.0% | 勝率=54.3% 信心=31.0% R:R=1.50
+2025-11-04T06:14:59.925390613Z [inf]  2025-11-04 06:14:59,840 - src.strategies.self_learning_trader - INFO - ❌ 4USDT 拒絕開倉: 信心度不足: 14.1% < 40.0% | 勝率=45.0% 信心=14.1% R:R=1.50
+2025-11-04T06:14:59.925398460Z [inf]  2025-11-04 06:14:59,866 - src.strategies.self_learning_trader - INFO - ❌ GIGGLEUSDT 拒絕開倉: 信心度不足: 20.1% < 40.0% | 勝率=45.0% 信心=20.1% R:R=1.50
+2025-11-04T06:14:59.925405697Z [inf]  2025-11-04 06:14:59,899 - src.strategies.self_learning_trader - INFO - ❌ MONUSDT 拒絕開倉: 信心度不足: 7.2% < 40.0% | 勝率=45.0% 信心=7.2% R:R=1.50
+2025-11-04T06:14:59.933833972Z [inf]  2025-11-04 06:14:59,928 - src.strategies.self_learning_trader - INFO - ❌ YBUSDT 拒絕開倉: 信心度不足: 35.1% < 40.0% | 勝率=55.5% 信心=35.1% R:R=1.50
+2025-11-04T06:14:59.933842681Z [inf]  2025-11-04 06:14:59,928 - src.core.unified_scheduler - INFO - ⏱️  進度: 512/530 | 已分析=512 | 平均分析=26.1ms | 平均數據=9.5ms
+2025-11-04T06:14:59.942480866Z [inf]  2025-11-04 06:14:59,934 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 18个symbols | 成功18 | 失败0 | 耗时0.01秒 | 平均0.4ms/symbol
+2025-11-04T06:14:59.942492294Z [inf]  2025-11-04 06:14:59,935 - src.core.unified_scheduler - INFO - ⏱️  批次 9: 18个symbols数据获取完成，耗时0.01秒
+2025-11-04T06:14:59.971869197Z [inf]  2025-11-04 06:14:59,967 - src.strategies.self_learning_trader - INFO - ❌ METUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=50.1% 信心=33.8% R:R=1.50
+2025-11-04T06:15:00.006780868Z [inf]  2025-11-04 06:14:59,999 - src.strategies.self_learning_trader - INFO - ❌ EULUSDT 拒絕開倉: 信心度不足: 30.2% < 40.0% | 勝率=45.0% 信心=30.2% R:R=1.50
+2025-11-04T06:15:00.041676487Z [inf]  2025-11-04 06:15:00,035 - src.strategies.self_learning_trader - INFO - ❌ ENSOUSDT 拒絕開倉: 信心度不足: 21.1% < 40.0% | 勝率=45.0% 信心=21.1% R:R=1.50
+2025-11-04T06:15:00.093304298Z [inf]  2025-11-04 06:15:00,089 - src.strategies.self_learning_trader - INFO - ❌ RECALLUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:15:00.123024843Z [inf]  2025-11-04 06:15:00,120 - src.strategies.self_learning_trader - INFO - ❌ ZBTUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=54.1% 信心=30.4% R:R=1.50
+2025-11-04T06:15:00.158603073Z [inf]  2025-11-04 06:15:00,155 - src.strategies.self_learning_trader - INFO - ❌ LABUSDT 拒絕開倉: 信心度不足: 31.6% < 40.0% | 勝率=45.0% 信心=31.6% R:R=1.50
+2025-11-04T06:15:00.213705377Z [inf]  2025-11-04 06:15:00,210 - src.strategies.self_learning_trader - INFO - 🎓 RVVUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:15:00.263966274Z [inf]  2025-11-04 06:15:00,257 - src.strategies.self_learning_trader - INFO - ❌ TURTLEUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:15:00.292795087Z [inf]  2025-11-04 06:15:00,285 - src.strategies.self_learning_trader - INFO - ❌ APRUSDT 拒絕開倉: 信心度不足: 24.3% < 40.0% | 勝率=45.0% 信心=24.3% R:R=1.50
+2025-11-04T06:15:00.317633584Z [inf]  2025-11-04 06:15:00,314 - src.strategies.self_learning_trader - INFO - ❌ ONUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:15:00.349780669Z [inf]  2025-11-04 06:15:00,347 - src.strategies.self_learning_trader - INFO - ❌ 42USDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:15:00.385529503Z [inf]  2025-11-04 06:15:00,378 - src.strategies.self_learning_trader - INFO - ❌ COMMONUSDT 拒絕開倉: 信心度不足: 19.5% < 40.0% | 勝率=45.8% 信心=19.5% R:R=1.50
+2025-11-04T06:15:00.410559336Z [inf]  2025-11-04 06:15:00,406 - src.strategies.self_learning_trader - INFO - ❌ KITEUSDT 拒絕開倉: 信心度不足: 7.2% < 40.0% | 勝率=45.0% 信心=7.2% R:R=1.50
+2025-11-04T06:15:00.442292271Z [inf]  2025-11-04 06:15:00,433 - src.strategies.self_learning_trader - INFO - ❌ ATUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=45.0% 信心=26.2% R:R=1.50
+2025-11-04T06:15:00.467256391Z [inf]  2025-11-04 06:15:00,459 - src.strategies.self_learning_trader - INFO - 🎓 CCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:15:00.467259639Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 📊 掃描統計: 總數=530 | 數據可用=530 | 數據缺失=0
+2025-11-04T06:15:00.467267393Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - ⏱️  進度: 530/530 | 已分析=530 | 平均分析=26.2ms | 平均數據=9.2ms
+2025-11-04T06:15:00.467275714Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.467281474Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - ⏱️  ===== 掃描時間分析報告 =====
+2025-11-04T06:15:00.467288384Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 📊 分析交易對: 530/530
+2025-11-04T06:15:00.467295298Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 📭 數據缺失: 0
+2025-11-04T06:15:00.467301690Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - ⏱️  總掃描時間: 18.8s
+2025-11-04T06:15:00.467308091Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 📈 平均分析時間: 26.2ms
+2025-11-04T06:15:00.467313891Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 🚀 最快分析: 14.9ms
+2025-11-04T06:15:00.467319634Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 🐌 最慢分析: 729.0ms
+2025-11-04T06:15:00.467326604Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - 💾 平均數據獲取: 0.0ms
+2025-11-04T06:15:00.467332356Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - WARNING - ⚠️  警告: 平均分析時間26.2ms，可能分析深度不足
+2025-11-04T06:15:00.467337671Z [inf]  2025-11-04 06:15:00,459 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.468799443Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.468809938Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - 📊 信號分析診斷（信心值Top 10）
+2025-11-04T06:15:00.468816090Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.468821335Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  1. SUNUSDT      | 信心= 57.0 | 勝率= 52.1% | ✅ 信號
+2025-11-04T06:15:00.468827304Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  2. ONTUSDT      | 信心= 55.6 | 勝率= 61.7% | ✅ 信號
+2025-11-04T06:15:00.468832446Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  3. DEXEUSDT     | 信心= 55.4 | 勝率= 61.6% | ✅ 信號
+2025-11-04T06:15:00.468838557Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  4. ICNTUSDT     | 信心= 54.9 | 勝率= 51.5% | ✅ 信號
+2025-11-04T06:15:00.468843231Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  5. CTKUSDT      | 信心= 54.2 | 勝率= 61.3% | ✅ 信號
+2025-11-04T06:15:00.468848676Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  6. BROCCOLIF3BUSDT | 信心= 54.2 | 勝率= 61.3% | ✅ 信號
+2025-11-04T06:15:00.468854646Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  7. AVNTUSDT     | 信心= 53.8 | 勝率= 51.1% | ✅ 信號
+2025-11-04T06:15:00.468858952Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  8. RAREUSDT     | 信心= 52.6 | 勝率= 50.8% | ✅ 信號
+2025-11-04T06:15:00.468864762Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO -  9. CTSIUSDT     | 信心= 52.4 | 勝率= 50.7% | ✅ 信號
+2025-11-04T06:15:00.468869559Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - 10. AI16ZUSDT    | 信心= 52.2 | 勝率= 60.7% | ✅ 信號
+2025-11-04T06:15:00.470976050Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.470982773Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - ✅ 發現 129 個交易信號
+2025-11-04T06:15:00.470987916Z [inf]  2025-11-04 06:15:00,460 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $55.78 | 已有倉位: 7 | 新信號數: 129
+2025-11-04T06:15:00.904618594Z [inf]  2025-11-04 06:15:00,597 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $71.33 | 可用保證金: $4.65 | 已佔用保證金: $64.64
+2025-11-04T06:15:00.904626493Z [inf]  2025-11-04 06:15:00,597 - src.core.capital_allocator - INFO - 💰 CapitalAllocator初始化 | 帳戶權益: $71.33 | 總金額: $69.30 | 已佔用保證金: $64.64 | 質量門檻: 0.25 (豁免期模式（交易數:0/100）)
+2025-11-04T06:15:00.904633919Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - 💰 質量排名完成：129/129 信號通過質量門檻 | 最高分: 0.707 | 最低分: 0.557
+2025-11-04T06:15:00.904640197Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - WARNING - ⚠️ 90%總倉位保證金上限限制 | 原預算: $4.19 → 調整為: $0.00 | 已佔用: $64.64 / 上限: $62.37 (90% × $69.30)
+2025-11-04T06:15:00.904648891Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - ✅ 資金分配完成
+2025-11-04T06:15:00.904665997Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - 💰 預算池初始化 | 總預算: $0.00 (90% × $4.65) | 單倉上限: $35.67 (50% × $71.33) | 總倉位保證金: $64.64 / $62.37 (90%)
+2025-11-04T06:15:00.904669274Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO -    獲批信號: 0/129 (通過質量門檻)
+2025-11-04T06:15:00.904669321Z [inf]  2025-11-04 06:15:00,597 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 69.30 USDT, 可用 4.65 USDT, 保證金 64.64 USDT, 未實現盈虧 +2.04 USDT
+2025-11-04T06:15:00.904673620Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - 💰 預算耗盡，拒絕剩餘 129 個信號 （排名 1-129）
+2025-11-04T06:15:00.904679091Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - WARNING -    ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）
+2025-11-04T06:15:00.904679592Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - ================================================================================
+2025-11-04T06:15:00.906336685Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO -    總分配: $0.00 / $0.00
+2025-11-04T06:15:00.906346614Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO -    獲批信號將無法執行
+2025-11-04T06:15:00.906352264Z [inf]  2025-11-04 06:15:00,598 - src.core.capital_allocator - INFO - ================================================================================
+2025-11-04T06:15:00.906358996Z [inf]  2025-11-04 06:15:00,598 - src.strategies.self_learning_trader - INFO - 💰 無信號獲得資金分配
+2025-11-04T06:15:00.906364195Z [inf]  2025-11-04 06:15:00,598 - src.strategies.self_learning_trader - INFO - 🔄 檢查智能汰換機會...
+2025-11-04T06:15:00.906371548Z [inf]  2025-11-04 06:15:00,598 - src.strategies.self_learning_trader - INFO - ⚠️ 無高品質信號（≥80）可用於汰換
+2025-11-04T06:15:00.906376458Z [inf]  2025-11-04 06:15:00,598 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 19.0s | 新成交: 0
+2025-11-04T06:15:00.906383311Z [inf]  2025-11-04 06:15:00,598 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:15:00.906389278Z [inf]  2025-11-04 06:15:00,733 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard8 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:01.205431831Z [inf]  2025-11-04 06:15:01,204 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:03.983666472Z [inf]  2025-11-04 06:15:03,981 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard10 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:04.340992691Z [inf]  2025-11-04 06:15:04,339 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:06.382837387Z [inf]  2025-11-04 06:15:06,376 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:06.510055045Z [inf]  2025-11-04 06:15:06,503 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:07.418405106Z [inf]  2025-11-04 06:15:07,413 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard3 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:07.963135578Z [inf]  2025-11-04 06:15:07,740 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard6 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:08.020233829Z [inf]  2025-11-04 06:15:08,016 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard5 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:09.043463012Z [inf]  2025-11-04 06:15:08,625 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard4 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:14.038603112Z [inf]  2025-11-04 06:15:14,032 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard3 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:15.948824491Z [inf]  2025-11-04 06:15:15,929 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard9 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:35.661615694Z [inf]  2025-11-04 06:15:27,064 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:15:55.658960321Z [inf]  2025-11-04 06:15:47,173 - src.core.position_controller - INFO - 📡 從WebSocket獲取 7 個倉位
+2025-11-04T06:15:55.658970344Z [inf]  2025-11-04 06:15:47,173 - src.core.position_controller - INFO -    📊 監控 7 個持倉
+2025-11-04T06:15:55.658977398Z [inf]  2025-11-04 06:15:47,309 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 69.30 USDT, 可用 3.12 USDT, 保證金 66.17 USDT, 未實現盈虧 +0.99 USDT
+2025-11-04T06:15:55.658983883Z [inf]  2025-11-04 06:15:47,309 - src.core.position_controller - INFO - 🛡️ 全倉保護檢查 | 保證金使用率: 95.5% | 閾值: 85% | 總金額: $69.30 | 總保證金: $66.17
+2025-11-04T06:15:55.658989811Z [inf]  2025-11-04 06:15:47,309 - src.core.position_controller - INFO - 🛡️ 保證金使用率 95.5% > 85% 但無虧損倉位，無需保護
+2025-11-04T06:15:55.658995981Z [inf]  2025-11-04 06:15:48,583 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-11-04T06:15:55.659001676Z [inf]  2025-11-04 06:15:50,784 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:00.604373645Z [inf]  2025-11-04 06:16:00,600 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:00.604383206Z [inf]  2025-11-04 06:16:00,600 - src.core.unified_scheduler - INFO - 🔄 交易週期 #146 | 2025-11-04 06:16:00 UTC
+2025-11-04T06:16:00.604388728Z [inf]  2025-11-04 06:16:00,600 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:00.713319081Z [inf]  2025-11-04 06:16:00,700 - src.core.unified_scheduler - INFO - 📊 歷史統計: 暫無交易記錄
+2025-11-04T06:16:00.713329597Z [inf]  2025-11-04 06:16:00,700 - src.core.unified_scheduler - INFO - 📦 當前持倉: 7 個 | 總未實現盈虧: $+0.63
+2025-11-04T06:16:00.713337223Z [inf]  2025-11-04 06:16:00,700 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:00.713344048Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • ACXUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.18 (+1.75%)
+2025-11-04T06:16:00.713351061Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • FUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.27 (+1.79%)
+2025-11-04T06:16:00.713359006Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • CETUSUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.53 (+1.51%)
+2025-11-04T06:16:00.713366045Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • LYNUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.03 (+0.62%)
+2025-11-04T06:16:00.713374912Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • AI16ZUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.43 (-2.88%)
+2025-11-04T06:16:00.713382069Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • JASMYUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$+0.34 (+2.24%)
+2025-11-04T06:16:00.713389019Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO -    • BROCCOLIF3BUSDT SHORT | 信心值=0.0% | 勝率=0.0% | 盈虧=$-0.28 (-0.70%)
+2025-11-04T06:16:00.713396505Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:00.713403499Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$69.30 | 可用=$55.78 | 保證金=$13.52 | 未實現盈虧=$+0.00
+2025-11-04T06:16:00.714985595Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - 🎯 模型評分: 無交易記錄
+2025-11-04T06:16:00.714995244Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - ✅ 使用DataService已加載的 530 個交易對（所有可交易USDT永續合約）
+2025-11-04T06:16:00.715003614Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - 📊 掃描 530 個交易對中...
+2025-11-04T06:16:00.715011050Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - ✅ Pipeline統計計數器已完整重置（包含所有ADX分布鍵）
+2025-11-04T06:16:00.715018099Z [inf]  2025-11-04 06:16:00,701 - src.core.unified_scheduler - INFO - ⏱️  ===== 開始掃描時間分析（v3.20 批量並行模式） =====
+2025-11-04T06:16:00.715026141Z [inf]  2025-11-04 06:16:00,710 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.01秒 | 平均0.1ms/symbol
+2025-11-04T06:16:00.715032631Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO - ⏱️  批次 1: 64个symbols数据获取完成，耗时0.01秒
+2025-11-04T06:16:00.715038343Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #1 - BTCUSDT:
+2025-11-04T06:16:00.715044080Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -    1h: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.715050079Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -       最新價格: 104773.10
+2025-11-04T06:16:00.715057185Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -    15m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.715063883Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -       最新價格: 104778.90
+2025-11-04T06:16:00.715070433Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -    5m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.716691586Z [inf]  2025-11-04 06:16:00,710 - src.core.unified_scheduler - INFO -       最新價格: 104773.10
+2025-11-04T06:16:00.716697679Z [inf]  2025-11-04 06:16:00,710 - src.strategies.rule_based_signal_generator - INFO - ✅ BTCUSDT 數據驗證通過 (#1)
+2025-11-04T06:16:00.716702256Z [inf]  2025-11-04 06:16:00,711 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=104773.10
+2025-11-04T06:16:00.716706495Z [inf]  2025-11-04 06:16:00,711 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=104778.90
+2025-11-04T06:16:00.716710413Z [inf]  2025-11-04 06:16:00,711 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=104773.10
+2025-11-04T06:16:00.716714595Z [inf]  2025-11-04 06:16:00,713 - src.strategies.rule_based_signal_generator - INFO -    🔧 技術指標計算: 7個成功
+2025-11-04T06:16:00.716719374Z [inf]  2025-11-04 06:16:00,713 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_20: 50個值
+2025-11-04T06:16:00.716724648Z [inf]  2025-11-04 06:16:00,713 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_50: 50個值
+2025-11-04T06:16:00.716727213Z [inf]  2025-11-04 06:16:00,713 - src.strategies.rule_based_signal_generator - INFO -      ✅ sma_10: 50個值
+2025-11-04T06:16:00.716729765Z [inf]  2025-11-04 06:16:00,713 - src.strategies.rule_based_signal_generator - INFO -      ✅ rsi_14: 50個值
+2025-11-04T06:16:00.752306680Z [inf]  2025-11-04 06:16:00,746 - src.strategies.rule_based_signal_generator - INFO - 📊 BTCUSDT ICT特徵樣本: market_structure=0, order_blocks=5, structure_integrity=0.34
+2025-11-04T06:16:00.752318990Z [inf]  2025-11-04 06:16:00,746 - src.strategies.rule_based_signal_generator - INFO - 📈 BTCUSDT: ICT信心值=31.8, 子分數={'market_structure_ict': 6.786657652005466, 'order_block_ict': 19.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 6.0}
+2025-11-04T06:16:00.752329067Z [inf]  2025-11-04 06:16:00,747 - src.strategies.self_learning_trader - INFO - ❌ BTCUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=49.5% 信心=31.8% R:R=1.50
+2025-11-04T06:16:00.752336214Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - WARNING - ⚠️ BTCUSDT: 有分數但無信號 | confidence=31.8 | win_prob=49.5%
+2025-11-04T06:16:00.752343187Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #2 - ETHUSDT:
+2025-11-04T06:16:00.752350034Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -    1h: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.752357337Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -       最新價格: 3509.72
+2025-11-04T06:16:00.752364647Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -    15m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.752373485Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -       最新價格: 3509.84
+2025-11-04T06:16:00.752380260Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -    5m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.752386790Z [inf]  2025-11-04 06:16:00,747 - src.core.unified_scheduler - INFO -       最新價格: 3510.00
+2025-11-04T06:16:00.752393023Z [inf]  2025-11-04 06:16:00,747 - src.strategies.rule_based_signal_generator - INFO - ✅ ETHUSDT 數據驗證通過 (#2)
+2025-11-04T06:16:00.754332977Z [inf]  2025-11-04 06:16:00,747 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=3509.72
+2025-11-04T06:16:00.754341683Z [inf]  2025-11-04 06:16:00,747 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=3509.84
+2025-11-04T06:16:00.754348452Z [inf]  2025-11-04 06:16:00,747 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=3510.00
+2025-11-04T06:16:00.754356980Z [inf]  2025-11-04 06:16:00,750 - src.strategies.rule_based_signal_generator - INFO -    🔧 技術指標計算: 7個成功
+2025-11-04T06:16:00.754362969Z [inf]  2025-11-04 06:16:00,750 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_20: 50個值
+2025-11-04T06:16:00.754370852Z [inf]  2025-11-04 06:16:00,750 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_50: 50個值
+2025-11-04T06:16:00.754376957Z [inf]  2025-11-04 06:16:00,750 - src.strategies.rule_based_signal_generator - INFO -      ✅ rsi_14: 50個值
+2025-11-04T06:16:00.754390439Z [inf]  2025-11-04 06:16:00,750 - src.strategies.rule_based_signal_generator - INFO -      ✅ sma_10: 50個值
+2025-11-04T06:16:00.792606448Z [inf]  2025-11-04 06:16:00,789 - src.strategies.rule_based_signal_generator - INFO - 📊 ETHUSDT ICT特徵樣本: market_structure=-1, order_blocks=6, structure_integrity=0.75
+2025-11-04T06:16:00.792617550Z [inf]  2025-11-04 06:16:00,789 - src.strategies.rule_based_signal_generator - INFO - 📈 ETHUSDT: ICT信心值=44.6, 子分數={'market_structure_ict': 24.9841654804549, 'order_block_ict': 15.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 4.585786437626904}
+2025-11-04T06:16:00.792624165Z [inf]  2025-11-04 06:16:00,789 - src.strategies.self_learning_trader - INFO - 🎓 ETHUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:00.792630914Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #3 - BCHUSDT:
+2025-11-04T06:16:00.792639956Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -    1h: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.792644996Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -       最新價格: 499.40
+2025-11-04T06:16:00.792650970Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -    15m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.792656510Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -       最新價格: 499.40
+2025-11-04T06:16:00.792662933Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -    5m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-04T06:16:00.792669402Z [inf]  2025-11-04 06:16:00,790 - src.core.unified_scheduler - INFO -       最新價格: 499.48
+2025-11-04T06:16:00.792675376Z [inf]  2025-11-04 06:16:00,790 - src.strategies.rule_based_signal_generator - INFO - ✅ BCHUSDT 數據驗證通過 (#3)
+2025-11-04T06:16:00.792681050Z [inf]  2025-11-04 06:16:00,790 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=499.40
+2025-11-04T06:16:00.793772723Z [inf]  2025-11-04 06:16:00,790 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=499.40
+2025-11-04T06:16:00.793778735Z [inf]  2025-11-04 06:16:00,790 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=499.48
+2025-11-04T06:16:00.795575997Z [inf]  2025-11-04 06:16:00,793 - src.strategies.rule_based_signal_generator - INFO -    🔧 技術指標計算: 7個成功
+2025-11-04T06:16:00.795587432Z [inf]  2025-11-04 06:16:00,793 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_20: 50個值
+2025-11-04T06:16:00.795596548Z [inf]  2025-11-04 06:16:00,793 - src.strategies.rule_based_signal_generator - INFO -      ✅ ema_50: 50個值
+2025-11-04T06:16:00.795601873Z [inf]  2025-11-04 06:16:00,793 - src.strategies.rule_based_signal_generator - INFO -      ✅ rsi_14: 50個值
+2025-11-04T06:16:00.795611008Z [inf]  2025-11-04 06:16:00,793 - src.strategies.rule_based_signal_generator - INFO -      ✅ sma_10: 50個值
+2025-11-04T06:16:00.828456870Z [inf]  2025-11-04 06:16:00,826 - src.strategies.self_learning_trader - INFO - ❌ BCHUSDT 拒絕開倉: 信心度不足: 36.6% < 40.0% | 勝率=56.0% 信心=36.6% R:R=1.50
+2025-11-04T06:16:00.828469732Z [inf]  2025-11-04 06:16:00,826 - src.core.unified_scheduler - WARNING - ⚠️ BCHUSDT: 有分數但無信號 | confidence=36.6 | win_prob=56.0%
+2025-11-04T06:16:00.866711324Z [inf]  2025-11-04 06:16:00,860 - src.strategies.self_learning_trader - INFO - 🎓 XRPUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:00.896062547Z [inf]  2025-11-04 06:16:00,894 - src.strategies.self_learning_trader - INFO - ❌ LTCUSDT 拒絕開倉: 信心度不足: 20.1% < 40.0% | 勝率=45.0% 信心=20.1% R:R=1.50
+2025-11-04T06:16:00.896071401Z [inf]  2025-11-04 06:16:00,894 - src.core.unified_scheduler - WARNING - ⚠️ LTCUSDT: 有分數但無信號 | confidence=20.1 | win_prob=45.0%
+2025-11-04T06:16:00.941636685Z [inf]  2025-11-04 06:16:00,929 - src.strategies.self_learning_trader - INFO - 🎓 TRXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.357426956Z [inf]  2025-11-04 06:16:00,961 - src.strategies.self_learning_trader - INFO - ❌ ETCUSDT 拒絕開倉: 信心度不足: 33.6% < 40.0% | 勝率=55.1% 信心=33.6% R:R=1.50
+2025-11-04T06:16:01.357434334Z [inf]  2025-11-04 06:16:00,989 - src.strategies.self_learning_trader - INFO - ❌ LINKUSDT 拒絕開倉: 信心度不足: 33.3% < 40.0% | 勝率=55.0% 信心=33.3% R:R=1.50
+2025-11-04T06:16:01.357441310Z [inf]  2025-11-04 06:16:01,027 - src.strategies.self_learning_trader - INFO - 🎓 XLMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.357447103Z [inf]  2025-11-04 06:16:01,061 - src.strategies.self_learning_trader - INFO - ❌ ADAUSDT 拒絕開倉: 信心度不足: 28.4% < 40.0% | 勝率=48.5% 信心=28.4% R:R=1.50
+2025-11-04T06:16:01.357453628Z [inf]  2025-11-04 06:16:01,123 - src.strategies.self_learning_trader - INFO - ❌ DASHUSDT 拒絕開倉: 信心度不足: 20.5% < 40.0% | 勝率=46.2% 信心=20.5% R:R=1.50
+2025-11-04T06:16:01.357459614Z [inf]  2025-11-04 06:16:01,157 - src.strategies.self_learning_trader - INFO - ❌ ZECUSDT 拒絕開倉: 信心度不足: 34.2% < 40.0% | 勝率=55.3% 信心=34.2% R:R=1.50
+2025-11-04T06:16:01.357465754Z [inf]  2025-11-04 06:16:01,191 - src.strategies.self_learning_trader - INFO - ❌ XTZUSDT 拒絕開倉: 信心度不足: 28.3% < 40.0% | 勝率=53.5% 信心=28.3% R:R=1.50
+2025-11-04T06:16:01.357471756Z [inf]  2025-11-04 06:16:01,225 - src.strategies.rule_based_signal_generator - INFO - 📊 BNBUSDT ICT特徵樣本: market_structure=0, order_blocks=6, structure_integrity=0.29
+2025-11-04T06:16:01.357478413Z [inf]  2025-11-04 06:16:01,225 - src.strategies.rule_based_signal_generator - INFO - 📈 BNBUSDT: ICT信心值=27.4, 子分數={'market_structure_ict': 5.784165480454901, 'order_block_ict': 15.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 6.585786437626904}
+2025-11-04T06:16:01.357485035Z [inf]  2025-11-04 06:16:01,226 - src.strategies.self_learning_trader - INFO - ❌ BNBUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=45.0% 信心=27.4% R:R=1.50
+2025-11-04T06:16:01.361973410Z [inf]  2025-11-04 06:16:01,259 - src.strategies.self_learning_trader - INFO - ❌ ATOMUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=49.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:01.362020809Z [inf]  2025-11-04 06:16:01,293 - src.strategies.self_learning_trader - INFO - 🎓 ONTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.362029062Z [inf]  2025-11-04 06:16:01,326 - src.strategies.self_learning_trader - INFO - ❌ IOTAUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=53.7% 信心=29.0% R:R=1.50
+2025-11-04T06:16:01.364975771Z [inf]  2025-11-04 06:16:01,363 - src.strategies.self_learning_trader - INFO - 🎓 BATUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.406803071Z [inf]  2025-11-04 06:16:01,400 - src.strategies.self_learning_trader - INFO - ❌ VETUSDT 拒絕開倉: 信心度不足: 33.3% < 40.0% | 勝率=45.0% 信心=33.3% R:R=1.50
+2025-11-04T06:16:01.453339669Z [inf]  2025-11-04 06:16:01,451 - src.strategies.self_learning_trader - INFO - ❌ QTUMUSDT 拒絕開倉: 信心度不足: 39.8% < 40.0% | 勝率=56.9% 信心=39.8% R:R=1.50
+2025-11-04T06:16:01.481691197Z [inf]  2025-11-04 06:16:01,479 - src.strategies.self_learning_trader - INFO - ❌ IOSTUSDT 拒絕開倉: 信心度不足: 28.7% < 40.0% | 勝率=48.6% 信心=28.7% R:R=1.50
+2025-11-04T06:16:01.507339504Z [inf]  2025-11-04 06:16:01,505 - src.strategies.self_learning_trader - INFO - 🎓 THETAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.538552450Z [inf]  2025-11-04 06:16:01,533 - src.strategies.self_learning_trader - INFO - ❌ ALGOUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=45.0% 信心=27.4% R:R=1.50
+2025-11-04T06:16:01.566499765Z [inf]  2025-11-04 06:16:01,561 - src.strategies.self_learning_trader - INFO - ❌ ZILUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=45.0% 信心=28.0% R:R=1.50
+2025-11-04T06:16:01.593490171Z [inf]  2025-11-04 06:16:01,590 - src.strategies.self_learning_trader - INFO - 🎓 KNCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.628035185Z [inf]  2025-11-04 06:16:01,625 - src.strategies.self_learning_trader - INFO - ❌ ZRXUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=45.9% 信心=36.2% R:R=1.50
+2025-11-04T06:16:01.658000061Z [inf]  2025-11-04 06:16:01,654 - src.strategies.self_learning_trader - INFO - 🎓 COMPUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.687293462Z [inf]  2025-11-04 06:16:01,681 - src.strategies.self_learning_trader - INFO - ❌ DOGEUSDT 拒絕開倉: 信心度不足: 28.1% < 40.0% | 勝率=48.4% 信心=28.1% R:R=1.50
+2025-11-04T06:16:01.716168204Z [inf]  2025-11-04 06:16:01,709 - src.strategies.self_learning_trader - INFO - ❌ SXPUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:01.741573335Z [inf]  2025-11-04 06:16:01,739 - src.strategies.self_learning_trader - INFO - ❌ KAVAUSDT 拒絕開倉: 信心度不足: 33.6% < 40.0% | 勝率=55.1% 信心=33.6% R:R=1.50
+2025-11-04T06:16:01.774516675Z [inf]  2025-11-04 06:16:01,770 - src.strategies.self_learning_trader - INFO - ❌ BANDUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=48.4% 信心=28.0% R:R=1.50
+2025-11-04T06:16:01.809937393Z [inf]  2025-11-04 06:16:01,804 - src.strategies.self_learning_trader - INFO - ❌ RLCUSDT 拒絕開倉: 信心度不足: 29.9% < 40.0% | 勝率=45.0% 信心=29.9% R:R=1.50
+2025-11-04T06:16:01.838982811Z [inf]  2025-11-04 06:16:01,829 - src.strategies.self_learning_trader - INFO - ❌ SNXUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=55.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:01.857248237Z [inf]  2025-11-04 06:16:01,855 - src.strategies.self_learning_trader - INFO - ❌ DOTUSDT 拒絕開倉: 信心度不足: 26.6% < 40.0% | 勝率=45.0% 信心=26.6% R:R=1.50
+2025-11-04T06:16:01.884555364Z [inf]  2025-11-04 06:16:01,881 - src.strategies.self_learning_trader - INFO - 🎓 YFIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:01.913087922Z [inf]  2025-11-04 06:16:01,909 - src.strategies.self_learning_trader - INFO - ❌ CRVUSDT 拒絕開倉: 信心度不足: 23.1% < 40.0% | 勝率=45.0% 信心=23.1% R:R=1.50
+2025-11-04T06:16:01.939630547Z [inf]  2025-11-04 06:16:01,938 - src.strategies.self_learning_trader - INFO - ❌ TRBUSDT 拒絕開倉: 信心度不足: 24.7% < 40.0% | 勝率=47.4% 信心=24.7% R:R=1.50
+2025-11-04T06:16:02.313739905Z [inf]  2025-11-04 06:16:01,965 - src.strategies.self_learning_trader - INFO - ❌ RUNEUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=45.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:02.313749308Z [inf]  2025-11-04 06:16:01,990 - src.strategies.self_learning_trader - INFO - ❌ SUSHIUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=48.4% 信心=28.0% R:R=1.50
+2025-11-04T06:16:02.313758757Z [inf]  2025-11-04 06:16:02,019 - src.strategies.self_learning_trader - INFO - 🎓 EGLDUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.313761431Z [inf]  2025-11-04 06:16:02,209 - src.strategies.self_learning_trader - INFO - ❌ FLMUSDT 拒絕開倉: 信心度不足: 12.0% < 40.0% | 勝率=45.0% 信心=12.0% R:R=1.50
+2025-11-04T06:16:02.313767568Z [inf]  2025-11-04 06:16:02,046 - src.strategies.self_learning_trader - INFO - ❌ SOLUSDT 拒絕開倉: 信心度不足: 28.4% < 40.0% | 勝率=48.5% 信心=28.4% R:R=1.50
+2025-11-04T06:16:02.313774703Z [inf]  2025-11-04 06:16:02,072 - src.strategies.self_learning_trader - INFO - 🎓 ICXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.313781084Z [inf]  2025-11-04 06:16:02,098 - src.strategies.self_learning_trader - INFO - ❌ STORJUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:02.313787283Z [inf]  2025-11-04 06:16:02,125 - src.strategies.self_learning_trader - INFO - ❌ UNIUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=48.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:02.313793911Z [inf]  2025-11-04 06:16:02,151 - src.strategies.self_learning_trader - INFO - 🎓 AVAXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.313799824Z [inf]  2025-11-04 06:16:02,180 - src.strategies.self_learning_trader - INFO - ❌ ENJUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=55.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:02.315722291Z [inf]  2025-11-04 06:16:02,209 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描50個）
+2025-11-04T06:16:02.315732284Z [inf]  2025-11-04 06:16:02,209 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=49, 拒絕=0
+2025-11-04T06:16:02.315739584Z [inf]  2025-11-04 06:16:02,209 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=47, 無=2
+2025-11-04T06:16:02.315746581Z [inf]  2025-11-04 06:16:02,237 - src.strategies.self_learning_trader - INFO - 🎓 KSMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.315753047Z [inf]  2025-11-04 06:16:02,264 - src.strategies.self_learning_trader - INFO - ❌ NEARUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:02.315759502Z [inf]  2025-11-04 06:16:02,290 - src.strategies.self_learning_trader - INFO - ❌ AAVEUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:02.322489276Z [inf]  2025-11-04 06:16:02,318 - src.strategies.self_learning_trader - INFO - 🎓 FILUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.352595956Z [inf]  2025-11-04 06:16:02,344 - src.strategies.self_learning_trader - INFO - 🎓 RSRUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.374447853Z [inf]  2025-11-04 06:16:02,372 - src.strategies.self_learning_trader - INFO - ❌ LRCUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:02.407196589Z [inf]  2025-11-04 06:16:02,400 - src.strategies.self_learning_trader - INFO - 🎓 BELUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.432745959Z [inf]  2025-11-04 06:16:02,428 - src.strategies.self_learning_trader - INFO - ❌ AXSUSDT 拒絕開倉: 信心度不足: 29.6% < 40.0% | 勝率=45.0% 信心=29.6% R:R=1.50
+2025-11-04T06:16:02.479654243Z [inf]  2025-11-04 06:16:02,455 - src.strategies.self_learning_trader - INFO - ❌ ZENUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:02.481349608Z [inf]  2025-11-04 06:16:02,479 - src.strategies.self_learning_trader - INFO - ❌ SKLUSDT 拒絕開倉: 信心度不足: 21.3% < 40.0% | 勝率=46.4% 信心=21.3% R:R=1.50
+2025-11-04T06:16:02.509315141Z [inf]  2025-11-04 06:16:02,506 - src.strategies.self_learning_trader - INFO - ❌ GRTUSDT 拒絕開倉: 信心度不足: 27.8% < 40.0% | 勝率=53.3% 信心=27.8% R:R=1.50
+2025-11-04T06:16:02.538284221Z [inf]  2025-11-04 06:16:02,534 - src.strategies.self_learning_trader - INFO - ❌ 1INCHUSDT 拒絕開倉: 信心度不足: 29.9% < 40.0% | 勝率=45.0% 信心=29.9% R:R=1.50
+2025-11-04T06:16:02.582238776Z [inf]  2025-11-04 06:16:02,562 - src.strategies.self_learning_trader - INFO - ❌ CHZUSDT 拒絕開倉: 信心度不足: 27.8% < 40.0% | 勝率=48.3% 信心=27.8% R:R=1.50
+2025-11-04T06:16:02.596905982Z [inf]  2025-11-04 06:16:02,591 - src.strategies.self_learning_trader - INFO - ❌ SANDUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=48.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:02.620343213Z [inf]  2025-11-04 06:16:02,618 - src.strategies.self_learning_trader - INFO - ❌ ANKRUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:02.620352650Z [inf]  2025-11-04 06:16:02,618 - src.core.unified_scheduler - INFO - ⏱️  進度: 64/530 | 已分析=64 | 平均分析=29.8ms | 平均數據=0.1ms
+2025-11-04T06:16:02.682632897Z [inf]  2025-11-04 06:16:02,675 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.06秒 | 平均0.9ms/symbol
+2025-11-04T06:16:02.682644853Z [inf]  2025-11-04 06:16:02,675 - src.core.unified_scheduler - INFO - ⏱️  批次 2: 64个symbols数据获取完成，耗时0.06秒
+2025-11-04T06:16:02.728775665Z [inf]  2025-11-04 06:16:02,720 - src.strategies.self_learning_trader - INFO - ❌ SFPUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=45.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:02.752185946Z [inf]  2025-11-04 06:16:02,749 - src.strategies.self_learning_trader - INFO - 🎓 COTIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:02.779445504Z [inf]  2025-11-04 06:16:02,772 - src.strategies.self_learning_trader - INFO - ❌ CHRUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=56.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:02.800077523Z [inf]  2025-11-04 06:16:02,796 - src.strategies.self_learning_trader - INFO - ❌ MANAUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=49.5% 信心=31.8% R:R=1.50
+2025-11-04T06:16:02.831256314Z [inf]  2025-11-04 06:16:02,819 - src.strategies.self_learning_trader - INFO - ❌ ALICEUSDT 拒絕開倉: 信心度不足: 35.4% < 40.0% | 勝率=55.6% 信心=35.4% R:R=1.50
+2025-11-04T06:16:02.852174770Z [inf]  2025-11-04 06:16:02,846 - src.strategies.self_learning_trader - INFO - ❌ HBARUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=48.2% 信心=27.4% R:R=1.50
+2025-11-04T06:16:02.873223187Z [inf]  2025-11-04 06:16:02,871 - src.strategies.self_learning_trader - INFO - ❌ ONEUSDT 拒絕開倉: 信心度不足: 16.5% < 40.0% | 勝率=50.0% 信心=16.5% R:R=1.50
+2025-11-04T06:16:02.941301584Z [inf]  2025-11-04 06:16:02,895 - src.strategies.self_learning_trader - INFO - ❌ DENTUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:16:02.941309353Z [inf]  2025-11-04 06:16:02,922 - src.strategies.self_learning_trader - INFO - ❌ CELRUSDT 拒絕開倉: 信心度不足: 16.5% < 40.0% | 勝率=50.0% 信心=16.5% R:R=1.50
+2025-11-04T06:16:03.357892982Z [inf]  2025-11-04 06:16:02,951 - src.strategies.self_learning_trader - INFO - ❌ HOTUSDT 拒絕開倉: 信心度不足: 31.9% < 40.0% | 勝率=54.6% 信心=31.9% R:R=1.50
+2025-11-04T06:16:03.357901335Z [inf]  2025-11-04 06:16:03,004 - src.strategies.self_learning_trader - INFO - ❌ OGNUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:16:03.357903315Z [inf]  2025-11-04 06:16:02,977 - src.strategies.self_learning_trader - INFO - ❌ MTLUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=45.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:03.357912501Z [inf]  2025-11-04 06:16:03,033 - src.strategies.self_learning_trader - INFO - ❌ NKNUSDT 拒絕開倉: 信心度不足: 29.9% < 40.0% | 勝率=54.0% 信心=29.9% R:R=1.50
+2025-11-04T06:16:03.357924566Z [inf]  2025-11-04 06:16:03,061 - src.strategies.self_learning_trader - INFO - ❌ 1000SHIBUSDT 拒絕開倉: 信心度不足: 28.7% < 40.0% | 勝率=48.6% 信心=28.7% R:R=1.50
+2025-11-04T06:16:03.357931690Z [inf]  2025-11-04 06:16:03,107 - src.strategies.self_learning_trader - INFO - ❌ BTCDOMUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=49.5% 信心=31.8% R:R=1.50
+2025-11-04T06:16:03.357938102Z [inf]  2025-11-04 06:16:03,133 - src.strategies.self_learning_trader - INFO - ❌ IOTXUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=55.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:03.357944194Z [inf]  2025-11-04 06:16:03,160 - src.strategies.self_learning_trader - INFO - 🎓 C98USDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.357951056Z [inf]  2025-11-04 06:16:03,186 - src.strategies.self_learning_trader - INFO - ❌ MASKUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=48.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:03.357958798Z [inf]  2025-11-04 06:16:03,214 - src.strategies.self_learning_trader - INFO - ❌ ATAUSDT 拒絕開倉: 信心度不足: 28.3% < 40.0% | 勝率=53.5% 信心=28.3% R:R=1.50
+2025-11-04T06:16:03.358581800Z [inf]  2025-11-04 06:16:03,262 - src.strategies.self_learning_trader - INFO - ❌ 1000XECUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=55.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:03.358592026Z [inf]  2025-11-04 06:16:03,286 - src.strategies.self_learning_trader - INFO - ❌ GALAUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:03.358598798Z [inf]  2025-11-04 06:16:03,312 - src.strategies.self_learning_trader - INFO - ❌ CELOUSDT 拒絕開倉: 信心度不足: 20.7% < 40.0% | 勝率=46.2% 信心=20.7% R:R=1.50
+2025-11-04T06:16:03.358603618Z [inf]  2025-11-04 06:16:03,345 - src.strategies.self_learning_trader - INFO - 🎓 ARUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.416950225Z [inf]  2025-11-04 06:16:03,412 - src.strategies.self_learning_trader - INFO - 🎓 CTSIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.457039347Z [inf]  2025-11-04 06:16:03,451 - src.strategies.self_learning_trader - INFO - ❌ LPTUSDT 拒絕開倉: 信心度不足: 18.7% < 40.0% | 勝率=45.6% 信心=18.7% R:R=1.50
+2025-11-04T06:16:03.491306833Z [inf]  2025-11-04 06:16:03,488 - src.strategies.self_learning_trader - INFO - ❌ ENSUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:03.530238988Z [inf]  2025-11-04 06:16:03,525 - src.strategies.self_learning_trader - INFO - 🎓 PEOPLEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.585901434Z [inf]  2025-11-04 06:16:03,579 - src.strategies.self_learning_trader - INFO - ❌ DUSKUSDT 拒絕開倉: 信心度不足: 35.8% < 40.0% | 勝率=45.0% 信心=35.8% R:R=1.50
+2025-11-04T06:16:03.623669120Z [inf]  2025-11-04 06:16:03,617 - src.strategies.self_learning_trader - INFO - ❌ FLOWUSDT 拒絕開倉: 信心度不足: 18.9% < 40.0% | 勝率=47.7% 信心=18.9% R:R=1.50
+2025-11-04T06:16:03.650417487Z [inf]  2025-11-04 06:16:03,648 - src.strategies.self_learning_trader - INFO - 🎓 IMXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.650423267Z [inf]  2025-11-04 06:16:03,648 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描100個）
+2025-11-04T06:16:03.650428506Z [inf]  2025-11-04 06:16:03,648 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=99, 拒絕=0
+2025-11-04T06:16:03.650433647Z [inf]  2025-11-04 06:16:03,648 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=92, 無=7
+2025-11-04T06:16:03.681266360Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:03.681274307Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描100個交易對）
+2025-11-04T06:16:03.681280846Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:03.681286512Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 100
+2025-11-04T06:16:03.681291761Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=100, 拒絕=0
+2025-11-04T06:16:03.681296885Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-04T06:16:03.681303006Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=100
+2025-11-04T06:16:03.681308290Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-04T06:16:03.681314633Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO -          有方向=93, 無方向=7
+2025-11-04T06:16:03.681319943Z [inf]  2025-11-04 06:16:03,679 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=21
+2025-11-04T06:16:03.681328782Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=61
+2025-11-04T06:16:03.681333383Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=7
+2025-11-04T06:16:03.681339361Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=3
+2025-11-04T06:16:03.683897034Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=1
+2025-11-04T06:16:03.683903145Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-04T06:16:03.683909985Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-04T06:16:03.683917511Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-04T06:16:03.683924992Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-04T06:16:03.683929171Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=93
+2025-11-04T06:16:03.683933934Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-04T06:16:03.683938244Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-04T06:16:03.683943236Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:16:03.683953645Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:16:03.683962202Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:16:03.683966851Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 93
+2025-11-04T06:16:03.683971617Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:16:03.683975929Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:16:03.685251417Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 93
+2025-11-04T06:16:03.685259093Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 93
+2025-11-04T06:16:03.685265790Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:16:03.685272326Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:16:03.685278196Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:16:03.685283405Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:16:03.685289608Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:16:03.685295557Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:16:03.685300586Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:16:03.685306946Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:16:03.685312687Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:16:03.685318117Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:16:03.685324153Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:16:03.685329901Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:16:03.686344727Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/100)
+2025-11-04T06:16:03.686352197Z [inf]  2025-11-04 06:16:03,680 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:03.686358703Z [inf]  2025-11-04 06:16:03,681 - src.strategies.self_learning_trader - INFO - ❌ API3USDT 拒絕開倉: 信心度不足: 27.2% < 40.0% | 勝率=48.2% 信心=27.2% R:R=1.50
+2025-11-04T06:16:03.709201196Z [inf]  2025-11-04 06:16:03,706 - src.strategies.self_learning_trader - INFO - ❌ GMTUSDT 拒絕開倉: 信心度不足: 30.5% < 40.0% | 勝率=54.2% 信心=30.5% R:R=1.50
+2025-11-04T06:16:03.735852619Z [inf]  2025-11-04 06:16:03,732 - src.strategies.self_learning_trader - INFO - 🎓 APEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.764766514Z [inf]  2025-11-04 06:16:03,763 - src.strategies.self_learning_trader - INFO - 🎓 WOOUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.795929159Z [inf]  2025-11-04 06:16:03,789 - src.strategies.self_learning_trader - INFO - 🎓 JASMYUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.825684717Z [inf]  2025-11-04 06:16:03,822 - src.strategies.self_learning_trader - INFO - ❌ OPUSDT 拒絕開倉: 信心度不足: 36.1% < 40.0% | 勝率=50.8% 信心=36.1% R:R=1.50
+2025-11-04T06:16:03.856109346Z [inf]  2025-11-04 06:16:03,850 - src.strategies.self_learning_trader - INFO - 🎓 INJUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:03.876411571Z [inf]  2025-11-04 06:16:03,874 - src.strategies.self_learning_trader - INFO - ❌ STGUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=45.0% 信心=26.2% R:R=1.50
+2025-11-04T06:16:03.905577055Z [inf]  2025-11-04 06:16:03,902 - src.strategies.self_learning_trader - INFO - ❌ SPELLUSDT 拒絕開倉: 信心度不足: 20.7% < 40.0% | 勝率=46.2% 信心=20.7% R:R=1.50
+2025-11-04T06:16:03.930505932Z [inf]  2025-11-04 06:16:03,927 - src.strategies.self_learning_trader - INFO - ❌ 1000LUNCUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=45.0% 信心=29.8% R:R=1.50
+2025-11-04T06:16:04.272654410Z [inf]  2025-11-04 06:16:03,958 - src.strategies.self_learning_trader - INFO - 🎓 LUNA2USDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:04.272660788Z [inf]  2025-11-04 06:16:03,989 - src.strategies.self_learning_trader - INFO - ❌ LDOUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:04.272666312Z [inf]  2025-11-04 06:16:04,017 - src.strategies.self_learning_trader - INFO - ❌ ICPUSDT 拒絕開倉: 信心度不足: 23.5% < 40.0% | 勝率=45.0% 信心=23.5% R:R=1.50
+2025-11-04T06:16:04.272671033Z [inf]  2025-11-04 06:16:04,044 - src.strategies.self_learning_trader - INFO - ❌ APTUSDT 拒絕開倉: 信心度不足: 38.5% < 40.0% | 勝率=56.5% 信心=38.5% R:R=1.50
+2025-11-04T06:16:04.272675860Z [inf]  2025-11-04 06:16:04,070 - src.strategies.self_learning_trader - INFO - ❌ QNTUSDT 拒絕開倉: 信心度不足: 39.8% < 40.0% | 勝率=56.9% 信心=39.8% R:R=1.50
+2025-11-04T06:16:04.272681939Z [inf]  2025-11-04 06:16:04,099 - src.strategies.self_learning_trader - INFO - ❌ FETUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=45.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:04.272687961Z [inf]  2025-11-04 06:16:04,157 - src.strategies.self_learning_trader - INFO - ❌ HOOKUSDT 拒絕開倉: 信心度不足: 36.6% < 40.0% | 勝率=56.0% 信心=36.6% R:R=1.50
+2025-11-04T06:16:04.272692760Z [inf]  2025-11-04 06:16:04,189 - src.strategies.self_learning_trader - INFO - ❌ MAGICUSDT 拒絕開倉: 信心度不足: 23.7% < 40.0% | 勝率=52.1% 信心=23.7% R:R=1.50
+2025-11-04T06:16:04.272697328Z [inf]  2025-11-04 06:16:04,218 - src.strategies.self_learning_trader - INFO - ❌ TUSDT 拒絕開倉: 信心度不足: 23.5% < 40.0% | 勝率=45.0% 信心=23.5% R:R=1.50
+2025-11-04T06:16:04.272701823Z [inf]  2025-11-04 06:16:04,244 - src.strategies.self_learning_trader - INFO - ❌ HIGHUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=53.7% 信心=29.0% R:R=1.50
+2025-11-04T06:16:04.274453502Z [inf]  2025-11-04 06:16:04,272 - src.strategies.self_learning_trader - INFO - ❌ MINAUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=50.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:04.306907577Z [inf]  2025-11-04 06:16:04,300 - src.strategies.self_learning_trader - INFO - ❌ ASTRUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=48.4% 信心=28.0% R:R=1.50
+2025-11-04T06:16:04.338685360Z [inf]  2025-11-04 06:16:04,327 - src.strategies.self_learning_trader - INFO - ❌ PHBUSDT 拒絕開倉: 信心度不足: 30.5% < 40.0% | 勝率=54.1% 信心=30.5% R:R=1.50
+2025-11-04T06:16:04.353466764Z [inf]  2025-11-04 06:16:04,351 - src.strategies.self_learning_trader - INFO - 🎓 GMXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:04.379346653Z [inf]  2025-11-04 06:16:04,377 - src.strategies.self_learning_trader - INFO - ❌ CFXUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=45.0% 信心=29.8% R:R=1.50
+2025-11-04T06:16:04.404579875Z [inf]  2025-11-04 06:16:04,401 - src.strategies.self_learning_trader - INFO - ❌ STXUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=48.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:04.431030502Z [inf]  2025-11-04 06:16:04,426 - src.strategies.self_learning_trader - INFO - ❌ ACHUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=47.8% 信心=26.2% R:R=1.50
+2025-11-04T06:16:04.459895206Z [inf]  2025-11-04 06:16:04,451 - src.strategies.self_learning_trader - INFO - ❌ SSVUSDT 拒絕開倉: 信心度不足: 28.7% < 40.0% | 勝率=45.0% 信心=28.7% R:R=1.50
+2025-11-04T06:16:04.459900437Z [inf]  2025-11-04 06:16:04,451 - src.core.unified_scheduler - INFO - ⏱️  進度: 128/530 | 已分析=128 | 平均分析=28.8ms | 平均數據=0.5ms
+2025-11-04T06:16:04.468375854Z [inf]  2025-11-04 06:16:04,462 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.01秒 | 平均0.2ms/symbol
+2025-11-04T06:16:04.468386096Z [inf]  2025-11-04 06:16:04,462 - src.core.unified_scheduler - INFO - ⏱️  批次 3: 64个symbols数据获取完成，耗时0.01秒
+2025-11-04T06:16:04.512272929Z [inf]  2025-11-04 06:16:04,495 - src.strategies.self_learning_trader - INFO - ❌ CKBUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=45.0% 信心=29.0% R:R=1.50
+2025-11-04T06:16:04.532719200Z [inf]  2025-11-04 06:16:04,529 - src.strategies.self_learning_trader - INFO - ❌ PERPUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=45.0% 信心=26.2% R:R=1.50
+2025-11-04T06:16:04.597210381Z [inf]  2025-11-04 06:16:04,594 - src.strategies.self_learning_trader - INFO - 🎓 LQTYUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:04.631042485Z [inf]  2025-11-04 06:16:04,626 - src.strategies.self_learning_trader - INFO - ❌ USDCUSDT 拒絕開倉: 信心度不足: 19.6% < 40.0% | 勝率=50.9% 信心=19.6% R:R=1.50
+2025-11-04T06:16:04.662877360Z [inf]  2025-11-04 06:16:04,657 - src.strategies.self_learning_trader - INFO - ❌ IDUSDT 拒絕開倉: 信心度不足: 36.9% < 40.0% | 勝率=56.1% 信心=36.9% R:R=1.50
+2025-11-04T06:16:04.706804617Z [inf]  2025-11-04 06:16:04,687 - src.strategies.self_learning_trader - INFO - ❌ ARBUSDT 拒絕開倉: 信心度不足: 22.5% < 40.0% | 勝率=45.0% 信心=22.5% R:R=1.50
+2025-11-04T06:16:04.731631390Z [inf]  2025-11-04 06:16:04,720 - src.strategies.self_learning_trader - INFO - ❌ JOEUSDT 拒絕開倉: 信心度不足: 31.0% < 40.0% | 勝率=54.3% 信心=31.0% R:R=1.50
+2025-11-04T06:16:04.753315252Z [inf]  2025-11-04 06:16:04,749 - src.strategies.self_learning_trader - INFO - ❌ TLMUSDT 拒絕開倉: 信心度不足: 22.5% < 40.0% | 勝率=51.7% 信心=22.5% R:R=1.50
+2025-11-04T06:16:04.832519527Z [inf]  2025-11-04 06:16:04,827 - src.strategies.self_learning_trader - INFO - 🎓 XVSUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:04.867558559Z [inf]  2025-11-04 06:16:04,859 - src.strategies.self_learning_trader - INFO - ❌ BLURUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=45.0% 信心=28.6% R:R=1.50
+2025-11-04T06:16:04.918585636Z [inf]  2025-11-04 06:16:04,913 - src.strategies.self_learning_trader - INFO - 🎓 SUIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:04.948946470Z [inf]  2025-11-04 06:16:04,943 - src.strategies.self_learning_trader - INFO - ❌ 1000PEPEUSDT 拒絕開倉: 信心度不足: 26.9% < 40.0% | 勝率=48.1% 信心=26.9% R:R=1.50
+2025-11-04T06:16:05.318684097Z [inf]  2025-11-04 06:16:05,076 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描150個）
+2025-11-04T06:16:05.318692983Z [inf]  2025-11-04 06:16:05,076 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=149, 拒絕=0
+2025-11-04T06:16:05.318699937Z [inf]  2025-11-04 06:16:05,076 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=137, 無=12
+2025-11-04T06:16:05.318707063Z [inf]  2025-11-04 06:16:05,103 - src.strategies.self_learning_trader - INFO - ❌ WLDUSDT 拒絕開倉: 信心度不足: 32.6% < 40.0% | 勝率=49.8% 信心=32.6% R:R=1.50
+2025-11-04T06:16:05.318721989Z [inf]  2025-11-04 06:16:04,970 - src.strategies.self_learning_trader - INFO - ❌ 1000FLOKIUSDT 拒絕開倉: 信心度不足: 33.3% < 40.0% | 勝率=45.0% 信心=33.3% R:R=1.50
+2025-11-04T06:16:05.318729564Z [inf]  2025-11-04 06:16:04,993 - src.strategies.self_learning_trader - INFO - ❌ UMAUSDT 拒絕開倉: 信心度不足: 36.9% < 40.0% | 勝率=56.1% 信心=36.9% R:R=1.50
+2025-11-04T06:16:05.318736657Z [inf]  2025-11-04 06:16:05,022 - src.strategies.self_learning_trader - INFO - ❌ NMRUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:05.318742919Z [inf]  2025-11-04 06:16:05,047 - src.strategies.self_learning_trader - INFO - ❌ MAVUSDT 拒絕開倉: 信心度不足: 32.0% < 40.0% | 勝率=54.6% 信心=32.0% R:R=1.50
+2025-11-04T06:16:05.318748768Z [inf]  2025-11-04 06:16:05,076 - src.strategies.self_learning_trader - INFO - ❌ XVGUSDT 拒絕開倉: 信心度不足: 35.6% < 40.0% | 勝率=55.7% 信心=35.6% R:R=1.50
+2025-11-04T06:16:05.318817537Z [inf]  2025-11-04 06:16:05,132 - src.strategies.self_learning_trader - INFO - 🎓 PENDLEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:05.318834952Z [inf]  2025-11-04 06:16:05,158 - src.strategies.self_learning_trader - INFO - ❌ ARKMUSDT 拒絕開倉: 信心度不足: 29.3% < 40.0% | 勝率=45.0% 信心=29.3% R:R=1.50
+2025-11-04T06:16:05.343280079Z [inf]  2025-11-04 06:16:05,186 - src.strategies.self_learning_trader - INFO - ❌ AGLDUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=48.4% 信心=28.0% R:R=1.50
+2025-11-04T06:16:05.343286296Z [inf]  2025-11-04 06:16:05,213 - src.strategies.self_learning_trader - INFO - ❌ YGGUSDT 拒絕開倉: 信心度不足: 27.8% < 40.0% | 勝率=48.3% 信心=27.8% R:R=1.50
+2025-11-04T06:16:05.343292377Z [inf]  2025-11-04 06:16:05,241 - src.strategies.self_learning_trader - INFO - 🎓 DODOXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:05.343298514Z [inf]  2025-11-04 06:16:05,267 - src.strategies.self_learning_trader - INFO - ❌ BNTUSDT 拒絕開倉: 信心度不足: 27.5% < 40.0% | 勝率=48.2% 信心=27.5% R:R=1.50
+2025-11-04T06:16:05.343305786Z [inf]  2025-11-04 06:16:05,291 - src.strategies.self_learning_trader - INFO - ❌ OXTUSDT 拒絕開倉: 信心度不足: 14.1% < 40.0% | 勝率=45.0% 信心=14.1% R:R=1.50
+2025-11-04T06:16:05.343312121Z [inf]  2025-11-04 06:16:05,315 - src.strategies.self_learning_trader - INFO - ❌ SEIUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:05.368567122Z [inf]  2025-11-04 06:16:05,364 - src.strategies.self_learning_trader - INFO - 🎓 CYBERUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:05.397767900Z [inf]  2025-11-04 06:16:05,395 - src.strategies.self_learning_trader - INFO - ❌ ARKUSDT 拒絕開倉: 信心度不足: 27.2% < 40.0% | 勝率=45.0% 信心=27.2% R:R=1.50
+2025-11-04T06:16:05.449917750Z [inf]  2025-11-04 06:16:05,444 - src.strategies.self_learning_trader - INFO - ❌ BIGTIMEUSDT 拒絕開倉: 信心度不足: 31.0% < 40.0% | 勝率=45.0% 信心=31.0% R:R=1.50
+2025-11-04T06:16:05.477257401Z [inf]  2025-11-04 06:16:05,472 - src.strategies.self_learning_trader - INFO - ❌ WAXPUSDT 拒絕開倉: 信心度不足: 21.9% < 40.0% | 勝率=51.6% 信心=21.9% R:R=1.50
+2025-11-04T06:16:05.504416132Z [inf]  2025-11-04 06:16:05,500 - src.strategies.self_learning_trader - INFO - 🎓 BSVUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:05.538571004Z [inf]  2025-11-04 06:16:05,531 - src.strategies.self_learning_trader - INFO - ❌ RIFUSDT 拒絕開倉: 信心度不足: 30.9% < 40.0% | 勝率=49.3% 信心=30.9% R:R=1.50
+2025-11-04T06:16:05.566643061Z [inf]  2025-11-04 06:16:05,559 - src.strategies.self_learning_trader - INFO - ❌ POLYXUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=50.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:05.590921753Z [inf]  2025-11-04 06:16:05,586 - src.strategies.self_learning_trader - INFO - ❌ GASUSDT 拒絕開倉: 信心度不足: 27.8% < 40.0% | 勝率=48.3% 信心=27.8% R:R=1.50
+2025-11-04T06:16:05.622076047Z [inf]  2025-11-04 06:16:05,617 - src.strategies.self_learning_trader - INFO - ❌ POWRUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:16:05.657423889Z [inf]  2025-11-04 06:16:05,652 - src.strategies.self_learning_trader - INFO - ❌ TIAUSDT 拒絕開倉: 信心度不足: 27.6% < 40.0% | 勝率=53.3% 信心=27.6% R:R=1.50
+2025-11-04T06:16:05.694941318Z [inf]  2025-11-04 06:16:05,690 - src.strategies.self_learning_trader - INFO - ❌ CAKEUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=48.2% 信心=27.4% R:R=1.50
+2025-11-04T06:16:05.745601010Z [inf]  2025-11-04 06:16:05,726 - src.strategies.self_learning_trader - INFO - 🎓 MEMEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:05.780901656Z [inf]  2025-11-04 06:16:05,776 - src.strategies.self_learning_trader - INFO - ❌ TWTUSDT 拒絕開倉: 信心度不足: 28.7% < 40.0% | 勝率=45.0% 信心=28.7% R:R=1.50
+2025-11-04T06:16:05.813394569Z [inf]  2025-11-04 06:16:05,811 - src.strategies.self_learning_trader - INFO - ❌ TOKENUSDT 拒絕開倉: 信心度不足: 29.3% < 40.0% | 勝率=53.8% 信心=29.3% R:R=1.50
+2025-11-04T06:16:05.854027913Z [inf]  2025-11-04 06:16:05,848 - src.strategies.self_learning_trader - INFO - ❌ ORDIUSDT 拒絕開倉: 信心度不足: 30.9% < 40.0% | 勝率=49.3% 信心=30.9% R:R=1.50
+2025-11-04T06:16:05.882888304Z [inf]  2025-11-04 06:16:05,880 - src.strategies.self_learning_trader - INFO - ❌ STEEMUSDT 拒絕開倉: 信心度不足: 33.0% < 40.0% | 勝率=54.9% 信心=33.0% R:R=1.50
+2025-11-04T06:16:05.916240444Z [inf]  2025-11-04 06:16:05,914 - src.strategies.self_learning_trader - INFO - ❌ ILVUSDT 拒絕開倉: 信心度不足: 26.6% < 40.0% | 勝率=48.0% 信心=26.6% R:R=1.50
+2025-11-04T06:16:06.316456337Z [inf]  2025-11-04 06:16:05,950 - src.strategies.self_learning_trader - INFO - ❌ NTRNUSDT 拒絕開倉: 信心度不足: 35.4% < 40.0% | 勝率=45.6% 信心=35.4% R:R=1.50
+2025-11-04T06:16:06.316460959Z [inf]  2025-11-04 06:16:05,982 - src.strategies.self_learning_trader - INFO - 🎓 KASUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.316466651Z [inf]  2025-11-04 06:16:06,011 - src.strategies.self_learning_trader - INFO - ❌ BEAMXUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=45.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:06.316471638Z [inf]  2025-11-04 06:16:06,042 - src.strategies.self_learning_trader - INFO - 🎓 1000BONKUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.316480675Z [inf]  2025-11-04 06:16:06,076 - src.strategies.self_learning_trader - INFO - ❌ PYTHUSDT 拒絕開倉: 信心度不足: 27.8% < 40.0% | 勝率=45.0% 信心=27.8% R:R=1.50
+2025-11-04T06:16:06.316485317Z [inf]  2025-11-04 06:16:06,107 - src.strategies.self_learning_trader - INFO - ❌ SUPERUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=45.0% 信心=28.0% R:R=1.50
+2025-11-04T06:16:06.316489746Z [inf]  2025-11-04 06:16:06,138 - src.strategies.self_learning_trader - INFO - ❌ USTCUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=54.1% 信心=30.4% R:R=1.50
+2025-11-04T06:16:06.316494468Z [inf]  2025-11-04 06:16:06,164 - src.strategies.self_learning_trader - INFO - 🎓 ONGUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.316498971Z [inf]  2025-11-04 06:16:06,190 - src.strategies.self_learning_trader - INFO - ❌ ETHWUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=47.8% 信心=26.2% R:R=1.50
+2025-11-04T06:16:06.316503187Z [inf]  2025-11-04 06:16:06,215 - src.strategies.self_learning_trader - INFO - ❌ JTOUSDT 拒絕開倉: 信心度不足: 32.0% < 40.0% | 勝率=49.6% 信心=32.0% R:R=1.50
+2025-11-04T06:16:06.318000283Z [inf]  2025-11-04 06:16:06,243 - src.strategies.self_learning_trader - INFO - 🎓 1000SATSUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.318023691Z [inf]  2025-11-04 06:16:06,272 - src.strategies.self_learning_trader - INFO - ❌ AUCTIONUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=48.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:06.318031060Z [inf]  2025-11-04 06:16:06,304 - src.strategies.self_learning_trader - INFO - ❌ 1000RATSUSDT 拒絕開倉: 信心度不足: 35.4% < 40.0% | 勝率=55.6% 信心=35.4% R:R=1.50
+2025-11-04T06:16:06.336727881Z [inf]  2025-11-04 06:16:06,334 - src.strategies.self_learning_trader - INFO - ❌ ACEUSDT 拒絕開倉: 信心度不足: 37.8% < 40.0% | 勝率=56.3% 信心=37.8% R:R=1.50
+2025-11-04T06:16:06.408462437Z [inf]  2025-11-04 06:16:06,383 - src.strategies.self_learning_trader - INFO - ❌ NFPUSDT 拒絕開倉: 信心度不足: 30.2% < 40.0% | 勝率=45.0% 信心=30.2% R:R=1.50
+2025-11-04T06:16:06.408468953Z [inf]  2025-11-04 06:16:06,383 - src.core.unified_scheduler - INFO - ⏱️  進度: 192/530 | 已分析=192 | 平均分析=29.2ms | 平均數據=0.4ms
+2025-11-04T06:16:06.408474923Z [inf]  2025-11-04 06:16:06,395 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.01秒 | 平均0.2ms/symbol
+2025-11-04T06:16:06.408481181Z [inf]  2025-11-04 06:16:06,395 - src.core.unified_scheduler - INFO - ⏱️  批次 4: 64个symbols数据获取完成，耗时0.01秒
+2025-11-04T06:16:06.426682013Z [inf]  2025-11-04 06:16:06,421 - src.strategies.self_learning_trader - INFO - ❌ AIUSDT 拒絕開倉: 信心度不足: 29.3% < 40.0% | 勝率=45.0% 信心=29.3% R:R=1.50
+2025-11-04T06:16:06.452185164Z [inf]  2025-11-04 06:16:06,450 - src.strategies.self_learning_trader - INFO - ❌ XAIUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=53.7% 信心=29.0% R:R=1.50
+2025-11-04T06:16:06.498040475Z [inf]  2025-11-04 06:16:06,479 - src.strategies.self_learning_trader - INFO - ❌ WIFUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=53.7% 信心=29.0% R:R=1.50
+2025-11-04T06:16:06.511930150Z [inf]  2025-11-04 06:16:06,506 - src.strategies.self_learning_trader - INFO - 🎓 MANTAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.538458197Z [inf]  2025-11-04 06:16:06,531 - src.strategies.self_learning_trader - INFO - ❌ ONDOUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=45.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:06.567375979Z [inf]  2025-11-04 06:16:06,555 - src.strategies.self_learning_trader - INFO - 🎓 LSKUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.578508607Z [inf]  2025-11-04 06:16:06,575 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描200個）
+2025-11-04T06:16:06.578515706Z [inf]  2025-11-04 06:16:06,575 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=199, 拒絕=0
+2025-11-04T06:16:06.578520666Z [inf]  2025-11-04 06:16:06,575 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=184, 無=15
+2025-11-04T06:16:06.605781065Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:06.605788624Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描200個交易對）
+2025-11-04T06:16:06.605794386Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:06.605799935Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 200
+2025-11-04T06:16:06.605804293Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=200, 拒絕=0
+2025-11-04T06:16:06.605808834Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-04T06:16:06.605869168Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=200
+2025-11-04T06:16:06.605876586Z [inf]  2025-11-04 06:16:06,601 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-04T06:16:06.605886660Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          有方向=185, 無方向=15
+2025-11-04T06:16:06.605891966Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=41
+2025-11-04T06:16:06.605897373Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=123
+2025-11-04T06:16:06.605903633Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=12
+2025-11-04T06:16:06.605910280Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=6
+2025-11-04T06:16:06.607766742Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=3
+2025-11-04T06:16:06.607775897Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-04T06:16:06.607785755Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-04T06:16:06.607790393Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-04T06:16:06.607794844Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-04T06:16:06.607799808Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=185
+2025-11-04T06:16:06.607804139Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-04T06:16:06.607811015Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-04T06:16:06.607815962Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:16:06.607821454Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:16:06.607825981Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:16:06.607830802Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 185
+2025-11-04T06:16:06.607837133Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:16:06.607844390Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:16:06.610515847Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 185
+2025-11-04T06:16:06.610527432Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 185
+2025-11-04T06:16:06.610534462Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:16:06.610541511Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:16:06.610547611Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:16:06.610558619Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:16:06.610563856Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:16:06.610568449Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:16:06.610572986Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:16:06.610582122Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:16:06.610586177Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:16:06.610592580Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:16:06.610597467Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:16:06.610602311Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:16:06.612041315Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/200)
+2025-11-04T06:16:06.612049238Z [inf]  2025-11-04 06:16:06,602 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:06.612055421Z [inf]  2025-11-04 06:16:06,602 - src.strategies.self_learning_trader - INFO - ❌ JUPUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=48.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:06.631538133Z [inf]  2025-11-04 06:16:06,630 - src.strategies.self_learning_trader - INFO - ❌ ZETAUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=47.9% 信心=26.2% R:R=1.50
+2025-11-04T06:16:06.658148618Z [inf]  2025-11-04 06:16:06,655 - src.strategies.self_learning_trader - INFO - ❌ RONINUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=48.2% 信心=27.4% R:R=1.50
+2025-11-04T06:16:06.691620218Z [inf]  2025-11-04 06:16:06,681 - src.strategies.self_learning_trader - INFO - 🎓 DYMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.714828562Z [inf]  2025-11-04 06:16:06,712 - src.strategies.self_learning_trader - INFO - 🎓 OMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:06.743957302Z [inf]  2025-11-04 06:16:06,739 - src.strategies.self_learning_trader - INFO - ❌ PIXELUSDT 拒絕開倉: 信心度不足: 27.6% < 40.0% | 勝率=45.0% 信心=27.6% R:R=1.50
+2025-11-04T06:16:06.768912971Z [inf]  2025-11-04 06:16:06,766 - src.strategies.self_learning_trader - INFO - ❌ STRKUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=55.9% 信心=36.2% R:R=1.50
+2025-11-04T06:16:06.822320663Z [inf]  2025-11-04 06:16:06,815 - src.strategies.self_learning_trader - INFO - ❌ PORTALUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:06.844887181Z [inf]  2025-11-04 06:16:06,843 - src.strategies.self_learning_trader - INFO - ❌ TONUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=49.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:06.875589841Z [inf]  2025-11-04 06:16:06,869 - src.strategies.self_learning_trader - INFO - ❌ AXLUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=45.0% 信心=29.0% R:R=1.50
+2025-11-04T06:16:06.899232419Z [inf]  2025-11-04 06:16:06,894 - src.strategies.self_learning_trader - INFO - ❌ MYROUSDT 拒絕開倉: 信心度不足: 26.5% < 40.0% | 勝率=45.0% 信心=26.5% R:R=1.50
+2025-11-04T06:16:06.924397576Z [inf]  2025-11-04 06:16:06,919 - src.strategies.self_learning_trader - INFO - ❌ METISUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:16:07.289426756Z [inf]  2025-11-04 06:16:06,955 - src.strategies.self_learning_trader - INFO - ❌ AEVOUSDT 拒絕開倉: 信心度不足: 24.1% < 40.0% | 勝率=47.2% 信心=24.1% R:R=1.50
+2025-11-04T06:16:07.289434637Z [inf]  2025-11-04 06:16:06,980 - src.strategies.self_learning_trader - INFO - ❌ VANRYUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:07.289442974Z [inf]  2025-11-04 06:16:07,006 - src.strategies.self_learning_trader - INFO - ❌ BOMEUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:07.289449815Z [inf]  2025-11-04 06:16:07,036 - src.strategies.self_learning_trader - INFO - ❌ ETHFIUSDT 拒絕開倉: 信心度不足: 31.4% < 40.0% | 勝率=45.0% 信心=31.4% R:R=1.50
+2025-11-04T06:16:07.289455267Z [inf]  2025-11-04 06:16:07,071 - src.strategies.self_learning_trader - INFO - 🎓 ENAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.289460471Z [inf]  2025-11-04 06:16:07,106 - src.strategies.self_learning_trader - INFO - 🎓 WUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.289465519Z [inf]  2025-11-04 06:16:07,139 - src.strategies.self_learning_trader - INFO - ❌ TNSRUSDT 拒絕開倉: 信心度不足: 30.5% < 40.0% | 勝率=54.1% 信心=30.5% R:R=1.50
+2025-11-04T06:16:07.289472064Z [inf]  2025-11-04 06:16:07,173 - src.strategies.self_learning_trader - INFO - ❌ SAGAUSDT 拒絕開倉: 信心度不足: 33.1% < 40.0% | 勝率=54.9% 信心=33.1% R:R=1.50
+2025-11-04T06:16:07.289476053Z [inf]  2025-11-04 06:16:07,210 - src.strategies.self_learning_trader - INFO - ❌ TAOUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=54.1% 信心=30.4% R:R=1.50
+2025-11-04T06:16:07.289480442Z [inf]  2025-11-04 06:16:07,246 - src.strategies.self_learning_trader - INFO - 🎓 REZUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.291510925Z [inf]  2025-11-04 06:16:07,270 - src.strategies.self_learning_trader - INFO - ❌ BBUSDT 拒絕開倉: 信心度不足: 39.0% < 40.0% | 勝率=51.7% 信心=39.0% R:R=1.50
+2025-11-04T06:16:07.300226715Z [inf]  2025-11-04 06:16:07,297 - src.strategies.self_learning_trader - INFO - ❌ NOTUSDT 拒絕開倉: 信心度不足: 29.6% < 40.0% | 勝率=53.9% 信心=29.6% R:R=1.50
+2025-11-04T06:16:07.331465650Z [inf]  2025-11-04 06:16:07,325 - src.strategies.self_learning_trader - INFO - ❌ TURBOUSDT 拒絕開倉: 信心度不足: 29.3% < 40.0% | 勝率=53.8% 信心=29.3% R:R=1.50
+2025-11-04T06:16:07.370354465Z [inf]  2025-11-04 06:16:07,360 - src.strategies.self_learning_trader - INFO - ❌ IOUSDT 拒絕開倉: 信心度不足: 33.3% < 40.0% | 勝率=55.0% 信心=33.3% R:R=1.50
+2025-11-04T06:16:07.434501507Z [inf]  2025-11-04 06:16:07,425 - src.strategies.self_learning_trader - INFO - ❌ MEWUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=45.0% 信心=28.6% R:R=1.50
+2025-11-04T06:16:07.469790470Z [inf]  2025-11-04 06:16:07,459 - src.strategies.self_learning_trader - INFO - 🎓 LISTAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.499259082Z [inf]  2025-11-04 06:16:07,495 - src.strategies.self_learning_trader - INFO - ❌ ZROUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=45.0% 信心=28.0% R:R=1.50
+2025-11-04T06:16:07.535250864Z [inf]  2025-11-04 06:16:07,524 - src.strategies.self_learning_trader - INFO - 🎓 RENDERUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.561634555Z [inf]  2025-11-04 06:16:07,552 - src.strategies.self_learning_trader - INFO - ❌ BANANAUSDT 拒絕開倉: 信心度不足: 28.7% < 40.0% | 勝率=45.0% 信心=28.7% R:R=1.50
+2025-11-04T06:16:07.587821362Z [inf]  2025-11-04 06:16:07,580 - src.strategies.self_learning_trader - INFO - 🎓 RAREUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.615383216Z [inf]  2025-11-04 06:16:07,608 - src.strategies.self_learning_trader - INFO - ❌ GUSDT 拒絕開倉: 信心度不足: 28.1% < 40.0% | 勝率=48.4% 信心=28.1% R:R=1.50
+2025-11-04T06:16:07.643264351Z [inf]  2025-11-04 06:16:07,633 - src.strategies.self_learning_trader - INFO - ❌ SYNUSDT 拒絕開倉: 信心度不足: 34.8% < 40.0% | 勝率=55.4% 信心=34.8% R:R=1.50
+2025-11-04T06:16:07.696184470Z [inf]  2025-11-04 06:16:07,687 - src.strategies.self_learning_trader - INFO - ❌ VOXELUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=50.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:07.722135386Z [inf]  2025-11-04 06:16:07,715 - src.strategies.self_learning_trader - INFO - 🎓 BRETTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.754271069Z [inf]  2025-11-04 06:16:07,747 - src.strategies.self_learning_trader - INFO - ❌ POPCATUSDT 拒絕開倉: 信心度不足: 26.8% < 40.0% | 勝率=48.0% 信心=26.8% R:R=1.50
+2025-11-04T06:16:07.799304062Z [inf]  2025-11-04 06:16:07,780 - src.strategies.self_learning_trader - INFO - 🎓 SUNUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:07.814203668Z [inf]  2025-11-04 06:16:07,810 - src.strategies.self_learning_trader - INFO - ❌ DOGSUSDT 拒絕開倉: 信心度不足: 36.1% < 40.0% | 勝率=55.8% 信心=36.1% R:R=1.50
+2025-11-04T06:16:07.845581635Z [inf]  2025-11-04 06:16:07,842 - src.strategies.self_learning_trader - INFO - ❌ MBOXUSDT 拒絕開倉: 信心度不足: 29.6% < 40.0% | 勝率=53.9% 信心=29.6% R:R=1.50
+2025-11-04T06:16:07.909327723Z [inf]  2025-11-04 06:16:07,897 - src.strategies.self_learning_trader - INFO - ❌ FLUXUSDT 拒絕開倉: 信心度不足: 29.5% < 40.0% | 勝率=53.8% 信心=29.5% R:R=1.50
+2025-11-04T06:16:07.939017219Z [inf]  2025-11-04 06:16:07,925 - src.strategies.self_learning_trader - INFO - ❌ QUICKUSDT 拒絕開倉: 信心度不足: 25.6% < 40.0% | 勝率=45.0% 信心=25.6% R:R=1.50
+2025-11-04T06:16:07.953789292Z [inf]  2025-11-04 06:16:07,949 - src.strategies.self_learning_trader - INFO - ❌ RPLUSDT 拒絕開倉: 信心度不足: 31.4% < 40.0% | 勝率=49.4% 信心=31.4% R:R=1.50
+2025-11-04T06:16:08.339801988Z [inf]  2025-11-04 06:16:08,149 - src.strategies.self_learning_trader - INFO - ❌ CATIUSDT 拒絕開倉: 信心度不足: 24.1% < 40.0% | 勝率=47.2% 信心=24.1% R:R=1.50
+2025-11-04T06:16:08.339813379Z [inf]  2025-11-04 06:16:08,193 - src.strategies.self_learning_trader - INFO - ❌ HMSTRUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=54.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:08.339825535Z [inf]  2025-11-04 06:16:07,977 - src.strategies.self_learning_trader - INFO - 🎓 POLUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:08.339830900Z [inf]  2025-11-04 06:16:08,005 - src.strategies.self_learning_trader - INFO - ❌ 1MBABYDOGEUSDT 拒絕開倉: 信心度不足: 27.4% < 40.0% | 勝率=48.2% 信心=27.4% R:R=1.50
+2025-11-04T06:16:08.339837852Z [inf]  2025-11-04 06:16:08,034 - src.strategies.self_learning_trader - INFO - ❌ NEIROUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:08.339843050Z [inf]  2025-11-04 06:16:08,034 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描250個）
+2025-11-04T06:16:08.339847942Z [inf]  2025-11-04 06:16:08,034 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=249, 拒絕=0
+2025-11-04T06:16:08.339853626Z [inf]  2025-11-04 06:16:08,034 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=230, 無=19
+2025-11-04T06:16:08.339858814Z [inf]  2025-11-04 06:16:08,062 - src.strategies.self_learning_trader - INFO - ❌ KDAUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=54.1% 信心=30.4% R:R=1.50
+2025-11-04T06:16:08.339864415Z [inf]  2025-11-04 06:16:08,088 - src.strategies.self_learning_trader - INFO - ❌ FIDAUSDT 拒絕開倉: 信心度不足: 31.0% < 40.0% | 勝率=54.3% 信心=31.0% R:R=1.50
+2025-11-04T06:16:08.339869841Z [inf]  2025-11-04 06:16:08,113 - src.strategies.self_learning_trader - INFO - ❌ FIOUSDT 拒絕開倉: 信心度不足: 35.4% < 40.0% | 勝率=55.6% 信心=35.4% R:R=1.50
+2025-11-04T06:16:08.340856137Z [inf]  2025-11-04 06:16:08,220 - src.strategies.self_learning_trader - INFO - ❌ REIUSDT 拒絕開倉: 信心度不足: 28.0% < 40.0% | 勝率=53.4% 信心=28.0% R:R=1.50
+2025-11-04T06:16:08.340862168Z [inf]  2025-11-04 06:16:08,220 - src.core.unified_scheduler - INFO - ⏱️  進度: 256/530 | 已分析=256 | 平均分析=29.0ms | 平均數據=0.3ms
+2025-11-04T06:16:09.781391947Z [inf]  2025-11-04 06:16:09,778 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时1.56秒 | 平均24.3ms/symbol
+2025-11-04T06:16:09.781400001Z [inf]  2025-11-04 06:16:09,779 - src.core.unified_scheduler - INFO - ⏱️  批次 5: 64个symbols数据获取完成，耗时1.56秒
+2025-11-04T06:16:09.827533734Z [inf]  2025-11-04 06:16:09,822 - src.strategies.self_learning_trader - INFO - 🎓 EIGENUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:09.892445064Z [inf]  2025-11-04 06:16:09,865 - src.strategies.self_learning_trader - INFO - ❌ 1000CATUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=46.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:09.892458629Z [inf]  2025-11-04 06:16:09,888 - src.strategies.self_learning_trader - INFO - ❌ SCRUSDT 拒絕開倉: 信心度不足: 26.1% < 40.0% | 勝率=47.8% 信心=26.1% R:R=1.50
+2025-11-04T06:16:09.915293889Z [inf]  2025-11-04 06:16:09,913 - src.strategies.self_learning_trader - INFO - 🎓 GOATUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:09.944380908Z [inf]  2025-11-04 06:16:09,940 - src.strategies.self_learning_trader - INFO - ❌ MOODENGUSDT 拒絕開倉: 信心度不足: 36.9% < 40.0% | 勝率=46.1% 信心=36.9% R:R=1.50
+2025-11-04T06:16:10.316442462Z [inf]  2025-11-04 06:16:09,964 - src.strategies.self_learning_trader - INFO - ❌ SAFEUSDT 拒絕開倉: 信心度不足: 36.6% < 40.0% | 勝率=56.0% 信心=36.6% R:R=1.50
+2025-11-04T06:16:10.316448713Z [inf]  2025-11-04 06:16:09,988 - src.strategies.self_learning_trader - INFO - ❌ SANTOSUSDT 拒絕開倉: 信心度不足: 38.0% < 40.0% | 勝率=45.0% 信心=38.0% R:R=1.50
+2025-11-04T06:16:10.316453572Z [inf]  2025-11-04 06:16:10,032 - src.strategies.self_learning_trader - INFO - 🎓 PONKEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.316458127Z [inf]  2025-11-04 06:16:10,058 - src.strategies.self_learning_trader - INFO - ❌ COWUSDT 拒絕開倉: 信心度不足: 37.2% < 40.0% | 勝率=51.2% 信心=37.2% R:R=1.50
+2025-11-04T06:16:10.316463288Z [inf]  2025-11-04 06:16:10,084 - src.strategies.self_learning_trader - INFO - 🎓 CETUSUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.316468056Z [inf]  2025-11-04 06:16:10,110 - src.strategies.self_learning_trader - INFO - ❌ 1000000MOGUSDT 拒絕開倉: 信心度不足: 35.1% < 40.0% | 勝率=45.0% 信心=35.1% R:R=1.50
+2025-11-04T06:16:10.316472682Z [inf]  2025-11-04 06:16:10,135 - src.strategies.self_learning_trader - INFO - ❌ GRASSUSDT 拒絕開倉: 信心度不足: 36.0% < 40.0% | 勝率=55.8% 信心=36.0% R:R=1.50
+2025-11-04T06:16:10.316477621Z [inf]  2025-11-04 06:16:10,159 - src.strategies.self_learning_trader - INFO - ❌ DRIFTUSDT 拒絕開倉: 信心度不足: 37.8% < 40.0% | 勝率=56.3% 信心=37.8% R:R=1.50
+2025-11-04T06:16:10.316482118Z [inf]  2025-11-04 06:16:10,208 - src.strategies.self_learning_trader - INFO - ❌ ACTUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=55.9% 信心=36.2% R:R=1.50
+2025-11-04T06:16:10.316487746Z [inf]  2025-11-04 06:16:10,273 - src.strategies.self_learning_trader - INFO - ❌ 1000XUSDT 拒絕開倉: 信心度不足: 37.2% < 40.0% | 勝率=56.2% 信心=37.2% R:R=1.50
+2025-11-04T06:16:10.320607164Z [inf]  2025-11-04 06:16:10,299 - src.strategies.self_learning_trader - INFO - ❌ DEGENUSDT 拒絕開倉: 信心度不足: 32.0% < 40.0% | 勝率=45.0% 信心=32.0% R:R=1.50
+2025-11-04T06:16:10.335710776Z [inf]  2025-11-04 06:16:10,331 - src.strategies.self_learning_trader - INFO - 🎓 BANUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.365606189Z [inf]  2025-11-04 06:16:10,358 - src.strategies.self_learning_trader - INFO - ❌ AKTUSDT 拒絕開倉: 信心度不足: 39.8% < 40.0% | 勝率=56.9% 信心=39.8% R:R=1.50
+2025-11-04T06:16:10.388560801Z [inf]  2025-11-04 06:16:10,383 - src.strategies.self_learning_trader - INFO - ❌ SCRTUSDT 拒絕開倉: 信心度不足: 36.6% < 40.0% | 勝率=56.0% 信心=36.6% R:R=1.50
+2025-11-04T06:16:10.410585004Z [inf]  2025-11-04 06:16:10,408 - src.strategies.self_learning_trader - INFO - ❌ 1000CHEEMSUSDT 拒絕開倉: 信心度不足: 38.1% < 40.0% | 勝率=51.4% 信心=38.1% R:R=1.50
+2025-11-04T06:16:10.437277042Z [inf]  2025-11-04 06:16:10,435 - src.strategies.self_learning_trader - INFO - ❌ 1000WHYUSDT 拒絕開倉: 信心度不足: 17.7% < 40.0% | 勝率=50.3% 信心=17.7% R:R=1.50
+2025-11-04T06:16:10.467385406Z [inf]  2025-11-04 06:16:10,460 - src.strategies.self_learning_trader - INFO - ❌ THEUSDT 拒絕開倉: 信心度不足: 35.7% < 40.0% | 勝率=45.0% 信心=35.7% R:R=1.50
+2025-11-04T06:16:10.495285542Z [inf]  2025-11-04 06:16:10,489 - src.strategies.self_learning_trader - INFO - ❌ MORPHOUSDT 拒絕開倉: 信心度不足: 31.5% < 40.0% | 勝率=49.5% 信心=31.5% R:R=1.50
+2025-11-04T06:16:10.548191363Z [inf]  2025-11-04 06:16:10,543 - src.strategies.self_learning_trader - INFO - 🎓 KAIAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.571285596Z [inf]  2025-11-04 06:16:10,568 - src.strategies.self_learning_trader - INFO - 🎓 AEROUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.599868837Z [inf]  2025-11-04 06:16:10,598 - src.strategies.self_learning_trader - INFO - 🎓 ACXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.625736710Z [inf]  2025-11-04 06:16:10,622 - src.strategies.self_learning_trader - INFO - ❌ ORCAUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=56.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:10.655805507Z [inf]  2025-11-04 06:16:10,647 - src.strategies.self_learning_trader - INFO - ❌ MOVEUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=49.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:10.674819305Z [inf]  2025-11-04 06:16:10,671 - src.strategies.self_learning_trader - INFO - 🎓 RAYSOLUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.703668129Z [inf]  2025-11-04 06:16:10,699 - src.strategies.self_learning_trader - INFO - ❌ KOMAUSDT 拒絕開倉: 信心度不足: 28.4% < 40.0% | 勝率=48.5% 信心=28.4% R:R=1.50
+2025-11-04T06:16:10.729501782Z [inf]  2025-11-04 06:16:10,725 - src.strategies.self_learning_trader - INFO - ❌ VIRTUALUSDT 拒絕開倉: 信心度不足: 35.6% < 40.0% | 勝率=45.7% 信心=35.6% R:R=1.50
+2025-11-04T06:16:10.767059014Z [inf]  2025-11-04 06:16:10,753 - src.strategies.self_learning_trader - INFO - 🎓 SPXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.815536203Z [inf]  2025-11-04 06:16:10,812 - src.strategies.self_learning_trader - INFO - 🎓 DEGOUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.852535053Z [inf]  2025-11-04 06:16:10,837 - src.strategies.self_learning_trader - INFO - ❌ VELODROMEUSDT 拒絕開倉: 信心度不足: 30.6% < 40.0% | 勝率=49.2% 信心=30.6% R:R=1.50
+2025-11-04T06:16:10.866174808Z [inf]  2025-11-04 06:16:10,860 - src.strategies.self_learning_trader - INFO - 🎓 MOCAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:10.866184616Z [inf]  2025-11-04 06:16:10,861 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描300個）
+2025-11-04T06:16:10.866191478Z [inf]  2025-11-04 06:16:10,861 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=299, 拒絕=0
+2025-11-04T06:16:10.866198156Z [inf]  2025-11-04 06:16:10,861 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=271, 無=28
+2025-11-04T06:16:10.888236427Z [inf]  2025-11-04 06:16:10,885 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:10.888245670Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描300個交易對）
+2025-11-04T06:16:10.888254228Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:10.888261047Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 300
+2025-11-04T06:16:10.888266171Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=300, 拒絕=0
+2025-11-04T06:16:10.888271882Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-04T06:16:10.888277319Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=300
+2025-11-04T06:16:10.888282776Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-04T06:16:10.888288280Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          有方向=272, 無方向=28
+2025-11-04T06:16:10.888293959Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=61
+2025-11-04T06:16:10.888300945Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=180
+2025-11-04T06:16:10.888306456Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=12
+2025-11-04T06:16:10.888312089Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=13
+2025-11-04T06:16:10.890825716Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=6
+2025-11-04T06:16:10.890835552Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-04T06:16:10.890845348Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-04T06:16:10.890851840Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-04T06:16:10.890858926Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-04T06:16:10.890865548Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=272
+2025-11-04T06:16:10.890871385Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-04T06:16:10.890877248Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-04T06:16:10.890883927Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:16:10.890892031Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:16:10.890897731Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:16:10.890903952Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 272
+2025-11-04T06:16:10.890909902Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:16:10.890917508Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:16:10.898002566Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 272
+2025-11-04T06:16:10.898063928Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 272
+2025-11-04T06:16:10.898072428Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:16:10.898082088Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:16:10.898090486Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:16:10.898098180Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:16:10.898105604Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:16:10.898112687Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:16:10.898119100Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:16:10.898127145Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:16:10.898135680Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:16:10.898145196Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:16:10.898152686Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:16:10.898159485Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:16:10.899860743Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/300)
+2025-11-04T06:16:10.899878087Z [inf]  2025-11-04 06:16:10,886 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:10.899885069Z [inf]  2025-11-04 06:16:10,887 - src.strategies.self_learning_trader - INFO - ❌ VANAUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=45.0% 信心=29.8% R:R=1.50
+2025-11-04T06:16:10.917357383Z [inf]  2025-11-04 06:16:10,912 - src.strategies.self_learning_trader - INFO - ❌ PENGUUSDT 拒絕開倉: 信心度不足: 35.1% < 40.0% | 勝率=50.5% 信心=35.1% R:R=1.50
+2025-11-04T06:16:11.438930963Z [inf]  2025-11-04 06:16:10,974 - src.strategies.self_learning_trader - INFO - 🎓 AIXBTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:11.438937744Z [inf]  2025-11-04 06:16:10,998 - src.strategies.self_learning_trader - INFO - ❌ FARTCOINUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=50.9% 信心=36.2% R:R=1.50
+2025-11-04T06:16:11.438945526Z [inf]  2025-11-04 06:16:11,040 - src.strategies.self_learning_trader - INFO - ❌ CGPTUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=45.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:11.438952732Z [inf]  2025-11-04 06:16:11,067 - src.strategies.self_learning_trader - INFO - ❌ HIVEUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=56.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:11.438961233Z [inf]  2025-11-04 06:16:11,110 - src.strategies.self_learning_trader - INFO - ❌ PHAUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=55.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:11.438969327Z [inf]  2025-11-04 06:16:11,152 - src.strategies.self_learning_trader - INFO - 🎓 GRIFFAINUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:11.438983686Z [inf]  2025-11-04 06:16:11,175 - src.strategies.self_learning_trader - INFO - 🎓 AI16ZUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:11.438992441Z [inf]  2025-11-04 06:16:11,211 - src.strategies.self_learning_trader - INFO - ❌ ZEREBROUSDT 拒絕開倉: 信心度不足: 32.6% < 40.0% | 勝率=51.8% 信心=32.6% R:R=1.50
+2025-11-04T06:16:11.439001266Z [inf]  2025-11-04 06:16:11,234 - src.strategies.self_learning_trader - INFO - ❌ BIOUSDT 拒絕開倉: 信心度不足: 39.0% < 40.0% | 勝率=56.7% 信心=39.0% R:R=1.50
+2025-11-04T06:16:11.439009563Z [inf]  2025-11-04 06:16:11,259 - src.strategies.self_learning_trader - INFO - 🎓 COOKIEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:11.446704798Z [inf]  2025-11-04 06:16:11,317 - src.strategies.self_learning_trader - INFO - 🎓 SONICUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:11.446712684Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描31400個，0信號）：
+2025-11-04T06:16:11.446720102Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=428, bearish=25860, neutral=5112
+2025-11-04T06:16:11.446726285Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=16297, bearish=5256, neutral=9847
+2025-11-04T06:16:11.446735300Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=16801, bearish=3242, neutral=11357
+2025-11-04T06:16:11.446743290Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=26022, bearish=1042, neutral=4336
+2025-11-04T06:16:11.446753432Z [inf]  2025-11-04 06:16:11,335 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-04T06:16:11.446760560Z [inf]  2025-11-04 06:16:11,335 - src.core.unified_scheduler - INFO - ⏱️  進度: 320/530 | 已分析=320 | 平均分析=28.1ms | 平均數據=5.1ms
+2025-11-04T06:16:12.465037333Z [inf]  2025-11-04 06:16:12,323 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.99秒 | 平均15.4ms/symbol
+2025-11-04T06:16:12.465047746Z [inf]  2025-11-04 06:16:12,323 - src.core.unified_scheduler - INFO - ⏱️  批次 6: 64个symbols数据获取完成，耗时0.99秒
+2025-11-04T06:16:12.465049570Z [inf]  2025-11-04 06:16:12,452 - src.strategies.self_learning_trader - INFO - ❌ TRUMPUSDT 拒絕開倉: 信心度不足: 35.4% < 40.0% | 勝率=55.6% 信心=35.4% R:R=1.50
+2025-11-04T06:16:12.465054186Z [inf]  2025-11-04 06:16:12,371 - src.strategies.self_learning_trader - INFO - 🎓 SUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.465059577Z [inf]  2025-11-04 06:16:12,413 - src.strategies.self_learning_trader - INFO - ❌ ARCUSDT 拒絕開倉: 信心度不足: 30.1% < 40.0% | 勝率=54.0% 信心=30.1% R:R=1.50
+2025-11-04T06:16:12.477800347Z [inf]  2025-11-04 06:16:12,473 - src.strategies.self_learning_trader - INFO - ❌ MELANIAUSDT 拒絕開倉: 信心度不足: 31.4% < 40.0% | 勝率=49.4% 信心=31.4% R:R=1.50
+2025-11-04T06:16:12.502200817Z [inf]  2025-11-04 06:16:12,499 - src.strategies.self_learning_trader - INFO - ❌ VTHOUSDT 拒絕開倉: 信心度不足: 39.2% < 40.0% | 勝率=46.8% 信心=39.2% R:R=1.50
+2025-11-04T06:16:12.532356233Z [inf]  2025-11-04 06:16:12,526 - src.strategies.self_learning_trader - INFO - ❌ ANIMEUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=46.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:12.588614720Z [inf]  2025-11-04 06:16:12,586 - src.strategies.self_learning_trader - INFO - ❌ VVVUSDT 拒絕開倉: 信心度不足: 37.7% < 40.0% | 勝率=51.3% 信心=37.7% R:R=1.50
+2025-11-04T06:16:12.616572516Z [inf]  2025-11-04 06:16:12,613 - src.strategies.self_learning_trader - INFO - 🎓 BERAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.646972623Z [inf]  2025-11-04 06:16:12,638 - src.strategies.self_learning_trader - INFO - ❌ TSTUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:12.665186643Z [inf]  2025-11-04 06:16:12,662 - src.strategies.self_learning_trader - INFO - ❌ LAYERUSDT 拒絕開倉: 信心度不足: 39.2% < 40.0% | 勝率=46.8% 信心=39.2% R:R=1.50
+2025-11-04T06:16:12.690526134Z [inf]  2025-11-04 06:16:12,687 - src.strategies.self_learning_trader - INFO - 🎓 HEIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.737185585Z [inf]  2025-11-04 06:16:12,724 - src.strategies.self_learning_trader - INFO - ❌ B3USDT 拒絕開倉: 信心度不足: 36.1% < 40.0% | 勝率=50.8% 信心=36.1% R:R=1.50
+2025-11-04T06:16:12.757673352Z [inf]  2025-11-04 06:16:12,756 - src.strategies.self_learning_trader - INFO - ❌ IPUSDT 拒絕開倉: 信心度不足: 38.0% < 40.0% | 勝率=46.4% 信心=38.0% R:R=1.50
+2025-11-04T06:16:12.790414579Z [inf]  2025-11-04 06:16:12,788 - src.strategies.self_learning_trader - INFO - ❌ GPSUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=45.0% 信心=35.0% R:R=1.50
+2025-11-04T06:16:12.841243399Z [inf]  2025-11-04 06:16:12,819 - src.strategies.self_learning_trader - INFO - 🎓 SHELLUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.853431215Z [inf]  2025-11-04 06:16:12,851 - src.strategies.self_learning_trader - INFO - ❌ KAITOUSDT 拒絕開倉: 信心度不足: 39.8% < 40.0% | 勝率=46.9% 信心=39.8% R:R=1.50
+2025-11-04T06:16:12.900031729Z [inf]  2025-11-04 06:16:12,893 - src.strategies.self_learning_trader - INFO - 🎓 VICUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.927906142Z [inf]  2025-11-04 06:16:12,923 - src.strategies.self_learning_trader - INFO - 🎓 EPICUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.952968619Z [inf]  2025-11-04 06:16:12,950 - src.strategies.self_learning_trader - INFO - 🎓 BMTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:12.980921449Z [inf]  2025-11-04 06:16:12,974 - src.strategies.self_learning_trader - INFO - ❌ MUBARAKUSDT 拒絕開倉: 信心度不足: 22.2% < 40.0% | 勝率=45.0% 信心=22.2% R:R=1.50
+2025-11-04T06:16:12.997186002Z [inf]  2025-11-04 06:16:12,995 - src.strategies.self_learning_trader - INFO - 🎓 FORMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535122288Z [inf]  2025-11-04 06:16:13,512 - src.strategies.self_learning_trader - INFO - 🎓 FORTHUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535178981Z [inf]  2025-11-04 06:16:13,272 - src.strategies.self_learning_trader - INFO - ❌ JELLYJELLYUSDT 拒絕開倉: 信心度不足: 10.8% < 40.0% | 勝率=45.0% 信心=10.8% R:R=1.50
+2025-11-04T06:16:13.535186681Z [inf]  2025-11-04 06:16:13,299 - src.strategies.self_learning_trader - INFO - ❌ MAVIAUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=49.5% 信心=31.8% R:R=1.50
+2025-11-04T06:16:13.535217951Z [inf]  2025-11-04 06:16:13,034 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描350個）
+2025-11-04T06:16:13.535225658Z [inf]  2025-11-04 06:16:13,328 - src.strategies.self_learning_trader - INFO - ❌ PAXGUSDT 拒絕開倉: 信心度不足: 32.5% < 40.0% | 勝率=54.7% 信心=32.5% R:R=1.50
+2025-11-04T06:16:13.535226487Z [inf]  2025-11-04 06:16:13,035 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=349, 拒絕=0
+2025-11-04T06:16:13.535233670Z [inf]  2025-11-04 06:16:13,035 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=305, 無=44
+2025-11-04T06:16:13.535238851Z [inf]  2025-11-04 06:16:13,058 - src.strategies.self_learning_trader - INFO - ❌ BROCCOLI714USDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=45.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:13.535245328Z [inf]  2025-11-04 06:16:13,083 - src.strategies.self_learning_trader - INFO - 🎓 BROCCOLIF3BUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535252052Z [inf]  2025-11-04 06:16:13,359 - src.strategies.self_learning_trader - INFO - 🎓 WALUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535254824Z [inf]  2025-11-04 06:16:13,106 - src.strategies.self_learning_trader - INFO - 🎓 SIRENUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535260239Z [inf]  2025-11-04 06:16:13,132 - src.strategies.self_learning_trader - INFO - ❌ BANANAS31USDT 拒絕開倉: 信心度不足: 22.3% < 40.0% | 勝率=51.7% 信心=22.3% R:R=1.50
+2025-11-04T06:16:13.535269503Z [inf]  2025-11-04 06:16:13,387 - src.strategies.self_learning_trader - INFO - 🎓 FUNUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535269830Z [inf]  2025-11-04 06:16:13,159 - src.strategies.self_learning_trader - INFO - ❌ BRUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=49.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:13.535278113Z [inf]  2025-11-04 06:16:13,187 - src.strategies.self_learning_trader - INFO - 🎓 PLUMEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535280926Z [inf]  2025-11-04 06:16:13,434 - src.strategies.self_learning_trader - INFO - 🎓 GUNUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.535286581Z [inf]  2025-11-04 06:16:13,218 - src.strategies.self_learning_trader - INFO - ❌ NILUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=45.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:13.535293825Z [inf]  2025-11-04 06:16:13,462 - src.strategies.self_learning_trader - INFO - ❌ ATHUSDT 拒絕開倉: 信心度不足: 34.5% < 40.0% | 勝率=45.3% 信心=34.5% R:R=1.50
+2025-11-04T06:16:13.535295435Z [inf]  2025-11-04 06:16:13,243 - src.strategies.self_learning_trader - INFO - ❌ PARTIUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:13.535304684Z [inf]  2025-11-04 06:16:13,487 - src.strategies.self_learning_trader - INFO - 🎓 BABYUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.541190249Z [inf]  2025-11-04 06:16:13,538 - src.strategies.self_learning_trader - INFO - ❌ PROMPTUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=50.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:13.612633234Z [inf]  2025-11-04 06:16:13,605 - src.strategies.self_learning_trader - INFO - ❌ FHEUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=48.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:13.641533648Z [inf]  2025-11-04 06:16:13,637 - src.strategies.self_learning_trader - INFO - ❌ KERNELUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=55.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:13.699706468Z [inf]  2025-11-04 06:16:13,683 - src.strategies.self_learning_trader - INFO - ❌ INITUSDT 拒絕開倉: 信心度不足: 37.8% < 40.0% | 勝率=56.3% 信心=37.8% R:R=1.50
+2025-11-04T06:16:13.716929540Z [inf]  2025-11-04 06:16:13,708 - src.strategies.self_learning_trader - INFO - ❌ AERGOUSDT 拒絕開倉: 信心度不足: 36.6% < 40.0% | 勝率=51.0% 信心=36.6% R:R=1.50
+2025-11-04T06:16:13.747361135Z [inf]  2025-11-04 06:16:13,738 - src.strategies.self_learning_trader - INFO - ❌ BANKUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=45.0% 信心=30.4% R:R=1.50
+2025-11-04T06:16:13.773093910Z [inf]  2025-11-04 06:16:13,770 - src.strategies.self_learning_trader - INFO - ❌ EPTUSDT 拒絕開倉: 信心度不足: 30.1% < 40.0% | 勝率=54.0% 信心=30.1% R:R=1.50
+2025-11-04T06:16:13.825308175Z [inf]  2025-11-04 06:16:13,803 - src.strategies.self_learning_trader - INFO - ❌ DEEPUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=55.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:13.850591925Z [inf]  2025-11-04 06:16:13,847 - src.strategies.self_learning_trader - INFO - ❌ HYPERUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=46.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:13.904509271Z [inf]  2025-11-04 06:16:13,902 - src.strategies.self_learning_trader - INFO - 🎓 JSTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.961066250Z [inf]  2025-11-04 06:16:13,957 - src.strategies.self_learning_trader - INFO - 🎓 PUNDIXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:13.993424099Z [inf]  2025-11-04 06:16:13,981 - src.core.unified_scheduler - INFO - ⏱️  進度: 384/530 | 已分析=384 | 平均分析=27.7ms | 平均數據=6.9ms
+2025-11-04T06:16:15.712737735Z [inf]  2025-11-04 06:16:15,704 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时1.72秒 | 平均26.9ms/symbol
+2025-11-04T06:16:15.712747413Z [inf]  2025-11-04 06:16:15,704 - src.core.unified_scheduler - INFO - ⏱️  批次 7: 64个symbols数据获取完成，耗时1.72秒
+2025-11-04T06:16:15.749774765Z [inf]  2025-11-04 06:16:15,733 - src.strategies.self_learning_trader - INFO - ❌ AIOTUSDT 拒絕開倉: 信心度不足: 26.2% < 40.0% | 勝率=47.9% 信心=26.2% R:R=1.50
+2025-11-04T06:16:15.795726766Z [inf]  2025-11-04 06:16:15,792 - src.strategies.self_learning_trader - INFO - 🎓 HAEDALUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:15.837341309Z [inf]  2025-11-04 06:16:15,825 - src.strategies.self_learning_trader - INFO - ❌ SXTUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=46.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:15.871810896Z [inf]  2025-11-04 06:16:15,856 - src.strategies.self_learning_trader - INFO - ❌ ASRUSDT 拒絕開倉: 信心度不足: 37.6% < 40.0% | 勝率=56.3% 信心=37.6% R:R=1.50
+2025-11-04T06:16:15.893263500Z [inf]  2025-11-04 06:16:15,890 - src.strategies.self_learning_trader - INFO - ❌ ALPINEUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=50.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:15.933165197Z [inf]  2025-11-04 06:16:15,923 - src.strategies.self_learning_trader - INFO - ❌ B2USDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=45.0% 信心=29.8% R:R=1.50
+2025-11-04T06:16:15.961919249Z [inf]  2025-11-04 06:16:15,960 - src.strategies.self_learning_trader - INFO - ❌ MILKUSDT 拒絕開倉: 信心度不足: 35.6% < 40.0% | 勝率=55.7% 信心=35.6% R:R=1.50
+2025-11-04T06:16:16.001043545Z [inf]  2025-11-04 06:16:15,996 - src.strategies.self_learning_trader - INFO - 🎓 SYRUPUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.036339038Z [inf]  2025-11-04 06:16:16,033 - src.strategies.self_learning_trader - INFO - ❌ OBOLUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=45.0% 信心=29.2% R:R=1.50
+2025-11-04T06:16:16.468133939Z [inf]  2025-11-04 06:16:16,097 - src.strategies.self_learning_trader - INFO - ❌ OGUSDT 拒絕開倉: 信心度不足: 35.6% < 40.0% | 勝率=55.7% 信心=35.6% R:R=1.50
+2025-11-04T06:16:16.468141951Z [inf]  2025-11-04 06:16:16,131 - src.strategies.self_learning_trader - INFO - ❌ ZKJUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=55.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:16.468147853Z [inf]  2025-11-04 06:16:16,181 - src.strategies.self_learning_trader - INFO - ❌ SKYAIUSDT 拒絕開倉: 信心度不足: 38.0% < 40.0% | 勝率=45.0% 信心=38.0% R:R=1.50
+2025-11-04T06:16:16.468154722Z [inf]  2025-11-04 06:16:16,215 - src.strategies.self_learning_trader - INFO - ❌ NXPCUSDT 拒絕開倉: 信心度不足: 40.0% < 40.0% | 勝率=47.0% 信心=40.0% R:R=1.50
+2025-11-04T06:16:16.468161920Z [inf]  2025-11-04 06:16:16,215 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描400個）
+2025-11-04T06:16:16.468168863Z [inf]  2025-11-04 06:16:16,215 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=399, 拒絕=0
+2025-11-04T06:16:16.468173869Z [inf]  2025-11-04 06:16:16,215 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=346, 無=53
+2025-11-04T06:16:16.468178754Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:16.468184448Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描400個交易對）
+2025-11-04T06:16:16.468189488Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:16.468195737Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 400
+2025-11-04T06:16:16.469068905Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=400, 拒絕=0
+2025-11-04T06:16:16.469081667Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-04T06:16:16.469091235Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=400
+2025-11-04T06:16:16.469100062Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-04T06:16:16.469109613Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          有方向=347, 無方向=53
+2025-11-04T06:16:16.469118641Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=76
+2025-11-04T06:16:16.469125112Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=215
+2025-11-04T06:16:16.469133434Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=12
+2025-11-04T06:16:16.469140331Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=31
+2025-11-04T06:16:16.469147043Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=13
+2025-11-04T06:16:16.469155979Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-04T06:16:16.469162433Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-04T06:16:16.469170089Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-04T06:16:16.475803579Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-04T06:16:16.475814982Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=347
+2025-11-04T06:16:16.475821753Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-04T06:16:16.475828710Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-04T06:16:16.475840135Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:16:16.475847505Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:16:16.475855259Z [inf]  2025-11-04 06:16:16,248 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:16:16.475862760Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 347
+2025-11-04T06:16:16.475870717Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:16:16.475877816Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:16:16.475888432Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 347
+2025-11-04T06:16:16.475895338Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 347
+2025-11-04T06:16:16.475901021Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:16:16.475906815Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:16:16.486977503Z [inf]  2025-11-04 06:16:16,249 - src.strategies.self_learning_trader - INFO - ❌ CVCUSDT 拒絕開倉: 信心度不足: 37.2% < 40.0% | 勝率=56.2% 信心=37.2% R:R=1.50
+2025-11-04T06:16:16.486986460Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:16:16.486991891Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:16:16.486997960Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:16:16.487002520Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:16:16.487008110Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:16:16.487013976Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:16:16.487019585Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:16:16.487025238Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:16:16.487029994Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:16:16.487034622Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:16:16.487040233Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/400)
+2025-11-04T06:16:16.487046007Z [inf]  2025-11-04 06:16:16,249 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:16.488921968Z [inf]  2025-11-04 06:16:16,272 - src.strategies.self_learning_trader - INFO - 🎓 AGTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.488930202Z [inf]  2025-11-04 06:16:16,296 - src.strategies.self_learning_trader - INFO - ❌ AWEUSDT 拒絕開倉: 信心度不足: 38.4% < 40.0% | 勝率=56.5% 信心=38.4% R:R=1.50
+2025-11-04T06:16:16.488936123Z [inf]  2025-11-04 06:16:16,321 - src.strategies.self_learning_trader - INFO - ❌ BUSDT 拒絕開倉: 信心度不足: 21.9% < 40.0% | 勝率=45.0% 信心=21.9% R:R=1.50
+2025-11-04T06:16:16.488941850Z [inf]  2025-11-04 06:16:16,343 - src.strategies.self_learning_trader - INFO - ❌ SOONUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=51.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:16.488946339Z [inf]  2025-11-04 06:16:16,367 - src.strategies.self_learning_trader - INFO - ❌ HUMAUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=45.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:16.488951856Z [inf]  2025-11-04 06:16:16,392 - src.strategies.self_learning_trader - INFO - 🎓 AUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.488959042Z [inf]  2025-11-04 06:16:16,417 - src.strategies.self_learning_trader - INFO - ❌ SOPHUSDT 拒絕開倉: 信心度不足: 38.7% < 40.0% | 勝率=51.6% 信心=38.7% R:R=1.50
+2025-11-04T06:16:16.488964440Z [inf]  2025-11-04 06:16:16,466 - src.strategies.self_learning_trader - INFO - 🎓 HYPEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.496963353Z [inf]  2025-11-04 06:16:16,494 - src.strategies.self_learning_trader - INFO - ❌ BDXNUSDT 拒絕開倉: 信心度不足: 29.0% < 40.0% | 勝率=53.7% 信心=29.0% R:R=1.50
+2025-11-04T06:16:16.524044237Z [inf]  2025-11-04 06:16:16,518 - src.strategies.self_learning_trader - INFO - ❌ PUFFERUSDT 拒絕開倉: 信心度不足: 30.1% < 40.0% | 勝率=54.0% 信心=30.1% R:R=1.50
+2025-11-04T06:16:16.568070607Z [inf]  2025-11-04 06:16:16,558 - src.strategies.self_learning_trader - INFO - ❌ 1000000BOBUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=45.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:16.601949808Z [inf]  2025-11-04 06:16:16,599 - src.strategies.self_learning_trader - INFO - ❌ SKATEUSDT 拒絕開倉: 信心度不足: 31.7% < 40.0% | 勝率=54.5% 信心=31.7% R:R=1.50
+2025-11-04T06:16:16.623647559Z [inf]  2025-11-04 06:16:16,621 - src.strategies.self_learning_trader - INFO - ❌ HOMEUSDT 拒絕開倉: 信心度不足: 33.9% < 40.0% | 勝率=55.2% 信心=33.9% R:R=1.50
+2025-11-04T06:16:16.650116325Z [inf]  2025-11-04 06:16:16,646 - src.strategies.self_learning_trader - INFO - 🎓 RESOLVUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.678837066Z [inf]  2025-11-04 06:16:16,670 - src.strategies.self_learning_trader - INFO - ❌ TAIKOUSDT 拒絕開倉: 信心度不足: 34.4% < 40.0% | 勝率=50.3% 信心=34.4% R:R=1.50
+2025-11-04T06:16:16.701168570Z [inf]  2025-11-04 06:16:16,699 - src.strategies.self_learning_trader - INFO - ❌ SQDUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=45.0% 信心=36.2% R:R=1.50
+2025-11-04T06:16:16.734128256Z [inf]  2025-11-04 06:16:16,724 - src.strategies.self_learning_trader - INFO - 🎓 PUMPBTCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.755053798Z [inf]  2025-11-04 06:16:16,747 - src.strategies.self_learning_trader - INFO - 🎓 SPKUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.772569876Z [inf]  2025-11-04 06:16:16,770 - src.strategies.self_learning_trader - INFO - 🎓 MYXUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.799919344Z [inf]  2025-11-04 06:16:16,792 - src.strategies.self_learning_trader - INFO - 🎓 FUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.818112951Z [inf]  2025-11-04 06:16:16,814 - src.strategies.self_learning_trader - INFO - 🎓 NEWTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.840435325Z [inf]  2025-11-04 06:16:16,838 - src.strategies.self_learning_trader - INFO - 🎓 DMCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.864185813Z [inf]  2025-11-04 06:16:16,862 - src.strategies.self_learning_trader - INFO - ❌ HUSDT 拒絕開倉: 信心度不足: 31.0% < 40.0% | 勝率=54.3% 信心=31.0% R:R=1.50
+2025-11-04T06:16:16.885492748Z [inf]  2025-11-04 06:16:16,883 - src.strategies.self_learning_trader - INFO - 🎓 OLUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:16.912291265Z [inf]  2025-11-04 06:16:16,909 - src.strategies.self_learning_trader - INFO - ❌ SAHARAUSDT 拒絕開倉: 信心度不足: 37.6% < 40.0% | 勝率=46.3% 信心=37.6% R:R=1.50
+2025-11-04T06:16:16.999819060Z [inf]  2025-11-04 06:16:16,994 - src.strategies.self_learning_trader - INFO - ❌ TANSSIUSDT 拒絕開倉: 信心度不足: 30.4% < 40.0% | 勝率=45.0% 信心=30.4% R:R=1.50
+2025-11-04T06:16:17.018741348Z [inf]  2025-11-04 06:16:17,017 - src.strategies.self_learning_trader - INFO - 🎓 PUMPUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.041730735Z [inf]  2025-11-04 06:16:17,038 - src.strategies.self_learning_trader - INFO - 🎓 CROSSUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527783648Z [inf]  2025-11-04 06:16:17,150 - src.strategies.self_learning_trader - INFO - ❌ ERAUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=55.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:17.527791570Z [inf]  2025-11-04 06:16:17,172 - src.strategies.self_learning_trader - INFO - ❌ TAUSDT 拒絕開倉: 信心度不足: 30.2% < 40.0% | 勝率=54.1% 信心=30.2% R:R=1.50
+2025-11-04T06:16:17.527797735Z [inf]  2025-11-04 06:16:17,195 - src.strategies.self_learning_trader - INFO - ❌ CVXUSDT 拒絕開倉: 信心度不足: 33.0% < 40.0% | 勝率=45.0% 信心=33.0% R:R=1.50
+2025-11-04T06:16:17.527802516Z [inf]  2025-11-04 06:16:17,218 - src.strategies.self_learning_trader - INFO - 🎓 SLPUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527807413Z [inf]  2025-11-04 06:16:17,244 - src.strategies.self_learning_trader - INFO - ❌ ZORAUSDT 拒絕開倉: 信心度不足: 17.7% < 40.0% | 勝率=50.3% 信心=17.7% R:R=1.50
+2025-11-04T06:16:17.527811252Z [inf]  2025-11-04 06:16:17,266 - src.strategies.self_learning_trader - INFO - 🎓 TAGUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527815006Z [inf]  2025-11-04 06:16:17,289 - src.strategies.self_learning_trader - INFO - 🎓 ZRCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527966594Z [inf]  2025-11-04 06:16:17,078 - src.strategies.self_learning_trader - INFO - 🎓 CUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527971668Z [inf]  2025-11-04 06:16:17,107 - src.strategies.self_learning_trader - INFO - 🎓 VELVETUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.527979756Z [inf]  2025-11-04 06:16:17,129 - src.strategies.self_learning_trader - INFO - ❌ TACUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=45.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:17.532631939Z [inf]  2025-11-04 06:16:17,332 - src.strategies.self_learning_trader - INFO - 🎓 TREEUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:17.532638742Z [inf]  2025-11-04 06:16:17,332 - src.core.unified_scheduler - INFO - ⏱️  進度: 448/530 | 已分析=448 | 平均分析=27.4ms | 平均數據=9.7ms
+2025-11-04T06:16:18.579362627Z [inf]  2025-11-04 06:16:18,203 - src.core.unified_scheduler - INFO - ⏱️  批次 8: 64个symbols数据获取完成，耗时0.87秒
+2025-11-04T06:16:18.579386709Z [inf]  2025-11-04 06:16:18,229 - src.strategies.self_learning_trader - INFO - ❌ A2ZUSDT 拒絕開倉: 信心度不足: 26.5% < 40.0% | 勝率=53.0% 信心=26.5% R:R=1.50
+2025-11-04T06:16:18.579394706Z [inf]  2025-11-04 06:16:18,229 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描450個）
+2025-11-04T06:16:18.579400741Z [inf]  2025-11-04 06:16:18,229 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=449, 拒絕=0
+2025-11-04T06:16:18.579407589Z [inf]  2025-11-04 06:16:18,229 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=387, 無=62
+2025-11-04T06:16:18.579430733Z [inf]  2025-11-04 06:16:18,255 - src.strategies.self_learning_trader - INFO - ❌ PLAYUSDT 拒絕開倉: 信心度不足: 27.7% < 40.0% | 勝率=53.3% 信心=27.7% R:R=1.50
+2025-11-04T06:16:18.579444783Z [inf]  2025-11-04 06:16:18,279 - src.strategies.self_learning_trader - INFO - ❌ NAORISUSDT 拒絕開倉: 信心度不足: 28.4% < 40.0% | 勝率=48.5% 信心=28.4% R:R=1.50
+2025-11-04T06:16:18.579453153Z [inf]  2025-11-04 06:16:18,306 - src.strategies.self_learning_trader - INFO - ❌ TOWNSUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:18.579462095Z [inf]  2025-11-04 06:16:18,356 - src.strategies.self_learning_trader - INFO - ❌ ALLUSDT 拒絕開倉: 信心度不足: 34.2% < 40.0% | 勝率=55.3% 信心=34.2% R:R=1.50
+2025-11-04T06:16:18.579468582Z [inf]  2025-11-04 06:16:18,396 - src.strategies.self_learning_trader - INFO - ❌ YALAUSDT 拒絕開倉: 信心度不足: 28.9% < 40.0% | 勝率=53.7% 信心=28.9% R:R=1.50
+2025-11-04T06:16:18.579535485Z [inf]  2025-11-04 06:16:18,203 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.87秒 | 平均13.6ms/symbol
+2025-11-04T06:16:18.582535294Z [inf]  2025-11-04 06:16:18,432 - src.strategies.self_learning_trader - INFO - ❌ CARVUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=51.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:18.582542254Z [inf]  2025-11-04 06:16:18,455 - src.strategies.self_learning_trader - INFO - ❌ AIOUSDT 拒絕開倉: 信心度不足: 33.7% < 40.0% | 勝率=55.1% 信心=33.7% R:R=1.50
+2025-11-04T06:16:18.582550679Z [inf]  2025-11-04 06:16:18,492 - src.strategies.self_learning_trader - INFO - 🎓 USELESSUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:18.582559586Z [inf]  2025-11-04 06:16:18,513 - src.strategies.self_learning_trader - INFO - ❌ DAMUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:18.582566122Z [inf]  2025-11-04 06:16:18,538 - src.strategies.self_learning_trader - INFO - ❌ CUDISUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:18.591104410Z [inf]  2025-11-04 06:16:18,584 - src.strategies.self_learning_trader - INFO - ❌ XPLUSDT 拒絕開倉: 信心度不足: 16.9% < 40.0% | 勝率=45.0% 信心=16.9% R:R=1.50
+2025-11-04T06:16:18.615005557Z [inf]  2025-11-04 06:16:18,611 - src.strategies.self_learning_trader - INFO - ❌ WLFIUSDT 拒絕開倉: 信心度不足: 29.5% < 40.0% | 勝率=45.0% 信心=29.5% R:R=1.50
+2025-11-04T06:16:18.646985171Z [inf]  2025-11-04 06:16:18,644 - src.strategies.self_learning_trader - INFO - 🎓 SOMIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:18.692704457Z [inf]  2025-11-04 06:16:18,688 - src.strategies.self_learning_trader - INFO - 🎓 BASUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:18.727243708Z [inf]  2025-11-04 06:16:18,721 - src.strategies.self_learning_trader - INFO - ❌ BTRUSDT 拒絕開倉: 信心度不足: 28.6% < 40.0% | 勝率=53.6% 信心=28.6% R:R=1.50
+2025-11-04T06:16:18.757009765Z [inf]  2025-11-04 06:16:18,750 - src.strategies.self_learning_trader - INFO - ❌ MITOUSDT 拒絕開倉: 信心度不足: 33.8% < 40.0% | 勝率=55.1% 信心=33.8% R:R=1.50
+2025-11-04T06:16:18.789534875Z [inf]  2025-11-04 06:16:18,783 - src.strategies.self_learning_trader - INFO - ❌ HEMIUSDT 拒絕開倉: 信心度不足: 31.7% < 40.0% | 勝率=45.0% 信心=31.7% R:R=1.50
+2025-11-04T06:16:18.816941127Z [inf]  2025-11-04 06:16:18,814 - src.strategies.self_learning_trader - INFO - ❌ LINEAUSDT 拒絕開倉: 信心度不足: 31.8% < 40.0% | 勝率=45.0% 信心=31.8% R:R=1.50
+2025-11-04T06:16:18.850703322Z [inf]  2025-11-04 06:16:18,844 - src.strategies.self_learning_trader - INFO - ❌ QUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:18.884832764Z [inf]  2025-11-04 06:16:18,873 - src.strategies.self_learning_trader - INFO - ❌ ARIAUSDT 拒絕開倉: 信心度不足: 34.3% < 40.0% | 勝率=55.3% 信心=34.3% R:R=1.50
+2025-11-04T06:16:18.900720338Z [inf]  2025-11-04 06:16:18,897 - src.strategies.self_learning_trader - INFO - ❌ TAKEUSDT 拒絕開倉: 信心度不足: 31.1% < 40.0% | 勝率=45.0% 信心=31.1% R:R=1.50
+2025-11-04T06:16:18.925758622Z [inf]  2025-11-04 06:16:18,919 - src.strategies.self_learning_trader - INFO - ❌ PTBUSDT 拒絕開倉: 信心度不足: 23.1% < 40.0% | 勝率=51.9% 信心=23.1% R:R=1.50
+2025-11-04T06:16:18.948097044Z [inf]  2025-11-04 06:16:18,941 - src.strategies.self_learning_trader - INFO - ❌ OPENUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=55.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:18.968764356Z [inf]  2025-11-04 06:16:18,963 - src.strategies.self_learning_trader - INFO - 🎓 FLOCKUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:18.991100427Z [inf]  2025-11-04 06:16:18,988 - src.strategies.self_learning_trader - INFO - ❌ SKYUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=55.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:19.018069153Z [inf]  2025-11-04 06:16:19,013 - src.strategies.self_learning_trader - INFO - 🎓 AVNTUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.044146246Z [inf]  2025-11-04 06:16:19,037 - src.strategies.self_learning_trader - INFO - 🎓 HOLOUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.469187186Z [inf]  2025-11-04 06:16:19,078 - src.strategies.self_learning_trader - INFO - ❌ UBUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=45.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:19.469197131Z [inf]  2025-11-04 06:16:19,108 - src.strategies.self_learning_trader - INFO - ❌ ZKCUSDT 拒絕開倉: 信心度不足: 38.6% < 40.0% | 勝率=56.6% 信心=38.6% R:R=1.50
+2025-11-04T06:16:19.469205651Z [inf]  2025-11-04 06:16:19,136 - src.strategies.self_learning_trader - INFO - 🎓 TOSHIUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.469212308Z [inf]  2025-11-04 06:16:19,161 - src.strategies.self_learning_trader - INFO - ❌ STBLUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:19.469218231Z [inf]  2025-11-04 06:16:19,184 - src.strategies.self_learning_trader - INFO - ❌ 0GUSDT 拒絕開倉: 信心度不足: 31.3% < 40.0% | 勝率=54.4% 信心=31.3% R:R=1.50
+2025-11-04T06:16:19.469225810Z [inf]  2025-11-04 06:16:19,207 - src.strategies.self_learning_trader - INFO - ❌ AIAUSDT 拒絕開倉: 信心度不足: 39.4% < 40.0% | 勝率=45.0% 信心=39.4% R:R=1.50
+2025-11-04T06:16:19.469232554Z [inf]  2025-11-04 06:16:19,251 - src.strategies.self_learning_trader - INFO - 🎓 ASTERUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.469240176Z [inf]  2025-11-04 06:16:19,275 - src.strategies.self_learning_trader - INFO - 🎓 TRADOORUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.469249090Z [inf]  2025-11-04 06:16:19,298 - src.strategies.self_learning_trader - INFO - ❌ BLESSUSDT 拒絕開倉: 信心度不足: 30.8% < 40.0% | 勝率=54.2% 信心=30.8% R:R=1.50
+2025-11-04T06:16:19.469257516Z [inf]  2025-11-04 06:16:19,320 - src.strategies.self_learning_trader - INFO - ❌ FLUIDUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:19.475712366Z [inf]  2025-11-04 06:16:19,359 - src.strategies.self_learning_trader - INFO - 🎓 HANAUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.475727937Z [inf]  2025-11-04 06:16:19,381 - src.strategies.self_learning_trader - INFO - ❌ MIRAUSDT 拒絕開倉: 信心度不足: 39.6% < 40.0% | 勝率=46.9% 信心=39.6% R:R=1.50
+2025-11-04T06:16:19.475735608Z [inf]  2025-11-04 06:16:19,402 - src.strategies.self_learning_trader - INFO - ❌ AKEUSDT 拒絕開倉: 信心度不足: 36.8% < 40.0% | 勝率=56.0% 信心=36.8% R:R=1.50
+2025-11-04T06:16:19.475743272Z [inf]  2025-11-04 06:16:19,424 - src.strategies.self_learning_trader - INFO - 🎓 ORDERUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.475751849Z [inf]  2025-11-04 06:16:19,444 - src.strategies.self_learning_trader - INFO - ❌ LIGHTUSDT 拒絕開倉: 信心度不足: 38.2% < 40.0% | 勝率=56.5% 信心=38.2% R:R=1.50
+2025-11-04T06:16:19.480054548Z [inf]  2025-11-04 06:16:19,473 - src.strategies.self_learning_trader - INFO - ❌ XANUSDT 拒絕開倉: 信心度不足: 39.2% < 40.0% | 勝率=56.8% 信心=39.2% R:R=1.50
+2025-11-04T06:16:19.480063827Z [inf]  2025-11-04 06:16:19,474 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描500個）
+2025-11-04T06:16:19.480070596Z [inf]  2025-11-04 06:16:19,474 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=499, 拒絕=0
+2025-11-04T06:16:19.480077492Z [inf]  2025-11-04 06:16:19,474 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=430, 無=69
+2025-11-04T06:16:19.502087401Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:19.502094751Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描500個交易對）
+2025-11-04T06:16:19.502104357Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:19.502110906Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 500
+2025-11-04T06:16:19.502118101Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=500, 拒絕=0
+2025-11-04T06:16:19.502124551Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-04T06:16:19.502132034Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=500
+2025-11-04T06:16:19.502139137Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-04T06:16:19.502145768Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          有方向=431, 無方向=69
+2025-11-04T06:16:19.502151311Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=91
+2025-11-04T06:16:19.502157178Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=251
+2025-11-04T06:16:19.502166251Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=12
+2025-11-04T06:16:19.502179346Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=52
+2025-11-04T06:16:19.504072928Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-04T06:16:19.504084659Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=25
+2025-11-04T06:16:19.504094219Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 431
+2025-11-04T06:16:19.504094615Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-04T06:16:19.504100412Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-04T06:16:19.504103792Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-04T06:16:19.504106329Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-04T06:16:19.504113224Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-04T06:16:19.504119533Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-04T06:16:19.504127348Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=431
+2025-11-04T06:16:19.504133549Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-04T06:16:19.504139332Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-04T06:16:19.504145265Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-04T06:16:19.504151343Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-04T06:16:19.505354688Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 431
+2025-11-04T06:16:19.505365212Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 431
+2025-11-04T06:16:19.505372403Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-04T06:16:19.505380581Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-04T06:16:19.505400787Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-04T06:16:19.505408348Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-04T06:16:19.505415133Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-04T06:16:19.505421260Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-04T06:16:19.505427561Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-04T06:16:19.505436409Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-04T06:16:19.505445004Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-04T06:16:19.505452838Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-04T06:16:19.505459082Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-04T06:16:19.505468417Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-04T06:16:19.506651198Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/500)
+2025-11-04T06:16:19.506657669Z [inf]  2025-11-04 06:16:19,499 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-04T06:16:19.506662252Z [inf]  2025-11-04 06:16:19,500 - src.strategies.self_learning_trader - INFO - 🎓 FFUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.559782826Z [inf]  2025-11-04 06:16:19,556 - src.strategies.self_learning_trader - INFO - 🎓 NOMUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.584310296Z [inf]  2025-11-04 06:16:19,577 - src.strategies.self_learning_trader - INFO - ❌ TRUTHUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:19.611190658Z [inf]  2025-11-04 06:16:19,598 - src.strategies.self_learning_trader - INFO - 🎓 2ZUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.622031082Z [inf]  2025-11-04 06:16:19,620 - src.strategies.self_learning_trader - INFO - ❌ EVAAUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=56.2% 信心=37.4% R:R=1.50
+2025-11-04T06:16:19.648580192Z [inf]  2025-11-04 06:16:19,638 - src.strategies.self_learning_trader - INFO - 🎓 LYNUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:19.674522440Z [inf]  2025-11-04 06:16:19,661 - src.strategies.self_learning_trader - INFO - ❌ KGENUSDT 拒絕開倉: 信心度不足: 29.8% < 40.0% | 勝率=53.9% 信心=29.8% R:R=1.50
+2025-11-04T06:16:19.691144537Z [inf]  2025-11-04 06:16:19,684 - src.strategies.self_learning_trader - INFO - ❌ 4USDT 拒絕開倉: 信心度不足: 12.9% < 40.0% | 勝率=45.0% 信心=12.9% R:R=1.50
+2025-11-04T06:16:19.713515620Z [inf]  2025-11-04 06:16:19,707 - src.strategies.self_learning_trader - INFO - ❌ GIGGLEUSDT 拒絕開倉: 信心度不足: 20.1% < 40.0% | 勝率=46.0% 信心=20.1% R:R=1.50
+2025-11-04T06:16:19.739019796Z [inf]  2025-11-04 06:16:19,731 - src.strategies.self_learning_trader - INFO - ❌ MONUSDT 拒絕開倉: 信心度不足: 7.2% < 40.0% | 勝率=45.0% 信心=7.2% R:R=1.50
+2025-11-04T06:16:19.760349575Z [inf]  2025-11-04 06:16:19,754 - src.strategies.self_learning_trader - INFO - ❌ YBUSDT 拒絕開倉: 信心度不足: 39.3% < 40.0% | 勝率=46.8% 信心=39.3% R:R=1.50
+2025-11-04T06:16:19.760356362Z [inf]  2025-11-04 06:16:19,754 - src.core.unified_scheduler - INFO - ⏱️  進度: 512/530 | 已分析=512 | 平均分析=27.0ms | 平均數據=10.2ms
+2025-11-04T06:16:20.066904726Z [inf]  2025-11-04 06:16:20,062 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 18个symbols | 成功18 | 失败0 | 耗时0.31秒 | 平均17.1ms/symbol
+2025-11-04T06:16:20.066914312Z [inf]  2025-11-04 06:16:20,062 - src.core.unified_scheduler - INFO - ⏱️  批次 9: 18个symbols数据获取完成，耗时0.31秒
+2025-11-04T06:16:20.107649809Z [inf]  2025-11-04 06:16:20,104 - src.strategies.self_learning_trader - INFO - ❌ EULUSDT 拒絕開倉: 信心度不足: 37.4% < 40.0% | 勝率=45.0% 信心=37.4% R:R=1.50
+2025-11-04T06:16:20.439770434Z [inf]  2025-11-04 06:16:20,165 - src.strategies.self_learning_trader - INFO - 🎓 RECALLUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:20.439778125Z [inf]  2025-11-04 06:16:20,190 - src.strategies.self_learning_trader - INFO - ❌ ZBTUSDT 拒絕開倉: 信心度不足: 36.2% < 40.0% | 勝率=55.9% 信心=36.2% R:R=1.50
+2025-11-04T06:16:20.439782830Z [inf]  2025-11-04 06:16:20,211 - src.strategies.self_learning_trader - INFO - ❌ LABUSDT 拒絕開倉: 信心度不足: 32.2% < 40.0% | 勝率=54.7% 信心=32.2% R:R=1.50
+2025-11-04T06:16:20.439804257Z [inf]  2025-11-04 06:16:20,234 - src.strategies.self_learning_trader - INFO - ❌ RIVERUSDT 拒絕開倉: 信心度不足: 34.3% < 40.0% | 勝率=55.3% 信心=34.3% R:R=1.50
+2025-11-04T06:16:20.439810417Z [inf]  2025-11-04 06:16:20,255 - src.strategies.self_learning_trader - INFO - 🎓 RVVUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:20.439814589Z [inf]  2025-11-04 06:16:20,128 - src.strategies.self_learning_trader - INFO - ❌ ENSOUSDT 拒絕開倉: 信心度不足: 24.1% < 40.0% | 勝率=52.2% 信心=24.1% R:R=1.50
+2025-11-04T06:16:20.439825676Z [inf]  2025-11-04 06:16:20,274 - src.strategies.self_learning_trader - INFO - ❌ BLUAIUSDT 拒絕開倉: 信心度不足: 29.2% < 40.0% | 勝率=53.8% 信心=29.2% R:R=1.50
+2025-11-04T06:16:20.439831452Z [inf]  2025-11-04 06:16:20,296 - src.strategies.self_learning_trader - INFO - ❌ TURTLEUSDT 拒絕開倉: 信心度不足: 32.6% < 40.0% | 勝率=45.0% 信心=32.6% R:R=1.50
+2025-11-04T06:16:20.439836211Z [inf]  2025-11-04 06:16:20,342 - src.strategies.self_learning_trader - INFO - ❌ ONUSDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=55.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:20.439841330Z [inf]  2025-11-04 06:16:20,366 - src.strategies.self_learning_trader - INFO - ❌ 42USDT 拒絕開倉: 信心度不足: 33.2% < 40.0% | 勝率=55.0% 信心=33.2% R:R=1.50
+2025-11-04T06:16:20.441092576Z [inf]  2025-11-04 06:16:20,392 - src.strategies.self_learning_trader - INFO - ❌ COMMONUSDT 拒絕開倉: 信心度不足: 35.0% < 40.0% | 勝率=45.5% 信心=35.0% R:R=1.50
+2025-11-04T06:16:20.441100471Z [inf]  2025-11-04 06:16:20,420 - src.strategies.self_learning_trader - INFO - ❌ KITEUSDT 拒絕開倉: 信心度不足: 7.8% < 40.0% | 勝率=45.0% 信心=7.8% R:R=1.50
+2025-11-04T06:16:20.465378828Z [inf]  2025-11-04 06:16:20,453 - src.strategies.self_learning_trader - INFO - ❌ ATUSDT 拒絕開倉: 信心度不足: 30.2% < 40.0% | 勝率=49.1% 信心=30.2% R:R=1.50
+2025-11-04T06:16:20.489710453Z [inf]  2025-11-04 06:16:20,481 - src.strategies.self_learning_trader - INFO - 🎓 CCUSDT 豁免期: 已完成 0/100 筆 | 門檻 勝率≥40% 信心≥40% | 槓桿限制: 1-3x
+2025-11-04T06:16:20.489738309Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - ⏱️  進度: 530/530 | 已分析=530 | 平均分析=26.9ms | 平均數據=10.4ms
+2025-11-04T06:16:20.489748279Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.489754609Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - ⏱️  ===== 掃描時間分析報告 =====
+2025-11-04T06:16:20.489760645Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 📊 分析交易對: 530/530
+2025-11-04T06:16:20.489767907Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 📭 數據缺失: 0
+2025-11-04T06:16:20.489774066Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - ⏱️  總掃描時間: 19.8s
+2025-11-04T06:16:20.489779700Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 📈 平均分析時間: 26.9ms
+2025-11-04T06:16:20.489785478Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 🚀 最快分析: 13.6ms
+2025-11-04T06:16:20.489791508Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 🐌 最慢分析: 49.8ms
+2025-11-04T06:16:20.489797141Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 💾 平均數據獲取: 0.0ms
+2025-11-04T06:16:20.489802884Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - WARNING - ⚠️  警告: 平均分析時間26.9ms，可能分析深度不足
+2025-11-04T06:16:20.489809484Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.489837857Z [inf]  2025-11-04 06:16:20,482 - src.core.unified_scheduler - INFO - 📊 掃描統計: 總數=530 | 數據可用=530 | 數據缺失=0
+2025-11-04T06:16:20.492613488Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.492624402Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - 📊 信號分析診斷（信心值Top 10）
+2025-11-04T06:16:20.492631393Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.492640313Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  1. VICUSDT      | 信心= 67.6 | 勝率= 65.3% | ✅ 信號
+2025-11-04T06:16:20.492647451Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  2. FUNUSDT      | 信心= 58.4 | 勝率= 62.5% | ✅ 信號
+2025-11-04T06:16:20.492654554Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  3. WALUSDT      | 信心= 58.2 | 勝率= 62.5% | ✅ 信號
+2025-11-04T06:16:20.492661363Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  4. CCUSDT       | 信心= 57.6 | 勝率= 62.3% | ✅ 信號
+2025-11-04T06:16:20.492667336Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  5. BROCCOLIF3BUSDT | 信心= 57.2 | 勝率= 62.2% | ✅ 信號
+2025-11-04T06:16:20.492673943Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  6. SUNUSDT      | 信心= 57.0 | 勝率= 52.1% | ✅ 信號
+2025-11-04T06:16:20.492679767Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  7. HANAUSDT     | 信心= 57.0 | 勝率= 62.1% | ✅ 信號
+2025-11-04T06:16:20.492686214Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  8. HAEDALUSDT   | 信心= 56.9 | 勝率= 62.1% | ✅ 信號
+2025-11-04T06:16:20.492691977Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO -  9. HEIUSDT      | 信心= 56.4 | 勝率= 61.9% | ✅ 信號
+2025-11-04T06:16:20.492697232Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - 10. PUMPBTCUSDT  | 信心= 55.9 | 勝率= 51.8% | ✅ 信號
+2025-11-04T06:16:20.493783299Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.493792528Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - ✅ 發現 128 個交易信號
+2025-11-04T06:16:20.493799384Z [inf]  2025-11-04 06:16:20,483 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $55.78 | 已有倉位: 7 | 新信號數: 128
+2025-11-04T06:16:20.588729040Z [inf]  2025-11-04 06:16:20,585 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 69.30 USDT, 可用 2.10 USDT, 保證金 67.19 USDT, 未實現盈虧 +0.36 USDT
+2025-11-04T06:16:20.588741769Z [inf]  2025-11-04 06:16:20,585 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $69.66 | 可用保證金: $2.10 | 已佔用保證金: $67.19
+2025-11-04T06:16:20.588750843Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - INFO - 💰 CapitalAllocator初始化 | 帳戶權益: $69.66 | 總金額: $69.30 | 已佔用保證金: $67.19 | 質量門檻: 0.25 (豁免期模式（交易數:0/100）)
+2025-11-04T06:16:20.588757744Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - INFO - 💰 質量排名完成：128/128 信號通過質量門檻 | 最高分: 0.782 | 最低分: 0.550
+2025-11-04T06:16:20.588768865Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - WARNING - ⚠️ 90%總倉位保證金上限限制 | 原預算: $1.89 → 調整為: $0.00 | 已佔用: $67.19 / 上限: $62.37 (90% × $69.30)
+2025-11-04T06:16:20.588776506Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - INFO - 💰 預算池初始化 | 總預算: $0.00 (90% × $2.10) | 單倉上限: $34.83 (50% × $69.66) | 總倉位保證金: $67.19 / $62.37 (90%)
+2025-11-04T06:16:20.588783222Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - INFO - 💰 預算耗盡，拒絕剩餘 128 個信號 （排名 1-128）
+2025-11-04T06:16:20.588789718Z [inf]  2025-11-04 06:16:20,585 - src.core.capital_allocator - INFO - ================================================================================
+2025-11-04T06:16:20.588795985Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - INFO - ✅ 資金分配完成
+2025-11-04T06:16:20.588803152Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - INFO -    獲批信號: 0/128 (通過質量門檻)
+2025-11-04T06:16:20.588814581Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - WARNING -    ⚠️ 無可用預算（available_margin=0，可能是帳戶餘額為0或API失敗）
+2025-11-04T06:16:20.590220862Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - INFO -    總分配: $0.00 / $0.00
+2025-11-04T06:16:20.590228452Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - INFO -    獲批信號將無法執行
+2025-11-04T06:16:20.590233472Z [inf]  2025-11-04 06:16:20,586 - src.core.capital_allocator - INFO - ================================================================================
+2025-11-04T06:16:20.590238029Z [inf]  2025-11-04 06:16:20,586 - src.strategies.self_learning_trader - INFO - 💰 無信號獲得資金分配
+2025-11-04T06:16:20.590242983Z [inf]  2025-11-04 06:16:20,586 - src.strategies.self_learning_trader - INFO - 🔄 檢查智能汰換機會...
+2025-11-04T06:16:20.590247882Z [inf]  2025-11-04 06:16:20,586 - src.strategies.self_learning_trader - INFO - ⚠️ 無高品質信號（≥80）可用於汰換
+2025-11-04T06:16:20.590253412Z [inf]  2025-11-04 06:16:20,586 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 20.0s | 新成交: 0
+2025-11-04T06:16:20.590258077Z [inf]  2025-11-04 06:16:20,586 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-04T06:16:20.649267006Z [inf]  2025-11-04 06:16:20,639 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard6 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:20.713359435Z [inf]  2025-11-04 06:16:20,710 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:20.837942155Z [inf]  2025-11-04 06:16:20,833 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard3 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:20.883972274Z [inf]  2025-11-04 06:16:20,879 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard9 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:20.977793242Z [inf]  2025-11-04 06:16:20,972 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard10 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:21.024323722Z [inf]  2025-11-04 06:16:21,017 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:21.501778526Z [inf]  2025-11-04 06:16:21,157 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:21.501785838Z [inf]  2025-11-04 06:16:21,410 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard4 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:23.588478212Z [inf]  2025-11-04 06:16:23,200 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard10 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:23.588483696Z [inf]  2025-11-04 06:16:23,358 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard1 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:23.631227454Z [inf]  2025-11-04 06:16:23,620 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard8 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:24.517203506Z [inf]  2025-11-04 06:16:24,453 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard4 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.563165086Z [inf]  2025-11-04 06:16:26,310 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard0 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.563177278Z [inf]  2025-11-04 06:16:26,355 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard7 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.563186838Z [inf]  2025-11-04 06:16:26,427 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard3 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.563195218Z [inf]  2025-11-04 06:16:26,486 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard7 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.595069779Z [inf]  2025-11-04 06:16:26,590 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard2 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:26.803876928Z [inf]  2025-11-04 06:16:26,801 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard5 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:27.059190915Z [inf]  2025-11-04 06:16:27,053 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard9 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:27.666690661Z [inf]  2025-11-04 06:16:27,265 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard8 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:28.629202542Z [inf]  2025-11-04 06:16:28,275 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard6 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
+2025-11-04T06:16:29.538625920Z [inf]  2025-11-04 06:16:29,201 - src.core.websocket.kline_feed - ERROR - ❌ KlineFeed-Shard5 接收失敗: sent 1011 (internal error) keepalive ping timeout; no close frame received
