@@ -1040,7 +1040,7 @@ class TradeRecorder:
             del self.position_metrics_history[position_key]
             logger.debug(f"✅ 清除 {position_key} 的歷史指標記錄")
     
-    def get_trade_count(self, timeframe: str = '24h', symbol: Optional[str] = None) -> int:
+    async def get_trade_count(self, timeframe: str = '24h', symbol: Optional[str] = None) -> int:
         """
         🔥 v3.23: 獲取交易數量（Bootstrap門槛判断）
         
