@@ -1,11 +1,17 @@
 """
-🛡️ 安全验证器 - 多层次防护体系
+🛡️ v3.23+ 安全验证器 - 多层次防护体系
 防止数学运算错误、无效输入、边界条件异常
+
+新增功能：
+- 集成 ExceptionHandler 统一异常处理
+- 关键方法添加重试机制
+- 更详细的错误日志
 """
 
 import math
 import logging
 from typing import Optional, Union
+from src.core.exception_handler import ExceptionHandler
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +29,7 @@ class SafetyValidator:
     MIN_MARGIN_THRESHOLD = 0.01
     
     @staticmethod
+    @ExceptionHandler.log_exceptions
     def validate_leverage(leverage: float, symbol: str = "unknown") -> float:
         """
         槓桿值多層驗證
@@ -56,6 +63,7 @@ class SafetyValidator:
         return float(leverage)
     
     @staticmethod
+    @ExceptionHandler.log_exceptions
     def safe_division(
         numerator: float, 
         denominator: float, 
@@ -91,6 +99,7 @@ class SafetyValidator:
         return result
     
     @staticmethod
+    @ExceptionHandler.log_exceptions
     def validate_total_score(total_score: float, num_signals: int = 0) -> float:
         """
         驗證總分數

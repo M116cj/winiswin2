@@ -1,11 +1,16 @@
 """
-🛡️ 保證金安全控制器
+🛡️ v3.23+ 保證金安全控制器
 實現多級保證金保護機制：80%警告、90%緊急、95%鎖定
+
+新增功能：
+- 集成 ExceptionHandler 統一異常處理
+- 關鍵方法添加安全執行保護
 """
 
 import logging
 from typing import Dict, Optional
 from dataclasses import dataclass
+from src.core.exception_handler import ExceptionHandler
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +65,7 @@ class MarginSafetyController:
             f"   鎖定閾值: {lock_threshold:.0%}"
         )
     
+    @ExceptionHandler.log_exceptions
     def check_margin_health(
         self, 
         current_margin: float, 

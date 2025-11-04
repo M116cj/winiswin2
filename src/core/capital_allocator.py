@@ -6,6 +6,7 @@ CapitalAllocator v3.23+ - 動態預算池 + 質量加權分配 + 安全驗證
 3. 動態預算池分配（高分優先，預算耗盡拒絕）
 4. 單倉上限強制執行（≤50%帳戶權益）
 5. 🔥 v3.23+: 多層次安全驗證（除零、NaN、邊界條件）
+6. 🔥 v3.23+: 集成 ExceptionHandler 統一異常處理
 """
 
 import logging
@@ -15,6 +16,7 @@ from dataclasses import dataclass
 from src.config import Config
 from src.core.safety_validator import SafetyValidator, ValidationError
 from src.core.margin_safety_controller import MarginSafetyController
+from src.core.exception_handler import ExceptionHandler
 
 logger = logging.getLogger(__name__)
 
@@ -145,6 +147,7 @@ class CapitalAllocator:
             f"進度: {progress_pct:.1f}%"
         )
     
+    @ExceptionHandler.critical_section(max_retries=2, backoff_base=1.0)
     def allocate_capital(
         self,
         signals: List[Dict],
