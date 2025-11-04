@@ -1,7 +1,8 @@
 """
-KlineFeed v3.17.2+ - 即時K線數據流（升級版+合併流訂閱）
+KlineFeed v3.23+ - 即時K線數據流（升級版+合併流訂閱+並發安全）
 職責：訂閱Binance @kline_1m WebSocket，取代REST K線輪詢
 升級：時間戳標準化、心跳監控、shard_id支持、合併流訂閱
+🔥 v3.23+: 集成ConcurrentDictManager實現線程安全緩存
 """
 
 import asyncio
@@ -15,6 +16,7 @@ except ImportError:
     websockets = None  # type: ignore
 
 from src.core.websocket.base_feed import BaseFeed
+from src.core.concurrent_dict_manager import ConcurrentDictManager
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +78,15 @@ class KlineFeed(BaseFeed):
         self.interval = interval
         self.shard_id = shard_id
         self.max_history = max_history
-        self.kline_cache: Dict[str, List[Dict]] = {}  # {symbol: [kline1, kline2, ...]}（保留最近max_history根）
+        
+        # 🔥 v3.23+: 使用ConcurrentDictManager實現線程安全緩存
+        self.kline_cache = ConcurrentDictManager[str, List[Dict]](
+            name=f"KlineCache-Shard{shard_id}",
+            enable_auto_cleanup=True,
+            cleanup_interval=300,  # 每5分鐘清理一次
+            max_size=1000  # 最多緩存1000個交易對
+        )
+        
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
