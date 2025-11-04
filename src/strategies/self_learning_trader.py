@@ -6,6 +6,7 @@ SelfLearningTrader v3.17+ - 智能決策核心
 import pandas as pd
 import numpy as np
 from typing import Dict, Optional, List
+from datetime import datetime
 import logging
 import json
 import time
@@ -847,7 +848,7 @@ class SelfLearningTrader:
             if self.trade_recorder:
                 try:
                     # 🔥 v3.17.2+：從WebSocketManager獲取元數據
-                    websocket_metadata = None
+                    websocket_metadata = {}
                     if self.websocket_monitor:
                         kline = self.websocket_monitor.get_kline(signal['symbol'])
                         if kline:
@@ -858,16 +859,28 @@ class SelfLearningTrader:
                                 'shard_id': kline.get('shard_id', 0)
                             }
                     
-                    self.trade_recorder.record_entry(
-                        signal=signal,
-                        position_info={
-                            'leverage': signal['leverage'],
-                            'position_value': position_value,
-                            'size': size
-                        },
-                        competition_context=competition_context,  # 🔥 v3.17.10+：競價上下文特徵
-                        websocket_metadata=websocket_metadata  # 🔥 v3.17.2+：WebSocket元數據
-                    )
+                    # 🔥 v3.23: 使用新的 EnhancedTradeRecorder API
+                    trade_data = {
+                        'symbol': signal['symbol'],
+                        'direction': signal['direction'],
+                        'entry_price': signal['entry_price'],
+                        'position_size': size,
+                        'confidence': signal.get('confidence', 0),
+                        'win_probability': signal.get('win_probability', 0),
+                        'risk_reward_ratio': signal.get('rr_ratio', 1.5),
+                        'leverage': signal['leverage'],
+                        'margin_used': position_value / signal['leverage'],
+                        'entry_time': datetime.now(),
+                        'stop_loss_price': signal.get('adjusted_stop_loss'),
+                        'take_profit_price': signal.get('adjusted_take_profit'),
+                        'strategy_version': 'v3.23',
+                        'market_conditions': {
+                            'websocket_metadata': websocket_metadata,
+                            'competition_context': competition_context
+                        }
+                    }
+                    
+                    await self.trade_recorder.record_entry(trade_data)
                     logger.debug(f"📝 記錄開倉信號: {signal['symbol']}")
                 except Exception as e:
                     logger.warning(f"⚠️ 記錄開倉信號失敗: {e}")
