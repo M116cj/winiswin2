@@ -112,6 +112,9 @@ class KlineFeed(BaseFeed):
         self.running = True
         logger.info(f"🚀 {self.name} 啟動中... ({len(self.symbols)} 個幣種)")
         
+        # 🔥 v3.23+: 啟動緩存自動清理任務
+        await self.kline_cache.start_auto_cleanup()
+        
         # 啟動心跳監控
         await self._start_heartbeat_monitor()
         
@@ -328,6 +331,9 @@ class KlineFeed(BaseFeed):
         """停止合併流WebSocket連線"""
         logger.info(f"⏸️  {self.name} 停止中...")
         self.running = False
+        
+        # 🔥 v3.23+: 停止緩存自動清理任務
+        await self.kline_cache.stop_auto_cleanup()
         
         # 停止心跳監控
         await self._stop_heartbeat_monitor()
