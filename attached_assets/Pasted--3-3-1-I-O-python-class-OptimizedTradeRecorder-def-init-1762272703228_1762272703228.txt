@@ -1,0 +1,178 @@
+🟢 第3階段：性能優化
+3.1 I/O性能優化
+python
+class OptimizedTradeRecorder:
+    """優化的交易記錄器"""
+    
+    def __init__(self, config):
+        self.completed_trades = []
+        self.pending_writes = asyncio.Queue()
+        self.batch_size = config.ML_FLUSH_COUNT
+        self.flush_interval = 60  # 批量寫入間隔
+        self.max_file_size = 10 * 1024 * 1024  # 10MB
+        
+        # 啟動後台寫入任務
+        self._writer_task = asyncio.create_task(self._batch_writer_loop())
+        
+    async def _batch_writer_loop(self):
+        """後台批量寫入循環"""
+        buffer = []
+        last_flush = time.time()
+        
+        while True:
+            try:
+                # 等待數據或超時
+                trade = await asyncio.wait_for(
+                    self.pending_writes.get(), 
+                    timeout=self.flush_interval
+                )
+                buffer.append(trade)
+            except asyncio.TimeoutError:
+                pass  # 超時觸發flush
+                
+            # 檢查flush條件
+            should_flush = (
+                len(buffer) >= self.batch_size or
+                (buffer and time.time() - last_flush >= self.flush_interval)
+            )
+            
+            if should_flush and buffer:
+                await self._flush_buffer(buffer)
+                buffer = []
+                last_flush = time.time()
+                
+    async def _flush_buffer(self, buffer: list):
+        """批量寫入緩衝區"""
+        # 文件大小檢查和輪轉
+        await self._check_file_rotation()
+        
+        # 批量寫入
+        batch_lines = "\n".join(
+            json.dumps(trade, ensure_ascii=False, default=str) 
+            for trade in buffer
+        ) + "\n"
+        
+        async with self._flush_lock:
+            with open(self.trades_file, 'a', encoding='utf-8') as f:
+                f.write(batch_lines)
+                
+        logger.debug(f"💾 批量寫入 {len(buffer)} 筆交易")
+3.2 智能日誌系統
+python
+class SmartLogger:
+    """智能日誌管理器"""
+    
+    def __init__(self, base_logger):
+        self.logger = base_logger
+        self.message_counts = {}  # 消息頻率計數
+        self.last_reset_time = time.time()
+        
+    def debug_sampled(self, message: str, sample_rate: float = 0.01):
+        """采樣debug日誌"""
+        if random.random() < sample_rate:
+            self.logger.debug(f"[SAMPLED] {message}")
+            
+    def info_throttled(self, message: str, key: str, interval: int = 60):
+        """限頻info日誌"""
+        current_time = time.time()
+        
+        if key not in self.message_counts:
+            self.message_counts[key] = current_time
+            self.logger.info(message)
+        elif current_time - self.message_counts[key] >= interval:
+            self.message_counts[key] = current_time
+            self.logger.info(message)
+            
+    def error_with_context(self, message: str, context: dict = None):
+        """帶上下文的錯誤日誌"""
+        context_str = json.dumps(context, ensure_ascii=False) if context else ""
+        self.logger.error(f"{message} | Context: {context_str}")
+
+# 應用示例
+smart_log = SmartLogger(logger)
+
+# 在熱路徑中使用采樣日誌
+for symbol in symbols:
+    smart_log.debug_sampled(f"💡 {symbol} K線更新", sample_rate=0.005)
+3.3 配置驗證系統
+python
+class ConfigValidator:
+    """配置值驗證器"""
+    
+    @staticmethod
+    def validate_ratio(value: float, name: str, min_val: float = 0.0, max_val: float = 1.0) -> float:
+        """驗證比率配置"""
+        if not (min_val <= value <= max_val):
+            logger.warning(f"⚠️ 配置 {name} 超出範圍 [{min_val}, {max_val}]，已調整: {value}")
+            return max(min_val, min(value, max_val))
+        return value
+    
+    @staticmethod
+    def validate_positive_int(value: int, name: str, default: int) -> int:
+        """驗證正整數配置"""
+        if value <= 0:
+            logger.warning(f"⚠️ 配置 {name} 必須為正整數，使用默認值: {default}")
+            return default
+        return value
+
+# 在配置加載時應用
+class AppConfig:
+    def __init__(self):
+        # 原始值
+        raw_ratio = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.80"))
+        
+        # 驗證並調整
+        self.MAX_TOTAL_BUDGET_RATIO = ConfigValidator.validate_ratio(
+            raw_ratio, "MAX_TOTAL_BUDGET_RATIO", 0.0, 1.0
+        )
+
+📊 監控和驗證體系
+4.1 實時健康檢查
+python
+class SystemHealthMonitor:
+    """系統健康監控"""
+    
+    def __init__(self):
+        self.metrics = {
+            'concurrent_errors': 0,
+            'margin_usage': 0.0,
+            'ws_latency': 0.0,
+            'api_success_rate': 1.0
+        }
+        self.health_status = "HEALTHY"
+        
+    async def continuous_monitoring(self):
+        """持續健康監控"""
+        while True:
+            health_report = await self._generate_health_report()
+            
+            if health_report['overall_status'] == "CRITICAL":
+                await self._trigger_emergency_protocol()
+            elif health_report['overall_status'] == "WARNING":
+                await self._trigger_alert_protocol()
+                
+            await asyncio.sleep(30)  # 30秒檢查間隔
+            
+    async def _generate_health_report(self) -> dict:
+        """生成健康報告"""
+        checks = {
+            'margin_safety': await self._check_margin_safety(),
+            'ws_connection': await self._check_websocket_health(),
+            'api_availability': await self._check_api_health(),
+            'disk_space': await self._check_disk_health()
+        }
+        
+        critical_count = sum(1 for check in checks.values() if check['status'] == 'CRITICAL')
+        warning_count = sum(1 for check in checks.values() if check['status'] == 'WARNING')
+        
+        overall_status = (
+            "CRITICAL" if critical_count > 0 else
+            "WARNING" if warning_count > 0 else
+            "HEALTHY"
+        )
+        
+        return {
+            'overall_status': overall_status,
+            'checks': checks,
+            'timestamp': time.time()
+        }

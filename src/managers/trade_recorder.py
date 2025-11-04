@@ -8,6 +8,8 @@ import os
 from typing import Dict, List, Optional
 from datetime import datetime
 import logging
+import asyncio
+import threading
 
 from src.config import Config
 from src.ml.feature_engine import FeatureEngine
@@ -20,7 +22,7 @@ class TradeRecorder:
     
     def __init__(self, model_scorer=None, model_initializer=None):
         """
-        🔥 v3.18.6+ 初始化交易記錄器（新增模型重訓練）
+        🔥 v3.23+ 初始化交易記錄器（新增並發安全保護）
         
         Args:
             model_scorer: ModelScorer实例（可选）
@@ -30,29 +32,27 @@ class TradeRecorder:
         self.trades_file = self.config.TRADES_FILE
         self.ml_pending_file = self.config.ML_PENDING_FILE
         self.model_scorer = model_scorer
-        self.model_initializer = model_initializer  # 🔥 v3.18.6+
+        self.model_initializer = model_initializer
         
         self.pending_entries: List[Dict] = []
         self.completed_trades: List[Dict] = []
         
-        # 🔥 v3.18.4+：部分平倉記錄（單獨存儲，不污染ML訓練數據）
         self.partial_exits: List[Dict] = []
         self.partial_exits_file = "data/partial_exits.json"
         
-        # 🔥 v3.17.10+：特徵工程引擎（競價上下文特徵）
         self.feature_engine = FeatureEngine()
         logger.info("✅ 特徵工程引擎已啟用（v3.17.10+）")
         
-        # 🔥 v3.18+：信心值/勝率歷史記錄（用於檢測變化）
-        # 格式: {position_key: [(timestamp, confidence, win_probability), ...]}
         self.position_metrics_history: Dict[str, List[tuple]] = {}
-        self.history_retention_seconds = 600  # 保留10分鐘歷史（5分鐘比較+5分鐘緩衝）
+        self.history_retention_seconds = 600
         logger.info("✅ 倉位指標歷史追蹤已啟用（v3.18+，用於強制止盈檢測）")
         
-        # 🔥 v3.18.6+ 重訓練計數器
         self.trades_since_last_retrain = 0
-        self.retrain_interval = int(os.getenv("ML_RETRAIN_INTERVAL", "50"))  # 每50筆交易重訓練
+        self.retrain_interval = int(os.getenv("ML_RETRAIN_INTERVAL", "50"))
         logger.info(f"✅ 模型重訓練已啟用（v3.18.6+，間隔: {self.retrain_interval}筆交易）")
+        
+        self._flush_lock = threading.Lock()
+        logger.info("🔒 並發安全保護已啟用（v3.23+，threading.Lock 保護文件寫入）")
         
         self._load_data()
     
@@ -498,83 +498,106 @@ class TradeRecorder:
         
         return reward / risk if risk > 0 else 0.0
     
+    def _flush_to_disk_sync(self):
+        """
+        🔥 v3.23+ 同步flush（threading.Lock保護）
+        
+        修復竞态条件：
+        - 使用threading.Lock防止並發寫入衝突
+        - 確保completed_trades清空時不會丟失數據
+        - 批量寫入優化性能
+        - 兼容同步和異步上下文
+        """
+        with self._flush_lock:
+            try:
+                if not self.completed_trades and not self.pending_entries:
+                    return
+                
+                os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
+                
+                num_trades = len(self.completed_trades)
+                
+                if num_trades > 0:
+                    batch_data = "\n".join(
+                        json.dumps(trade, ensure_ascii=False, default=str)
+                        for trade in self.completed_trades
+                    ) + "\n"
+                    
+                    with open(self.trades_file, 'a', encoding='utf-8') as f:
+                        f.write(batch_data)
+                    
+                    logger.info(f"💾 保存 {num_trades} 條交易記錄到磁盤")
+                    self.completed_trades = []
+                
+                with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
+                    json.dump(self.pending_entries, f, ensure_ascii=False, indent=2, default=str)
+                
+                from src.config import Config
+                if num_trades > 0 and self.model_initializer and not getattr(Config, 'DISABLE_MODEL_TRAINING', False):
+                    self.trades_since_last_retrain += num_trades
+                    
+                    if self.trades_since_last_retrain >= self.retrain_interval:
+                        logger.info("=" * 60)
+                        logger.info(f"🔄 觸發模型重訓練（累積 {self.trades_since_last_retrain} 筆新交易）")
+                        logger.info("=" * 60)
+                        
+                        self._trigger_model_retrain_safe()
+                        self.trades_since_last_retrain = 0
+                
+            except Exception as e:
+                logger.error(f"保存交易記錄失敗: {e}")
+    
     def _check_and_flush(self):
         """
-        檢查並執行智能 Flush
+        🔥 v3.23+ 智能flush（向後兼容）
         
-        🔥 v3.18.4-Critical: 立即保存pending_entries到磁盤
-        - 確保每次開倉/平倉後都寫入磁盤
-        - 防止系統重啟時丟失original_signal
+        使用threading.Lock統一處理同步和異步上下文
         """
-        # 總是保存pending_entries（開倉記錄）到磁盤
         should_flush = (
-            len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or  # 有平倉交易
-            len(self.pending_entries) > 0  # 🔥 Critical: 或有待配對的開倉記錄
+            len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or
+            len(self.pending_entries) > 0
         )
         
-        if should_flush:
-            self._flush_to_disk()
+        if not should_flush:
+            return
+        
+        self._flush_to_disk_sync()
     
     def _flush_to_disk(self):
         """
-        🔥 v3.18.6+ 將數據寫入磁盤並觸發模型重訓練
+        🔥 v3.23+ 同步包裝器（向後兼容）
+        """
+        self._check_and_flush()
+    
+    def _trigger_model_retrain_safe(self):
+        """
+        🔥 v3.23+ 安全觸發模型重訓練
+        
+        智能調度：
+        - 異步上下文：創建後台任務
+        - 同步上下文：在後台線程中執行
         """
         try:
-            os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
-            
-            # 保存完成的交易記錄
-            num_trades = len(self.completed_trades)
-            with open(self.trades_file, 'a', encoding='utf-8') as f:
-                for trade in self.completed_trades:
-                    f.write(json.dumps(trade, ensure_ascii=False, default=str) + '\n')
-            
-            logger.info(f"💾 保存 {num_trades} 條交易記錄到磁盤")
-            
-            self.completed_trades = []
-            
-            # 🔥 v3.18+ Critical Fix: 添加default=str處理original_signal中的datetime對象
-            with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
-                json.dump(self.pending_entries, f, ensure_ascii=False, indent=2, default=str)
-            
-            # 🔥 v3.18.6+ Critical Fix: 檢查是否需要重訓練模型
-            # 🔒 v3.18.7+: 檢查模型訓練鎖定開關
-            from src.config import Config
-            if num_trades > 0 and self.model_initializer and not getattr(Config, 'DISABLE_MODEL_TRAINING', False):
-                self.trades_since_last_retrain += num_trades
-                
-                if self.trades_since_last_retrain >= self.retrain_interval:
-                    logger.info("=" * 60)
-                    logger.info(f"🔄 觸發模型重訓練（累積 {self.trades_since_last_retrain} 筆新交易）")
-                    logger.info("=" * 60)
-                    
-                    # 🔥 v3.18.6+ Critical Fix: 安全的異步觸發重訓練
-                    import asyncio
-                    try:
-                        # 嘗試獲取運行中的事件循環
-                        loop = asyncio.get_running_loop()
-                        # 如果成功，創建後台任務
-                        loop.create_task(self._retrain_model_async())
-                        logger.info("✅ 已創建後台重訓練任務")
-                    except RuntimeError:
-                        # 沒有運行中的事件循環，嘗試獲取或創建新的
-                        try:
-                            loop = asyncio.get_event_loop()
-                            if loop.is_running():
-                                loop.create_task(self._retrain_model_async())
-                                logger.info("✅ 已創建後台重訓練任務")
-                            else:
-                                # 事件循環存在但未運行，使用run_until_complete
-                                logger.info("⚠️ 使用同步模式執行重訓練（事件循環未運行）")
-                                loop.run_until_complete(self._retrain_model_async())
-                        except Exception as e:
-                            logger.warning(f"⚠️ 無法創建重訓練任務: {e}")
-                            logger.info("💡 提示：下次系統啟動時將使用最新交易數據訓練")
-                    
-                    # 重置計數器
-                    self.trades_since_last_retrain = 0
-            
+            loop = asyncio.get_running_loop()
+            loop.create_task(self._retrain_model_async())
+            logger.info("✅ 已創建後台重訓練任務（異步）")
+        except RuntimeError:
+            thread = threading.Thread(
+                target=self._run_retrain_in_thread,
+                daemon=True
+            )
+            thread.start()
+            logger.info("✅ 已創建後台重訓練任務（線程）")
+    
+    def _run_retrain_in_thread(self):
+        """在新線程中運行模型重訓練"""
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self._retrain_model_async())
+            loop.close()
         except Exception as e:
-            logger.error(f"保存交易記錄失敗: {e}")
+            logger.error(f"❌ 線程重訓練失敗: {e}")
     
     async def _retrain_model_async(self):
         """

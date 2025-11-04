@@ -1,10 +1,11 @@
 """
-CapitalAllocator v3.18+ - 動態預算池 + 質量加權分配
+CapitalAllocator v3.23+ - 動態預算池 + 質量加權分配 + 安全驗證
 職責：
 1. 計算信號質量分數（勝率^0.4 × 信心值^0.4 × 報酬率^0.2）
 2. 競價排名（按分數降序排列）
 3. 動態預算池分配（高分優先，預算耗盡拒絕）
 4. 單倉上限強制執行（≤50%帳戶權益）
+5. 🔥 v3.23+: 多層次安全驗證（除零、NaN、邊界條件）
 """
 
 import logging
@@ -12,6 +13,8 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
 from src.config import Config
+from src.core.safety_validator import SafetyValidator, ValidationError
+from src.core.margin_safety_controller import MarginSafetyController
 
 logger = logging.getLogger(__name__)
 
@@ -79,10 +82,11 @@ def calculate_signal_score(signal: Dict, config: Config) -> float:
 
 class CapitalAllocator:
     """
-    資金分配器（v3.18.7+ 動態預算池版本 + 豁免期質量門檻）
+    資金分配器（v3.23+ 動態預算池 + 安全驗證）
     
     核心理念：
     - 競價排名：質量分數越高，越優先分配資金
+    - 🔥 v3.23+: 多層次安全驗證，防止數學錯誤和邊界條件異常
     - 動態預算池：高分信號優先扣減預算，預算耗盡拒絕低分信號
     - 單倉上限：單個倉位不超過帳戶權益的50%
     - 總預算控制：使用可用保證金的80%
@@ -98,7 +102,7 @@ class CapitalAllocator:
         total_trades: int = 0
     ):
         """
-        初始化資金分配器
+        🔥 v3.23+ 初始化資金分配器（新增安全驗證）
         
         Args:
             config: 配置對象
@@ -113,7 +117,13 @@ class CapitalAllocator:
         self.total_margin = total_margin
         self.total_trades = total_trades
         
-        # 🔥 v3.18.7+ 動態質量門檻（豁免期0.25，正常期0.40）
+        self.margin_controller = MarginSafetyController(
+            warning_threshold=0.80,
+            critical_threshold=0.90,
+            lock_threshold=0.95
+        )
+        logger.info("🔒 保證金安全控制器已啟用（v3.23+）")
+        
         if total_trades < config.BOOTSTRAP_TRADE_LIMIT:
             self.quality_threshold = config.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD
             threshold_mode = f"豁免期模式（交易數:{total_trades}/{config.BOOTSTRAP_TRADE_LIMIT}）"
@@ -164,18 +174,39 @@ class CapitalAllocator:
             logger.debug("💰 無信號需要分配資金")
             return []
         
-        # ===== 步驟1：計算質量分數並過濾 =====
+        # ===== 步驟0：安全驗證 =====
+        try:
+            available_margin = SafetyValidator.validate_budget(
+                available_margin, 
+                "available_margin in allocate_capital"
+            )
+        except ValidationError as e:
+            logger.error(f"❌ 可用保證金驗證失敗: {e}")
+            return []
+        
+        # ===== 步驟1：計算質量分數並過濾 + 槓桿驗證 =====
         scored_signals: List[Tuple[Dict, float]] = []
         
         for signal in signals:
+            symbol = signal.get('symbol', 'UNKNOWN')
+            
+            try:
+                leverage = SafetyValidator.validate_leverage(
+                    signal.get('leverage', 1.0), 
+                    symbol
+                )
+                signal['leverage'] = leverage
+            except ValidationError as e:
+                logger.error(f"❌ 信號驗證失敗，拒絕 {symbol}: {e}")
+                continue
+            
             score = calculate_signal_score(signal, self.config)
             
-            # 🔥 v3.18.7+ 使用動態質量門檻（豁免期0.4，正常期0.6）
             if score >= self.quality_threshold:
                 scored_signals.append((signal, score))
             else:
                 logger.debug(
-                    f"💰 質量不足，拒絕信號 {signal.get('symbol', 'UNKNOWN')} | "
+                    f"💰 質量不足，拒絕信號 {symbol} | "
                     f"分數: {score:.3f} < 門檻: {self.quality_threshold:.3f}"
                 )
         
@@ -194,46 +225,25 @@ class CapitalAllocator:
             f"最高分: {scored_signals[0][1]:.3f} | 最低分: {scored_signals[-1][1]:.3f}"
         )
         
-        # ===== 步驟3：初始化預算（含90%總倉位保證金上限檢查）=====
+        # ===== 步驟3：初始化預算 + 保證金安全控制 =====
         total_budget = available_margin * self.config.MAX_TOTAL_BUDGET_RATIO
         max_single_budget = self.total_account_equity * self.config.MAX_SINGLE_POSITION_RATIO
         
-        # 🔥 v3.18+ 優化：90%總倉位保證金上限檢查（渐进式削減）
-        # 計算還能使用的保證金空間（帳戶總金額×90% - 已佔用保證金）
         max_allowed_total_margin = self.total_balance * self.config.MAX_TOTAL_MARGIN_RATIO
-        remaining_margin_space = max(0, max_allowed_total_margin - self.total_margin)
-        margin_usage_ratio = self.total_margin / self.total_balance if self.total_balance > 0 else 0
         
-        # 🔥 v3.23+ 修復：渐进式削減預算（避免直接清零）
-        if remaining_margin_space < total_budget:
-            # 計算超出部分
-            excess_margin = self.total_margin - max_allowed_total_margin
-            
-            if excess_margin > 0:
-                # 已經超出上限：根據超出程度削減預算
-                # 超出越多，削減越多（1.5倍懲罰）
-                budget_reduction = min(total_budget, excess_margin * 1.5)
-                adjusted_budget = max(0, total_budget - budget_reduction)
-                
-                logger.warning(
-                    f"⚠️ 保證金超出90%上限 | "
-                    f"使用率: {margin_usage_ratio:.1%} > {self.config.MAX_TOTAL_MARGIN_RATIO:.0%} | "
-                    f"原預算: ${total_budget:.2f} → 削減: ${adjusted_budget:.2f} | "
-                    f"超出: ${excess_margin:.2f} | "
-                    f"已佔用: ${self.total_margin:.2f} / 上限: ${max_allowed_total_margin:.2f}"
-                )
-            else:
-                # 接近但未超出上限：使用剩餘空間
-                adjusted_budget = remaining_margin_space
-                
-                logger.warning(
-                    f"⚠️ 接近90%保證金上限 | "
-                    f"使用率: {margin_usage_ratio:.1%} | "
-                    f"原預算: ${total_budget:.2f} → 調整為: ${adjusted_budget:.2f} | "
-                    f"剩餘空間: ${remaining_margin_space:.2f}"
-                )
-            
-            total_budget = adjusted_budget
+        margin_health = self.margin_controller.check_margin_health(
+            self.total_margin, 
+            max_allowed_total_margin
+        )
+        
+        total_budget = self.margin_controller.apply_budget_protection(
+            total_budget, 
+            margin_health
+        )
+        
+        if total_budget <= 0:
+            logger.warning("⚠️ 預算為0，無法分配資金")
+            return []
         
         remaining_budget = total_budget
         
@@ -241,12 +251,23 @@ class CapitalAllocator:
             f"💰 預算池初始化 | "
             f"總預算: ${total_budget:.2f} ({self.config.MAX_TOTAL_BUDGET_RATIO:.0%} × ${available_margin:.2f}) | "
             f"單倉上限: ${max_single_budget:.2f} ({self.config.MAX_SINGLE_POSITION_RATIO:.0%} × ${self.total_account_equity:.2f}) | "
-            f"總倉位保證金: ${self.total_margin:.2f} / ${max_allowed_total_margin:.2f} ({self.config.MAX_TOTAL_MARGIN_RATIO:.0%})"
+            f"保證金狀態: {margin_health.status}"
         )
         
-        # ===== 步驟4：動態分配（修正版：預算池扣減）=====
+        # ===== 步驟4：動態分配 + total_score驗證 =====
         allocated_signals = []
         total_score = sum(score for _, score in scored_signals)
+        
+        try:
+            total_score = SafetyValidator.validate_total_score(
+                total_score, 
+                len(scored_signals)
+            )
+        except ValidationError as e:
+            logger.error(f"{e}")
+            logger.error(f"   信號列表: {[s.get('symbol') for s, _ in scored_signals]}")
+            logger.error(f"   分數列表: {[score for _, score in scored_signals]}")
+            return []
         
         for rank, (signal, score) in enumerate(scored_signals, 1):
             symbol = signal.get('symbol', 'UNKNOWN')
@@ -261,12 +282,21 @@ class CapitalAllocator:
                 break
             
             # 計算理論分配（基於質量分數比例）
-            allocation_ratio = score / total_score
+            allocation_ratio = SafetyValidator.safe_division(
+                score, 
+                total_score, 
+                context=f"allocation_ratio for {symbol}",
+                default=0.0
+            )
             theoretical_budget = total_budget * allocation_ratio
             
-            # 計算單倉上限（名義價值 = 保證金 × 槓桿）
-            # 保證金上限 = 名義價值上限 / 槓桿
-            max_budget_for_leverage = max_single_budget / leverage if leverage > 0 else max_single_budget
+            # 計算單倉上限（使用SafetyValidator防止除零）
+            max_budget_for_leverage = SafetyValidator.safe_division(
+                max_single_budget, 
+                leverage, 
+                context=f"max_budget_for_leverage for {symbol}",
+                default=max_single_budget
+            )
             
             # 應用單倉上限和剩餘預算限制
             actual_budget = min(theoretical_budget, max_budget_for_leverage, remaining_budget)
