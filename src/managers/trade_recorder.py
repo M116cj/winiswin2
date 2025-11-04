@@ -1039,3 +1039,60 @@ class TradeRecorder:
         if position_key in self.position_metrics_history:
             del self.position_metrics_history[position_key]
             logger.debug(f"✅ 清除 {position_key} 的歷史指標記錄")
+    
+    def get_trade_count(self, timeframe: str = '24h', symbol: Optional[str] = None) -> int:
+        """
+        🔥 v3.23: 獲取交易數量（Bootstrap門槛判断）
+        
+        Args:
+            timeframe: 時間範圍（'24h', '7d', 'all'）
+            symbol: 可選交易對過濾
+        
+        Returns:
+            交易數量
+        """
+        try:
+            # 從 completed_trades 中統計
+            if not self.completed_trades:
+                return 0
+            
+            # 計算時間範圍
+            from datetime import timedelta
+            now = datetime.now()
+            
+            if timeframe == '24h':
+                cutoff = now - timedelta(hours=24)
+            elif timeframe == '7d':
+                cutoff = now - timedelta(days=7)
+            elif timeframe == '30d':
+                cutoff = now - timedelta(days=30)
+            else:  # 'all'
+                cutoff = None
+            
+            # 統計符合條件的交易
+            count = 0
+            for trade in self.completed_trades:
+                # 檢查時間範圍
+                if cutoff:
+                    exit_time = trade.get('exit_timestamp')
+                    if exit_time:
+                        if isinstance(exit_time, str):
+                            exit_dt = datetime.fromisoformat(exit_time.replace('Z', '+00:00'))
+                        else:
+                            exit_dt = exit_time
+                        
+                        if exit_dt < cutoff:
+                            continue
+                
+                # 檢查交易對過濾
+                if symbol and trade.get('symbol') != symbol:
+                    continue
+                
+                count += 1
+            
+            logger.debug(f"📊 TradeRecorder.get_trade_count: {timeframe} {symbol or 'ALL'} = {count}")
+            return count
+            
+        except Exception as e:
+            logger.error(f"❌ TradeRecorder.get_trade_count 失敗: {e}")
+            return 0
