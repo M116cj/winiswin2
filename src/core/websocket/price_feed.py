@@ -106,11 +106,11 @@ class PriceFeed(BaseFeed):
         
         while self.running:
             try:
-                # v3.20.6 穩定性優化：更頻繁的keepalive檢測（15秒）
+                # v3.20.7 Railway環境優化：增加ping_timeout容忍網絡延遲
                 async with websockets.connect(
                     url, 
-                    ping_interval=15,      # 每15秒發送ping（從20秒縮短，提升穩定性）
-                    ping_timeout=10,       # 10秒等待pong回應
+                    ping_interval=15,      # 每15秒發送ping
+                    ping_timeout=60,       # 60秒等待pong回應（Railway環境網絡延遲優化）
                     close_timeout=10,      # 10秒關閉超時
                     max_size=2**20         # 1MB消息緩衝區
                 ) as ws:  # type: ignore

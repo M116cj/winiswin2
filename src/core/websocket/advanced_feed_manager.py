@@ -41,11 +41,11 @@ class AdvancedWebSocketManager:
         self.quality_monitor = DataQualityMonitor()
         self.gap_handler = DataGapHandler(binance_client)
         
-        # Railway优化配置
+        # Railway优化配置（v3.20.7 增加ping_timeout容忍网络延迟）
         self.ws_config = {
             'max_symbols_per_connection': 150,
-            'ping_interval': 20,
-            'ping_timeout': 10,
+            'ping_interval': 15,
+            'ping_timeout': 60,
             'reconnect_base_delay': 1,
             'max_reconnect_delay': 30,
             'connection_timeout': 180,

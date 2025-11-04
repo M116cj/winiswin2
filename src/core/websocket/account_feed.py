@@ -195,11 +195,11 @@ class AccountFeed(BaseFeed):
         
         while self.running:
             try:
-                # v3.20.6 穩定性優化：啟用自動ping（與健康檢查並行）
+                # v3.20.7 Railway環境優化：增加ping_timeout容忍網絡延遲
                 async with websockets.connect(
                     url, 
-                    ping_interval=15,      # 啟用自動ping（從None改為15秒，雙重保障）
-                    ping_timeout=10,       # 10秒等待pong回應
+                    ping_interval=15,      # 每15秒發送ping
+                    ping_timeout=60,       # 60秒等待pong回應（Railway環境網絡延遲優化）
                     close_timeout=10,      # 10秒關閉超時
                     max_size=2**20         # 1MB消息緩衝區
                 ) as ws:  # type: ignore
