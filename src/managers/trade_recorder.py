@@ -22,7 +22,13 @@ class TradeRecorder:
     
     def __init__(self, model_scorer=None, model_initializer=None):
         """
-        🔥 v3.23+ 初始化交易記錄器（新增並發安全保護）
+        🔥 v3.23+ 初始化交易記錄器（雙事件循環架構）
+        
+        架構設計：
+        - 主循環：處理交易邏輯（record_entry/record_exit）
+        - Flush循環：專門處理磁盤I/O和模型重訓練（後台線程）
+        - threading.RLock：保護狀態突變（pending_entries/completed_trades）
+        - asyncio.Lock：保護flush操作（在flush循環上）
         
         Args:
             model_scorer: ModelScorer实例（可选）
@@ -51,10 +57,41 @@ class TradeRecorder:
         self.retrain_interval = int(os.getenv("ML_RETRAIN_INTERVAL", "50"))
         logger.info(f"✅ 模型重訓練已啟用（v3.18.6+，間隔: {self.retrain_interval}筆交易）")
         
-        self._flush_lock = threading.Lock()
-        logger.info("🔒 並發安全保護已啟用（v3.23+，threading.Lock 保護文件寫入）")
+        # 🔥 v3.23+ 雙鎖機制
+        self._state_lock = threading.RLock()
+        logger.info("🔒 狀態鎖已啟用（threading.RLock 保護pending_entries/completed_trades）")
+        
+        # 🔥 v3.23+ 專用flush循環（後台線程）
+        self._flush_loop = asyncio.new_event_loop()
+        self._flush_thread = threading.Thread(
+            target=self._run_flush_loop,
+            daemon=True,
+            name="TradeRecorder-Flush-Loop"
+        )
+        self._flush_thread.start()
+        logger.info("🔄 專用flush循環已啟動（後台線程處理磁盤I/O）")
+        
+        # 🔥 v3.23+ 初始化flush循環上的asyncio.Lock
+        self._flush_lock_future = asyncio.run_coroutine_threadsafe(
+            self._init_flush_lock(),
+            self._flush_loop
+        )
+        self._flush_lock_future.result(timeout=5.0)
+        logger.info("🔒 Flush鎖已啟用（asyncio.Lock 保護並發flush操作）")
         
         self._load_data()
+    
+    def _run_flush_loop(self):
+        """運行專用flush循環（在後台線程中）"""
+        asyncio.set_event_loop(self._flush_loop)
+        try:
+            self._flush_loop.run_forever()
+        finally:
+            self._flush_loop.close()
+    
+    async def _init_flush_lock(self):
+        """在flush循環上初始化asyncio.Lock"""
+        self._flush_lock = asyncio.Lock()
     
     def record_entry(
         self, 
@@ -126,9 +163,11 @@ class TradeRecorder:
             entry_data['local_timestamp'] = int(datetime.now().timestamp() * 1000)
             entry_data['websocket_shard_id'] = 0
         
-        self.pending_entries.append(entry_data)
+        # 🔥 v3.23+ 使用狀態鎖保護pending_entries突變
+        with self._state_lock:
+            self.pending_entries.append(entry_data)
         
-        self._check_and_flush()
+        self._maybe_schedule_flush()
     
     def record_exit(self, trade_result: Dict, current_winrate: Optional[float] = None) -> Optional[Dict]:
         """
@@ -143,11 +182,13 @@ class TradeRecorder:
         """
         symbol = trade_result['symbol']
         
+        # 🔥 v3.23+ 使用狀態鎖保護pending_entries突變
         entry_data = None
-        for i, entry in enumerate(self.pending_entries):
-            if entry['symbol'] == symbol:
-                entry_data = self.pending_entries.pop(i)
-                break
+        with self._state_lock:
+            for i, entry in enumerate(self.pending_entries):
+                if entry['symbol'] == symbol:
+                    entry_data = self.pending_entries.pop(i)
+                    break
         
         if not entry_data:
             # 🔥 v3.18+: 舊倉位補救機制 - 從trade_result重建開倉記錄
@@ -165,7 +206,9 @@ class TradeRecorder:
             # 不保存到completed_trades，但仍返回給調用者（用於模型評分）
             return ml_record
         
-        self.completed_trades.append(ml_record)
+        # 🔥 v3.23+ 使用狀態鎖保護completed_trades突變
+        with self._state_lock:
+            self.completed_trades.append(ml_record)
         
         logger.info(f"📝 記錄交易: {symbol} PnL: {ml_record['pnl']:+.2%}")
         
@@ -184,7 +227,7 @@ class TradeRecorder:
             except Exception as e:
                 logger.error(f"模型评分失败: {e}")
         
-        self._check_and_flush()
+        self._maybe_schedule_flush()
         
         return ml_record
     
@@ -498,106 +541,182 @@ class TradeRecorder:
         
         return reward / risk if risk > 0 else 0.0
     
-    def _flush_to_disk_sync(self):
+    def _maybe_schedule_flush(self, force: bool = False):
         """
-        🔥 v3.23+ 同步flush（threading.Lock保護）
+        🔥 v3.23+ 智能調度flush（雙事件循環架構）
         
-        修復竞态条件：
-        - 使用threading.Lock防止並發寫入衝突
-        - 確保completed_trades清空時不會丟失數據
-        - 批量寫入優化性能
-        - 兼容同步和異步上下文
+        根據調用上下文選擇調度策略：
+        - 異步上下文：立即返回（非阻塞）
+        - 同步上下文：等待完成（阻塞）
         """
-        with self._flush_lock:
-            try:
-                if not self.completed_trades and not self.pending_entries:
-                    return
-                
-                os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
-                
-                num_trades = len(self.completed_trades)
-                
-                if num_trades > 0:
-                    batch_data = "\n".join(
-                        json.dumps(trade, ensure_ascii=False, default=str)
-                        for trade in self.completed_trades
-                    ) + "\n"
-                    
-                    with open(self.trades_file, 'a', encoding='utf-8') as f:
-                        f.write(batch_data)
-                    
-                    logger.info(f"💾 保存 {num_trades} 條交易記錄到磁盤")
-                    self.completed_trades = []
-                
-                with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
-                    json.dump(self.pending_entries, f, ensure_ascii=False, indent=2, default=str)
-                
-                from src.config import Config
-                if num_trades > 0 and self.model_initializer and not getattr(Config, 'DISABLE_MODEL_TRAINING', False):
-                    self.trades_since_last_retrain += num_trades
-                    
-                    if self.trades_since_last_retrain >= self.retrain_interval:
-                        logger.info("=" * 60)
-                        logger.info(f"🔄 觸發模型重訓練（累積 {self.trades_since_last_retrain} 筆新交易）")
-                        logger.info("=" * 60)
-                        
-                        self._trigger_model_retrain_safe()
-                        self.trades_since_last_retrain = 0
-                
-            except Exception as e:
-                logger.error(f"保存交易記錄失敗: {e}")
-    
-    def _check_and_flush(self):
-        """
-        🔥 v3.23+ 智能flush（向後兼容）
-        
-        使用threading.Lock統一處理同步和異步上下文
-        """
-        should_flush = (
-            len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or
-            len(self.pending_entries) > 0
-        )
+        with self._state_lock:
+            should_flush = (
+                force or
+                len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or
+                len(self.pending_entries) > 0
+            )
         
         if not should_flush:
             return
         
-        self._flush_to_disk_sync()
+        try:
+            asyncio.get_running_loop()
+            self._schedule_flush(block=False)
+        except RuntimeError:
+            self._schedule_flush(block=True)
+    
+    def _schedule_flush(self, block: bool):
+        """
+        🔥 v3.23+ 調度flush到專用循環
+        
+        Args:
+            block: 是否阻塞等待完成（同步調用者需要）
+        """
+        future = asyncio.run_coroutine_threadsafe(
+            self._flush_to_disk_async(),
+            self._flush_loop
+        )
+        
+        if block:
+            try:
+                timeout = getattr(self.config, 'FLUSH_TIMEOUT', 10.0)
+                future.result(timeout=timeout)
+            except Exception as e:
+                logger.error(f"❌ 同步flush失敗: {e}")
+    
+    async def _flush_to_disk_async(self):
+        """
+        🔥 v3.23+ 異步flush（在專用循環上運行）
+        
+        使用asyncio.Lock保護並發flush操作
+        使用asyncio.to_thread執行非阻塞I/O
+        """
+        async with self._flush_lock:
+            try:
+                snapshot = await asyncio.to_thread(self._snapshot_state)
+                
+                if not snapshot:
+                    return
+                
+                await asyncio.to_thread(self._write_snapshot, snapshot)
+                
+                retrain_ready = await asyncio.to_thread(
+                    self._update_retrain_counter,
+                    snapshot['num_trades']
+                )
+                
+                if retrain_ready:
+                    asyncio.create_task(self._retrain_model_async())
+                
+            except Exception as e:
+                logger.error(f"❌ 異步flush失敗: {e}")
+    
+    def _snapshot_state(self) -> Optional[Dict]:
+        """
+        🔥 v3.23+ 快照狀態（在threading.RLock保護下）
+        
+        Returns:
+            快照字典或None（無需flush）
+        """
+        with self._state_lock:
+            if not self.completed_trades and not self.pending_entries:
+                return None
+            
+            snapshot = {
+                'completed_trades': self.completed_trades.copy(),
+                'pending_entries': self.pending_entries.copy(),
+                'num_trades': len(self.completed_trades)
+            }
+            
+            self.completed_trades = []
+            
+            return snapshot
+    
+    def _write_snapshot(self, snapshot: Dict):
+        """
+        🔥 v3.23+ 寫入快照到磁盤（純同步I/O）
+        
+        Args:
+            snapshot: 狀態快照
+        """
+        try:
+            os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
+            
+            num_trades = snapshot['num_trades']
+            
+            if num_trades > 0:
+                batch_data = "\n".join(
+                    json.dumps(trade, ensure_ascii=False, default=str)
+                    for trade in snapshot['completed_trades']
+                ) + "\n"
+                
+                with open(self.trades_file, 'a', encoding='utf-8') as f:
+                    f.write(batch_data)
+                
+                logger.info(f"💾 保存 {num_trades} 條交易記錄到磁盤")
+            
+            with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
+                json.dump(snapshot['pending_entries'], f, ensure_ascii=False, indent=2, default=str)
+        
+        except Exception as e:
+            logger.error(f"❌ 寫入快照失敗: {e}")
+            with self._state_lock:
+                self.completed_trades.extend(snapshot['completed_trades'])
+    
+    def _update_retrain_counter(self, num_trades: int) -> bool:
+        """
+        🔥 v3.23+ 更新重訓練計數器
+        
+        Args:
+            num_trades: 新增交易數量
+        
+        Returns:
+            是否需要重訓練
+        """
+        from src.config import Config
+        
+        if num_trades == 0:
+            return False
+        
+        if not self.model_initializer:
+            return False
+        
+        if getattr(Config, 'DISABLE_MODEL_TRAINING', False):
+            return False
+        
+        self.trades_since_last_retrain += num_trades
+        
+        if self.trades_since_last_retrain >= self.retrain_interval:
+            logger.info("=" * 60)
+            logger.info(f"🔄 觸發模型重訓練（累積 {self.trades_since_last_retrain} 筆新交易）")
+            logger.info("=" * 60)
+            
+            self.trades_since_last_retrain = 0
+            return True
+        
+        return False
     
     def _flush_to_disk(self):
         """
         🔥 v3.23+ 同步包裝器（向後兼容）
         """
-        self._check_and_flush()
+        self._maybe_schedule_flush(force=True)
     
-    def _trigger_model_retrain_safe(self):
+    def force_flush(self):
         """
-        🔥 v3.23+ 安全觸發模型重訓練
-        
-        智能調度：
-        - 異步上下文：創建後台任務
-        - 同步上下文：在後台線程中執行
+        🔥 v3.23+ 強制同步flush（用於測試）
         """
-        try:
-            loop = asyncio.get_running_loop()
-            loop.create_task(self._retrain_model_async())
-            logger.info("✅ 已創建後台重訓練任務（異步）")
-        except RuntimeError:
-            thread = threading.Thread(
-                target=self._run_retrain_in_thread,
-                daemon=True
-            )
-            thread.start()
-            logger.info("✅ 已創建後台重訓練任務（線程）")
+        self._maybe_schedule_flush(force=True)
     
-    def _run_retrain_in_thread(self):
-        """在新線程中運行模型重訓練"""
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(self._retrain_model_async())
-            loop.close()
-        except Exception as e:
-            logger.error(f"❌ 線程重訓練失敗: {e}")
+    async def flush_now(self):
+        """
+        🔥 v3.23+ 強制異步flush（用於測試）
+        """
+        future = asyncio.run_coroutine_threadsafe(
+            self._flush_to_disk_async(),
+            self._flush_loop
+        )
+        future.result(timeout=10.0)
     
     async def _retrain_model_async(self):
         """
@@ -790,17 +909,6 @@ class TradeRecorder:
             return filtered_trades
         
         return all_trades
-    
-    def force_flush(self):
-        """
-        強制保存所有數據（v3.18.4-hotfix）
-        
-        即使completed_trades為空，也要保存pending_entries
-        這確保系統關閉時不會丟失開倉記錄
-        """
-        # 總是調用_flush_to_disk，因為pending_entries可能有數據
-        self._flush_to_disk()
-        logger.info(f"✅ 強制保存完成: {len(self.completed_trades)} 條完成交易, {len(self.pending_entries)} 條待配對")
     
     async def save_competition_log(self, competition_log: Dict):
         """
