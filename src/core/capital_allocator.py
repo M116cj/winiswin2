@@ -192,20 +192,42 @@ class CapitalAllocator:
         total_budget = available_margin * self.config.MAX_TOTAL_BUDGET_RATIO
         max_single_budget = self.total_account_equity * self.config.MAX_SINGLE_POSITION_RATIO
         
-        # 🔥 v3.18+ 新增：90%總倉位保證金上限檢查
+        # 🔥 v3.18+ 優化：90%總倉位保證金上限檢查（渐进式削減）
         # 計算還能使用的保證金空間（帳戶總金額×90% - 已佔用保證金）
         max_allowed_total_margin = self.total_balance * self.config.MAX_TOTAL_MARGIN_RATIO
         remaining_margin_space = max(0, max_allowed_total_margin - self.total_margin)
+        margin_usage_ratio = self.total_margin / self.total_balance if self.total_balance > 0 else 0
         
-        # 限制總預算不超過剩餘保證金空間
+        # 🔥 v3.23+ 修復：渐进式削減預算（避免直接清零）
         if remaining_margin_space < total_budget:
-            logger.warning(
-                f"⚠️ 90%總倉位保證金上限限制 | "
-                f"原預算: ${total_budget:.2f} → 調整為: ${remaining_margin_space:.2f} | "
-                f"已佔用: ${self.total_margin:.2f} / 上限: ${max_allowed_total_margin:.2f} "
-                f"({self.config.MAX_TOTAL_MARGIN_RATIO:.0%} × ${self.total_balance:.2f})"
-            )
-            total_budget = remaining_margin_space
+            # 計算超出部分
+            excess_margin = self.total_margin - max_allowed_total_margin
+            
+            if excess_margin > 0:
+                # 已經超出上限：根據超出程度削減預算
+                # 超出越多，削減越多（1.5倍懲罰）
+                budget_reduction = min(total_budget, excess_margin * 1.5)
+                adjusted_budget = max(0, total_budget - budget_reduction)
+                
+                logger.warning(
+                    f"⚠️ 保證金超出90%上限 | "
+                    f"使用率: {margin_usage_ratio:.1%} > {self.config.MAX_TOTAL_MARGIN_RATIO:.0%} | "
+                    f"原預算: ${total_budget:.2f} → 削減: ${adjusted_budget:.2f} | "
+                    f"超出: ${excess_margin:.2f} | "
+                    f"已佔用: ${self.total_margin:.2f} / 上限: ${max_allowed_total_margin:.2f}"
+                )
+            else:
+                # 接近但未超出上限：使用剩餘空間
+                adjusted_budget = remaining_margin_space
+                
+                logger.warning(
+                    f"⚠️ 接近90%保證金上限 | "
+                    f"使用率: {margin_usage_ratio:.1%} | "
+                    f"原預算: ${total_budget:.2f} → 調整為: ${adjusted_budget:.2f} | "
+                    f"剩餘空間: ${remaining_margin_space:.2f}"
+                )
+            
+            total_budget = adjusted_budget
         
         remaining_budget = total_budget
         

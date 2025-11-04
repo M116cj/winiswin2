@@ -223,11 +223,25 @@ class PositionController:
                 entry_price = float(pos.get('entryPrice', 0))
                 leverage = float(pos.get('leverage', 1))
                 
-                # 🔥 v3.18.1+：優先使用API直接提供的unrealized PnL（準確且高效）
+                # 🔥 v3.23+ 修復：優先使用API直接提供的unrealized PnL（準確且高效）
+                # 但確保PnL值合理，避免WebSocket數據未更新導致PnL=0的問題
                 if 'unRealizedProfit' in pos:
                     pnl = float(pos.get('unRealizedProfit', 0))
                     # 從倉位金額判斷方向
                     side = 'LONG' if position_amt > 0 else 'SHORT'
+                    
+                    # 🔥 v3.23+ 修復：如果PnL=0但倉位存在，使用markPrice重新計算
+                    # 避免WebSocket數據未更新導致虧損倉位被誤判為盈虧平衡
+                    if pnl == 0 and 'markPrice' in pos:
+                        current_price = float(pos.get('markPrice', entry_price))
+                        if position_amt > 0:  # LONG
+                            pnl = (current_price - entry_price) * position_amt
+                        else:  # SHORT
+                            pnl = (entry_price - current_price) * abs(position_amt)
+                        logger.debug(
+                            f"🔄 {symbol} WebSocket PnL=0，使用markPrice重新計算: ${pnl:+.2f}"
+                        )
+                    
                     # 使用unrealizedPnL時，current_price需反推（僅用於顯示）
                     if position_amt > 0:  # LONG
                         current_price = entry_price + (pnl / position_amt) if position_amt != 0 else entry_price
@@ -386,14 +400,25 @@ class PositionController:
             if margin_usage_ratio <= threshold:
                 return False
             
-            # 步驟6：篩選虧損倉位
-            losing_positions = [p for p in positions if p['pnl'] < 0]
+            # 步驟6：篩選虧損倉位（🔥 v3.23+ 修復：使用pnl_pct檢測）
+            # 🔥 修復：同時檢查pnl和pnl_pct，確保捕獲所有虧損倉位
+            losing_positions = [
+                p for p in positions 
+                if p.get('pnl', 0) < 0 or p.get('pnl_pct', 0) < 0
+            ]
             
             if not losing_positions:
+                # 🔥 v3.23+ 修復：詳細日誌，幫助診斷
                 logger.info(
                     f"🛡️ 保證金使用率 {margin_usage_ratio:.1%} > {threshold:.0%} "
                     f"但無虧損倉位，無需保護"
                 )
+                logger.debug(f"📊 當前倉位PnL詳情：")
+                for p in positions[:5]:  # 只顯示前5個
+                    logger.debug(
+                        f"   • {p['symbol']} {p['side']}: "
+                        f"PnL=${p.get('pnl', 0):+.2f} ({p.get('pnl_pct', 0):+.2%})"
+                    )
                 return False
             
             # 步驟7：找出虧損最大的倉位（絕對金額）
