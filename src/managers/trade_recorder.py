@@ -193,33 +193,50 @@ class TradeRecorder:
         """
         symbol = trade_result['symbol']
         
+        # 🔥 v3.27+ 診斷日誌：record_exit被調用
+        logger.info(f"🔍 [DIAG] record_exit()被調用: {symbol} | PnL={trade_result.get('pnl', 'N/A')}")
+        
         # 🔥 v3.23+ 使用狀態鎖保護pending_entries突變
         entry_data = None
         with self._state_lock:
+            pending_count = len(self.pending_entries)
+            logger.info(f"🔍 [DIAG] 當前pending_entries數量: {pending_count}")
             for i, entry in enumerate(self.pending_entries):
                 if entry['symbol'] == symbol:
                     entry_data = self.pending_entries.pop(i)
+                    logger.info(f"🔍 [DIAG] 找到配對開倉記錄: {symbol}")
                     break
         
         if not entry_data:
             # 🔥 v3.18+: 舊倉位補救機制 - 從trade_result重建開倉記錄
             logger.warning(f"⚠️ {symbol} 未找到開倉記錄（可能是舊倉位），使用補救機制重建")
+            logger.info(f"🔍 [DIAG] 嘗試重建開倉記錄...")
             entry_data = self._rebuild_entry_from_position(trade_result)
             if not entry_data:
                 logger.error(f"❌ {symbol} 補救失敗：無法重建開倉記錄")
+                logger.error(f"🔍 [DIAG] 交易記錄失敗: 無開倉數據")
                 return None
+            else:
+                logger.info(f"🔍 [DIAG] 成功重建開倉記錄")
         
         ml_record = self._create_ml_record(entry_data, trade_result)
+        logger.info(f"🔍 [DIAG] ML記錄已創建: {symbol}")
         
         # 🔥 v3.17.2+：數據品質過濾（僅保存高品質樣本）
-        if not self._is_high_quality_sample(ml_record):
-            logger.debug(f"⚠️ 低品質樣本已過濾: {symbol} (延遲/時間戳/流動性異常)")
+        is_high_quality = self._is_high_quality_sample(ml_record)
+        logger.info(f"🔍 [DIAG] 品質檢查結果: {symbol} → {'通過' if is_high_quality else '未通過'}")
+        
+        if not is_high_quality:
+            logger.warning(f"⚠️ 低品質樣本已過濾: {symbol} (延遲/時間戳/流動性異常)")
+            logger.warning(f"🔍 [DIAG] 樣本被過濾詳情: latency={ml_record.get('latency_ms')}ms, volume={ml_record.get('volume')}")
             # 不保存到completed_trades，但仍返回給調用者（用於模型評分）
             return ml_record
         
         # 🔥 v3.23+ 使用狀態鎖保護completed_trades突變
         with self._state_lock:
             self.completed_trades.append(ml_record)
+            completed_count = len(self.completed_trades)
+            logger.info(f"🔍 [DIAG] 已添加到completed_trades | 當前數量: {completed_count}")
         
         logger.info(f"📝 記錄交易: {symbol} PnL: {ml_record['pnl']:+.2%}")
         
@@ -238,7 +255,9 @@ class TradeRecorder:
             except Exception as e:
                 logger.error(f"模型评分失败: {e}")
         
+        logger.info(f"🔍 [DIAG] 準備觸發flush...")
         self._maybe_schedule_flush()
+        logger.info(f"🔍 [DIAG] flush已觸發")
         
         return ml_record
     
@@ -561,19 +580,26 @@ class TradeRecorder:
         - 同步上下文：等待完成（阻塞）
         """
         with self._state_lock:
+            completed_count = len(self.completed_trades)
+            pending_count = len(self.pending_entries)
             should_flush = (
                 force or
-                len(self.completed_trades) >= self.config.ML_FLUSH_COUNT or
-                len(self.pending_entries) > 0
+                completed_count >= self.config.ML_FLUSH_COUNT or
+                pending_count > 0
             )
+            
+            logger.info(f"🔍 [DIAG] flush條件檢查: force={force}, completed={completed_count}, ML_FLUSH_COUNT={self.config.ML_FLUSH_COUNT}, should_flush={should_flush}")
         
         if not should_flush:
+            logger.info(f"🔍 [DIAG] 不需要flush，跳過")
             return
         
         try:
             asyncio.get_running_loop()
+            logger.info(f"🔍 [DIAG] 異步上下文，非阻塞flush")
             self._schedule_flush(block=False)
         except RuntimeError:
+            logger.info(f"🔍 [DIAG] 同步上下文，阻塞flush")
             self._schedule_flush(block=True)
     
     def _schedule_flush(self, block: bool):
@@ -654,9 +680,11 @@ class TradeRecorder:
             os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
             
             num_trades = snapshot['num_trades']
+            logger.info(f"🔍 [DIAG] _write_snapshot()開始: {num_trades}筆交易")
             
             # ✨ v3.26+ 性能优化：使用OptimizedTradeRecorder批量写入
             if num_trades > 0:
+                logger.info(f"🔍 [DIAG] 準備寫入trades.jsonl...")
                 # 在当前线程中创建新的event loop来运行async操作
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
@@ -665,15 +693,21 @@ class TradeRecorder:
                         self._optimized_recorder.write_trades_batch(snapshot['completed_trades'])
                     )
                     logger.info(f"💾 保存 {num_trades} 條交易記錄到磁盤（OptimizedTradeRecorder）")
+                    logger.info(f"🔍 [DIAG] OptimizedTradeRecorder寫入完成")
                 finally:
                     loop.close()
+            else:
+                logger.info(f"🔍 [DIAG] 無交易記錄，跳過寫入")
             
             # ml_pending.json继续使用同步写入（小文件，全量覆盖）
+            pending_count = len(snapshot['pending_entries'])
+            logger.info(f"🔍 [DIAG] 更新ml_pending.json: {pending_count}筆待平倉")
             with open(self.ml_pending_file, 'w', encoding='utf-8') as f:
                 json.dump(snapshot['pending_entries'], f, ensure_ascii=False, indent=2, default=str)
         
         except Exception as e:
             logger.error(f"❌ 寫入快照失敗: {e}")
+            logger.error(f"🔍 [DIAG] 寫入失敗，恢復數據到內存")
             with self._state_lock:
                 self.completed_trades.extend(snapshot['completed_trades'])
     
