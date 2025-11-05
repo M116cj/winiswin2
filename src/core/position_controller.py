@@ -78,14 +78,20 @@ class PositionController:
             'total_closes': 0,
             'total_adjustments': 0,
             'emergency_closes': 0,  # 100% 虧損緊急平倉
-            'cross_margin_protections': 0  # 🔥 v3.18+：全倉保護平倉次數
+            'cross_margin_protections': 0,  # 🔥 v3.18+：全倉保護平倉次數
+            'time_based_stops': 0  # 🔥 v3.28+：時間基礎止損次數
         }
         
         # 🔥 v3.18+：全倉保護狀態追蹤
         self.last_cross_margin_protection_time = 0  # 上次觸發時間戳
         
+        # 🔥 v3.28+：時間基礎止損追蹤
+        self.position_entry_times = {}  # symbol -> entry_timestamp
+        self.liquidating_symbols = set()  # 正在平倉的symbol集合（避免重複平倉）
+        self.last_time_stop_check = 0  # 上次檢查時間戳
+        
         logger.info("=" * 80)
-        logger.info("✅ PositionController v3.18+ 初始化完成（全倉保護）")
+        logger.info("✅ PositionController v3.28+ 初始化完成（全倉保護 + 時間止損）")
         logger.info(f"   ⏱️  監控間隔: {monitor_interval} 秒")
         logger.info("   🛡️  優先級: 0（最高優先級）")
         logger.info("   🚨 緊急平倉: PnL ≤ -99%")
@@ -95,6 +101,11 @@ class PositionController:
             logger.info(f"   🛡️ 全倉保護: 啟用（{getattr(config, 'CROSS_MARGIN_PROTECTOR_THRESHOLD', 0.85):.0%} 閾值，{getattr(config, 'CROSS_MARGIN_PROTECTOR_COOLDOWN', 120)}秒冷卻）")
         else:
             logger.info("   🛡️ 全倉保護: 停用")
+        if config and hasattr(config, 'TIME_BASED_STOP_LOSS_ENABLED') and config.TIME_BASED_STOP_LOSS_ENABLED:
+            time_threshold_hours = getattr(config, 'TIME_BASED_STOP_LOSS_HOURS', 2.0)
+            logger.info(f"   ⏰ 時間止損: 啟用（持倉>{time_threshold_hours}小時且虧損→強制平倉）")
+        else:
+            logger.info("   ⏰ 時間止損: 停用")
         logger.info("=" * 80)
     
     async def start_monitoring(self):
@@ -132,6 +143,10 @@ class PositionController:
         # 🔥 v3.18+：顯示全倉保護統計
         if self.stats['cross_margin_protections'] > 0:
             logger.info(f"   🛡️ 全倉保護平倉: {self.stats['cross_margin_protections']} 次")
+        
+        # 🔥 v3.28+：顯示時間止損統計
+        if self.stats['time_based_stops'] > 0:
+            logger.info(f"   ⏰ 時間止損平倉: {self.stats['time_based_stops']} 次")
     
     async def _monitoring_cycle(self):
         """單次監控週期（整合PositionMonitor24x7檢測，共享API調用）"""
@@ -155,6 +170,10 @@ class PositionController:
             # 🔥 v3.18+：全倉保護檢查（在trader評估之前執行，Priority 0）
             # 防止虧損稀釋10%預留緩衝，立即市價平倉虧損最大倉位
             cross_margin_protected = await self._check_cross_margin_protection(positions)
+            
+            # 🔥 v3.28+：時間基礎止損檢查（每5分鐘檢查一次）
+            # 持倉超過閾值時間（默認2小時）且虧損，自動市價平倉
+            time_based_closes = await self._check_time_based_stop_loss(positions)
             if cross_margin_protected:
                 # 如果執行了全倉保護平倉，重新獲取倉位列表
                 logger.info("🛡️ 全倉保護已執行，重新獲取倉位列表")
@@ -554,6 +573,217 @@ class PositionController:
         except Exception as e:
             logger.critical(f"❌ 全倉保護平倉異常: {symbol} - {e}", exc_info=True)
             return False
+    
+    async def _check_time_based_stop_loss(self, positions: List[Dict]) -> int:
+        """
+        🔥 v3.28+ 基於時間的強制止損檢查
+        
+        檢查邏輯：
+        1. 遍歷所有持倉，記錄/更新開倉時間
+        2. 檢查持倉時間是否超過閾值（默認2小時）
+        3. 檢查當前是否虧損（unrealized_pnl < 0）
+        4. 如果同時滿足，觸發市價平倉
+        
+        Args:
+            positions: 當前所有持倉列表
+        
+        Returns:
+            int: 執行平倉的數量
+        """
+        # 檢查配置是否啟用
+        if not self.config or not getattr(self.config, 'TIME_BASED_STOP_LOSS_ENABLED', False):
+            return 0
+        
+        try:
+            import time
+            
+            # 步驟1：檢查是否需要執行檢查（避免過於頻繁）
+            check_interval = getattr(self.config, 'TIME_BASED_STOP_LOSS_CHECK_INTERVAL', 300)
+            current_time = time.time()
+            
+            if current_time - self.last_time_stop_check < check_interval:
+                return 0
+            
+            self.last_time_stop_check = current_time
+            
+            # 步驟2：獲取時間閾值（小時）
+            time_threshold_hours = getattr(self.config, 'TIME_BASED_STOP_LOSS_HOURS', 2.0)
+            time_threshold_seconds = time_threshold_hours * 3600
+            
+            closed_count = 0
+            
+            # 步驟3：遍歷所有持倉
+            for position in positions:
+                symbol = position.get('symbol', 'UNKNOWN')
+                
+                # 跳過已在平倉中的symbol
+                if symbol in self.liquidating_symbols:
+                    continue
+                
+                # 🔥 Critical: 檢查持倉數量，跳過已平倉位
+                size = abs(float(position.get('size', 0)))
+                if size < 0.00001:  # 考慮浮點誤差
+                    # 如果持倉已平倉，從記錄中移除
+                    if symbol in self.position_entry_times:
+                        del self.position_entry_times[symbol]
+                    continue
+                
+                # 步驟4：記錄或獲取開倉時間
+                if symbol not in self.position_entry_times:
+                    # 首次發現此持倉，記錄當前時間為開倉時間
+                    self.position_entry_times[symbol] = current_time
+                    logger.debug(f"⏰ 記錄持倉開倉時間: {symbol} @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                    continue  # 剛開倉，無需檢查
+                
+                entry_time = self.position_entry_times[symbol]
+                holding_time = current_time - entry_time
+                
+                # 步驟5：檢查持倉時間是否超過閾值
+                if holding_time < time_threshold_seconds:
+                    continue  # 未超時
+                
+                # 步驟6：獲取當前價格並計算未實現盈虧
+                current_price = position.get('current_price')
+                entry_price = position.get('entry_price')
+                side = position.get('side', 'UNKNOWN')
+                
+                # 計算未實現盈虧
+                unrealized_pnl = position.get('pnl', 0)
+                
+                # 如果pnl不可用，嘗試手動計算
+                if unrealized_pnl == 0 and current_price and entry_price:
+                    if side == 'LONG':
+                        unrealized_pnl = (float(current_price) - float(entry_price)) * size
+                    elif side == 'SHORT':
+                        unrealized_pnl = (float(entry_price) - float(current_price)) * size
+                
+                # 步驟7：檢查是否虧損
+                if unrealized_pnl >= 0:
+                    logger.debug(
+                        f"⏰ {symbol} 持倉{holding_time/3600:.2f}小時但盈利${unrealized_pnl:.2f}，不執行時間止損"
+                    )
+                    continue
+                
+                # 步驟8：觸發時間基礎強制止損
+                holding_hours = holding_time / 3600
+                logger.warning(
+                    f"🔴⏰ 時間止損觸發: {symbol} {side} | "
+                    f"持倉時間 {holding_hours:.2f} 小時 > {time_threshold_hours} 小時 | "
+                    f"虧損 ${unrealized_pnl:.2f}"
+                )
+                
+                # 異步執行平倉（不阻塞其他檢查）
+                success = await self._force_close_time_based(position, holding_hours)
+                if success:
+                    closed_count += 1
+            
+            return closed_count
+            
+        except Exception as e:
+            logger.error(f"❌ 時間止損檢查異常: {e}", exc_info=True)
+            return 0
+    
+    async def _force_close_time_based(self, position: Dict, holding_hours: float) -> bool:
+        """
+        🔥 v3.28+ 時間基礎強制平倉（市價單，Priority HIGH）
+        
+        Args:
+            position: 要平倉的倉位信息
+            holding_hours: 持倉時間（小時）
+        
+        Returns:
+            bool: 是否成功平倉
+        """
+        symbol = position.get('symbol', 'UNKNOWN')
+        
+        # 防止重複平倉
+        if symbol in self.liquidating_symbols:
+            return False
+        
+        self.liquidating_symbols.add(symbol)
+        
+        try:
+            # 平倉方向：LONG倉用SELL平，SHORT倉用BUY平
+            side = "SELL" if position['side'] == "LONG" else "BUY"
+            quantity = position['size']
+            position_side = position['side']  # "LONG" 或 "SHORT"
+            
+            logger.warning(
+                f"🚨⏰ 執行時間止損平倉: {symbol} {side} {quantity} (倉位方向: {position_side}) | "
+                f"原因: 持倉{holding_hours:.2f}小時且虧損${position.get('pnl', 0):.2f}"
+            )
+            
+            # 檢測Position Mode
+            is_hedge_mode = await self.binance_client.get_position_mode()
+            
+            # 依照Binance API協議構建參數
+            order_params = {}
+            if is_hedge_mode:
+                order_params['positionSide'] = position_side
+                logger.info(f"  Hedge Mode: positionSide={position_side}")
+            else:
+                order_params['reduceOnly'] = "true"
+                logger.info("  One-Way Mode: reduceOnly=\"true\"")
+            
+            # 使用HIGH優先級（低於CRITICAL，但高於NORMAL）
+            from src.core.circuit_breaker import Priority
+            
+            # 使用市價單立即平倉
+            result = await self.binance_client.place_order(
+                symbol=symbol,
+                side=side,
+                order_type="MARKET",
+                quantity=quantity,
+                priority=Priority.HIGH,
+                operation_type="close_position",
+                **order_params
+            )
+            
+            if result:
+                logger.warning(
+                    f"✅⏰ 時間止損平倉訂單提交成功: {symbol} (訂單ID: {result.get('orderId')})"
+                )
+                
+                # 記錄到TradeRecorder
+                if self.trade_recorder:
+                    try:
+                        trade_result = {
+                            'symbol': symbol,
+                            'direction': side,
+                            'entry_price': position.get('entry_price'),
+                            'exit_price': position.get('current_price'),
+                            'pnl': position.get('pnl', 0),
+                            'pnl_pct': position.get('pnl_pct', 0),
+                            'close_reason': f"time_based_stop_loss ({holding_hours:.2f}h, loss ${position['pnl']:.2f})",
+                            'close_timestamp': datetime.now(),
+                            'order_id': result.get('orderId')
+                        }
+                        
+                        self.trade_recorder.record_exit(trade_result)
+                        logger.info(
+                            f"📝 時間止損平倉已記錄: {symbol} {side} {quantity} | "
+                            f"持倉{holding_hours:.2f}h | 虧損${position['pnl']:.2f}"
+                        )
+                    except Exception as e:
+                        logger.warning(f"⚠️ 記錄時間止損平倉失敗: {e}")
+                
+                # 統計
+                self.stats['time_based_stops'] += 1
+                
+                # 從開倉時間記錄中移除
+                if symbol in self.position_entry_times:
+                    del self.position_entry_times[symbol]
+                
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            logger.error(f"❌ 時間止損平倉異常: {symbol} - {e}", exc_info=True)
+            return False
+        finally:
+            # 無論成功失敗，都從liquidating集合中移除
+            self.liquidating_symbols.discard(symbol)
     
     async def _execute_decision(
         self,
