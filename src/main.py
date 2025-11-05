@@ -41,6 +41,7 @@ from src.core.unified_scheduler import UnifiedScheduler
 from src.managers.trade_recorder import TradeRecorder
 from src.core.model_evaluator import ModelEvaluator
 from src.core.model_initializer import ModelInitializer
+from src.utils.config_validator import validate_config
 
 # 配置日誌
 logging.basicConfig(
@@ -85,15 +86,24 @@ class SelfLearningTradingSystem:
             logger.info("📌 核心理念: 模型擁有無限制槓桿控制權，唯一準則是勝率 × 信心度")
             logger.info("=" * 80)
             
-            # 驗證配置
-            is_valid, errors = self.config.validate()
+            # 🔥 v3.26+ 全面配置驗證（使用新的ConfigValidator）
+            is_valid, errors, warnings = validate_config(self.config)
+            
             if not is_valid:
                 logger.error("❌ 配置驗證失敗:")
                 for error in errors:
                     logger.error(f"  - {error}")
+                logger.error("=" * 80)
+                logger.error("💡 請修正配置錯誤後重新啟動系統")
+                logger.error("=" * 80)
                 return False
             
-            logger.info("✅ 配置驗證通過")
+            # 打印警告（如果有）
+            if warnings:
+                for warning in warnings:
+                    logger.warning(warning)
+            
+            logger.info("✅ 配置驗證通過（全面驗證：API、交易、風險、指標等）")
             
             # 顯示配置
             self._display_config()
