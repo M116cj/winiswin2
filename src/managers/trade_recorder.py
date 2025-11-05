@@ -58,15 +58,16 @@ class TradeRecorder:
         self.retrain_interval = int(os.getenv("ML_RETRAIN_INTERVAL", "50"))
         logger.info(f"✅ 模型重訓練已啟用（v3.18.6+，間隔: {self.retrain_interval}筆交易）")
         
-        # ✨ v3.26+ 性能优化：启用OptimizedTradeRecorder（批量I/O + 异步写入）
+        # ✨ v3.27+ Critical Fix：buffer_size=1確保實時寫入
+        # 🔥 與ML_FLUSH_COUNT=1對齊，每筆交易立即持久化到磁盤
         self._optimized_recorder = OptimizedTradeRecorder(
             trades_file=self.trades_file,
             pending_file=self.ml_pending_file,
-            buffer_size=50,
+            buffer_size=1,  # 🎯 Critical: 與ML_FLUSH_COUNT=1對齊，實時寫入
             rotation_size_mb=100,
             enable_compression=True
         )
-        logger.info("✨ OptimizedTradeRecorder 已启用（批量I/O优化，性能提升37倍）")
+        logger.info("✨ OptimizedTradeRecorder 已启用（buffer_size=1，實時寫入模式）")
         
         # 🔥 v3.23+ 雙鎖機制
         self._state_lock = threading.RLock()
