@@ -1,9 +1,8 @@
 """
-KlineFeed v3.29+ - 即時K線數據流（優化心跳+合併流訂閱+並發安全）
+KlineFeed v3.23+ - 即時K線數據流（升級版+合併流訂閱+並發安全）
 職責：訂閱Binance @kline_1m WebSocket，取代REST K線輪詢
 升級：時間戳標準化、心跳監控、shard_id支持、合併流訂閱
 🔥 v3.23+: 集成ConcurrentDictManager實現線程安全緩存
-🔥 v3.29+: 使用OptimizedWebSocketFeed（10秒心跳，指数退避重连）
 """
 
 import asyncio
@@ -16,13 +15,13 @@ try:
 except ImportError:
     websockets = None  # type: ignore
 
-from src.core.websocket.optimized_base_feed import OptimizedWebSocketFeed  # v3.29+
+from src.core.websocket.base_feed import BaseFeed
 from src.core.concurrent_dict_manager import ConcurrentDictManager
 
 logger = logging.getLogger(__name__)
 
 
-class KlineFeed(OptimizedWebSocketFeed):
+class KlineFeed(BaseFeed):
     """
     KlineFeed - Binance K線WebSocket監控器（v3.17.2+升級版+合併流）
     
@@ -73,14 +72,7 @@ class KlineFeed(OptimizedWebSocketFeed):
             shard_id: 分片ID（用於追蹤，默認0）
             max_history: 最大歷史K線數量（默認100，用於聚合5m/15m/1h）
         """
-        # v3.29+ 使用优化的WebSocket参数
-        super().__init__(
-            name=f"KlineFeed-Shard{shard_id}",
-            ping_interval=10,  # v3.29+ 優化：20→10秒（Railway環境）
-            ping_timeout=30,
-            max_reconnect_delay=300,
-            health_check_interval=60
-        )
+        super().__init__(name=f"KlineFeed-Shard{shard_id}")
         
         self.symbols = [s.lower() for s in symbols if s]
         self.interval = interval
@@ -98,14 +90,13 @@ class KlineFeed(OptimizedWebSocketFeed):
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
-        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成（v3.29+）")
+        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成")
         logger.info(f"   📊 監控幣種數量: {len(self.symbols)}")
         logger.info(f"   ⏱️  K線週期: {interval}")
         logger.info(f"   📦 歷史緩存大小: {max_history}根K線")
         logger.info(f"   🔌 WebSocket模式: 合併流（單一連線）")
         logger.info(f"   ⚡ 時間戳標準化: server_ts + local_ts + latency_ms")
-        logger.info(f"   💓 心跳監控: 10秒ping（v3.29+優化）")
-        logger.info(f"   🔄 智能重連: 指数退避算法")
+        logger.info(f"   💓 心跳監控: 30秒無訊息→重連")
         logger.info("=" * 80)
     
     async def start(self):
@@ -124,12 +115,8 @@ class KlineFeed(OptimizedWebSocketFeed):
         # 🔥 v3.23+: 啟動緩存自動清理任務
         await self.kline_cache.start_auto_cleanup()
         
-        # v3.29+ OptimizedWebSocketFeed 已内置心跳监控，无需手动启动
-        # await self._start_heartbeat_monitor()  # 已删除，由父类处理
-        
-        # v3.29+ 启动健康检查（OptimizedWebSocketFeed功能）
-        if hasattr(self, 'start_health_check'):
-            await self.start_health_check()
+        # 啟動心跳監控
+        await self._start_heartbeat_monitor()
         
         # 啟動合併流WebSocket監聽（單一連線）
         self.ws_task = asyncio.create_task(self._listen_klines_combined())
@@ -175,10 +162,8 @@ class KlineFeed(OptimizedWebSocketFeed):
                             if 'data' in data and data['data'].get('e') == 'kline':
                                 self._update_kline(data['data']['k'])
                             
-                            # v3.29+ OptimizedWebSocketFeed已内置消息时间追踪
-                            if hasattr(self, 'last_message_time'):
-                                import time
-                                self.last_message_time = time.time()
+                            # 更新心跳
+                            self._update_heartbeat()
                         
                         except asyncio.TimeoutError:
                             try:
@@ -213,12 +198,10 @@ class KlineFeed(OptimizedWebSocketFeed):
             # 🔥 v3.18.8+ Critical Fix: 使用事件時間計算延遲，而非開盤時間
             # 修復前：server_ts = kline['t']（開盤時間，60秒前）→ 延遲顯示60,000ms ❌
             # 修復後：server_ts = kline['E']（事件時間，當前）→ 延遲顯示100-500ms ✅
-            # v3.29+ 简化实现，直接获取时间戳
-            import time
-            event_ts = int(kline.get('E', 0))  # WebSocket事件時間（最準確）
+            event_ts = self.get_server_timestamp_ms(kline, 'E')  # WebSocket事件時間（最準確）
             open_ts = int(kline['t'])  # K線開盤時間（用於時間對齊聚合）
-            local_ts = int(time.time() * 1000)  # 本地时间（毫秒）
-            latency_ms = local_ts - event_ts if event_ts > 0 else 0  # 真實網路延遲
+            local_ts = self.get_local_timestamp_ms()
+            latency_ms = self.calculate_latency_ms(event_ts, local_ts)  # 真實網路延遲
             
             kline_data = {
                 'symbol': kline.get('s'),
@@ -352,8 +335,8 @@ class KlineFeed(OptimizedWebSocketFeed):
         # 🔥 v3.23+: 停止緩存自動清理任務
         await self.kline_cache.stop_auto_cleanup()
         
-        # v3.29+ OptimizedWebSocketFeed会自动停止心跳监控
-        # await self._stop_heartbeat_monitor()  # 已删除，由父类处理
+        # 停止心跳監控
+        await self._stop_heartbeat_monitor()
         
         # 取消WebSocket任務
         if self.ws_task:
