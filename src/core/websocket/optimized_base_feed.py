@@ -1,0 +1,356 @@
+"""
+Optimized WebSocket Feed v3.29+ - 优化心跳和重连机制
+职责：稳定的WebSocket连接管理（Railway环境优化）
+"""
+
+import asyncio
+import logging
+from typing import Optional
+from datetime import datetime
+import time
+
+try:
+    import websockets
+except ImportError:
+    websockets = None
+
+logger = logging.getLogger(__name__)
+
+
+class OptimizedWebSocketFeed:
+    """
+    优化版WebSocket Feed v3.29+
+    
+    特性：
+    1. 优化心跳参数（ping_interval=10s, 适合Railway环境）
+    2. 指数退避算法的智能重连机制
+    3. 连接健康监控任务
+    4. 心跳超时检测和自动恢复
+    5. 优化连接参数（close_timeout, max_size, read/write limits）
+    6. 连接状态追踪（last_pong, reconnect_count）
+    """
+    
+    def __init__(
+        self,
+        name: str = "WebSocketFeed",
+        ping_interval: int = 10,  # 🔥 10秒（优化：20→10）
+        ping_timeout: int = 30,
+        max_reconnect_delay: int = 300,
+        health_check_interval: int = 60
+    ):
+        """
+        初始化优化版WebSocket Feed
+        
+        Args:
+            name: Feed名称
+            ping_interval: 心跳间隔（秒，默认10）
+            ping_timeout: 心跳超时（秒，默认30）
+            max_reconnect_delay: 最大重连延迟（秒）
+            health_check_interval: 健康检查间隔（秒）
+        """
+        self.name = name
+        self.ping_interval = ping_interval
+        self.ping_timeout = ping_timeout
+        self.max_reconnect_delay = max_reconnect_delay
+        self.health_check_interval = health_check_interval
+        
+        # 连接状态
+        self.ws = None
+        self.running = False
+        self.connected = False
+        
+        # 心跳监控
+        self.last_pong_time: float = 0
+        self.last_message_time: float = 0
+        
+        # 重连控制
+        self.reconnect_count: int = 0
+        self.consecutive_failures: int = 0
+        self.last_reconnect_time: float = 0
+        
+        # 优化的连接参数
+        self.connection_params = {
+            'ping_interval': ping_interval,
+            'ping_timeout': ping_timeout,
+            'close_timeout': 10,  # 关闭超时
+            'max_size': 10 * 1024 * 1024,  # 10MB
+            'read_limit': 2 ** 16,  # 64KB
+            'write_limit': 2 ** 16,  # 64KB
+        }
+        
+        # 任务
+        self.heartbeat_task: Optional[asyncio.Task] = None
+        self.health_check_task: Optional[asyncio.Task] = None
+        
+        # 统计
+        self.stats = {
+            'total_messages': 0,
+            'total_errors': 0,
+            'total_reconnects': 0,
+            'uptime_seconds': 0,
+            'avg_latency_ms': 0
+        }
+        
+        logger.info("=" * 80)
+        logger.info(f"✅ {name} 初始化完成（Railway优化版）")
+        logger.info(f"   💓 心跳间隔: {ping_interval}秒（20→10优化）")
+        logger.info(f"   ⏱️  心跳超时: {ping_timeout}秒")
+        logger.info(f"   🔄 指数退避: 1s → {max_reconnect_delay}s")
+        logger.info(f"   🏥 健康检查: 每{health_check_interval}秒")
+        logger.info("=" * 80)
+    
+    async def connect(self, url: str) -> bool:
+        """
+        建立WebSocket连接（带指数退避重连）
+        
+        Args:
+            url: WebSocket URL
+            
+        Returns:
+            是否成功连接
+        """
+        if not websockets:
+            logger.error(f"❌ {self.name}: websockets模块未安装")
+            return False
+        
+        attempt = 0
+        while self.running:
+            try:
+                # 计算退避延迟（指数退避算法）
+                delay = min(
+                    self.max_reconnect_delay,
+                    (2 ** attempt) * 1.0  # 1s, 2s, 4s, 8s, ...
+                )
+                
+                if attempt > 0:
+                    logger.info(
+                        f"🔄 {self.name}: 重连尝试 #{attempt} "
+                        f"(延迟{delay:.1f}秒)..."
+                    )
+                    await asyncio.sleep(delay)
+                
+                # 建立连接
+                logger.info(f"🔌 {self.name}: 正在连接 {url}...")
+                
+                self.ws = await asyncio.wait_for(
+                    websockets.connect(url, **self.connection_params),
+                    timeout=30
+                )
+                
+                self.connected = True
+                self.last_pong_time = time.time()
+                self.last_message_time = time.time()
+                self.reconnect_count += 1
+                self.stats['total_reconnects'] += 1
+                self.consecutive_failures = 0
+                
+                logger.info(f"✅ {self.name}: 连接成功")
+                
+                # 启动心跳监控
+                if not self.heartbeat_task or self.heartbeat_task.done():
+                    self.heartbeat_task = asyncio.create_task(
+                        self._heartbeat_monitor()
+                    )
+                
+                return True
+                
+            except asyncio.TimeoutError:
+                logger.error(f"❌ {self.name}: 连接超时")
+                self.consecutive_failures += 1
+                attempt += 1
+                
+            except Exception as e:
+                logger.error(f"❌ {self.name}: 连接失败: {e}")
+                self.consecutive_failures += 1
+                self.stats['total_errors'] += 1
+                attempt += 1
+                
+                # 如果连续失败过多，增加延迟
+                if self.consecutive_failures > 5:
+                    logger.warning(
+                        f"⚠️ {self.name}: 连续失败{self.consecutive_failures}次，"
+                        f"进入长延迟模式"
+                    )
+                    await asyncio.sleep(60)
+        
+        return False
+    
+    async def _heartbeat_monitor(self) -> None:
+        """
+        心跳监控循环（检测连接健康状态）
+        """
+        logger.info(f"💓 {self.name}: 心跳监控已启动")
+        
+        while self.running and self.connected:
+            try:
+                await asyncio.sleep(self.ping_interval)
+                
+                # 检查上次pong时间
+                time_since_pong = time.time() - self.last_pong_time
+                
+                if time_since_pong > self.ping_timeout:
+                    logger.warning(
+                        f"⚠️ {self.name}: 心跳超时 "
+                        f"({time_since_pong:.1f}秒无响应)"
+                    )
+                    
+                    # 触发重连
+                    self.connected = False
+                    if self.ws:
+                        await self.ws.close()
+                    
+                    break
+                
+                # 发送ping
+                if self.ws and not self.ws.closed:
+                    try:
+                        pong_waiter = await self.ws.ping()
+                        await asyncio.wait_for(pong_waiter, timeout=5.0)
+                        self.last_pong_time = time.time()
+                        logger.debug(f"💓 {self.name}: Pong received")
+                    except asyncio.TimeoutError:
+                        logger.warning(f"⚠️ {self.name}: Ping超时")
+                    except Exception as e:
+                        logger.error(f"❌ {self.name}: Ping失败: {e}")
+                        
+            except Exception as e:
+                logger.error(f"❌ {self.name}: 心跳监控错误: {e}")
+                break
+        
+        logger.info(f"💓 {self.name}: 心跳监控已停止")
+    
+    async def start_health_check(self) -> None:
+        """启动健康检查任务"""
+        if self.health_check_task and not self.health_check_task.done():
+            logger.warning(f"⚠️ {self.name}: 健康检查已在运行")
+            return
+        
+        self.health_check_task = asyncio.create_task(
+            self._health_check_loop()
+        )
+        logger.info(f"🏥 {self.name}: 健康检查任务已启动")
+    
+    async def _health_check_loop(self) -> None:
+        """健康检查循环"""
+        while self.running:
+            try:
+                await asyncio.sleep(self.health_check_interval)
+                
+                health_status = self.get_health_status()
+                
+                if health_status['status'] == 'unhealthy':
+                    logger.warning(
+                        f"🏥 {self.name}: 健康检查失败 - "
+                        f"{health_status['reason']}"
+                    )
+                    
+                    # 触发重连
+                    if self.ws:
+                        await self.ws.close()
+                        self.connected = False
+                
+            except Exception as e:
+                logger.error(f"❌ {self.name}: 健康检查错误: {e}")
+    
+    def get_health_status(self) -> dict:
+        """
+        获取连接健康状态
+        
+        Returns:
+            健康状态字典
+        """
+        time_since_message = time.time() - self.last_message_time
+        time_since_pong = time.time() - self.last_pong_time
+        
+        if not self.connected:
+            return {
+                'status': 'unhealthy',
+                'reason': 'not_connected',
+                'connected': False
+            }
+        
+        if time_since_message > 120:  # 2分钟无消息
+            return {
+                'status': 'unhealthy',
+                'reason': 'no_messages',
+                'time_since_message': time_since_message
+            }
+        
+        if time_since_pong > self.ping_timeout:
+            return {
+                'status': 'unhealthy',
+                'reason': 'ping_timeout',
+                'time_since_pong': time_since_pong
+            }
+        
+        return {
+            'status': 'healthy',
+            'connected': True,
+            'time_since_message': time_since_message,
+            'time_since_pong': time_since_pong,
+            'reconnect_count': self.reconnect_count
+        }
+    
+    async def receive_message(self) -> Optional[str]:
+        """
+        接收WebSocket消息（带异常处理）
+        
+        Returns:
+            消息内容或None
+        """
+        if not self.ws or self.ws.closed:
+            return None
+        
+        try:
+            message = await asyncio.wait_for(
+                self.ws.recv(),
+                timeout=self.ping_timeout
+            )
+            
+            self.last_message_time = time.time()
+            self.stats['total_messages'] += 1
+            
+            return message
+            
+        except asyncio.TimeoutError:
+            logger.warning(f"⚠️ {self.name}: 接收消息超时")
+            return None
+            
+        except websockets.exceptions.ConnectionClosed:
+            logger.warning(f"⚠️ {self.name}: 连接已关闭")
+            self.connected = False
+            return None
+            
+        except Exception as e:
+            logger.error(f"❌ {self.name}: 接收消息失败: {e}")
+            self.stats['total_errors'] += 1
+            return None
+    
+    async def shutdown(self) -> None:
+        """优雅关闭"""
+        logger.info(f"🔄 {self.name}: 开始关闭...")
+        
+        self.running = False
+        self.connected = False
+        
+        # 取消任务
+        if self.heartbeat_task:
+            self.heartbeat_task.cancel()
+        
+        if self.health_check_task:
+            self.health_check_task.cancel()
+        
+        # 关闭连接
+        if self.ws:
+            await self.ws.close()
+        
+        logger.info(f"✅ {self.name}: 已关闭")
+    
+    def get_stats(self) -> dict:
+        """获取统计信息"""
+        return {
+            **self.stats,
+            'connected': self.connected,
+            'reconnect_count': self.reconnect_count,
+            'consecutive_failures': self.consecutive_failures
+        }
