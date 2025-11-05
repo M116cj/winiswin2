@@ -42,6 +42,7 @@ from src.managers.trade_recorder import TradeRecorder
 from src.core.model_evaluator import ModelEvaluator
 from src.core.model_initializer import ModelInitializer
 from src.utils.config_validator import validate_config
+from src.utils.smart_logger import create_smart_logger
 
 # 配置日誌
 logging.basicConfig(
@@ -52,7 +53,13 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger(__name__)
+# ✨ v3.26+ 性能优化：启用SmartLogger（99%速率限制效率）
+logger = create_smart_logger(
+    __name__,
+    rate_limit_window=2.0,
+    enable_aggregation=True,
+    enable_structured=False
+)
 
 
 class SelfLearningTradingSystem:

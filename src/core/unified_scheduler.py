@@ -17,8 +17,15 @@ from src.core.websocket import WebSocketManager  # 🔥 v3.17.2+
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.config import Config
+from src.utils.smart_logger import create_smart_logger
 
-logger = logging.getLogger(__name__)
+# ✨ v3.26+ 性能优化：启用SmartLogger（减少重复日志）
+logger = create_smart_logger(
+    __name__,
+    rate_limit_window=2.0,
+    enable_aggregation=True,
+    enable_structured=False
+)
 
 
 class UnifiedScheduler:

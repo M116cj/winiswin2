@@ -16,8 +16,15 @@ from src.core.rate_limiter import RateLimiter
 from src.core.circuit_breaker import CircuitBreaker, GradedCircuitBreaker, Priority
 from src.core.cache_manager import CacheManager
 from src.clients.binance_errors import BinanceRequestError
+from src.utils.smart_logger import create_smart_logger
 
-logger = logging.getLogger(__name__)
+# ✨ v3.26+ 性能优化：启用SmartLogger（减少API调用重复日志）
+logger = create_smart_logger(
+    __name__,
+    rate_limit_window=3.0,
+    enable_aggregation=True,
+    enable_structured=False
+)
 
 class BinanceClient:
     """Binance USDT 永續合約 API 客戶端"""
