@@ -659,9 +659,14 @@ class PositionController:
             
             logger.info(f"✅ 平倉成功: {symbol} | 訂單 ID={result.get('orderId')}")
             
+            # 🔥 v3.27+ 診斷日誌：檢查trade_recorder狀態
+            logger.info(f"🔍 [DIAG] trade_recorder存在: {self.trade_recorder is not None}")
+            logger.info(f"🔍 [DIAG] result存在: {result is not None}")
+            
             # 🔥 v3.18.4+：記錄平倉數據到TradeRecorder（ML學習關鍵）
             if self.trade_recorder and result:
                 try:
+                    logger.info(f"🔍 [DIAG] 準備調用record_exit: {symbol}")
                     trade_result = {
                         'symbol': symbol,
                         'direction': side,
@@ -674,10 +679,17 @@ class PositionController:
                         'order_id': result.get('orderId')
                     }
                     
+                    logger.info(f"🔍 [DIAG] 調用record_exit: trade_result={trade_result}")
                     self.trade_recorder.record_exit(trade_result)
                     logger.info(f"📝 已記錄平倉: {symbol} | PnL: {position.get('pnl', 0):+.2f} USDT ({position.get('pnl_pct', 0):+.2%})")
                 except Exception as e:
-                    logger.warning(f"⚠️ 記錄平倉數據失敗: {e}")
+                    logger.error(f"❌ 記錄平倉數據失敗: {e}", exc_info=True)
+                    logger.error(f"🔍 [DIAG] 異常堆棧已記錄")
+            else:
+                if not self.trade_recorder:
+                    logger.warning(f"⚠️ trade_recorder為None，無法記錄交易")
+                if not result:
+                    logger.warning(f"⚠️ 平倉result為None，無法記錄交易")
             
         except Exception as e:
             logger.error(f"❌ 平倉失敗 ({position['symbol']}): {e}", exc_info=True)

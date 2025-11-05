@@ -690,9 +690,13 @@ class PositionMonitor24x7:
                 self.forced_closures += 1
                 logger.critical(f"✅ 強制平倉成功: {symbol} (訂單: {result.get('orderId')})")
                 
+                # 🔥 v3.27+ 診斷日誌
+                logger.info(f"🔍 [DIAG] PositionMonitor24x7 - trade_recorder存在: {self.trade_recorder is not None}")
+                
                 # 🔥 v3.18.4+：記錄到交易記錄（使用record_exit）
                 if self.trade_recorder:
                     try:
+                        logger.info(f"🔍 [DIAG] PositionMonitor24x7 - 準備記錄平倉: {symbol}")
                         # 🔥 從trade_recorder獲取entry_price和PnL信息
                         entry_price = None
                         pnl = 0
@@ -732,10 +736,14 @@ class PositionMonitor24x7:
                             'order_id': result.get('orderId')
                         }
                         
+                        logger.info(f"🔍 [DIAG] PositionMonitor24x7 - 調用record_exit: {symbol}")
                         self.trade_recorder.record_exit(trade_result)
                         logger.info(f"📝 平倉已記錄: {symbol} {side} {quantity} @ {current_price} | {reason} | PnL: ${pnl:+.2f}")
                     except Exception as e:
-                        logger.warning(f"⚠️ 記錄平倉失敗: {e}")
+                        logger.error(f"❌ 記錄平倉失敗: {e}", exc_info=True)
+                        logger.error(f"🔍 [DIAG] PositionMonitor24x7 - 異常堆棧已記錄")
+                else:
+                    logger.warning(f"⚠️ trade_recorder為None，無法記錄平倉")
             else:
                 logger.error(f"❌ 強制平倉失敗: {symbol}")
                 

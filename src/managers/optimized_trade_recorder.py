@@ -133,7 +133,10 @@ class OptimizedTradeRecorder:
             trades: 交易数据列表
         """
         if not trades:
+            logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.write_trades_batch: 空交易列表")
             return
+        
+        logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.write_trades_batch: 收到{len(trades)}筆交易")
         
         # 🔥 v3.24.2 Critical Fix: 第一次写入时自动启动定时flush
         await self._ensure_auto_flush_started()
@@ -144,22 +147,31 @@ class OptimizedTradeRecorder:
             for trade in trades
         ]
         
+        logger.info(f"🔍 [DIAG] OptimizedTradeRecorder: 序列化完成，{len(lines)}行")
+        
         async with self._buffer_lock:
             self._write_buffer.extend(lines)
             buffer_count = len(self._write_buffer)
         
+        logger.info(f"🔍 [DIAG] OptimizedTradeRecorder: 緩衝區大小={buffer_count}, 閾值={self.buffer_size}")
+        
         # 批量写入后立即flush
         if buffer_count >= self.buffer_size:
+            logger.info(f"🔍 [DIAG] OptimizedTradeRecorder: 觸發flush")
             await self.flush()
+        else:
+            logger.info(f"🔍 [DIAG] OptimizedTradeRecorder: 未觸發flush，等待更多數據")
     
     async def flush(self):
         """
         强制刷新缓冲区到磁盘（异步I/O）
         """
+        logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 開始flush")
         start_time = datetime.now()
         
         async with self._buffer_lock:
             if not self._write_buffer:
+                logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 緩衝區為空，跳過")
                 return
             
             # 🔥 v3.24.1 Critical Fix: 保存原始lines列表用于失败恢复
@@ -168,14 +180,18 @@ class OptimizedTradeRecorder:
             num_lines = len(self._write_buffer)
             self._write_buffer = []
         
+        logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 準備寫入{num_lines}行到{self.trades_file}")
+        
         # 🔥 检查文件轮转
         await self._maybe_rotate_file()
         
         # 🔥 异步写入磁盘
         try:
             if AIOFILES_AVAILABLE:
+                logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 使用aiofiles異步寫入")
                 await self._async_append(data_to_write)
             else:
+                logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 使用同步fallback寫入")
                 await self._sync_append_fallback(data_to_write)
             
             # 更新统计
@@ -195,10 +211,12 @@ class OptimizedTradeRecorder:
                     (1 - alpha) * self._stats['avg_flush_duration_ms']
                 )
             
-            logger.debug(f"💾 Flush完成: {num_lines}条记录, {bytes_written}字节, {duration_ms:.2f}ms")
+            logger.info(f"💾 Flush完成: {num_lines}条记录, {bytes_written}字节, {duration_ms:.2f}ms")
+            logger.info(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 成功完成")
         
         except Exception as e:
-            logger.error(f"❌ Flush失败: {e}")
+            logger.error(f"❌ Flush失败: {e}", exc_info=True)
+            logger.error(f"🔍 [DIAG] OptimizedTradeRecorder.flush: 寫入失敗，恢復緩衝區")
             # 🔥 v3.24.1 Critical Fix: 恢复原始lines列表（保持缓冲区不变性）
             async with self._buffer_lock:
                 self._write_buffer = lines_snapshot + self._write_buffer

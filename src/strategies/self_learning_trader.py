@@ -880,10 +880,13 @@ class SelfLearningTrader:
                         }
                     }
                     
+                    logger.info(f"🔍 [DIAG] SelfLearningTrader - 準備調用record_entry: {signal['symbol']}")
                     await self.trade_recorder.record_entry(trade_data)
+                    logger.info(f"🔍 [DIAG] SelfLearningTrader - record_entry完成: {signal['symbol']}")
                     logger.debug(f"📝 記錄開倉信號: {signal['symbol']}")
                 except Exception as e:
-                    logger.warning(f"⚠️ 記錄開倉信號失敗: {e}")
+                    logger.error(f"❌ 記錄開倉信號失敗: {e}", exc_info=True)
+                    logger.error(f"🔍 [DIAG] SelfLearningTrader - 異常堆棧已記錄")
             
             logger.info(
                 f"✅ 下單成功: {signal['symbol']} {signal['direction']} | "
