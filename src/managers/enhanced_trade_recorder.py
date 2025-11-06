@@ -412,7 +412,7 @@ class EnhancedTradeRecorder:
     
     def get_trades(self, days: Optional[int] = None) -> List[Dict[str, Any]]:
         """
-        获取交易记录
+        获取交易记录（线程安全）
         
         Args:
             days: 可选，获取最近N天的交易记录
@@ -420,19 +420,21 @@ class EnhancedTradeRecorder:
         Returns:
             交易记录列表（包含pending和completed trades）
         """
-        all_trades = []
+        # 🔒 使用write_lock保护读取操作（防止并发修改）
+        with self._write_lock:
+            all_trades = []
+            
+            # 添加待配对记录（open状态）
+            for entry in self.pending_entries:
+                all_trades.append({
+                    'status': 'open',
+                    **entry
+                })
+            
+            # 添加已完成记录（closed状态）
+            all_trades.extend(self.completed_trades)
         
-        # 添加待配对记录（open状态）
-        for entry in self.pending_entries:
-            all_trades.append({
-                'status': 'open',
-                **entry
-            })
-        
-        # 添加已完成记录（closed状态）
-        all_trades.extend(self.completed_trades)
-        
-        # 如果指定了days，过滤时间范围
+        # 🔓 释放锁后进行时间过滤（不涉及共享数据）
         if days is not None:
             cutoff_time = datetime.now() - timedelta(days=days)
             all_trades = [
