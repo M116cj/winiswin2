@@ -407,6 +407,39 @@ class EnhancedTradeRecorder:
             'completed_count': len(self.completed_trades)
         }
     
+    def get_trades(self, days: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        获取交易记录
+        
+        Args:
+            days: 可选，获取最近N天的交易记录
+            
+        Returns:
+            交易记录列表（包含pending和completed trades）
+        """
+        all_trades = []
+        
+        # 添加待配对记录（open状态）
+        for entry_id, entry_data in self.pending_entries.items():
+            all_trades.append({
+                'entry_id': entry_id,
+                'status': 'open',
+                **entry_data
+            })
+        
+        # 添加已完成记录（closed状态）
+        all_trades.extend(self.completed_trades)
+        
+        # 如果指定了days，过滤时间范围
+        if days is not None:
+            cutoff_time = datetime.now() - timedelta(days=days)
+            all_trades = [
+                t for t in all_trades 
+                if datetime.fromisoformat(t.get('entry_timestamp', '1970-01-01')) >= cutoff_time
+            ]
+        
+        return all_trades
+    
     async def force_flush(self) -> bool:
         """强制刷新所有缓冲区"""
         success = await self.flush_to_disk()
