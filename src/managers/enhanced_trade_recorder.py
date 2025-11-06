@@ -444,6 +444,123 @@ class EnhancedTradeRecorder:
         
         return all_trades
     
+    async def clean_orphan_entries(self, active_positions: List[Dict[str, Any]]) -> int:
+        """
+        清理孤立仓位记录（有开仓记录但实际已无该仓位）
+        
+        Args:
+            active_positions: 当前实际持仓列表 [{symbol, direction, ...}, ...]
+            
+        Returns:
+            清理的孤立记录数量
+        """
+        try:
+            # 构建实际持仓的标识集合
+            active_keys = set()
+            for pos in active_positions:
+                key = f"{pos.get('symbol')}_{pos.get('direction')}"
+                active_keys.add(key)
+            
+            # 🔒 线程安全：查找并删除孤立记录
+            orphan_count = 0
+            with self._write_lock:
+                orphans_to_remove = []
+                
+                for entry in self.pending_entries:
+                    entry_key = f"{entry.get('symbol')}_{entry.get('direction')}"
+                    if entry_key not in active_keys:
+                        orphans_to_remove.append(entry)
+                        orphan_count += 1
+                
+                # 删除孤立记录
+                for orphan in orphans_to_remove:
+                    self.pending_entries.remove(orphan)
+                    logger.warning(
+                        f"🧹 清理孤立仓位记录: {orphan.get('symbol')} {orphan.get('direction')} "
+                        f"(开仓价: {orphan.get('entry_price')}, "
+                        f"开仓时间: {orphan.get('entry_timestamp')})"
+                    )
+                
+                # 如果有清理，保存到文件
+                if orphan_count > 0:
+                    self._save_pending_entries()
+            
+            if orphan_count > 0:
+                logger.info(f"✅ 清理了 {orphan_count} 条孤立仓位记录")
+            
+            return orphan_count
+            
+        except Exception as e:
+            logger.error(f"❌ 清理孤立记录失败: {e}", exc_info=True)
+            return 0
+    
+    async def get_trade_count(self, timeframe: str = '24h', symbol: Optional[str] = None) -> int:
+        """
+        获取交易数量（Bootstrap门槛判断）
+        
+        Args:
+            timeframe: 时间范围（'24h', '7d', '30d', 'all'）
+            symbol: 可选交易对过滤
+            
+        Returns:
+            交易数量
+        """
+        try:
+            # 🔒 线程安全：读取已完成的交易记录
+            with self._write_lock:
+                all_trades = self.completed_trades.copy()
+            
+            if not all_trades:
+                logger.debug(f"📊 get_trade_count: 无历史交易记录")
+                return 0
+            
+            # 计算时间范围
+            now = datetime.now()
+            
+            if timeframe == '24h':
+                cutoff = now - timedelta(hours=24)
+            elif timeframe == '7d':
+                cutoff = now - timedelta(days=7)
+            elif timeframe == '30d':
+                cutoff = now - timedelta(days=30)
+            else:  # 'all'
+                cutoff = None
+            
+            # 统计符合条件的交易
+            count = 0
+            for trade in all_trades:
+                # 检查时间范围
+                if cutoff:
+                    exit_time = trade.get('exit_timestamp')
+                    if exit_time:
+                        try:
+                            if isinstance(exit_time, str):
+                                exit_dt = datetime.fromisoformat(exit_time.replace('Z', '+00:00'))
+                            else:
+                                exit_dt = exit_time
+                            
+                            if exit_dt < cutoff:
+                                continue
+                        except:
+                            # 无效时间戳，跳过
+                            continue
+                
+                # 检查交易对过滤
+                if symbol and trade.get('symbol') != symbol:
+                    continue
+                
+                count += 1
+            
+            logger.debug(
+                f"📊 get_trade_count: {timeframe} {symbol or 'ALL'} = {count} "
+                f"(总记录: {len(all_trades)})"
+            )
+            return count
+            
+        except Exception as e:
+            logger.error(f"❌ get_trade_count 失败: {e}", exc_info=True)
+            return 0
+    
     async def force_flush(self) -> bool:
         """强制刷新所有缓冲区"""
         success = await self.flush_to_disk()
