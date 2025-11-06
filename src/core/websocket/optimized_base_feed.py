@@ -114,12 +114,14 @@ class OptimizedWebSocketFeed:
             return False
         
         attempt = 0
+        max_initial_attempts = 5  # 初始阶段最多尝试5次
+        
         while self.running:
             try:
                 # 计算退避延迟（指数退避算法）
                 delay = min(
                     self.max_reconnect_delay,
-                    (2 ** attempt) * 1.0  # 1s, 2s, 4s, 8s, ...
+                    (2 ** min(attempt, 8)) * 1.0  # 限制最大指数，避免过长延迟
                 )
                 
                 if attempt > 0:
@@ -144,7 +146,7 @@ class OptimizedWebSocketFeed:
                 self.stats['total_reconnects'] += 1
                 self.consecutive_failures = 0
                 
-                logger.info(f"✅ {self.name}: 连接成功")
+                logger.info(f"✅ {self.name}: 连接成功（尝试#{attempt + 1}）")
                 
                 # 启动心跳监控
                 if not self.heartbeat_task or self.heartbeat_task.done():
@@ -155,15 +157,33 @@ class OptimizedWebSocketFeed:
                 return True
                 
             except asyncio.TimeoutError:
-                logger.error(f"❌ {self.name}: 连接超时")
+                logger.error(f"❌ {self.name}: 连接超时（尝试#{attempt + 1}）")
                 self.consecutive_failures += 1
                 attempt += 1
                 
+                # 初始阶段失败太多次则放弃
+                if attempt >= max_initial_attempts and self.reconnect_count == 0:
+                    logger.error(
+                        f"🔴 {self.name}: 初始连接失败{max_initial_attempts}次，"
+                        f"可能是网络问题或Binance限流，暂时跳过此分片"
+                    )
+                    self.connected = False
+                    return False
+                
             except Exception as e:
-                logger.error(f"❌ {self.name}: 连接失败: {e}")
+                logger.error(f"❌ {self.name}: 连接失败: {e}（尝试#{attempt + 1}）")
                 self.consecutive_failures += 1
                 self.stats['total_errors'] += 1
                 attempt += 1
+                
+                # 初始阶段失败太多次则放弃
+                if attempt >= max_initial_attempts and self.reconnect_count == 0:
+                    logger.error(
+                        f"🔴 {self.name}: 初始连接失败{max_initial_attempts}次，"
+                        f"错误: {e}，暂时跳过此分片"
+                    )
+                    self.connected = False
+                    return False
                 
                 # 如果连续失败过多，增加延迟
                 if self.consecutive_failures > 5:
