@@ -448,6 +448,9 @@ class EnhancedTradeRecorder:
         """
         清理孤立仓位记录（有开仓记录但实际已无该仓位）
         
+        注意：此方法仅在内存中删除孤立记录，不立即持久化。
+              待配对记录会在shutdown时自动保存，避免复杂的锁竞争。
+        
         Args:
             active_positions: 当前实际持仓列表 [{symbol, direction, ...}, ...]
             
@@ -461,8 +464,10 @@ class EnhancedTradeRecorder:
                 key = f"{pos.get('symbol')}_{pos.get('direction')}"
                 active_keys.add(key)
             
-            # 🔒 线程安全：查找并删除孤立记录
+            # 🔒 在write_lock下找到并删除孤立记录（内存操作）
             orphan_count = 0
+            orphans_info = []
+            
             with self._write_lock:
                 orphans_to_remove = []
                 
@@ -470,23 +475,31 @@ class EnhancedTradeRecorder:
                     entry_key = f"{entry.get('symbol')}_{entry.get('direction')}"
                     if entry_key not in active_keys:
                         orphans_to_remove.append(entry)
+                        orphans_info.append({
+                            'symbol': entry.get('symbol'),
+                            'direction': entry.get('direction'),
+                            'entry_price': entry.get('entry_price'),
+                            'entry_timestamp': entry.get('entry_timestamp')
+                        })
                         orphan_count += 1
                 
-                # 删除孤立记录
+                # 删除孤立记录（仅内存操作，避免死锁）
                 for orphan in orphans_to_remove:
                     self.pending_entries.remove(orphan)
-                    logger.warning(
-                        f"🧹 清理孤立仓位记录: {orphan.get('symbol')} {orphan.get('direction')} "
-                        f"(开仓价: {orphan.get('entry_price')}, "
-                        f"开仓时间: {orphan.get('entry_timestamp')})"
-                    )
-                
-                # 如果有清理，保存到文件
-                if orphan_count > 0:
-                    self._save_pending_entries()
+            
+            # 🔓 释放锁后记录日志
+            for orphan_info in orphans_info:
+                logger.warning(
+                    f"🧹 清理孤立仓位记录: {orphan_info['symbol']} {orphan_info['direction']} "
+                    f"(开仓价: {orphan_info['entry_price']}, "
+                    f"开仓时间: {orphan_info['entry_timestamp']})"
+                )
             
             if orphan_count > 0:
-                logger.info(f"✅ 清理了 {orphan_count} 条孤立仓位记录")
+                logger.info(
+                    f"✅ 清理了 {orphan_count} 条孤立仓位记录 "
+                    f"(将在shutdown时自动保存)"
+                )
             
             return orphan_count
             
