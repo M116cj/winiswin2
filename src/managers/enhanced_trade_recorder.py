@@ -7,7 +7,7 @@ import json
 import asyncio
 import threading
 from typing import Dict, List, Optional, Any
-from datetime import datetime
+from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, asdict
 import logging
@@ -283,6 +283,9 @@ class EnhancedTradeRecorder:
         """
         async with self._flush_lock:
             with self._db_lock:
+                # 初始化buffer_snapshot（避免LSP警告）
+                buffer_snapshot: List[str] = []
+                
                 try:
                     if not self.write_buffer:
                         return True
@@ -420,11 +423,10 @@ class EnhancedTradeRecorder:
         all_trades = []
         
         # 添加待配对记录（open状态）
-        for entry_id, entry_data in self.pending_entries.items():
+        for entry in self.pending_entries:
             all_trades.append({
-                'entry_id': entry_id,
                 'status': 'open',
-                **entry_data
+                **entry
             })
         
         # 添加已完成记录（closed状态）
