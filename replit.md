@@ -1,13 +1,31 @@
-# SelfLearningTrader v3.22.0 - WebSocket Quality Enhancement
+# SelfLearningTrader v3.23.0 - PostgreSQL Unified Data Layer
 
 ## 📌 項目概述
 
-**版本**：v3.22.0 WebSocket Quality Enhancement  
-**狀態**：✅ WebSocket完整增強套件 - 數據質量監控 + 缺口處理  
+**版本**：v3.23.0 PostgreSQL Unified Data Layer  
+**狀態**：✅ Phase 1完成 - 統一PostgreSQL數據層  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**v3.23 PostgreSQL Unified Data Layer（Phase 1完成）**：
+- ✅ **UnifiedTradeRecorder v4.0（450行）**：
+  - PostgreSQL作為唯一數據源（刪除JSONL/SQLite碎片化）
+  - Fail-Fast初始化機制（DATABASE_URL驗證）
+  - 智能SSL檢測（Railway內部 vs 公開域名）
+  - 完整交易生命週期管理（entry → exit → metadata）
+- ✅ **數據層統一**：
+  - 刪除4個舊版TradeRecorder實現
+  - 統一DatabaseManager + TradingDataService
+  - PostgreSQL連接池管理（asyncpg）
+  - 所有主要模塊已遷移至UnifiedTradeRecorder
+- ✅ **代碼清理**：
+  - 所有舊引用已更新（src/strategies, src/simulation）
+  - 過時測試文件已刪除
+  - 零LSP錯誤
+  - 系統成功運行並連接PostgreSQL
+- ✅ **Architect審查**：全部6個子任務通過
 
 **v3.22 WebSocket Quality Enhancement 核心改進**：
 - ✅ **DataQualityMonitor（數據質量監控器）**：
