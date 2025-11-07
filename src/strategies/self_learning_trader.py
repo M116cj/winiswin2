@@ -851,7 +851,7 @@ class SelfLearningTrader:
                                 'shard_id': kline.get('shard_id', 0)
                             }
                     
-                    # 🔥 v3.23: 使用新的 EnhancedTradeRecorder API
+                    # 🔥 v4.0: 使用UnifiedTradeRecorder API（PostgreSQL）
                     trade_data = {
                         'symbol': signal['symbol'],
                         'direction': signal['direction'],
