@@ -87,10 +87,11 @@ class LeverageEngine:
         if is_bootstrap_period:
             # 豁免期：強制限制在 1-3x 範圍
             # 計算壓制後的槓桿：基於信心度線性映射到 1-3x
-            # confidence 0.4 → 1x
-            # confidence 0.5 → 2x
-            # confidence 0.6+ → 3x
-            bootstrap_leverage = 1.0 + min((confidence - 0.4) / 0.1, 2.0)
+            # confidence < 0.4 → 1x（最小值）
+            # confidence = 0.4 → 1x
+            # confidence = 0.5 → 2x
+            # confidence ≥ 0.6 → 3x（最大值）
+            bootstrap_leverage = 1.0 + max(0, min((confidence - 0.4) / 0.1, 2.0))
             
             if verbose:
                 logger.debug(f"🎓 豁免期槓桿壓制:")
