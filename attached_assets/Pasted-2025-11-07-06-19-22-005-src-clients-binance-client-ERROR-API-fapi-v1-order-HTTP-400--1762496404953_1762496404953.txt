@@ -1,0 +1,31 @@
+2025-11-07 06:19:22,005 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07 06:19:22,005 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 SAHARAUSDT: HTTP 400: Bad Request
+Traceback (most recent call last):
+  File "/app/src/clients/binance_client.py", line 218, in _request
+    result = await self.circuit_breaker.call_async(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/core/circuit_breaker.py", line 339, in call_async
+    raise e
+  File "/app/src/core/circuit_breaker.py", line 334, in call_async
+    result = await func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 180, in _do_request
+    response.raise_for_status()
+  File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+    raise ClientResponseError(
+aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=63.0&side=BUY&symbol=SAHARAUSDT&timestamp=1762496361929&type=MARKET&signature=6da8a2164afc1e915c47168760ae605398ebd053618a84dae5ccb57b9875b613')
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/app/src/strategies/self_learning_trader.py", line 813, in _place_order_and_monitor
+    order_result = await self.binance_client.place_order(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 695, in place_order
+    return await self.create_order(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 600, in create_order
+    return await self._request(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/app/src/clients/binance_client.py", line 226, in _request
+    raise BinanceRequestError(
+src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-07 06:19:22,006 - src.strategies.self_learning_trader - WARNING - ❌ SAHARAUSDT 開倉失敗
