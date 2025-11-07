@@ -98,21 +98,6 @@ class PositionMonitor24x7:
         logger.info(f"   🎯 優先級: 0 (最高)")
         logger.info("=" * 60)
     
-    async def start(self):
-        """
-        🚫 已廢棄：不再獨立啟動監控器（防止重複API調用）
-        
-        v3.17.10+：PositionMonitor24x7 改為被動模式，接收PositionController共享的倉位數據。
-        如果調用此方法會導致HTTP 429速率限制問題。
-        """
-        logger.error(
-            "❌ PositionMonitor24x7.start() 已廢棄！\n"
-            "   原因：避免與PositionController重複API調用導致HTTP 429\n"
-            "   解決：請使用 check_positions_with_data() 接收共享數據"
-        )
-        raise DeprecationWarning(
-            "PositionMonitor24x7.start() 已廢棄，改用 check_positions_with_data() 被動模式"
-        )
     
     async def stop(self):
         """停止監控器"""
@@ -129,14 +114,6 @@ class PositionMonitor24x7:
         
         logger.info(f"⏸️  24/7 倉位監控器已停止 (總檢查: {self.total_checks}, 強制平倉: {self.forced_closures})")
     
-    async def _monitor_loop(self):
-        """
-        🚫 已廢棄：主監控循環（不再使用）
-        
-        v3.17.10+：改為被動模式，由PositionController調用 check_positions_with_data()
-        """
-        logger.error("❌ _monitor_loop() 被意外調用！此方法已廢棄，應使用被動模式")
-        raise DeprecationWarning("_monitor_loop() 已廢棄")
     
     async def check_positions_with_data(self, positions: List[Dict]):
         """
@@ -213,14 +190,6 @@ class PositionMonitor24x7:
             }
             await self._check_single_position(converted)
     
-    async def _check_all_positions(self):
-        """
-        🚫 已廢棄：檢查所有倉位（會重複調用API）
-        
-        v3.17.10+：改用 check_positions_with_data() 接收共享數據
-        """
-        logger.error("❌ _check_all_positions() 被意外調用！此方法已廢棄，會導致API速率限制")
-        raise DeprecationWarning("_check_all_positions() 已廢棄，改用 check_positions_with_data()")
     
     async def _check_single_position(self, position: Dict[str, Any]):
         """
