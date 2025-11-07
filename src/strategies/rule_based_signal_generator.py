@@ -294,22 +294,19 @@ class RuleBasedSignalGenerator:
             
             self._pipeline_stats['stage1_valid_data'] += 1
             
-            # 🔍 v3.19+ 診斷：前3個驗證成功的symbol輸出數據樣本
+            # 🔍 v3.29+ 診斷：前3個驗證成功的symbol輸出數據樣本
             if self._pipeline_stats['stage1_valid_data'] <= 3:
                 logger.info(f"✅ {symbol} 數據驗證通過 (#{self._pipeline_stats['stage1_valid_data']})")
                 logger.info(f"   1h數據: {len(h1_data)}行, 最新收盤={h1_data['close'].iloc[-1]:.2f}")
                 logger.info(f"   15m數據: {len(m15_data)}行, 最新收盤={m15_data['close'].iloc[-1]:.2f}")
                 logger.info(f"   5m數據: {len(m5_data)}行, 最新收盤={m5_data['close'].iloc[-1]:.2f}")
                 
-                # 🔧 v3.19.2 特徵計算診斷
-                from src.features.technical_indicators import TechnicalIndicatorCalculator
-                h1_indicators = TechnicalIndicatorCalculator.calculate_basic_indicators(h1_data['close'])
-                logger.info(f"   🔧 技術指標計算: {len([k for k, v in h1_indicators.items() if v is not None])}個成功")
-                for ind_name in ['ema_20', 'ema_50', 'rsi_14', 'sma_10']:
-                    ind_val = h1_indicators.get(ind_name)
-                    status = "✅" if ind_val is not None else "❌"
-                    count = len(ind_val) if ind_val is not None else 0
-                    logger.info(f"     {status} {ind_name}: {count}個值")
+                # 🔧 v3.29+ 使用統一的 EliteTechnicalEngine
+                try:
+                    indicators_result = self.tech_engine.calculate_all_indicators(h1_data, symbol=symbol)
+                    logger.info(f"   🔧 技術指標計算成功: EMA={indicators_result.ema_fast:.2f}, RSI={indicators_result.rsi:.1f}, ATR={indicators_result.atr:.4f}")
+                except Exception as e:
+                    logger.warning(f"   ⚠️ 技術指標診斷失敗: {e}")
             
             # 計算所有指標
             indicators = self._calculate_all_indicators(h1_data, m15_data, m5_data)
