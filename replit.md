@@ -1,13 +1,28 @@
-# SelfLearningTrader v3.23.0 - PostgreSQL Unified Data Layer
+# SelfLearningTrader v4.0 - ML Feature Schema Unification
 
 ## 📌 項目概述
 
-**版本**：v3.23.0 PostgreSQL Unified Data Layer  
-**狀態**：✅ Phase 1完成 - 統一PostgreSQL數據層  
+**版本**：v4.0 ML Feature Schema Unification  
+**狀態**：✅ ML Bug修復完成 - 統一12特徵Schema  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**v4.0 ML Feature Schema Unification（CRITICAL BUG修復）**：
+- 🐛 **問題**：ModelInitializer訓練時使用44特徵，MLModelWrapper預測時只使用12特徵
+- ✅ **修復**：建立統一12特徵Schema，訓練和預測完全一致
+- ✅ **核心改進**：
+  - 創建`src/ml/feature_schema.py`：CANONICAL_FEATURE_NAMES（12個ICT/SMC標準特徵）
+  - 更新ModelInitializer：PostgreSQL優先 → JSONL fallback → defensive defaults
+  - 修復Event Loop問題：`_load_training_data_from_trades()`改為async
+  - 修復數據加載：即使trades缺少features也使用FEATURE_DEFAULTS
+  - 更新FeatureEngine和MLModelWrapper：全部使用統一schema
+- ✅ **12個標準特徵**：
+  - 基礎特徵（8個）：market_structure, order_blocks_count, institutional_candle, liquidity_grab, order_flow, fvg_count, trend_alignment_enhanced, swing_high_distance
+  - 合成特徵（4個）：structure_integrity, institutional_participation, timeframe_convergence, liquidity_context
+- ✅ **訓練一致性保證**：訓練和預測使用完全相同的特徵順序和默認值
+- ✅ **Architect審查**：全部5個子任務通過，關鍵問題全部修復
 
 **v3.23 PostgreSQL Unified Data Layer（Phase 1完成）**：
 - ✅ **UnifiedTradeRecorder v4.0（450行）**：
@@ -80,11 +95,12 @@ SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統�
 
 ## 🎯 核心特性
 
-### 1. 🧠 機器學習驅動
-- **XGBoost模型**：44個特徵完整記錄與預測
+### 1. 🧠 機器學習驅動（v4.0統一）
+- **XGBoost模型**：12個ICT/SMC特徵（訓練和預測一致）
+- **統一Schema**：CANONICAL_FEATURE_NAMES確保一致性
 - **自動重訓練**：每50筆交易觸發模型更新
 - **勝率預測**：基於歷史數據持續優化
-- **特徵完整性**：100%驗證通過（447行測試套件）
+- **數據源**：PostgreSQL優先 → JSONL fallback → 合成數據
 
 ### 2. 🎚️ 無限槓桿控制
 - **動態槓桿**：基於勝率 × 信心度
@@ -227,9 +243,10 @@ src/
 ├── clients/                     # Binance API客戶端
 │   ├── binance_client.py
 │   └── binance_errors.py
-├── ml/                          # 機器學習
-│   ├── model_wrapper.py         # XGBoost封裝
-│   └── feature_engine.py        # 特徵工程
+├── ml/                          # 機器學習（v4.0統一）
+│   ├── feature_schema.py        # 🔥 v4.0：統一12特徵Schema
+│   ├── model_wrapper.py         # XGBoost封裝（使用統一schema）
+│   └── feature_engine.py        # 特徵工程（使用統一schema）
 ├── strategies/                  # 交易策略
 │   ├── self_learning_trader.py  # 主策略
 │   └── rule_based_signal_generator.py # ICT/SMC信號
@@ -279,19 +296,26 @@ RuleBasedSignalGenerator
   └─ 44個特徵字段生成
 ```
 
-### 2. 特徵提取
+### 2. 特徵提取（v4.0統一）
 ```
 FeatureEngine
-  ├─ 基礎特徵（價格、成交量）
-  ├─ 競價上下文（勝率、信心度）
-  └─ WebSocket特徵（實時數據）
+  ├─ 基礎ICT/SMC特徵（8個）
+  │   ├─ market_structure, order_blocks_count
+  │   ├─ institutional_candle, liquidity_grab
+  │   ├─ order_flow, fvg_count
+  │   └─ trend_alignment_enhanced, swing_high_distance
+  ├─ 合成特徵（4個）
+  │   ├─ structure_integrity, institutional_participation
+  │   └─ timeframe_convergence, liquidity_context
+  └─ 使用CANONICAL_FEATURE_NAMES統一順序
 ```
 
-### 3. ML預測
+### 3. ML預測（v4.0統一）
 ```
 MLModelWrapper
   ├─ XGBoost模型加載
-  ├─ 44特徵輸入
+  ├─ 12特徵輸入（與訓練一致）
+  │   └─ 使用CANONICAL_FEATURE_NAMES提取
   └─ 勝率預測輸出
 ```
 
@@ -304,12 +328,13 @@ SelfLearningTrader
   └─ 訂單執行
 ```
 
-### 5. 交易記錄
+### 5. 交易記錄（v4.0 PostgreSQL優先）
 ```
-TradeRecorder
-  ├─ 44特徵完整記錄
-  ├─ trades.jsonl持久化
-  └─ 每50筆觸發重訓練
+UnifiedTradeRecorder
+  ├─ PostgreSQL作為主數據源
+  ├─ 12個ICT/SMC特徵完整記錄
+  ├─ metadata.features存儲特徵字典
+  └─ 每50筆觸發重訓練（使用統一schema）
 ```
 
 ---
@@ -390,6 +415,73 @@ CYCLE_INTERVAL: int = 60
 ---
 
 ## 🎉 最新更新
+
+### v4.0.0 (2025-11-07) - ML Feature Schema Unification 🔥
+
+**🐛 關鍵ML Bug修復**
+
+#### **問題描述**
+- ModelInitializer訓練時使用44個特徵
+- MLModelWrapper預測時只使用12個ICT/SMC特徵
+- 導致特徵不匹配，ML預測失效，系統fallback到規則引擎
+
+#### **修復實施**
+
+1. **✅ 統一特徵Schema（src/ml/feature_schema.py）**
+   - CANONICAL_FEATURE_NAMES：12個標準特徵名稱列表
+   - extract_canonical_features()：從任意特徵字典提取12個標準特徵
+   - features_to_vector()：轉換為固定順序向量
+   - FEATURE_DEFAULTS：所有特徵的默認值
+
+2. **✅ ModelInitializer更新**
+   - 修復Event Loop問題：`_load_training_data_from_trades()`改為async
+   - PostgreSQL優先加載（通過UnifiedTradeRecorder）
+   - JSONL fallback（向後兼容）
+   - Defensive defaults：即使trades缺少features也能訓練
+   - 使用features_to_vector()確保12維向量
+
+3. **✅ FeatureEngine更新**
+   - 導入CANONICAL_FEATURE_NAMES, FEATURE_DEFAULTS
+   - 添加缺失的成員變量（latency_history, shard_load_counter）
+   - get_feature_names()返回CANONICAL_FEATURE_NAMES
+
+4. **✅ MLModelWrapper更新**
+   - 使用CANONICAL_FEATURE_NAMES提取特徵
+   - _extract_features_from_signal()：按統一順序提取12特徵
+   - 所有注釋更新為v4.0
+
+#### **12個標準ICT/SMC特徵**
+
+**基礎特徵（8個）**：
+1. market_structure - 市場結構（BOS/CHOCH）
+2. order_blocks_count - Order Block數量
+3. institutional_candle - 機構K線識別
+4. liquidity_grab - 流動性捕獲檢測
+5. order_flow - 訂單流分析
+6. fvg_count - Fair Value Gap數量
+7. trend_alignment_enhanced - 多時間框架趨勢對齊
+8. swing_high_distance - 擺動高點距離
+
+**合成特徵（4個）**：
+9. structure_integrity - 結構完整性
+10. institutional_participation - 機構參與度
+11. timeframe_convergence - 時間框架收斂
+12. liquidity_context - 流動性上下文
+
+#### **Architect審查結果**
+- ✅ 所有5個子任務通過審查
+- ✅ Event loop問題已修復
+- ✅ Defensive defaults正確實現
+- ✅ 訓練和預測使用完全相同的特徵順序
+- ✅ PostgreSQL集成正常工作
+
+#### **影響**
+- 🎯 訓練和預測特徵完全一致（100%）
+- 🎯 ML模型現在可以正確使用
+- 🎯 系統不再依賴規則引擎fallback
+- 🎯 PostgreSQL作為主數據源
+
+---
 
 ### v3.20.0 (2025-11-02) - Elite Refactoring Phase 1 🚀
 
