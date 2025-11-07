@@ -1701,13 +1701,14 @@ class SelfLearningTrader:
             # 平倉方向：多頭平倉用SELL，空頭平倉用BUY
             close_side = 'SELL' if side == 'LONG' else 'BUY'
             
-            # 市價平倉
+            # 市價平倉（依照Binance API協議自動適配Position Mode）
+            # place_order 會自動判斷 Hedge/One-Way Mode 並添加正確參數
             order_result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=close_side,
                 order_type='MARKET',
                 quantity=size,
-                reduce_only=True  # 僅平倉
+                reduceOnly="true"  # 🔥 Critical: 字符串"true"，符合Binance API協議
             )
             
             if not order_result:

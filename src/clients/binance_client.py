@@ -588,6 +588,11 @@ class BinanceClient:
         if stop_price:
             params['stopPrice'] = stop_price
         
+        # 🔥 Critical Fix: LIMIT訂單必須包含timeInForce（Binance API協議要求）
+        if order_type == "LIMIT" and 'timeInForce' not in params:
+            params['timeInForce'] = 'GTC'  # 默認 Good Till Cancel
+            logger.debug(f"  自動添加 timeInForce=GTC (LIMIT訂單必需參數)")
+        
         logger.info(f"創建訂單: {symbol} {side} {order_type} {formatted_quantity}")
         if formatted_quantity != quantity:
             logger.debug(f"  數量已格式化: {quantity} → {formatted_quantity}")
