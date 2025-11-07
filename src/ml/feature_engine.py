@@ -1,14 +1,14 @@
 """
-特徵工程引擎 v3.19 (Pure ICT/SMC)
+特徵工程引擎 v4.0 (Pure ICT/SMC + Unified Schema)
 職責：純ICT/SMC高級特徵（移除傳統技術指標）
 
-v3.19 特徵構成：
+v4.0 特徵構成（统一schema）：
 - 8個基礎特徵：market_structure, order_blocks_count, institutional_candle, 
                 liquidity_grab, order_flow, fvg_count, trend_alignment_enhanced, swing_high_distance
 - 4個合成特徵：structure_integrity, institutional_participation, 
                 timeframe_convergence, liquidity_context
 
-總特徵數：56 → 12（純ICT/SMC）
+總特徵數：12個（與訓練一致）
 """
 
 import logging
@@ -16,6 +16,7 @@ import numpy as np
 from typing import Dict, Optional, Deque, List
 from collections import deque
 from src.utils.ict_tools import ICTTools
+from src.ml.feature_schema import CANONICAL_FEATURE_NAMES, FEATURE_DEFAULTS
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +37,14 @@ class FeatureEngine:
         # 🔥 v3.19：訂單流緩衝（用於計算實時訂單流）
         self.trade_buffer: Deque[Dict] = deque(maxlen=1000)
         
+        # v3.17.2+: WebSocket特徵追蹤
+        self.latency_history: Deque[float] = deque(maxlen=100)
+        self.shard_load_counter: Dict[int, int] = {}
+        
         logger.info("=" * 60)
-        logger.info("✅ 特徵工程引擎已創建 v3.19 (Pure ICT/SMC)")
+        logger.info("✅ 特徵工程引擎已創建 v4.0 (Pure ICT/SMC + Unified Schema)")
         logger.info("   🎯 功能：純ICT/SMC機構交易特徵")
-        logger.info("   📊 總特徵數：12個（8基礎 + 4合成）")
+        logger.info("   📊 總特徵數：12個（與訓練一致）")
         logger.info("=" * 60)
     
     def build_enhanced_features(
@@ -220,26 +225,12 @@ class FeatureEngine:
         """
         獲取所有特徵名稱（12個純ICT/SMC特徵）
         
+        v4.0: 使用统一的CANONICAL_FEATURE_NAMES（与训练一致）
+        
         Returns:
-            特徵名稱列表（v3.19：僅12個ICT/SMC特徵）
+            特徵名稱列表（v4.0：統一schema的12個ICT/SMC特徵）
         """
-        return [
-            # 🔥 ICT/SMC基礎特徵 (8)
-            'market_structure',           # 市场结构
-            'order_blocks_count',         # 订单块数量
-            'institutional_candle',       # 机构K线
-            'liquidity_grab',             # 流动性抓取
-            'order_flow',                 # 订单流
-            'fvg_count',                  # FVG数量
-            'trend_alignment_enhanced',   # 多时间框架对齐
-            'swing_high_distance',        # 价格位置上下文
-            
-            # 🔥 ICT/SMC合成特徵 (4)
-            'structure_integrity',        # 结构完整性
-            'institutional_participation', # 机构参与度
-            'timeframe_convergence',      # 时间框架收敛
-            'liquidity_context'           # 流动性情境
-        ]
+        return CANONICAL_FEATURE_NAMES
     
     # ==================== v3.17.2+ WebSocket專屬特徵方法 ====================
     
@@ -632,7 +623,7 @@ class FeatureEngine:
         std = np.std(trends)
         convergence = 1 - (std / 2)
         
-        return max(0, min(1, convergence))
+        return max(0.0, min(1.0, convergence))
     
     def _calculate_liquidity_context(
         self,

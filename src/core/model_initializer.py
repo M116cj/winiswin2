@@ -1,6 +1,10 @@
 """
 v3.17+ 模型自動初始化系統
 部署到 Railway 後立即訓練，無需手動干預
+
+v4.0 Feature Unification:
+- 使用统一的12个ICT/SMC特征（与预测保持一致）
+- 训练和推理使用相同的feature_schema
 """
 
 import os
@@ -11,6 +15,12 @@ from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 import json
 from src.config import Config
+from src.ml.feature_schema import (
+    CANONICAL_FEATURE_NAMES,
+    extract_canonical_features,
+    features_to_vector,
+    FEATURE_DEFAULTS
+)
 
 logger = logging.getLogger(__name__)
 
@@ -192,15 +202,15 @@ class ModelInitializer:
         """
         training_data = []
         
-        # 🔥 v3.18.6+ 策略 1: 從 trades.jsonl 直接加載（最高優先級）
-        logger.info("📊 從 trades.jsonl 加載真實交易數據...")
-        real_trades = self._load_training_data_from_trades()
+        # 🔥 v4.0+: 從 PostgreSQL/JSONL 加載真實交易數據
+        logger.info("📊 加載真實交易數據（PostgreSQL優先）...")
+        real_trades = await self._load_training_data_from_trades()
         
         if real_trades:
-            logger.info(f"✅ 從 trades.jsonl 加載 {len(real_trades)} 筆真實交易數據")
+            logger.info(f"✅ 加載 {len(real_trades)} 筆真實交易數據（12特徵）")
             training_data.extend(real_trades)
         else:
-            logger.warning("⚠️ trades.jsonl 無數據或不存在")
+            logger.warning("⚠️ PostgreSQL/JSONL 無數據或不存在")
         
         # 策略 2: 若數據不足，生成合成樣本
         if len(training_data) < self.training_params['min_samples']:
@@ -407,21 +417,59 @@ class ModelInitializer:
         
         return samples
     
-    def _load_training_data_from_trades(self) -> List[Dict]:
+    async def _load_training_data_from_trades(self) -> List[Dict]:
         """
-        🔥 v3.18.6+ Critical Fix: 從 trades.jsonl 加載真實交易數據
+        🔥 v4.0 Feature Unification: 從 PostgreSQL 加載真實交易數據
         
-        這是真正的ML訓練數據來源，使用TradeRecorder記錄的44個特徵
+        使用统一的12个ICT/SMC特征（与预测一致）
         
         Returns:
-            訓練數據列表（每個元素包含完整的44個特徵 + label）
+            訓練數據列表（每個元素包含12個標準特徵 + label）
         """
         training_data = []
+        
+        # v4.0: 优先从PostgreSQL读取
+        if self.trade_recorder and hasattr(self.trade_recorder, 'data_service'):
+            try:
+                trades = await self.trade_recorder.data_service.get_all_trades()
+                
+                for trade in trades:
+                    # 提取元数据中的特征
+                    metadata = trade.get('metadata', {})
+                    features_dict = metadata.get('features', {})
+                    
+                    # v4.0: 即使缺少features，也使用默认值（defensive）
+                    if not features_dict:
+                        logger.debug(f"⚠️ Trade {trade.get('id')} 缺少features，使用默认值")
+                        features_dict = {}
+                    
+                    # 提取12个标准特征（缺失字段使用FEATURE_DEFAULTS）
+                    canonical = extract_canonical_features(features_dict)
+                    
+                    # 确定标签（outcome: WIN=1, LOSS=0）
+                    label = 1 if trade.get('outcome') == 'WIN' else 0
+                    
+                    training_data.append({
+                        'features': canonical,
+                        'label': label,
+                        'pnl': float(trade.get('pnl', 0))
+                    })
+                
+                if training_data:
+                    logger.info(f"✅ 從 PostgreSQL 加載 {len(training_data)} 筆訓練數據（12特徵）")
+                    return training_data
+                else:
+                    logger.warning("⚠️ PostgreSQL無可用訓練數據，嘗試JSONL備援")
+                
+            except Exception as e:
+                logger.warning(f"⚠️ 從PostgreSQL加載失敗: {e}，嘗試JSONL備援")
+        
+        # Fallback: 从trades.jsonl读取（向后兼容 or PostgreSQL不足）
         trades_file = Path("data/trades.jsonl")
         
         if not trades_file.exists():
             logger.warning(f"⚠️ 訓練數據文件不存在: {trades_file}")
-            return training_data
+            return training_data  # 返回PostgreSQL数据（可能为空）
         
         try:
             with open(trades_file, 'r', encoding='utf-8') as f:
@@ -429,32 +477,39 @@ class ModelInitializer:
                     if line.strip():
                         try:
                             trade = json.loads(line)
-                            # 確保有必要的字段
-                            if 'label' in trade and 'confidence' in trade:
-                                training_data.append(trade)
-                        except json.JSONDecodeError as e:
-                            logger.debug(f"跳過無效JSON行: {e}")
+                            
+                            # v4.0: 从旧格式提取12个标准特征
+                            features_dict = trade.get('features', trade)
+                            canonical = extract_canonical_features(features_dict)
+                            
+                            label = int(trade.get('label', trade.get('outcome') == 'WIN'))
+                            
+                            training_data.append({
+                                'features': canonical,
+                                'label': label,
+                                'pnl': float(trade.get('pnl', 0))
+                            })
+                        except (json.JSONDecodeError, Exception) as e:
+                            logger.debug(f"跳過無效數據行: {e}")
                             continue
             
-            logger.info(f"✅ 從 {trades_file} 加載 {len(training_data)} 筆訓練數據")
+            if training_data:
+                logger.info(f"✅ 從 {trades_file} 加載 {len(training_data)} 筆訓練數據（12特徵）")
             
         except Exception as e:
             logger.error(f"❌ 加載訓練數據失敗: {e}")
         
         return training_data
     
-    def _extract_44_features(self, trade: Dict) -> Optional[List[float]]:
+    def _extract_44_features_DEPRECATED(self, trade: Dict) -> Optional[List[float]]:
         """
-        🔥 v3.18.6+ Critical Fix: 從交易記錄提取44個特徵（容錯處理）
+        ⚠️ DEPRECATED v4.0: This method is no longer used
         
-        使用默認值處理缺失字段，確保歷史數據可用性
-        
-        Args:
-            trade: 交易記錄（可能缺少部分字段）
-        
-        Returns:
-            44個特徵的數值列表（總是成功返回，除非發生異常）
+        v4.0 now uses 12 canonical ICT/SMC features via feature_schema.py
+        Kept for reference only
         """
+        logger.warning("⚠️ _extract_44_features is deprecated, use feature_schema instead")
+        return None  # No longer functional
         try:
             # 🔥 v3.18.6+ Critical Fix: 所有字段都使用默認值，確保歷史數據不被跳過
             features = [
@@ -532,10 +587,10 @@ class ModelInitializer:
     
     async def _train_xgboost_model(self, training_data: List[Dict]) -> bool:
         """
-        🔥 v3.18.6+ Critical Fix: 訓練 XGBoost 模型（使用44個特徵）
+        🔥 v4.0 Feature Unification: 訓練 XGBoost 模型（使用12個ICT/SMC特徵）
         
         Args:
-            training_data: 訓練數據（從trades.jsonl加載的真實交易）
+            training_data: 訓練數據（包含12個標準特徵 + label）
             
         Returns:
             訓練是否成功
@@ -544,20 +599,19 @@ class ModelInitializer:
             import xgboost as xgb
             import numpy as np
             
-            # 🔥 v3.18.6+: 從真實交易數據提取44個特徵
+            # 🔥 v4.0: 提取12個標準特徵
             X = []
             y = []
             
             for trade in training_data:
-                # 提取44個特徵
-                features = self._extract_44_features(trade)
-                if features is None:
-                    continue
+                # 提取12個特徵向量
+                features_dict = trade.get('features', {})
+                features_vector = features_to_vector(features_dict)
                 
                 # 提取標籤
                 label = int(trade.get('label', 0))
                 
-                X.append(features)
+                X.append(features_vector)
                 y.append(label)
             
             if len(X) < 10:
@@ -568,7 +622,7 @@ class ModelInitializer:
             y = np.array(y)
             
             logger.info(f"📊 訓練數據: X.shape={X.shape}, y.shape={y.shape}")
-            logger.info(f"   ✅ 使用 44 個特徵（FeatureEngine完整特徵集）")
+            logger.info(f"   ✅ 使用 {len(CANONICAL_FEATURE_NAMES)} 個ICT/SMC特徵（與預測一致）")
             logger.info(f"   📈 正樣本: {np.sum(y)} / {len(y)} ({np.mean(y)*100:.1f}%)")
             
             # 創建 DMatrix

@@ -1,7 +1,7 @@
 """
-🔥 v3.19 ML模型包装器 (Pure ICT/SMC)
+🔥 v4.0 ML模型包装器 (Pure ICT/SMC + Unified Schema)
 职责：加载XGBoost模型并提供预测接口
-v3.19更新：纯12个ICT/SMC特征（56→12，移除传统技术指标）
+v4.0更新：使用统一的12个ICT/SMC特征（与训练一致）
 """
 
 import os
@@ -9,17 +9,18 @@ import logging
 from pathlib import Path
 from typing import Optional, List, Dict
 import numpy as np
+from src.ml.feature_schema import CANONICAL_FEATURE_NAMES, features_to_vector
 
 logger = logging.getLogger(__name__)
 
 
 class MLModelWrapper:
     """
-    ML模型包装器（v3.19 Pure ICT/SMC）
+    ML模型包装器（v4.0 Pure ICT/SMC + Unified Schema）
     
     职责：
     1. 加载训练好的XGBoost模型
-    2. 提供12个ICT/SMC特征的预测接口
+    2. 提供12个ICT/SMC特征的预测接口（与训练一致）
     3. 处理模型不存在的fallback
     """
     
@@ -112,6 +113,8 @@ class MLModelWrapper:
         """
         从信号字典预测获胜概率
         
+        v4.0: 使用统一的12个ICT/SMC特征
+        
         Args:
             signal: 包含12个ICT/SMC特征字段的信号字典
         
@@ -122,7 +125,7 @@ class MLModelWrapper:
             return None
         
         try:
-            # 按照FeatureEngine顺序提取44个特征
+            # v4.0: 提取12个标准特征（与训练一致）
             features = self._extract_features_from_signal(signal)
             
             if features is None:
@@ -137,32 +140,19 @@ class MLModelWrapper:
     
     def _extract_features_from_signal(self, signal: Dict) -> Optional[List[float]]:
         """
-        🔥 v3.19: 从信号字典提取12个ICT/SMC特征
+        🔥 v4.0: 从信号字典提取12个ICT/SMC特征（使用统一schema）
         
         Args:
             signal: 信号字典（包含ICT/SMC特征）
         
         Returns:
-            12个ICT/SMC特征的数值列表
+            12个ICT/SMC特征的数值列表（按CANONICAL_FEATURE_NAMES顺序）
         """
         try:
-            # 🔥 v3.19：只提取ICT/SMC特征（12个）
+            # v4.0: 使用统一的特征顺序（与训练一致）
             features = [
-                # ICT/SMC基礎特徵 (8)
-                float(signal.get('market_structure', 0)),
-                float(signal.get('order_blocks_count', 0)),
-                float(signal.get('institutional_candle', 0)),
-                float(signal.get('liquidity_grab', 0)),
-                float(signal.get('order_flow', 0.0)),
-                float(signal.get('fvg_count', 0)),
-                float(signal.get('trend_alignment_enhanced', 0.0)),
-                float(signal.get('swing_high_distance', 0.0)),
-                
-                # ICT/SMC合成特徵 (4)
-                float(signal.get('structure_integrity', 0.0)),
-                float(signal.get('institutional_participation', 0.0)),
-                float(signal.get('timeframe_convergence', 0.0)),
-                float(signal.get('liquidity_context', 0.0))
+                float(signal.get(name, 0.0))
+                for name in CANONICAL_FEATURE_NAMES
             ]
             
             # 验证长度
