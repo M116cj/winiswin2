@@ -234,7 +234,10 @@ class DatabaseManager:
         
         # 所有重试都失败
         logger.error(f"❌ 查询在 {self.max_retries} 次重试后仍然失败")
-        raise last_error
+        if last_error:
+            raise last_error
+        else:
+            raise RuntimeError("查询失败但未捕获到具体错误")
     
     def check_health(self) -> bool:
         """
