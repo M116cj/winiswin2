@@ -12,7 +12,7 @@ from datetime import datetime
 from src.config import Config
 from src.simulation.mock_binance_client import MockBinanceClient
 from src.strategies.self_learning_trader import SelfLearningTrader
-from src.managers.trade_recorder import TradeRecorder
+from src.managers.unified_trade_recorder import UnifiedTradeRecorder
 from src.ml.feature_engine import FeatureEngine
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class TradeSimulator:
         config: Config,
         mock_client: MockBinanceClient,
         trader: SelfLearningTrader,
-        trade_recorder: TradeRecorder
+        trade_recorder: UnifiedTradeRecorder
     ):
         self.config = config
         self.mock_client = mock_client
@@ -275,26 +275,28 @@ class TradeSimulator:
                     'orderId': i
                 }
                 
-                # 记录entry
-                self.trade_recorder.record_entry(
-                    signal=entry_signal,
-                    position_info=position_info
+                # 记录entry（UnifiedTradeRecorder API）
+                trade_id = self.trade_recorder.record_entry(
+                    symbol=result['symbol'],
+                    direction=result['direction'],
+                    entry_price=result['entry_price'],
+                    quantity=result['quantity'],
+                    leverage=result['leverage'],
+                    signal_data=entry_signal,
+                    klines_data={}  # 模拟模式无K线数据
                 )
                 
-                # 创建trade_result用于record_exit
-                trade_result = {
-                    'symbol': result['symbol'],
-                    'exit_price': result['exit_price'],
-                    'pnl': result['pnl'],
-                    'pnl_percent': result['pnl_pct'],
-                    'outcome': result['outcome'],
-                    'exit_reason': 'TP' if result['outcome'] == 'WIN' else 'SL'
-                }
-                
-                # 记录exit
-                self.trade_recorder.record_exit(
-                    trade_result=trade_result
-                )
+                # 记录exit（UnifiedTradeRecorder API）
+                if trade_id is not None:
+                    self.trade_recorder.record_exit(
+                        trade_id=trade_id,
+                        exit_price=result['exit_price'],
+                        pnl=result['pnl'],
+                        pnl_pct=result['pnl_pct'],
+                        reason='TP' if result['outcome'] == 'WIN' else 'SL'
+                    )
+                else:
+                    logger.warning(f"⚠️ 交易{i}开仓记录失败，跳过平仓记录")
                 
                 # 使缓存失效
                 self.trader.invalidate_trades_cache()

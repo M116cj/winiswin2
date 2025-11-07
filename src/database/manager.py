@@ -9,7 +9,8 @@ import time
 from typing import Optional
 from contextlib import contextmanager
 import psycopg2
-from psycopg2 import pool, OperationalError, InterfaceError
+import psycopg2.pool
+from psycopg2 import OperationalError, InterfaceError
 from urllib.parse import urlparse, parse_qs
 
 from src.config import Config
@@ -53,7 +54,7 @@ class DatabaseManager:
         self.auto_retry = auto_retry
         self.max_retries = max_retries
         
-        self.connection_pool: Optional[pool.SimpleConnectionPool] = None
+        self.connection_pool: Optional[psycopg2.pool.SimpleConnectionPool] = None
         self._is_initialized = False
         
         # 初始化连接池
