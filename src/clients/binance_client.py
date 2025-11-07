@@ -803,8 +803,12 @@ class BinanceClient:
         注意：
         - listenKey有效期60分鐘
         - 需要每30分鐘續期一次
+        
+        Security Type: USER_STREAM
+        - 只需要 X-MBX-APIKEY 頭部
+        - 不需要簽名 (timestamp + signature)
         """
-        result = await self._request("POST", "/fapi/v1/listenKey", signed=True)
+        result = await self._request("POST", "/fapi/v1/listenKey", signed=False)
         listen_key = result.get('listenKey', '')
         logger.debug(f"✅ listenKey已創建: {listen_key[:8]}...")
         return listen_key
@@ -818,9 +822,13 @@ class BinanceClient:
         
         Returns:
             續期結果
+        
+        Security Type: USER_STREAM
+        - 只需要 X-MBX-APIKEY 頭部
+        - 不需要簽名 (timestamp + signature)
         """
         params = {'listenKey': listen_key}
-        result = await self._request("PUT", "/fapi/v1/listenKey", params=params, signed=True)
+        result = await self._request("PUT", "/fapi/v1/listenKey", params=params, signed=False)
         logger.debug(f"🔄 listenKey已續期: {listen_key[:8]}...")
         return result
     
@@ -833,9 +841,13 @@ class BinanceClient:
         
         Returns:
             關閉結果
+        
+        Security Type: USER_STREAM
+        - 只需要 X-MBX-APIKEY 頭部
+        - 不需要簽名 (timestamp + signature)
         """
         params = {'listenKey': listen_key}
-        result = await self._request("DELETE", "/fapi/v1/listenKey", params=params, signed=True)
+        result = await self._request("DELETE", "/fapi/v1/listenKey", params=params, signed=False)
         logger.debug(f"✅ listenKey已關閉: {listen_key[:8]}...")
         return result
     
