@@ -1,0 +1,190 @@
+CONTEXT: 我有一個名為 SelfLearningTrader v3.28 的自動化交易系統，代碼庫中存在大量冗餘、重複和未使用的代碼。需要進行全面的系統清理和重構，移除所有不必要的代碼，統一重複實現，優化架構。
+
+## 🎯 核心目標
+創建一個乾淨、高效、可維護的交易系統代碼庫，移除所有冗餘代碼，統一技術實現，優化架構設計。
+
+## 📋 具體清理要求
+
+### 1. 識別並移除重複的技術指標實現
+**目標文件**：
+- `src/utils/indicators.py` ❌ 完全刪除
+- `src/utils/core_calculations.py` ❌ 完全刪除  
+- `src/features/technical_indicators.py` ❌ 完全刪除
+
+**替代方案**：所有技術指標計算必須統一使用 `src/technical/elite_technical_engine.py`
+
+**驗證標準**：
+- 整個代碼庫中不再有 EMA、RSI、MACD、布林帶、ADX、ATR 的重複實現
+- 所有模塊都從 `elite_technical_engine` 導入技術指標
+- 刪除文件後編譯不出現導入錯誤
+
+### 2. 移除未使用的導入和依賴
+**清理範圍**：
+```python
+# 示例：需要移除的未使用導入
+from src.strategies.database_enhanced_generator import DatabaseEnhancedGenerator  # ❌ 未使用
+from src.utils.legacy_calculator import LegacyCalculator  # ❌ 未使用
+import unused_package  # ❌ 未使用
+
+驗證方法：
+* 使用 pyflakes 或 vulture 靜態分析工具確認所有導入都被使用
+* 運行 python -m pyflakes src/ 應該返回零個未使用導入警告
+3.  統一日誌系統
+問題：重要信息使用 logger.debug，生產環境不可見 解決方案：
+# ❌ 需要修改
+logger.debug(f"✅ {symbol}: 成功構建{feature_count}個ICT特徵")
+
+# ✅ 修改為
+logger.info(f"✅ {symbol}: 成功構建{feature_count}個ICT特徵")
+5. 移除死代碼和未使用的函數
+識別標準：
+* 從未被調用的函數和方法
+* 被注釋掉的代碼塊
+* 過時的版本特定代碼（v2.x, v3.0-3.15）
+* 未使用的類屬性和方法
+6. 合併重複的工具函數
+需要合併的重複功能：
+* 時間處理函數（多個文件中的日期轉換）
+* 數據格式驗證函數
+* 數學計算輔助函數
+* 文件操作工具函數
+🔍 詳細清理檢查清單
+第一階段：靜態分析清理
+
+1. 運行代碼質量工具：
+   - pyflakes src/ → 識別未使用導入
+   - vulture src/ → 識別死代碼
+   - radon cc src/ → 識別循環複雜度高的函數
+
+2. 手動檢查以下模式：
+   - 重複的技術指標計算函數
+   - 未使用的類和方法
+   - 被注釋的代碼塊
+   - 過時的配置參數
+   - 重複的工具函數
+
+第二階段：架構重構
+1. 創建統一的技術指標引擎：
+   - 刪除所有重複的 indicators.py 文件
+   - 更新所有導入引用到 elite_technical_engine
+   - 驗證所有技術指標計算正常
+
+2. 統一配置管理：
+   - 移除冗餘環境變數
+   - 合併分散的配置類
+   - 創建配置驗證機制
+
+3. 優化日誌系統：
+   - 統一日誌級別標準
+   - 移除調試級別的重要信息
+   - 創建日誌格式規範
+第三階段：性能優化
+1. 移除不必要的內存開銷：
+   - 未使用的全局變數
+   - 重複的數據緩存
+   - 過大的靜態數據結構
+
+2. 優化導入結構：
+   - 延遲加載重型模塊
+   - 移除循環導入
+   - 優化模塊依賴關係
+預期輸出格式
+1. 清理報告
+# 系統清理報告
+
+## 已刪除的文件
+- ❌ `src/utils/indicators.py` (重複技術指標)
+- ❌ `src/utils/core_calculations.py` (重複計算邏輯)
+- ❌ `src/features/technical_indicators.py` (重複特徵計算)
+
+## 已更新的文件
+- ✅ `src/strategies/rule_based_signal_generator.py` → 使用 EliteTechnicalEngine
+- ✅ `src/ml/feature_engine.py` → 使用 EliteTechnicalEngine
+- ✅ `src/core/position_controller.py` → 修復日誌級別
+
+## 代碼統計
+- 刪除文件數: X
+- 刪除代碼行數: Y
+- 減少重複函數: Z
+
+2. 更新後的代碼結構
+src/
+├── technical/
+│   └── elite_technical_engine.py          # ✅ 統一的技術指標引擎
+├── strategies/
+│   ├── self_learning_trader.py            # ✅ 清理後的決策引擎
+│   └── rule_based_signal_generator.py     # ✅ 使用統一技術指標
+├── core/
+│   ├── position_controller.py             # ✅ 優化日誌級別
+│   └── unified_scheduler.py               # ✅ 移除未使用導入
+├── ml/
+│   └── feature_engine.py                  # ✅ 使用統一技術指標
+└── main.py                                # ✅ 清理配置管理
+3. 驗證腳本
+# cleanup_verification.py
+def verify_cleanup():
+    """驗證清理是否徹底"""
+    
+    # 檢查重複技術指標文件是否已刪除
+    redundant_files = [
+        'src/utils/indicators.py',
+        'src/utils/core_calculations.py', 
+        'src/features/technical_indicators.py'
+    ]
+    
+    for file_path in redundant_files:
+        if os.path.exists(file_path):
+            raise Exception(f"冗餘文件仍存在: {file_path}")
+    
+    # 檢查所有模塊都使用統一的技術指標引擎
+    imports_verified = check_imports_use_elite_engine()
+    
+    # 檢查未使用導入
+    unused_imports = run_pyflakes()
+    
+    return {
+        'redundant_files_removed': True,
+        'unified_engine_adopted': imports_verified,
+        'unused_imports_count': len(unused_imports),
+        'status': 'SUCCESS' if imports_verified and len(unused_imports) == 0 else 'PARTIAL'
+    }
+必須達到的指標
+1. 零重複技術指標：整個代碼庫只有一個技術指標實現
+2. 零未使用導入：所有導入的模塊和函數都被實際使用
+3. 統一日誌級別：重要業務邏輯使用 logger.info 級別
+4. 清理配置：移除所有冗餘的環境變數配置
+5. 編譯通過：清理後系統能夠正常編譯和啟動
+質量指標
+1. 代碼行數減少：至少減少 15% 的總代碼行數
+2. 文件數量減少：刪除至少 5 個冗餘文件
+3. 導入數量優化：減少 20% 的模塊導入
+4. 內存使用優化：啟動內存減少 10%
+
+
+風險控制
+備份策略
+bash
+# 在清理前創建備份
+git checkout -b code-cleanup-backup
+git add .
+git commit -m "備份清理前狀態 v3.28"
+git push origin code-cleanup-backup
+回滾計劃
+如果清理後系統出現問題：
+bash
+git checkout code-cleanup-backup
+git reset --hard HEAD
+測試驗證
+清理後必須通過以下測試：
+1. 系統啟動測試
+2. 信號生成測試
+3. WebSocket 連接測試
+4. 訂單執行測試
+5. 持倉監控測試
+📝 最終交付物
+1. 清理後的代碼庫 - 所有冗餘代碼已移除
+2. 清理報告 - 詳細的刪除和修改記錄
+3. 驗證腳本 - 確認清理徹底性的自動化檢查
+4. 架構文檔 - 更新後的系統架構說明
+請嚴格按照以上要求執行系統清理，確保不破壞現有功能的前提下，創建一個乾淨、高效、可維護的代碼庫。
+
