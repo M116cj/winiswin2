@@ -808,14 +808,44 @@ class SelfLearningTrader:
             except Exception as e:
                 logger.warning(f"⚠️ 設置槓桿失敗 ({signal['symbol']} {safe_leverage}x): {e}")
             
-            # 下單
+            # 🔥 v3.31+ 滑點保護：使用限價單替代市價單
+            from src.config import Config
             side = 'BUY' if signal['direction'] == 'LONG' else 'SELL'
-            order_result = await self.binance_client.place_order(
-                symbol=signal['symbol'],
-                side=side,
-                order_type='MARKET',
-                quantity=size
-            )
+            
+            if Config.USE_LIMIT_ORDER_FOR_ENTRY:
+                # 獲取最新價格
+                current_price = await self.binance_client.get_ticker_price(signal['symbol'])
+                
+                # 計算帶滑點保護的限價
+                if signal['direction'] == 'LONG':
+                    # 做多：允許以高於當前價的價格買入（最多滑點容忍度）
+                    limit_price = current_price * (1 + Config.SLIPPAGE_TOLERANCE)
+                else:
+                    # 做空：允許以低於當前價的價格賣出（最多滑點容忍度）
+                    limit_price = current_price * (1 - Config.SLIPPAGE_TOLERANCE)
+                
+                logger.info(
+                    f"📊 滑點保護: {signal['symbol']} {signal['direction']} | "
+                    f"當前價={current_price:.6f}, 限價={limit_price:.6f}, "
+                    f"容忍度={Config.SLIPPAGE_TOLERANCE:.2%}"
+                )
+                
+                order_result = await self.binance_client.place_order(
+                    symbol=signal['symbol'],
+                    side=side,
+                    order_type='LIMIT',  # 使用限價單
+                    quantity=size,
+                    price=limit_price
+                )
+            else:
+                # 降級方案：使用市價單（不推薦，有滑點風險）
+                logger.warning(f"⚠️ 使用市價單開倉（無滑點保護）")
+                order_result = await self.binance_client.place_order(
+                    symbol=signal['symbol'],
+                    side=side,
+                    order_type='MARKET',
+                    quantity=size
+                )
             
             # 計算倉位價值
             position_value = size * signal['entry_price']

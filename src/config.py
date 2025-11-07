@@ -73,6 +73,10 @@ class Config:
     TRADING_ENABLED: bool = os.getenv("TRADING_ENABLED", "true").lower() == "true"
     VIRTUAL_POSITION_CYCLE_INTERVAL: int = int(os.getenv("VIRTUAL_POSITION_CYCLE_INTERVAL", "10"))
     
+    # ===== v3.31+ 滑點保護配置 =====
+    SLIPPAGE_TOLERANCE: float = float(os.getenv("SLIPPAGE_TOLERANCE", "0.002"))  # 滑點容忍度 0.2% (適合主流幣種)
+    USE_LIMIT_ORDER_FOR_ENTRY: bool = os.getenv("USE_LIMIT_ORDER_FOR_ENTRY", "true").lower() == "true"  # 使用限價單開倉（防滑點）
+    
     # ===== v3.17+ 核心策略配置 =====
     MIN_CONFIDENCE: float = float(os.getenv("MIN_CONFIDENCE", "0.40"))  # 🔥 v3.20.7: 50%→40% (Bug #6修復)
     MAX_SIGNALS: int = 10
