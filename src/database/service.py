@@ -221,7 +221,9 @@ class TradingDataService:
         status: str,
         exit_price: Optional[float] = None,
         pnl: Optional[float] = None,
-        pnl_pct: Optional[float] = None
+        pnl_pct: Optional[float] = None,
+        exit_timestamp: Optional[str] = None,
+        reason: Optional[str] = None
     ) -> bool:
         """
         更新交易状态
@@ -232,6 +234,8 @@ class TradingDataService:
             exit_price: 出场价格（可选）
             pnl: 盈亏金额（可选）
             pnl_pct: 盈亏百分比（可选）
+            exit_timestamp: 出场时间（可选，默认当前时间）
+            reason: 平仓原因（可选）
             
         Returns:
             是否成功
@@ -241,15 +245,16 @@ class TradingDataService:
                 UPDATE trades
                 SET status = %s,
                     exit_price = COALESCE(%s, exit_price),
-                    exit_timestamp = CASE WHEN %s = 'CLOSED' THEN CURRENT_TIMESTAMP ELSE exit_timestamp END,
+                    exit_timestamp = COALESCE(%s::timestamptz, CASE WHEN %s = 'CLOSED' THEN CURRENT_TIMESTAMP ELSE exit_timestamp END),
                     pnl = COALESCE(%s, pnl),
                     pnl_pct = COALESCE(%s, pnl_pct),
                     won = CASE WHEN %s IS NOT NULL THEN %s > 0 ELSE won END,
+                    reason = COALESCE(%s, reason),
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s;
             """
             
-            params = (status, exit_price, status, pnl, pnl_pct, pnl, pnl, trade_id)
+            params = (status, exit_price, exit_timestamp, status, pnl, pnl_pct, pnl, pnl, reason, trade_id)
             
             self.db.execute_query(query, params, fetch=False)
             logger.info(f"✅ 交易 {trade_id} 状态已更新为 {status}")

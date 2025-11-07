@@ -9,7 +9,7 @@ from typing import Optional, List
 import logging
 
 class Config:
-    """系統配置管理類（v3.17+ 精簡版）"""
+    """系統配置管理類（v4.0+ 支持PostgreSQL）"""
     
     # ===== Binance API 配置 =====
     BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
@@ -20,6 +20,29 @@ class Config:
     BINANCE_TRADING_API_KEY: str = os.getenv("BINANCE_TRADING_API_KEY", "") or BINANCE_API_KEY
     BINANCE_TRADING_API_SECRET: str = os.getenv("BINANCE_TRADING_API_SECRET", "") or BINANCE_API_SECRET
     BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
+    
+    # ===== 🔥 v4.0+ PostgreSQL数据库配置 =====
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+    DATABASE_PUBLIC_URL: str = os.getenv("DATABASE_PUBLIC_URL", "")
+    
+    # 数据库连接池配置
+    DB_MIN_CONNECTIONS: int = int(os.getenv("DB_MIN_CONNECTIONS", "2"))
+    DB_MAX_CONNECTIONS: int = int(os.getenv("DB_MAX_CONNECTIONS", "10"))
+    DB_CONNECTION_TIMEOUT: int = int(os.getenv("DB_CONNECTION_TIMEOUT", "30"))
+    
+    # 数据库查询配置
+    DB_QUERY_TIMEOUT: int = int(os.getenv("DB_QUERY_TIMEOUT", "30"))
+    DB_BATCH_SIZE: int = int(os.getenv("DB_BATCH_SIZE", "1000"))
+    
+    @staticmethod
+    def get_database_url() -> Optional[str]:
+        """获取数据库URL（优先使用内部URL）"""
+        return Config.DATABASE_URL or Config.DATABASE_PUBLIC_URL
+    
+    @staticmethod
+    def is_database_configured() -> bool:
+        """检查数据库是否已配置"""
+        return bool(Config.get_database_url())
     
     # ========================================
     # 🔒 功能锁定开关 (v3.18.7+)

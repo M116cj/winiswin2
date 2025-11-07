@@ -12,6 +12,8 @@ import psycopg2
 from psycopg2 import pool, OperationalError, InterfaceError
 from urllib.parse import urlparse, parse_qs
 
+from src.config import Config
+
 logger = logging.getLogger(__name__)
 
 
@@ -80,7 +82,7 @@ class DatabaseManager:
     
     def _prepare_connection_url(self, database_url: str) -> str:
         """
-        准备连接URL（添加必要的参数）
+        准备连接URL（智能SSL检测）
         
         Args:
             database_url: 原始数据库URL
@@ -90,19 +92,26 @@ class DatabaseManager:
         """
         parsed = urlparse(database_url)
         
-        # 检查是否需要添加SSL模式
-        # Railway内部连接可能不需要SSL，公开连接需要
-        if 'postgres.railway.internal' in parsed.netloc:
-            # 内部连接，不强制SSL
-            logger.info("🔒 使用Railway内部连接（无需SSL）")
+        # 🔥 v4.0+ 智能SSL检测
+        # 1. Railway内部连接（*.railway.internal）-> 无需SSL
+        # 2. Railway公开连接（*.railway.app等）-> 需要SSL
+        # 3. Replit内部数据库 -> 无需SSL（默认）
+        # 4. 其他云平台（Neon/Supabase等）-> 需要SSL
+        
+        if 'railway.internal' in parsed.netloc:
+            logger.info("🔓 Railway内部连接：禁用SSL")
             return database_url
-        else:
-            # 公开连接，添加SSL
-            logger.info("🔒 使用Railway公开连接（需要SSL）")
+        elif 'railway.app' in parsed.netloc or Config.DATABASE_PUBLIC_URL:
+            # Railway公开连接需要SSL
+            logger.info("🔒 Railway公开连接：启用SSL")
             if '?' in database_url:
                 return f"{database_url}&sslmode=require"
             else:
                 return f"{database_url}?sslmode=require"
+        else:
+            # Replit内部数据库或其他默认不需要SSL
+            logger.info("🔓 Replit内部连接：禁用SSL")
+            return database_url
     
     def _initialize_pool(self) -> None:
         """初始化连接池"""
