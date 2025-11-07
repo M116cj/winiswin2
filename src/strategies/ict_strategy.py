@@ -50,8 +50,6 @@ class ICTStrategy:
             h1_trend = self._determine_trend(h1_data)
             m15_trend = self._determine_trend(m15_data)
             m5_trend = self._determine_trend(m5_data)
-            
-            # v3.0.2: 移除過嚴的 neutral 過濾，讓信號生成邏輯自行判斷
             logger.debug(f"{symbol}: 趨勢檢測 - 1h:{h1_trend}, 15m:{m15_trend}, 5m:{m5_trend}")
             
             # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 ICT 函数
@@ -189,8 +187,6 @@ class ICTStrategy:
         
         fast_val = float(ema_fast.iloc[-1])
         slow_val = float(ema_slow.iloc[-1])
-        
-        # ✨ v3.10.0: ADX趨勢強度過濾（避免震盪市假信號）
         try:
             # ✅ v3.20: 使用 EliteTechnicalEngine（键名：di_plus/di_minus）
             adx_result = self.tech_engine.calculate('adx', df, period=self.config.ADX_PERIOD)
@@ -207,8 +203,6 @@ class ICTStrategy:
                     return "neutral"
         except Exception as e:
             logger.debug(f"ADX計算失敗（降級使用EMA）: {e}")
-        
-        # ✨ v3.10.0: EMA斜率確認（確保趨勢有動能）
         # ✅ v3.20.2: 使用 EliteTechnicalEngine 的 ema_slope
         try:
             ema_fast_slope_result = self.tech_engine.calculate('ema_slope', ema_fast, lookback=3)

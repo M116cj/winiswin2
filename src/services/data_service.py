@@ -1,10 +1,5 @@
 """
-數據服務（v3.12.0 增量更新优化版）
-職責：市場數據獲取、批量處理、多時間框架數據對齊、性能追蹤
-
-v3.12.0 优化3：
-- K线数据增量更新（只拉取新K线，减少60-80% API请求）
-- 动态TTL智能缓存（基于波动率，高波动→短TTL）
+數據服務
 - 网络 I/O 延迟降低 50%
 """
 
@@ -42,8 +37,6 @@ class DataService:
         # 5m: 趋势符合确认 + 入场信号
         self.timeframes = ["1h", "15m", "5m"]
         self.all_symbols: List[str] = []
-        
-        # ✨ v3.12.0新增：增量更新缓存键前缀
         self._incremental_cache_prefix = "klines_inc_"
         
         # ✨ 性能監控
@@ -268,18 +261,7 @@ class DataService:
         end_time: Optional[int] = None
     ) -> pd.DataFrame:
         """
-        獲取 K線數據（v3.12.0 增量更新 + 动态TTL优化版）
-        
-        优化3核心特性：
-        1. 增量更新：仅拉取新K线，减少60-80% API请求
-        2. 动态TTL：基于波动率计算缓存时间（高波动→短TTL）
-        3. 智能合并：合并旧缓存数据与新数据
-        
-        Args:
-            symbol: 交易對
-            interval: 時間間隔
-            limit: 數據條數
-            start_time: 開始時間戳（手动指定时跳过增量更新）
+        獲取 K線數據
             end_time: 結束時間戳
         
         Returns:
@@ -293,15 +275,12 @@ class DataService:
             return await self._fetch_full_klines(
                 symbol, interval, limit, start_time, end_time
             )
-        
-        # ✨ v3.12.0：增量更新缓存键
         cache_key = f"{self._incremental_cache_prefix}{symbol}_{interval}_{limit}"
         
         # 嘗試從緩存獲取旧数据
         cached_df = self.cache.get(cache_key)
         
         if cached_df is not None and not cached_df.empty:
-            # ✨ v3.12.0：增量拉取 - 只获取新K线
             try:
                 last_close_time = cached_df.iloc[-1]['close_time']
                 
@@ -347,8 +326,6 @@ class DataService:
             
             if self.perf_monitor:
                 self.perf_monitor.record_cache_miss()
-        
-        # ✨ v3.12.0：动态TTL（基于波动率）
         if not df.empty:
             dynamic_ttl = self._calculate_dynamic_ttl(df, interval)
             self.cache.set(cache_key, df, ttl=dynamic_ttl)
@@ -485,17 +462,7 @@ class DataService:
     
     async def get_klines_incremental(self, symbol: str, interval: str, limit: int = 100) -> pd.DataFrame:
         """
-        增量获取K线数据（v3.13.0 文档步骤1完整实现）
-        
-        🔥 关键优化：
-        - 首次获取完整数据
-        - 后续只拉取新K线（基于last_close_time）
-        - 动态TTL缓存（基于波动率，高波动→短TTL）
-        - API请求减少60-80%，网络I/O延迟降低50%
-        
-        Args:
-            symbol: 交易对符号
-            interval: 时间间隔（1h, 15m, 5m等）
+        增量获取K线数据
             limit: 数据条数限制
         
         Returns:
@@ -589,12 +556,7 @@ class DataService:
     
     async def _fetch_klines_since(self, symbol: str, interval: str, since_time: float) -> pd.DataFrame:
         """
-        获取指定时间后的K线（v3.13.0 文档步骤2要求）
-        
-        Args:
-            symbol: 交易对
-            interval: 时间间隔
-            since_time: 起始时间（毫秒时间戳）
+        获取指定时间后的K线
         
         Returns:
             pd.DataFrame: 新的K线数据
@@ -619,13 +581,7 @@ class DataService:
     
     def _calculate_volatility(self, df: pd.DataFrame) -> float:
         """
-        计算波动率（v3.13.0 文档步骤1要求）
-        
-        Args:
-            df: K线数据
-        
-        Returns:
-            float: 波动率（归一化值）
+        计算波动率
         """
         try:
             if len(df) < 20:

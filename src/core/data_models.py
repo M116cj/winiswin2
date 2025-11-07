@@ -1,10 +1,5 @@
 """
-数据模型（v3.12.0 轻量化策略）
-
-使用 __slots__ + dataclass 优化内存占用和访问速度
-- 减少内存占用（避免 __dict__ 开销，每个实例节省 200-300 字节）
-- 提高属性访问速度（直接槽位访问）
-- 防止动态添加属性（更安全）
+数据模型
 - frozen=True 确保不可变性
 
 适用于频繁创建的数据结构：信号、持仓、交易记录、虚拟仓位
@@ -290,20 +285,7 @@ class PositionCloseRecord:
 
 class VirtualPosition:
     """
-    虚拟仓位数据类 - 纯 __slots__ 可变对象（v3.12.0 优化7）
-    
-    ✅ 为什么使用可变 __slots__ 而非 frozen dataclass：
-    1. 虚拟仓位需要频繁更新价格/PnL（每10秒一次）
-    2. frozen=True 每次更新需创建新实例 → 极其低效
-    3. 可变 __slots__ 直接内存更新 → 零额外分配
-    
-    内存优化：
-    - 每个实例节省约 200-300 字节（vs 标准dict）
-    - __slots__ 预分配内存，无 __dict__ 开销
-    - 200个虚拟仓位 = 节省 40-60KB
-    
-    性能优化：
-    - 属性访问速度快 15-20%（直接偏移 vs hash查找）
+    虚拟仓位数据类 - 纯 __slots__ 可变对象
     - update_price() 零额外内存分配
     - 类型安全 + IDE 自动补全
     """
@@ -316,7 +298,6 @@ class VirtualPosition:
         'rsi', 'macd', 'atr', 'close_timestamp', 'close_reason',
         '_last_update', 'leverage',
         'signal_id', '_entry_direction',
-        # 🔥 v3.14.0：lifecycle monitor 所需属性
         'pnl_pct', 'is_closed', '_last_pnl', '_last_max_pnl', '_last_min_pnl'
     )
     
@@ -358,16 +339,12 @@ class VirtualPosition:
         
         self._last_update = time.time()
         self.leverage = kwargs.get('leverage', 10)
-        
-        # 🔥 v3.14.0：lifecycle monitor 属性初始化
         self.pnl_pct = kwargs.get('pnl_pct', 0.0)  # 百分比PnL
         self.is_closed = kwargs.get('is_closed', False)  # 是否已关闭
         # 🔧 类型修复：使用 float 初始值而非 None，避免类型不兼容警告
         self._last_pnl = kwargs.get('_last_pnl', 0.0)  # 上次PnL（用于变化检测）
         self._last_max_pnl = kwargs.get('_last_max_pnl', 0.0)  # 上次最大PnL（用于变化检测）
         self._last_min_pnl = kwargs.get('_last_min_pnl', 0.0)  # 上次最小PnL（用于变化检测）
-        
-        # 🔥 v3.13.0修复3：signal_id机制
         # 自动生成signal_id（如果未提供）
         if 'signal_id' in kwargs:
             self.signal_id = kwargs['signal_id']
@@ -386,8 +363,6 @@ class VirtualPosition:
             else:
                 # 默认使用当前时间
                 self.signal_id = f"{self.symbol}_{int(time.time())}"
-        
-        # 🔥 v3.13.0修复1+2：缓存初始方向，防止运行时修改影响PnL计算
         # 将字符串方向转换为数值（1=LONG, -1=SHORT）
         if self.direction == "LONG" or self.direction == 1:
             self._entry_direction = 1

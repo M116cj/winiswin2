@@ -1,16 +1,5 @@
 """
-虛擬倉位管理器（v3.12.0 优化7：纯 __slots__ 可变对象）
-職責：追蹤 Rank 4-10 信號、虛擬 PnL 計算、ML 數據收集
-
-v3.12.0 优化（纯 __slots__ 可变对象）：
-✅ 为什么拒绝混合方式（__slots__ + 内部dict）：
-1. 混合方式失去所有 __slots__ 优势（内存仍有 __dict__ 开销）
-2. 状态不一致风险（两种存取方式）
-3. 维护复杂度倍增
-
-✅ 纯 __slots__ 可变对象优势：
-1. 内存节省 40%+（200个虚拟仓位 = 节省 40KB+）
-2. 属性访问速度快 15-20%（直接偏移 vs hash查找）
+虛擬倉位管理器
 3. update_price() 零额外内存分配
 4. 类型安全 + IDE 自动补全
 """
@@ -32,7 +21,7 @@ from src.core.virtual_position_monitor import VirtualPositionMonitor
 
 logger = logging.getLogger(__name__)
 
-# v3.15.0: 性能优化模块（可选）
+# 性能优化模块（可选）
 try:
     from src.core.memory_mapped_features import MemoryMappedFeatureStore
     from src.utils.incremental_feature_cache import IncrementalFeatureCache
@@ -40,12 +29,12 @@ try:
     OPTIMIZATION_MODULES_AVAILABLE = True
 except ImportError:
     OPTIMIZATION_MODULES_AVAILABLE = False
-    logger.warning("⚠️ v3.15.0 优化模块未完全加载，使用默认实现")
+    logger.warning("⚠️ 性能优化模块未完全加载，使用默认实现")
 
 
 class VirtualPositionManager:
     """
-    虛擬倉位管理器（v3.13.0：异步批量更新+并发保护）
+    虛擬倉位管理器（异步批量更新+并发保护）
     
     使用方式：
     - 同步模式：update_virtual_positions(market_data)
@@ -61,26 +50,26 @@ class VirtualPositionManager:
             on_close_callback: 虛擬倉位關閉時的回調函數 (position_data, close_data) -> None
         """
         self.config = Config
-        # ✅ v3.12.0：直接存储 VirtualPosition 对象（不转换为dict）
+        # 直接存储 VirtualPosition 对象（不转换为dict）
         self.virtual_positions: Dict[str, VirtualPosition] = {}
         self.positions_file = self.config.VIRTUAL_POSITIONS_FILE
         self.on_open_callback = on_open_callback
         self.on_close_callback = on_close_callback
         
-        # v3.13.0修复：使用threading.Lock（兼容同步和异步上下文）
+        # 使用threading.Lock（兼容同步和异步上下文）
         self._save_lock = threading.Lock()
         
-        # 🔥 v3.14.0：生命週期監控器集成
+        # 生命週期監控器集成
         self.lifecycle_monitor = VirtualPositionLifecycleMonitor(
             event_callback=self._handle_position_event
         )
         logger.info("✅ 虛擬倉位生命週期監控器已啟用")
         
-        # 🔥 v3.17.10+：虛擬倉位真實性監控器（滑點、流動性、強平模擬）
+        # 虛擬倉位真實性監控器（滑點、流動性、強平模擬）
         self.realism_monitor = VirtualPositionMonitor()
-        logger.info("✅ 虛擬倉位真實性監控器已啟用（v3.17.10+）")
+        logger.info("✅ 虛擬倉位真實性監控器已啟用")
         
-        # v3.15.0: 性能优化模块（可选）
+        # 性能优化模块（可选）
         if OPTIMIZATION_MODULES_AVAILABLE:
             if hasattr(Config, 'ENABLE_MEMORY_MAPPED_STORAGE') and Config.ENABLE_MEMORY_MAPPED_STORAGE:
                 self.feature_store = MemoryMappedFeatureStore(
@@ -111,7 +100,7 @@ class VirtualPositionManager:
     
     def add_virtual_position(self, signal: Dict, rank: int):
         """
-        添加虛擬倉位（v3.12.0：纯 __slots__ 可变对象）
+        添加虛擬倉位（纯 __slots__ 可变对象）
         
         Args:
             signal: 交易信號
@@ -128,17 +117,17 @@ class VirtualPositionManager:
             )
             self._close_virtual_position(symbol, "replaced_by_new_signal")
         
-        # ✅ v3.12.0：直接创建并存储 VirtualPosition 对象（不转换为dict）
+        # 直接创建并存储 VirtualPosition 对象（不转换为dict）
         expiry = (datetime.now() + timedelta(hours=self.config.VIRTUAL_POSITION_EXPIRY)).isoformat()
         virtual_pos = VirtualPosition.from_signal(signal, rank, expiry)
         
         self.virtual_positions[symbol] = virtual_pos  # 直接存储对象
         
-        # 🔥 v3.14.0：添加到生命週期監控
+        # 添加到生命週期監控
         self.lifecycle_monitor.add_position(virtual_pos)
         logger.debug(f"✅ 虛擬倉位創建並添加到監控: {symbol} {virtual_pos.signal_id}")
         
-        self._save_positions_sync()  # v3.13.0：明确使用同步保存
+        self._save_positions_sync()  # 明确使用同步保存
         
         logger.info(
             f"➕ 添加虛擬倉位: {symbol} {signal['direction']} "
@@ -190,7 +179,7 @@ class VirtualPositionManager:
     
     def _update_virtual_positions_sync(self, market_data: Dict[str, float]):
         """
-        同步更新虛擬倉位 PnL（v3.12.0：使用可变对象的 update_price）
+        同步更新虛擬倉位 PnL
         
         ✅ 性能优势：
         - 直接调用 position.update_price() → 零额外内存分配
@@ -215,8 +204,6 @@ class VirtualPositionManager:
             current_price = market_data.get(symbol)
             if current_price is None:
                 continue
-            
-            # ✅ v3.12.0：使用可变对象的 update_price（高效）
             position.update_price(current_price)
             
             # 检查是否应该关闭
@@ -279,8 +266,6 @@ class VirtualPositionManager:
         if not prices:
             logger.warning("未能获取任何价格，跳过更新")
             return []
-        
-        # 🔥 v3.14.0：高效更新每个倉位（包括 lifecycle_monitor 同步）
         closed_positions = []
         for symbol, position in list(self.virtual_positions.items()):
             if position.status != 'active':
@@ -312,8 +297,6 @@ class VirtualPositionManager:
                         self._close_virtual_position(symbol, f"liquidation_{liquidation_reason}")
                         closed_positions.append(position)
                         continue
-                
-                # 🔥 v3.14.0：同步更新 lifecycle_monitor 中的倉位引用
                 # lifecycle_monitor 使用 signal_id 作为 key
                 position_id = position.signal_id
                 if position_id in self.lifecycle_monitor.active_positions:
@@ -348,7 +331,7 @@ class VirtualPositionManager:
         return await binance_client.get_ticker_price(symbol)
     
     def _should_close_virtual(self, position: VirtualPosition, current_price: float) -> bool:
-        """判斷是否應該關閉虛擬倉位（v3.12.0：使用对象属性）"""
+        """判斷是否應該關閉虛擬倉位"""
         if position.direction == "LONG":
             if current_price <= position.stop_loss:
                 return True
@@ -363,7 +346,7 @@ class VirtualPositionManager:
         return False
     
     def _get_close_reason(self, position: VirtualPosition, current_price: float) -> str:
-        """獲取關閉原因（v3.12.0：使用对象属性）"""
+        """獲取關閉原因"""
         if position.direction == "LONG":
             if current_price <= position.stop_loss:
                 return "stop_loss"
@@ -378,13 +361,11 @@ class VirtualPositionManager:
         return "unknown"
     
     def _close_virtual_position(self, symbol: str, reason: str):
-        """關閉虛擬倉位（v3.12.0：使用可变对象的 close_position）"""
+        """關閉虛擬倉位"""
         if symbol not in self.virtual_positions:
             return
         
         position = self.virtual_positions[symbol]
-        
-        # ✅ v3.12.0：使用可变对象的 close_position 方法
         position.close_position(reason)
         
         # 🔥 v3.17.10+：真實性調整（添加滑點和流動性成本）
@@ -444,21 +425,21 @@ class VirtualPositionManager:
         }
     
     def get_active_virtual_positions(self) -> List[Dict]:
-        """獲取所有活躍虛擬倉位（v3.12.0：使用对象属性）"""
+        """獲取所有活躍虛擬倉位"""
         return [
             pos.to_dict() for pos in self.virtual_positions.values()
             if pos.status == 'active'
         ]
     
     def get_closed_virtual_positions(self) -> List[Dict]:
-        """獲取所有已關閉虛擬倉位（v3.12.0：使用对象属性）"""
+        """獲取所有已關閉虛擬倉位"""
         return [
             pos.to_dict() for pos in self.virtual_positions.values()
             if pos.status == 'closed'
         ]
     
     def get_statistics(self) -> Dict:
-        """獲取虛擬倉位統計（v3.12.0：使用对象属性）"""
+        """獲取虛擬倉位統計"""
         closed = [
             pos for pos in self.virtual_positions.values()
             if pos.status == 'closed'
@@ -486,11 +467,10 @@ class VirtualPositionManager:
     
     def _load_positions(self):
         """
-        同步加载虚拟仓位（v3.13.0：始终使用同步版本）
+        同步加载虚拟仓位
         
         异步初始化请使用 await _load_positions_async()
         """
-        # v3.13.0修复：构造函数中始终使用同步加载，确保初始化完成
         self._load_positions_sync()
     
     def _transform_position_data(self, positions_dict: Dict) -> Dict[str, Any]:
@@ -547,9 +527,7 @@ class VirtualPositionManager:
     
     async def _load_positions_async(self):
         """
-        從文件加載虛擬倉位（v3.13.0异步版本）
-        
-        ✅ v3.20：使用统一转换逻辑（消除重复）
+        從文件加載虛擬倉位
         """
         if not os.path.exists(self.positions_file):
             self.virtual_positions = {}
@@ -570,11 +548,10 @@ class VirtualPositionManager:
     
     def _save_positions(self):
         """
-        同步保存虚拟仓位（v3.13.0：始终使用同步版本）
+        同步保存虚拟仓位
         
         异步保存请使用 await _save_positions_async()
         """
-        # v3.13.0修复：始终使用同步保存，确保数据持久化完成
         self._save_positions_sync()
     
     def _save_positions_sync(self):
@@ -583,7 +560,6 @@ class VirtualPositionManager:
         
         ✅ 保存流程：VirtualPosition object → JSON dict
         """
-        # v3.13.0：使用锁保护并发写入（与异步版本共享）
         with self._save_lock:
             try:
                 os.makedirs(os.path.dirname(self.positions_file), exist_ok=True)
@@ -601,11 +577,10 @@ class VirtualPositionManager:
     
     async def _save_positions_async(self):
         """
-        保存虛擬倉位到文件（v3.13.0异步版本+并发保护）
+        保存虛擬倉位到文件
         
         ✅ 保存流程：VirtualPosition object → JSON dict
         """
-        # v3.13.0修复：异步安全地获取threading锁
         # 在asyncio中运行阻塞的锁获取，避免阻塞事件循环
         def _sync_save():
             with self._save_lock:

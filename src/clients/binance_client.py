@@ -406,7 +406,7 @@ class BinanceClient:
     
     async def get_ticker_price(self, symbol: Optional[str] = None) -> Any:
         """
-        獲取最新價格（v3.13.0：支持单个symbol返回float）
+        獲取最新價格（支持单个symbol返回float）
         
         Args:
             symbol: 交易對符號（None 表示所有）
@@ -428,7 +428,7 @@ class BinanceClient:
         result = await self._request("GET", "/fapi/v1/ticker/price", params=params)
         self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_TICKER)
         
-        # v3.13.0：单个symbol直接返回价格（float）
+        # 单个symbol直接返回价格（float）
         if symbol and isinstance(result, dict):
             return float(result.get('price', 0.0))
         
