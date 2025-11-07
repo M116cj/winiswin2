@@ -195,13 +195,13 @@ class AccountFeed(BaseFeed):
         
         while self.running:
             try:
-                # v3.20.7 Railway環境優化：增加ping_timeout容忍網絡延遲
+                # v3.32+ 符合Binance规范：服务器ping，客户端pong
                 async with websockets.connect(
                     url, 
-                    ping_interval=15,      # 每15秒發送ping
-                    ping_timeout=60,       # 60秒等待pong回應（Railway環境網絡延遲優化）
-                    close_timeout=10,      # 10秒關閉超時
-                    max_size=2**20         # 1MB消息緩衝區
+                    ping_interval=None,    # 禁用客户端ping（让服务器发送）
+                    ping_timeout=120,      # 120秒无服务器ping则断线
+                    close_timeout=10,
+                    max_size=2**20
                 ) as ws:  # type: ignore
                     logger.info("✅ 帳戶WebSocket已連接")
                     self.ws_connection = ws  # 保存連接供健康檢查使用

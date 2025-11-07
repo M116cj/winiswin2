@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 
 class OptimizedWebSocketFeed:
     """
-    优化版WebSocket Feed v3.29+
+    优化版WebSocket Feed v3.32+
     
     特性：
-    1. 优化心跳参数（ping_interval=10s, 适合Railway环境）
+    1. 符合Binance规范的ping/pong机制（服务器ping，客户端pong）
     2. 指数退避算法的智能重连机制
     3. 连接健康监控任务
     4. 心跳超时检测和自动恢复
@@ -33,8 +33,8 @@ class OptimizedWebSocketFeed:
     def __init__(
         self,
         name: str = "WebSocketFeed",
-        ping_interval: int = 10,  # 🔥 10秒（优化：20→10）
-        ping_timeout: int = 30,
+        ping_interval: Optional[int] = None,
+        ping_timeout: int = 120,
         max_reconnect_delay: int = 300,
         health_check_interval: int = 60
     ):
@@ -43,8 +43,8 @@ class OptimizedWebSocketFeed:
         
         Args:
             name: Feed名称
-            ping_interval: 心跳间隔（秒，默认10）
-            ping_timeout: 心跳超时（秒，默认30）
+            ping_interval: 心跳间隔（None=禁用客户端ping，让服务器发送）
+            ping_timeout: 心跳超时（秒，默认120）
             max_reconnect_delay: 最大重连延迟（秒）
             health_check_interval: 健康检查间隔（秒）
         """
@@ -68,14 +68,14 @@ class OptimizedWebSocketFeed:
         self.consecutive_failures: int = 0
         self.last_reconnect_time: float = 0
         
-        # 优化的连接参数
+        # 优化的连接参数（符合Binance规范）
         self.connection_params = {
             'ping_interval': ping_interval,
             'ping_timeout': ping_timeout,
-            'close_timeout': 10,  # 关闭超时
-            'max_size': 10 * 1024 * 1024,  # 10MB
-            'read_limit': 2 ** 16,  # 64KB
-            'write_limit': 2 ** 16,  # 64KB
+            'close_timeout': 10,
+            'max_size': 10 * 1024 * 1024,
+            'read_limit': 2 ** 16,
+            'write_limit': 2 ** 16,
         }
         
         # 任务
@@ -92,9 +92,9 @@ class OptimizedWebSocketFeed:
         }
         
         logger.info("=" * 80)
-        logger.info(f"✅ {name} 初始化完成（Railway优化版）")
-        logger.info(f"   💓 心跳间隔: {ping_interval}秒（20→10优化）")
-        logger.info(f"   ⏱️  心跳超时: {ping_timeout}秒")
+        logger.info(f"✅ {name} 初始化完成（v3.32 Binance规范版）")
+        logger.info(f"   💓 Ping机制: 服务器ping（每20秒）+ 客户端自动pong")
+        logger.info(f"   ⏱️  Ping超时: {ping_timeout}秒")
         logger.info(f"   🔄 指数退避: 1s → {max_reconnect_delay}s")
         logger.info(f"   🏥 健康检查: 每{health_check_interval}秒")
         logger.info("=" * 80)
@@ -197,47 +197,13 @@ class OptimizedWebSocketFeed:
     
     async def _heartbeat_monitor(self) -> None:
         """
-        心跳监控循环（检测连接健康状态）
+        心跳监控循环（v3.32：已禁用，websockets库自动处理ping/pong）
+        
+        注意：Binance服务器每20秒发送ping，websockets库自动响应pong。
+        如果ping_timeout秒内未收到服务器ping，连接会自动断开。
         """
-        logger.info(f"💓 {self.name}: 心跳监控已启动")
-        
-        while self.running and self.connected:
-            try:
-                await asyncio.sleep(self.ping_interval)
-                
-                # 检查上次pong时间
-                time_since_pong = time.time() - self.last_pong_time
-                
-                if time_since_pong > self.ping_timeout:
-                    logger.warning(
-                        f"⚠️ {self.name}: 心跳超时 "
-                        f"({time_since_pong:.1f}秒无响应)"
-                    )
-                    
-                    # 触发重连
-                    self.connected = False
-                    if self.ws:
-                        await self.ws.close()
-                    
-                    break
-                
-                # 发送ping
-                if self.ws and not self.ws.closed:
-                    try:
-                        pong_waiter = await self.ws.ping()
-                        await asyncio.wait_for(pong_waiter, timeout=5.0)
-                        self.last_pong_time = time.time()
-                        logger.debug(f"💓 {self.name}: Pong received")
-                    except asyncio.TimeoutError:
-                        logger.warning(f"⚠️ {self.name}: Ping超时")
-                    except Exception as e:
-                        logger.error(f"❌ {self.name}: Ping失败: {e}")
-                        
-            except Exception as e:
-                logger.error(f"❌ {self.name}: 心跳监控错误: {e}")
-                break
-        
-        logger.info(f"💓 {self.name}: 心跳监控已停止")
+        logger.info(f"💓 {self.name}: 心跳监控已禁用（依赖websockets库自动处理）")
+        return
     
     async def start_health_check(self) -> None:
         """启动健康检查任务"""

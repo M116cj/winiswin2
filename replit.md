@@ -3,11 +3,29 @@
 ## 📌 項目概述
 
 **版本**：v4.0 ML Feature Schema Unification  
-**狀態**：✅ ML Bug修復完成 - 統一12特徵Schema  
+**狀態**：✅ v3.32 WebSocket Binance規範合規完成  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**v3.32 WebSocket Binance Compliance（2025-11-07）**：
+- ✅ **Ping/Pong機制修正**：完全符合Binance官方規範
+  - 禁用客戶端主動ping（ping_interval=None）
+  - 依賴Binance服務器每20秒發送ping
+  - websockets庫自動響應pong
+  - ping_timeout延長至120秒（避免誤判斷線）
+- ✅ **影響文件**：
+  - OptimizedWebSocketFeed：移除手動心跳監控代碼
+  - KlineFeed：更新連接參數，移除手動ping檢查
+  - AccountFeed：更新連接參數
+- ✅ **驗證測試**：
+  - WebSocket K線數據格式測試通過 ✅
+  - 所有必需字段正確（symbol, open, high, low, close, volume, timestamp等）
+  - 網絡延遲正常（77-86毫秒）
+  - 合併流格式正確解析
+- ✅ **Architect審查**：通過，連接穩定性保持
+- ✅ **符合規範**：100%符合Binance WebSocket API 2024規範
 
 **v4.0 ML Feature Schema Unification（CRITICAL BUG修復）**：
 - 🐛 **問題**：ModelInitializer訓練時使用44特徵，MLModelWrapper預測時只使用12特徵

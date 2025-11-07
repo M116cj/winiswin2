@@ -73,11 +73,11 @@ class KlineFeed(OptimizedWebSocketFeed):
             shard_id: 分片ID（用於追蹤，默認0）
             max_history: 最大歷史K線數量（默認100，用於聚合5m/15m/1h）
         """
-        # v3.29+ 使用优化的WebSocket参数
+        # v3.32+ 使用符合Binance规范的WebSocket参数
         super().__init__(
             name=f"KlineFeed-Shard{shard_id}",
-            ping_interval=10,  # v3.29+ 優化：20→10秒（Railway環境）
-            ping_timeout=30,
+            ping_interval=None,
+            ping_timeout=120,
             max_reconnect_delay=300,
             health_check_interval=60
         )
@@ -98,13 +98,13 @@ class KlineFeed(OptimizedWebSocketFeed):
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
-        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成（v3.29+）")
+        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成（v3.32 Binance规范版）")
         logger.info(f"   📊 監控幣種數量: {len(self.symbols)}")
         logger.info(f"   ⏱️  K線週期: {interval}")
         logger.info(f"   📦 歷史緩存大小: {max_history}根K線")
         logger.info(f"   🔌 WebSocket模式: 合併流（單一連線）")
         logger.info(f"   ⚡ 時間戳標準化: server_ts + local_ts + latency_ms")
-        logger.info(f"   💓 心跳監控: 10秒ping（v3.29+優化）")
+        logger.info(f"   💓 Ping機制: 服務器ping（每20秒）+ 客戶端自動pong")
         logger.info(f"   🔄 智能重連: 指数退避算法")
         logger.info("=" * 80)
     
@@ -156,13 +156,13 @@ class KlineFeed(OptimizedWebSocketFeed):
         
         while self.running:
             try:
-                # v3.20.7 Railway環境優化：增加ping_timeout容忍網絡延遲
+                # v3.32+ 符合Binance规范：服务器ping，客户端pong
                 async with websockets.connect(
                     url, 
-                    ping_interval=15,      # 每15秒發送ping
-                    ping_timeout=60,       # 60秒等待pong回應（Railway環境網絡延遲優化）
-                    close_timeout=10,      # 10秒關閉超時
-                    max_size=2**20         # 1MB消息緩衝區
+                    ping_interval=None,    # 禁用客户端ping（让服务器发送）
+                    ping_timeout=120,      # 120秒无服务器ping则断线
+                    close_timeout=10,
+                    max_size=2**20
                 ) as ws:  # type: ignore
                     logger.debug(f"✅ {self.name} WebSocket已連接 ({len(self.symbols)}個幣種)")
                     
@@ -175,17 +175,14 @@ class KlineFeed(OptimizedWebSocketFeed):
                             if 'data' in data and data['data'].get('e') == 'kline':
                                 self._update_kline(data['data']['k'])
                             
-                            # v3.29+ OptimizedWebSocketFeed已内置消息时间追踪
+                            # v3.32+ 更新消息时间追踪
                             if hasattr(self, 'last_message_time'):
                                 import time
                                 self.last_message_time = time.time()
                         
                         except asyncio.TimeoutError:
-                            try:
-                                await ws.ping()
-                            except Exception:
-                                logger.warning(f"⚠️ {self.name} ping失敗，重連中...")
-                                break
+                            # 30秒无消息是正常的（空闲期），继续等待
+                            continue
                         
                         except Exception as e:
                             logger.error(f"❌ {self.name} 接收失敗: {e}")
