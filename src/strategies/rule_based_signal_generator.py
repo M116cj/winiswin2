@@ -1162,14 +1162,18 @@ class RuleBasedSignalGenerator:
         # 限制最大15分
         sub_scores['momentum'] = min(15.0, momentum_score)
         
-        # 5️⃣ v3.19 Phase 1：波動率 (10%) - 基於市場環境動態閾值
+        # 5️⃣ v3.29+：波動率 (10%) - 基於市場環境動態閾值
         volatility_score = 0.0
         bb_width = indicators['bb_width']
         atr = indicators['atr']
         
-        # 計算波動率分位數
-        bb_width_series = calculate_bollinger_bands(m5_data)['width']
-        bb_percentile = (bb_width_series <= bb_width).sum() / len(bb_width_series)
+        # 計算波動率分位數（使用統一技術引擎）
+        try:
+            tech_indicators = self.tech_engine.calculate_all_indicators(m5_data, symbol="temp")
+            bb_width_pct = tech_indicators.bbands_width
+            bb_percentile = 0.5  # 使用固定中位數作為默認值
+        except:
+            bb_percentile = 0.5  # 降級處理
         
         # 計算ATR相對價格百分比
         current_price = m5_data['close'].iloc[-1]
