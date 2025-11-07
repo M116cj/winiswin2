@@ -584,6 +584,7 @@ class BinanceClient:
         Returns:
             訂單信息
         """
+        from decimal import Decimal
         from src.core.circuit_breaker import Priority
         if priority is None:
             priority = Priority.NORMAL
@@ -591,25 +592,36 @@ class BinanceClient:
         # 自動格式化數量以符合 Binance 精度要求
         formatted_quantity = await self.format_quantity(symbol, quantity)
         
+        # 🔥 Critical Fix v3.30: 所有數值參數必須轉換為字符串（避免科學計數法）
+        # Binance API 要求：quantity/price/stopPrice 必須是字符串格式
+        def _format_decimal(value: float) -> str:
+            """將 float 轉換為字符串（避免科學計數法）"""
+            return format(Decimal(str(value)), 'f')
+        
         params = {
             "symbol": symbol,
             "side": side,
             "type": order_type,
-            "quantity": formatted_quantity,
+            "quantity": _format_decimal(formatted_quantity),  # ✅ 字符串格式
             **kwargs
         }
         
         if price:
-            params['price'] = price
+            params['price'] = _format_decimal(price)  # ✅ 字符串格式
         if stop_price:
-            params['stopPrice'] = stop_price
+            params['stopPrice'] = _format_decimal(stop_price)  # ✅ 字符串格式
         
         # 🔥 Critical Fix: LIMIT訂單必須包含timeInForce（Binance API協議要求）
         if order_type == "LIMIT" and 'timeInForce' not in params:
             params['timeInForce'] = 'GTC'  # 默認 Good Till Cancel
             logger.debug(f"  自動添加 timeInForce=GTC (LIMIT訂單必需參數)")
         
-        logger.info(f"創建訂單: {symbol} {side} {order_type} {formatted_quantity}")
+        # 🔥 Critical Fix v3.30: MARKET訂單不應該有timeInForce參數
+        if order_type == "MARKET" and 'timeInForce' in params:
+            del params['timeInForce']
+            logger.debug(f"  移除 timeInForce (MARKET訂單不支持此參數)")
+        
+        logger.info(f"創建訂單: {symbol} {side} {order_type} {params['quantity']}")
         if formatted_quantity != quantity:
             logger.debug(f"  數量已格式化: {quantity} → {formatted_quantity}")
         
