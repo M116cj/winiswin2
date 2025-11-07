@@ -1,0 +1,1002 @@
+2025-11-07T01:20:19.392578260Z [inf]  2025-11-07 01:20:19,389 - src.strategies.self_learning_trader - INFO - 🎓 BERAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.445630816Z [inf]  2025-11-07 01:20:19,425 - src.strategies.self_learning_trader - INFO - 🎓 LAYERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.446630030Z [inf]  2025-11-07 01:20:19,444 - src.strategies.self_learning_trader - INFO - 🎓 HEIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.470203317Z [inf]  2025-11-07 01:20:19,466 - src.strategies.self_learning_trader - INFO - 🎓 B3USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.507468399Z [inf]  2025-11-07 01:20:19,504 - src.strategies.self_learning_trader - INFO - 🎓 GPSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.532345853Z [inf]  2025-11-07 01:20:19,525 - src.strategies.self_learning_trader - INFO - 🎓 SHELLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.569948927Z [inf]  2025-11-07 01:20:19,565 - src.strategies.self_learning_trader - INFO - 🎓 REDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.589441792Z [inf]  2025-11-07 01:20:19,584 - src.strategies.self_learning_trader - INFO - 🎓 VICUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.613497580Z [inf]  2025-11-07 01:20:19,605 - src.strategies.self_learning_trader - INFO - 🎓 EPICUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.636707166Z [inf]  2025-11-07 01:20:19,625 - src.strategies.self_learning_trader - INFO - 🎓 BMTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.648777517Z [inf]  2025-11-07 01:20:19,646 - src.strategies.self_learning_trader - INFO - 🎓 MUBARAKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.671521614Z [inf]  2025-11-07 01:20:19,667 - src.strategies.self_learning_trader - INFO - 🎓 FORMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.750745612Z [inf]  2025-11-07 01:20:19,719 - src.strategies.self_learning_trader - INFO - 🎓 TUTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.750754178Z [inf]  2025-11-07 01:20:19,719 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描350個）
+2025-11-07T01:20:19.750760705Z [inf]  2025-11-07 01:20:19,720 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=349, 拒絕=0
+2025-11-07T01:20:19.750767610Z [inf]  2025-11-07 01:20:19,720 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=314, 無=35
+2025-11-07T01:20:19.758238110Z [inf]  2025-11-07 01:20:19,753 - src.strategies.self_learning_trader - INFO - 🎓 BROCCOLI714USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.795037482Z [inf]  2025-11-07 01:20:19,790 - src.strategies.self_learning_trader - INFO - 🎓 BROCCOLIF3BUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.827023400Z [inf]  2025-11-07 01:20:19,823 - src.strategies.self_learning_trader - INFO - 🎓 SIRENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.870270437Z [inf]  2025-11-07 01:20:19,855 - src.strategies.self_learning_trader - INFO - 🎓 BANANAS31USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.894234699Z [inf]  2025-11-07 01:20:19,888 - src.strategies.self_learning_trader - INFO - 🎓 BRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.937543829Z [inf]  2025-11-07 01:20:19,919 - src.strategies.self_learning_trader - INFO - 🎓 PLUMEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:19.960952637Z [inf]  2025-11-07 01:20:19,951 - src.strategies.self_learning_trader - INFO - 🎓 NILUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.005513187Z [inf]  2025-11-07 01:20:19,985 - src.strategies.self_learning_trader - INFO - 🎓 PARTIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.017347584Z [inf]  2025-11-07 01:20:20,016 - src.strategies.self_learning_trader - INFO - ❌ JELLYJELLYUSDT 拒絕開倉: 信心度不足: 22.5% < 25.0% | 勝率=45.0% 信心=22.5% R:R=1.50
+2025-11-07T01:20:20.314123831Z [inf]  2025-11-07 01:20:20,054 - src.strategies.self_learning_trader - INFO - 🎓 PAXGUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314131881Z [inf]  2025-11-07 01:20:20,054 - src.strategies.self_learning_trader - WARNING - ⚠️ PAXGUSDT SL/TP 無效: 止損距離過小: 0.15% < 0.30%，使用安全值
+2025-11-07T01:20:20.314137934Z [inf]  2025-11-07 01:20:20,089 - src.strategies.self_learning_trader - INFO - 🎓 FUNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314142739Z [inf]  2025-11-07 01:20:20,125 - src.strategies.self_learning_trader - INFO - 🎓 GUNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314149557Z [inf]  2025-11-07 01:20:20,176 - src.strategies.self_learning_trader - INFO - 🎓 FORTHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314154946Z [inf]  2025-11-07 01:20:20,213 - src.strategies.self_learning_trader - INFO - 🎓 XCNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314161626Z [inf]  2025-11-07 01:20:20,248 - src.strategies.self_learning_trader - INFO - 🎓 FHEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314167281Z [inf]  2025-11-07 01:20:20,276 - src.strategies.self_learning_trader - INFO - 🎓 KERNELUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.314172669Z [inf]  2025-11-07 01:20:20,297 - src.strategies.self_learning_trader - INFO - 🎓 WCTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.319535767Z [inf]  2025-11-07 01:20:20,317 - src.strategies.self_learning_trader - INFO - 🎓 INITUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.345580860Z [inf]  2025-11-07 01:20:20,342 - src.strategies.self_learning_trader - INFO - 🎓 AERGOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.366542570Z [inf]  2025-11-07 01:20:20,365 - src.strategies.self_learning_trader - INFO - 🎓 BANKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.390876235Z [inf]  2025-11-07 01:20:20,384 - src.strategies.self_learning_trader - INFO - 🎓 EPTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.412577048Z [inf]  2025-11-07 01:20:20,408 - src.strategies.self_learning_trader - INFO - 🎓 DEEPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.441285523Z [inf]  2025-11-07 01:20:20,430 - src.strategies.self_learning_trader - INFO - 🎓 HYPERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.464237138Z [inf]  2025-11-07 01:20:20,455 - src.strategies.self_learning_trader - INFO - 🎓 FISUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.486712409Z [inf]  2025-11-07 01:20:20,476 - src.strategies.self_learning_trader - INFO - 🎓 JSTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.513795560Z [inf]  2025-11-07 01:20:20,510 - src.strategies.self_learning_trader - INFO - 🎓 PUNDIXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.547757108Z [inf]  2025-11-07 01:20:20,529 - src.strategies.self_learning_trader - INFO - 🎓 CTKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.547765098Z [inf]  2025-11-07 01:20:20,529 - src.core.unified_scheduler - INFO - ⏱️  進度: 384/532 | 已分析=384 | 平均分析=22.7ms | 平均數據=4.8ms
+2025-11-07T01:20:20.803970916Z [inf]  2025-11-07 01:20:20,789 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.26秒 | 平均4.1ms/symbol
+2025-11-07T01:20:20.803979799Z [inf]  2025-11-07 01:20:20,789 - src.core.unified_scheduler - INFO - ⏱️  批次 7: 64个symbols数据获取完成，耗时0.26秒
+2025-11-07T01:20:20.815394582Z [inf]  2025-11-07 01:20:20,813 - src.strategies.self_learning_trader - INFO - 🎓 AIOTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.856438901Z [inf]  2025-11-07 01:20:20,837 - src.strategies.self_learning_trader - INFO - 🎓 DOLOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.861888183Z [inf]  2025-11-07 01:20:20,857 - src.strategies.self_learning_trader - INFO - 🎓 HAEDALUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.884145591Z [inf]  2025-11-07 01:20:20,882 - src.strategies.self_learning_trader - INFO - 🎓 SXTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.905855497Z [inf]  2025-11-07 01:20:20,903 - src.strategies.self_learning_trader - INFO - 🎓 ASRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.928279555Z [inf]  2025-11-07 01:20:20,922 - src.strategies.self_learning_trader - INFO - 🎓 ALPINEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.951023654Z [inf]  2025-11-07 01:20:20,943 - src.strategies.self_learning_trader - INFO - 🎓 B2USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.974231644Z [inf]  2025-11-07 01:20:20,963 - src.strategies.self_learning_trader - INFO - 🎓 MILKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:20.987584668Z [inf]  2025-11-07 01:20:20,983 - src.strategies.self_learning_trader - INFO - 🎓 SYRUPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.340251305Z [inf]  2025-11-07 01:20:21,019 - src.strategies.self_learning_trader - INFO - 🎓 DOODUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.340256914Z [inf]  2025-11-07 01:20:21,039 - src.strategies.self_learning_trader - INFO - 🎓 OGUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.340263566Z [inf]  2025-11-07 01:20:21,058 - src.strategies.self_learning_trader - INFO - 🎓 ZKJUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.340269467Z [inf]  2025-11-07 01:20:21,102 - src.strategies.self_learning_trader - INFO - 🎓 NXPCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.340277462Z [inf]  2025-11-07 01:20:21,102 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描400個）
+2025-11-07T01:20:21.340283546Z [inf]  2025-11-07 01:20:21,102 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=399, 拒絕=0
+2025-11-07T01:20:21.340289134Z [inf]  2025-11-07 01:20:21,102 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=354, 無=45
+2025-11-07T01:20:21.340294192Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:21.340299261Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描400個交易對）
+2025-11-07T01:20:21.340305752Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:21.340311144Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 400
+2025-11-07T01:20:21.343854327Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=400, 拒絕=0
+2025-11-07T01:20:21.343864673Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-07T01:20:21.343872655Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=400
+2025-11-07T01:20:21.343878925Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-07T01:20:21.343886081Z [inf]  2025-11-07 01:20:21,127 - src.strategies.rule_based_signal_generator - INFO -          有方向=355, 無方向=45
+2025-11-07T01:20:21.343894574Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=201
+2025-11-07T01:20:21.343901207Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=58
+2025-11-07T01:20:21.343907319Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=7
+2025-11-07T01:20:21.343912087Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=33
+2025-11-07T01:20:21.343918768Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=56
+2025-11-07T01:20:21.343924521Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-07T01:20:21.343929980Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-07T01:20:21.343935658Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-07T01:20:21.344212955Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-07T01:20:21.344218984Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=355
+2025-11-07T01:20:21.344223618Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-07T01:20:21.344227818Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-07T01:20:21.344231829Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-07T01:20:21.344235787Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-07T01:20:21.344241970Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-07T01:20:21.344245910Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 355
+2025-11-07T01:20:21.344249874Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-07T01:20:21.344253695Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-07T01:20:21.344257339Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 355
+2025-11-07T01:20:21.344262734Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 355
+2025-11-07T01:20:21.344266828Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-07T01:20:21.344272687Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-07T01:20:21.345089301Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-07T01:20:21.345090101Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-07T01:20:21.345095195Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-07T01:20:21.345099634Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-07T01:20:21.345102105Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/400)
+2025-11-07T01:20:21.345107556Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-07T01:20:21.345107588Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:21.345112585Z [inf]  2025-11-07 01:20:21,128 - src.strategies.self_learning_trader - INFO - 🎓 CVCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345114636Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-07T01:20:21.345120139Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-07T01:20:21.345126348Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-07T01:20:21.345132099Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-07T01:20:21.345137689Z [inf]  2025-11-07 01:20:21,128 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-07T01:20:21.345947934Z [inf]  2025-11-07 01:20:21,167 - src.strategies.self_learning_trader - INFO - 🎓 AWEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345958947Z [inf]  2025-11-07 01:20:21,194 - src.strategies.self_learning_trader - INFO - 🎓 BUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345963835Z [inf]  2025-11-07 01:20:21,216 - src.strategies.self_learning_trader - INFO - 🎓 SOONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345968134Z [inf]  2025-11-07 01:20:21,237 - src.strategies.self_learning_trader - INFO - 🎓 HUMAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345975533Z [inf]  2025-11-07 01:20:21,265 - src.strategies.self_learning_trader - INFO - 🎓 AUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345984982Z [inf]  2025-11-07 01:20:21,296 - src.strategies.self_learning_trader - INFO - 🎓 SOPHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.345989092Z [inf]  2025-11-07 01:20:21,321 - src.strategies.self_learning_trader - INFO - 🎓 MERLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.393258440Z [inf]  2025-11-07 01:20:21,383 - src.strategies.self_learning_trader - INFO - 🎓 PORT3USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.415949835Z [inf]  2025-11-07 01:20:21,405 - src.strategies.self_learning_trader - INFO - 🎓 1000000BOBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.425739300Z [inf]  2025-11-07 01:20:21,422 - src.strategies.self_learning_trader - INFO - 🎓 LAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.449957998Z [inf]  2025-11-07 01:20:21,442 - src.strategies.self_learning_trader - INFO - 🎓 SKATEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.462272172Z [inf]  2025-11-07 01:20:21,460 - src.strategies.self_learning_trader - INFO - 🎓 HOMEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.485305767Z [inf]  2025-11-07 01:20:21,480 - src.strategies.self_learning_trader - INFO - 🎓 RESOLVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.503139972Z [inf]  2025-11-07 01:20:21,498 - src.strategies.self_learning_trader - INFO - 🎓 TAIKOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.525339235Z [inf]  2025-11-07 01:20:21,522 - src.strategies.self_learning_trader - INFO - 🎓 SQDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.548170364Z [inf]  2025-11-07 01:20:21,542 - src.strategies.self_learning_trader - INFO - 🎓 PUMPBTCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.565504859Z [inf]  2025-11-07 01:20:21,563 - src.strategies.self_learning_trader - INFO - 🎓 SPKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.586717438Z [inf]  2025-11-07 01:20:21,583 - src.strategies.self_learning_trader - INFO - 🎓 MYXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.611148433Z [inf]  2025-11-07 01:20:21,606 - src.strategies.self_learning_trader - INFO - 🎓 FUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.644187843Z [inf]  2025-11-07 01:20:21,643 - src.strategies.self_learning_trader - INFO - 🎓 DMCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.669073228Z [inf]  2025-11-07 01:20:21,663 - src.strategies.self_learning_trader - INFO - 🎓 HUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.725624126Z [inf]  2025-11-07 01:20:21,715 - src.strategies.self_learning_trader - INFO - 🎓 ICNTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.737141946Z [inf]  2025-11-07 01:20:21,735 - src.strategies.self_learning_trader - INFO - ❌ BULLAUSDT 拒絕開倉: 信心度不足: 16.6% < 25.0% | 勝率=47.0% 信心=16.6% R:R=1.50
+2025-11-07T01:20:21.759993843Z [inf]  2025-11-07 01:20:21,754 - src.strategies.self_learning_trader - INFO - 🎓 IDOLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.813125293Z [inf]  2025-11-07 01:20:21,796 - src.strategies.self_learning_trader - INFO - 🎓 TANSSIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.892733132Z [inf]  2025-11-07 01:20:21,889 - src.strategies.self_learning_trader - INFO - 🎓 CUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.922396847Z [inf]  2025-11-07 01:20:21,921 - src.strategies.self_learning_trader - INFO - 🎓 VELVETUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.950530696Z [inf]  2025-11-07 01:20:21,945 - src.strategies.self_learning_trader - INFO - 🎓 TACUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:21.992643007Z [inf]  2025-11-07 01:20:21,980 - src.strategies.self_learning_trader - INFO - 🎓 TAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.020942945Z [inf]  2025-11-07 01:20:22,013 - src.strategies.self_learning_trader - INFO - 🎓 SLPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378095079Z [inf]  2025-11-07 01:20:22,033 - src.strategies.self_learning_trader - INFO - 🎓 ZORAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378102127Z [inf]  2025-11-07 01:20:22,053 - src.strategies.self_learning_trader - INFO - 🎓 TAGUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378107863Z [inf]  2025-11-07 01:20:22,075 - src.strategies.self_learning_trader - INFO - 🎓 ZRCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378113159Z [inf]  2025-11-07 01:20:22,095 - src.strategies.self_learning_trader - INFO - 🎓 ESPORTSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378118449Z [inf]  2025-11-07 01:20:22,117 - src.strategies.self_learning_trader - INFO - 🎓 TREEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378122857Z [inf]  2025-11-07 01:20:22,117 - src.core.unified_scheduler - INFO - ⏱️  進度: 448/532 | 已分析=448 | 平均分析=22.4ms | 平均數據=4.7ms
+2025-11-07T01:20:22.378127279Z [inf]  2025-11-07 01:20:22,262 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.14秒 | 平均2.3ms/symbol
+2025-11-07T01:20:22.378132270Z [inf]  2025-11-07 01:20:22,263 - src.core.unified_scheduler - INFO - ⏱️  批次 8: 64个symbols数据获取完成，耗时0.15秒
+2025-11-07T01:20:22.378137667Z [inf]  2025-11-07 01:20:22,285 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描450個）
+2025-11-07T01:20:22.378143527Z [inf]  2025-11-07 01:20:22,285 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=449, 拒絕=0
+2025-11-07T01:20:22.378150276Z [inf]  2025-11-07 01:20:22,285 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=390, 無=59
+2025-11-07T01:20:22.378920024Z [inf]  2025-11-07 01:20:22,314 - src.strategies.self_learning_trader - INFO - 🎓 PLAYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378925976Z [inf]  2025-11-07 01:20:22,343 - src.strategies.self_learning_trader - INFO - 🎓 NAORISUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.378932436Z [inf]  2025-11-07 01:20:22,365 - src.strategies.self_learning_trader - INFO - 🎓 TOWNSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.407660203Z [inf]  2025-11-07 01:20:22,402 - src.strategies.self_learning_trader - INFO - 🎓 ALLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.431859761Z [inf]  2025-11-07 01:20:22,427 - src.strategies.self_learning_trader - INFO - 🎓 INUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.478875148Z [inf]  2025-11-07 01:20:22,474 - src.strategies.self_learning_trader - INFO - 🎓 CARVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.580640819Z [inf]  2025-11-07 01:20:22,563 - src.strategies.self_learning_trader - INFO - 🎓 DAMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.592824579Z [inf]  2025-11-07 01:20:22,589 - src.strategies.self_learning_trader - INFO - 🎓 CUDISUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.621905229Z [inf]  2025-11-07 01:20:22,617 - src.strategies.self_learning_trader - INFO - ❌ SAPIENUSDT 拒絕開倉: 信心度不足: 24.1% < 25.0% | 勝率=49.2% 信心=24.1% R:R=1.50
+2025-11-07T01:20:22.640529861Z [inf]  2025-11-07 01:20:22,637 - src.strategies.self_learning_trader - INFO - 🎓 XPLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.682822767Z [inf]  2025-11-07 01:20:22,677 - src.strategies.self_learning_trader - INFO - 🎓 SOMIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.705148644Z [inf]  2025-11-07 01:20:22,697 - src.strategies.self_learning_trader - INFO - 🎓 BASUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.746346054Z [inf]  2025-11-07 01:20:22,744 - src.strategies.self_learning_trader - INFO - ❌ HEMIUSDT 拒絕開倉: 信心度不足: 24.3% < 25.0% | 勝率=52.3% 信心=24.3% R:R=1.50
+2025-11-07T01:20:22.773628352Z [inf]  2025-11-07 01:20:22,768 - src.strategies.self_learning_trader - INFO - 🎓 LINEAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.824722299Z [inf]  2025-11-07 01:20:22,822 - src.strategies.self_learning_trader - INFO - 🎓 ARIAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.902424634Z [inf]  2025-11-07 01:20:22,896 - src.strategies.self_learning_trader - INFO - 🎓 OPENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.926426817Z [inf]  2025-11-07 01:20:22,924 - src.strategies.self_learning_trader - INFO - 🎓 FLOCKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.952818973Z [inf]  2025-11-07 01:20:22,951 - src.strategies.self_learning_trader - INFO - 🎓 SKYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:22.979142730Z [inf]  2025-11-07 01:20:22,977 - src.strategies.self_learning_trader - INFO - 🎓 AVNTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.005412258Z [inf]  2025-11-07 01:20:23,001 - src.strategies.self_learning_trader - INFO - 🎓 HOLOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.023348294Z [inf]  2025-11-07 01:20:23,019 - src.strategies.self_learning_trader - INFO - 🎓 XPINUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421424693Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=34886, bearish=36122, neutral=85192
+2025-11-07T01:20:23.421437209Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=57783, bearish=65621, neutral=32796
+2025-11-07T01:20:23.421439380Z [inf]  2025-11-07 01:20:23,039 - src.strategies.self_learning_trader - INFO - 🎓 UBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421444997Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-07T01:20:23.421445967Z [inf]  2025-11-07 01:20:23,077 - src.strategies.self_learning_trader - INFO - 🎓 TOSHIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421451131Z [inf]  2025-11-07 01:20:23,132 - src.strategies.self_learning_trader - INFO - 🎓 AIAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421451772Z [inf]  2025-11-07 01:20:23,192 - src.strategies.self_learning_trader - INFO - 🎓 TRADOORUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421457304Z [inf]  2025-11-07 01:20:23,154 - src.strategies.self_learning_trader - INFO - 🎓 BARDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.421462235Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描156200個，0信號）：
+2025-11-07T01:20:23.421467005Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=29547, bearish=30435, neutral=96218
+2025-11-07T01:20:23.421473246Z [inf]  2025-11-07 01:20:23,171 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=17052, bearish=51112, neutral=88036
+2025-11-07T01:20:23.424764761Z [inf]  2025-11-07 01:20:23,265 - src.strategies.self_learning_trader - INFO - 🎓 HANAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.424769114Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-07T01:20:23.424774414Z [inf]  2025-11-07 01:20:23,302 - src.strategies.self_learning_trader - INFO - 🎓 AKEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.424778164Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-07T01:20:23.424781295Z [inf]  2025-11-07 01:20:23,335 - src.strategies.self_learning_trader - INFO - 🎓 LIGHTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.424784924Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=420
+2025-11-07T01:20:23.424789243Z [inf]  2025-11-07 01:20:23,353 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描500個）
+2025-11-07T01:20:23.424790066Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=500
+2025-11-07T01:20:23.424795617Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=55
+2025-11-07T01:20:23.424797498Z [inf]  2025-11-07 01:20:23,353 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=499, 拒絕=0
+2025-11-07T01:20:23.424804250Z [inf]  2025-11-07 01:20:23,353 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=419, 無=80
+2025-11-07T01:20:23.424805087Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-07T01:20:23.424809850Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=65
+2025-11-07T01:20:23.424813948Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:23.424819019Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          有方向=420, 無方向=80
+2025-11-07T01:20:23.424821058Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描500個交易對）
+2025-11-07T01:20:23.424823391Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-07T01:20:23.424828292Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:23.424829563Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=217
+2025-11-07T01:20:23.424831644Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-07T01:20:23.424834508Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 500
+2025-11-07T01:20:23.424837610Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=72
+2025-11-07T01:20:23.424844793Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=500, 拒絕=0
+2025-11-07T01:20:23.424846099Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=11
+2025-11-07T01:20:23.424850739Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 0.0%
+2025-11-07T01:20:23.426009381Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-07T01:20:23.426017699Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-07T01:20:23.426023101Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-07T01:20:23.426114930Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-07T01:20:23.426120992Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-07T01:20:23.426126810Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 420
+2025-11-07T01:20:23.426132550Z [inf]  2025-11-07 01:20:23,375 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-07T01:20:23.426138974Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-07T01:20:23.426144458Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 420
+2025-11-07T01:20:23.426151881Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 420
+2025-11-07T01:20:23.426157025Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-07T01:20:23.426161832Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-07T01:20:23.426166166Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-07T01:20:23.426170781Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-07T01:20:23.427036698Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-07T01:20:23.427042344Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-07T01:20:23.427046682Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-07T01:20:23.427050665Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-07T01:20:23.427055056Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-07T01:20:23.427059696Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-07T01:20:23.427074505Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-07T01:20:23.427079157Z [inf]  2025-11-07 01:20:23,376 - src.strategies.self_learning_trader - INFO - 🎓 FFUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.427079627Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-07T01:20:23.427086037Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/500)
+2025-11-07T01:20:23.427088749Z [inf]  2025-11-07 01:20:23,409 - src.strategies.self_learning_trader - INFO - 🎓 EDENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.427092216Z [inf]  2025-11-07 01:20:23,376 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-07T01:20:23.433405846Z [inf]  2025-11-07 01:20:23,429 - src.strategies.self_learning_trader - INFO - 🎓 NOMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.451740064Z [inf]  2025-11-07 01:20:23,448 - src.strategies.self_learning_trader - INFO - 🎓 TRUTHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.471722771Z [inf]  2025-11-07 01:20:23,469 - src.strategies.self_learning_trader - INFO - 🎓 2ZUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.494098142Z [inf]  2025-11-07 01:20:23,488 - src.strategies.self_learning_trader - INFO - 🎓 EVAAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.517656755Z [inf]  2025-11-07 01:20:23,507 - src.strategies.self_learning_trader - INFO - 🎓 LYNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.574689519Z [inf]  2025-11-07 01:20:23,570 - src.strategies.self_learning_trader - INFO - ❌ MONUSDT 拒絕開倉: 信心度不足: 18.1% < 25.0% | 勝率=45.0% 信心=18.1% R:R=1.50
+2025-11-07T01:20:23.595252171Z [inf]  2025-11-07 01:20:23,592 - src.strategies.self_learning_trader - INFO - 🎓 YBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.595261685Z [inf]  2025-11-07 01:20:23,592 - src.core.unified_scheduler - INFO - ⏱️  進度: 512/532 | 已分析=512 | 平均分析=22.2ms | 平均數據=4.4ms
+2025-11-07T01:20:23.601301127Z [inf]  2025-11-07 01:20:23,598 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 20个symbols | 成功20 | 失败0 | 耗时0.01秒 | 平均0.3ms/symbol
+2025-11-07T01:20:23.601308016Z [inf]  2025-11-07 01:20:23,598 - src.core.unified_scheduler - INFO - ⏱️  批次 9: 20个symbols数据获取完成，耗时0.01秒
+2025-11-07T01:20:23.671143253Z [inf]  2025-11-07 01:20:23,650 - src.strategies.self_learning_trader - INFO - 🎓 ENSOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.672220964Z [inf]  2025-11-07 01:20:23,670 - src.strategies.self_learning_trader - INFO - 🎓 CLOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.717761359Z [inf]  2025-11-07 01:20:23,706 - src.strategies.self_learning_trader - INFO - 🎓 ZBTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.731300114Z [inf]  2025-11-07 01:20:23,725 - src.strategies.self_learning_trader - INFO - 🎓 LABUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.746778689Z [inf]  2025-11-07 01:20:23,745 - src.strategies.self_learning_trader - INFO - 🎓 RIVERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.770555735Z [inf]  2025-11-07 01:20:23,765 - src.strategies.self_learning_trader - INFO - 🎓 RVVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.789226104Z [inf]  2025-11-07 01:20:23,786 - src.strategies.self_learning_trader - INFO - 🎓 BLUAIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.813987432Z [inf]  2025-11-07 01:20:23,805 - src.strategies.self_learning_trader - INFO - 🎓 TURTLEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.826100886Z [inf]  2025-11-07 01:20:23,825 - src.strategies.self_learning_trader - INFO - 🎓 APRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.849242396Z [inf]  2025-11-07 01:20:23,845 - src.strategies.self_learning_trader - INFO - 🎓 ONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.867239832Z [inf]  2025-11-07 01:20:23,866 - src.strategies.self_learning_trader - INFO - 🎓 42USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.890787612Z [inf]  2025-11-07 01:20:23,887 - src.strategies.self_learning_trader - INFO - 🎓 COMMONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.916321615Z [inf]  2025-11-07 01:20:23,908 - src.strategies.self_learning_trader - INFO - 🎓 KITEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.936519900Z [inf]  2025-11-07 01:20:23,928 - src.strategies.self_learning_trader - INFO - 🎓 ATUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.952948494Z [inf]  2025-11-07 01:20:23,950 - src.strategies.self_learning_trader - INFO - 🎓 CCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.972574874Z [inf]  2025-11-07 01:20:23,970 - src.strategies.self_learning_trader - INFO - 🎓 MMTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥25% | 槓桿限制: 1-3x
+2025-11-07T01:20:23.995199698Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - ⏱️  進度: 532/532 | 已分析=532 | 平均分析=22.1ms | 平均數據=4.2ms
+2025-11-07T01:20:23.995212565Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-07T01:20:23.995220512Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - ⏱️  ===== 掃描時間分析報告 =====
+2025-11-07T01:20:23.995227480Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 📊 分析交易對: 532/532
+2025-11-07T01:20:23.995233995Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 📭 數據缺失: 0
+2025-11-07T01:20:23.995241498Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - ⏱️  總掃描時間: 14.0s
+2025-11-07T01:20:23.995248638Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 📈 平均分析時間: 22.1ms
+2025-11-07T01:20:23.995254816Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 🚀 最快分析: 14.0ms
+2025-11-07T01:20:23.995261029Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 🐌 最慢分析: 36.6ms
+2025-11-07T01:20:23.995270475Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 💾 平均數據獲取: 0.0ms
+2025-11-07T01:20:23.995276522Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - WARNING - ⚠️  警告: 平均分析時間22.1ms，可能分析深度不足
+2025-11-07T01:20:23.995282667Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 📊 掃描統計: 總數=532 | 數據可用=532 | 數據缺失=0
+2025-11-07T01:20:23.995289256Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 📊 信號分析診斷（信心值Top 10）
+2025-11-07T01:20:23.995295159Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  1. BUSDT        | 信心= 61.4 | 勝率= 50.4% | ✅ 信號
+2025-11-07T01:20:23.996258935Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  2. RAYSOLUSDT   | 信心= 59.5 | 勝率= 59.8% | ✅ 信號
+2025-11-07T01:20:23.996268546Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  3. TRUTHUSDT    | 信心= 59.5 | 勝率= 59.8% | ✅ 信號
+2025-11-07T01:20:23.996274913Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  4. 42USDT       | 信心= 59.2 | 勝率= 59.8% | ✅ 信號
+2025-11-07T01:20:23.996279722Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  5. KNCUSDT      | 信心= 58.8 | 勝率= 49.6% | ✅ 信號
+2025-11-07T01:20:23.996285091Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  6. SIRENUSDT    | 信心= 58.3 | 勝率= 52.5% | ✅ 信號
+2025-11-07T01:20:23.996291000Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  7. AVNTUSDT     | 信心= 57.6 | 勝率= 52.3% | ✅ 信號
+2025-11-07T01:20:23.996297053Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  8. PUNDIXUSDT   | 信心= 57.0 | 勝率= 52.1% | ✅ 信號
+2025-11-07T01:20:23.996304376Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO -  9. GASUSDT      | 信心= 57.0 | 勝率= 62.1% | ✅ 信號
+2025-11-07T01:20:23.996310479Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - 10. ZRCUSDT      | 信心= 55.2 | 勝率= 48.5% | ✅ 信號
+2025-11-07T01:20:23.996316771Z [inf]  2025-11-07 01:20:23,987 - src.core.unified_scheduler - INFO - ✅ 發現 422 個交易信號
+2025-11-07T01:20:23.996322430Z [inf]  2025-11-07 01:20:23,988 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $63.71 | 已有倉位: 0 | 新信號數: 422
+2025-11-07T01:20:24.442736505Z [inf]  2025-11-07 01:20:24,173 - src.clients.binance_client - INFO - 💰 賬戶餘額: 總額 63.71 USDT, 可用 63.71 USDT, 保證金 0.00 USDT, 未實現盈虧 +0.00 USDT
+2025-11-07T01:20:24.442742727Z [inf]  2025-11-07 01:20:24,173 - src.strategies.self_learning_trader - INFO - 💰 帳戶狀態 | 總權益: $63.71 | 可用保證金: $63.71 | 已佔用保證金: $0.00
+2025-11-07T01:20:24.442748538Z [inf]  2025-11-07 01:20:24,173 - src.strategies.self_learning_trader - INFO - 📊 豁免期檢查 | 已完成交易: 0 筆 | 豁免期門檻: 50 筆 | 狀態: 🎓 豁免期
+2025-11-07T01:20:24.442754786Z [inf]  2025-11-07 01:20:24,173 - src.core.margin_safety_controller - INFO - ✅ 保證金安全控制器已啟用
+2025-11-07T01:20:24.442761290Z [inf]     警告閾值: 80%
+2025-11-07T01:20:24.442767717Z [inf]     緊急閾值: 90%
+2025-11-07T01:20:24.442773673Z [inf]     鎖定閾值: 95%
+2025-11-07T01:20:24.442778960Z [inf]  2025-11-07 01:20:24,173 - src.core.capital_allocator - INFO - 🔒 保證金安全控制器已啟用（v3.23+）
+2025-11-07T01:20:24.442789201Z [inf]  2025-11-07 01:20:24,173 - src.core.capital_allocator - INFO - 💰 CapitalAllocator初始化 | 帳戶權益: $63.71 | 總金額: $63.71 | 已佔用保證金: $0.00
+2025-11-07T01:20:24.442795753Z [inf]  2025-11-07 01:20:24,173 - src.core.capital_allocator - INFO - 🎯 質量門檻: 25.00% | 模式: 豁免期模式（交易數:0/50） | 進度: 0.0%
+2025-11-07T01:20:24.442802054Z [inf]  2025-11-07 01:20:24,173 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.04x < 0.5x，調整為最小值 - ETHUSDT
+2025-11-07T01:20:24.442807679Z [inf]  2025-11-07 01:20:24,173 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.442813441Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.442819594Z [inf]     錯誤信息: 槓桿值必須大於0: -0.2 - ETCUSDT
+2025-11-07T01:20:24.442826330Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.445121402Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.445129821Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.445136147Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.445140860Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.445145123Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.445149503Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.2 - ETCUSDT
+2025-11-07T01:20:24.445153887Z [inf]  2025-11-07 01:20:24,174 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 ETCUSDT: 槓桿值必須大於0: -0.2 - ETCUSDT
+2025-11-07T01:20:24.445158025Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.02x < 0.5x，調整為最小值 - XLMUSDT
+2025-11-07T01:20:24.445163055Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.05x < 0.5x，調整為最小值 - DASHUSDT
+2025-11-07T01:20:24.445167594Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.02x < 0.5x，調整為最小值 - ZECUSDT
+2025-11-07T01:20:24.445176742Z [inf]  2025-11-07 01:20:24,174 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.445181116Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.445185107Z [inf]     錯誤信息: 槓桿值必須大於0: -0.2 - XTZUSDT
+2025-11-07T01:20:24.445189179Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.445193258Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.445198801Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.445202761Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.445208190Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.445268910Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.445274879Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.2 - XTZUSDT
+2025-11-07T01:20:24.445281050Z [inf]  2025-11-07 01:20:24,174 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 XTZUSDT: 槓桿值必須大於0: -0.2 - XTZUSDT
+2025-11-07T01:20:24.445285440Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - ATOMUSDT
+2025-11-07T01:20:24.445289472Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.42x < 0.5x，調整為最小值 - ONTUSDT
+2025-11-07T01:20:24.445293657Z [inf]  2025-11-07 01:20:24,174 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.445297714Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.445306837Z [inf]     錯誤信息: 槓桿值必須大於0: -0.29 - IOTAUSDT
+2025-11-07T01:20:24.445311584Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.445320618Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.445324947Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.445329159Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.445333586Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.445338185Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.445342389Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.29 - IOTAUSDT
+2025-11-07T01:20:24.445346816Z [inf]  2025-11-07 01:20:24,174 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 IOTAUSDT: 槓桿值必須大於0: -0.29 - IOTAUSDT
+2025-11-07T01:20:24.445350885Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.27x < 0.5x，調整為最小值 - VETUSDT
+2025-11-07T01:20:24.446348814Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.38 - DOTUSDT
+2025-11-07T01:20:24.446349612Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - QTUMUSDT
+2025-11-07T01:20:24.446358713Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - IOSTUSDT
+2025-11-07T01:20:24.446362270Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.446367647Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.09x < 0.5x，調整為最小值 - THETAUSDT
+2025-11-07T01:20:24.446372811Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.446378508Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - ZILUSDT
+2025-11-07T01:20:24.446380401Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.446386884Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - COMPUSDT
+2025-11-07T01:20:24.446387339Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.446395017Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.446398450Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - SXPUSDT
+2025-11-07T01:20:24.446404219Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.446406591Z [inf]  2025-11-07 01:20:24,174 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.446411777Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.446417291Z [inf]     錯誤信息: 槓桿值必須大於0: -0.38 - DOTUSDT
+2025-11-07T01:20:24.447267383Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.447272909Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.447278205Z [inf]  2025-11-07 01:20:24,174 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 DOTUSDT: 槓桿值必須大於0: -0.38 - DOTUSDT
+2025-11-07T01:20:24.447278682Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.447284620Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.447287134Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.25x < 0.5x，調整為最小值 - CRVUSDT
+2025-11-07T01:20:24.447290346Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.447295333Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.14 - ICXUSDT
+2025-11-07T01:20:24.447298598Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - TRBUSDT
+2025-11-07T01:20:24.447301663Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 ICXUSDT: 槓桿值必須大於0: -0.14 - ICXUSDT
+2025-11-07T01:20:24.447305845Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.14x < 0.5x，調整為最小值 - EGLDUSDT
+2025-11-07T01:20:24.447313174Z [inf]  2025-11-07 01:20:24,174 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.04x < 0.5x，調整為最小值 - SOLUSDT
+2025-11-07T01:20:24.447319279Z [inf]  2025-11-07 01:20:24,174 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.447325581Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.447331729Z [inf]     錯誤信息: 槓桿值必須大於0: -0.14 - ICXUSDT
+2025-11-07T01:20:24.447337562Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.448234868Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.02 - KSMUSDT
+2025-11-07T01:20:24.448241042Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.04x < 0.5x，調整為最小值 - STORJUSDT
+2025-11-07T01:20:24.448241473Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 KSMUSDT: 槓桿值必須大於0: -0.02 - KSMUSDT
+2025-11-07T01:20:24.448247762Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.34x < 0.5x，調整為最小值 - NEARUSDT
+2025-11-07T01:20:24.448248837Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.11x < 0.5x，調整為最小值 - AVAXUSDT
+2025-11-07T01:20:24.448252838Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - AAVEUSDT
+2025-11-07T01:20:24.448254929Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.448258506Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.448260634Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.448266232Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - KSMUSDT
+2025-11-07T01:20:24.448270358Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.448274540Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.448278260Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.448283782Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.448287907Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.448292182Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.449675107Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.449678437Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.449683200Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.449684255Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - FILUSDT
+2025-11-07T01:20:24.449685236Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.449690574Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.449691394Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.449697093Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.02 - FILUSDT
+2025-11-07T01:20:24.449699258Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.449703134Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 FILUSDT: 槓桿值必須大於0: -0.02 - FILUSDT
+2025-11-07T01:20:24.449704041Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - ZENUSDT
+2025-11-07T01:20:24.449705300Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.449709817Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.42x < 0.5x，調整為最小值 - BELUSDT
+2025-11-07T01:20:24.449714227Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.449714618Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.449719119Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - AXSUSDT
+2025-11-07T01:20:24.449723706Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.449730045Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.449738987Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.450656334Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.450656611Z [inf]     錯誤信息: 槓桿值必須大於0: -0.05 - 1INCHUSDT
+2025-11-07T01:20:24.450657086Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.450663315Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.05 - 1INCHUSDT
+2025-11-07T01:20:24.450666123Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.450667671Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.450670199Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 1INCHUSDT: 槓桿值必須大於0: -0.05 - 1INCHUSDT
+2025-11-07T01:20:24.450674905Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.450676038Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.02 - ZENUSDT
+2025-11-07T01:20:24.450676978Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.27x < 0.5x，調整為最小值 - CHZUSDT
+2025-11-07T01:20:24.450683827Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.450686908Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 ZENUSDT: 槓桿值必須大於0: -0.02 - ZENUSDT
+2025-11-07T01:20:24.450689177Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.450694471Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.450694767Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.08x < 0.5x，調整為最小值 - SKLUSDT
+2025-11-07T01:20:24.450700645Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.450706182Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.452392990Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.33x < 0.5x，調整為最小值 - ANKRUSDT
+2025-11-07T01:20:24.452398767Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.33x < 0.5x，調整為最小值 - MANAUSDT
+2025-11-07T01:20:24.452399976Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.2x < 0.5x，調整為最小值 - RVNUSDT
+2025-11-07T01:20:24.452406324Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.05x < 0.5x，調整為最小值 - ONEUSDT
+2025-11-07T01:20:24.452406658Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.452413862Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.452414115Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.452420823Z [inf]     錯誤信息: 槓桿值必須大於0: -0.19 - SFPUSDT
+2025-11-07T01:20:24.452425496Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.452428272Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.452433470Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.452434006Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.452440313Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.19 - SFPUSDT
+2025-11-07T01:20:24.452441030Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.452445852Z [inf]  2025-11-07 01:20:24,175 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 SFPUSDT: 槓桿值必須大於0: -0.19 - SFPUSDT
+2025-11-07T01:20:24.452450963Z [inf]  2025-11-07 01:20:24,175 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.45x < 0.5x，調整為最小值 - CHRUSDT
+2025-11-07T01:20:24.453240217Z [inf]  2025-11-07 01:20:24,175 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.453246126Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.453250883Z [inf]     錯誤信息: 槓桿值必須大於0: -0.04 - MTLUSDT
+2025-11-07T01:20:24.453255865Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.453260773Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.453263640Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.453265453Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.453270814Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.453276529Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.453276683Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.453282246Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.453286636Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.453289019Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.04 - MTLUSDT
+2025-11-07T01:20:24.453294447Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 MTLUSDT: 槓桿值必須大於0: -0.04 - MTLUSDT
+2025-11-07T01:20:24.453297157Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.453299800Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.1x < 0.5x，調整為最小值 - OGNUSDT
+2025-11-07T01:20:24.453305412Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.453309448Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.453314016Z [inf]     錯誤信息: 槓桿值必須大於0: -0.34 - NKNUSDT
+2025-11-07T01:20:24.454169123Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.454170050Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.454175779Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.454180569Z [inf]     錯誤信息: 槓桿值必須大於0: -0.17 - DYDXUSDT
+2025-11-07T01:20:24.454182332Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.34 - NKNUSDT
+2025-11-07T01:20:24.454186786Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 NKNUSDT: 槓桿值必須大於0: -0.34 - NKNUSDT
+2025-11-07T01:20:24.454189956Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.454192650Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - 1000SHIBUSDT
+2025-11-07T01:20:24.454199396Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - IOTXUSDT
+2025-11-07T01:20:24.454199867Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.454205620Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.49x < 0.5x，調整為最小值 - C98USDT
+2025-11-07T01:20:24.454209582Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.454211015Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.454218211Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.454225083Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.454232237Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.454241571Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.17 - DYDXUSDT
+2025-11-07T01:20:24.455470825Z [inf]     錯誤信息: 槓桿值必須大於0: -0.04 - DUSKUSDT
+2025-11-07T01:20:24.455476589Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 DYDXUSDT: 槓桿值必須大於0: -0.17 - DYDXUSDT
+2025-11-07T01:20:24.455480049Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.08x < 0.5x，調整為最小值 - PEOPLEUSDT
+2025-11-07T01:20:24.455481008Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 CELOUSDT: 槓桿值必須大於0: -0.23 - CELOUSDT
+2025-11-07T01:20:24.455486597Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.455488072Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.455491571Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - CTSIUSDT
+2025-11-07T01:20:24.455492575Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.455495071Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.455500675Z [inf]     錯誤信息: 槓桿值必須大於0: -0.23 - CELOUSDT
+2025-11-07T01:20:24.455505551Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.455510576Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.455515828Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.455516681Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.455526888Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.455534068Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.455541639Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.23 - CELOUSDT
+2025-11-07T01:20:24.456719308Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.456722207Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.456727474Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.456728342Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.456732797Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.456734322Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.31 - IMXUSDT
+2025-11-07T01:20:24.456741537Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.456742102Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.456746820Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.04 - DUSKUSDT
+2025-11-07T01:20:24.456750055Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.456752531Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.456753633Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 DUSKUSDT: 槓桿值必須大於0: -0.04 - DUSKUSDT
+2025-11-07T01:20:24.456758936Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.456760179Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.16x < 0.5x，調整為最小值 - FLOWUSDT
+2025-11-07T01:20:24.456762713Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.456767423Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.456767940Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.456774204Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.456779863Z [inf]     錯誤信息: 槓桿值必須大於0: -0.31 - IMXUSDT
+2025-11-07T01:20:24.457776099Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.44 - GMTUSDT
+2025-11-07T01:20:24.457785947Z [inf]  2025-11-07 01:20:24,177 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 GMTUSDT: 槓桿值必須大於0: -0.44 - GMTUSDT
+2025-11-07T01:20:24.457786320Z [inf]  2025-11-07 01:20:24,176 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 IMXUSDT: 槓桿值必須大於0: -0.31 - IMXUSDT
+2025-11-07T01:20:24.457792326Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - APEUSDT
+2025-11-07T01:20:24.457796513Z [inf]  2025-11-07 01:20:24,176 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.24x < 0.5x，調整為最小值 - API3USDT
+2025-11-07T01:20:24.457798693Z [inf]  2025-11-07 01:20:24,177 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.457804618Z [inf]  2025-11-07 01:20:24,176 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.457805215Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.457811482Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.457811867Z [inf]     錯誤信息: 槓桿值必須大於0: -0.01 - APTUSDT
+2025-11-07T01:20:24.457818013Z [inf]     錯誤信息: 槓桿值必須大於0: -0.44 - GMTUSDT
+2025-11-07T01:20:24.457823810Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.457829417Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.457835217Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.457841041Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.457846369Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.457852513Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.459089838Z [inf]  2025-11-07 01:20:24,177 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 HOOKUSDT: 槓桿值必須大於0: -0.28 - HOOKUSDT
+2025-11-07T01:20:24.459097775Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.459100551Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.459101168Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.459108627Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.459109268Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.459112631Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.459115084Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.459117351Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.459121617Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.459128301Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.459130709Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.28 - HOOKUSDT
+2025-11-07T01:20:24.459136801Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.459143010Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.459148922Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.01 - APTUSDT
+2025-11-07T01:20:24.459154455Z [inf]  2025-11-07 01:20:24,177 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 APTUSDT: 槓桿值必須大於0: -0.01 - APTUSDT
+2025-11-07T01:20:24.459160138Z [inf]  2025-11-07 01:20:24,177 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.459165937Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.459172021Z [inf]     錯誤信息: 槓桿值必須大於0: -0.28 - HOOKUSDT
+2025-11-07T01:20:24.460052069Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.460060058Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.460066962Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.22x < 0.5x，調整為最小值 - HIGHUSDT
+2025-11-07T01:20:24.460086112Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.460093772Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.460095561Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.16x < 0.5x，調整為最小值 - ASTRUSDT
+2025-11-07T01:20:24.460103795Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - PHBUSDT
+2025-11-07T01:20:24.460110827Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.33x < 0.5x，調整為最小值 - GMXUSDT
+2025-11-07T01:20:24.460117231Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - SSVUSDT
+2025-11-07T01:20:24.460123527Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.27x < 0.5x，調整為最小值 - CKBUSDT
+2025-11-07T01:20:24.460130536Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.18x < 0.5x，調整為最小值 - IDUSDT
+2025-11-07T01:20:24.460137761Z [inf]  2025-11-07 01:20:24,177 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.460145262Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.460154208Z [inf]     錯誤信息: 槓桿值必須大於0: -0.19 - JOEUSDT
+2025-11-07T01:20:24.460160378Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.460166819Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.461126446Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.19 - JOEUSDT
+2025-11-07T01:20:24.461133667Z [inf]  2025-11-07 01:20:24,177 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 JOEUSDT: 槓桿值必須大於0: -0.19 - JOEUSDT
+2025-11-07T01:20:24.461140582Z [inf]  2025-11-07 01:20:24,177 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.461146547Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.461152021Z [inf]     錯誤信息: 槓桿值必須大於0: -0.26 - TLMUSDT
+2025-11-07T01:20:24.461157761Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.461163443Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.461170385Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.461175737Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.461182042Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.461188149Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.461196642Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.26 - TLMUSDT
+2025-11-07T01:20:24.461202220Z [inf]  2025-11-07 01:20:24,177 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 TLMUSDT: 槓桿值必須大於0: -0.26 - TLMUSDT
+2025-11-07T01:20:24.461208056Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.15x < 0.5x，調整為最小值 - XVSUSDT
+2025-11-07T01:20:24.461213992Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.46x < 0.5x，調整為最小值 - BLURUSDT
+2025-11-07T01:20:24.461220419Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.11x < 0.5x，調整為最小值 - SUIUSDT
+2025-11-07T01:20:24.462317320Z [inf]  2025-11-07 01:20:24,177 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.2x < 0.5x，調整為最小值 - 1000PEPEUSDT
+2025-11-07T01:20:24.462319201Z [inf]     錯誤信息: 槓桿值必須大於0: -0.08 - PENDLEUSDT
+2025-11-07T01:20:24.462322750Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.462327534Z [inf]  2025-11-07 01:20:24,177 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.462333913Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.462335389Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.462342459Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.462343042Z [inf]     錯誤信息: 槓桿值必須大於0: -0.2 - 1000FLOKIUSDT
+2025-11-07T01:20:24.462351106Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.462352523Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.462357610Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.14x < 0.5x，調整為最小值 - NMRUSDT
+2025-11-07T01:20:24.462359602Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.2 - 1000FLOKIUSDT
+2025-11-07T01:20:24.462361142Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.462369365Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 1000FLOKIUSDT: 槓桿值必須大於0: -0.2 - 1000FLOKIUSDT
+2025-11-07T01:20:24.462371857Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.22x < 0.5x，調整為最小值 - XVGUSDT
+2025-11-07T01:20:24.462378103Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.462383060Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.463308362Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - DODOXUSDT
+2025-11-07T01:20:24.463319835Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.463326098Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.463331597Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - BIGTIMEUSDT
+2025-11-07T01:20:24.463336971Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.463338765Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.463343390Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.463591050Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.463599855Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.463607081Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.463614542Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.463621696Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.463635304Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.08 - PENDLEUSDT
+2025-11-07T01:20:24.463641951Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 PENDLEUSDT: 槓桿值必須大於0: -0.08 - PENDLEUSDT
+2025-11-07T01:20:24.463647918Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - ARKMUSDT
+2025-11-07T01:20:24.463653653Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.18x < 0.5x，調整為最小值 - AGLDUSDT
+2025-11-07T01:20:24.463660016Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.14x < 0.5x，調整為最小值 - YGGUSDT
+2025-11-07T01:20:24.464405140Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.464412519Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.464415685Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.464418612Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.464424916Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.464428310Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.464431987Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.02 - BIGTIMEUSDT
+2025-11-07T01:20:24.464437397Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.464439627Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 BIGTIMEUSDT: 槓桿值必須大於0: -0.02 - BIGTIMEUSDT
+2025-11-07T01:20:24.464447374Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.464447825Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.464455630Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.464456492Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.34 - RIFUSDT
+2025-11-07T01:20:24.464464211Z [inf]     錯誤信息: 槓桿值必須大於0: -0.34 - RIFUSDT
+2025-11-07T01:20:24.464464365Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 RIFUSDT: 槓桿值必須大於0: -0.34 - RIFUSDT
+2025-11-07T01:20:24.464472667Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.464474039Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - POWRUSDT
+2025-11-07T01:20:24.464479659Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.465526077Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.42x < 0.5x，調整為最小值 - TIAUSDT
+2025-11-07T01:20:24.465534105Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.16x < 0.5x，調整為最小值 - TWTUSDT
+2025-11-07T01:20:24.465539256Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.465543779Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.465547794Z [inf]     錯誤信息: 槓桿值必須大於0: -0.07 - TOKENUSDT
+2025-11-07T01:20:24.465552165Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.465556677Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.465561738Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.465566064Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.465570308Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.465573947Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.465577912Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.07 - TOKENUSDT
+2025-11-07T01:20:24.465584742Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 TOKENUSDT: 槓桿值必須大於0: -0.07 - TOKENUSDT
+2025-11-07T01:20:24.465589361Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.36x < 0.5x，調整為最小值 - NTRNUSDT
+2025-11-07T01:20:24.465593813Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.465598046Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.465601712Z [inf]     錯誤信息: 槓桿值必須大於0: -0.28 - KASUSDT
+2025-11-07T01:20:24.467008317Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.467016741Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.467024623Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.467030348Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.467035911Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.467042281Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.467048211Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.28 - KASUSDT
+2025-11-07T01:20:24.467054415Z [inf]  2025-11-07 01:20:24,178 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 KASUSDT: 槓桿值必須大於0: -0.28 - KASUSDT
+2025-11-07T01:20:24.467060589Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - BEAMXUSDT
+2025-11-07T01:20:24.467066521Z [inf]  2025-11-07 01:20:24,178 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.39x < 0.5x，調整為最小值 - 1000BONKUSDT
+2025-11-07T01:20:24.467073020Z [inf]  2025-11-07 01:20:24,178 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.467078621Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.467084119Z [inf]     錯誤信息: 槓桿值必須大於0: -0.19 - PYTHUSDT
+2025-11-07T01:20:24.467089901Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.467095478Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.467100993Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.467106426Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.467112320Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.467329752Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.467336147Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.467336534Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.467339199Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.02x < 0.5x，調整為最小值 - ACEUSDT
+2025-11-07T01:20:24.467340016Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.19 - PYTHUSDT
+2025-11-07T01:20:24.467349357Z [inf]     錯誤信息: 槓桿值必須大於0: -0.26 - ONGUSDT
+2025-11-07T01:20:24.467351562Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.467352170Z [inf]  2025-11-07 01:20:24,179 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.467356268Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.467358867Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.26 - ONGUSDT
+2025-11-07T01:20:24.467359025Z [inf]  2025-11-07 01:20:24,179 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 PYTHUSDT: 槓桿值必須大於0: -0.19 - PYTHUSDT
+2025-11-07T01:20:24.467363703Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.467365826Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.467369759Z [inf]  2025-11-07 01:20:24,179 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.467369882Z [inf]  2025-11-07 01:20:24,179 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 ONGUSDT: 槓桿值必須大於0: -0.26 - ONGUSDT
+2025-11-07T01:20:24.467372394Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.467380050Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.468894353Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.468896039Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.07 - MOVRUSDT
+2025-11-07T01:20:24.468900876Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.468904095Z [inf]  2025-11-07 01:20:24,179 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 MOVRUSDT: 槓桿值必須大於0: -0.07 - MOVRUSDT
+2025-11-07T01:20:24.468907265Z [inf]     錯誤信息: 槓桿值必須大於0: -0.07 - MOVRUSDT
+2025-11-07T01:20:24.468908935Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.468912209Z [inf]  2025-11-07 01:20:24,179 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.468917906Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.468917939Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.02 - AIUSDT
+2025-11-07T01:20:24.468920561Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.468924964Z [inf]  2025-11-07 01:20:24,179 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 AIUSDT: 槓桿值必須大於0: -0.02 - AIUSDT
+2025-11-07T01:20:24.468927814Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.468928085Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - AIUSDT
+2025-11-07T01:20:24.468934955Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.468936043Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.468940293Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.468944881Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.468946839Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.468951625Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.468957651Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.469570163Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - XAIUSDT
+2025-11-07T01:20:24.469575756Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - WIFUSDT
+2025-11-07T01:20:24.469579940Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.18x < 0.5x，調整為最小值 - MANTAUSDT
+2025-11-07T01:20:24.469584473Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.47x < 0.5x，調整為最小值 - ONDOUSDT
+2025-11-07T01:20:24.469590366Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - LSKUSDT
+2025-11-07T01:20:24.469595694Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.48x < 0.5x，調整為最小值 - ZETAUSDT
+2025-11-07T01:20:24.469601002Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.02x < 0.5x，調整為最小值 - RONINUSDT
+2025-11-07T01:20:24.469607015Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.4x < 0.5x，調整為最小值 - GLMUSDT
+2025-11-07T01:20:24.469613100Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.2x < 0.5x，調整為最小值 - PORTALUSDT
+2025-11-07T01:20:24.469619135Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.14x < 0.5x，調整為最小值 - TONUSDT
+2025-11-07T01:20:24.469624672Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.22x < 0.5x，調整為最小值 - AXLUSDT
+2025-11-07T01:20:24.469628560Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.33x < 0.5x，調整為最小值 - AEVOUSDT
+2025-11-07T01:20:24.470917452Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.02x < 0.5x，調整為最小值 - BOMEUSDT
+2025-11-07T01:20:24.470922578Z [inf]  2025-11-07 01:20:24,179 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.17x < 0.5x，調整為最小值 - ENAUSDT
+2025-11-07T01:20:24.470926969Z [inf]  2025-11-07 01:20:24,179 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.470932028Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.470937066Z [inf]     錯誤信息: 槓桿值必須大於0: -0.04 - WUSDT
+2025-11-07T01:20:24.470941893Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.470945758Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.470949919Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.470953879Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.470958817Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.470963289Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.470967116Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.04 - WUSDT
+2025-11-07T01:20:24.470971168Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 WUSDT: 槓桿值必須大於0: -0.04 - WUSDT
+2025-11-07T01:20:24.470975160Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.470978922Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.470983132Z [inf]     錯誤信息: 槓桿值必須大於0: -0.26 - SAGAUSDT
+2025-11-07T01:20:24.470987077Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.470991351Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.472637744Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.472644872Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.472650460Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.472655308Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.472659238Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.26 - SAGAUSDT
+2025-11-07T01:20:24.472663815Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 SAGAUSDT: 槓桿值必須大於0: -0.26 - SAGAUSDT
+2025-11-07T01:20:24.472668182Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.472672390Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.472676591Z [inf]     錯誤信息: 槓桿值必須大於0: -0.19 - BBUSDT
+2025-11-07T01:20:24.472680787Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.472690503Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.472695416Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.472700082Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.472704269Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.472708461Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.472712806Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.19 - BBUSDT
+2025-11-07T01:20:24.472716873Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 BBUSDT: 槓桿值必須大於0: -0.19 - BBUSDT
+2025-11-07T01:20:24.472721105Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.08x < 0.5x，調整為最小值 - IOUSDT
+2025-11-07T01:20:24.473493751Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - ZROUSDT
+2025-11-07T01:20:24.473499007Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.473504797Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.473508901Z [inf]     錯誤信息: 槓桿值必須大於0: -0.14 - RENDERUSDT
+2025-11-07T01:20:24.473512500Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.473516068Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.473519624Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.473523153Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.473526511Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.473530043Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.473534693Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.14 - RENDERUSDT
+2025-11-07T01:20:24.473538337Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 RENDERUSDT: 槓桿值必須大於0: -0.14 - RENDERUSDT
+2025-11-07T01:20:24.473542937Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.473546314Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.473549988Z [inf]     錯誤信息: 槓桿值必須大於0: -0.38 - RAREUSDT
+2025-11-07T01:20:24.473553716Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.473557098Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.473561646Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.473565689Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.474571162Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.474576207Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.474580098Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.38 - RAREUSDT
+2025-11-07T01:20:24.474584307Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 RAREUSDT: 槓桿值必須大於0: -0.38 - RAREUSDT
+2025-11-07T01:20:24.474588994Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - GUSDT
+2025-11-07T01:20:24.474593953Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.08x < 0.5x，調整為最小值 - SYSUSDT
+2025-11-07T01:20:24.474598019Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.474602126Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.474606923Z [inf]     錯誤信息: 槓桿值必須大於0: -0.21 - VOXELUSDT
+2025-11-07T01:20:24.474611203Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.474615865Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.474620299Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.474624446Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.474628181Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.474632250Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.474638003Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.21 - VOXELUSDT
+2025-11-07T01:20:24.474641811Z [inf]  2025-11-07 01:20:24,180 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 VOXELUSDT: 槓桿值必須大於0: -0.21 - VOXELUSDT
+2025-11-07T01:20:24.476579615Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.18x < 0.5x，調整為最小值 - BRETTUSDT
+2025-11-07T01:20:24.476585725Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.38x < 0.5x，調整為最小值 - CHESSUSDT
+2025-11-07T01:20:24.476590076Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.44x < 0.5x，調整為最小值 - QUICKUSDT
+2025-11-07T01:20:24.476594232Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - RPLUSDT
+2025-11-07T01:20:24.476598512Z [inf]  2025-11-07 01:20:24,180 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.2x < 0.5x，調整為最小值 - 1MBABYDOGEUSDT
+2025-11-07T01:20:24.476602692Z [inf]  2025-11-07 01:20:24,180 - src.core.exception_handler - ERROR - ❌ 異常發生在 validate_leverage
+2025-11-07T01:20:24.476606745Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.476610594Z [inf]     錯誤信息: 槓桿值必須大於0: -0.01 - CATIUSDT
+2025-11-07T01:20:24.476614472Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.476618569Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.476622558Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.476626304Z [inf]             ^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.476630377Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.476634041Z [inf]      raise ValidationError(f"槓桿值必須大於0: {leverage} - {symbol}")
+2025-11-07T01:20:24.476637464Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.01 - CATIUSDT
+2025-11-07T01:20:24.476641919Z [inf]  2025-11-07 01:20:24,181 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 CATIUSDT: 槓桿值必須大於0: -0.01 - CATIUSDT
+2025-11-07T01:20:24.477591466Z [inf]  2025-11-07 01:20:24,181 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.2x < 0.5x，調整為最小值 - GHSTUSDT
+2025-11-07T01:20:24.477598485Z [inf]  2025-11-07 01:20:24,181 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.35x < 0.5x，調整為最小值 - DIAUSDT
+2025-11-07T01:20:24.477603238Z [inf]  2025-11-07 01:20:24,181 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.26x < 0.5x，調整為最小值 - 1000CATUSDT
+2025-11-07T01:20:24.480766616Z [inf]     錯誤類型: ValidationError
+2025-11-07T01:20:24.480775532Z [inf]     錯誤信息: 槓桿值必須大於0: -0.02 - MORPHOUSDT
+2025-11-07T01:20:24.483582904Z [inf]  2025-11-07 01:20:24,181 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 VELODROMEUSDT: 槓桿值必須大於0: -0.47 - VELODROMEUSDT
+2025-11-07T01:20:24.484826186Z [inf]  2025-11-07 01:20:24,182 - src.core.capital_allocator - ERROR - ❌ 信號驗證失敗，拒絕 HIVEUSDT: 槓桿值必須大於0: -0.38 - HIVEUSDT
+2025-11-07T01:20:24.486813593Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.489434600Z [inf]  2025-11-07 01:20:24,183 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.04x < 0.5x，調整為最小值 - BANANAS31USDT
+2025-11-07T01:20:24.491183803Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.493688094Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.495139755Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.1 - HUMAUSDT
+2025-11-07T01:20:24.497608037Z [inf]    File "/app/src/core/exception_handler.py", line 217, in sync_wrapper
+2025-11-07T01:20:24.499276019Z [inf]  src.core.safety_validator.ValidationError: 槓桿值必須大於0: -0.17 - ICNTUSDT
+2025-11-07T01:20:24.500971024Z [inf]      return func(*args, **kwargs)
+2025-11-07T01:20:24.503580294Z [inf]  2025-11-07 01:20:24,185 - src.core.safety_validator - WARNING - ⚠️ 槓桿值過低: 0.32x < 0.5x，調整為最小值 - OPENUSDT
+2025-11-07T01:20:24.504692204Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.506672050Z [inf]    File "/app/src/core/safety_validator.py", line 54, in validate_leverage
+2025-11-07T01:20:24.508818280Z [inf]  2025-11-07 01:20:24,188 - src.strategies.self_learning_trader - WARNING - 💰 TRUTHUSDT 倉位過小 (0.61 < 5.0)，調整至最小值
+2025-11-07T01:20:24.551628724Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-07T01:20:24.551640726Z [inf]      result = await func(*args, **kwargs)
+2025-11-07T01:20:24.551647503Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.551652919Z [inf]    File "/app/src/clients/binance_client.py", line 180, in _do_request
+2025-11-07T01:20:24.551659428Z [inf]      response.raise_for_status()
+2025-11-07T01:20:24.551663094Z [inf]  2025-11-07 01:20:24,539 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4164, msg=Order's notional must be no smaller than 5 (unless you choose reduce only)., endpoint=/fapi/v1/order, params={'symbol': 'TRUTHUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 298.0, 'positionSide': 'LONG', 'timestamp': 1762478424457}
+2025-11-07T01:20:24.551666314Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-07T01:20:24.551673658Z [inf]  2025-11-07 01:20:24,539 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-07T01:20:24.551680196Z [inf]  2025-11-07 01:20:24,539 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07T01:20:24.551686094Z [inf]  2025-11-07 01:20:24,539 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 TRUTHUSDT: HTTP 400: Bad Request
+2025-11-07T01:20:24.551695372Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.551701172Z [inf]    File "/app/src/clients/binance_client.py", line 218, in _request
+2025-11-07T01:20:24.551707203Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-07T01:20:24.551712748Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.551719320Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-07T01:20:24.551726426Z [inf]      raise e
+2025-11-07T01:20:24.552543109Z [inf]      raise ClientResponseError(
+2025-11-07T01:20:24.552551452Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=298.0&side=BUY&symbol=TRUTHUSDT&timestamp=1762478424457&type=MARKET&signature=f9a61ba8de4fe797490ac409f174bbfaa7751b411ca8f6db96a011e301f34792')
+2025-11-07T01:20:24.552557585Z [inf]  
+2025-11-07T01:20:24.552563358Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-07T01:20:24.552568152Z [inf]  
+2025-11-07T01:20:24.553405385Z [inf]  2025-11-07 01:20:24,541 - src.strategies.self_learning_trader - INFO - 💰 執行 #2/5 | RAYSOLUSDT | 分配: $0.21 | 槓桿: 3.0x | 倉位: 3.817377 | 名義價值: $5.00 | 質量分數: 0.717
+2025-11-07T01:20:24.632425028Z [inf]  2025-11-07 01:20:24,623 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-07T01:20:24.632433138Z [inf]  2025-11-07 01:20:24,624 - src.clients.binance_client - INFO - 創建訂單: RAYSOLUSDT SELL MARKET 3.8
+2025-11-07T01:20:24.726092950Z [inf]  2025-11-07 01:20:24,704 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4164, msg=Order's notional must be no smaller than 5 (unless you choose reduce only)., endpoint=/fapi/v1/order, params={'symbol': 'RAYSOLUSDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 3.8, 'positionSide': 'SHORT', 'timestamp': 1762478424624}
+2025-11-07T01:20:24.726100845Z [inf]  2025-11-07 01:20:24,704 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-07T01:20:24.726107944Z [inf]  2025-11-07 01:20:24,705 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07T01:20:24.726119250Z [inf]  2025-11-07 01:20:24,705 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 RAYSOLUSDT: HTTP 400: Bad Request
+2025-11-07T01:20:24.726129420Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.726136417Z [inf]    File "/app/src/clients/binance_client.py", line 218, in _request
+2025-11-07T01:20:24.726144065Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-07T01:20:24.726151386Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.726157227Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-07T01:20:24.726163037Z [inf]      raise e
+2025-11-07T01:20:24.726169922Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-07T01:20:24.726177533Z [inf]      result = await func(*args, **kwargs)
+2025-11-07T01:20:24.726183749Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.726189669Z [inf]    File "/app/src/clients/binance_client.py", line 180, in _do_request
+2025-11-07T01:20:24.726196744Z [inf]      response.raise_for_status()
+2025-11-07T01:20:24.726202133Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-07T01:20:24.726992498Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.727003247Z [inf]      raise ClientResponseError(
+2025-11-07T01:20:24.727006131Z [inf]    File "/app/src/clients/binance_client.py", line 226, in _request
+2025-11-07T01:20:24.727014380Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=SHORT&quantity=3.8&side=SELL&symbol=RAYSOLUSDT&timestamp=1762478424624&type=MARKET&signature=1788b0ad5b27df3a8a65e9f35ec626dcefa8e7228f5a80294a429336eb0cfdaf')
+2025-11-07T01:20:24.727016423Z [inf]      raise BinanceRequestError(
+2025-11-07T01:20:24.727021707Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-07T01:20:24.727023789Z [inf]  
+2025-11-07T01:20:24.727027638Z [inf]  2025-11-07 01:20:24,705 - src.strategies.self_learning_trader - WARNING - ❌ RAYSOLUSDT 開倉失敗
+2025-11-07T01:20:24.727032197Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-07T01:20:24.727033711Z [inf]  2025-11-07 01:20:24,705 - src.strategies.self_learning_trader - WARNING - 💰 GASUSDT 倉位過小 (0.56 < 5.0)，調整至最小值
+2025-11-07T01:20:24.727038847Z [inf]  
+2025-11-07T01:20:24.727044048Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.727049726Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 821, in _place_order_and_monitor
+2025-11-07T01:20:24.727055457Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-07T01:20:24.727060507Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.727066041Z [inf]    File "/app/src/clients/binance_client.py", line 690, in place_order
+2025-11-07T01:20:24.727071645Z [inf]      return await self.create_order(
+2025-11-07T01:20:24.727076983Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.727082463Z [inf]    File "/app/src/clients/binance_client.py", line 595, in create_order
+2025-11-07T01:20:24.727087943Z [inf]      return await self._request(
+2025-11-07T01:20:24.727658491Z [inf]  2025-11-07 01:20:24,705 - src.strategies.self_learning_trader - INFO - 💰 執行 #3/5 | GASUSDT | 分配: $0.21 | 槓桿: 2.7x | 倉位: 2.112379 | 名義價值: $5.00 | 質量分數: 0.716
+2025-11-07T01:20:24.727664298Z [inf]  2025-11-07 01:20:24,706 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-07T01:20:24.804954655Z [inf]  2025-11-07 01:20:24,785 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-07T01:20:24.804967893Z [inf]  2025-11-07 01:20:24,785 - src.clients.binance_client - INFO - 創建訂單: GASUSDT BUY MARKET 2.1
+2025-11-07T01:20:24.870823986Z [inf]  2025-11-07 01:20:24,865 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4164, msg=Order's notional must be no smaller than 5 (unless you choose reduce only)., endpoint=/fapi/v1/order, params={'symbol': 'GASUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 2.1, 'positionSide': 'LONG', 'timestamp': 1762478424785}
+2025-11-07T01:20:24.870836580Z [inf]  2025-11-07 01:20:24,865 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-07T01:20:24.870844555Z [inf]  2025-11-07 01:20:24,865 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07T01:20:24.870853477Z [inf]  2025-11-07 01:20:24,865 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 GASUSDT: HTTP 400: Bad Request
+2025-11-07T01:20:24.870859915Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.870866199Z [inf]    File "/app/src/clients/binance_client.py", line 218, in _request
+2025-11-07T01:20:24.870875954Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-07T01:20:24.870884601Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.870891081Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-07T01:20:24.870897777Z [inf]      raise e
+2025-11-07T01:20:24.870903612Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-07T01:20:24.870909637Z [inf]      result = await func(*args, **kwargs)
+2025-11-07T01:20:24.870916788Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.870923730Z [inf]    File "/app/src/clients/binance_client.py", line 180, in _do_request
+2025-11-07T01:20:24.870929618Z [inf]      response.raise_for_status()
+2025-11-07T01:20:24.870935994Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-07T01:20:24.872287368Z [inf]      return await self._request(
+2025-11-07T01:20:24.872297226Z [inf]      raise ClientResponseError(
+2025-11-07T01:20:24.872299109Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.872307295Z [inf]    File "/app/src/clients/binance_client.py", line 226, in _request
+2025-11-07T01:20:24.872308335Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=2.1&side=BUY&symbol=GASUSDT&timestamp=1762478424785&type=MARKET&signature=acc44e6c7f7352820b7cc5f81acdc76c525f96f1bedf7a0a7b985c51013eb1de')
+2025-11-07T01:20:24.872314404Z [inf]      raise BinanceRequestError(
+2025-11-07T01:20:24.872317378Z [inf]  
+2025-11-07T01:20:24.872320983Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-07T01:20:24.872327732Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-07T01:20:24.872328894Z [inf]  2025-11-07 01:20:24,865 - src.strategies.self_learning_trader - WARNING - ❌ GASUSDT 開倉失敗
+2025-11-07T01:20:24.872336576Z [inf]  2025-11-07 01:20:24,865 - src.strategies.self_learning_trader - WARNING - 💰 42USDT 倉位過小 (0.61 < 5.0)，調整至最小值
+2025-11-07T01:20:24.872337153Z [inf]  
+2025-11-07T01:20:24.872344418Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:24.872350444Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 821, in _place_order_and_monitor
+2025-11-07T01:20:24.872357579Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-07T01:20:24.872364784Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.872371352Z [inf]    File "/app/src/clients/binance_client.py", line 690, in place_order
+2025-11-07T01:20:24.872378298Z [inf]      return await self.create_order(
+2025-11-07T01:20:24.872384992Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:24.872391769Z [inf]    File "/app/src/clients/binance_client.py", line 595, in create_order
+2025-11-07T01:20:24.873517280Z [inf]  2025-11-07 01:20:24,865 - src.strategies.self_learning_trader - INFO - 💰 執行 #4/5 | 42USDT | 分配: $0.21 | 槓桿: 2.9x | 倉位: 60.562016 | 名義價值: $5.00 | 質量分數: 0.715
+2025-11-07T01:20:24.873523235Z [inf]  2025-11-07 01:20:24,866 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-07T01:20:24.958071768Z [inf]  2025-11-07 01:20:24,951 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-07T01:20:24.958079053Z [inf]  2025-11-07 01:20:24,951 - src.clients.binance_client - INFO - 創建訂單: 42USDT SELL MARKET 60.0
+2025-11-07T01:20:25.037019645Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.037028369Z [inf]    File "/app/src/clients/binance_client.py", line 180, in _do_request
+2025-11-07T01:20:25.037034012Z [inf]      response.raise_for_status()
+2025-11-07T01:20:25.037038491Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-07T01:20:25.037050510Z [inf]  2025-11-07 01:20:25,031 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4164, msg=Order's notional must be no smaller than 5 (unless you choose reduce only)., endpoint=/fapi/v1/order, params={'symbol': '42USDT', 'side': 'SELL', 'type': 'MARKET', 'quantity': 60.0, 'positionSide': 'SHORT', 'timestamp': 1762478424951}
+2025-11-07T01:20:25.037055301Z [inf]  2025-11-07 01:20:25,031 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-07T01:20:25.037059510Z [inf]  2025-11-07 01:20:25,031 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07T01:20:25.037065407Z [inf]  2025-11-07 01:20:25,031 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 42USDT: HTTP 400: Bad Request
+2025-11-07T01:20:25.037069449Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:25.037074190Z [inf]    File "/app/src/clients/binance_client.py", line 218, in _request
+2025-11-07T01:20:25.037078647Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-07T01:20:25.037082702Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.037088100Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-07T01:20:25.037093800Z [inf]      raise e
+2025-11-07T01:20:25.037099963Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-07T01:20:25.037106765Z [inf]      result = await func(*args, **kwargs)
+2025-11-07T01:20:25.038415092Z [inf]      raise ClientResponseError(
+2025-11-07T01:20:25.038421354Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=SHORT&quantity=60.0&side=SELL&symbol=42USDT&timestamp=1762478424951&type=MARKET&signature=58ebb9bc3ffbe439a0085e706b89b09d8fd04017003a6bd88c327ca16a5f5c85')
+2025-11-07T01:20:25.038426549Z [inf]    File "/app/src/clients/binance_client.py", line 690, in place_order
+2025-11-07T01:20:25.038426721Z [inf]      raise BinanceRequestError(
+2025-11-07T01:20:25.038427130Z [inf]  
+2025-11-07T01:20:25.038435352Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-07T01:20:25.038438838Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-07T01:20:25.038439438Z [inf]      return await self.create_order(
+2025-11-07T01:20:25.038441491Z [inf]  
+2025-11-07T01:20:25.038447420Z [inf]  2025-11-07 01:20:25,032 - src.strategies.self_learning_trader - WARNING - ❌ 42USDT 開倉失敗
+2025-11-07T01:20:25.038448009Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:25.038448952Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.038454262Z [inf]  2025-11-07 01:20:25,032 - src.strategies.self_learning_trader - WARNING - 💰 PARTIUSDT 倉位過小 (0.44 < 5.0)，調整至最小值
+2025-11-07T01:20:25.038455763Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 821, in _place_order_and_monitor
+2025-11-07T01:20:25.038458757Z [inf]    File "/app/src/clients/binance_client.py", line 595, in create_order
+2025-11-07T01:20:25.038461724Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-07T01:20:25.038467787Z [inf]      return await self._request(
+2025-11-07T01:20:25.038468201Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.038476227Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.038482266Z [inf]    File "/app/src/clients/binance_client.py", line 226, in _request
+2025-11-07T01:20:25.039929064Z [inf]  2025-11-07 01:20:25,032 - src.strategies.self_learning_trader - INFO - 💰 執行 #5/5 | PARTIUSDT | 分配: $0.20 | 槓桿: 2.2x | 倉位: 81.685999 | 名義價值: $5.00 | 質量分數: 0.683
+2025-11-07T01:20:25.039938271Z [inf]  2025-11-07 01:20:25,032 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-07T01:20:25.495547893Z [inf]      raise e
+2025-11-07T01:20:25.495551455Z [inf]  2025-11-07 01:20:25,112 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-07T01:20:25.495561244Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-07T01:20:25.495563065Z [inf]  2025-11-07 01:20:25,112 - src.clients.binance_client - INFO - 創建訂單: PARTIUSDT BUY MARKET 81.0
+2025-11-07T01:20:25.495572301Z [inf]  2025-11-07 01:20:25,191 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-4164, msg=Order's notional must be no smaller than 5 (unless you choose reduce only)., endpoint=/fapi/v1/order, params={'symbol': 'PARTIUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 81.0, 'positionSide': 'LONG', 'timestamp': 1762478425112}
+2025-11-07T01:20:25.495575565Z [inf]      result = await func(*args, **kwargs)
+2025-11-07T01:20:25.495582143Z [inf]  2025-11-07 01:20:25,192 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-07T01:20:25.495586122Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.495590997Z [inf]  2025-11-07 01:20:25,192 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-07T01:20:25.495593825Z [inf]    File "/app/src/clients/binance_client.py", line 180, in _do_request
+2025-11-07T01:20:25.495602516Z [inf]  2025-11-07 01:20:25,192 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 PARTIUSDT: HTTP 400: Bad Request
+2025-11-07T01:20:25.495651381Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:25.495658690Z [inf]    File "/app/src/clients/binance_client.py", line 218, in _request
+2025-11-07T01:20:25.495666275Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-07T01:20:25.495673379Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.495683175Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-07T01:20:25.499193912Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.499204485Z [inf]    File "/app/src/clients/binance_client.py", line 690, in place_order
+2025-11-07T01:20:25.499212144Z [inf]      return await self.create_order(
+2025-11-07T01:20:25.499220233Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.499227364Z [inf]    File "/app/src/clients/binance_client.py", line 595, in create_order
+2025-11-07T01:20:25.499235701Z [inf]      return await self._request(
+2025-11-07T01:20:25.499239640Z [inf]      response.raise_for_status()
+2025-11-07T01:20:25.499244659Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-07T01:20:25.499246643Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-07T01:20:25.499252392Z [inf]      raise ClientResponseError(
+2025-11-07T01:20:25.499256972Z [inf]    File "/app/src/clients/binance_client.py", line 226, in _request
+2025-11-07T01:20:25.499264182Z [inf]      raise BinanceRequestError(
+2025-11-07T01:20:25.499270978Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-07T01:20:25.499307933Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?positionSide=LONG&quantity=81.0&side=BUY&symbol=PARTIUSDT&timestamp=1762478425112&type=MARKET&signature=35fc14f9fe0f11b6e2ac5e6b8e56a7d3f9e60aa4153fcfbced559d5e337256e4')
+2025-11-07T01:20:25.499315341Z [inf]  
+2025-11-07T01:20:25.499321516Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-07T01:20:25.499327124Z [inf]  
+2025-11-07T01:20:25.499333268Z [inf]  Traceback (most recent call last):
+2025-11-07T01:20:25.499339035Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 821, in _place_order_and_monitor
+2025-11-07T01:20:25.499344932Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-07T01:20:25.502341420Z [inf]  2025-11-07 01:20:25,192 - src.strategies.self_learning_trader - WARNING - ❌ PARTIUSDT 開倉失敗
+2025-11-07T01:20:25.502350383Z [inf]  2025-11-07 01:20:25,193 - src.strategies.self_learning_trader - INFO - ================================================================================
+2025-11-07T01:20:25.502356744Z [inf]  2025-11-07 01:20:25,193 - src.strategies.self_learning_trader - INFO - ✅ 多信號執行完成
+2025-11-07T01:20:25.502362034Z [inf]  2025-11-07 01:20:25,193 - src.strategies.self_learning_trader - INFO -    成功開倉: 0/5
+2025-11-07T01:20:25.502366474Z [inf]  2025-11-07 01:20:25,193 - src.strategies.self_learning_trader - INFO -    虛擬倉位: 422
+2025-11-07T01:20:25.502370886Z [inf]  2025-11-07 01:20:25,193 - src.strategies.self_learning_trader - INFO - ================================================================================
+2025-11-07T01:20:25.502375643Z [inf]  2025-11-07 01:20:25,193 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 15.6s | 新成交: 0
+2025-11-07T01:20:39.126827001Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 409
+2025-11-07T01:20:45.723339652Z [inf]  2025-11-07 01:20:40,170 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
