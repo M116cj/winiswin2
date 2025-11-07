@@ -424,6 +424,32 @@ class UnifiedTradeRecorder:
         """获取倉位指標歷史"""
         return self.position_metrics_history.get(symbol, [])
     
+    async def get_trade_count(self, filter_type: str = 'all') -> int:
+        """
+        获取交易数量（异步接口）
+        
+        Args:
+            filter_type: 过滤类型
+                - 'all': 所有交易
+                - 'closed': 已关闭交易
+                - 'open': 开仓交易
+                - 或者交易对符号（如 'BTCUSDT'）
+        
+        Returns:
+            交易数量
+        """
+        try:
+            loop = asyncio.get_event_loop()
+            count = await loop.run_in_executor(
+                None, 
+                self.db_service.get_trade_count, 
+                filter_type
+            )
+            return count
+        except Exception as e:
+            logger.error(f"❌ 获取交易数量失败: {e}")
+            return 0
+    
     def get_statistics(self) -> Dict[str, Any]:
         """
         获取统计信息

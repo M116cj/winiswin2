@@ -406,6 +406,46 @@ class TradingDataService:
         # 暂时返回原始数据
         return {"raw_data": row}
     
+    def get_trade_count(self, filter_type: str = 'all') -> int:
+        """
+        获取交易数量
+        
+        Args:
+            filter_type: 过滤类型
+                - 'all': 所有交易
+                - 'closed': 已关闭交易
+                - 'open': 开仓交易
+                - 或者交易对符号（如 'BTCUSDT'）
+        
+        Returns:
+            交易数量
+        """
+        try:
+            if filter_type == 'all':
+                query = "SELECT COUNT(*) FROM trades;"
+                params = None
+            elif filter_type == 'closed':
+                query = "SELECT COUNT(*) FROM trades WHERE status = 'CLOSED';"
+                params = None
+            elif filter_type == 'open':
+                query = "SELECT COUNT(*) FROM trades WHERE status = 'OPEN';"
+                params = None
+            else:
+                query = "SELECT COUNT(*) FROM trades WHERE symbol = %s;"
+                params = (filter_type,)
+            
+            result = self.db.execute_query(query, params, fetch=True)
+            
+            if result and len(result) > 0:
+                count = result[0][0] or 0
+                return count
+            
+            return 0
+            
+        except Exception as e:
+            logger.error(f"❌ 获取交易数量失败: {e}")
+            return 0
+    
     def get_statistics(self) -> Dict:
         """获取交易统计数据"""
         try:
