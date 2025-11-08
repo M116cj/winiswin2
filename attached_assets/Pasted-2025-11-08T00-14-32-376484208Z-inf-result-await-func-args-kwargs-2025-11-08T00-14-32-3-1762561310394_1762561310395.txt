@@ -1,0 +1,1001 @@
+2025-11-08T00:14:32.376484208Z [inf]      result = await func(*args, **kwargs)
+2025-11-08T00:14:32.376487831Z [inf]  2025-11-08 00:14:32,050 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-1111, msg=Precision is over the maximum defined for this asset., endpoint=/fapi/v1/order, params={'symbol': 'FIOUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '416.0', 'price': '0.01201398', 'timeInForce': 'GTC', 'timestamp': 1762560871974}
+2025-11-08T00:14:32.376492971Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.376500018Z [inf]  2025-11-08 00:14:32,050 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-08T00:14:32.376508615Z [inf]  2025-11-08 00:14:32,050 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-08T00:14:32.376515884Z [inf]  2025-11-08 00:14:32,050 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 FIOUSDT: HTTP 400: Bad Request
+2025-11-08T00:14:32.376525930Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.376532693Z [inf]    File "/app/src/clients/binance_client.py", line 232, in _request
+2025-11-08T00:14:32.376539835Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-08T00:14:32.376542405Z [inf]  2025-11-08 00:14:31,974 - src.strategies.self_learning_trader - INFO - 📊 滑點保護: FIOUSDT LONG | 當前價=0.011990, 限價=0.012014, 容忍度=0.20%
+2025-11-08T00:14:32.376551228Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.376559390Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-08T00:14:32.377680215Z [inf]    File "/app/src/clients/binance_client.py", line 187, in _do_request
+2025-11-08T00:14:32.377684659Z [inf]      response.raise_for_status()
+2025-11-08T00:14:32.377689559Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-08T00:14:32.377693746Z [inf]      raise ClientResponseError(
+2025-11-08T00:14:32.377698899Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?price=0.01201398&quantity=416.0&side=BUY&symbol=FIOUSDT&timeInForce=GTC&timestamp=1762560871974&type=LIMIT&signature=678f5b3d3778997e832ee76c964401612c50d02ce345c81d36e29a65e08e3e76')
+2025-11-08T00:14:32.377703753Z [inf]  
+2025-11-08T00:14:32.377708708Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-08T00:14:32.377713465Z [inf]  
+2025-11-08T00:14:32.377718719Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.377724136Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 833, in _place_order_and_monitor
+2025-11-08T00:14:32.377729873Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-08T00:14:32.377734598Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.377739568Z [inf]    File "/app/src/clients/binance_client.py", line 723, in place_order
+2025-11-08T00:14:32.377744249Z [inf]      return await self.create_order(
+2025-11-08T00:14:32.377749315Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.377754462Z [inf]    File "/app/src/clients/binance_client.py", line 628, in create_order
+2025-11-08T00:14:32.377758736Z [inf]      return await self._request(
+2025-11-08T00:14:32.377763518Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.377768674Z [inf]    File "/app/src/clients/binance_client.py", line 242, in _request
+2025-11-08T00:14:32.377773113Z [inf]      raise BinanceRequestError(
+2025-11-08T00:14:32.378229506Z [inf]  2025-11-08 00:14:32,201 - src.clients.binance_client - INFO - 創建訂單: AIOUSDT SELL LIMIT 37.0
+2025-11-08T00:14:32.378230222Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-08T00:14:32.378239678Z [inf]  2025-11-08 00:14:32,051 - src.strategies.self_learning_trader - WARNING - ❌ FIOUSDT 開倉失敗
+2025-11-08T00:14:32.378242373Z [inf]  2025-11-08 00:14:32,275 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-1111, msg=Precision is over the maximum defined for this asset., endpoint=/fapi/v1/order, params={'symbol': 'AIOUSDT', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '37.0', 'price': '0.13411124', 'timeInForce': 'GTC', 'timestamp': 1762560872201}
+2025-11-08T00:14:32.378246496Z [inf]  2025-11-08 00:14:32,051 - src.strategies.self_learning_trader - WARNING - 💰 AIOUSDT 倉位過小 (0.96 < 5.0)，調整至最小值
+2025-11-08T00:14:32.378253095Z [inf]  2025-11-08 00:14:32,051 - src.strategies.self_learning_trader - INFO - 💰 執行 #4/5 | AIOUSDT | 分配: $0.32 | 槓桿: 3.0x | 倉位: 37.260601 | 名義價值: $5.00 | 質量分數: 0.722
+2025-11-08T00:14:32.378253805Z [inf]  2025-11-08 00:14:32,275 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-08T00:14:32.378262070Z [inf]  2025-11-08 00:14:32,275 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-08T00:14:32.378262654Z [inf]  2025-11-08 00:14:32,051 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-08T00:14:32.378268411Z [inf]  2025-11-08 00:14:32,125 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-08T00:14:32.378273600Z [inf]  2025-11-08 00:14:32,200 - src.strategies.self_learning_trader - INFO - 📊 滑點保護: AIOUSDT SHORT | 當前價=0.134380, 限價=0.134111, 容忍度=0.20%
+2025-11-08T00:14:32.379146380Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.379148347Z [inf]  2025-11-08 00:14:32,275 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 AIOUSDT: HTTP 400: Bad Request
+2025-11-08T00:14:32.379153673Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 833, in _place_order_and_monitor
+2025-11-08T00:14:32.379157811Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.379162625Z [inf]    File "/app/src/clients/binance_client.py", line 232, in _request
+2025-11-08T00:14:32.379167024Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-08T00:14:32.379174058Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.379178573Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-08T00:14:32.379182551Z [inf]      raise e
+2025-11-08T00:14:32.379186633Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-08T00:14:32.379190421Z [inf]      result = await func(*args, **kwargs)
+2025-11-08T00:14:32.379195301Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.379199144Z [inf]    File "/app/src/clients/binance_client.py", line 187, in _do_request
+2025-11-08T00:14:32.379203292Z [inf]      response.raise_for_status()
+2025-11-08T00:14:32.379206984Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-08T00:14:32.379212200Z [inf]      raise ClientResponseError(
+2025-11-08T00:14:32.379216357Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?price=0.13411124&quantity=37.0&side=SELL&symbol=AIOUSDT&timeInForce=GTC&timestamp=1762560872201&type=LIMIT&signature=6ef1aa9ae6f0b18c602ce18aea9ed6cd3f9f752beaa1fa6b734e6b0829accc5d')
+2025-11-08T00:14:32.379220455Z [inf]  
+2025-11-08T00:14:32.379224309Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-08T00:14:32.379228326Z [inf]  
+2025-11-08T00:14:32.380123928Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-08T00:14:32.380130649Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.380133237Z [inf]  2025-11-08 00:14:32,277 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-08T00:14:32.380137272Z [inf]    File "/app/src/clients/binance_client.py", line 723, in place_order
+2025-11-08T00:14:32.380143506Z [inf]      return await self.create_order(
+2025-11-08T00:14:32.380143626Z [inf]  2025-11-08 00:14:32,350 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-08T00:14:32.380148078Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.380152425Z [inf]    File "/app/src/clients/binance_client.py", line 628, in create_order
+2025-11-08T00:14:32.380156545Z [inf]      return await self._request(
+2025-11-08T00:14:32.380160319Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.380164596Z [inf]    File "/app/src/clients/binance_client.py", line 242, in _request
+2025-11-08T00:14:32.380193080Z [inf]      raise BinanceRequestError(
+2025-11-08T00:14:32.380198154Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-08T00:14:32.380202155Z [inf]  2025-11-08 00:14:32,276 - src.strategies.self_learning_trader - WARNING - ❌ AIOUSDT 開倉失敗
+2025-11-08T00:14:32.380206595Z [inf]  2025-11-08 00:14:32,276 - src.strategies.self_learning_trader - WARNING - 💰 FXSUSDT 倉位過小 (0.86 < 5.0)，調整至最小值
+2025-11-08T00:14:32.380210604Z [inf]  2025-11-08 00:14:32,276 - src.strategies.self_learning_trader - INFO - 💰 執行 #5/5 | FXSUSDT | 分配: $0.32 | 槓桿: 2.7x | 倉位: 4.121672 | 名義價值: $5.00 | 質量分數: 0.716
+2025-11-08T00:14:32.429135113Z [inf]  2025-11-08 00:14:32,425 - src.strategies.self_learning_trader - INFO - 📊 滑點保護: FXSUSDT LONG | 當前價=1.216200, 限價=1.218632, 容忍度=0.20%
+2025-11-08T00:14:32.429144898Z [inf]  2025-11-08 00:14:32,425 - src.clients.binance_client - INFO - 創建訂單: FXSUSDT BUY LIMIT 4.1
+2025-11-08T00:14:32.520793009Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.520811155Z [inf]    File "/app/src/clients/binance_client.py", line 187, in _do_request
+2025-11-08T00:14:32.520825274Z [inf]      response.raise_for_status()
+2025-11-08T00:14:32.520830100Z [inf]  2025-11-08 00:14:32,501 - src.clients.binance_client - ERROR - Binance API 錯誤 400: code=-1111, msg=Precision is over the maximum defined for this asset., endpoint=/fapi/v1/order, params={'symbol': 'FXSUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '4.1', 'price': '1.2186324', 'timeInForce': 'GTC', 'timestamp': 1762560872425}
+2025-11-08T00:14:32.520833538Z [inf]    File "/opt/venv/lib/python3.11/site-packages/aiohttp/client_reqrep.py", line 1059, in raise_for_status
+2025-11-08T00:14:32.520841370Z [inf]  2025-11-08 00:14:32,501 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-08T00:14:32.520842456Z [inf]      raise ClientResponseError(
+2025-11-08T00:14:32.520850023Z [inf]  2025-11-08 00:14:32,501 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/order - HTTP 400: Bad Request
+2025-11-08T00:14:32.520856086Z [inf]  2025-11-08 00:14:32,502 - src.strategies.self_learning_trader - ERROR - ❌ 下單失敗 FXSUSDT: HTTP 400: Bad Request
+2025-11-08T00:14:32.520861718Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.520868296Z [inf]    File "/app/src/clients/binance_client.py", line 232, in _request
+2025-11-08T00:14:32.520873626Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-08T00:14:32.520878926Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.520884543Z [inf]    File "/app/src/core/circuit_breaker.py", line 339, in call_async
+2025-11-08T00:14:32.520889418Z [inf]      raise e
+2025-11-08T00:14:32.520898037Z [inf]    File "/app/src/core/circuit_breaker.py", line 334, in call_async
+2025-11-08T00:14:32.520904033Z [inf]      result = await func(*args, **kwargs)
+2025-11-08T00:14:32.522248413Z [inf]             ^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.522249889Z [inf]  src.clients.binance_errors.BinanceRequestError: HTTP 400: Bad Request
+2025-11-08T00:14:32.522251181Z [inf]  aiohttp.client_exceptions.ClientResponseError: 400, message='Bad Request', url=URL('https://fapi.binance.com/fapi/v1/order?price=1.2186324&quantity=4.1&side=BUY&symbol=FXSUSDT&timeInForce=GTC&timestamp=1762560872425&type=LIMIT&signature=a9784fd8ee4f04d971436c5262018d832773ffe0dc9981a00ab41ecb0d15f68f')
+2025-11-08T00:14:32.522258574Z [inf]    File "/app/src/clients/binance_client.py", line 242, in _request
+2025-11-08T00:14:32.522262784Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - WARNING - ❌ FXSUSDT 開倉失敗
+2025-11-08T00:14:32.522266496Z [inf]  
+2025-11-08T00:14:32.522267851Z [inf]      raise BinanceRequestError(
+2025-11-08T00:14:32.522270942Z [inf]    File "/app/src/strategies/self_learning_trader.py", line 833, in _place_order_and_monitor
+2025-11-08T00:14:32.522272118Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - INFO - ================================================================================
+2025-11-08T00:14:32.522278493Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-08T00:14:32.522282133Z [inf]      order_result = await self.binance_client.place_order(
+2025-11-08T00:14:32.522289844Z [inf]  
+2025-11-08T00:14:32.522290812Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.522297395Z [inf]    File "/app/src/clients/binance_client.py", line 723, in place_order
+2025-11-08T00:14:32.522303559Z [inf]  Traceback (most recent call last):
+2025-11-08T00:14:32.522303758Z [inf]      return await self.create_order(
+2025-11-08T00:14:32.522310137Z [inf]             ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:14:32.522315185Z [inf]    File "/app/src/clients/binance_client.py", line 628, in create_order
+2025-11-08T00:14:32.522320197Z [inf]      return await self._request(
+2025-11-08T00:14:32.523388891Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - INFO - ✅ 多信號執行完成
+2025-11-08T00:14:32.523397613Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - INFO -    成功開倉: 0/5
+2025-11-08T00:14:32.523403713Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - INFO -    虛擬倉位: 277
+2025-11-08T00:14:32.523419750Z [inf]  2025-11-08 00:14:32,503 - src.strategies.self_learning_trader - INFO - ================================================================================
+2025-11-08T00:14:32.523425039Z [inf]  2025-11-08 00:14:32,503 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 14.9s | 新成交: 0
+2025-11-08T00:15:02.650853406Z [inf]  2025-11-08 00:14:53,225 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: websocket - critical - WebSocket未连接
+2025-11-08T00:15:02.650860667Z [inf]  2025-11-08 00:14:53,225 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: api - critical - API连接失败
+2025-11-08T00:15:02.650868229Z [inf]  2025-11-08 00:14:53,225 - src.monitoring.health_check - INFO - 🏥 健康检查完成: critical (1.00秒)
+2025-11-08T00:15:02.650874620Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard0: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650880713Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard1: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650887547Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard2: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650895537Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard3: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650901859Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard4: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650907967Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard5: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650913633Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard6: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650919652Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard7: 健康检查失败 - not_connected
+2025-11-08T00:15:02.650925165Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard8: 健康检查失败 - not_connected
+2025-11-08T00:15:02.651608077Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard9: 健康检查失败 - not_connected
+2025-11-08T00:15:02.651613891Z [inf]  2025-11-08 00:14:53,245 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard10: 健康检查失败 - not_connected
+2025-11-08T00:15:02.651619062Z [inf]  2025-11-08 00:14:53,245 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-11-08T00:15:02.651624196Z [inf]  2025-11-08 00:14:53,246 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-08T00:15:02.651629455Z [inf]  2025-11-08 00:14:53,351 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → normal (失敗次數: 0)
+2025-11-08T00:15:02.651634939Z [inf]  2025-11-08 00:14:53,351 - src.core.position_controller - INFO -    📭 當前無持倉
+2025-11-08T00:15:02.651639782Z [inf]  2025-11-08 00:14:59,228 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent
+2025-11-08T00:15:42.377876771Z [inf]  2025-11-08 00:15:32,506 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-08T00:15:42.377889536Z [inf]  2025-11-08 00:15:32,506 - src.core.unified_scheduler - INFO - 🔄 交易週期 #339 | 2025-11-08 00:15:32 UTC
+2025-11-08T00:15:42.377896891Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - ERROR - ❌ 顯示歷史統計失敗: 'UnifiedTradeRecorder' object has no attribute 'get_trades'
+2025-11-08T00:15:42.377905323Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - 📦 當前持倉: 無
+2025-11-08T00:15:42.377911850Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - 💰 賬戶餘額: 總額=$75.86 | 可用=$75.86 | 保證金=$0.00 | 未實現盈虧=$+0.00
+2025-11-08T00:15:42.377917208Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - ✅ 使用DataService已加載的 533 個交易對（所有可交易USDT永續合約）
+2025-11-08T00:15:42.377923518Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - 📊 掃描 533 個交易對中...
+2025-11-08T00:15:42.377931190Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - ✅ Pipeline統計計數器已完整重置（包含所有ADX分布鍵）
+2025-11-08T00:15:42.377937772Z [inf]  2025-11-08 00:15:32,602 - src.core.unified_scheduler - INFO - ⏱️  ===== 開始掃描時間分析（v3.20 批量並行模式） =====
+2025-11-08T00:15:42.377944611Z [inf]  2025-11-08 00:15:33,564 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.96秒 | 平均15.0ms/symbol
+2025-11-08T00:15:42.377950481Z [inf]  2025-11-08 00:15:33,564 - src.core.unified_scheduler - INFO - ⏱️  批次 1: 64个symbols数据获取完成，耗时0.96秒
+2025-11-08T00:15:42.377957962Z [inf]  2025-11-08 00:15:33,564 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #1 - BTCUSDT:
+2025-11-08T00:15:42.379979037Z [inf]  2025-11-08 00:15:33,565 - src.core.unified_scheduler - INFO -    1h: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-08T00:15:42.379989921Z [inf]  2025-11-08 00:15:33,565 - src.core.unified_scheduler - INFO -       最新價格: 103196.60
+2025-11-08T00:15:42.379997503Z [inf]  2025-11-08 00:15:33,565 - src.core.unified_scheduler - INFO -    15m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-08T00:15:42.380004848Z [inf]  2025-11-08 00:15:33,565 - src.core.unified_scheduler - INFO -    5m: 50行, 列=['open', 'high', 'low', 'close', 'volume']...
+2025-11-08T00:15:42.380011073Z [inf]  2025-11-08 00:15:33,565 - src.strategies.rule_based_signal_generator - INFO - ✅ BTCUSDT 數據驗證通過 (#1)
+2025-11-08T00:15:42.380019987Z [inf]  2025-11-08 00:15:33,565 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=103196.60
+2025-11-08T00:15:42.380026336Z [inf]  2025-11-08 00:15:33,565 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=103196.60
+2025-11-08T00:15:42.380033265Z [inf]  2025-11-08 00:15:33,565 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=103196.60
+2025-11-08T00:15:42.380039152Z [inf]  2025-11-08 00:15:33,565 - src.strategies.rule_based_signal_generator - WARNING -    ⚠️ 技術指標診斷失敗: 'EliteTechnicalEngine' object has no attribute 'calculate_all_indicators'
+2025-11-08T00:15:42.380046189Z [inf]  2025-11-08 00:15:33,591 - src.strategies.rule_based_signal_generator - INFO - 📊 BTCUSDT ICT特徵樣本: market_structure=-1, order_blocks=3, structure_integrity=0.81
+2025-11-08T00:15:42.380052721Z [inf]  2025-11-08 00:15:33,591 - src.strategies.rule_based_signal_generator - INFO - 📈 BTCUSDT: ICT信心值=39.8, 子分數={'market_structure_ict': 16.16956493573459, 'order_block_ict': 19.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 4.585786437626904}
+2025-11-08T00:15:42.381913618Z [inf]  2025-11-08 00:15:33,591 - src.strategies.self_learning_trader - INFO - 🎓 BTCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.381932777Z [inf]  2025-11-08 00:15:33,592 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #2 - ETHUSDT:
+2025-11-08T00:15:42.381939070Z [inf]  2025-11-08 00:15:33,592 - src.core.unified_scheduler - INFO -       最新價格: 3432.29
+2025-11-08T00:15:42.381944631Z [inf]  2025-11-08 00:15:33,592 - src.core.unified_scheduler - INFO -       最新價格: 3426.00
+2025-11-08T00:15:42.381954501Z [inf]  2025-11-08 00:15:33,592 - src.strategies.rule_based_signal_generator - INFO - ✅ ETHUSDT 數據驗證通過 (#2)
+2025-11-08T00:15:42.381959475Z [inf]  2025-11-08 00:15:33,592 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=3432.29
+2025-11-08T00:15:42.381963623Z [inf]  2025-11-08 00:15:33,592 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=3426.00
+2025-11-08T00:15:42.381968537Z [inf]  2025-11-08 00:15:33,592 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=3432.29
+2025-11-08T00:15:42.381980542Z [inf]  2025-11-08 00:15:33,592 - src.strategies.rule_based_signal_generator - WARNING -    ⚠️ 技術指標診斷失敗: 'EliteTechnicalEngine' object has no attribute 'calculate_all_indicators'
+2025-11-08T00:15:42.381987578Z [inf]  2025-11-08 00:15:33,615 - src.strategies.rule_based_signal_generator - INFO - 📊 ETHUSDT ICT特徵樣本: market_structure=0, order_blocks=7, structure_integrity=0.59
+2025-11-08T00:15:42.381992335Z [inf]  2025-11-08 00:15:33,616 - src.strategies.rule_based_signal_generator - INFO - 📈 ETHUSDT: ICT信心值=32.9, 子分數={'market_structure_ict': 11.888208487859199, 'order_block_ict': 15.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 6.0}
+2025-11-08T00:15:42.381996400Z [inf]  2025-11-08 00:15:33,616 - src.strategies.self_learning_trader - INFO - 🎓 ETHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.384123440Z [inf]  2025-11-08 00:15:33,616 - src.core.unified_scheduler - INFO - 🔍 數據診斷 #3 - BCHUSDT:
+2025-11-08T00:15:42.384129013Z [inf]  2025-11-08 00:15:33,616 - src.core.unified_scheduler - INFO -       最新價格: 514.75
+2025-11-08T00:15:42.384134887Z [inf]  2025-11-08 00:15:33,616 - src.core.unified_scheduler - INFO -       最新價格: 514.80
+2025-11-08T00:15:42.384140196Z [inf]  2025-11-08 00:15:33,616 - src.core.unified_scheduler - INFO -       最新價格: 514.63
+2025-11-08T00:15:42.384173175Z [inf]  2025-11-08 00:15:33,616 - src.strategies.rule_based_signal_generator - INFO - ✅ BCHUSDT 數據驗證通過 (#3)
+2025-11-08T00:15:42.384179013Z [inf]  2025-11-08 00:15:33,616 - src.strategies.rule_based_signal_generator - INFO -    1h數據: 50行, 最新收盤=514.75
+2025-11-08T00:15:42.384183570Z [inf]  2025-11-08 00:15:33,616 - src.strategies.rule_based_signal_generator - INFO -    15m數據: 50行, 最新收盤=514.80
+2025-11-08T00:15:42.384187610Z [inf]  2025-11-08 00:15:33,616 - src.strategies.rule_based_signal_generator - INFO -    5m數據: 50行, 最新收盤=514.63
+2025-11-08T00:15:42.384191502Z [inf]  2025-11-08 00:15:33,617 - src.strategies.rule_based_signal_generator - WARNING -    ⚠️ 技術指標診斷失敗: 'EliteTechnicalEngine' object has no attribute 'calculate_all_indicators'
+2025-11-08T00:15:42.384199990Z [inf]  2025-11-08 00:15:33,682 - src.strategies.self_learning_trader - INFO - 🎓 LTCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.384204932Z [inf]  2025-11-08 00:15:33,724 - src.strategies.self_learning_trader - INFO - 🎓 ETCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.384210182Z [inf]  2025-11-08 00:15:33,763 - src.strategies.self_learning_trader - INFO - 🎓 XLMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386882496Z [inf]  2025-11-08 00:15:33,830 - src.strategies.self_learning_trader - INFO - 🎓 DASHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386894180Z [inf]  2025-11-08 00:15:33,869 - src.strategies.self_learning_trader - INFO - 🎓 XTZUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386904897Z [inf]  2025-11-08 00:15:33,891 - src.strategies.rule_based_signal_generator - INFO - 📊 BNBUSDT ICT特徵樣本: market_structure=0, order_blocks=4, structure_integrity=0.26
+2025-11-08T00:15:42.386911422Z [inf]  2025-11-08 00:15:33,892 - src.strategies.rule_based_signal_generator - INFO - 📈 BNBUSDT: ICT信心值=26.2, 子分數={'market_structure_ict': 5.220369970456032, 'order_block_ict': 15.0, 'liquidity_ict': 0.0, 'institutional_ict': 0.0, 'timeframe_ict': 6.0}
+2025-11-08T00:15:42.386918509Z [inf]  2025-11-08 00:15:33,892 - src.strategies.self_learning_trader - INFO - 🎓 BNBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386924800Z [inf]  2025-11-08 00:15:34,033 - src.strategies.self_learning_trader - INFO - 🎓 QTUMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386930147Z [inf]  2025-11-08 00:15:34,085 - src.strategies.self_learning_trader - INFO - 🎓 THETAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386934924Z [inf]  2025-11-08 00:15:34,134 - src.strategies.self_learning_trader - INFO - 🎓 KNCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386940189Z [inf]  2025-11-08 00:15:34,179 - src.strategies.self_learning_trader - INFO - 🎓 COMPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.386948198Z [inf]  2025-11-08 00:15:34,254 - src.strategies.self_learning_trader - INFO - 🎓 KAVAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.390402771Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描26250個，0信號）：
+2025-11-08T00:15:42.390414643Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=14334, bearish=2535, neutral=9381
+2025-11-08T00:15:42.390422274Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=9623, bearish=2328, neutral=14299
+2025-11-08T00:15:42.390429486Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=5901, bearish=9661, neutral=10688
+2025-11-08T00:15:42.390436181Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=7255, bearish=16455, neutral=2540
+2025-11-08T00:15:42.390442925Z [inf]  2025-11-08 00:15:34,300 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-08T00:15:42.390448462Z [inf]  2025-11-08 00:15:34,351 - src.strategies.self_learning_trader - INFO - 🎓 DOTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.390453763Z [inf]  2025-11-08 00:15:34,381 - src.strategies.self_learning_trader - INFO - 🎓 YFIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.390459141Z [inf]  2025-11-08 00:15:34,439 - src.strategies.self_learning_trader - INFO - 🎓 TRBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.390464750Z [inf]  2025-11-08 00:15:34,468 - src.strategies.self_learning_trader - INFO - 🎓 RUNEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.390470200Z [inf]  2025-11-08 00:15:34,520 - src.strategies.self_learning_trader - INFO - 🎓 EGLDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392202667Z [inf]  2025-11-08 00:15:34,614 - src.strategies.self_learning_trader - INFO - 🎓 AVAXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392213238Z [inf]  2025-11-08 00:15:34,635 - src.strategies.self_learning_trader - INFO - 🎓 ENJUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392220690Z [inf]  2025-11-08 00:15:34,652 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描50個）
+2025-11-08T00:15:42.392226644Z [inf]  2025-11-08 00:15:34,652 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=49, 拒絕=0
+2025-11-08T00:15:42.392232075Z [inf]  2025-11-08 00:15:34,652 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=20, 無=29
+2025-11-08T00:15:42.392237461Z [inf]  2025-11-08 00:15:34,692 - src.strategies.self_learning_trader - INFO - 🎓 NEARUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392242940Z [inf]  2025-11-08 00:15:34,734 - src.strategies.self_learning_trader - INFO - 🎓 FILUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392249695Z [inf]  2025-11-08 00:15:34,756 - src.strategies.self_learning_trader - INFO - 🎓 RSRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392256367Z [inf]  2025-11-08 00:15:34,818 - src.strategies.self_learning_trader - INFO - ❌ AXSUSDT 拒絕開倉: 信心度不足: 15.9% < 18.0% | 勝率=45.0% 信心=15.9% R:R=1.50
+2025-11-08T00:15:42.392263373Z [inf]  2025-11-08 00:15:34,843 - src.strategies.self_learning_trader - INFO - 🎓 ZENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.392269806Z [inf]  2025-11-08 00:15:34,926 - src.strategies.self_learning_trader - INFO - 🎓 CHZUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394454739Z [inf]  2025-11-08 00:15:34,961 - src.core.unified_scheduler - INFO - ⏱️  進度: 64/533 | 已分析=64 | 平均分析=21.8ms | 平均數據=15.0ms
+2025-11-08T00:15:42.394465442Z [inf]  2025-11-08 00:15:36,445 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时1.48秒 | 平均23.2ms/symbol
+2025-11-08T00:15:42.394471408Z [inf]  2025-11-08 00:15:36,445 - src.core.unified_scheduler - INFO - ⏱️  批次 2: 64个symbols数据获取完成，耗时1.48秒
+2025-11-08T00:15:42.394476476Z [inf]  2025-11-08 00:15:36,468 - src.strategies.self_learning_trader - INFO - 🎓 RVNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394482965Z [inf]  2025-11-08 00:15:36,493 - src.strategies.self_learning_trader - INFO - 🎓 SFPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394489474Z [inf]  2025-11-08 00:15:36,546 - src.strategies.self_learning_trader - INFO - 🎓 CHRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394495618Z [inf]  2025-11-08 00:15:36,627 - src.strategies.self_learning_trader - INFO - 🎓 ONEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394501704Z [inf]  2025-11-08 00:15:36,650 - src.strategies.self_learning_trader - INFO - 🎓 DENTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.394507140Z [inf]  2025-11-08 00:15:36,674 - src.strategies.self_learning_trader - INFO - ❌ CELRUSDT 拒絕開倉: 信心度不足: 15.3% < 18.0% | 勝率=45.0% 信心=15.3% R:R=1.50
+2025-11-08T00:15:42.394513171Z [inf]  2025-11-08 00:15:36,699 - src.strategies.self_learning_trader - INFO - ❌ HOTUSDT 拒絕開倉: 信心度不足: 16.5% < 18.0% | 勝率=45.0% 信心=16.5% R:R=1.50
+2025-11-08T00:15:42.399129149Z [inf]  2025-11-08 00:15:36,726 - src.strategies.self_learning_trader - INFO - 🎓 MTLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399139700Z [inf]  2025-11-08 00:15:36,751 - src.strategies.self_learning_trader - INFO - 🎓 OGNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399150747Z [inf]  2025-11-08 00:15:36,907 - src.strategies.self_learning_trader - INFO - ❌ ATAUSDT 拒絕開倉: 信心度不足: 17.7% < 18.0% | 勝率=50.3% 信心=17.7% R:R=1.50
+2025-11-08T00:15:42.399156205Z [inf]  2025-11-08 00:15:36,973 - src.strategies.self_learning_trader - INFO - 🎓 CELOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399162397Z [inf]  2025-11-08 00:15:36,994 - src.strategies.self_learning_trader - INFO - 🎓 ARUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399169105Z [inf]  2025-11-08 00:15:37,057 - src.strategies.self_learning_trader - INFO - 🎓 LPTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399174520Z [inf]  2025-11-08 00:15:37,101 - src.strategies.self_learning_trader - INFO - 🎓 PEOPLEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399180367Z [inf]  2025-11-08 00:15:37,123 - src.strategies.self_learning_trader - INFO - 🎓 ROSEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.399186446Z [inf]  2025-11-08 00:15:37,160 - src.strategies.self_learning_trader - INFO - ❌ FLOWUSDT 拒絕開倉: 信心度不足: 16.5% < 18.0% | 勝率=45.0% 信心=16.5% R:R=1.50
+2025-11-08T00:15:42.399193061Z [inf]  2025-11-08 00:15:37,187 - src.strategies.self_learning_trader - INFO - 🎓 IMXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401334233Z [inf]  2025-11-08 00:15:37,187 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描100個）
+2025-11-08T00:15:42.401342018Z [inf]  2025-11-08 00:15:37,187 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=99, 拒絕=0
+2025-11-08T00:15:42.401348453Z [inf]  2025-11-08 00:15:37,187 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=43, 無=56
+2025-11-08T00:15:42.401353859Z [inf]  2025-11-08 00:15:37,254 - src.strategies.self_learning_trader - INFO - 🎓 APEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401359545Z [inf]  2025-11-08 00:15:37,331 - src.strategies.self_learning_trader - INFO - 🎓 INJUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401365258Z [inf]  2025-11-08 00:15:37,391 - src.strategies.self_learning_trader - INFO - 🎓 1000LUNCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401371513Z [inf]  2025-11-08 00:15:37,415 - src.strategies.self_learning_trader - INFO - 🎓 LUNA2USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401377478Z [inf]  2025-11-08 00:15:37,436 - src.strategies.self_learning_trader - INFO - 🎓 LDOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401382436Z [inf]  2025-11-08 00:15:37,458 - src.strategies.self_learning_trader - INFO - 🎓 ICPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401387466Z [inf]  2025-11-08 00:15:37,532 - src.strategies.self_learning_trader - INFO - 🎓 FXSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.401392405Z [inf]  2025-11-08 00:15:37,556 - src.strategies.self_learning_trader - INFO - 🎓 HOOKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403267627Z [inf]  2025-11-08 00:15:37,601 - src.strategies.self_learning_trader - INFO - 🎓 TUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403278351Z [inf]  2025-11-08 00:15:37,621 - src.strategies.self_learning_trader - INFO - 🎓 HIGHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403285452Z [inf]  2025-11-08 00:15:37,679 - src.strategies.self_learning_trader - INFO - 🎓 PHBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403294813Z [inf]  2025-11-08 00:15:37,701 - src.strategies.self_learning_trader - INFO - 🎓 GMXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403302446Z [inf]  2025-11-08 00:15:37,721 - src.strategies.self_learning_trader - INFO - 🎓 CFXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403308877Z [inf]  2025-11-08 00:15:37,743 - src.strategies.self_learning_trader - INFO - 🎓 STXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403314997Z [inf]  2025-11-08 00:15:37,764 - src.strategies.self_learning_trader - INFO - 🎓 ACHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.403321681Z [inf]  2025-11-08 00:15:37,784 - src.core.unified_scheduler - INFO - ⏱️  進度: 128/533 | 已分析=128 | 平均分析=21.4ms | 平均數據=19.1ms
+2025-11-08T00:15:42.403327935Z [inf]  2025-11-08 00:15:38,586 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.80秒 | 平均12.5ms/symbol
+2025-11-08T00:15:42.403334972Z [inf]  2025-11-08 00:15:38,586 - src.core.unified_scheduler - INFO - ⏱️  批次 3: 64个symbols数据获取完成，耗时0.80秒
+2025-11-08T00:15:42.405746121Z [inf]  2025-11-08 00:15:38,684 - src.strategies.self_learning_trader - INFO - 🎓 USDCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.405749779Z [inf]  2025-11-08 00:15:38,608 - src.strategies.self_learning_trader - INFO - ❌ CKBUSDT 拒絕開倉: 信心度不足: 17.7% < 18.0% | 勝率=50.3% 信心=17.7% R:R=1.50
+2025-11-08T00:15:42.405759124Z [inf]  2025-11-08 00:15:38,684 - src.strategies.self_learning_trader - WARNING - ⚠️ USDCUSDT SL/TP 無效: 止損距離過小: 0.01% < 0.30%，使用安全值
+2025-11-08T00:15:42.405759589Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描26300個，0信號）：
+2025-11-08T00:15:42.405768075Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=14383, bearish=2536, neutral=9381
+2025-11-08T00:15:42.405768371Z [inf]  2025-11-08 00:15:38,713 - src.strategies.self_learning_trader - INFO - 🎓 IDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.405775336Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=9662, bearish=2330, neutral=14308
+2025-11-08T00:15:42.405781271Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=5930, bearish=9667, neutral=10703
+2025-11-08T00:15:42.405787592Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=7256, bearish=16503, neutral=2541
+2025-11-08T00:15:42.405793473Z [inf]  2025-11-08 00:15:38,624 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-08T00:15:42.405799288Z [inf]  2025-11-08 00:15:38,662 - src.strategies.self_learning_trader - INFO - 🎓 LQTYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407349869Z [inf]  2025-11-08 00:15:39,024 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描150個）
+2025-11-08T00:15:42.407360610Z [inf]  2025-11-08 00:15:39,024 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=149, 拒絕=0
+2025-11-08T00:15:42.407367435Z [inf]  2025-11-08 00:15:39,024 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=69, 無=80
+2025-11-08T00:15:42.407372881Z [inf]  2025-11-08 00:15:39,045 - src.strategies.self_learning_trader - INFO - 🎓 WLDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407386242Z [inf]  2025-11-08 00:15:38,734 - src.strategies.self_learning_trader - INFO - 🎓 ARBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407393179Z [inf]  2025-11-08 00:15:38,831 - src.strategies.self_learning_trader - INFO - 🎓 XVSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407400206Z [inf]  2025-11-08 00:15:38,854 - src.strategies.self_learning_trader - INFO - 🎓 BLURUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407405821Z [inf]  2025-11-08 00:15:38,879 - src.strategies.self_learning_trader - INFO - 🎓 EDUUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407412239Z [inf]  2025-11-08 00:15:38,905 - src.strategies.self_learning_trader - INFO - 🎓 SUIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407418613Z [inf]  2025-11-08 00:15:38,961 - src.strategies.self_learning_trader - INFO - 🎓 UMAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.407426173Z [inf]  2025-11-08 00:15:38,992 - src.strategies.self_learning_trader - INFO - 🎓 NMRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408819191Z [inf]  2025-11-08 00:15:39,067 - src.strategies.self_learning_trader - INFO - ❌ PENDLEUSDT 拒絕開倉: 信心度不足: 7.2% < 18.0% | 勝率=45.0% 信心=7.2% R:R=1.50
+2025-11-08T00:15:42.408826129Z [inf]  2025-11-08 00:15:39,088 - src.strategies.self_learning_trader - INFO - 🎓 ARKMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408832644Z [inf]  2025-11-08 00:15:39,109 - src.strategies.self_learning_trader - INFO - 🎓 AGLDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408837704Z [inf]  2025-11-08 00:15:39,130 - src.strategies.self_learning_trader - INFO - 🎓 YGGUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408842725Z [inf]  2025-11-08 00:15:39,152 - src.strategies.self_learning_trader - INFO - 🎓 DODOXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408848622Z [inf]  2025-11-08 00:15:39,173 - src.strategies.self_learning_trader - INFO - 🎓 BNTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408854693Z [inf]  2025-11-08 00:15:39,275 - src.strategies.self_learning_trader - INFO - 🎓 BIGTIMEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408859788Z [inf]  2025-11-08 00:15:39,296 - src.strategies.self_learning_trader - INFO - 🎓 WAXPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408943664Z [inf]  2025-11-08 00:15:39,330 - src.strategies.self_learning_trader - INFO - 🎓 RIFUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.408951100Z [inf]  2025-11-08 00:15:39,352 - src.strategies.self_learning_trader - INFO - 🎓 POLYXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410815057Z [inf]  2025-11-08 00:15:39,373 - src.strategies.self_learning_trader - INFO - 🎓 GASUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410815768Z [inf]  2025-11-08 00:15:39,637 - src.strategies.self_learning_trader - INFO - 🎓 BEAMXUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410825993Z [inf]  2025-11-08 00:15:39,411 - src.strategies.self_learning_trader - INFO - 🎓 TIAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410827788Z [inf]  2025-11-08 00:15:39,753 - src.strategies.self_learning_trader - INFO - 🎓 JTOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410836048Z [inf]  2025-11-08 00:15:39,432 - src.strategies.self_learning_trader - INFO - 🎓 CAKEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410836376Z [inf]  2025-11-08 00:15:39,775 - src.strategies.self_learning_trader - INFO - ❌ 1000SATSUSDT 拒絕開倉: 信心度不足: 17.1% < 18.0% | 勝率=50.1% 信心=17.1% R:R=1.50
+2025-11-08T00:15:42.410843126Z [inf]  2025-11-08 00:15:39,486 - src.strategies.self_learning_trader - INFO - 🎓 TWTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410849197Z [inf]  2025-11-08 00:15:39,514 - src.strategies.self_learning_trader - INFO - 🎓 TOKENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410855677Z [inf]  2025-11-08 00:15:39,541 - src.strategies.self_learning_trader - INFO - 🎓 ORDIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.410861582Z [inf]  2025-11-08 00:15:39,586 - src.strategies.self_learning_trader - INFO - 🎓 ILVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.412399021Z [inf]  2025-11-08 00:15:39,811 - src.strategies.self_learning_trader - INFO - 🎓 1000RATSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.412407420Z [inf]  2025-11-08 00:15:39,856 - src.core.unified_scheduler - INFO - ⏱️  進度: 192/533 | 已分析=192 | 平均分析=20.8ms | 平均數據=16.9ms
+2025-11-08T00:15:42.412412874Z [inf]  2025-11-08 00:15:39,992 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AIUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.412417653Z [inf]  2025-11-08 00:15:39,992 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-08T00:15:42.412422711Z [inf]  2025-11-08 00:15:39,992 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.412429738Z [inf]  2025-11-08 00:15:39,992 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AIUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.412434415Z [inf]  2025-11-08 00:15:39,992 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.412438950Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AIUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.414226012Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.414233726Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WIFUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.414239178Z [inf]  2025-11-08 00:15:39,993 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → throttled (失敗次數: 4)
+2025-11-08T00:15:42.414244899Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.414249979Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'XAIUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.414255578Z [inf]  2025-11-08 00:15:39,993 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: throttled → blocked (失敗次數: 5)
+2025-11-08T00:15:42.414261096Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.414266344Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WIFUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.414271133Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.415900782Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'XAIUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.415910702Z [inf]  2025-11-08 00:15:39,993 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.415919304Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MANTAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.415924374Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.415929458Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MANTAUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.415934563Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.415939855Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WIFUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.417699124Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.417707746Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'XAIUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.417714085Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.417719239Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ONDOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.417725221Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.417730658Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.417736651Z [inf]  2025-11-08 00:15:39,994 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.417747505Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ONDOUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.419204980Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.419215959Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MANTAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.419225789Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.419234239Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.419240790Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.419246822Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'LSKUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.419252894Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.419259697Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ALTUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.421107865Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.421117495Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ALTUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.421124705Z [inf]  2025-11-08 00:15:39,995 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.421131639Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'JUPUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.421137719Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.421143282Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ALTUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.421148670Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.421153594Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'JUPUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.423026886Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.423037041Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ZETAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.423044157Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.423050982Z [inf]  2025-11-08 00:15:39,996 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'JUPUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.423059848Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.423066458Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ONDOUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.423090335Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.423097260Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ZETAUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.424923677Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.424935445Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'RONINUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.424945866Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.424954464Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ZETAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.424960552Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.424966581Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'RONINUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.424972332Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.424978391Z [inf]  2025-11-08 00:15:39,997 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'DYMUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.427310623Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.427319072Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'RONINUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.427325034Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.427330124Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'DYMUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.427335380Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.427340848Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'OMUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.427346537Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.427352135Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'OMUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.429471191Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.429480760Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'OMUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.429488127Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.429494621Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PIXELUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.429501540Z [inf]  2025-11-08 00:15:39,998 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.429507695Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PIXELUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.429513351Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.429519794Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PIXELUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.431120181Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.431132863Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'GLMUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.431139872Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.431145743Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'STRKUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.431155217Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.431161870Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'STRKUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.431168391Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.431174227Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'STRKUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.432965602Z [inf]  2025-11-08 00:15:39,999 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.432977980Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'GLMUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.432985053Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.432990734Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'GLMUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.432997089Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.433003155Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PORTALUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.433008994Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.433014784Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PORTALUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.434264082Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.434270351Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AXLUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.434275890Z [inf]  2025-11-08 00:15:40,000 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.434280543Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TONUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.434285670Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.434290793Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'PORTALUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.434295783Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.434300387Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TONUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.436089125Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.436099859Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TONUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.436109201Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.436116403Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AXLUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.436123591Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.436129622Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AXLUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.436136272Z [inf]  2025-11-08 00:15:40,001 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.436142898Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MYROUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.437662171Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.437669270Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MYROUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.437675464Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.437680700Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'MYROUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.437686276Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.437691785Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'METISUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.437697620Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.437702761Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AEVOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.439878759Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.439886753Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'METISUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.439893293Z [inf]  2025-11-08 00:15:40,002 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.439898349Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AEVOUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.439903109Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.439908724Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'AEVOUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.439915388Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.439920553Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'VANRYUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.442258073Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'VANRYUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.442266648Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.442275085Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BOMEUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.442280326Z [inf]  2025-11-08 00:15:40,003 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.442284829Z [inf]  2025-11-08 00:15:40,025 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'METISUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.442290858Z [inf]  2025-11-08 00:15:40,025 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.442295523Z [inf]  2025-11-08 00:15:40,025 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BOMEUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.442300881Z [inf]  2025-11-08 00:15:40,025 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.443844642Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.443856303Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ETHFIUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.443866595Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.443873762Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'VANRYUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.443880195Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.443887237Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BOMEUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.443896213Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.443902736Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ETHFIUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.445693777Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.445706811Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ETHFIUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.445716825Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.445724098Z [inf]  2025-11-08 00:15:40,026 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ENAUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.445729972Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.445739899Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ENAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.445747156Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.445754040Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'ENAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.447768598Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.447776038Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.447782322Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.447786707Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.447791298Z [inf]  2025-11-08 00:15:40,027 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.447795333Z [inf]  2025-11-08 00:15:40,030 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.447799501Z [inf]  2025-11-08 00:15:40,030 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.447803765Z [inf]  2025-11-08 00:15:40,030 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.447807485Z [inf]  2025-11-08 00:15:40,030 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.449201086Z [inf]  2025-11-08 00:15:40,030 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.449210649Z [inf]  2025-11-08 00:15:40,030 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.449257757Z [inf]  2025-11-08 00:15:40,030 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.449265164Z [inf]  2025-11-08 00:15:40,031 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.449274247Z [inf]  2025-11-08 00:15:40,031 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.449281873Z [inf]  2025-11-08 00:15:40,031 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.449288603Z [inf]  2025-11-08 00:15:40,032 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.449294678Z [inf]  2025-11-08 00:15:40,032 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.449300357Z [inf]  2025-11-08 00:15:40,032 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.449306354Z [inf]  2025-11-08 00:15:40,032 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.449312595Z [inf]  2025-11-08 00:15:40,032 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.450941046Z [inf]  2025-11-08 00:15:40,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WIFUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.450950247Z [inf]  2025-11-08 00:15:40,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WIFUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.450956890Z [inf]  2025-11-08 00:15:40,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WIFUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.450962121Z [inf]  2025-11-08 00:15:40,033 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.450966943Z [inf]  2025-11-08 00:15:40,033 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.450972652Z [inf]  2025-11-08 00:15:40,033 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.450977314Z [inf]  2025-11-08 00:15:40,033 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.450989391Z [inf]  2025-11-08 00:15:40,033 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.451000043Z [inf]  2025-11-08 00:15:40,033 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.451010743Z [inf]  2025-11-08 00:15:40,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.451019918Z [inf]  2025-11-08 00:15:40,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.452622509Z [inf]  2025-11-08 00:15:40,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.452630948Z [inf]  2025-11-08 00:15:40,034 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.452641650Z [inf]  2025-11-08 00:15:40,034 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.452647764Z [inf]  2025-11-08 00:15:40,034 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.452653534Z [inf]  2025-11-08 00:15:40,034 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.452658739Z [inf]  2025-11-08 00:15:40,034 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.452664410Z [inf]  2025-11-08 00:15:40,034 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.452669482Z [inf]  2025-11-08 00:15:40,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MANTAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.452675365Z [inf]  2025-11-08 00:15:40,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MANTAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.452680970Z [inf]  2025-11-08 00:15:40,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MANTAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.452687652Z [inf]  2025-11-08 00:15:40,034 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.454203236Z [inf]  2025-11-08 00:15:40,034 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.454209770Z [inf]  2025-11-08 00:15:40,035 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.454214755Z [inf]  2025-11-08 00:15:40,035 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.454219086Z [inf]  2025-11-08 00:15:40,035 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.454223652Z [inf]  2025-11-08 00:15:40,035 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.454228664Z [inf]  2025-11-08 00:15:40,035 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LSKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.454232928Z [inf]  2025-11-08 00:15:40,035 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LSKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.454237092Z [inf]  2025-11-08 00:15:40,035 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LSKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.454241304Z [inf]  2025-11-08 00:15:40,035 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.454246104Z [inf]  2025-11-08 00:15:40,035 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.454250456Z [inf]  2025-11-08 00:15:40,035 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.455823779Z [inf]  2025-11-08 00:15:40,035 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.455831085Z [inf]  2025-11-08 00:15:40,036 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.455836869Z [inf]  2025-11-08 00:15:40,036 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.455847859Z [inf]  2025-11-08 00:15:40,036 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.455854186Z [inf]  2025-11-08 00:15:40,036 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.455860726Z [inf]  2025-11-08 00:15:40,036 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.455865973Z [inf]  2025-11-08 00:15:40,036 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.455871453Z [inf]  2025-11-08 00:15:40,036 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.455876885Z [inf]  2025-11-08 00:15:40,036 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.455882190Z [inf]  2025-11-08 00:15:40,036 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.455887887Z [inf]  2025-11-08 00:15:40,036 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.457856745Z [inf]  2025-11-08 00:15:40,036 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.457867436Z [inf]  2025-11-08 00:15:40,036 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JUPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.457874707Z [inf]  2025-11-08 00:15:40,037 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JUPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.457881373Z [inf]  2025-11-08 00:15:40,037 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JUPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.457890239Z [inf]  2025-11-08 00:15:40,037 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.457897165Z [inf]  2025-11-08 00:15:40,037 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.457905076Z [inf]  2025-11-08 00:15:40,037 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.457911470Z [inf]  2025-11-08 00:15:40,037 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.457919828Z [inf]  2025-11-08 00:15:40,037 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.457927066Z [inf]  2025-11-08 00:15:40,037 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.457933106Z [inf]  2025-11-08 00:15:40,037 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONDOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.459452345Z [inf]  2025-11-08 00:15:40,037 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONDOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.459459455Z [inf]  2025-11-08 00:15:40,038 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZETAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.459463029Z [inf]  2025-11-08 00:15:40,038 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONDOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.459469540Z [inf]  2025-11-08 00:15:40,038 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.459476338Z [inf]  2025-11-08 00:15:40,038 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.459482205Z [inf]  2025-11-08 00:15:40,038 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.459487957Z [inf]  2025-11-08 00:15:40,038 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.459494728Z [inf]  2025-11-08 00:15:40,038 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.459500196Z [inf]  2025-11-08 00:15:40,038 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.459506047Z [inf]  2025-11-08 00:15:40,038 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZETAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.459511543Z [inf]  2025-11-08 00:15:40,038 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZETAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.461027070Z [inf]  2025-11-08 00:15:40,039 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.461027809Z [inf]  2025-11-08 00:15:40,039 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.461036838Z [inf]  2025-11-08 00:15:40,039 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RONINUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.461038263Z [inf]  2025-11-08 00:15:40,039 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.461045153Z [inf]  2025-11-08 00:15:40,039 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RONINUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.461047933Z [inf]  2025-11-08 00:15:40,039 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.461053219Z [inf]  2025-11-08 00:15:40,039 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RONINUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.461058736Z [inf]  2025-11-08 00:15:40,039 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.461061269Z [inf]  2025-11-08 00:15:40,039 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.461068816Z [inf]  2025-11-08 00:15:40,039 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.461069348Z [inf]  2025-11-08 00:15:40,040 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.462734301Z [inf]  2025-11-08 00:15:40,040 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.462746766Z [inf]  2025-11-08 00:15:40,040 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.462754801Z [inf]  2025-11-08 00:15:40,040 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.462762374Z [inf]  2025-11-08 00:15:40,040 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.462769785Z [inf]  2025-11-08 00:15:40,040 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.462777392Z [inf]  2025-11-08 00:15:40,040 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.462783511Z [inf]  2025-11-08 00:15:40,040 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.462790051Z [inf]  2025-11-08 00:15:40,041 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.462795779Z [inf]  2025-11-08 00:15:40,041 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.462803152Z [inf]  2025-11-08 00:15:40,041 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.462809893Z [inf]  2025-11-08 00:15:40,041 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.464547597Z [inf]  2025-11-08 00:15:40,041 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.464561125Z [inf]  2025-11-08 00:15:40,041 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.464569523Z [inf]  2025-11-08 00:15:40,041 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.464576017Z [inf]  2025-11-08 00:15:40,041 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.464583467Z [inf]  2025-11-08 00:15:40,041 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.464591639Z [inf]  2025-11-08 00:15:40,042 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.464598438Z [inf]  2025-11-08 00:15:40,042 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.464605528Z [inf]  2025-11-08 00:15:40,042 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.464614953Z [inf]  2025-11-08 00:15:40,042 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.464621197Z [inf]  2025-11-08 00:15:40,042 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.464628193Z [inf]  2025-11-08 00:15:40,042 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.466335785Z [inf]  2025-11-08 00:15:40,042 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.466344222Z [inf]  2025-11-08 00:15:40,042 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.466349996Z [inf]  2025-11-08 00:15:40,043 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.466355034Z [inf]  2025-11-08 00:15:40,043 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.466360285Z [inf]  2025-11-08 00:15:40,043 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.466365354Z [inf]  2025-11-08 00:15:40,043 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.466370070Z [inf]  2025-11-08 00:15:40,043 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.466374593Z [inf]  2025-11-08 00:15:40,043 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.466379560Z [inf]  2025-11-08 00:15:40,043 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.466383809Z [inf]  2025-11-08 00:15:40,043 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.466388105Z [inf]  2025-11-08 00:15:40,043 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.467734945Z [inf]  2025-11-08 00:15:40,043 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.467739379Z [inf]  2025-11-08 00:15:40,045 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.467745174Z [inf]  2025-11-08 00:15:40,044 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.467752432Z [inf]  2025-11-08 00:15:40,044 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.467758881Z [inf]  2025-11-08 00:15:40,044 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.467764814Z [inf]  2025-11-08 00:15:40,044 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.467770439Z [inf]  2025-11-08 00:15:40,044 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.467776638Z [inf]  2025-11-08 00:15:40,044 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.467787042Z [inf]  2025-11-08 00:15:40,044 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.467794194Z [inf]  2025-11-08 00:15:40,044 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.467799941Z [inf]  2025-11-08 00:15:40,044 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.469311625Z [inf]  2025-11-08 00:15:40,045 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.469322780Z [inf]  2025-11-08 00:15:40,045 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.469330627Z [inf]  2025-11-08 00:15:40,045 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.469340666Z [inf]  2025-11-08 00:15:40,045 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.469347598Z [inf]  2025-11-08 00:15:40,045 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.469353836Z [inf]  2025-11-08 00:15:40,045 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.469360794Z [inf]  2025-11-08 00:15:40,045 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.469366508Z [inf]  2025-11-08 00:15:40,045 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.469372772Z [inf]  2025-11-08 00:15:40,046 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.469379150Z [inf]  2025-11-08 00:15:40,046 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.469385835Z [inf]  2025-11-08 00:15:40,046 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.470957908Z [inf]  2025-11-08 00:15:40,046 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.470968061Z [inf]  2025-11-08 00:15:40,046 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.470973953Z [inf]  2025-11-08 00:15:40,046 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.470979290Z [inf]  2025-11-08 00:15:40,046 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.470986769Z [inf]  2025-11-08 00:15:40,046 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.470991786Z [inf]  2025-11-08 00:15:40,046 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.470995939Z [inf]  2025-11-08 00:15:40,047 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.471001315Z [inf]  2025-11-08 00:15:40,047 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.471008152Z [inf]  2025-11-08 00:15:40,047 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.471014827Z [inf]  2025-11-08 00:15:40,047 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.471019203Z [inf]  2025-11-08 00:15:40,047 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.472600522Z [inf]  2025-11-08 00:15:40,047 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.472607100Z [inf]  2025-11-08 00:15:40,047 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.472612094Z [inf]  2025-11-08 00:15:40,047 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.472617844Z [inf]  2025-11-08 00:15:40,047 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.472624556Z [inf]  2025-11-08 00:15:40,048 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.472630631Z [inf]  2025-11-08 00:15:40,048 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.472636242Z [inf]  2025-11-08 00:15:40,048 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.472642331Z [inf]  2025-11-08 00:15:40,048 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.472648127Z [inf]  2025-11-08 00:15:40,048 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗76次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.472654477Z [inf]  2025-11-08 00:15:40,048 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗76次)，請60秒後重試
+2025-11-08T00:15:42.472660327Z [inf]  2025-11-08 00:15:40,048 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.474603512Z [inf]  2025-11-08 00:15:40,048 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.474610185Z [inf]  2025-11-08 00:15:40,048 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.474615418Z [inf]  2025-11-08 00:15:40,050 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TNSRUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.474621052Z [inf]  2025-11-08 00:15:40,050 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.474625743Z [inf]  2025-11-08 00:15:40,050 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'WUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.474632657Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.474638611Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TNSRUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.474643873Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.474649731Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TNSRUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.477226483Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'SAGAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.477238806Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.477248241Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'SAGAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.477261572Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.477269039Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'SAGAUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.477275276Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.477281571Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TAOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.477287764Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.479717677Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.479739972Z [inf]  2025-11-08 00:15:40,051 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TAOUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.479748361Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.479754531Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'REZUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.479760427Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.479766602Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'REZUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.479772211Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.479778354Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TAOUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.481808092Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.481823542Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'REZUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.481830816Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.481837149Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BBUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.481842328Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.481849225Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BBUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.481855416Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.481860986Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NOTUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.483177892Z [inf]  2025-11-08 00:15:40,052 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.483187049Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NOTUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.483192453Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.483197493Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'BBUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.483205202Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.483210138Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'NOTUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.483214359Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.483219486Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TURBOUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.484701760Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.484710842Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'IOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.484717108Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.484722164Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TURBOUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.484726952Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.484731693Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'TURBOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.484736660Z [inf]  2025-11-08 00:15:40,053 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.484741204Z [inf]  2025-11-08 00:15:40,055 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.484745904Z [inf]  2025-11-08 00:15:40,055 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.486185634Z [inf]  2025-11-08 00:15:40,055 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.486187725Z [inf]  2025-11-08 00:15:40,057 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.486195866Z [inf]  2025-11-08 00:15:40,055 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.486199973Z [inf]  2025-11-08 00:15:40,057 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.486204385Z [inf]  2025-11-08 00:15:40,056 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.486209561Z [inf]  2025-11-08 00:15:40,057 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.486212272Z [inf]  2025-11-08 00:15:40,056 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.486216886Z [inf]  2025-11-08 00:15:40,056 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.486221451Z [inf]  2025-11-08 00:15:40,056 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.486227781Z [inf]  2025-11-08 00:15:40,056 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.486232378Z [inf]  2025-11-08 00:15:40,056 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.487738335Z [inf]  2025-11-08 00:15:40,057 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.487745491Z [inf]  2025-11-08 00:15:40,057 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.487753332Z [inf]  2025-11-08 00:15:40,057 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.487759133Z [inf]  2025-11-08 00:15:40,057 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.487764653Z [inf]  2025-11-08 00:15:40,057 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.489739051Z [inf]  2025-11-08 00:15:40,058 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BOMEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.491867864Z [inf]  2025-11-08 00:15:40,059 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ETHFIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.491878191Z [inf]  2025-11-08 00:15:40,059 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.495843862Z [inf]  2025-11-08 00:15:40,064 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗99次)，請60秒後重試
+2025-11-08T00:15:42.495851108Z [inf]  2025-11-08 00:15:40,064 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.499280592Z [inf]  2025-11-08 00:15:40,066 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.500872445Z [inf]  2025-11-08 00:15:40,067 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.502379998Z [inf]  2025-11-08 00:15:40,068 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.504033252Z [inf]  2025-11-08 00:15:40,069 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗99次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.507185529Z [inf]  2025-11-08 00:15:40,081 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.508539032Z [inf]  2025-11-08 00:15:40,083 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.510163012Z [inf]  2025-11-08 00:15:40,085 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗112次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.512331995Z [inf]  2025-11-08 00:15:40,087 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.514220579Z [inf]  2025-11-08 00:15:40,087 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.516017481Z [inf]  2025-11-08 00:15:40,088 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.519055806Z [inf]  2025-11-08 00:15:40,089 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.520370102Z [inf]  2025-11-08 00:15:40,093 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗130次)，請60秒後重試
+2025-11-08T00:15:42.522011620Z [inf]  2025-11-08 00:15:40,094 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'SYSUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.524651565Z [inf]  2025-11-08 00:15:40,095 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.526329196Z [inf]  2025-11-08 00:15:40,096 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.530229788Z [inf]  2025-11-08 00:15:40,096 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.530239722Z [inf]  2025-11-08 00:15:40,097 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗147次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.532088096Z [inf]  2025-11-08 00:15:40,098 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗147次)，請60秒後重試
+2025-11-08T00:15:42.534582556Z [inf]  2025-11-08 00:15:40,099 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗147次)，請60秒後重試
+2025-11-08T00:15:42.536139694Z [inf]  2025-11-08 00:15:40,100 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗147次)，請60秒後重試
+2025-11-08T00:15:42.537986061Z [inf]  2025-11-08 00:15:40,103 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗148次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.539838500Z [inf]  2025-11-08 00:15:40,104 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RAREUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.543827751Z [inf]  2025-11-08 00:15:40,106 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗148次)，請60秒後重試
+2025-11-08T00:15:42.543849432Z [inf]  2025-11-08 00:15:40,107 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.546055058Z [inf]  2025-11-08 00:15:40,107 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗148次)，請60秒後重試
+2025-11-08T00:15:42.552186537Z [inf]  2025-11-08 00:15:40,108 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗148次)，請60秒後重試
+2025-11-08T00:15:42.552203722Z [inf]  2025-11-08 00:15:40,108 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.552213908Z [inf]  2025-11-08 00:15:40,108 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.555266465Z [inf]  2025-11-08 00:15:40,110 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'POLUSDT', 'interval': '1h', 'limit': 50}
+2025-11-08T00:15:42.557032743Z [inf]  2025-11-08 00:15:40,111 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.558542690Z [inf]  2025-11-08 00:15:40,111 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.559819885Z [inf]  2025-11-08 00:15:40,114 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'RPLUSDT', 'interval': '15m', 'limit': 50}
+2025-11-08T00:15:42.563851816Z [inf]  2025-11-08 00:15:40,116 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗163次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.563862174Z [inf]  2025-11-08 00:15:40,116 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗163次)，請60秒後重試
+2025-11-08T00:15:42.566141579Z [inf]  2025-11-08 00:15:40,118 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CHESSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.568274237Z [inf]  2025-11-08 00:15:40,119 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RPLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.570197730Z [inf]  2025-11-08 00:15:40,120 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗163次)，請60秒後重試
+2025-11-08T00:15:42.572119488Z [inf]  2025-11-08 00:15:40,124 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': '1MBABYDOGEUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.574179570Z [inf]  2025-11-08 00:15:40,124 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.575934585Z [inf]  2025-11-08 00:15:40,126 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.577949056Z [inf]  2025-11-08 00:15:40,128 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1MBABYDOGEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.579986423Z [inf]  2025-11-08 00:15:40,129 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.582009736Z [inf]  2025-11-08 00:15:40,130 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIDAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.586063114Z [inf]  2025-11-08 00:15:40,135 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'CATIUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.586072384Z [inf]  2025-11-08 00:15:40,135 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.587986827Z [inf]  2025-11-08 00:15:40,135 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.590024654Z [inf]  2025-11-08 00:15:40,137 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.594222529Z [inf]  2025-11-08 00:15:40,140 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 429: Too Many Requests
+2025-11-08T00:15:42.594233278Z [inf]  2025-11-08 00:15:40,140 - src.clients.binance_client - ERROR - Binance API 錯誤 429: code=-1003, msg=Too many requests; current limit of IP(208.77.246.15) is 2400 requests per minute. Please use the websocket for live updates to avoid polling the API., endpoint=/fapi/v1/klines, params={'symbol': 'COSUSDT', 'interval': '5m', 'limit': 50}
+2025-11-08T00:15:42.598523516Z [inf]  2025-11-08 00:15:40,141 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HMSTRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-08T00:15:42.598743234Z [inf]  2025-11-08 00:15:40,142 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗192次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.600314136Z [inf]  2025-11-08 00:15:40,144 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗192次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.602102250Z [inf]  2025-11-08 00:15:40,145 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗192次)，請60秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:42.603880539Z [inf]  2025-11-08 00:15:40,147 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=91, 無=101
+2025-11-08T00:15:42.606058447Z [inf]  2025-11-08 00:15:40,445 - src.strategies.self_learning_trader - INFO - 🎓 DRIFTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.609197160Z [inf]  2025-11-08 00:15:41,091 - src.strategies.self_learning_trader - INFO - 🎓 MOCAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.610794442Z [inf]  2025-11-08 00:15:41,135 - src.strategies.rule_based_signal_generator - INFO -          有方向=120, 無方向=116
+2025-11-08T00:15:42.612077038Z [inf]  2025-11-08 00:15:41,135 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-08T00:15:42.615604407Z [inf]  2025-11-08 00:15:41,275 - src.strategies.self_learning_trader - INFO - 🎓 CGPTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.617234247Z [inf]  2025-11-08 00:15:41,497 - src.strategies.self_learning_trader - INFO - 🎓 ALCHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.619167579Z [inf]  2025-11-08 00:15:41,874 - src.strategies.self_learning_trader - INFO - 🎓 VVVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.621389922Z [inf]  2025-11-08 00:15:42,268 - src.strategies.self_learning_trader - INFO - 🎓 BIDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:42.643382549Z [inf]  2025-11-08 00:15:42,638 - src.strategies.self_learning_trader - INFO - 🎓 GUNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078280188Z [inf]  2025-11-08 00:15:42,837 - src.strategies.self_learning_trader - INFO - 🎓 KERNELUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078289850Z [inf]  2025-11-08 00:15:42,862 - src.strategies.self_learning_trader - INFO - ❌ WCTUSDT 拒絕開倉: 信心度不足: 16.5% < 18.0% | 勝率=45.0% 信心=16.5% R:R=1.50
+2025-11-08T00:15:43.078296680Z [inf]  2025-11-08 00:15:42,886 - src.strategies.self_learning_trader - INFO - 🎓 INITUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078301208Z [inf]  2025-11-08 00:15:42,979 - src.strategies.self_learning_trader - INFO - 🎓 DEEPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078362963Z [inf]  2025-11-08 00:15:42,665 - src.strategies.self_learning_trader - INFO - 🎓 ATHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078368888Z [inf]  2025-11-08 00:15:42,690 - src.strategies.self_learning_trader - INFO - 🎓 BABYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078376074Z [inf]  2025-11-08 00:15:42,717 - src.strategies.self_learning_trader - INFO - 🎓 FORTHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078382014Z [inf]  2025-11-08 00:15:42,744 - src.strategies.self_learning_trader - INFO - 🎓 PROMPTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078388235Z [inf]  2025-11-08 00:15:42,768 - src.strategies.self_learning_trader - INFO - 🎓 XCNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.078395531Z [inf]  2025-11-08 00:15:42,794 - src.strategies.self_learning_trader - INFO - 🎓 STOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.080368124Z [inf]  2025-11-08 00:15:43,006 - src.strategies.self_learning_trader - INFO - 🎓 HYPERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.080375879Z [inf]  2025-11-08 00:15:43,037 - src.strategies.self_learning_trader - INFO - 🎓 FISUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.102943971Z [inf]  2025-11-08 00:15:43,099 - src.strategies.self_learning_trader - INFO - 🎓 SIGNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:43.200318162Z [inf]  2025-11-08 00:15:43,199 - src.core.unified_scheduler - INFO - ⏱️  進度: 384/533 | 已分析=384 | 平均分析=18.3ms | 平均數據=9.3ms
+2025-11-08T00:15:44.079647062Z [inf]  2025-11-08 00:15:43,745 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.55秒 | 平均8.5ms/symbol
+2025-11-08T00:15:44.079653227Z [inf]  2025-11-08 00:15:43,745 - src.core.unified_scheduler - INFO - ⏱️  批次 7: 64个symbols数据获取完成，耗时0.55秒
+2025-11-08T00:15:44.079659554Z [inf]  2025-11-08 00:15:43,810 - src.strategies.self_learning_trader - INFO - 🎓 ASRUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079666442Z [inf]  2025-11-08 00:15:43,854 - src.strategies.self_learning_trader - INFO - 🎓 B2USDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079673159Z [inf]  2025-11-08 00:15:43,894 - src.strategies.self_learning_trader - INFO - 🎓 SYRUPUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079680023Z [inf]  2025-11-08 00:15:43,919 - src.strategies.self_learning_trader - INFO - 🎓 OBOLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079687901Z [inf]  2025-11-08 00:15:43,943 - src.strategies.self_learning_trader - INFO - 🎓 DOODUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079694629Z [inf]  2025-11-08 00:15:44,030 - src.strategies.self_learning_trader - INFO - 🎓 NXPCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.079701224Z [inf]  2025-11-08 00:15:44,056 - src.strategies.self_learning_trader - INFO - 🎓 CVCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.086736239Z [inf]  2025-11-08 00:15:44,084 - src.strategies.self_learning_trader - INFO - 🎓 AGTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.086744258Z [inf]  2025-11-08 00:15:44,084 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描400個）
+2025-11-08T00:15:44.086750486Z [inf]  2025-11-08 00:15:44,084 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=335, 拒絕=64
+2025-11-08T00:15:44.086756352Z [inf]  2025-11-08 00:15:44,084 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=171, 無=164
+2025-11-08T00:15:44.121271660Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-08T00:15:44.121277469Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline診斷報告（已掃描400個交易對）
+2025-11-08T00:15:44.121283250Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-08T00:15:44.121289517Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage0 - 總掃描數: 400
+2025-11-08T00:15:44.121295485Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage1 - 數據驗證: 有效=336, 拒絕=64
+2025-11-08T00:15:44.121300936Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          拒絕率: 16.0%
+2025-11-08T00:15:44.121307903Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage2 - 趨勢判斷: 成功=336
+2025-11-08T00:15:44.121313382Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage3 - 信號方向:
+2025-11-08T00:15:44.121319435Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          有方向=172, 無方向=164
+2025-11-08T00:15:44.121325815Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          優先級1(完美對齊)=42
+2025-11-08T00:15:44.121336633Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          優先級2(H1+M15)=119
+2025-11-08T00:15:44.121342597Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          優先級3(趨勢初期)=1
+2025-11-08T00:15:44.121348138Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          優先級4(H1主導-寬鬆)=7
+2025-11-08T00:15:44.127804993Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          優先級5(M15+M5-寬鬆)=3
+2025-11-08T00:15:44.127818417Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage4 - ADX過濾（v3.18.10+ 3層懲罰機制）:
+2025-11-08T00:15:44.127827056Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          ADX<10(硬拒絕)=0
+2025-11-08T00:15:44.127835815Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          ADX 10-15(強懲罰×0.6)=0
+2025-11-08T00:15:44.127844167Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          ADX 15-20(中懲罰×0.8)=0
+2025-11-08T00:15:44.127851699Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          ADX≥20(通過)=172
+2025-11-08T00:15:44.127860621Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - ADX分布:
+2025-11-08T00:15:44.127870180Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          <10: 0
+2025-11-08T00:15:44.127877503Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          10-15: 0
+2025-11-08T00:15:44.127888256Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          15-20: 0
+2025-11-08T00:15:44.127895598Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          20-25: 0
+2025-11-08T00:15:44.127903368Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          ≥25: 172
+2025-11-08T00:15:44.127910794Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<10占比: 0.0% ← 硬拒絕
+2025-11-08T00:15:44.127918046Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          🔥 ADX<15占比: 0.0% ← 包含強懲罰區間
+2025-11-08T00:15:44.127926362Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage5 - 信心度計算: 172
+2025-11-08T00:15:44.127934645Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage6 - 勝率計算: 172
+2025-11-08T00:15:44.127941713Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage7 - 雙門檻驗證:
+2025-11-08T00:15:44.127949397Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          通過=0
+2025-11-08T00:15:44.127958570Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          拒絕(勝率不足)=0
+2025-11-08T00:15:44.127966212Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          拒絕(信心不足)=0
+2025-11-08T00:15:44.127974441Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          拒絕(R:R超範圍)=0
+2025-11-08T00:15:44.127982062Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage8 - 質量評分:
+2025-11-08T00:15:44.127988470Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          通過(quality≥門檻)=0
+2025-11-08T00:15:44.127994677Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          拒絕(quality<門檻)=0
+2025-11-08T00:15:44.128001555Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - Stage9 - 排序&執行:
+2025-11-08T00:15:44.128008948Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          排序候選=0
+2025-11-08T00:15:44.128015963Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO -          最終執行=0
+2025-11-08T00:15:44.128022418Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - 
+2025-11-08T00:15:44.128028754Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - 🎯 Pipeline完整漏斗轉化率: 0.00% (0/400)
+2025-11-08T00:15:44.128036442Z [inf]  2025-11-08 00:15:44,110 - src.strategies.rule_based_signal_generator - INFO - ================================================================================
+2025-11-08T00:15:44.128044730Z [inf]  2025-11-08 00:15:44,111 - src.strategies.self_learning_trader - INFO - 🎓 AWEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.150514874Z [inf]  2025-11-08 00:15:44,141 - src.strategies.self_learning_trader - INFO - 🎓 BUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.175948638Z [inf]  2025-11-08 00:15:44,163 - src.strategies.self_learning_trader - INFO - 🎓 SOONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.213775111Z [inf]  2025-11-08 00:15:44,208 - src.strategies.self_learning_trader - INFO - 🎓 AUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.295803216Z [inf]  2025-11-08 00:15:44,269 - src.strategies.self_learning_trader - INFO - 🎓 MERLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.408334271Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描26400個，0信號）：
+2025-11-08T00:15:44.408343045Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=14469, bearish=2538, neutral=9393
+2025-11-08T00:15:44.408348894Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=9738, bearish=2331, neutral=14331
+2025-11-08T00:15:44.408363270Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=5951, bearish=9691, neutral=10758
+2025-11-08T00:15:44.408370351Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=7260, bearish=16598, neutral=2542
+2025-11-08T00:15:44.408379872Z [inf]  2025-11-08 00:15:44,403 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-08T00:15:44.473447880Z [inf]  2025-11-08 00:15:44,463 - src.strategies.self_learning_trader - INFO - 🎓 SKATEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.493238888Z [inf]  2025-11-08 00:15:44,492 - src.strategies.self_learning_trader - INFO - 🎓 HOMEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.518925001Z [inf]  2025-11-08 00:15:44,517 - src.strategies.self_learning_trader - INFO - 🎓 RESOLVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.546348244Z [inf]  2025-11-08 00:15:44,543 - src.strategies.self_learning_trader - INFO - 🎓 TAIKOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.581276163Z [inf]  2025-11-08 00:15:44,574 - src.strategies.self_learning_trader - INFO - 🎓 SQDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:44.649240720Z [inf]  2025-11-08 00:15:44,645 - src.strategies.self_learning_trader - INFO - 🎓 SPKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139299758Z [inf]  2025-11-08 00:15:44,891 - src.strategies.self_learning_trader - INFO - 🎓 BULLAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139316751Z [inf]  2025-11-08 00:15:44,920 - src.strategies.self_learning_trader - INFO - 🎓 IDOLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139324499Z [inf]  2025-11-08 00:15:44,947 - src.strategies.self_learning_trader - INFO - 🎓 MUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139331513Z [inf]  2025-11-08 00:15:45,044 - src.strategies.self_learning_trader - INFO - 🎓 AINUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139439414Z [inf]  2025-11-08 00:15:44,757 - src.strategies.self_learning_trader - INFO - 🎓 DMCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139445973Z [inf]  2025-11-08 00:15:44,787 - src.strategies.self_learning_trader - INFO - 🎓 HUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139452612Z [inf]  2025-11-08 00:15:44,814 - src.strategies.self_learning_trader - INFO - 🎓 OLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.139459440Z [inf]  2025-11-08 00:15:44,842 - src.strategies.self_learning_trader - INFO - ❌ SAHARAUSDT 拒絕開倉: 信心度不足: 17.8% < 18.0% | 勝率=45.0% 信心=17.8% R:R=1.50
+2025-11-08T00:15:45.311694425Z [inf]  2025-11-08 00:15:45,299 - src.strategies.self_learning_trader - INFO - 🎓 ZRCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.386480470Z [inf]  2025-11-08 00:15:45,382 - src.strategies.self_learning_trader - INFO - 🎓 PLAYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.386487727Z [inf]  2025-11-08 00:15:45,382 - src.core.unified_scheduler - INFO - ⏱️  進度: 448/533 | 已分析=448 | 平均分析=19.3ms | 平均數據=9.2ms
+2025-11-08T00:15:45.400456345Z [inf]  2025-11-08 00:15:45,395 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 64个symbols | 成功64 | 失败0 | 耗时0.01秒 | 平均0.2ms/symbol
+2025-11-08T00:15:45.400463570Z [inf]  2025-11-08 00:15:45,395 - src.core.unified_scheduler - INFO - ⏱️  批次 8: 64个symbols数据获取完成，耗时0.01秒
+2025-11-08T00:15:45.423647855Z [inf]  2025-11-08 00:15:45,420 - src.strategies.self_learning_trader - INFO - 🎓 NAORISUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.423655325Z [inf]  2025-11-08 00:15:45,420 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描450個）
+2025-11-08T00:15:45.423663774Z [inf]  2025-11-08 00:15:45,420 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=385, 拒絕=64
+2025-11-08T00:15:45.423672740Z [inf]  2025-11-08 00:15:45,420 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=193, 無=192
+2025-11-08T00:15:45.471452171Z [inf]  2025-11-08 00:15:45,468 - src.strategies.self_learning_trader - INFO - 🎓 PROVEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.498591888Z [inf]  2025-11-08 00:15:45,494 - src.strategies.self_learning_trader - INFO - 🎓 ALLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.565533513Z [inf]  2025-11-08 00:15:45,555 - src.strategies.self_learning_trader - INFO - 🎓 CARVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.584413990Z [inf]  2025-11-08 00:15:45,580 - src.strategies.self_learning_trader - INFO - 🎓 AIOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.615212956Z [inf]  2025-11-08 00:15:45,606 - src.strategies.self_learning_trader - INFO - 🎓 XNYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:45.649070344Z [inf]  2025-11-08 00:15:45,642 - src.strategies.self_learning_trader - INFO - 🎓 USELESSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021154310Z [inf]  2025-11-08 00:15:45,679 - src.strategies.self_learning_trader - INFO - 🎓 DAMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021162331Z [inf]  2025-11-08 00:15:45,751 - src.strategies.self_learning_trader - INFO - 🎓 XPLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021168836Z [inf]  2025-11-08 00:15:45,780 - src.strategies.self_learning_trader - INFO - 🎓 WLFIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021175615Z [inf]  2025-11-08 00:15:45,811 - src.strategies.self_learning_trader - INFO - 🎓 SOMIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021182102Z [inf]  2025-11-08 00:15:45,930 - src.strategies.self_learning_trader - INFO - 🎓 LINEAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021188862Z [inf]  2025-11-08 00:15:45,958 - src.strategies.self_learning_trader - INFO - 🎓 QUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021195781Z [inf]  2025-11-08 00:15:45,985 - src.strategies.self_learning_trader - INFO - 🎓 ARIAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.021202129Z [inf]  2025-11-08 00:15:46,015 - src.strategies.self_learning_trader - INFO - 🎓 TAKEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.068029180Z [inf]  2025-11-08 00:15:46,066 - src.strategies.self_learning_trader - INFO - 🎓 OPENUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.112538639Z [inf]  2025-11-08 00:15:46,096 - src.strategies.self_learning_trader - INFO - 🎓 FLOCKUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.129519428Z [inf]  2025-11-08 00:15:46,124 - src.strategies.self_learning_trader - INFO - 🎓 SKYUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.154791284Z [inf]  2025-11-08 00:15:46,151 - src.strategies.self_learning_trader - INFO - 🎓 AVNTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.199421613Z [inf]  2025-11-08 00:15:46,192 - src.strategies.self_learning_trader - INFO - 🎓 HOLOUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.361777010Z [inf]  2025-11-08 00:15:46,303 - src.strategies.self_learning_trader - INFO - 🎓 ZKCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.361786813Z [inf]  2025-11-08 00:15:46,346 - src.strategies.self_learning_trader - INFO - 🎓 TOSHIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.424474263Z [inf]  2025-11-08 00:15:46,418 - src.strategies.self_learning_trader - INFO - 🎓 0GUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.498455132Z [inf]  2025-11-08 00:15:46,497 - src.strategies.self_learning_trader - INFO - 🎓 BARDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.550774689Z [inf]  2025-11-08 00:15:46,545 - src.strategies.self_learning_trader - INFO - 🎓 ASTERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:46.633280670Z [inf]  2025-11-08 00:15:46,630 - src.strategies.self_learning_trader - INFO - 🎓 FLUIDUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045780366Z [inf]  2025-11-08 00:15:46,670 - src.strategies.self_learning_trader - INFO - 🎓 COAIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045788554Z [inf]  2025-11-08 00:15:46,791 - src.strategies.self_learning_trader - INFO - 🎓 ORDERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045796788Z [inf]  2025-11-08 00:15:46,817 - src.strategies.self_learning_trader - INFO - 🎓 LIGHTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045804746Z [inf]  2025-11-08 00:15:46,843 - src.strategies.self_learning_trader - INFO - 🎓 XANUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045812716Z [inf]  2025-11-08 00:15:46,884 - src.strategies.rule_based_signal_generator - INFO - 📊 Pipeline進度快照（已掃描500個）
+2025-11-08T00:15:47.045821576Z [inf]  2025-11-08 00:15:46,884 - src.strategies.rule_based_signal_generator - INFO -    Stage1驗證: 有效=435, 拒絕=64
+2025-11-08T00:15:47.045829806Z [inf]  2025-11-08 00:15:46,884 - src.strategies.rule_based_signal_generator - INFO -    Stage3方向: 有=222, 無=213
+2025-11-08T00:15:47.045836645Z [inf]  2025-11-08 00:15:46,931 - src.strategies.self_learning_trader - INFO - 🎓 NOMUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045843391Z [inf]  2025-11-08 00:15:46,957 - src.strategies.self_learning_trader - INFO - 🎓 TRUTHUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045849612Z [inf]  2025-11-08 00:15:47,005 - src.strategies.self_learning_trader - INFO - 🎓 EVAAUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.045856099Z [inf]  2025-11-08 00:15:47,032 - src.strategies.self_learning_trader - INFO - 🎓 LYNUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.104392190Z [inf]  2025-11-08 00:15:47,101 - src.strategies.self_learning_trader - INFO - 🎓 GIGGLEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.140932934Z [inf]  2025-11-08 00:15:47,139 - src.strategies.self_learning_trader - INFO - 🎓 MONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.186486179Z [inf]  2025-11-08 00:15:47,166 - src.strategies.self_learning_trader - INFO - 🎓 YBUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.211261412Z [inf]  2025-11-08 00:15:47,209 - src.core.unified_scheduler - INFO - ⏱️  進度: 512/533 | 已分析=512 | 平均分析=20.5ms | 平均數據=8.1ms
+2025-11-08T00:15:47.225514020Z [inf]  2025-11-08 00:15:47,218 - src.core.elite.unified_data_pipeline - INFO - ✅ 批量数据获取完成: 21个symbols | 成功21 | 失败0 | 耗时0.01秒 | 平均0.4ms/symbol
+2025-11-08T00:15:47.225521706Z [inf]  2025-11-08 00:15:47,218 - src.core.unified_scheduler - INFO - ⏱️  批次 9: 21个symbols数据获取完成，耗时0.01秒
+2025-11-08T00:15:47.267240038Z [inf]  2025-11-08 00:15:47,259 - src.strategies.rule_based_signal_generator - INFO - 🔍 信號生成統計（已掃描26450個，0信號）：
+2025-11-08T00:15:47.267248420Z [inf]  2025-11-08 00:15:47,260 - src.strategies.rule_based_signal_generator - INFO -    H1趨勢: bullish=14502, bearish=2541, neutral=9407
+2025-11-08T00:15:47.267255581Z [inf]  2025-11-08 00:15:47,260 - src.strategies.rule_based_signal_generator - INFO -    M15趨勢: bullish=9767, bearish=2333, neutral=14350
+2025-11-08T00:15:47.267263636Z [inf]  2025-11-08 00:15:47,260 - src.strategies.rule_based_signal_generator - INFO -    M5趨勢: bullish=5957, bearish=9706, neutral=10787
+2025-11-08T00:15:47.267270867Z [inf]  2025-11-08 00:15:47,260 - src.strategies.rule_based_signal_generator - INFO -    市場結構: bullish=7266, bearish=16636, neutral=2548
+2025-11-08T00:15:47.267277635Z [inf]  2025-11-08 00:15:47,260 - src.strategies.rule_based_signal_generator - INFO -    ⚠️ 建議啟用RELAXED_SIGNAL_MODE=true增加信號數量
+2025-11-08T00:15:47.292205325Z [inf]  2025-11-08 00:15:47,285 - src.strategies.self_learning_trader - INFO - 🎓 RECALLUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.361342960Z [inf]  2025-11-08 00:15:47,354 - src.strategies.self_learning_trader - INFO - 🎓 RIVERUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.387742759Z [inf]  2025-11-08 00:15:47,386 - src.strategies.self_learning_trader - INFO - 🎓 RVVUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.421315702Z [inf]  2025-11-08 00:15:47,418 - src.strategies.self_learning_trader - INFO - 🎓 BLUAIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.504333991Z [inf]  2025-11-08 00:15:47,494 - src.strategies.self_learning_trader - INFO - 🎓 ONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.550501550Z [inf]  2025-11-08 00:15:47,545 - src.strategies.self_learning_trader - INFO - 🎓 COMMONUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.594350330Z [inf]  2025-11-08 00:15:47,591 - src.strategies.self_learning_trader - INFO - 🎓 ATUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.619419727Z [inf]  2025-11-08 00:15:47,618 - src.strategies.self_learning_trader - INFO - 🎓 CCUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:47.647280558Z [inf]  2025-11-08 00:15:47,646 - src.strategies.self_learning_trader - INFO - 🎓 MMTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:48.072318655Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 🐌 最慢分析: 48.6ms
+2025-11-08T00:15:48.072435067Z [inf]  2025-11-08 00:15:47,673 - src.strategies.self_learning_trader - INFO - 🎓 TRUSTUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:48.072440128Z [inf]  2025-11-08 00:15:47,700 - src.strategies.self_learning_trader - INFO - 🎓 UAIUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:48.072445939Z [inf]  2025-11-08 00:15:47,734 - src.strategies.self_learning_trader - INFO - 🎓 FOLKSUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:48.072451237Z [inf]  2025-11-08 00:15:47,765 - src.strategies.self_learning_trader - INFO - 🎓 STABLEUSDT 豁免期: 已完成 0/50 筆 | 門檻 勝率≥20% 信心≥18% | 槓桿限制: 1-3x
+2025-11-08T00:15:48.072456702Z [inf]  2025-11-08 00:15:47,765 - src.core.unified_scheduler - INFO - ⏱️  進度: 533/533 | 已分析=533 | 平均分析=20.7ms | 平均數據=7.8ms
+2025-11-08T00:15:48.072464827Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - ================================================================================
+2025-11-08T00:15:48.072469609Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - ⏱️  ===== 掃描時間分析報告 =====
+2025-11-08T00:15:48.072474172Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 📊 分析交易對: 533/533
+2025-11-08T00:15:48.072478953Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 📭 數據缺失: 0
+2025-11-08T00:15:48.072485923Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - ⏱️  總掃描時間: 15.2s
+2025-11-08T00:15:48.072490680Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 📈 平均分析時間: 20.7ms
+2025-11-08T00:15:48.072497566Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 🚀 最快分析: 0.0ms
+2025-11-08T00:15:48.072786888Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 💾 平均數據獲取: 0.0ms
+2025-11-08T00:15:48.072794528Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - WARNING - ⚠️  警告: 平均分析時間20.7ms，可能分析深度不足
+2025-11-08T00:15:48.072801529Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 📊 掃描統計: 總數=533 | 數據可用=533 | 數據缺失=0
+2025-11-08T00:15:48.072808709Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO - 📊 信號分析診斷（信心值Top 10）
+2025-11-08T00:15:48.072814307Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO -  1. XCNUSDT      | 信心= 60.4 | 勝率= 63.1% | ✅ 信號
+2025-11-08T00:15:48.072819988Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO -  2. AIOUSDT      | 信心= 60.2 | 勝率= 60.0% | ✅ 信號
+2025-11-08T00:15:48.072826708Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO -  3. QUSDT        | 信心= 59.4 | 勝率= 62.8% | ✅ 信號
+2025-11-08T00:15:48.072833670Z [inf]  2025-11-08 00:15:47,766 - src.core.unified_scheduler - INFO -  4. COMPUSDT     | 信心= 58.2 | 勝率= 49.4% | ✅ 信號
+2025-11-08T00:15:48.072839164Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO -  5. TOKENUSDT    | 信心= 57.2 | 勝率= 52.2% | ✅ 信號
+2025-11-08T00:15:48.072844219Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO -  6. FXSUSDT      | 信心= 57.1 | 勝率= 62.1% | ✅ 信號
+2025-11-08T00:15:48.073319093Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO -  7. EDUUSDT      | 信心= 57.1 | 勝率= 52.1% | ✅ 信號
+2025-11-08T00:15:48.073325489Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO -  8. SPKUSDT      | 信心= 55.8 | 勝率= 61.7% | ✅ 信號
+2025-11-08T00:15:48.076679048Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO -  9. GMXUSDT      | 信心= 55.2 | 勝率= 61.6% | ✅ 信號
+2025-11-08T00:15:48.076685140Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO - 10. FARTCOINUSDT | 信心= 54.4 | 勝率= 56.3% | ✅ 信號
+2025-11-08T00:15:48.076690317Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO - ✅ 發現 230 個交易信號
+2025-11-08T00:15:48.077007419Z [inf]  2025-11-08 00:15:47,767 - src.core.unified_scheduler - INFO - 📊 信號執行 | 可用保證金: $75.86 | 已有倉位: 0 | 新信號數: 230
+2025-11-08T00:15:48.077014455Z [inf]  2025-11-08 00:15:47,768 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗192次)，請52秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:48.077021073Z [inf]  2025-11-08 00:15:47,768 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗192次)，請52秒後重試
+2025-11-08T00:15:48.077029872Z [inf]  2025-11-08 00:15:47,768 - src.strategies.self_learning_trader - ERROR - ❌ 獲取帳戶信息失敗: 熔斷器阻斷(失敗192次)，請52秒後重試
+2025-11-08T00:15:48.077039323Z [inf]  2025-11-08 00:15:47,768 - src.core.unified_scheduler - INFO - ✅ 週期完成 | 耗時: 15.3s | 新成交: 0
+2025-11-08T00:15:54.232881616Z [inf]  2025-11-08 00:15:54,227 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: websocket - critical - WebSocket未连接
+2025-11-08T00:15:54.232899812Z [inf]  2025-11-08 00:15:54,227 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: api - critical - API连接失败
+2025-11-08T00:15:54.232907789Z [inf]  2025-11-08 00:15:54,227 - src.monitoring.health_check - INFO - 🏥 健康检查完成: critical (1.00秒)
+2025-11-08T00:15:54.239132932Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard0: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239140929Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard1: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239146787Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard2: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239153446Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard3: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239158390Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard4: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239163669Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard5: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239169130Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard6: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239174561Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard7: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239179824Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard8: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239185268Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard9: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239191726Z [inf]  2025-11-08 00:15:54,236 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard10: 健康检查失败 - not_connected
+2025-11-08T00:15:54.239197422Z [inf]  2025-11-08 00:15:54,236 - src.core.position_controller - INFO - 📡 WebSocket無倉位數據，使用REST API備援
+2025-11-08T00:15:54.240755517Z [inf]  2025-11-08 00:15:54,236 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗192次)，請46秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-08T00:15:54.240780567Z [inf]  2025-11-08 00:15:54,236 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗192次)，請46秒後重試
+2025-11-08T00:15:54.240794260Z [inf]  2025-11-08 00:15:54,236 - src.core.position_controller - ERROR - ❌ 獲取持倉失敗: 熔斷器阻斷(失敗192次)，請46秒後重試
+2025-11-08T00:15:54.240794632Z [inf]  
+2025-11-08T00:15:54.240802934Z [inf]  Traceback (most recent call last):
+2025-11-08T00:15:54.240810990Z [inf]    File "/app/src/clients/binance_client.py", line 232, in _request
+2025-11-08T00:15:54.240815402Z [inf]  During handling of the above exception, another exception occurred:
+2025-11-08T00:15:54.240819981Z [inf]      result = await self.circuit_breaker.call_async(
+2025-11-08T00:15:54.240828525Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:15:54.240833915Z [inf]    File "/app/src/core/circuit_breaker.py", line 327, in call_async
+2025-11-08T00:15:54.240839460Z [inf]      raise Exception(reason)
+2025-11-08T00:15:54.240849049Z [inf]  
+2025-11-08T00:15:54.240854468Z [inf]  Exception: 熔斷器阻斷(失敗192次)，請46秒後重試
+2025-11-08T00:15:54.240864638Z [inf]  Traceback (most recent call last):
+2025-11-08T00:15:54.240873680Z [inf]    File "/app/src/core/position_controller.py", line 232, in _fetch_all_positions
+2025-11-08T00:15:54.240884246Z [inf]      raw_positions = await self.binance_client.get_position_info_async()
+2025-11-08T00:15:54.240893437Z [inf]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:15:54.240901262Z [inf]    File "/app/src/clients/binance_client.py", line 510, in get_position_info_async
+2025-11-08T00:15:54.240911857Z [inf]      account_info = await self.get_account_info()
+2025-11-08T00:15:54.242331718Z [inf]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:15:54.242341149Z [inf]    File "/app/src/clients/binance_client.py", line 490, in get_account_info
+2025-11-08T00:15:54.242368517Z [inf]      result = await self._request("GET", "/fapi/v2/account", signed=True)
+2025-11-08T00:15:54.242380697Z [inf]               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-08T00:15:54.242388341Z [inf]    File "/app/src/clients/binance_client.py", line 254, in _request
+2025-11-08T00:15:54.242397322Z [inf]      raise BinanceRequestError(
+2025-11-08T00:15:54.242405942Z [inf]  src.clients.binance_errors.BinanceRequestError: 熔斷器阻斷(失敗192次)，請46秒後重試
+2025-11-08T00:15:54.242412278Z [inf]  2025-11-08 00:15:54,237 - src.core.position_controller - INFO -    📭 當前無持倉
+2025-11-08T00:15:57.479110123Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 633
+2025-11-08T00:16:00.112486831Z [inf]  2025-11-08 00:15:59,829 - src.core.websocket.price_feed - ERROR - ❌ PriceFeed-Shard0 接收失敗: no close frame received or sent

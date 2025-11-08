@@ -378,6 +378,52 @@ class BinanceClient:
         
         return quantity
     
+    async def format_price(self, symbol: str, price: float) -> float:
+        """
+        根據交易對規則格式化價格（符合 PRICE_FILTER）
+        
+        Args:
+            symbol: 交易對符號
+            price: 原始價格
+        
+        Returns:
+            格式化後的價格
+        """
+        from decimal import Decimal, ROUND_DOWN
+        import math
+        
+        symbol_info = await self.get_symbol_info(symbol)
+        if not symbol_info:
+            return price
+        
+        # 獲取 PRICE_FILTER
+        for f in symbol_info.get('filters', []):
+            if f.get('filterType') == 'PRICE_FILTER':
+                tick_size = float(f.get('tickSize', 0))
+                if tick_size == 0:
+                    return price
+                
+                # 轉換為 Decimal 避免浮點數精度問題
+                price_decimal = Decimal(str(price))
+                tick_decimal = Decimal(str(tick_size))
+                
+                # 向下取整到 tickSize 的倍數
+                ticks = int(price_decimal / tick_decimal)
+                formatted_decimal = tick_decimal * Decimal(ticks)
+                
+                # 計算精度（小數位數）
+                precision = int(round(-math.log(tick_size, 10), 0))
+                if precision < 0:
+                    precision = 0
+                
+                # 量化到正確精度
+                quantize_str = '0.' + '0' * precision if precision > 0 else '1'
+                formatted_decimal = formatted_decimal.quantize(Decimal(quantize_str), rounding=ROUND_DOWN)
+                
+                return float(formatted_decimal)
+        
+        return price
+    
     async def get_klines(
         self,
         symbol: str,
