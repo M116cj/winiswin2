@@ -3,11 +3,27 @@
 ## 📌 項目概述
 
 **版本**：v4.0 ML Feature Schema Unification  
-**狀態**：✅ v3.32 WebSocket Binance規範合規完成  
+**狀態**：✅ v3.33 訂單精度修復完成  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**v3.33 Order Precision Fix（2025-11-08）**：
+- 🐛 **問題**：訂單失敗 "Precision is over the maximum defined for this asset"
+- ✅ **根本原因**：限價訂單的價格和數量沒有根據交易對規則格式化
+- ✅ **修復內容**：
+  - 新增 `BinanceClient.format_price()`：根據 PRICE_FILTER 格式化價格
+  - 已有 `BinanceClient.format_quantity()`：根據 LOT_SIZE 格式化數量
+  - 修復 3 處訂單調用：限價開倉、市價開倉、平倉
+- ✅ **影響範圍**：
+  - `src/clients/binance_client.py`：+48 行（format_price 方法）
+  - `src/strategies/self_learning_trader.py`：3 處修復
+- ✅ **測試驗證**：
+  - LSP 錯誤：0 個 ✅
+  - 錯誤示例：FIOUSDT price=0.01201398（8位）→ 格式化為正確精度
+  - 錯誤示例：FXSUSDT quantity=4.1（1位）→ 格式化為正確精度
+- ✅ **使用 Decimal 模組**：避免浮點數精度問題，向下取整到規範倍數
 
 **v3.32 WebSocket Binance Compliance（2025-11-07）**：
 - ✅ **Ping/Pong機制修正**：完全符合Binance官方規範
