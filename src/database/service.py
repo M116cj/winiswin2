@@ -147,14 +147,23 @@ class TradingDataService:
                 Json(trade_data.get('metadata')) if trade_data.get('metadata') else None
             )
             
+            # 🔥 v3.34+ 增强日志：追踪数据库写入
+            logger.info(f"💾 准备保存交易: {trade_data.get('symbol')} {trade_data.get('direction')}")
+            logger.debug(f"   SQL: INSERT INTO trades ... RETURNING id")
+            
             result = self.db.execute_query(query, params, fetch=True)
             
-            if result and len(result) > 0:
-                trade_id = result[0][0]
-                logger.info(f"✅ 交易记录已保存，ID: {trade_id}")
-                return trade_id
+            # 🔥 v3.34+ 修复：检测 RETURNING 是否返回结果
+            logger.debug(f"   execute_query 返回值类型: {type(result)}, 内容: {result}")
             
-            return None
+            if result and len(result) > 0:
+                trade_id = result[0]  # 🔥 修复：fetchone() 返回 tuple，不是 list of tuples
+                logger.info(f"✅ 交易记录已保存，PostgreSQL ID: {trade_id}")
+                return trade_id
+            else:
+                logger.error(f"❌ INSERT RETURNING 未返回 ID（result={result}）")
+                logger.error("   可能原因：execute_query 未正确处理 RETURNING 子句")
+                return None
             
         except Exception as e:
             logger.error(f"❌ 保存交易记录失败: {e}")

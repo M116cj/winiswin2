@@ -206,6 +206,11 @@ class UnifiedTradeRecorder:
                 }
             }
             
+            # 🔥 v3.34+ 增强日志：追踪数据库写入流程
+            logger.info(f"📝 UnifiedTradeRecorder 开始记录开仓: {symbol} {direction}")
+            logger.debug(f"   交易数据: confidence={signal_data.get('confidence')}, win_prob={signal_data.get('win_probability')}")
+            logger.debug(f"   ML特征数量: {len(ml_features)}")
+            
             # 保存到PostgreSQL
             trade_id = self.db_service.save_trade(trade_data)
             
@@ -214,15 +219,18 @@ class UnifiedTradeRecorder:
                 self.stats.db_saves_success += 1
                 
                 logger.info(
-                    f"✅ 开仓记录已保存 | ID: {trade_id} | "
+                    f"✅ 开仓记录已保存 | PostgreSQL ID: {trade_id} | "
                     f"{symbol} {direction} @{entry_price:.2f} | "
                     f"杠杆: {leverage}x | 数量: {quantity}"
                 )
+                logger.info(f"📊 统计: 成功={self.stats.db_saves_success}, 失败={self.stats.db_saves_failed}")
                 
                 return trade_id
             else:
                 self.stats.db_saves_failed += 1
                 logger.error(f"❌ PostgreSQL保存失败: {symbol} {direction}")
+                logger.error(f"   save_trade() 返回 None - 检查 TradingDataService 日志")
+                logger.error(f"📊 统计: 成功={self.stats.db_saves_success}, 失败={self.stats.db_saves_failed}")
                 return None
                 
         except Exception as e:
@@ -259,6 +267,9 @@ class UnifiedTradeRecorder:
             # 更新交易状态（包含完整信息）
             exit_time = exit_timestamp or (datetime.utcnow().isoformat() + 'Z')
             
+            # 🔥 v3.34+ 增强日志：追踪平仓更新
+            logger.info(f"📝 UnifiedTradeRecorder 开始记录平仓: trade_id={trade_id}, PnL={pnl:.2f}")
+            
             success = self.db_service.update_trade_status(
                 trade_id=trade_id,
                 status='CLOSED',
@@ -277,7 +288,7 @@ class UnifiedTradeRecorder:
                 won = pnl > 0
                 
                 logger.info(
-                    f"{'🟢' if won else '🔴'} 平仓记录已更新 | "
+                    f"{'🟢' if won else '🔴'} 平仓记录已更新（PostgreSQL UPDATE成功）| "
                     f"ID: {trade_id} | PnL: {pnl:.2f} USDT ({pnl_pct:+.2f}%) | "
                     f"原因: {reason}"
                 )

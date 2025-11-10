@@ -62,17 +62,19 @@ class DatabaseManager:
     
     def _get_database_url(self) -> str:
         """
-        获取数据库URL（优先使用内部URL）
+        获取数据库URL（优先使用 DATABASE_URL）
         
         Returns:
             数据库连接URL
         """
-        # 优先使用内部URL（在Railway上更快）
+        # 🔥 v3.34+ 修复：优先使用 DATABASE_URL（Railway 自动设置）
+        # DATABASE_PUBLIC_URL 仅作为 fallback（避免 SSL 冲突）
         database_url = os.environ.get('DATABASE_URL')
         
         if not database_url:
             # 备用公开URL
             database_url = os.environ.get('DATABASE_PUBLIC_URL')
+            logger.warning("⚠️ DATABASE_URL 未设置，使用 DATABASE_PUBLIC_URL")
         
         if not database_url:
             raise ValueError(
@@ -93,6 +95,14 @@ class DatabaseManager:
         """
         parsed = urlparse(database_url)
         
+        # 🔥 v3.34+ 修复：检查URL是否已包含 sslmode 参数
+        query_params = parse_qs(parsed.query)
+        has_sslmode = 'sslmode' in query_params
+        
+        if has_sslmode:
+            logger.info(f"🔑 URL已包含 sslmode={query_params['sslmode'][0]}，保持不变")
+            return database_url
+        
         # 🔥 v4.0+ 智能SSL检测
         # 1. Railway内部连接（*.railway.internal）-> 无需SSL
         # 2. Railway公开连接（*.railway.app等）-> 需要SSL
@@ -102,7 +112,7 @@ class DatabaseManager:
         if 'railway.internal' in parsed.netloc:
             logger.info("🔓 Railway内部连接：禁用SSL")
             return database_url
-        elif 'railway.app' in parsed.netloc or Config.DATABASE_PUBLIC_URL:
+        elif 'railway.app' in parsed.netloc:
             # Railway公开连接需要SSL
             logger.info("🔒 Railway公开连接：启用SSL")
             if '?' in database_url:
@@ -111,7 +121,7 @@ class DatabaseManager:
                 return f"{database_url}?sslmode=require"
         else:
             # Replit内部数据库或其他默认不需要SSL
-            logger.info("🔓 Replit内部连接：禁用SSL")
+            logger.info("🔓 默认连接：禁用SSL")
             return database_url
     
     def _initialize_pool(self) -> None:
@@ -203,7 +213,7 @@ class DatabaseManager:
         Args:
             query: SQL查询语句
             params: 查询参数
-            fetch: 是否返回结果
+            fetch: 是否返回结果（SELECT或RETURNING子句）
             
         Returns:
             查询结果（如果fetch=True）
@@ -217,9 +227,27 @@ class DatabaseManager:
                     with conn.cursor() as cursor:
                         cursor.execute(query, params)
                         
-                        if fetch and query.strip().upper().startswith('SELECT'):
-                            result = cursor.fetchall()
+                        # 🔥 v3.34+ 修复：支持 INSERT/UPDATE ... RETURNING
+                        query_upper = query.strip().upper()
+                        
+                        if fetch:
+                            # 检测需要 fetch 的情况
+                            if 'SELECT' in query_upper or 'RETURNING' in query_upper:
+                                if 'RETURNING' in query_upper and query_upper.startswith(('INSERT', 'UPDATE', 'DELETE')):
+                                    # INSERT/UPDATE/DELETE ... RETURNING - 单行结果
+                                    result = cursor.fetchone()
+                                    logger.debug(f"✅ RETURNING 查询返回: {result}")
+                                else:
+                                    # SELECT - 多行结果
+                                    result = cursor.fetchall()
+                                
+                                conn.commit()
+                            else:
+                                # INSERT/UPDATE/DELETE 无 RETURNING
+                                conn.commit()
+                                result = None
                         else:
+                            # 不需要 fetch（通常是 DDL）
                             conn.commit()
                             result = None
                         
