@@ -3,11 +3,48 @@
 ## 📌 項目概述
 
 **版本**：v4.0 ML Feature Schema Unification  
-**狀態**：✅ v3.33 訂單精度修復完成  
+**狀態**：✅ v3.34 Railway PostgreSQL 數據寫入修復完成  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**v3.34 Railway PostgreSQL 數據寫入修復（2025-11-10）**：
+- 🐛 **問題**：Railway 部署時 PostgreSQL 數據庫沒有數據增長（靜默失敗）
+- ✅ **根本原因**：
+  - `DatabaseManager.execute_query()` 只對 SELECT 執行 fetchall()
+  - `save_trade()` 使用 `INSERT ... RETURNING id` 需要 fetch 但未執行
+  - execute_query 返回 None，save_trade 認為失敗但僅記錄軟錯誤
+  - 系統日誌顯示正常，但 PostgreSQL 完全沒有數據寫入
+- ✅ **修復內容**：
+  1. **execute_query RETURNING 支持**：
+     - 檢測 `RETURNING` 關鍵詞（INSERT/UPDATE/DELETE）
+     - 對 RETURNING 查詢調用 `cursor.fetchone()` 返回 tuple
+     - 對 SELECT 查詢調用 `cursor.fetchall()` 返回 list
+     - commit() 在 fetch 之後執行
+  2. **Railway SSL 智能處理**：
+     - 檢查 URL 是否已包含 `sslmode` 參數（避免重複添加）
+     - 優先使用 `DATABASE_URL`（Railway 標準變量）
+     - 僅在公開連接（*.railway.app）添加 `sslmode=require`
+     - Railway 內部連接（*.railway.internal）不需要 SSL
+  3. **完整診斷日誌**：
+     - DatabaseManager：RETURNING 查詢返回值追蹤
+     - TradingDataService：save_trade 參數和返回值記錄
+     - UnifiedTradeRecorder：統計計數器實時輸出
+- ✅ **影響範圍**：
+  - `src/database/manager.py`：修復 execute_query + SSL 處理（+20 行）
+  - `src/database/service.py`：增強日誌 + 修復 tuple 解析（+10 行）
+  - `src/managers/unified_trade_recorder.py`：增強追蹤日誌（+10 行）
+- ✅ **測試驗證**：
+  - LSP 錯誤：0 個 ✅
+  - Architect 審查：全部通過 ✅
+  - RETURNING 處理邏輯正確，fetchone() 返回值正確解析
+  - SSL 邏輯覆蓋所有 Railway 場景
+  - 無性能回歸，日誌不過於冗余
+- ✅ **部署建議**：
+  - 驗證 Railway 環境變量：DATABASE_URL（優先）
+  - 啟用 DEBUG 日誌觀察首次交易的完整寫入流程
+  - 檢查 PostgreSQL 數據庫增長驗證修復成功
 
 **v3.33 Order Precision Fix（2025-11-08）**：
 - 🐛 **問題**：訂單失敗 "Precision is over the maximum defined for this asset"
