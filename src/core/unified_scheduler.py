@@ -274,19 +274,17 @@ class UnifiedScheduler:
             self.stats['total_cycles'] += 1
             cycle_start = datetime.now()
             
-            logger.info("=" * 80)
-            logger.info(f"🔄 交易週期 #{self.stats['total_cycles']} | {cycle_start.strftime('%Y-%m-%d %H:%M:%S UTC')}")
-            logger.info("=" * 80)
+            logger.debug(f"交易週期 #{self.stats['total_cycles']}")
             
             # 🔥 v3.17.10+：每10個週期檢查是否需要重訓練（動態觸發）
             if self.model_initializer and self.stats['total_cycles'] % 10 == 0:
                 try:
                     if self.model_initializer.should_retrain():
-                        logger.warning("⚠️ 觸發動態重訓練（性能驟降 or 市場狀態劇變 or 樣本累積）...")
+                        logger.info("🔄 模型重訓練: 性能驟降/市場狀態劇變/樣本累積...")
                         await self.model_initializer.force_retrain()
-                        logger.info("✅ 動態重訓練完成，模型已更新")
+                        logger.info("✅ 模型已更新")
                 except Exception as e:
-                    logger.error(f"❌ 動態重訓練失敗: {e}")
+                    logger.error(f"❌ 模型重訓練失敗: {e}")
             
             # 步驟 1：獲取並顯示持倉狀態
             positions = await self._get_and_display_positions()
@@ -324,10 +322,10 @@ class UnifiedScheduler:
             symbols = await self._get_trading_symbols()
             
             if not symbols:
-                logger.warning("⚠️  無可交易交易對")
+                logger.warning("⚠️ 無可交易交易對")
                 return
             
-            logger.info(f"📊 掃描 {len(symbols)} 個交易對中...")
+            logger.debug(f"掃描 {len(symbols)} 個交易對...")
             
             # 🔧 v3.19+ 修復：重置Pipeline統計計數器（防止多次掃描累加）
             # 🔥 v3.20.3 Phase 6: 修復缺失的ADX分布鍵，防止KeyError
@@ -376,14 +374,14 @@ class UnifiedScheduler:
             signal_candidates = []  # 🔥 v3.19+：收集所有交易對的信心值/勝率用於診斷
             diagnostic_count = 0  # 🔥 v3.19.1: 數據診斷計數器
             
-            # 🔥 v3.19+ 診斷：時間分析
+            # 🔥 v3.19+ 診斷：時間分析（降级为DEBUG）
             import time
             total_data_time = 0
             total_analysis_time = 0
             analysis_times = []
             data_times = []
             scan_start = time.time()
-            logger.info("⏱️  ===== 開始掃描時間分析（v3.20 批量並行模式） =====")
+            logger.debug("開始掃描時間分析（批量並行模式）")
             
             # ✅ v3.20 Phase 3: 批量並行數據獲取優化
             BATCH_SIZE = 64  # 每批64個symbols
@@ -402,8 +400,8 @@ class UnifiedScheduler:
                     data_elapsed = time.time() - data_start
                     total_data_time += data_elapsed
                     
-                    logger.info(
-                        f"⏱️  批次 {batch_start//BATCH_SIZE + 1}: "
+                    logger.debug(
+                        f"批次 {batch_start//BATCH_SIZE + 1}: "
                         f"{len(batch_symbols)}个symbols数据获取完成，耗时{data_elapsed:.2f}秒"
                     )
                     
@@ -416,18 +414,17 @@ class UnifiedScheduler:
                                 data_unavailable_count += 1
                                 continue
                             
-                            # 🔥 v3.19.1: 診斷前3個symbol的實際數據情況
+                            # 🔥 v3.19.1: 診斷前3個symbol的實際數據情況（降级为DEBUG）
                             if diagnostic_count < 3:
                                 diagnostic_count += 1
-                                logger.info(f"🔍 數據診斷 #{diagnostic_count} - {symbol}:")
+                                logger.debug(f"數據診斷 #{diagnostic_count} - {symbol}:")
                                 for tf, df in multi_tf_data.items():
                                     if df is not None and len(df) > 0:
-                                        logger.info(f"   {tf}: {len(df)}行, 列={list(df.columns)[:5]}...")
-                                        logger.info(f"      最新價格: {df['close'].iloc[-1]:.2f}")
+                                        logger.debug(f"   {tf}: {len(df)}行")
                                     elif df is not None:
-                                        logger.info(f"   {tf}: DataFrame為空（0行）")
+                                        logger.debug(f"   {tf}: DataFrame為空")
                                     else:
-                                        logger.warning(f"   {tf}: DataFrame為None")
+                                        logger.debug(f"   {tf}: DataFrame為None")
                             
                             # 測量分析時間
                             analysis_start = time.time()
@@ -468,7 +465,7 @@ class UnifiedScheduler:
                     if analyzed_count > 0:
                         avg_analysis = (total_analysis_time / analyzed_count * 1000) if analyzed_count > 0 else 0
                         avg_data = (total_data_time / (batch_start + len(batch_symbols)) * 1000) if batch_start + len(batch_symbols) > 0 else 0
-                        logger.info(f"⏱️  進度: {batch_start + len(batch_symbols)}/{len(symbols)} | "
+                        logger.debug(f"進度: {batch_start + len(batch_symbols)}/{len(symbols)} | "
                                   f"已分析={analyzed_count} | "
                                   f"平均分析={avg_analysis:.1f}ms | "
                                   f"平均數據={avg_data:.1f}ms")

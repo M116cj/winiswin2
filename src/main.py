@@ -109,11 +109,8 @@ class SelfLearningTradingSystem:
     async def initialize(self):
         """初始化所有組件"""
         try:
-            logger.info("=" * 80)
-            logger.info("🚀 SelfLearningTrader v4.0+ 啟動中...")
-            logger.info("📌 核心理念: 模型擁有無限制槓桿控制權，唯一準則是勝率 × 信心度")
-            logger.info("🔥 v4.0+ 重大改进: 统一PostgreSQL + 代码减少34% + 性能提升30%")
-            logger.info("=" * 80)
+            # 🔥 精简启动日志（Railway优化）
+            logger.info("🚀 SelfLearningTrader v4.0+ 启动中...")
             
             # 🔥 v3.26+ 全面配置驗證（使用新的ConfigValidator）
             is_valid, errors, warnings = validate_config(self.config)
@@ -122,9 +119,7 @@ class SelfLearningTradingSystem:
                 logger.error("❌ 配置驗證失敗:")
                 for error in errors:
                     logger.error(f"  - {error}")
-                logger.error("=" * 80)
                 logger.error("💡 請修正配置錯誤後重新啟動系統")
-                logger.error("=" * 80)
                 return False
             
             # 打印警告（如果有）
@@ -132,13 +127,13 @@ class SelfLearningTradingSystem:
                 for warning in warnings:
                     logger.warning(warning)
             
-            logger.info("✅ 配置驗證通過（全面驗證：API、交易、風險、指標等）")
+            logger.debug("✅ 配置驗證通過")
             
-            # 顯示配置
+            # 顯示配置（降级为DEBUG）
             self._display_config()
             
-            # 初始化核心組件
-            logger.info("\n🔧 初始化核心組件...")
+            # 初始化核心組件（降级为DEBUG）
+            logger.debug("初始化核心組件...")
             
             # Binance 客戶端
             self.binance_client = BinanceClient()
@@ -150,10 +145,9 @@ class SelfLearningTradingSystem:
             )
             
             if connection_ok:
-                logger.info("✅ Binance 客戶端已連接")
+                logger.debug("✅ Binance 客戶端已連接")
             else:
                 logger.warning("⚠️ API連接測試未通過，將在實際調用時重試")
-                logger.warning("⚠️ 系統將繼續初始化，實際API調用將由熔斷器保護")
             
             # 數據服務（v3.17.2+：預留websocket_monitor，稍後設置）
             self.data_service = DataService(
@@ -163,20 +157,13 @@ class SelfLearningTradingSystem:
             
             # 🔥 重要：初始化 DataService（加載所有交易對）
             await self.data_service.initialize()
-            logger.info("✅ 數據服務初始化完成")
+            logger.debug("✅ 數據服務初始化完成")
             
             # 🔥 v4.0+ PostgreSQL数据库初始化（必需）
             if not Config.get_database_url():
-                logger.error("=" * 80)
-                logger.error("❌ CRITICAL: DATABASE_URL未配置！")
-                logger.error("❌ PostgreSQL是系统唯一数据源，无法启动交易系统")
-                logger.error("=" * 80)
+                logger.error("❌ DATABASE_URL未配置！无法启动系统")
                 logger.error("💡 请在Railway环境变量中设置DATABASE_URL")
-                logger.error("💡 示例: DATABASE_URL=postgresql://user:pass@host:5432/dbname")
-                logger.error("=" * 80)
                 return False  # Fail fast - 数据库不可用时立即终止
-            
-            logger.info("\n🗄️  初始化PostgreSQL数据库...")
             
             try:
                 self.db_manager = DatabaseManager(
@@ -184,34 +171,28 @@ class SelfLearningTradingSystem:
                     max_connections=10,
                     connection_timeout=30
                 )
-                logger.info("✅ 数据库连接池已创建（2-10连接）")
+                logger.debug("✅ 数据库连接池已创建")
             except Exception as e:
-                logger.error("=" * 80)
-                logger.error(f"❌ CRITICAL: 数据库连接失败: {e}")
-                logger.error("❌ 无法继续启动系统")
-                logger.error("=" * 80)
+                logger.error(f"❌ 数据库连接失败: {e}")
                 return False  # Fail fast - 数据库连接失败时立即终止
             
             # 初始化数据表
             if not initialize_database(self.db_manager):
-                logger.error("=" * 80)
-                logger.error("❌ CRITICAL: 数据库表初始化失败")
-                logger.error("❌ 无法继续启动系统")
-                logger.error("=" * 80)
+                logger.error("❌ 数据库表初始化失败")
                 return False  # Fail fast - 表初始化失败时立即终止
             
-            logger.info("✅ 数据库表结构初始化完成")
+            logger.debug("✅ 数据库表结构初始化完成")
             
             # 创建数据服务
             self.db_service = TradingDataService(self.db_manager)
-            logger.info("✅ PostgreSQL数据服务已创建")
+            logger.debug("✅ PostgreSQL数据服务已创建")
             
             # 🔥 v3.17.10+：模型評估器（用於特徵重要性分析）
             self.model_evaluator = ModelEvaluator(
                 config=self.config,
                 reports_dir=self.config.REPORTS_DIR
             )
-            logger.info("✅ 模型評估器初始化完成")
+            logger.debug("✅ 模型評估器初始化完成")
             
             # 🔥 v3.18.6+：先創建模型初始化器（用於重訓練）
             self.model_initializer = ModelInitializer(
@@ -220,7 +201,7 @@ class SelfLearningTradingSystem:
                 config_profile=self.config,
                 model_evaluator=self.model_evaluator
             )
-            logger.info("✅ 模型初始化器已創建")
+            logger.debug("✅ 模型初始化器已創建")
             
             # 🔥 v4.0+ 统一PostgreSQL交易记录器（必定成功，因为db_service已验证）
             self.trade_recorder = UnifiedTradeRecorder(
@@ -229,15 +210,15 @@ class SelfLearningTradingSystem:
                 model_initializer=self.model_initializer,
                 retrain_interval=50
             )
-            logger.info("✅ UnifiedTradeRecorder初始化完成（PostgreSQL唯一数据源）")
+            logger.debug("✅ UnifiedTradeRecorder初始化完成")
             
             # 設置ModelInitializer的trade_recorder引用
             self.model_initializer.trade_recorder = self.trade_recorder
-            logger.info("✅ 模型初始化器與交易記錄器已關聯")
+            logger.debug("✅ 模型初始化器與交易記錄器已關聯")
             
             # 🔥 v4.0+ 统一技术引擎（合并重复实现）
             self.technical_engine = EliteTechnicalEngine()
-            logger.info("✅ 统一技术引擎初始化完成（v4.0+，唯一实现）")
+            logger.debug("✅ 统一技术引擎初始化完成")
             
             # UnifiedScheduler（核心調度器）
             self.scheduler = UnifiedScheduler(
@@ -247,11 +228,11 @@ class SelfLearningTradingSystem:
                 trade_recorder=self.trade_recorder,
                 model_initializer=self.model_initializer  # 🔥 v3.17.10+
             )
-            logger.info("✅ UnifiedScheduler 初始化完成")
+            logger.debug("✅ UnifiedScheduler 初始化完成")
             
             # 🔥 v3.17.2+：將websocket_monitor設置到DataService（降低REST API使用）
             self.data_service.websocket_monitor = self.scheduler.websocket_manager
-            logger.info("✅ DataService已連接WebSocket（優先使用WebSocket數據）")
+            logger.debug("✅ DataService已連接WebSocket")
             
             # 🔥 v3.29+ 系统健康监控（6大组件监控）
             self.health_monitor = SystemHealthMonitor(
@@ -261,13 +242,13 @@ class SelfLearningTradingSystem:
                 websocket_manager=self.scheduler.websocket_manager,
                 trade_recorder=self.trade_recorder
             )
-            logger.info("✅ 系统健康监控初始化完成（v3.29+）")
+            logger.debug("✅ 系统健康监控初始化完成")
             
             # 启动健康监控
             await self.health_monitor.start_monitoring()
-            logger.info("✅ 健康监控已启动（6大组件：WS/内存/API/DB/交易/延迟）")
+            logger.debug("✅ 健康监控已启动")
             
-            logger.info("\n✅ 所有核心組件初始化完成")
+            logger.info("✅ 系统初始化完成")
             return True
             
         except Exception as e:
@@ -312,25 +293,13 @@ class SelfLearningTradingSystem:
         return False
     
     def _display_config(self):
-        """顯示當前配置"""
-        logger.info("\n📋 系統配置:")
-        logger.info(f"  version: v3.17+")
-        logger.info(f"  binance_testnet: {self.config.BINANCE_TESTNET}")
-        logger.info(f"  trading_enabled: {self.config.TRADING_ENABLED}")
-        logger.info(f"  cycle_interval: {self.config.CYCLE_INTERVAL}")
-        logger.info(f"  min_confidence: {self.config.MIN_CONFIDENCE * 100:.1f}%")
-        logger.info(f"  log_level: {self.config.LOG_LEVEL}")
-        logger.info(f"  note: 使用 SelfLearningTrader 無限制槓桿控制，無持倉上限")
-        
-        # 顯示 SelfLearningTrader 特性
-        logger.info("\n🎯 SelfLearningTrader v3.17+ 特性:")
-        logger.info("  ✅ 無限制槓桿（基於勝率 × 信心度）")
-        logger.info("  ✅ 10 USDT 最小倉位（符合 Binance 規格）")
-        logger.info("  ✅ 動態 SL/TP（高槓桿 → 寬止損）")
-        logger.info("  ✅ 24/7 倉位監控（2 秒週期）")
-        logger.info("  ✅ 100% 虧損熔斷（PnL ≤ -99% 立即平倉）")
-        logger.info("  ✅ 100 分制模型評級（6 大維度 + 懲罰）")
-        logger.info("  ✅ 每日自動報告（JSON + Markdown）")
+        """顯示當前配置（降级为DEBUG）"""
+        logger.debug("系統配置:")
+        logger.debug(f"  version: v4.0+")
+        logger.debug(f"  binance_testnet: {self.config.BINANCE_TESTNET}")
+        logger.debug(f"  trading_enabled: {self.config.TRADING_ENABLED}")
+        logger.debug(f"  cycle_interval: {self.config.CYCLE_INTERVAL}")
+        logger.debug(f"  min_confidence: {self.config.MIN_CONFIDENCE * 100:.1f}%")
     
     async def run(self):
         """啟動系統"""
@@ -345,7 +314,7 @@ class SelfLearningTradingSystem:
             
             # 啟動 UnifiedScheduler
             self.running = True
-            logger.info("\n🚀 啟動 UnifiedScheduler...")
+            logger.debug("启动调度器...")
             if self.scheduler:  # 類型檢查
                 await self.scheduler.start()
             
