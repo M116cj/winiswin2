@@ -16,6 +16,7 @@ from src.core.rate_limiter import RateLimiter
 from src.core.circuit_breaker import CircuitBreaker, GradedCircuitBreaker, Priority
 from src.core.cache_manager import CacheManager
 from src.clients.binance_errors import BinanceRequestError
+from src.clients.order_validator import SmartOrderManager, NotionalMonitor  # v4.2.1+ 名义价值验证
 from src.utils.smart_logger import create_smart_logger
 
 # ✨ v3.26+ 性能优化：启用SmartLogger（减少API调用重复日志）
@@ -65,6 +66,11 @@ class BinanceClient:
         self.cache = CacheManager()
         self.session: Optional[aiohttp.ClientSession] = None
         self._hedge_mode = None  # None = 未檢測，True = Hedge Mode，False = One-Way Mode
+        
+        # 🔥 v4.2.1+: 名义价值验证器（防止 Binance API -4164 错误）
+        self.order_manager = SmartOrderManager(self)
+        self.notional_monitor = NotionalMonitor()
+        logger.info("✅ 订单验证器已启用（最小名义价值: 5 USDT）")
     
     async def _get_session(self) -> aiohttp.ClientSession:
         """獲取或創建 aiohttp session"""
@@ -642,8 +648,46 @@ class BinanceClient:
         if priority is None:
             priority = Priority.NORMAL
         
-        # 自動格式化數量以符合 Binance 精度要求
+        # 🔥 v4.2.1+: 第一步 - 先格式化数量（确保符合LOT_SIZE精度）
         formatted_quantity = await self.format_quantity(symbol, quantity)
+        
+        # 🔥 v4.2.1+: 第二步 - 验证格式化后的数量是否满足名义价值要求
+        reduce_only = kwargs.get('reduceOnly', False)
+        
+        # 获取验证价格（市价单需要获取当前价格）
+        validation_price = price
+        if not validation_price and order_type in ['MARKET', 'STOP_MARKET']:
+            try:
+                validation_price = await self.get_ticker_price(symbol)
+            except Exception as e:
+                logger.warning(f"⚠️ 无法获取 {symbol} 当前价格进行验证: {e}")
+                validation_price = None  # 无法验证，让Binance处理
+        
+        # 验证格式化后的数量（这是实际会发送给Binance的数量）
+        if validation_price and validation_price > 0:
+            can_proceed, adjusted_qty, status_msg = await self.order_manager.prepare_order(
+                symbol, formatted_quantity, validation_price, side, reduce_only
+            )
+            
+            if not can_proceed:
+                # 格式化后的数量仍不满足要求，需要再次调整
+                logger.warning(f"⚠️ 格式化后数量不足: {formatted_quantity}, 重新调整...")
+                formatted_quantity = await self.format_quantity(symbol, adjusted_qty)
+                
+                # 最终验证
+                final_can_proceed, final_qty, final_msg = await self.order_manager.prepare_order(
+                    symbol, formatted_quantity, validation_price, side, reduce_only
+                )
+                
+                if not final_can_proceed:
+                    error_msg = f"订单无法满足Binance最小名义价值要求 (5 USDT): {final_msg}"
+                    logger.error(f"❌ {error_msg}")
+                    raise BinanceRequestError(error_msg)
+                
+                logger.info(f"✅ 订单最终调整: {quantity} → {formatted_quantity} (名义价值: {formatted_quantity * validation_price:.4f} USDT)")
+            
+            # 记录到监控器
+            await self.notional_monitor.check_and_log(symbol, formatted_quantity, validation_price, side)
         
         # 🔥 Critical Fix v3.30: 所有數值參數必須轉換為字符串（避免科學計數法）
         # Binance API 要求：quantity/price/stopPrice 必須是字符串格式

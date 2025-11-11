@@ -9,6 +9,27 @@
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
 
+**🔥 v4.2.1 Binance名义价值错误修复（2025-11-11）**：
+- 🐛 **问题**：订单失败 API错误 -4164（名义价值 < 5 USDT）
+- ✅ **根本原因**：订单验证在`format_quantity()`之前，导致向下取整后低于最小值
+- ✅ **修复方案**：
+  1. **验证时机调整**：先格式化，后验证（确保实际发送的数量满足要求）
+  2. **OrderValidator类**：验证名义价值 ≥ 5 USDT，自动计算最小数量
+  3. **SmartOrderManager**：自动调整订单数量，应用交易对精度规则
+  4. **双重验证**：格式化→验证→调整→再格式化→再验证
+  5. **NotionalMonitor**：实时监控和统计名义价值违规
+- ✅ **安全保障**：
+  - 2%安全边际（实际最小5.10 USDT）
+  - 减仓订单豁免检查
+  - 向上取整策略（math.ceil）
+  - 完整的错误日志和监控
+- ✅ **影响文件**：
+  - `src/clients/order_validator.py`：新增290行验证器代码
+  - `src/clients/binance_client.py`：集成验证器（+40行）
+  - 新增文档：`BINANCE_NOTIONAL_FIX.md`
+- ✅ **架构师审查**：通过（Pass）
+- 📚 **相关文档**：BINANCE_NOTIONAL_FIX.md - 完整修复报告
+
 **🔥 v4.2 Binance速率限制修復（2025-11-11）**：
 - 🐛 **問題**：系統啟動時觸發Binance IP封禁（HTTP 418: Way too many requests）
 - ✅ **根本原因**：
