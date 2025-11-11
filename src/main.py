@@ -216,6 +216,19 @@ class SelfLearningTradingSystem:
             self.model_initializer.trade_recorder = self.trade_recorder
             logger.debug("✅ 模型初始化器與交易記錄器已關聯")
             
+            # 🔥 v4.1+：執行模型初始化檢查（啟用在線學習）
+            logger.info("🧠 檢查模型初始化狀態...")
+            try:
+                model_ready = await self.model_initializer.check_and_initialize()
+                if model_ready:
+                    logger.info("✅ 模型已就緒，ML增強模式已啟用")
+                else:
+                    logger.warning("⚠️ 模型初始化未完成，系統將以純規則引擎模式運行")
+                    logger.warning("   💡 系統將在稍後嘗試重新訓練（當累積足夠數據時）")
+            except Exception as e:
+                logger.error(f"❌ 模型初始化檢查失敗: {e}")
+                logger.warning("⚠️ 降級為純規則引擎模式，稍後將自動重試訓練")
+            
             # 🔥 v4.0+ 统一技术引擎（合并重复实现）
             self.technical_engine = EliteTechnicalEngine()
             logger.debug("✅ 统一技术引擎初始化完成")

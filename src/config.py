@@ -47,8 +47,8 @@ class Config:
     # ========================================
     # 🔒 功能锁定开关 (v3.18.7+)
     # ========================================
-    # 当设置为True时，禁用对应功能（生产环境稳定性优先）
-    DISABLE_MODEL_TRAINING: bool = os.getenv("DISABLE_MODEL_TRAINING", "true").lower() == "true"  # 禁用模型训练（初始训练+重训练）
+    # 🔥 v4.1+：默认启用模型训练以支持在线学习
+    DISABLE_MODEL_TRAINING: bool = os.getenv("DISABLE_MODEL_TRAINING", "false").lower() == "true"  # 启用模型训练（初始训练+重训练）
     DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "false").lower() == "true"  # 禁用REST API fallback（仅在WebSocket稳定时使用）
     
     # ========================================
