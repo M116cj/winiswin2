@@ -52,6 +52,20 @@ class Config:
     DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "false").lower() == "true"  # 禁用REST API fallback（仅在WebSocket稳定时使用）
     
     # ========================================
+    # 🚀 K线预热配置 (v4.2+ Binance速率限制优化)
+    # ========================================
+    # 🔥 v4.2：默认禁用REST API预热以避免IP封禁
+    # - false（默认）：仅使用WebSocket实时数据（需等待60分钟累积1h数据）
+    # - true：启动时通过REST API预热历史K线（风险：可能触发速率限制）
+    ENABLE_KLINE_WARMUP: bool = os.getenv("ENABLE_KLINE_WARMUP", "false").lower() == "true"
+    
+    # 预热配置（仅在ENABLE_KLINE_WARMUP=true时生效）
+    WARMUP_SYMBOL_LIMIT: int = int(os.getenv("WARMUP_SYMBOL_LIMIT", "50"))  # 最多预热50个交易对（避免速率限制）
+    WARMUP_BATCH_SIZE: int = int(os.getenv("WARMUP_BATCH_SIZE", "5"))  # 每批5个交易对（降低并发）
+    WARMUP_BATCH_DELAY: float = float(os.getenv("WARMUP_BATCH_DELAY", "2.0"))  # 每批间隔2秒（避免burst）
+    WARMUP_TIMEFRAME: str = os.getenv("WARMUP_TIMEFRAME", "1h")  # 只预热1h数据（单时间框架，减少请求）
+    
+    # ========================================
     # 🎚️ 信号生成模式 (v3.18.7+)
     # ========================================
     # RELAXED_SIGNAL_MODE: 宽松信号生成模式（增加信号数量，降低精度要求）

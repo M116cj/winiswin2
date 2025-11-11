@@ -220,56 +220,76 @@ class WebSocketManager:
             await asyncio.gather(*tasks, return_exceptions=True)
             logger.debug("   所有Feed已啟動")
         
-        # 🔥 v3.18+：預熱K線緩存（解決冷啟動問題）
-        logger.debug("預熱K線緩存...")
-        if self.enable_kline_feed and self.shard_feed:
-            logger.debug("   開始預熱（REST API獲取歷史K線）...")
+        # 🔥 v4.2：可選的K線預熱（默認禁用以避免Binance速率限制）
+        from src.config import Config
+        logger.debug("檢查K線預熱配置...")
+        if Config.ENABLE_KLINE_WARMUP and self.enable_kline_feed and self.shard_feed:
+            logger.info("   ✅ K線預熱已啟用（可能觸發速率限制風險）")
+            logger.info(f"      Symbol限制: {Config.WARMUP_SYMBOL_LIMIT}")
+            logger.info(f"      Batch大小: {Config.WARMUP_BATCH_SIZE}")
+            logger.info(f"      Batch延遲: {Config.WARMUP_BATCH_DELAY}s")
             await self._warmup_cache()
         else:
-            logger.warning("   ⚠️ 預熱跳過，WebSocket將從實時接收開始")
+            logger.info("   ⚠️ K線預熱已禁用（ENABLE_KLINE_WARMUP=false）")
+            logger.info("      WebSocket將實時累積數據：")
+            logger.info("         • 5m數據將在5分鐘後可用")
+            logger.info("         • 15m數據將在15分鐘後可用")
+            logger.info("         • 1h數據將在60分鐘後可用")
+            logger.info("      💡 若需快速啟動，設置環境變量 ENABLE_KLINE_WARMUP=true")
         
         logger.debug(f"WebSocketManager啟動完成 | 監控{len(self.symbols)}個交易對")
     
-    async def _warmup_cache(self, timeout: int = 60):
+    async def _warmup_cache(self, timeout: int = 120):
         """
-        預熱K線緩存（v3.18+ 強化版：REST失敗不影響WebSocket）
+        預熱K線緩存（v4.2 速率限制優化版）
+        
+        🔥 v4.2 重大更新：
+        - 默認禁用（ENABLE_KLINE_WARMUP=false）以避免Binance IP封禁
+        - 支持symbol数量限制（WARMUP_SYMBOL_LIMIT，默认50）
+        - 大幅降低batch_size（默认5）和增加batch延迟（默认2s）
+        - 只预热单一时间框架（WARMUP_TIMEFRAME，默认1h）
+        - 完全防止速率限制：50 symbols × 1 TF × 5 weight = 250 weight（远低于2400限制）
         
         解決問題：
-        - WebSocket啟動時緩存為空，導致立即fallback到REST
-        - 需要60分鐘才能累積足夠的1m K線聚合成1h
+        - WebSocket啟動時緩存為空，需60分鐘累積1h數據
+        - 但直接预热535个交易对会触发速率限制（1605+ requests）
         
         解決方案：
-        - 啟動時用REST API獲取歷史100根1m K線
-        - 填充到所有分片的KlineFeed緩存中
-        - 立即可用於聚合5m/15m/1h
-        - WebSocket繼續接收新K線並累積
-        
-        🔥 v3.18+ 修復：
-        - 預熱失敗不影響WebSocket啟動
-        - 即使所有REST請求失敗，WebSocket仍會接收實時數據
-        - 實時累積60根1m K線後（約60分鐘）即可聚合1h
+        - 只預熱top-N主流交易對（默認50個）
+        - 單一時間框架（默認1h）
+        - 大延遲批次處理（避免burst）
+        - 預熱失敗不影響WebSocket正常運行
         
         Args:
-            timeout: 預熱超時時間（秒），默認60秒
+            timeout: 預熱超時時間（秒），默認120秒
         """
+        from src.config import Config
+        
         if not self.shard_feed or not self.shard_feed.kline_shards:
             logger.warning("   ⚠️ 無K線分片，跳過預熱")
             return
         
-        logger.info(f"   預熱目標: {len(self.symbols)}個交易對")
+        # 🔥 v4.2：限制預熱的交易對數量（避免速率限制）
+        warmup_symbols = self.symbols[:Config.WARMUP_SYMBOL_LIMIT]
+        warmup_timeframe = Config.WARMUP_TIMEFRAME
+        
+        logger.info(f"   預熱目標: {len(warmup_symbols)}個主流交易對")
+        logger.info(f"   預熱時間框架: {warmup_timeframe}（單一框架）")
+        logger.info(f"   預計Weight消耗: ~{len(warmup_symbols) * 5} (远低于2400限制)")
         start_time = asyncio.get_event_loop().time()
         
-        # 批量獲取歷史K線（避免速率限制）
-        batch_size = 10  # 每批10個交易對
+        # 🔥 v4.2：大幅降低batch_size並增加延遲（避免速率限制）
+        batch_size = Config.WARMUP_BATCH_SIZE  # 默認5
+        batch_delay = Config.WARMUP_BATCH_DELAY  # 默認2秒
         warmed_count = 0
         failed_count = 0
         
-        for i in range(0, len(self.symbols), batch_size):
-            batch = self.symbols[i:i + batch_size]
+        for i in range(0, len(warmup_symbols), batch_size):
+            batch = warmup_symbols[i:i + batch_size]
             
-            # 並行獲取這批交易對的K線
+            # 並行獲取這批交易對的K線（單一時間框架）
             tasks = [
-                self._fetch_and_seed_kline_history(symbol)
+                self._fetch_and_seed_kline_history(symbol, interval=warmup_timeframe)
                 for symbol in batch
             ]
             
@@ -288,11 +308,13 @@ class WebSocketManager:
             # 檢查超時
             elapsed = asyncio.get_event_loop().time() - start_time
             if elapsed > timeout:
-                logger.warning(f"   ⚠️ 預熱超時（{elapsed:.1f}s），已完成{warmed_count}/{len(self.symbols)}個交易對")
+                logger.warning(f"   ⚠️ 預熱超時（{elapsed:.1f}s），已完成{warmed_count}/{len(warmup_symbols)}個交易對")
                 break
             
-            # 避免速率限制
-            await asyncio.sleep(0.1)
+            # 🔥 v4.2：大幅增加批次延遲（避免Binance速率限制）
+            if i + batch_size < len(warmup_symbols):  # 最後一批不延遲
+                logger.debug(f"      批次延遲 {batch_delay}s（避免速率限制）...")
+                await asyncio.sleep(batch_delay)
         
         elapsed = asyncio.get_event_loop().time() - start_time
         success_rate = (warmed_count / len(self.symbols) * 100) if self.symbols else 0
@@ -314,21 +336,22 @@ class WebSocketManager:
         
         logger.info("   " + "─" * 76)
     
-    async def _fetch_and_seed_kline_history(self, symbol: str) -> bool:
+    async def _fetch_and_seed_kline_history(self, symbol: str, interval: str = "1m") -> bool:
         """
-        獲取並填充單個交易對的K線歷史
+        獲取並填充單個交易對的K線歷史（v4.2 支持可配置時間框架）
         
         Args:
             symbol: 交易對
+            interval: K線時間框架（v4.2+ 可配置，默認1m）
         
         Returns:
             True如果成功，False如果失敗
         """
         try:
-            # 使用binance_client獲取最近100根1m K線
+            # 🔥 v4.2：使用可配置的時間框架（默認1m）
             klines = await self.binance_client.get_klines(
                 symbol=symbol,
-                interval="1m",
+                interval=interval,
                 limit=100
             )
             
