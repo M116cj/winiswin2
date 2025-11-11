@@ -130,11 +130,9 @@ class DatabaseManager:
             database_url = self._get_database_url()
             connection_url = self._prepare_connection_url(database_url)
             
-            logger.info("=" * 70)
-            logger.info("🔌 正在初始化PostgreSQL连接池...")
-            logger.info(f"   最小连接数: {self.min_connections}")
-            logger.info(f"   最大连接数: {self.max_connections}")
-            logger.info(f"   连接超时: {self.connection_timeout}秒")
+            logger.debug("初始化PostgreSQL连接池...")
+            logger.debug(f"   最小连接数: {self.min_connections}")
+            logger.debug(f"   最大连接数: {self.max_connections}")
             
             self.connection_pool = psycopg2.pool.SimpleConnectionPool(
                 self.min_connections,
@@ -145,8 +143,7 @@ class DatabaseManager:
             
             self._is_initialized = True
             
-            logger.info("✅ PostgreSQL连接池初始化成功")
-            logger.info("=" * 70)
+            logger.debug("✅ PostgreSQL连接池初始化成功")
             
         except Exception as e:
             logger.error(f"❌ 连接池初始化失败: {e}")

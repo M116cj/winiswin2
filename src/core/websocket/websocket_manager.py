@@ -106,15 +106,8 @@ class WebSocketManager:
         # v3.17.2+ 波動率選擇器（動態篩選高波動交易對）
         self.symbol_selector = SymbolSelector(binance_client, Config)
         
-        logger.info("=" * 80)
-        logger.info("✅ WebSocketManager v3.17.2+ 初始化完成（流動性×波動率優化）")
-        logger.info(f"   📊 交易對模式: {'綜合分數前{0}名'.format(Config.WEBSOCKET_SYMBOL_LIMIT) if auto_fetch_symbols else f'{len(symbols or [])}個'}")
-        logger.info(f"   🎯 選擇策略: 流動性 × 波動率（過濾<1M + <0.5%）")
-        logger.info(f"   🔀 分片大小: {shard_size}")
-        logger.info(f"   📡 K線Feed: {'啟用' if enable_kline_feed else '停用'}")
-        logger.info(f"   💰 價格Feed: {'啟用' if enable_price_feed else '停用'}")
-        logger.info(f"   📡 帳戶Feed: {'啟用' if enable_account_feed else '停用'}")
-        logger.info("=" * 80)
+        logger.debug("WebSocketManager 初始化完成")
+        logger.debug(f"   分片大小: {shard_size}, K線: {enable_kline_feed}, 價格: {enable_price_feed}, 帳戶: {enable_account_feed}")
     
     async def _get_all_futures_symbols(self) -> List[str]:
         """
@@ -182,26 +175,23 @@ class WebSocketManager:
             return
         
         self.running = True
-        logger.info("=" * 80)
-        logger.info("🚀 WebSocketManager v3.18+ 啟動中（冷啟動優化）...")
-        logger.info("=" * 80)
+        logger.debug("WebSocketManager 啟動中...")
         
         # 1. 動態獲取交易對（如果需要）
         if self.auto_fetch_symbols and not self.symbols:
-            logger.info("📡 步驟1/4：獲取交易對列表...")
+            logger.debug("獲取交易對列表...")
             self.symbols = await self._get_all_futures_symbols()
-            logger.info(f"   ✅ 已獲取 {len(self.symbols)} 個交易對")
-            logger.info(f"   前10名: {self.symbols[:10]}")
+            logger.debug(f"   已獲取 {len(self.symbols)} 個交易對")
         else:
-            logger.info(f"📡 步驟1/4：使用預設交易對列表（{len(self.symbols)}個）")
+            logger.debug(f"使用預設交易對列表（{len(self.symbols)}個）")
         
         tasks = []
         
         # 2. 啟動ShardFeed（K線+價格分片管理）
-        logger.info("📡 步驟2/4：啟動ShardFeed（K線+價格）...")
+        logger.debug("啟動ShardFeed...")
         if self.symbols and (self.enable_kline_feed or self.enable_price_feed):
             shard_count = (len(self.symbols) + self.shard_size - 1) // self.shard_size
-            logger.info(f"   創建 {shard_count} 個分片（每片{self.shard_size}個交易對）")
+            logger.debug(f"   創建 {shard_count} 個分片")
             
             self.shard_feed = ShardFeed(
                 all_symbols=self.symbols,
@@ -211,41 +201,34 @@ class WebSocketManager:
                 kline_interval=self.kline_interval
             )
             tasks.append(self.shard_feed.start())
-            logger.info(f"   ✅ ShardFeed已創建")
+            logger.debug("   ShardFeed已創建")
         else:
-            logger.warning("   ⚠️ 無交易對或Feed未啟用，跳過ShardFeed")
+            logger.warning("   ⚠️ 無交易對或Feed未啟用")
         
         # 3. 啟動AccountFeed（帳戶/倉位監控）
-        logger.info("📡 步驟3/4：啟動AccountFeed（帳戶監控）...")
+        logger.debug("啟動AccountFeed...")
         if self.enable_account_feed:
             self.account_feed = AccountFeed(binance_client=self.binance_client)
             tasks.append(self.account_feed.start())
-            logger.info("   ✅ AccountFeed已創建")
+            logger.debug("   AccountFeed已創建")
         else:
-            logger.info("   ⏸️  AccountFeed未啟用")
+            logger.debug("   AccountFeed未啟用")
         
         # 4. 並行啟動所有Feed
         if tasks:
-            logger.info(f"📡 並行啟動 {len(tasks)} 個Feed...")
+            logger.debug(f"並行啟動 {len(tasks)} 個Feed...")
             await asyncio.gather(*tasks, return_exceptions=True)
-            logger.info("   ✅ 所有Feed已啟動")
+            logger.debug("   所有Feed已啟動")
         
         # 🔥 v3.18+：預熱K線緩存（解決冷啟動問題）
-        logger.info("📡 步驟4/4：預熱K線緩存...")
+        logger.debug("預熱K線緩存...")
         if self.enable_kline_feed and self.shard_feed:
-            logger.info("   🔥 開始預熱（用REST API獲取歷史100根1m K線）...")
+            logger.debug("   開始預熱（REST API獲取歷史K線）...")
             await self._warmup_cache()
         else:
-            logger.warning("   ⚠️ 預熱跳過（K線Feed未啟用或ShardFeed未創建）")
-            logger.warning("   ⚠️ WebSocket將從實時接收開始，需60分鐘累積1h數據")
+            logger.warning("   ⚠️ 預熱跳過，WebSocket將從實時接收開始")
         
-        logger.info("=" * 80)
-        logger.info("✅ WebSocketManager啟動完成")
-        logger.info(f"   K線Feed: {'✅' if self.shard_feed else '⏸️ '}")
-        logger.info(f"   價格Feed: {'✅' if self.shard_feed and self.enable_price_feed else '⏸️ '}")
-        logger.info(f"   帳戶Feed: {'✅' if self.account_feed else '⏸️ '}")
-        logger.info(f"   監控交易對: {len(self.symbols)}個")
-        logger.info("=" * 80)
+        logger.debug(f"WebSocketManager啟動完成 | 監控{len(self.symbols)}個交易對")
     
     async def _warmup_cache(self, timeout: int = 60):
         """

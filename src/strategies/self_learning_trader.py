@@ -55,7 +55,7 @@ class SelfLearningTrader:
         # 🔥 v4.0+ UnifiedTradeRecorder（PostgreSQL唯一數據源）
         self.trade_recorder = trade_recorder
         if self.trade_recorder:
-            logger.info("✅ 使用UnifiedTradeRecorder（PostgreSQL）")
+            logger.debug("使用UnifiedTradeRecorder（PostgreSQL）")
         else:
             logger.warning("⚠️ TradeRecorder未提供，部分功能將受限")
         
@@ -85,21 +85,9 @@ class SelfLearningTrader:
         self._completed_trades_cache = None  # 緩存交易計數（避免重複讀取文件）
         self._bootstrap_ended_logged = False  # 標記豁免期結束日誌是否已輸出
         
-        logger.info("=" * 80)
-        logger.info(f"✅ SelfLearningTrader v3.18.7+ 初始化完成（豁免期策略）")
-        logger.info(f"   🧠 決策引擎: {'ML模型 + 規則混合' if self.ml_enabled else '純規則驅動'}")
-        logger.info(f"   🤖 ML狀態: {'✅ 已加載（44個特徵）' if self.ml_enabled else '❌ 未加載（使用規則fallback）'}")
-        logger.info("   📡 WebSocket: {}".format("已啟用（即時市場數據）" if websocket_monitor else "未啟用"))
-        logger.info("   🛡️  風險控制: 6層防護（質量門檻+方向驗證+RR控制+倉位限制+動態槓桿+智能出場）")
-        logger.info("   🏆 多信號競價: 加權評分（信心40% + 勝率40% + R:R 20%）")
-        if self.bootstrap_enabled:
-            logger.info("")
-            logger.info("   🎓 豁免期策略（前100筆交易）:")
-            logger.info(f"      ├─ 勝率門檻: {self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.0%} (正常期: {self.config.MIN_WIN_PROBABILITY:.0%})")
-            logger.info(f"      ├─ 信心門檻: {self.config.BOOTSTRAP_MIN_CONFIDENCE:.0%} (正常期: {self.config.MIN_CONFIDENCE:.0%})")
-            logger.info(f"      ├─ 質量門檻: {self.config.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD:.0%} (正常期: {self.config.SIGNAL_QUALITY_THRESHOLD:.0%})")
-            logger.info(f"      └─ 槓桿範圍: 1-3x（強制壓制）(正常期: 無上限)")
-        logger.info("=" * 80)
+        logger.debug("SelfLearningTrader 初始化完成")
+        logger.debug(f"   ML狀態: {'已加載' if self.ml_enabled else '未加載'}")
+        logger.debug(f"   WebSocket: {'已啟用' if websocket_monitor else '未啟用'}")
     
     def analyze(
         self,

@@ -21,9 +21,7 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
         True if successful, False otherwise
     """
     try:
-        logger.info("=" * 70)
-        logger.info("📊 开始初始化数据库表结构...")
-        logger.info("=" * 70)
+        logger.debug("初始化数据库表结构...")
         
         # 创建所有表
         success = True
@@ -33,9 +31,7 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
         success &= _create_trading_signals_table(db_manager)
         
         if success:
-            logger.info("=" * 70)
-            logger.info("✅ 数据库表结构初始化完成！")
-            logger.info("=" * 70)
+            logger.debug("✅ 数据库表结构初始化完成")
         else:
             logger.error("❌ 部分表初始化失败")
         
@@ -50,7 +46,7 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
 def _create_trades_table(db_manager: DatabaseManager) -> bool:
     """创建交易记录表"""
     try:
-        logger.info("📝 创建 trades 表...")
+        logger.debug("创建 trades 表...")
         
         create_table_sql = """
         CREATE TABLE IF NOT EXISTS trades (
