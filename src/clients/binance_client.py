@@ -30,8 +30,10 @@ class BinanceClient:
     """Binance USDT 永續合約 API 客戶端"""
     
     def __init__(self):
-        self.api_key = Config.BINANCE_API_KEY
-        self.api_secret = Config.BINANCE_API_SECRET
+        # 🔥 v4.1+：優先使用TRADING API密鑰（如已設置），否則回退到普通密鑰
+        # 最佳實踐：讀取操作用普通密鑰，交易操作用獨立密鑰
+        self.api_key = Config.BINANCE_TRADING_API_KEY or Config.BINANCE_API_KEY
+        self.api_secret = Config.BINANCE_TRADING_API_SECRET or Config.BINANCE_API_SECRET
         
         if Config.BINANCE_TESTNET:
             self.base_url = "https://testnet.binancefuture.com"
@@ -527,7 +529,12 @@ class BinanceClient:
         return result
     
     async def get_account_info(self) -> dict:
-        """獲取賬戶信息"""
+        """
+        獲取賬戶信息
+        
+        🔥 v4.1+：使用 /fapi/v2/account（兼容性）
+        注意：Binance推薦使用 /fapi/v3/account，但v2仍可用
+        """
         cache_key = "account_info"
         cached = self.cache.get(cache_key)
         if cached:
@@ -854,12 +861,45 @@ class BinanceClient:
         return await self._request("POST", "/fapi/v1/leverage", params=params, signed=True)
     
     async def test_connection(self) -> bool:
-        """測試 API 連接並初始化 Position Mode"""
+        """
+        測試 API 連接並驗證密鑰權限
+        
+        🔥 v4.1+：增強權限檢測
+        - 測試網絡連通性（/fapi/v1/ping）
+        - 驗證API密鑰權限（嘗試/fapi/v2/account）
+        - 檢測Position Mode
+        """
         try:
+            # 步驟1：測試網絡連通性
             await self._request("GET", "/fapi/v1/ping")
-            logger.info("✅ Binance API 連接成功")
+            logger.info("✅ Binance API 網絡連接成功")
             
-            # 立即檢測 Position Mode（Hedge 或 One-Way）
+            # 步驟2：驗證API密鑰權限（測試signed端點）
+            try:
+                await self.get_account_info()
+                logger.info("✅ API密鑰權限驗證成功（Futures + Reading已啟用）")
+            except BinanceRequestError as e:
+                if "-2015" in str(e) or "401" in str(e):
+                    logger.error("=" * 80)
+                    logger.error("❌ API密鑰權限不足！請檢查以下配置：")
+                    logger.error("   1. 登錄 Binance.com → API管理 → 編輯您的API密鑰")
+                    logger.error("   2. 確保已勾選：")
+                    logger.error("      ✅ Enable Reading")
+                    logger.error("      ✅ Enable Futures")
+                    logger.error("      ✅ (可選) Enable Trading - 如需下單功能")
+                    logger.error("   3. IP白名單：")
+                    logger.error("      • 如已設置IP限制，需添加部署服務器IP")
+                    logger.error("      • 或臨時改為'不限制訪問IP'進行測試")
+                    logger.error("   4. Portfolio Margin用戶：")
+                    logger.error("      • 需使用 /papi/ 端點而非 /fapi/ 端點")
+                    logger.error("      • 請聯繫技術支持進行配置")
+                    logger.error("=" * 80)
+                    raise BinanceRequestError(
+                        "API密鑰權限不足，請按上述步驟配置後重試"
+                    ) from e
+                raise
+            
+            # 步驟3：檢測 Position Mode（Hedge 或 One-Way）
             await self.get_position_mode()
             
             return True
