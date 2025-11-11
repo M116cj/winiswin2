@@ -1,21 +1,55 @@
-# Core Dependencies
-aiohttp==3.9.1
-websockets==12.0
-pandas==2.1.4
-numpy==1.26.2
+# =============================================================================
+# SelfLearningTrader v4.2 - Production Dependencies
+# =============================================================================
+
+# Core Runtime Dependencies
+aiohttp==3.13.1
+websockets==14.1
+pandas==2.3.3
+numpy==1.26.4
 python-dateutil==2.8.2
 
 # Async I/O
 aiofiles==23.2.1
 
-# Database
-psycopg2-binary==2.9.9
+# Database (PostgreSQL)
+psycopg2-binary==2.9.11
 
-# System Monitoring  
+# System Monitoring
 psutil==5.9.6
 
-# Optional: High-performance technical indicators
-# TA-Lib==0.4.28
+# Exchange API Client
+ccxt==4.5.12
 
-# Existing dependencies
-# ...
+# Machine Learning Dependencies
+xgboost==3.1.1
+scikit-learn==1.7.2
+
+# =============================================================================
+# Optional Dependencies (Install with: pip install -e .[extras])
+# =============================================================================
+
+# [notifications]
+# discord.py==2.3.2  # For Discord trading alerts (optional)
+
+# [technical-indicators]
+# TA-Lib==0.4.28  # High-performance technical indicators (optional, requires system libs)
+
+# =============================================================================
+# Development Dependencies (Not for production)
+# =============================================================================
+
+# [dev]
+# pytest==7.4.3
+# pytest-asyncio==0.21.1
+# black==23.12.1
+# flake8==6.1.0
+# mypy==1.7.1
+
+# =============================================================================
+# Notes:
+# - All versions pinned for reproducible builds
+# - Tested on Python 3.11+
+# - For Railway deployment: only core dependencies needed
+# - Optional extras reduce deployment size by ~200MB
+# =============================================================================

@@ -143,6 +143,22 @@ class Config:
     WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))  # 心跳超時30秒
     REST_COOLDOWN_BASE: int = int(os.getenv("REST_COOLDOWN_BASE", "60"))  # REST備援基礎冷卻60秒
     
+    # ========================================
+    # 🧠 內存管理配置 (v4.2+ 系統優化)
+    # ========================================
+    # DataFrame和緩存大小限制，防止內存泄漏
+    DATAFRAME_MAX_ROWS: int = int(os.getenv("DATAFRAME_MAX_ROWS", "1000"))  # 每個時間框架DataFrame最大行數（滑動窗口）
+    CACHE_MAX_SIZE_MB: int = int(os.getenv("CACHE_MAX_SIZE_MB", "512"))  # L1+L2緩存最大內存（MB）
+    ENABLE_PERIODIC_GC: bool = os.getenv("ENABLE_PERIODIC_GC", "true").lower() == "true"  # 啟用周期性垃圾回收
+    GC_INTERVAL_SECONDS: int = int(os.getenv("GC_INTERVAL_SECONDS", "300"))  # GC間隔（5分鐘）
+    
+    # ========================================
+    # 📊 性能監控配置 (v4.2+ 系統優化)
+    # ========================================
+    ENABLE_PERFORMANCE_MONITORING: bool = os.getenv("ENABLE_PERFORMANCE_MONITORING", "true").lower() == "true"  # 啟用性能監控
+    PERF_METRICS_WINDOW_SIZE: int = int(os.getenv("PERF_METRICS_WINDOW_SIZE", "1000"))  # 性能指標滑動窗口大小
+    PERF_MEMORY_CHECK_INTERVAL: int = int(os.getenv("PERF_MEMORY_CHECK_INTERVAL", "60"))  # 內存檢查間隔（秒）
+    
     # ===== 時間框架配置 =====
     TIMEFRAMES: List[str] = ["1h", "15m", "5m"]  # 多時間框架分析：1h主趨勢, 15m中期, 5m入場
     
