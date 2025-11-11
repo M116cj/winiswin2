@@ -196,21 +196,24 @@ class SelfLearningTrader:
                     logger.info(f"❌ {symbol} 拒絕開倉: {reject_reason} | 勝率={win_probability:.1%} 信心={confidence:.1%} R:R={rr_ratio:.2f}")
                     return None, confidence * 100, win_probability * 100
             
-            # 🔥 v3.18.7+ 步驟 4：獲取豁免期狀態並記錄
+            # 🔥 v4.1+ 步驟 4：獲取豁免期狀態和階段性槓桿上限
             is_bootstrap = thresholds.get('is_bootstrap', False)
+            max_leverage = thresholds.get('max_leverage', None)  # v4.1+
+            phase = thresholds.get('phase', 'normal')  # v4.1+
             
             if is_bootstrap:
                 logger.info(
-                    f"🎓 {symbol} 豁免期: 已完成 {thresholds['completed_trades']}/{self.config.BOOTSTRAP_TRADE_LIMIT} 筆 | "
+                    f"🎓 {symbol} 豁免期({phase}): 已完成 {thresholds['completed_trades']}/{self.config.BOOTSTRAP_TRADE_LIMIT} 筆 | "
                     f"門檻 勝率≥{thresholds['min_win_probability']:.0%} 信心≥{thresholds['min_confidence']:.0%} | "
-                    f"槓桿限制: 1-3x"
+                    f"槓桿限制: 1-{max_leverage:.0f}x"
                 )
             
-            # 步驟 5：計算槓桿（豁免期壓制至1-3x，正常期無上限）
+            # 步驟 5：計算槓桿（v4.1+：漸進式豁免期，正常期無上限）
             leverage = self.calculate_leverage(
                 win_probability,
                 confidence,
                 is_bootstrap_period=is_bootstrap,
+                max_leverage=max_leverage,
                 verbose=True
             )
             
@@ -295,45 +298,31 @@ class SelfLearningTrader:
         win_probability: float,
         confidence: float,
         is_bootstrap_period: bool = False,
+        max_leverage: Optional[float] = None,
         verbose: bool = False
     ) -> float:
         """
-        計算槓桿（v3.18.7+ 豁免期壓制）
+        計算槓桿（v4.1+ 漸進式豁免期）
         
-        豁免期（0-100筆）：1-3x（強制壓制）
-        正常期（101+筆）：無上限（模型自行判定）
-        
-        公式：
-        1. win_factor = (win_prob - 0.55) / 0.15
-           - win_prob = 0.55 → win_factor = 0 → 1x
-           - win_prob = 0.70 → win_factor = 1 → 12x
-        
-        2. win_leverage = 1 + win_factor × 11
-        
-        3. conf_factor = confidence / 0.5
-           - confidence = 0.50 → conf_factor = 1.0
-           - confidence = 1.00 → conf_factor = 2.0
-        
-        4. leverage = base × win_leverage × conf_factor
-        
-        豁免期壓制：
-        - 前100筆：強制限制 1-3x（基於信心度線性映射）
-        - 101+筆：無上限（模型自行判定）
+        漸進式策略：
+        - 階段1 (1-15筆)：槓桿≤2x
+        - 階段2 (16-35筆)：槓桿≤3x
+        - 階段3 (36-50筆)：槓桿≤4x
+        - 正常期（51+筆）：無上限（模型自行判定）
         
         Args:
             win_probability: 勝率（0-1）
             confidence: 信心度（0-1）
-            is_bootstrap_period: 是否在豁免期（前100筆交易）
+            is_bootstrap_period: 是否在豁免期
+            max_leverage: 階段性槓桿上限（v4.1+）
             verbose: 是否輸出詳細日誌
         
         Returns:
             槓桿倍數
-            - 豁免期：1-3x（強制壓制）
-            - 正常期：0.5x ~ ∞（模型自行判定）
         """
-        # 🔥 v3.18.7+ 委托给 LeverageEngine 处理（包含豁免期逻辑）
+        # 🔥 v4.1+ 委托给 LeverageEngine 处理（含漸進式逻辑）
         return self.leverage_engine.calculate_leverage(
-            win_probability, confidence, is_bootstrap_period, verbose
+            win_probability, confidence, is_bootstrap_period, max_leverage, verbose
         )
     
     async def calculate_position_size(
@@ -1393,9 +1382,58 @@ class SelfLearningTrader:
         """
         self._completed_trades_cache = None
     
+    def _get_progressive_bootstrap_thresholds(self, trade_count: int) -> Dict:
+        """
+        🔥 v4.1+ 漸進式Bootstrap門檻（修復20%勝率過低問題）
+        
+        階段策略：
+        - 階段1 (交易1-15):   勝率35%, 信心30%, 槓桿≤2x
+        - 階段2 (交易16-35):  勝率40%, 信心35%, 槓桿≤3x
+        - 階段3 (交易36-50):  勝率43%, 信心38%, 槓桿≤4x
+        - 正常期 (交易51+):   勝率45%, 信心40%, 槓桿動態
+        
+        Args:
+            trade_count: 已完成交易數
+            
+        Returns:
+            階段配置字典
+        """
+        if trade_count <= 15:
+            return {
+                'phase': 'phase_1',
+                'min_win_probability': 0.35,
+                'min_confidence': 0.30,
+                'max_leverage': 2.0,
+                'trade_range': (1, 15)
+            }
+        elif trade_count <= 35:
+            return {
+                'phase': 'phase_2',
+                'min_win_probability': 0.40,
+                'min_confidence': 0.35,
+                'max_leverage': 3.0,
+                'trade_range': (16, 35)
+            }
+        elif trade_count <= 50:
+            return {
+                'phase': 'phase_3',
+                'min_win_probability': 0.43,
+                'min_confidence': 0.38,
+                'max_leverage': 4.0,
+                'trade_range': (36, 50)
+            }
+        else:
+            return {
+                'phase': 'normal',
+                'min_win_probability': 0.45,
+                'min_confidence': 0.40,
+                'max_leverage': None,  # 動態槓桿
+                'trade_range': (51, float('inf'))
+            }
+    
     def _get_current_thresholds(self) -> Dict:
         """
-        獲取當前應使用的門檻值（v3.18.7+ 啟動豁免機制）
+        獲取當前應使用的門檻值（v4.1+ 漸進式豁免機制）
         
         Returns:
             包含當前門檻的字典 {
@@ -1403,7 +1441,8 @@ class SelfLearningTrader:
                 'min_confidence': float,
                 'is_bootstrap': bool,
                 'completed_trades': int,
-                'remaining': int (僅豁免期)
+                'remaining': int (僅豁免期),
+                'phase': str (僅豁免期)
             }
         """
         if not self.bootstrap_enabled or not self.trade_recorder:
@@ -1416,21 +1455,22 @@ class SelfLearningTrader:
             }
         
         # 🔥 強制重新讀取交易數（use_cache=False）確保計數最新
-        # 這個方法只在有新信號時才調用，不會造成性能問題
         completed_trades = self._count_completed_trades(use_cache=False)
         
-        # 前N筆交易使用豁免門檻
+        # 🔥 v4.1+ 使用漸進式門檻
         if completed_trades < self.config.BOOTSTRAP_TRADE_LIMIT:
+            progressive = self._get_progressive_bootstrap_thresholds(completed_trades)
             return {
-                'min_win_probability': self.config.BOOTSTRAP_MIN_WIN_PROBABILITY,
-                'min_confidence': self.config.BOOTSTRAP_MIN_CONFIDENCE,
+                'min_win_probability': progressive['min_win_probability'],
+                'min_confidence': progressive['min_confidence'],
                 'is_bootstrap': True,
                 'completed_trades': completed_trades,
-                'remaining': self.config.BOOTSTRAP_TRADE_LIMIT - completed_trades
+                'remaining': self.config.BOOTSTRAP_TRADE_LIMIT - completed_trades,
+                'phase': progressive['phase'],
+                'max_leverage': progressive['max_leverage']
             }
         else:
             # 已完成豁免期，使用正常門檻
-            # 🔥 在豁免期結束時記錄一次（避免重複輸出）
             if not self._bootstrap_ended_logged:
                 self._bootstrap_ended_logged = True
                 logger.info("=" * 80)
@@ -1511,12 +1551,17 @@ class SelfLearningTrader:
     
     def _evaluate_signal_quality(self, signal: Dict) -> float:
         """
-        評估信號品質分數（0-100）
+        🔥 v4.1+ 評估信號品質分數（重新平衡權重）
         
-        計算公式：
-        - 基礎品質 = (信心值 + 勝率) / 2
-        - 風險獎勵加成 = min(RR/3.0, 1.0) * 10
-        - 最終品質 = 基礎品質 + RR加成
+        FIXED計算公式：
+        - 預測能力 = 信心值 × 勝率 (0-1)
+        - 標準化RR = min(RR/2.5, 1.0) (上限2.5避免過度影響)
+        - 最終品質 = 預測能力×70% + 標準化RR×30%
+        - 轉換為0-100範圍
+        
+        修復說明：
+        - 舊版本：40% confidence + 40% win_prob + 20% RR（RR主導問題）
+        - 新版本：70% prediction_power + 30% RR（平衡）
         
         Args:
             signal: 交易信號
@@ -1525,23 +1570,28 @@ class SelfLearningTrader:
             品質分數（0-100）
         """
         try:
-            confidence = signal.get('confidence', 0)  # 0-100
-            win_probability = signal.get('win_probability', 0)  # 0-100
-            rr_ratio = signal.get('rr_ratio', signal.get('risk_reward_ratio', 1.0))
+            # 輸入驗證與正規化（0-100 → 0-1）
+            confidence = max(0.0, min(1.0, signal.get('confidence', 0) / 100.0))
+            win_probability = max(0.0, min(1.0, signal.get('win_probability', 0) / 100.0))
+            rr_ratio = max(0.0, signal.get('rr_ratio', signal.get('risk_reward_ratio', 1.0)))
             
-            # 基礎品質：信心值和勝率的平均
-            base_quality = (confidence + win_probability) / 2
+            # 計算預測能力（信心 × 勝率）
+            prediction_power = confidence * win_probability
             
-            # 風險獎勵比加成（RR越高，加分越多，最多+10分）
-            rr_bonus = min(rr_ratio / 3.0, 1.0) * 10
+            # 標準化RR（上限2.5，防止極端值主導）
+            normalized_rr = min(rr_ratio / 2.5, 1.0)
             
-            final_quality = base_quality + rr_bonus
+            # 🔥 FIXED: 平衡加權（70%預測 + 30%RR）
+            signal_quality = (prediction_power * 0.70) + (normalized_rr * 0.30)
             
-            return max(0, min(100, final_quality))  # 限制在0-100範圍
+            # 轉換為0-100範圍
+            final_quality = signal_quality * 100.0
+            
+            return max(0.0, min(100.0, final_quality))
             
         except Exception as e:
             logger.error(f"❌ 信號品質評估失敗: {e}")
-            return 0
+            return 0.0
     
     def _find_lowest_quality_position(self, positions: List[Dict]) -> Optional[Dict]:
         """

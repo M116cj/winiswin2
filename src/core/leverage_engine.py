@@ -39,14 +39,12 @@ class LeverageEngine:
         """
         self.config = config_profile
         logger.info("=" * 80)
-        logger.info("✅ 槓桿引擎初始化完成（v3.18.7+ 豁免期策略）")
-        logger.info(f"   📊 正常期勝率閾值: {self.config.MIN_WIN_PROBABILITY:.0%}")
-        logger.info(f"   📊 正常期信心度閾值: {self.config.MIN_CONFIDENCE:.0%}")
-        logger.info(f"   📊 正常期槓桿範圍: 無限制（0.5x ~ ∞）")
-        logger.info(f"   🎓 豁免期勝率閾值: {self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.0%}")
-        logger.info(f"   🎓 豁免期信心度閾值: {self.config.BOOTSTRAP_MIN_CONFIDENCE:.0%}")
-        logger.info(f"   🎓 豁免期槓桿範圍: 強制壓制（1-3x）")
-        logger.info(f"   🎓 豁免期交易數: 前{self.config.BOOTSTRAP_TRADE_LIMIT}筆")
+        logger.info("✅ 槓桿引擎初始化完成（v4.1+ 漸進式豁免期）")
+        logger.info(f"   📊 正常期: 勝率≥{self.config.MIN_WIN_PROBABILITY:.0%}, 信心≥{self.config.MIN_CONFIDENCE:.0%}, 槓桿動態（0.5x ~ ∞）")
+        logger.info(f"   🎓 豁免期（前{self.config.BOOTSTRAP_TRADE_LIMIT}筆）漸進式策略:")
+        logger.info(f"      階段1 (1-15筆): 勝率≥35%, 信心≥30%, 槓桿≤2x")
+        logger.info(f"      階段2 (16-35筆): 勝率≥40%, 信心≥35%, 槓桿≤3x")
+        logger.info(f"      階段3 (36-50筆): 勝率≥43%, 信心≥38%, 槓桿≤4x")
         logger.info("=" * 80)
     
     def calculate_leverage(
@@ -54,20 +52,26 @@ class LeverageEngine:
         win_probability: float, 
         confidence: float,
         is_bootstrap_period: bool = False,
+        max_leverage: Optional[float] = None,
         verbose: bool = False
     ) -> float:
         """
-        計算槓桿倍數（v3.18.7+：豁免期壓制至1-3x，正常期無上限）
+        計算槓桿倍數（v4.1+：漸進式豁免期槓桿上限）
         
         Args:
             win_probability: 勝率預測（0-1）
             confidence: 信心度（0-1）
-            is_bootstrap_period: 是否在豁免期（前100筆交易）
+            is_bootstrap_period: 是否在豁免期
+            max_leverage: 階段性槓桿上限（v4.1+漸進式）
+                - 階段1: 2x
+                - 階段2: 3x
+                - 階段3: 4x
+                - 正常期: None（無上限）
             verbose: 是否輸出詳細計算過程
             
         Returns:
             槓桿倍數
-            - 豁免期：1-3x（強制壓制）
+            - 豁免期：根據階段上限（2x/3x/4x）
             - 正常期：0.5x ~ ∞（模型自行判定）
         """
         # 基礎槓桿
@@ -83,23 +87,31 @@ class LeverageEngine:
         # 綜合槓桿（原始計算）
         leverage = base * win_leverage * conf_factor
         
-        # 🔥 v3.18.7+ 豁免期槓桿壓制（1-3x）
-        if is_bootstrap_period:
-            # 豁免期：強制限制在 1-3x 範圍
-            # 計算壓制後的槓桿：基於信心度線性映射到 1-3x
-            # confidence < 0.4 → 1x（最小值）
-            # confidence = 0.4 → 1x
-            # confidence = 0.5 → 2x
-            # confidence ≥ 0.6 → 3x（最大值）
+        # 🔥 v4.1+ 漸進式豁免期槓桿控制
+        if is_bootstrap_period and max_leverage is not None:
+            # 豁免期：強制限制在階段性上限
+            # 計算壓制後的槓桿：基於信心度線性映射到 1-max_leverage
+            # confidence < 0.3 → 1x（最小值）
+            # confidence 線性增長到 max_leverage
+            leverage_range = max_leverage - 1.0
+            bootstrap_leverage = 1.0 + max(0, min((confidence - 0.3) / 0.3, 1.0)) * leverage_range
+            
+            if verbose:
+                logger.debug(f"🎓 漸進式豁免期槓桿:")
+                logger.debug(f"  原始計算槓桿: {leverage:.2f}x")
+                logger.debug(f"  勝率: {win_probability:.1%} → win_leverage: {win_leverage:.2f}x")
+                logger.debug(f"  信心度: {confidence:.1%} → conf_factor: {conf_factor:.2f}x")
+                logger.debug(f"  階段上限: {max_leverage:.1f}x")
+                logger.debug(f"  壓制後槓桿: {bootstrap_leverage:.2f}x（範圍：1-{max_leverage:.0f}x）")
+            
+            return round(bootstrap_leverage, 2)
+        elif is_bootstrap_period:
+            # 向後兼容：如果沒有提供 max_leverage，使用舊的 3x 上限
             bootstrap_leverage = 1.0 + max(0, min((confidence - 0.4) / 0.1, 2.0))
             
             if verbose:
-                logger.debug(f"🎓 豁免期槓桿壓制:")
-                logger.debug(f"  原始計算槓桿: {leverage:.2f}x")
-                logger.debug(f"  勝率: {win_probability:.1%} → win_factor: {win_factor:.2f} → win_leverage: {win_leverage:.2f}x")
-                logger.debug(f"  信心度: {confidence:.1%} → conf_factor: {conf_factor:.2f}x")
-                logger.debug(f"  豁免期壓制: {bootstrap_leverage:.2f}x（範圍：1-3x）")
-                logger.debug(f"  最終槓桿: {bootstrap_leverage:.2f}x ✅")
+                logger.debug(f"🎓 豁免期槓桿壓制（舊模式）:")
+                logger.debug(f"  壓制後槓桿: {bootstrap_leverage:.2f}x（範圍：1-3x）")
             
             return round(bootstrap_leverage, 2)
         
@@ -161,21 +173,20 @@ class LeverageEngine:
     
     def get_leverage_summary(self) -> dict:
         """
-        獲取槓桿引擎配置摘要（v3.18.7+ 豁免期策略）
+        獲取槓桿引擎配置摘要（v4.1+ 漸進式豁免期）
         
         Returns:
             配置字典
         """
         return {
-            "leverage_type": "bootstrap_aware",
+            "leverage_type": "progressive_bootstrap",
             "formula": "base × (1 + (winrate-0.55)/0.15 × 11) × (confidence/0.5)",
-            "leverage_range_bootstrap": "1-3x (forced)",
+            "bootstrap_strategy": "4-phase progressive (2x→3x→4x→dynamic)",
+            "phase_1": "trades 1-15: winrate≥35%, conf≥30%, leverage≤2x",
+            "phase_2": "trades 16-35: winrate≥40%, conf≥35%, leverage≤3x",
+            "phase_3": "trades 36-50: winrate≥43%, conf≥38%, leverage≤4x",
+            "normal_period": "trades 51+: winrate≥45%, conf≥40%, leverage dynamic",
             "leverage_range_normal": "0.5x ~ ∞ (unlimited)",
-            "bootstrap_limit": f"{self.config.BOOTSTRAP_TRADE_LIMIT} trades",
-            "normal_min_win_probability": f"{self.config.MIN_WIN_PROBABILITY:.1%}",
-            "normal_min_confidence": f"{self.config.MIN_CONFIDENCE:.1%}",
-            "bootstrap_min_win_probability": f"{self.config.BOOTSTRAP_MIN_WIN_PROBABILITY:.1%}",
-            "bootstrap_min_confidence": f"{self.config.BOOTSTRAP_MIN_CONFIDENCE:.1%}",
             "min_rr_ratio": f"{self.config.MIN_RR_RATIO:.1f}",
             "max_rr_ratio": f"{self.config.MAX_RR_RATIO:.1f}",
         }
