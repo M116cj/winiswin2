@@ -46,6 +46,8 @@ class PositionSizer:
         """
         獲取交易對規格（帶緩存）
         
+        🔥 v4.1+ Critical Fix: 正確調用 get_symbol_info() 並解析 Binance filters
+        
         Args:
             symbol: 交易對符號
             
@@ -54,6 +56,7 @@ class PositionSizer:
             - min_quantity: 最小數量
             - step_size: 數量精度
             - min_notional: 最小名義價值
+            - tick_size: 價格精度
         """
         # 檢查緩存
         if symbol in self._symbol_specs_cache:
@@ -64,22 +67,87 @@ class PositionSizer:
         # 從 Binance 獲取（如果有客戶端）
         if self.binance_client:
             try:
-                specs = await self.binance_client.get_exchange_info(symbol)
-                if specs:
+                # 🔥 Critical Fix: 使用 get_symbol_info(symbol) 而非 get_exchange_info(symbol)
+                symbol_info = await self.binance_client.get_symbol_info(symbol)
+                
+                if symbol_info:
+                    # ✅ 解析 Binance filters
+                    specs = self._parse_symbol_filters(symbol_info)
+                    
+                    # 緩存結果
                     self._symbol_specs_cache[symbol] = specs
                     self._cache_timestamp[symbol] = time.time()
+                    
+                    logger.debug(
+                        f"✅ 已獲取 {symbol} 規格: "
+                        f"minQty={specs['min_quantity']}, "
+                        f"stepSize={specs['step_size']}, "
+                        f"minNotional={specs['min_notional']}"
+                    )
                     return specs
+                    
             except Exception as e:
-                logger.warning(f"獲取 {symbol} 交易對規格失敗: {e}")
+                logger.warning(f"⚠️ 獲取 {symbol} 交易對規格失敗: {e}")
         
         # 使用默認值（保守估計）
         default_specs = {
             "min_quantity": 0.001,
             "step_size": 0.001,
             "min_notional": 10.0,
+            "tick_size": 0.01,
         }
-        logger.debug(f"使用默認規格: {symbol} → {default_specs}")
+        logger.warning(
+            f"⚠️ 使用默認規格（可能不準確）: {symbol} → {default_specs}"
+        )
         return default_specs
+    
+    def _parse_symbol_filters(self, symbol_info: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        🔥 v4.1+ 解析 Binance symbol filters
+        
+        Args:
+            symbol_info: Binance exchangeInfo 中的 symbol 信息
+            
+        Returns:
+            解析後的規格字典
+        """
+        specs = {
+            "min_quantity": 0.001,
+            "step_size": 0.001,
+            "min_notional": 10.0,
+            "tick_size": 0.01,
+        }
+        
+        filters = symbol_info.get('filters', [])
+        
+        for f in filters:
+            filter_type = f.get('filterType')
+            
+            # LOT_SIZE: 數量過濾器
+            if filter_type == 'LOT_SIZE':
+                specs['min_quantity'] = float(f.get('minQty', 0.001))
+                specs['step_size'] = float(f.get('stepSize', 0.001))
+            
+            # MARKET_LOT_SIZE: 市價單數量過濾器（優先級更高）
+            elif filter_type == 'MARKET_LOT_SIZE':
+                specs['min_quantity'] = max(
+                    specs['min_quantity'], 
+                    float(f.get('minQty', 0.001))
+                )
+                specs['step_size'] = max(
+                    specs['step_size'], 
+                    float(f.get('stepSize', 0.001))
+                )
+            
+            # MIN_NOTIONAL: 最小名義價值
+            elif filter_type == 'MIN_NOTIONAL':
+                specs['min_notional'] = float(f.get('notional', 10.0))
+            
+            # PRICE_FILTER: 價格過濾器
+            elif filter_type == 'PRICE_FILTER':
+                specs['tick_size'] = float(f.get('tickSize', 0.01))
+        
+        return specs
     
     def calculate_position_size(
         self,
