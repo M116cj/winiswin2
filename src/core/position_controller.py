@@ -103,7 +103,7 @@ class PositionController:
             logger.info("   🛡️ 全倉保護: 停用")
         if config and hasattr(config, 'TIME_BASED_STOP_LOSS_ENABLED') and config.TIME_BASED_STOP_LOSS_ENABLED:
             time_threshold_hours = getattr(config, 'TIME_BASED_STOP_LOSS_HOURS', 2.0)
-            logger.info(f"   ⏰ 時間止損: 啟用（持倉>{time_threshold_hours}小時且虧損→強制平倉）")
+            logger.info(f"   ⏰ 時間止損: v4.3.1 嚴格模式（持倉>{time_threshold_hours}小時→強制平倉，無論盈虧）")
         else:
             logger.info("   ⏰ 時間止損: 停用")
         logger.info("=" * 80)
@@ -171,8 +171,8 @@ class PositionController:
             # 防止虧損稀釋10%預留緩衝，立即市價平倉虧損最大倉位
             cross_margin_protected = await self._check_cross_margin_protection(positions)
             
-            # 🔥 v3.28+：時間基礎止損檢查（每5分鐘檢查一次）
-            # 持倉超過閾值時間（默認2小時）且虧損，自動市價平倉
+            # 🔥 v3.28+ / v4.3.1：時間基礎止損檢查（每1分鐘檢查一次）
+            # 持倉超過閾值時間（默認2小時），自動市價平倉（v4.3.1: 無論盈虧都平倉）
             time_based_closes = await self._check_time_based_stop_loss(positions)
             if cross_margin_protected:
                 # 如果執行了全倉保護平倉，重新獲取倉位列表
@@ -576,13 +576,12 @@ class PositionController:
     
     async def _check_time_based_stop_loss(self, positions: List[Dict]) -> int:
         """
-        🔥 v3.28+ 基於時間的強制止損檢查
+        🔥 v3.28+ / v4.3.1 基於時間的強制止損檢查（嚴格模式）
         
         檢查邏輯：
         1. 遍歷所有持倉，記錄/更新開倉時間
         2. 檢查持倉時間是否超過閾值（默認2小時）
-        3. 檢查當前是否虧損（unrealized_pnl < 0）
-        4. 如果同時滿足，觸發市價平倉
+        3. 🔥 v4.3.1: 無論盈虧，只要超時就觸發市價平倉（移除盈利豁免）
         
         Args:
             positions: 當前所有持倉列表
@@ -657,19 +656,17 @@ class PositionController:
                     elif side == 'SHORT':
                         unrealized_pnl = (float(entry_price) - float(current_price)) * size
                 
-                # 步驟7：檢查是否虧損
-                if unrealized_pnl >= 0:
-                    logger.debug(
-                        f"⏰ {symbol} 持倉{holding_time/3600:.2f}小時但盈利${unrealized_pnl:.2f}，不執行時間止損"
-                    )
-                    continue
+                # 🔥 v4.3.1 修复：移除盈利豁免逻辑
+                # 原逻辑Bug：盈利仓位可以无限期持有（违背2小时严格限制）
+                # 新逻辑：超过2小时，无论盈亏都强制平仓
                 
-                # 步驟8：觸發時間基礎強制止損
+                # 步驟7：觸發時間基礎強制止損（无论盈亏）
                 holding_hours = holding_time / 3600
+                pnl_status = "盈利" if unrealized_pnl >= 0 else "虧損"
                 logger.warning(
                     f"🔴⏰ 時間止損觸發: {symbol} {side} | "
                     f"持倉時間 {holding_hours:.2f} 小時 > {time_threshold_hours} 小時 | "
-                    f"虧損 ${unrealized_pnl:.2f}"
+                    f"{pnl_status} ${unrealized_pnl:.2f}"
                 )
                 
                 # 異步執行平倉（不阻塞其他檢查）
@@ -708,9 +705,13 @@ class PositionController:
             quantity = position['size']
             position_side = position['side']  # "LONG" 或 "SHORT"
             
+            # 獲取盈虧狀態
+            pnl = position.get('pnl', 0)
+            pnl_status = "盈利" if pnl >= 0 else "虧損"
+            
             logger.warning(
                 f"🚨⏰ 執行時間止損平倉: {symbol} {side} {quantity} (倉位方向: {position_side}) | "
-                f"原因: 持倉{holding_hours:.2f}小時且虧損${position.get('pnl', 0):.2f}"
+                f"原因: 持倉{holding_hours:.2f}小時（{pnl_status}${pnl:.2f}）"
             )
             
             # 檢測Position Mode
@@ -754,7 +755,7 @@ class PositionController:
                             'exit_price': position.get('current_price'),
                             'pnl': position.get('pnl', 0),
                             'pnl_pct': position.get('pnl_pct', 0),
-                            'close_reason': f"time_based_stop_loss ({holding_hours:.2f}h, loss ${position['pnl']:.2f})",
+                            'close_reason': f"time_based_stop_loss_v4.3.1 ({holding_hours:.2f}h, {pnl_status} ${pnl:.2f})",
                             'close_timestamp': datetime.now(),
                             'order_id': result.get('orderId')
                         }

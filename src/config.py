@@ -128,10 +128,10 @@ class Config:
     CROSS_MARGIN_PROTECTOR_THRESHOLD: float = float(os.getenv("CROSS_MARGIN_PROTECTOR_THRESHOLD", "0.85"))  # 85%觸發閾值（90%上限前5%預警）
     CROSS_MARGIN_PROTECTOR_COOLDOWN: int = int(os.getenv("CROSS_MARGIN_PROTECTOR_COOLDOWN", "120"))  # 平倉後冷卻時間（秒）
     
-    # ===== v3.28+ 基於時間的強制止損配置 =====
+    # ===== v3.28+ / v4.3.1 基於時間的強制止損配置（嚴格模式）=====
     TIME_BASED_STOP_LOSS_ENABLED: bool = os.getenv("TIME_BASED_STOP_LOSS_ENABLED", "true").lower() == "true"  # 啟用時間基礎止損
     TIME_BASED_STOP_LOSS_HOURS: float = float(os.getenv("TIME_BASED_STOP_LOSS_HOURS", "2.0"))  # 持倉時間閾值（小時）
-    TIME_BASED_STOP_LOSS_CHECK_INTERVAL: int = int(os.getenv("TIME_BASED_STOP_LOSS_CHECK_INTERVAL", "300"))  # 檢查間隔（秒，默認5分鐘）
+    TIME_BASED_STOP_LOSS_CHECK_INTERVAL: int = int(os.getenv("TIME_BASED_STOP_LOSS_CHECK_INTERVAL", "60"))  # 檢查間隔（秒，v4.3.1: 300→60秒，無論盈虧都平倉）
     
     # ===== 掃描配置（監控所有 U 本位合約）=====
     SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
