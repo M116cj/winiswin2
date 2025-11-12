@@ -1,13 +1,55 @@
-# SelfLearningTrader v4.3.1 - Strict Time-Based Stop Loss Fix
+# SelfLearningTrader v4.4 - WebSocket-Only K线数据模式
 
 ## 📌 項目概述
 
-**版本**：v4.3.1 时间止损严格模式（移除盈利豁免）  
-**狀態**：✅ **Production Ready - 2小时严格限制，无论盈亏**  
+**版本**：v4.4 WebSocket-only模式（零REST K线API调用）  
+**狀態**：✅ **Production Ready - 100% Binance API协议合规**  
 **部署目標**：Railway（推薦）或其他雲平台  
-**性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%） + Railway日志减少95%
+**性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%） + Railway日志减少95%  
+**协议合规**：✅ **零REST K线API调用**（消除IP封禁风险）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**🔥 v4.4 WebSocket-only K线数据模式（2025-11-12）**：
+- 🎯 **目标**：强制所有K线数据仅从WebSocket读取，零REST K线API调用
+- ✅ **实施内容**：
+  1. **Config配置**：
+     - `WEBSOCKET_ONLY_KLINES=true`（默认启用严格模式）
+     - `DISABLE_REST_FALLBACK=true`（默认禁用REST备援）
+  2. **WebSocket缓存扩容**：
+     - KlineFeed `max_history`: 100根 → **4000根**
+     - 支持1h聚合（需≥60根1m K线）
+     - 保留66小时历史（应对网络中断）
+     - 内存占用：~160MB for 200符号（可接受）
+  3. **数据服务层**：
+     - DataService跳过历史API调用
+     - 禁用REST备援（只在非严格模式下启用）
+     - 数据不足时返回空DataFrame+warming_up日志
+  4. **统一数据管道**：
+     - UnifiedDataPipeline完全跳过Layer 1（历史API）和Layer 3（REST备援）
+     - 完整实现WebSocket聚合逻辑（1m→5m/15m/1h）
+     - 新增`_aggregate_ws_klines()`方法（时间对齐聚合）
+     - 新增`_convert_ws_klines_to_df()`方法（格式转换）
+- ✅ **系统行为**：
+  - **预热期**：启动后60分钟内，1h数据warming_up（5m/15m可用）
+  - **完全就绪**：60分钟后，所有时间框架数据可用
+  - **零REST调用**：仅WebSocket数据源，完全符合Binance API协议
+- ✅ **协议合规验证**：
+  - WebSocket: ✅ `wss://fstream.binance.com/stream`（持续连接）
+  - REST K线: ❌ `/fapi/v1/klines`（**零调用**）
+  - REST账户/订单: ✅ 正常使用（必需操作）
+- ✅ **Architect审查**：全部通过 ✅
+  - WebSocket聚合逻辑正确
+  - warming_up状态正确传播
+  - 内存占用在可接受范围
+  - 零安全问题
+- 📚 **相关文档**：
+  - `WEBSOCKET_ONLY_MODE_v4.4.md` - 完整实施报告
+  - `BINANCE_API_COMPLIANCE_AUDIT.md` - API协议合规审计
+- ⚠️ **注意事项**：
+  - 系统启动后需60分钟才能生成1h信号（预热期）
+  - Railway部署推荐≥512MB内存
+  - 预热期内正常出现`warming_up`日志
 
 **🔥 v4.3.1 时间止损Bug修复（2025-11-12）**：
 - 🐛 **问题**：仓位持有超过2小时（盈利仓位豁免导致无限期持有）
