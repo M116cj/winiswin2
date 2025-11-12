@@ -278,32 +278,65 @@ class UnifiedDataPipeline:
         limit: int
     ) -> Dict[str, pd.DataFrame]:
         """
-        Layer 2: 从WebSocket聚合数据
+        Layer 2: 从WebSocket聚合数据（v4.3.2+ 完整实现）
+        
+        聚合逻辑：
+        - 从WebSocket缓存获取1m K线
+        - 聚合生成5m/15m/1h K线
+        - 返回可用的时间框架数据
         
         适用场景：
         - WebSocket已启用
         - 需要实时数据
-        - 历史API不可用
+        - 历史API不可用/禁用
         """
         if not self.ws_monitor:
             return {}
         
+        # 从WebSocket获取所有1m K线历史
+        all_klines = self.ws_monitor.get_all_klines()
+        # WebSocket缓存使用小写symbol
+        klines_1m = all_klines.get(symbol.lower(), [])
+        
+        kline_count = len(klines_1m) if klines_1m else 0
+        
+        if kline_count < 5:
+            # 连5m都无法聚合，完全没有WebSocket数据
+            logger.debug(f"{symbol}: WebSocket 1m K线太少（{kline_count}<5），无法使用")
+            return {}
+        
         data = {}
         
+        # 逐时间框架检查，返回可用的部分
         for tf in timeframes:
             try:
-                # 从WebSocket获取聚合的K线数据
-                # TODO: 实现WebSocket数据聚合逻辑
-                # ws_klines = await self.ws_monitor.get_aggregated_klines(
-                #     symbol, tf, limit
-                # )
-                
-                # 暂时返回空（v3.21实现）
-                data[tf] = None
+                if tf == "1m" and kline_count >= 1:
+                    # 1m直接使用
+                    data[tf] = self._convert_ws_klines_to_df(klines_1m[-limit:])
+                    self._websocket_hits += 1
+                elif tf in ["5m", "15m", "1h"]:
+                    # 检查是否有足够数据聚合
+                    aggregated = self._aggregate_ws_klines(klines_1m, tf)
+                    if aggregated and len(aggregated) > 0:
+                        data[tf] = self._convert_ws_klines_to_df(aggregated[-limit:])
+                        self._websocket_hits += 1
+                        logger.debug(
+                            f"{symbol} {tf}: WebSocket聚合成功（{kline_count}根1m K线）"
+                        )
+                    else:
+                        # 数据不足
+                        logger.debug(
+                            f"{symbol} {tf}: WebSocket数据不足（{kline_count}根1m K线），"
+                            f"需要至少{60 if tf=='1h' else (15 if tf=='15m' else 5)}根"
+                        )
+                        data[tf] = pd.DataFrame()
+                else:
+                    # 不支持的时间框架
+                    data[tf] = pd.DataFrame()
                 
             except Exception as e:
                 logger.debug(f"⚠️  WebSocket获取失败 {symbol} {tf}: {e}")
-                data[tf] = None
+                data[tf] = pd.DataFrame()
         
         return data
     
@@ -338,6 +371,104 @@ class UnifiedDataPipeline:
                 data[tf] = None
         
         return data
+    
+    def _aggregate_ws_klines(self, klines_1m: List[Dict], target_interval: str) -> List[Dict]:
+        """
+        从1m K线聚合生成高时间框架K线（v4.3.2+ WebSocket-only模式）
+        
+        使用时间对齐的聚合方式：
+        - 5m: 对齐到每5分钟（00:00, 00:05, 00:10...）
+        - 15m: 对齐到每15分钟（00:00, 00:15, 00:30...）
+        - 1h: 对齐到每小时（00:00, 01:00, 02:00...）
+        
+        Args:
+            klines_1m: 1m K线列表（从WebSocket获取）
+            target_interval: 目标时间框架（5m/15m/1h）
+        
+        Returns:
+            聚合后的K线列表
+        """
+        interval_map = {
+            "5m": 5 * 60 * 1000,
+            "15m": 15 * 60 * 1000,
+            "1h": 60 * 60 * 1000
+        }
+        
+        interval_ms = interval_map.get(target_interval)
+        if not interval_ms:
+            return []
+        
+        minutes = interval_ms // (60 * 1000)
+        
+        if len(klines_1m) < minutes:
+            return []
+        
+        # 按时间戳分组
+        from collections import defaultdict
+        grouped = defaultdict(list)
+        
+        for kline in klines_1m:
+            timestamp = kline.get('timestamp') or kline.get('server_timestamp', 0)
+            aligned_time = (timestamp // interval_ms) * interval_ms
+            grouped[aligned_time].append(kline)
+        
+        # 聚合每个时间组
+        aggregated = []
+        for aligned_time in sorted(grouped.keys()):
+            group = grouped[aligned_time]
+            if len(group) > 0:
+                aggregated.append({
+                    'symbol': group[0].get('symbol', ''),
+                    'timestamp': aligned_time,
+                    'open': group[0].get('open', 0),
+                    'high': max(k.get('high', 0) for k in group),
+                    'low': min(k.get('low', float('inf')) for k in group),
+                    'close': group[-1].get('close', 0),
+                    'volume': sum(k.get('volume', 0) for k in group),
+                    'quote_volume': sum(k.get('quote_volume', 0) for k in group),
+                    'trades': sum(k.get('trades', 0) for k in group)
+                })
+        
+        return aggregated
+    
+    def _convert_ws_klines_to_df(self, klines: List[Dict]) -> pd.DataFrame:
+        """
+        转换WebSocket K线数据为DataFrame（v4.3.2+）
+        
+        Args:
+            klines: WebSocket K线数据列表
+        
+        Returns:
+            标准化DataFrame
+        """
+        if not klines:
+            return pd.DataFrame()
+        
+        try:
+            df = pd.DataFrame(klines)
+            
+            # 确保必要字段存在
+            required_fields = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
+            if not all(field in df.columns for field in required_fields):
+                logger.error(f"WebSocket K线缺少必要字段: {df.columns.tolist()}")
+                return pd.DataFrame()
+            
+            # 转换数据类型
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            df['open'] = df['open'].astype(float)
+            df['high'] = df['high'].astype(float)
+            df['low'] = df['low'].astype(float)
+            df['close'] = df['close'].astype(float)
+            df['volume'] = df['volume'].astype(float)
+            
+            # 设置索引
+            df.set_index('timestamp', inplace=True)
+            
+            return df[['open', 'high', 'low', 'close', 'volume']]
+            
+        except Exception as e:
+            logger.error(f"❌ WebSocket K线转换失败: {e}")
+            return pd.DataFrame()
     
     def _parse_klines(self, klines: List) -> pd.DataFrame:
         """
