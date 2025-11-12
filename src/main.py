@@ -60,6 +60,15 @@ logging.basicConfig(
     ]
 )
 
+# 🔥 v4.3+ Railway日志优化（过滤冗余，只显示关键业务指标）
+try:
+    from src.utils.railway_logger import setup_railway_logging
+    railway_business_logger = setup_railway_logging()
+except Exception as e:
+    # 如果Railway日志初始化失败，使用标准日志
+    logging.warning(f"Railway日志优化未启用: {e}")
+    railway_business_logger = None
+
 # ✨ v3.26+ 性能优化：启用SmartLogger（99%速率限制效率）
 logger = create_smart_logger(
     __name__,

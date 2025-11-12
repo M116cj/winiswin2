@@ -6,6 +6,7 @@ System Health Monitor v3.29+ - 全面健康监控系统
 import asyncio
 import psutil
 import logging
+import time
 from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -80,14 +81,20 @@ class SystemHealthMonitor:
         self.monitoring_task: Optional[asyncio.Task] = None
         self.running = False
         
-        # 阈值配置
+        # 阈值配置（v4.3+ Railway环境优化：更宽容的阈值）
         self.thresholds = {
-            'memory_percent': 85.0,  # 内存使用率
-            'cpu_percent': 90.0,  # CPU使用率
-            'thread_count': 500,  # 线程数
-            'api_latency_ms': 5000,  # API延迟
-            'ws_lag_seconds': 60,  # WebSocket滞后
+            'memory_percent': 90.0,  # 内存使用率（Railway: 85→90）
+            'cpu_percent': 95.0,  # CPU使用率（Railway: 90→95）
+            'thread_count': 800,  # 线程数（Railway: 500→800）
+            'api_latency_ms': 10000,  # API延迟（Railway: 5000→10000）
+            'ws_lag_seconds': 180,  # WebSocket滞后（Railway: 60→180秒）
         }
+        
+        # 🔥 v4.3+ Railway优化：健康检查宽容期
+        self.railway_grace_period = 300  # 5分钟宽容期
+        self.system_start_time = time.time()
+        self.consecutive_ws_failures = 0
+        self.ws_failure_threshold = 5  # Railway: 需要5次连续失败才告警（原3次）
         
         logger.info("=" * 80)
         logger.info("✅ SystemHealthMonitor v3.29+ 初始化完成")
