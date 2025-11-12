@@ -1,0 +1,1001 @@
+2025-11-12T13:47:46.626320545Z [inf]  2025-11-12 13:47:46,606 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DYMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626326162Z [inf]  2025-11-12 13:47:46,606 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626331930Z [inf]  2025-11-12 13:47:46,606 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626337883Z [inf]  2025-11-12 13:47:46,606 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626345446Z [inf]  2025-11-12 13:47:46,607 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626351210Z [inf]  2025-11-12 13:47:46,607 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626356466Z [inf]  2025-11-12 13:47:46,607 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIXELUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626362069Z [inf]  2025-11-12 13:47:46,613 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626367536Z [inf]  2025-11-12 13:47:46,613 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626373647Z [inf]  2025-11-12 13:47:46,613 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STRKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626381760Z [inf]  2025-11-12 13:47:46,614 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626387839Z [inf]  2025-11-12 13:47:46,614 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626393864Z [inf]  2025-11-12 13:47:46,614 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GLMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626399907Z [inf]  2025-11-12 13:47:46,614 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626405566Z [inf]  2025-11-12 13:47:46,614 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626411188Z [inf]  2025-11-12 13:47:46,615 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORTALUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626418161Z [inf]  2025-11-12 13:47:46,615 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626424085Z [inf]  2025-11-12 13:47:46,615 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626430093Z [inf]  2025-11-12 13:47:46,615 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626436340Z [inf]  2025-11-12 13:47:46,616 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626441888Z [inf]  2025-11-12 13:47:46,616 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626447526Z [inf]  2025-11-12 13:47:46,616 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AXLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626452995Z [inf]  2025-11-12 13:47:46,616 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626458718Z [inf]  2025-11-12 13:47:46,616 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626464710Z [inf]  2025-11-12 13:47:46,617 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYROUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626471948Z [inf]  2025-11-12 13:47:46,617 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626477982Z [inf]  2025-11-12 13:47:46,617 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626484150Z [inf]  2025-11-12 13:47:46,617 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METISUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626489871Z [inf]  2025-11-12 13:47:46,618 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626495601Z [inf]  2025-11-12 13:47:46,618 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626501082Z [inf]  2025-11-12 13:47:46,618 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AEVOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626506870Z [inf]  2025-11-12 13:47:46,618 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626513929Z [inf]  2025-11-12 13:47:46,618 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626519376Z [inf]  2025-11-12 13:47:46,619 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VANRYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626525827Z [inf]  2025-11-12 13:47:46,619 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BOMEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626531985Z [inf]  2025-11-12 13:47:46,619 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BOMEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626540769Z [inf]  2025-11-12 13:47:46,619 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BOMEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626545794Z [inf]  2025-11-12 13:47:46,620 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ETHFIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626552369Z [inf]  2025-11-12 13:47:46,620 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ETHFIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626557933Z [inf]  2025-11-12 13:47:46,620 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ETHFIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626563719Z [inf]  2025-11-12 13:47:46,620 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626570359Z [inf]  2025-11-12 13:47:46,621 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626576038Z [inf]  2025-11-12 13:47:46,621 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626581843Z [inf]  2025-11-12 13:47:46,621 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626587753Z [inf]  2025-11-12 13:47:46,621 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626593215Z [inf]  2025-11-12 13:47:46,621 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626599099Z [inf]  2025-11-12 13:47:46,622 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TNSRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626604774Z [inf]  2025-11-12 13:47:46,622 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TNSRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626610518Z [inf]  2025-11-12 13:47:46,622 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TNSRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626615690Z [inf]  2025-11-12 13:47:46,622 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAGAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626621495Z [inf]  2025-11-12 13:47:46,623 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAGAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626626691Z [inf]  2025-11-12 13:47:46,623 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAGAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626631736Z [inf]  2025-11-12 13:47:46,623 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626637314Z [inf]  2025-11-12 13:47:46,623 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626642411Z [inf]  2025-11-12 13:47:46,623 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.626647567Z [inf]  2025-11-12 13:47:46,624 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REZUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627744480Z [inf]  2025-11-12 13:47:46,624 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REZUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627752193Z [inf]  2025-11-12 13:47:46,624 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REZUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627757896Z [inf]  2025-11-12 13:47:46,624 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BBUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627763436Z [inf]  2025-11-12 13:47:46,625 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BBUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627768704Z [inf]  2025-11-12 13:47:46,625 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BBUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627774447Z [inf]  2025-11-12 13:47:46,625 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627779601Z [inf]  2025-11-12 13:47:46,625 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.627784828Z [inf]  2025-11-12 13:47:46,625 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631445527Z [inf]  2025-11-12 13:47:46,626 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURBOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631454082Z [inf]  2025-11-12 13:47:46,626 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURBOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631460308Z [inf]  2025-11-12 13:47:46,626 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURBOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631466265Z [inf]  2025-11-12 13:47:46,627 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631472965Z [inf]  2025-11-12 13:47:46,627 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631479262Z [inf]  2025-11-12 13:47:46,627 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631485690Z [inf]  2025-11-12 13:47:46,627 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631491901Z [inf]  2025-11-12 13:47:46,627 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631497912Z [inf]  2025-11-12 13:47:46,628 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631503768Z [inf]  2025-11-12 13:47:46,628 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MEWUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631509466Z [inf]  2025-11-12 13:47:46,628 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MEWUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631515037Z [inf]  2025-11-12 13:47:46,628 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MEWUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631520809Z [inf]  2025-11-12 13:47:46,629 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LISTAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631528365Z [inf]  2025-11-12 13:47:46,629 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LISTAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631533870Z [inf]  2025-11-12 13:47:46,629 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LISTAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631539269Z [inf]  2025-11-12 13:47:46,629 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZROUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631547088Z [inf]  2025-11-12 13:47:46,630 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZROUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.631552537Z [inf]  2025-11-12 13:47:46,630 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZROUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632528582Z [inf]  2025-11-12 13:47:46,630 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RENDERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632536510Z [inf]  2025-11-12 13:47:46,630 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RENDERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632542448Z [inf]  2025-11-12 13:47:46,630 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RENDERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632547793Z [inf]  2025-11-12 13:47:46,631 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632554068Z [inf]  2025-11-12 13:47:46,631 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632562751Z [inf]  2025-11-12 13:47:46,631 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.632569454Z [inf]  2025-11-12 13:47:46,631 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RAREUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.633991638Z [inf]  2025-11-12 13:47:46,632 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RAREUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634000289Z [inf]  2025-11-12 13:47:46,632 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RAREUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634006697Z [inf]  2025-11-12 13:47:46,632 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634013160Z [inf]  2025-11-12 13:47:46,632 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634020148Z [inf]  2025-11-12 13:47:46,632 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634030120Z [inf]  2025-11-12 13:47:46,633 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.634050919Z [inf]  2025-11-12 13:47:46,633 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635820831Z [inf]  2025-11-12 13:47:46,633 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635828904Z [inf]  2025-11-12 13:47:46,633 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635835511Z [inf]  2025-11-12 13:47:46,634 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635841961Z [inf]  2025-11-12 13:47:46,634 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635847763Z [inf]  2025-11-12 13:47:46,634 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VOXELUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635854135Z [inf]  2025-11-12 13:47:46,634 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VOXELUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.635860240Z [inf]  2025-11-12 13:47:46,634 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VOXELUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637543098Z [inf]  2025-11-12 13:47:46,635 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRETTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637549658Z [inf]  2025-11-12 13:47:46,635 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRETTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637555534Z [inf]  2025-11-12 13:47:46,635 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRETTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637560826Z [inf]  2025-11-12 13:47:46,636 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POPCATUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637565532Z [inf]  2025-11-12 13:47:46,636 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POPCATUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637570956Z [inf]  2025-11-12 13:47:46,636 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POPCATUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637575177Z [inf]  2025-11-12 13:47:46,636 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.637580280Z [inf]  2025-11-12 13:47:46,636 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639010454Z [inf]  2025-11-12 13:47:46,637 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639019913Z [inf]  2025-11-12 13:47:46,637 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOGSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639033895Z [inf]  2025-11-12 13:47:46,637 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOGSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639040137Z [inf]  2025-11-12 13:47:46,637 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOGSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639046440Z [inf]  2025-11-12 13:47:46,638 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MBOXUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639052773Z [inf]  2025-11-12 13:47:46,638 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MBOXUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.639059488Z [inf]  2025-11-12 13:47:46,638 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MBOXUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641534786Z [inf]  2025-11-12 13:47:46,638 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CHESSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641545281Z [inf]  2025-11-12 13:47:46,638 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CHESSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641553045Z [inf]  2025-11-12 13:47:46,639 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CHESSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641560689Z [inf]  2025-11-12 13:47:46,639 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUXUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641567014Z [inf]  2025-11-12 13:47:46,639 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUXUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641577114Z [inf]  2025-11-12 13:47:46,639 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUXUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641585923Z [inf]  2025-11-12 13:47:46,640 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUICKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641592267Z [inf]  2025-11-12 13:47:46,640 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUICKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.641598654Z [inf]  2025-11-12 13:47:46,640 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUICKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643422428Z [inf]  2025-11-12 13:47:46,641 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643429951Z [inf]  2025-11-12 13:47:46,640 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RPLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643434187Z [inf]  2025-11-12 13:47:46,642 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1MBABYDOGEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643440172Z [inf]  2025-11-12 13:47:46,640 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RPLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643443217Z [inf]  2025-11-12 13:47:46,642 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1MBABYDOGEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643447802Z [inf]  2025-11-12 13:47:46,641 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RPLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643454322Z [inf]  2025-11-12 13:47:46,642 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1MBABYDOGEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643455428Z [inf]  2025-11-12 13:47:46,641 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.643461726Z [inf]  2025-11-12 13:47:46,641 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  POLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645044908Z [inf]  2025-11-12 13:47:46,642 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEIROUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645053337Z [inf]  2025-11-12 13:47:46,642 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEIROUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645061119Z [inf]  2025-11-12 13:47:46,643 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEIROUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645066812Z [inf]  2025-11-12 13:47:46,643 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIDAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645072006Z [inf]  2025-11-12 13:47:46,643 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIDAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645078158Z [inf]  2025-11-12 13:47:46,643 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIDAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645084326Z [inf]  2025-11-12 13:47:46,644 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645090144Z [inf]  2025-11-12 13:47:46,644 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.645097937Z [inf]  2025-11-12 13:47:46,644 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FIOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646789672Z [inf]  2025-11-12 13:47:46,644 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CATIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646795512Z [inf]  2025-11-12 13:47:46,644 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CATIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646799299Z [inf]  2025-11-12 13:47:46,645 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CATIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646803594Z [inf]  2025-11-12 13:47:46,645 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GHSTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646811738Z [inf]  2025-11-12 13:47:46,645 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GHSTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646816520Z [inf]  2025-11-12 13:47:46,645 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GHSTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.646821824Z [inf]  2025-11-12 13:47:46,646 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HMSTRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648727925Z [inf]  2025-11-12 13:47:46,646 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HMSTRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648737110Z [inf]  2025-11-12 13:47:46,646 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HMSTRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648744373Z [inf]  2025-11-12 13:47:46,646 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648750779Z [inf]  2025-11-12 13:47:46,647 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648758865Z [inf]  2025-11-12 13:47:46,647 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.648779153Z [inf]  2025-11-12 13:47:46,648 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.650522618Z [inf]  2025-11-12 13:47:46,648 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.650529921Z [inf]  2025-11-12 13:47:46,648 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675256834Z [inf]  2025-11-12 13:47:46,668 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EIGENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675271908Z [inf]  2025-11-12 13:47:46,669 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EIGENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675282082Z [inf]  2025-11-12 13:47:46,669 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EIGENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675292939Z [inf]  2025-11-12 13:47:46,669 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DIAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675300485Z [inf]  2025-11-12 13:47:46,669 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DIAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675309046Z [inf]  2025-11-12 13:47:46,670 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DIAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675317458Z [inf]  2025-11-12 13:47:46,670 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000CATUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675325306Z [inf]  2025-11-12 13:47:46,670 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000CATUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675332855Z [inf]  2025-11-12 13:47:46,670 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000CATUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675341283Z [inf]  2025-11-12 13:47:46,671 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SCRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675351014Z [inf]  2025-11-12 13:47:46,671 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SCRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.675358887Z [inf]  2025-11-12 13:47:46,671 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SCRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676849196Z [inf]  2025-11-12 13:47:46,671 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GOATUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676861281Z [inf]  2025-11-12 13:47:46,671 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GOATUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676870629Z [inf]  2025-11-12 13:47:46,672 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GOATUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676876679Z [inf]  2025-11-12 13:47:46,672 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MOODENGUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676884146Z [inf]  2025-11-12 13:47:46,672 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MOODENGUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676892125Z [inf]  2025-11-12 13:47:46,672 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MOODENGUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676898932Z [inf]  2025-11-12 13:47:46,673 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAFEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676906416Z [inf]  2025-11-12 13:47:46,673 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAFEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676913257Z [inf]  2025-11-12 13:47:46,673 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAFEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676922588Z [inf]  2025-11-12 13:47:46,673 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SANTOSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676928889Z [inf]  2025-11-12 13:47:46,674 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SANTOSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.676937162Z [inf]  2025-11-12 13:47:46,674 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SANTOSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696013327Z [inf]  2025-11-12 13:47:46,674 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PONKEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696040180Z [inf]  2025-11-12 13:47:46,674 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PONKEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696051025Z [inf]  2025-11-12 13:47:46,674 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PONKEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696059548Z [inf]  2025-11-12 13:47:46,675 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COWUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696067567Z [inf]  2025-11-12 13:47:46,675 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COWUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696076603Z [inf]  2025-11-12 13:47:46,675 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COWUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696084821Z [inf]  2025-11-12 13:47:46,675 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CETUSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696093839Z [inf]  2025-11-12 13:47:46,676 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CETUSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696101581Z [inf]  2025-11-12 13:47:46,676 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CETUSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.696109418Z [inf]  2025-11-12 13:47:46,676 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000MOGUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697872016Z [inf]  2025-11-12 13:47:46,676 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000MOGUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697884484Z [inf]  2025-11-12 13:47:46,676 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000MOGUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697899702Z [inf]  2025-11-12 13:47:46,677 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GRASSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697907024Z [inf]  2025-11-12 13:47:46,677 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GRASSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697913865Z [inf]  2025-11-12 13:47:46,677 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GRASSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697920080Z [inf]  2025-11-12 13:47:46,677 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DRIFTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697926386Z [inf]  2025-11-12 13:47:46,678 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DRIFTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697932244Z [inf]  2025-11-12 13:47:46,678 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DRIFTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697938332Z [inf]  2025-11-12 13:47:46,678 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SWELLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697945889Z [inf]  2025-11-12 13:47:46,678 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SWELLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697952588Z [inf]  2025-11-12 13:47:46,678 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SWELLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.697959468Z [inf]  2025-11-12 13:47:46,679 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ACTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699037603Z [inf]  2025-11-12 13:47:46,679 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ACTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699045785Z [inf]  2025-11-12 13:47:46,679 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ACTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699051525Z [inf]  2025-11-12 13:47:46,680 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PNUTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699057629Z [inf]  2025-11-12 13:47:46,680 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PNUTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699063263Z [inf]  2025-11-12 13:47:46,680 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PNUTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699070610Z [inf]  2025-11-12 13:47:46,680 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HIPPOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699076938Z [inf]  2025-11-12 13:47:46,680 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HIPPOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699082515Z [inf]  2025-11-12 13:47:46,681 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HIPPOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.699088015Z [inf]  2025-11-12 13:47:46,681 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000XUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.700692385Z [inf]  2025-11-12 13:47:46,684 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SCRTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.703920051Z [inf]  2025-11-12 13:47:46,687 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CHILLGUYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.705366357Z [inf]  2025-11-12 13:47:46,690 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ORCAUSDT 1h 数据获取失败��所有层级失败）
+2025-11-12T13:47:46.716850591Z [inf]  2025-11-12 13:47:46,695 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DEGOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.716860838Z [inf]  2025-11-12 13:47:46,698 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PENGUUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.716866777Z [inf]  2025-11-12 13:47:46,700 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FARTCOINUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.716871587Z [inf]  2025-11-12 13:47:46,706 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZEREBROUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:47:46.716878121Z [inf]  2025-11-12 13:47:46,709 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SWARMSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:02.527469930Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 127
+2025-11-12T13:48:37.427144085Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard3: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427155537Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard4: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427162672Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard5: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427169015Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard6: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427176952Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard7: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427185463Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard8: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427234610Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard9: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427242562Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard10: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427327854Z [inf]  2025-11-12 13:48:31,419 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: websocket - critical - WebSocket未连接
+2025-11-12T13:48:37.427333488Z [inf]  2025-11-12 13:48:31,419 - src.monitoring.health_check - CRITICAL - 🚨 告警触发: api - critical - API连接失败
+2025-11-12T13:48:37.427338475Z [inf]  2025-11-12 13:48:31,420 - src.monitoring.health_check - INFO - 🏥 健康检查完成: critical (1.00秒)
+2025-11-12T13:48:37.427343250Z [inf]  2025-11-12 13:48:31,513 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard0: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427350759Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard1: 健康检查失败 - not_connected
+2025-11-12T13:48:37.427357068Z [inf]  2025-11-12 13:48:31,514 - src.core.websocket.optimized_base_feed - WARNING - 🏥 KlineFeed-Shard2: 健康检查失败 - not_connected
+2025-11-12T13:48:39.576952421Z [inf]  2025-11-12 13:48:39,572 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗193次)，請7秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-12T13:48:39.576964121Z [inf]  2025-11-12 13:48:39,573 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v2/account - 熔斷器阻斷(失敗193次)，請7秒後重試
+2025-11-12T13:48:39.705172079Z [inf]  2025-11-12 13:48:39,672 - src.core.rate_limiter - WARNING - 達到速率限制，等待 5.75 秒
+2025-11-12T13:48:45.538476314Z [inf]  2025-11-12 13:48:45,427 - src.core.circuit_breaker - ERROR - 🔴 熔斷器阻斷(失敗193次)，請1秒後重試 | 操作: generic | 優先級: NORMAL
+2025-11-12T13:48:45.538482535Z [inf]  2025-11-12 13:48:45,427 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - 熔斷器阻斷(失敗193次)，請1秒後重試
+2025-11-12T13:48:45.538488268Z [inf]  2025-11-12 13:48:45,427 - src.core.rate_limiter - WARNING - 達到速率限制，等待 0.10 秒
+2025-11-12T13:48:45.538495151Z [inf]  2025-11-12 13:48:45,529 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.538501328Z [inf]  2025-11-12 13:48:45,530 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.538506521Z [inf]  2025-11-12 13:48:45,530 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.557429510Z [inf]  2025-11-12 13:48:45,556 - src.core.rate_limiter - WARNING - 達到速率限制，等待 0.19 秒
+2025-11-12T13:48:45.564358456Z [inf]  2025-11-12 13:48:45,560 - src.core.rate_limiter - WARNING - 達到速率限制，等待 0.18 秒
+2025-11-12T13:48:45.745911137Z [inf]  2025-11-12 13:48:45,743 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPICUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.745917732Z [inf]  2025-11-12 13:48:45,744 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPICUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.745924659Z [inf]  2025-11-12 13:48:45,744 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPICUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.745931077Z [inf]  2025-11-12 13:48:45,745 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VICUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747556233Z [inf]  2025-11-12 13:48:45,745 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VICUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747563632Z [inf]  2025-11-12 13:48:45,745 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VICUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747568339Z [inf]  2025-11-12 13:48:45,745 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BMTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747572880Z [inf]  2025-11-12 13:48:45,746 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BMTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747577251Z [inf]  2025-11-12 13:48:45,746 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BMTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.747582151Z [inf]  2025-11-12 13:48:45,746 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KAITOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749852153Z [inf]  2025-11-12 13:48:45,747 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KAITOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749860855Z [inf]  2025-11-12 13:48:45,747 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KAITOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749866623Z [inf]  2025-11-12 13:48:45,747 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REDUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749871401Z [inf]  2025-11-12 13:48:45,747 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REDUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749877244Z [inf]  2025-11-12 13:48:45,747 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  REDUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749882735Z [inf]  2025-11-12 13:48:45,748 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TSTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749888619Z [inf]  2025-11-12 13:48:45,748 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TSTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749895606Z [inf]  2025-11-12 13:48:45,748 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TSTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749901336Z [inf]  2025-11-12 13:48:45,749 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GPSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.749907334Z [inf]  2025-11-12 13:48:45,749 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GPSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.751516648Z [inf]  2025-11-12 13:48:45,749 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GPSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.751523563Z [inf]  2025-11-12 13:48:45,750 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VVVUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.751529880Z [inf]  2025-11-12 13:48:45,750 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VVVUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.751534576Z [inf]  2025-11-12 13:48:45,750 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VVVUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.751538908Z [inf]  2025-11-12 13:48:45,750 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ANIMEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.753208045Z [inf]  2025-11-12 13:48:45,751 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ANIMEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.753214558Z [inf]  2025-11-12 13:48:45,751 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ANIMEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762556793Z [inf]  2025-11-12 13:48:45,755 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VTHOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762564599Z [inf]  2025-11-12 13:48:45,755 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VTHOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762570395Z [inf]  2025-11-12 13:48:45,755 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VTHOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762575548Z [inf]  2025-11-12 13:48:45,756 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SHELLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762582687Z [inf]  2025-11-12 13:48:45,756 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SHELLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762587551Z [inf]  2025-11-12 13:48:45,756 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SHELLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762592147Z [inf]  2025-11-12 13:48:45,756 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUBARAKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762597221Z [inf]  2025-11-12 13:48:45,757 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUBARAKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762602006Z [inf]  2025-11-12 13:48:45,757 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUBARAKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762606395Z [inf]  2025-11-12 13:48:45,757 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAYERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762610372Z [inf]  2025-11-12 13:48:45,757 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAYERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.762614442Z [inf]  2025-11-12 13:48:45,757 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAYERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764186082Z [inf]  2025-11-12 13:48:45,761 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVAAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764191633Z [inf]  2025-11-12 13:48:45,758 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MELANIAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764200445Z [inf]  2025-11-12 13:48:45,758 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MELANIAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764208566Z [inf]  2025-11-12 13:48:45,758 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MELANIAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764257959Z [inf]  2025-11-12 13:48:45,759 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIPPINUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764264430Z [inf]  2025-11-12 13:48:45,759 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIPPINUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764269204Z [inf]  2025-11-12 13:48:45,759 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PIPPINUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764275057Z [inf]  2025-11-12 13:48:45,760 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BERAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764283335Z [inf]  2025-11-12 13:48:45,760 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BERAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764288744Z [inf]  2025-11-12 13:48:45,760 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BERAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764294959Z [inf]  2025-11-12 13:48:45,760 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVAAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.764299522Z [inf]  2025-11-12 13:48:45,761 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVAAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765600984Z [inf]  2025-11-12 13:48:45,761 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765613772Z [inf]  2025-11-12 13:48:45,761 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765620699Z [inf]  2025-11-12 13:48:45,762 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GUNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765629311Z [inf]  2025-11-12 13:48:45,762 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765636047Z [inf]  2025-11-12 13:48:45,762 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765644566Z [inf]  2025-11-12 13:48:45,762 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765651810Z [inf]  2025-11-12 13:48:45,763 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NILUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765673622Z [inf]  2025-11-12 13:48:45,763 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NILUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765680844Z [inf]  2025-11-12 13:48:45,763 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NILUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765687472Z [inf]  2025-11-12 13:48:45,763 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PARTIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765693043Z [inf]  2025-11-12 13:48:45,763 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PARTIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.765699308Z [inf]  2025-11-12 13:48:45,764 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PARTIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766652525Z [inf]  2025-11-12 13:48:45,764 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766661232Z [inf]  2025-11-12 13:48:45,764 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766667643Z [inf]  2025-11-12 13:48:45,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766673025Z [inf]  2025-11-12 13:48:45,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766678569Z [inf]  2025-11-12 13:48:45,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766706774Z [inf]  2025-11-12 13:48:45,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EPTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.766713410Z [inf]  2025-11-12 13:48:45,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768113425Z [inf]  2025-11-12 13:48:45,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768118706Z [inf]  2025-11-12 13:48:45,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768124368Z [inf]  2025-11-12 13:48:45,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BABYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768128500Z [inf]  2025-11-12 13:48:45,767 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BABYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768132304Z [inf]  2025-11-12 13:48:45,767 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BABYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.768136140Z [inf]  2025-11-12 13:48:45,767 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLUMEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770023054Z [inf]  2025-11-12 13:48:45,767 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLUMEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770032584Z [inf]  2025-11-12 13:48:45,767 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLUMEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770037713Z [inf]  2025-11-12 13:48:45,768 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIRENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770042740Z [inf]  2025-11-12 13:48:45,768 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIRENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770047755Z [inf]  2025-11-12 13:48:45,768 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIRENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770052968Z [inf]  2025-11-12 13:48:45,769 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.770058699Z [inf]  2025-11-12 13:48:45,769 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771446073Z [inf]  2025-11-12 13:48:45,769 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771451354Z [inf]  2025-11-12 13:48:45,769 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAS31USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771455424Z [inf]  2025-11-12 13:48:45,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAS31USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771460424Z [inf]  2025-11-12 13:48:45,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANANAS31USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771464329Z [inf]  2025-11-12 13:48:45,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUNDIXUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771467859Z [inf]  2025-11-12 13:48:45,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUNDIXUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.771471384Z [inf]  2025-11-12 13:48:45,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUNDIXUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773477295Z [inf]  2025-11-12 13:48:45,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JSTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773487118Z [inf]  2025-11-12 13:48:45,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JSTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773493572Z [inf]  2025-11-12 13:48:45,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JSTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773498174Z [inf]  2025-11-12 13:48:45,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATHUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773503185Z [inf]  2025-11-12 13:48:45,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATHUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773508588Z [inf]  2025-11-12 13:48:45,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATHUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773513533Z [inf]  2025-11-12 13:48:45,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WALUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.773518369Z [inf]  2025-11-12 13:48:45,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WALUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775050859Z [inf]  2025-11-12 13:48:45,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WALUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775061694Z [inf]  2025-11-12 13:48:45,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CTKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775069658Z [inf]  2025-11-12 13:48:45,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CTKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775075233Z [inf]  2025-11-12 13:48:45,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CTKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775081034Z [inf]  2025-11-12 13:48:45,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLIF3BUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775087808Z [inf]  2025-11-12 13:48:45,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLIF3BUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.775095039Z [inf]  2025-11-12 13:48:45,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLIF3BUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.776637762Z [inf]  2025-11-12 13:48:45,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FISUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.776646170Z [inf]  2025-11-12 13:48:45,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FISUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.776653720Z [inf]  2025-11-12 13:48:45,775 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FISUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.776659714Z [inf]  2025-11-12 13:48:45,775 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B3USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778202431Z [inf]  2025-11-12 13:48:45,776 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B3USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778212090Z [inf]  2025-11-12 13:48:45,776 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B3USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778217772Z [inf]  2025-11-12 13:48:45,776 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PAXGUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778226359Z [inf]  2025-11-12 13:48:45,776 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PAXGUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778232578Z [inf]  2025-11-12 13:48:45,777 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PAXGUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778237288Z [inf]  2025-11-12 13:48:45,777 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIGNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.778242036Z [inf]  2025-11-12 13:48:45,777 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIGNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779792504Z [inf]  2025-11-12 13:48:45,777 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SIGNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779800872Z [inf]  2025-11-12 13:48:45,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLI714USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779808226Z [inf]  2025-11-12 13:48:45,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLI714USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779814472Z [inf]  2025-11-12 13:48:45,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BROCCOLI714USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779821066Z [inf]  2025-11-12 13:48:45,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FHEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779827626Z [inf]  2025-11-12 13:48:45,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FHEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.779833910Z [inf]  2025-11-12 13:48:45,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FHEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781558561Z [inf]  2025-11-12 13:48:45,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WCTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781565468Z [inf]  2025-11-12 13:48:45,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WCTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781569978Z [inf]  2025-11-12 13:48:45,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WCTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781574342Z [inf]  2025-11-12 13:48:45,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TUTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781579252Z [inf]  2025-11-12 13:48:45,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TUTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.781583811Z [inf]  2025-11-12 13:48:45,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TUTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783098227Z [inf]  2025-11-12 13:48:45,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KERNELUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783106813Z [inf]  2025-11-12 13:48:45,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KERNELUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783112265Z [inf]  2025-11-12 13:48:45,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KERNELUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783117708Z [inf]  2025-11-12 13:48:45,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INITUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783123247Z [inf]  2025-11-12 13:48:45,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INITUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.783128700Z [inf]  2025-11-12 13:48:45,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INITUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784863336Z [inf]  2025-11-12 13:48:45,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784870889Z [inf]  2025-11-12 13:48:45,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784876113Z [inf]  2025-11-12 13:48:45,783 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BANKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784880721Z [inf]  2025-11-12 13:48:45,783 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORTHUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784885592Z [inf]  2025-11-12 13:48:45,783 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORTHUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.784890829Z [inf]  2025-11-12 13:48:45,784 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORTHUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786710618Z [inf]  2025-11-12 13:48:45,784 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786723541Z [inf]  2025-11-12 13:48:45,784 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786731003Z [inf]  2025-11-12 13:48:45,784 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786738220Z [inf]  2025-11-12 13:48:45,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786745482Z [inf]  2025-11-12 13:48:45,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786752886Z [inf]  2025-11-12 13:48:45,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786760231Z [inf]  2025-11-12 13:48:45,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.786767904Z [inf]  2025-11-12 13:48:45,786 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788791657Z [inf]  2025-11-12 13:48:45,786 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FORMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788802149Z [inf]  2025-11-12 13:48:45,786 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JELLYJELLYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788809881Z [inf]  2025-11-12 13:48:45,787 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JELLYJELLYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788817312Z [inf]  2025-11-12 13:48:45,787 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JELLYJELLYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788823852Z [inf]  2025-11-12 13:48:45,787 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AERGOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.788829634Z [inf]  2025-11-12 13:48:45,787 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AERGOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.789962647Z [inf]  2025-11-12 13:48:45,788 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AERGOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900865844Z [inf]  2025-11-12 13:48:45,890 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DEEPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900877079Z [inf]  2025-11-12 13:48:45,890 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DEEPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900884096Z [inf]  2025-11-12 13:48:45,891 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DEEPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900889359Z [inf]  2025-11-12 13:48:45,891 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOLVUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900897067Z [inf]  2025-11-12 13:48:45,891 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOLVUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900903139Z [inf]  2025-11-12 13:48:45,892 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOLVUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900908415Z [inf]  2025-11-12 13:48:45,892 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VINEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900916430Z [inf]  2025-11-12 13:48:45,892 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VINEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900922139Z [inf]  2025-11-12 13:48:45,893 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VINEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900928332Z [inf]  2025-11-12 13:48:45,893 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XCNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900934179Z [inf]  2025-11-12 13:48:45,893 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XCNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.900941613Z [inf]  2025-11-12 13:48:45,894 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XCNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903300928Z [inf]  2025-11-12 13:48:45,894 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903314630Z [inf]  2025-11-12 13:48:45,894 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903324735Z [inf]  2025-11-12 13:48:45,895 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903331364Z [inf]  2025-11-12 13:48:45,895 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903337952Z [inf]  2025-11-12 13:48:45,895 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903344183Z [inf]  2025-11-12 13:48:45,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903351123Z [inf]  2025-11-12 13:48:45,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MAVIAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903357627Z [inf]  2025-11-12 13:48:45,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MAVIAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903363085Z [inf]  2025-11-12 13:48:45,897 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MAVIAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903370901Z [inf]  2025-11-12 13:48:45,897 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BIDUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903375933Z [inf]  2025-11-12 13:48:45,897 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BIDUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.903382055Z [inf]  2025-11-12 13:48:45,898 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BIDUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.905467040Z [inf]  2025-11-12 13:48:45,898 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MLNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.905473915Z [inf]  2025-11-12 13:48:45,898 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MLNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.905478864Z [inf]  2025-11-12 13:48:45,899 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MLNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:45.905483751Z [inf]  2025-11-12 13:48:45,899 - src.core.rate_limiter - WARNING - 達到速率限制，等待 0.12 秒
+2025-11-12T13:48:46.061929067Z [inf]  2025-11-12 13:48:46,019 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUMPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.061933334Z [inf]  2025-11-12 13:48:46,020 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUMPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.061939525Z [inf]  2025-11-12 13:48:46,020 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUMPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.061944682Z [inf]  2025-11-12 13:48:46,020 - src.core.rate_limiter - WARNING - 達到速率限制，等待 0.27 秒
+2025-11-12T13:48:46.581825149Z [inf]  2025-11-12 13:48:46,369 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'DOLOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:46.581834132Z [inf]  2025-11-12 13:48:46,369 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: normal → warning (失敗次數: 1)
+2025-11-12T13:48:46.581841478Z [inf]  2025-11-12 13:48:46,370 - src.clients.binance_client - ERROR - API 請求失敗: /fapi/v1/klines - HTTP 418: I'm a teapot
+2025-11-12T13:48:46.581849614Z [inf]  2025-11-12 13:48:46,370 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗1次 (操作: generic, 優先級: NORMAL)
+2025-11-12T13:48:46.581859376Z [inf]  2025-11-12 13:48:46,374 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PROMPTUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:46.581867823Z [inf]  2025-11-12 13:48:46,374 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROMPTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.581875006Z [inf]  2025-11-12 13:48:46,375 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROMPTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.581882986Z [inf]  2025-11-12 13:48:46,375 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROMPTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.581891630Z [inf]  2025-11-12 13:48:46,497 - src.core.circuit_breaker - WARNING - ⚠️  熔斷器警告級: 失敗3次 (操作: generic, 優先級: NORMAL)
+2025-11-12T13:48:46.581899514Z [inf]  2025-11-12 13:48:46,573 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: warning → throttled (失敗次數: 4)
+2025-11-12T13:48:46.584918297Z [inf]  2025-11-12 13:48:46,573 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOLOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.584924489Z [inf]  2025-11-12 13:48:46,574 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOLOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.584930232Z [inf]  2025-11-12 13:48:46,574 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOLOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:46.584936603Z [inf]  2025-11-12 13:48:46,580 - src.core.circuit_breaker - WARNING - 🔸 熔斷器限流: 增加2.0秒延遲 (失敗4次, 操作: generic)
+2025-11-12T13:48:48.715127085Z [inf]  2025-11-12 13:48:48,706 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'HAEDALUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.715133355Z [inf]  2025-11-12 13:48:48,706 - src.core.circuit_breaker - WARNING - 🔄 熔斷器級別變化: throttled → blocked (失敗次數: 5)
+2025-11-12T13:48:48.715139874Z [inf]  2025-11-12 13:48:48,709 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SXTUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.715146663Z [inf]  2025-11-12 13:48:48,709 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ASRUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.715153533Z [inf]  2025-11-12 13:48:48,711 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HAEDALUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.715160040Z [inf]  2025-11-12 13:48:48,711 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HAEDALUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.715165843Z [inf]  2025-11-12 13:48:48,712 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HAEDALUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.715170554Z [inf]  2025-11-12 13:48:48,712 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SXTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.715174686Z [inf]  2025-11-12 13:48:48,712 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SXTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.716532278Z [inf]  2025-11-12 13:48:48,712 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SXTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.718591180Z [inf]  2025-11-12 13:48:48,717 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ALPINEUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.725318747Z [inf]  2025-11-12 13:48:48,720 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.725325773Z [inf]  2025-11-12 13:48:48,720 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.725330975Z [inf]  2025-11-12 13:48:48,720 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.725340256Z [inf]  2025-11-12 13:48:48,722 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALPINEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.725347644Z [inf]  2025-11-12 13:48:48,722 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALPINEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.725352959Z [inf]  2025-11-12 13:48:48,722 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALPINEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.769647610Z [inf]  2025-11-12 13:48:48,750 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ZKJUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.769654386Z [inf]  2025-11-12 13:48:48,750 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SYRUPUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.769660461Z [inf]  2025-11-12 13:48:48,751 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'OBOLUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.769668831Z [inf]  2025-11-12 13:48:48,751 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'B2USDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.769675140Z [inf]  2025-11-12 13:48:48,752 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'DOODUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.769681154Z [inf]  2025-11-12 13:48:48,752 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957499510. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'AGTUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.770898396Z [inf]  2025-11-12 13:48:48,752 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'MILKUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.770904152Z [inf]  2025-11-12 13:48:48,752 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SKYAIUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.770909313Z [inf]  2025-11-12 13:48:48,754 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'OGUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.770913938Z [inf]  2025-11-12 13:48:48,754 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762956897508. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'BUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.770918148Z [inf]  2025-11-12 13:48:48,756 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'NXPCUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.770923799Z [inf]  2025-11-12 13:48:48,756 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SOONUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.772444466Z [inf]  2025-11-12 13:48:48,756 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762956897508. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'AWEUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.772451009Z [inf]  2025-11-12 13:48:48,757 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'CVCUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.772458662Z [inf]  2025-11-12 13:48:48,759 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MILKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.772462711Z [inf]  2025-11-12 13:48:48,759 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MILKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.772466843Z [inf]  2025-11-12 13:48:48,760 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MILKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.772470966Z [inf]  2025-11-12 13:48:48,761 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SOPHUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.772477341Z [inf]  2025-11-12 13:48:48,761 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'AUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.772481072Z [inf]  2025-11-12 13:48:48,762 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'HUMAUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.774382523Z [inf]  2025-11-12 13:48:48,763 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'MERLUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.774393670Z [inf]  2025-11-12 13:48:48,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774400767Z [inf]  2025-11-12 13:48:48,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774412227Z [inf]  2025-11-12 13:48:48,765 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774419029Z [inf]  2025-11-12 13:48:48,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NXPCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774426960Z [inf]  2025-11-12 13:48:48,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NXPCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774432189Z [inf]  2025-11-12 13:48:48,766 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NXPCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774438088Z [inf]  2025-11-12 13:48:48,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774452528Z [inf]  2025-11-12 13:48:48,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774457998Z [inf]  2025-11-12 13:48:48,770 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.774463253Z [inf]  2025-11-12 13:48:48,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B2USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775868709Z [inf]  2025-11-12 13:48:48,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B2USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775873648Z [inf]  2025-11-12 13:48:48,771 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  B2USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775878480Z [inf]  2025-11-12 13:48:48,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AGTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775882779Z [inf]  2025-11-12 13:48:48,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AGTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775894814Z [inf]  2025-11-12 13:48:48,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AGTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775899266Z [inf]  2025-11-12 13:48:48,772 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AWEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775903233Z [inf]  2025-11-12 13:48:48,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AWEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775907725Z [inf]  2025-11-12 13:48:48,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AWEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775912235Z [inf]  2025-11-12 13:48:48,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OGUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775916696Z [inf]  2025-11-12 13:48:48,773 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OGUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775920852Z [inf]  2025-11-12 13:48:48,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OGUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.775925324Z [inf]  2025-11-12 13:48:48,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOODUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.777168087Z [inf]  2025-11-12 13:48:48,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOODUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.777172950Z [inf]  2025-11-12 13:48:48,774 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DOODUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.777177983Z [inf]  2025-11-12 13:48:48,775 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKJUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.777182525Z [inf]  2025-11-12 13:48:48,775 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKJUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.777187223Z [inf]  2025-11-12 13:48:48,775 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKJUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784321467Z [inf]  2025-11-12 13:48:48,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOPHUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784336243Z [inf]  2025-11-12 13:48:48,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOPHUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784346070Z [inf]  2025-11-12 13:48:48,778 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOPHUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784351539Z [inf]  2025-11-12 13:48:48,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784358139Z [inf]  2025-11-12 13:48:48,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784365182Z [inf]  2025-11-12 13:48:48,779 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784371679Z [inf]  2025-11-12 13:48:48,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784380761Z [inf]  2025-11-12 13:48:48,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784386549Z [inf]  2025-11-12 13:48:48,780 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784392483Z [inf]  2025-11-12 13:48:48,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUMAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784401045Z [inf]  2025-11-12 13:48:48,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUMAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.784405592Z [inf]  2025-11-12 13:48:48,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUMAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785714374Z [inf]  2025-11-12 13:48:48,781 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OBOLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785724958Z [inf]  2025-11-12 13:48:48,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OBOLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785729075Z [inf]  2025-11-12 13:48:48,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OBOLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785733784Z [inf]  2025-11-12 13:48:48,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYRUPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785738881Z [inf]  2025-11-12 13:48:48,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYRUPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.785743419Z [inf]  2025-11-12 13:48:48,782 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SYRUPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.787071717Z [inf]  2025-11-12 13:48:48,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.787078553Z [inf]  2025-11-12 13:48:48,785 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.787085072Z [inf]  2025-11-12 13:48:48,786 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.787090904Z [inf]  2025-11-12 13:48:48,786 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957499510. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'HYPEUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.788958409Z [inf]  2025-11-12 13:48:48,786 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'LAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.788965403Z [inf]  2025-11-12 13:48:48,786 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SKATEUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.788971124Z [inf]  2025-11-12 13:48:48,787 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TAIKOUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.788976941Z [inf]  2025-11-12 13:48:48,787 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PUFFERUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.788983475Z [inf]  2025-11-12 13:48:48,787 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PORT3USDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.788989005Z [inf]  2025-11-12 13:48:48,787 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'HOMEUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.790390595Z [inf]  2025-11-12 13:48:48,788 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': '1000000BOBUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.796969912Z [inf]  2025-11-12 13:48:48,791 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'BDXNUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.796979185Z [inf]  2025-11-12 13:48:48,792 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'RESOLVUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.796984800Z [inf]  2025-11-12 13:48:48,792 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SQDUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.796990120Z [inf]  2025-11-12 13:48:48,793 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957499510. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PUMPBTCUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.796995329Z [inf]  2025-11-12 13:48:48,794 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SPKUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.797000856Z [inf]  2025-11-12 13:48:48,795 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'MYXUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.798292872Z [inf]  2025-11-12 13:48:48,796 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUFFERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.798300271Z [inf]  2025-11-12 13:48:48,796 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUFFERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.798304894Z [inf]  2025-11-12 13:48:48,796 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUFFERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.799981537Z [inf]  2025-11-12 13:48:48,798 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'FUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.799991309Z [inf]  2025-11-12 13:48:48,799 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802114855Z [inf]  2025-11-12 13:48:48,799 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802130922Z [inf]  2025-11-12 13:48:48,799 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802139059Z [inf]  2025-11-12 13:48:48,800 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BDXNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802148298Z [inf]  2025-11-12 13:48:48,800 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BDXNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802156172Z [inf]  2025-11-12 13:48:48,800 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BDXNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802164462Z [inf]  2025-11-12 13:48:48,800 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAIKOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.802172249Z [inf]  2025-11-12 13:48:48,801 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAIKOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803548341Z [inf]  2025-11-12 13:48:48,801 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAIKOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803558247Z [inf]  2025-11-12 13:48:48,801 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RESOLVUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803564500Z [inf]  2025-11-12 13:48:48,801 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RESOLVUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803569612Z [inf]  2025-11-12 13:48:48,801 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RESOLVUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803575622Z [inf]  2025-11-12 13:48:48,802 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MERLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803581842Z [inf]  2025-11-12 13:48:48,802 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MERLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.803587593Z [inf]  2025-11-12 13:48:48,802 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MERLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.805091344Z [inf]  2025-11-12 13:48:48,803 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORT3USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.805099394Z [inf]  2025-11-12 13:48:48,803 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORT3USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.805105861Z [inf]  2025-11-12 13:48:48,803 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PORT3USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.805111636Z [inf]  2025-11-12 13:48:48,804 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000BOBUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.805117224Z [inf]  2025-11-12 13:48:48,804 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000BOBUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807437166Z [inf]  2025-11-12 13:48:48,804 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  1000000BOBUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807451882Z [inf]  2025-11-12 13:48:48,804 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKATEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807460779Z [inf]  2025-11-12 13:48:48,805 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKATEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807469105Z [inf]  2025-11-12 13:48:48,805 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKATEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807476495Z [inf]  2025-11-12 13:48:48,805 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807486746Z [inf]  2025-11-12 13:48:48,805 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807497934Z [inf]  2025-11-12 13:48:48,805 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HYPEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807506164Z [inf]  2025-11-12 13:48:48,806 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPBTCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807515030Z [inf]  2025-11-12 13:48:48,806 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPBTCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.807521958Z [inf]  2025-11-12 13:48:48,806 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPBTCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.808557162Z [inf]  2025-11-12 13:48:48,807 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOMEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.808565386Z [inf]  2025-11-12 13:48:48,807 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOMEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.808570879Z [inf]  2025-11-12 13:48:48,807 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOMEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.808575889Z [inf]  2025-11-12 13:48:48,807 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SQDUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.809963798Z [inf]  2025-11-12 13:48:48,808 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SQDUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.809974852Z [inf]  2025-11-12 13:48:48,808 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SQDUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.809982716Z [inf]  2025-11-12 13:48:48,808 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SPKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.809990705Z [inf]  2025-11-12 13:48:48,808 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SPKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.809999573Z [inf]  2025-11-12 13:48:48,809 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SPKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.810011296Z [inf]  2025-11-12 13:48:48,809 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762956897508. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'NEWTUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.816485320Z [inf]  2025-11-12 13:48:48,811 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.816497256Z [inf]  2025-11-12 13:48:48,811 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.816505183Z [inf]  2025-11-12 13:48:48,811 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.829873693Z [inf]  2025-11-12 13:48:48,824 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'DMCUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.829883216Z [inf]  2025-11-12 13:48:48,825 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEWTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.829889398Z [inf]  2025-11-12 13:48:48,825 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEWTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.829895315Z [inf]  2025-11-12 13:48:48,826 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NEWTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.829902522Z [inf]  2025-11-12 13:48:48,827 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'HUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.829910438Z [inf]  2025-11-12 13:48:48,828 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SAHARAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.829917272Z [inf]  2025-11-12 13:48:48,829 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'OLUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.831091109Z [inf]  2025-11-12 13:48:48,830 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DMCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.832500375Z [inf]  2025-11-12 13:48:48,830 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DMCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.832508436Z [inf]  2025-11-12 13:48:48,830 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DMCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.832514321Z [inf]  2025-11-12 13:48:48,831 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.832518716Z [inf]  2025-11-12 13:48:48,832 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.834114291Z [inf]  2025-11-12 13:48:48,832 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.834121663Z [inf]  2025-11-12 13:48:48,833 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762956897508. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'BULLAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.835325533Z [inf]  2025-11-12 13:48:48,834 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAHARAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.835334550Z [inf]  2025-11-12 13:48:48,834 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAHARAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.835344081Z [inf]  2025-11-12 13:48:48,834 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAHARAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.836729892Z [inf]  2025-11-12 13:48:48,835 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'IDOLUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.836738001Z [inf]  2025-11-12 13:48:48,835 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ICNTUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.838406836Z [inf]  2025-11-12 13:48:48,836 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BULLAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.838413860Z [inf]  2025-11-12 13:48:48,837 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BULLAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.838419029Z [inf]  2025-11-12 13:48:48,837 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BULLAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.838424857Z [inf]  2025-11-12 13:48:48,837 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959221055. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'MUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.840016272Z [inf]  2025-11-12 13:48:48,839 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.840024411Z [inf]  2025-11-12 13:48:48,839 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.841359518Z [inf]  2025-11-12 13:48:48,839 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.841368559Z [inf]  2025-11-12 13:48:48,840 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PUMPUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.842750794Z [inf]  2025-11-12 13:48:48,841 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ICNTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.842758119Z [inf]  2025-11-12 13:48:48,841 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ICNTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.842762468Z [inf]  2025-11-12 13:48:48,841 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ICNTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.842766980Z [inf]  2025-11-12 13:48:48,841 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'CUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.844694876Z [inf]  2025-11-12 13:48:48,843 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IDOLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.844703071Z [inf]  2025-11-12 13:48:48,843 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IDOLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.844708843Z [inf]  2025-11-12 13:48:48,843 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  IDOLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.844714965Z [inf]  2025-11-12 13:48:48,844 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.846152719Z [inf]  2025-11-12 13:48:48,844 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.846163986Z [inf]  2025-11-12 13:48:48,844 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.846171696Z [inf]  2025-11-12 13:48:48,844 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957258758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'VELVETUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.846179517Z [inf]  2025-11-12 13:48:48,845 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'CROSSUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.846186309Z [inf]  2025-11-12 13:48:48,845 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TANSSIUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.846192525Z [inf]  2025-11-12 13:48:48,845 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957499510. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'AINUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.852667163Z [inf]  2025-11-12 13:48:48,847 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852671445Z [inf]  2025-11-12 13:48:48,851 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AINUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852675250Z [inf]  2025-11-12 13:48:48,847 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852682811Z [inf]  2025-11-12 13:48:48,847 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PUMPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852689597Z [inf]  2025-11-12 13:48:48,848 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TANSSIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852695843Z [inf]  2025-11-12 13:48:48,849 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TANSSIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852701414Z [inf]  2025-11-12 13:48:48,849 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TANSSIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852707047Z [inf]  2025-11-12 13:48:48,849 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TACUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.852713183Z [inf]  2025-11-12 13:48:48,850 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CROSSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852719349Z [inf]  2025-11-12 13:48:48,850 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CROSSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.852724054Z [inf]  2025-11-12 13:48:48,850 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CROSSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.854288761Z [inf]  2025-11-12 13:48:48,851 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AINUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.854296287Z [inf]  2025-11-12 13:48:48,851 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AINUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.854302262Z [inf]  2025-11-12 13:48:48,852 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.854308765Z [inf]  2025-11-12 13:48:48,853 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ERAUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.855790701Z [inf]  2025-11-12 13:48:48,854 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.855796183Z [inf]  2025-11-12 13:48:48,854 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.855799946Z [inf]  2025-11-12 13:48:48,855 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.857271832Z [inf]  2025-11-12 13:48:48,856 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TACUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.858668470Z [inf]  2025-11-12 13:48:48,857 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TACUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.858675625Z [inf]  2025-11-12 13:48:48,857 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TACUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.858681824Z [inf]  2025-11-12 13:48:48,857 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VELVETUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.858688117Z [inf]  2025-11-12 13:48:48,857 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VELVETUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.858710767Z [inf]  2025-11-12 13:48:48,857 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VELVETUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.865894223Z [inf]  2025-11-12 13:48:48,859 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.865899889Z [inf]  2025-11-12 13:48:48,859 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.865904210Z [inf]  2025-11-12 13:48:48,859 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.865910789Z [inf]  2025-11-12 13:48:48,861 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'SLPUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.865915561Z [inf]  2025-11-12 13:48:48,862 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'CVXUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.865920430Z [inf]  2025-11-12 13:48:48,863 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957619763. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TAGUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.867217127Z [inf]  2025-11-12 13:48:48,865 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVXUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.867225747Z [inf]  2025-11-12 13:48:48,865 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVXUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.867232149Z [inf]  2025-11-12 13:48:48,865 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CVXUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.867239207Z [inf]  2025-11-12 13:48:48,866 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ZORAUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.868644289Z [inf]  2025-11-12 13:48:48,866 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAGUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.868648822Z [inf]  2025-11-12 13:48:48,867 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAGUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.868653513Z [inf]  2025-11-12 13:48:48,867 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAGUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.870561506Z [inf]  2025-11-12 13:48:48,868 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959351469. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ZRCUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.870568481Z [inf]  2025-11-12 13:48:48,869 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ERAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.870573451Z [inf]  2025-11-12 13:48:48,869 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ERAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.870581536Z [inf]  2025-11-12 13:48:48,869 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ERAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.872072465Z [inf]  2025-11-12 13:48:48,871 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SLPUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.872078413Z [inf]  2025-11-12 13:48:48,871 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SLPUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.872083962Z [inf]  2025-11-12 13:48:48,871 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SLPUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.874492528Z [inf]  2025-11-12 13:48:48,872 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZORAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.874504449Z [inf]  2025-11-12 13:48:48,872 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZORAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.874511458Z [inf]  2025-11-12 13:48:48,872 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZORAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.874538701Z [inf]  2025-11-12 13:48:48,873 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957379010. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'PLAYUSDT', 'interval': '5m', 'limit': 50}
+2025-11-12T13:48:48.874545755Z [inf]  2025-11-12 13:48:48,873 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957017758. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'TREEUSDT', 'interval': '15m', 'limit': 50}
+2025-11-12T13:48:48.875550296Z [inf]  2025-11-12 13:48:48,874 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762957138009. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'ESPORTSUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.876665036Z [inf]  2025-11-12 13:48:48,876 - src.clients.binance_client - ERROR - Binance API 錯誤 418: code=-1003, msg=Way too many requests; IP(208.77.246.15) banned until 1762959098866. Please use the websocket for live updates to avoid bans., endpoint=/fapi/v1/klines, params={'symbol': 'A2ZUSDT', 'interval': '1h', 'limit': 50}
+2025-11-12T13:48:48.878363236Z [inf]  2025-11-12 13:48:48,877 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZRCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.878371287Z [inf]  2025-11-12 13:48:48,877 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZRCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.878377010Z [inf]  2025-11-12 13:48:48,877 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZRCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.879490510Z [inf]  2025-11-12 13:48:48,878 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ESPORTSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.879497392Z [inf]  2025-11-12 13:48:48,878 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ESPORTSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.879502833Z [inf]  2025-11-12 13:48:48,878 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ESPORTSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881026845Z [inf]  2025-11-12 13:48:48,879 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TREEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881033647Z [inf]  2025-11-12 13:48:48,879 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TREEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881040390Z [inf]  2025-11-12 13:48:48,879 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TREEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881046493Z [inf]  2025-11-12 13:48:48,880 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLAYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881051459Z [inf]  2025-11-12 13:48:48,880 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLAYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.881060900Z [inf]  2025-11-12 13:48:48,880 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PLAYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.910052090Z [inf]  2025-11-12 13:48:48,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  A2ZUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.910062269Z [inf]  2025-11-12 13:48:48,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  A2ZUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.910069153Z [inf]  2025-11-12 13:48:48,896 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  A2ZUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.925514914Z [inf]  2025-11-12 13:48:48,923 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYXUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.925523146Z [inf]  2025-11-12 13:48:48,923 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYXUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.925529009Z [inf]  2025-11-12 13:48:48,924 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MYXUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.951984628Z [inf]  2025-11-12 13:48:48,949 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NAORISUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.951991631Z [inf]  2025-11-12 13:48:48,949 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NAORISUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.951997385Z [inf]  2025-11-12 13:48:48,949 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NAORISUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.952002364Z [inf]  2025-11-12 13:48:48,950 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOWNSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.952023856Z [inf]  2025-11-12 13:48:48,950 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOWNSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.952028237Z [inf]  2025-11-12 13:48:48,950 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOWNSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953810357Z [inf]  2025-11-12 13:48:48,951 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROVEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953817990Z [inf]  2025-11-12 13:48:48,951 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROVEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953823488Z [inf]  2025-11-12 13:48:48,951 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PROVEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953829555Z [inf]  2025-11-12 13:48:48,951 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953835571Z [inf]  2025-11-12 13:48:48,952 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953841152Z [inf]  2025-11-12 13:48:48,952 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953846330Z [inf]  2025-11-12 13:48:48,952 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953851626Z [inf]  2025-11-12 13:48:48,952 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.953856208Z [inf]  2025-11-12 13:48:48,952 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  INUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.955287019Z [inf]  2025-11-12 13:48:48,953 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YALAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.955296424Z [inf]  2025-11-12 13:48:48,953 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YALAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.955303122Z [inf]  2025-11-12 13:48:48,953 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YALAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957108173Z [inf]  2025-11-12 13:48:48,954 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CARVUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957127720Z [inf]  2025-11-12 13:48:48,954 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CARVUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957135661Z [inf]  2025-11-12 13:48:48,954 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CARVUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957142837Z [inf]  2025-11-12 13:48:48,954 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957148575Z [inf]  2025-11-12 13:48:48,955 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957153300Z [inf]  2025-11-12 13:48:48,955 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957157966Z [inf]  2025-11-12 13:48:48,955 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XNYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957162942Z [inf]  2025-11-12 13:48:48,955 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XNYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.957169585Z [inf]  2025-11-12 13:48:48,956 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XNYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958886276Z [inf]  2025-11-12 13:48:48,956 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  USELESSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958896856Z [inf]  2025-11-12 13:48:48,956 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  USELESSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958903664Z [inf]  2025-11-12 13:48:48,956 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  USELESSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958910918Z [inf]  2025-11-12 13:48:48,957 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DAMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958918039Z [inf]  2025-11-12 13:48:48,957 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DAMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958926037Z [inf]  2025-11-12 13:48:48,957 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  DAMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958932244Z [inf]  2025-11-12 13:48:48,957 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUDISUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958938446Z [inf]  2025-11-12 13:48:48,958 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUDISUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.958944664Z [inf]  2025-11-12 13:48:48,958 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CUDISUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960602337Z [inf]  2025-11-12 13:48:48,958 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAPIENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960608907Z [inf]  2025-11-12 13:48:48,958 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAPIENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960613462Z [inf]  2025-11-12 13:48:48,958 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SAPIENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960617871Z [inf]  2025-11-12 13:48:48,959 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960622498Z [inf]  2025-11-12 13:48:48,959 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960628219Z [inf]  2025-11-12 13:48:48,959 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.960632874Z [inf]  2025-11-12 13:48:48,960 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WLFIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962636848Z [inf]  2025-11-12 13:48:48,960 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WLFIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962645786Z [inf]  2025-11-12 13:48:48,960 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  WLFIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962652890Z [inf]  2025-11-12 13:48:48,960 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOMIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962660790Z [inf]  2025-11-12 13:48:48,960 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOMIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962668257Z [inf]  2025-11-12 13:48:48,961 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SOMIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962675242Z [inf]  2025-11-12 13:48:48,961 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BASUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962682708Z [inf]  2025-11-12 13:48:48,961 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BASUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.962703355Z [inf]  2025-11-12 13:48:48,961 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BASUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964064643Z [inf]  2025-11-12 13:48:48,962 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BTRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964071014Z [inf]  2025-11-12 13:48:48,962 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BTRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964079163Z [inf]  2025-11-12 13:48:48,962 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BTRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964084552Z [inf]  2025-11-12 13:48:48,963 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MITOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964089376Z [inf]  2025-11-12 13:48:48,963 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MITOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.964093931Z [inf]  2025-11-12 13:48:48,963 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MITOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.965898490Z [inf]  2025-11-12 13:48:48,964 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEMIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.965905000Z [inf]  2025-11-12 13:48:48,964 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEMIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.965910248Z [inf]  2025-11-12 13:48:48,964 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HEMIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.965914878Z [inf]  2025-11-12 13:48:48,965 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LINEAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968448713Z [inf]  2025-11-12 13:48:48,965 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LINEAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968457973Z [inf]  2025-11-12 13:48:48,965 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LINEAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968464916Z [inf]  2025-11-12 13:48:48,966 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968471130Z [inf]  2025-11-12 13:48:48,966 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968476903Z [inf]  2025-11-12 13:48:48,966 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  QUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968482942Z [inf]  2025-11-12 13:48:48,967 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARIAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968489582Z [inf]  2025-11-12 13:48:48,967 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARIAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.968496155Z [inf]  2025-11-12 13:48:48,967 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ARIAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.969860380Z [inf]  2025-11-12 13:48:48,968 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAKEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.969867440Z [inf]  2025-11-12 13:48:48,968 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAKEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.969877326Z [inf]  2025-11-12 13:48:48,969 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TAKEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.971984354Z [inf]  2025-11-12 13:48:48,969 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PTBUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.971992648Z [inf]  2025-11-12 13:48:48,969 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PTBUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.972000608Z [inf]  2025-11-12 13:48:48,969 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  PTBUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.972005588Z [inf]  2025-11-12 13:48:48,970 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OPENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.972010054Z [inf]  2025-11-12 13:48:48,970 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OPENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.972015582Z [inf]  2025-11-12 13:48:48,970 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  OPENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973743461Z [inf]  2025-11-12 13:48:48,971 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLOCKUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973754715Z [inf]  2025-11-12 13:48:48,971 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLOCKUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973761790Z [inf]  2025-11-12 13:48:48,971 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLOCKUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973768325Z [inf]  2025-11-12 13:48:48,972 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973774799Z [inf]  2025-11-12 13:48:48,972 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973780973Z [inf]  2025-11-12 13:48:48,972 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  SKYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973787364Z [inf]  2025-11-12 13:48:48,972 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVNTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.973793901Z [inf]  2025-11-12 13:48:48,973 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVNTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975444154Z [inf]  2025-11-12 13:48:48,973 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AVNTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975452938Z [inf]  2025-11-12 13:48:48,973 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOLOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975459875Z [inf]  2025-11-12 13:48:48,973 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOLOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975466329Z [inf]  2025-11-12 13:48:48,974 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HOLOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975472979Z [inf]  2025-11-12 13:48:48,974 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPINUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975479164Z [inf]  2025-11-12 13:48:48,974 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPINUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.975486051Z [inf]  2025-11-12 13:48:48,974 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XPINUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976727503Z [inf]  2025-11-12 13:48:48,975 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UBUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976739183Z [inf]  2025-11-12 13:48:48,975 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UBUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976746554Z [inf]  2025-11-12 13:48:48,975 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UBUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976753506Z [inf]  2025-11-12 13:48:48,975 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976773166Z [inf]  2025-11-12 13:48:48,976 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.976781057Z [inf]  2025-11-12 13:48:48,976 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZKCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.978272524Z [inf]  2025-11-12 13:48:48,976 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOSHIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.978281253Z [inf]  2025-11-12 13:48:48,976 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOSHIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.978286351Z [inf]  2025-11-12 13:48:48,977 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TOSHIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.978290399Z [inf]  2025-11-12 13:48:48,977 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STBLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980106165Z [inf]  2025-11-12 13:48:48,977 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STBLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980114927Z [inf]  2025-11-12 13:48:48,977 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STBLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980121030Z [inf]  2025-11-12 13:48:48,978 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  0GUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980125943Z [inf]  2025-11-12 13:48:48,978 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  0GUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980132012Z [inf]  2025-11-12 13:48:48,978 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  0GUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980136678Z [inf]  2025-11-12 13:48:48,979 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980141258Z [inf]  2025-11-12 13:48:48,979 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.980146481Z [inf]  2025-11-12 13:48:48,979 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AIAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981670864Z [inf]  2025-11-12 13:48:48,979 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BARDUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981678310Z [inf]  2025-11-12 13:48:48,979 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BARDUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981684113Z [inf]  2025-11-12 13:48:48,980 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BARDUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981690528Z [inf]  2025-11-12 13:48:48,980 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASTERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981695239Z [inf]  2025-11-12 13:48:48,980 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASTERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981699736Z [inf]  2025-11-12 13:48:48,980 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ASTERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.981704782Z [inf]  2025-11-12 13:48:48,981 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRADOORUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983255026Z [inf]  2025-11-12 13:48:48,981 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRADOORUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983268550Z [inf]  2025-11-12 13:48:48,981 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRADOORUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983274966Z [inf]  2025-11-12 13:48:48,981 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLESSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983279468Z [inf]  2025-11-12 13:48:48,982 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLESSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983284068Z [inf]  2025-11-12 13:48:48,982 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLESSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983288391Z [inf]  2025-11-12 13:48:48,982 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUIDUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.983293010Z [inf]  2025-11-12 13:48:48,982 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUIDUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984632302Z [inf]  2025-11-12 13:48:48,982 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FLUIDUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984640168Z [inf]  2025-11-12 13:48:48,983 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984646440Z [inf]  2025-11-12 13:48:48,983 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984652190Z [inf]  2025-11-12 13:48:48,983 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984657541Z [inf]  2025-11-12 13:48:48,983 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HANAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.984663820Z [inf]  2025-11-12 13:48:48,984 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HANAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986215934Z [inf]  2025-11-12 13:48:48,984 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  HANAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986221785Z [inf]  2025-11-12 13:48:48,984 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MIRAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986226083Z [inf]  2025-11-12 13:48:48,984 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MIRAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986230773Z [inf]  2025-11-12 13:48:48,985 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MIRAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986237940Z [inf]  2025-11-12 13:48:48,985 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AKEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986242317Z [inf]  2025-11-12 13:48:48,985 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AKEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.986246442Z [inf]  2025-11-12 13:48:48,985 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  AKEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987761049Z [inf]  2025-11-12 13:48:48,986 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ORDERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987768900Z [inf]  2025-11-12 13:48:48,986 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ORDERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987773897Z [inf]  2025-11-12 13:48:48,986 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ORDERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987778862Z [inf]  2025-11-12 13:48:48,986 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LIGHTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987782636Z [inf]  2025-11-12 13:48:48,987 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LIGHTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.987787600Z [inf]  2025-11-12 13:48:48,987 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LIGHTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989386554Z [inf]  2025-11-12 13:48:48,987 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XANUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989391911Z [inf]  2025-11-12 13:48:48,987 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XANUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989395948Z [inf]  2025-11-12 13:48:48,987 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  XANUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989399815Z [inf]  2025-11-12 13:48:48,988 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FFUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989403665Z [inf]  2025-11-12 13:48:48,988 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FFUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.989408655Z [inf]  2025-11-12 13:48:48,988 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FFUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990778555Z [inf]  2025-11-12 13:48:48,989 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VFYUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990788302Z [inf]  2025-11-12 13:48:48,989 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VFYUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990795271Z [inf]  2025-11-12 13:48:48,989 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  VFYUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990801866Z [inf]  2025-11-12 13:48:48,989 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EDENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990807929Z [inf]  2025-11-12 13:48:48,989 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EDENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.990813941Z [inf]  2025-11-12 13:48:48,990 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EDENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.992522751Z [inf]  2025-11-12 13:48:48,990 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOMUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.992528265Z [inf]  2025-11-12 13:48:48,990 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOMUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.992533407Z [inf]  2025-11-12 13:48:48,990 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  NOMUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.992538116Z [inf]  2025-11-12 13:48:48,991 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUTHUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.992542153Z [inf]  2025-11-12 13:48:48,991 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUTHUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.993985023Z [inf]  2025-11-12 13:48:48,991 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUTHUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.993985687Z [inf]  2025-11-12 13:48:48,993 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EVAAUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.993994566Z [inf]  2025-11-12 13:48:48,993 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EVAAUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.993996287Z [inf]  2025-11-12 13:48:48,992 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  2ZUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.994003509Z [inf]  2025-11-12 13:48:48,992 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  2ZUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.994010013Z [inf]  2025-11-12 13:48:48,992 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  2ZUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.994016344Z [inf]  2025-11-12 13:48:48,992 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EVAAUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995689572Z [inf]  2025-11-12 13:48:48,993 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LYNUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995700711Z [inf]  2025-11-12 13:48:48,993 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LYNUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995707673Z [inf]  2025-11-12 13:48:48,993 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LYNUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995715036Z [inf]  2025-11-12 13:48:48,994 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KGENUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995720532Z [inf]  2025-11-12 13:48:48,994 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KGENUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.995726292Z [inf]  2025-11-12 13:48:48,994 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KGENUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997882682Z [inf]  2025-11-12 13:48:48,995 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  4USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997894359Z [inf]  2025-11-12 13:48:48,995 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  4USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997902465Z [inf]  2025-11-12 13:48:48,995 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  4USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997910007Z [inf]  2025-11-12 13:48:48,995 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GIGGLEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997917536Z [inf]  2025-11-12 13:48:48,995 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GIGGLEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997925056Z [inf]  2025-11-12 13:48:48,996 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  GIGGLEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997932549Z [inf]  2025-11-12 13:48:48,996 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997940454Z [inf]  2025-11-12 13:48:48,996 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.997947610Z [inf]  2025-11-12 13:48:48,996 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998926107Z [inf]  2025-11-12 13:48:48,997 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YBUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998933278Z [inf]  2025-11-12 13:48:48,997 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YBUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998937971Z [inf]  2025-11-12 13:48:48,997 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  YBUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998942947Z [inf]  2025-11-12 13:48:48,998 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998947512Z [inf]  2025-11-12 13:48:48,998 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:48.998951441Z [inf]  2025-11-12 13:48:48,998 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  METUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.000352735Z [inf]  2025-11-12 13:48:48,998 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EULUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.000362433Z [inf]  2025-11-12 13:48:48,998 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EULUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.000368060Z [inf]  2025-11-12 13:48:48,999 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  EULUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.015294178Z [inf]  2025-11-12 13:48:49,012 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENSOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.015302182Z [inf]  2025-11-12 13:48:49,013 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENSOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.015308691Z [inf]  2025-11-12 13:48:49,013 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ENSOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.015315761Z [inf]  2025-11-12 13:48:49,013 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CLOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.015322851Z [inf]  2025-11-12 13:48:49,014 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CLOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.016690802Z [inf]  2025-11-12 13:48:49,014 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CLOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.016697776Z [inf]  2025-11-12 13:48:49,015 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RECALLUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.016703657Z [inf]  2025-11-12 13:48:49,015 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RECALLUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.016708817Z [inf]  2025-11-12 13:48:49,015 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RECALLUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.018474271Z [inf]  2025-11-12 13:48:49,016 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZBTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.018484875Z [inf]  2025-11-12 13:48:49,016 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZBTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.018491339Z [inf]  2025-11-12 13:48:49,017 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ZBTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.020109787Z [inf]  2025-11-12 13:48:49,017 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LABUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.020118647Z [inf]  2025-11-12 13:48:49,018 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LABUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.020124981Z [inf]  2025-11-12 13:48:49,018 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  LABUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.020129597Z [inf]  2025-11-12 13:48:49,019 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RIVERUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.020134463Z [inf]  2025-11-12 13:48:49,019 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RIVERUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022573753Z [inf]  2025-11-12 13:48:49,019 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RIVERUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022581968Z [inf]  2025-11-12 13:48:49,020 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RVVUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022588778Z [inf]  2025-11-12 13:48:49,020 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RVVUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022594629Z [inf]  2025-11-12 13:48:49,020 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  RVVUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022602221Z [inf]  2025-11-12 13:48:49,021 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLUAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022607509Z [inf]  2025-11-12 13:48:49,021 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLUAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.022613425Z [inf]  2025-11-12 13:48:49,021 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  BLUAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024735534Z [inf]  2025-11-12 13:48:49,021 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURTLEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024744701Z [inf]  2025-11-12 13:48:49,022 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURTLEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024751013Z [inf]  2025-11-12 13:48:49,022 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TURTLEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024756049Z [inf]  2025-11-12 13:48:49,022 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  APRUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024762129Z [inf]  2025-11-12 13:48:49,022 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  APRUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024782936Z [inf]  2025-11-12 13:48:49,022 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  APRUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024789949Z [inf]  2025-11-12 13:48:49,023 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024796626Z [inf]  2025-11-12 13:48:49,023 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.024802123Z [inf]  2025-11-12 13:48:49,023 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026221513Z [inf]  2025-11-12 13:48:49,024 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  42USDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026226530Z [inf]  2025-11-12 13:48:49,024 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  42USDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026230897Z [inf]  2025-11-12 13:48:49,024 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  42USDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026235332Z [inf]  2025-11-12 13:48:49,024 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COMMONUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026239465Z [inf]  2025-11-12 13:48:49,025 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COMMONUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026243440Z [inf]  2025-11-12 13:48:49,025 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  COMMONUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.026247318Z [inf]  2025-11-12 13:48:49,025 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KITEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.027803748Z [inf]  2025-11-12 13:48:49,025 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KITEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.027812153Z [inf]  2025-11-12 13:48:49,025 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  KITEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.027819216Z [inf]  2025-11-12 13:48:49,026 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.027826384Z [inf]  2025-11-12 13:48:49,026 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.027832961Z [inf]  2025-11-12 13:48:49,026 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ATUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.029493200Z [inf]  2025-11-12 13:48:49,027 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CCUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.029504627Z [inf]  2025-11-12 13:48:49,027 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CCUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.029513257Z [inf]  2025-11-12 13:48:49,027 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  CCUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031808080Z [inf]  2025-11-12 13:48:49,029 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MMTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031820440Z [inf]  2025-11-12 13:48:49,029 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MMTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031828146Z [inf]  2025-11-12 13:48:49,029 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  MMTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031834166Z [inf]  2025-11-12 13:48:49,030 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUSTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031843085Z [inf]  2025-11-12 13:48:49,030 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUSTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.031848092Z [inf]  2025-11-12 13:48:49,030 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  TRUSTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033505277Z [inf]  2025-11-12 13:48:49,031 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UAIUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033512030Z [inf]  2025-11-12 13:48:49,031 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UAIUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033517858Z [inf]  2025-11-12 13:48:49,031 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  UAIUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033523966Z [inf]  2025-11-12 13:48:49,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FOLKSUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033529809Z [inf]  2025-11-12 13:48:49,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FOLKSUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033536084Z [inf]  2025-11-12 13:48:49,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  FOLKSUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.033544292Z [inf]  2025-11-12 13:48:49,032 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STABLEUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034889241Z [inf]  2025-11-12 13:48:49,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STABLEUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034896627Z [inf]  2025-11-12 13:48:49,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  STABLEUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034901363Z [inf]  2025-11-12 13:48:49,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JCTUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034907003Z [inf]  2025-11-12 13:48:49,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JCTUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034911664Z [inf]  2025-11-12 13:48:49,033 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  JCTUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034917561Z [inf]  2025-11-12 13:48:49,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLOUSDT 1h 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.034922283Z [inf]  2025-11-12 13:48:49,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLOUSDT 15m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.036602274Z [inf]  2025-11-12 13:48:49,034 - src.core.elite.unified_data_pipeline - WARNING - ⚠️  ALLOUSDT 5m 数据获取失败（所有层级失败）
+2025-11-12T13:48:49.038510178Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - ERROR - 🚨 嚴重問題: 平均分析時間僅0.0ms，系統在快速跳過！
+2025-11-12T13:48:49.038523159Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - ERROR -    → 可能原因：數據驗證過嚴、方向判斷快速返回None、特徵計算失敗
+2025-11-12T13:48:49.038531235Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO - 📊 信號分析診斷（信心值Top 10）
+2025-11-12T13:48:49.038537563Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  1. BTCUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038545203Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  2. ETHUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038553774Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  3. BCHUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038564215Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  4. XRPUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038572654Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  5. LTCUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038579812Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  6. TRXUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038587493Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  7. ETCUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038594536Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  8. LINKUSDT     | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.038601102Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -  9. XLMUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.040354126Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    9. XLMUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040364777Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO - 10. ADAUSDT      | 信心=  0.0 | 勝率=  0.0% | ❌ 無信號
+2025-11-12T13:48:49.040371257Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -    信心度  ≥ 40%
+2025-11-12T13:48:49.040376822Z [inf]  2025-11-12 13:48:49,037 - src.core.unified_scheduler - INFO -    勝率    ≥ 40%
+2025-11-12T13:48:49.040383253Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    1. BTCUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040392775Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    2. ETHUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040398399Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    3. BCHUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040403342Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    4. XRPUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040407666Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    5. LTCUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040412780Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    6. TRXUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040417575Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    7. ETCUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.040421974Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -    8. LINKUSDT     | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042188296Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   10. ADAUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042199284Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   11. XMRUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042207182Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   12. DASHUSDT     | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042215307Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   13. ZECUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042227246Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   14. XTZUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042234416Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -   15. BNBUSDT      | 信心=  0.0% | 勝率=  0.0% | ❌ 拒絕(信心0.0<40, 勝率0.0<40)
+2025-11-12T13:48:49.042243638Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -      - 信心度不足: 15
+2025-11-12T13:48:49.042250250Z [inf]  2025-11-12 13:48:49,038 - src.core.unified_scheduler - INFO -      - 勝率不足: 15
