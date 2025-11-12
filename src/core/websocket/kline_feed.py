@@ -63,7 +63,7 @@ class KlineFeed(OptimizedWebSocketFeed):
     }
     """
     
-    def __init__(self, symbols: List[str], interval: str = "1m", shard_id: int = 0, max_history: int = 100):
+    def __init__(self, symbols: List[str], interval: str = "1m", shard_id: int = 0, max_history: int = 4000):
         """
         初始化KlineFeed
         
@@ -71,7 +71,13 @@ class KlineFeed(OptimizedWebSocketFeed):
             symbols: 交易對列表（例如：['BTCUSDT', 'ETHUSDT']）
             interval: K線週期（默認1m）
             shard_id: 分片ID（用於追蹤，默認0）
-            max_history: 最大歷史K線數量（默認100，用於聚合5m/15m/1h）
+            max_history: 最大歷史K線數量（默認4000，支持1h聚合需≥3600根）
+        
+        Notes:
+            v4.3.2+：max_history提升到4000以支持WebSocket-only模式
+            - 1h聚合需要60根1m K線
+            - 保留66.67小時历史（~3天）以应对网络中断
+            - 内存占用：200符号 × 4000根 × 200bytes ≈ 160MB（可接受）
         """
         # v3.32+ 使用符合Binance规范的WebSocket参数
         super().__init__(

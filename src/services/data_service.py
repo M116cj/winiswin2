@@ -188,6 +188,11 @@ class DataService:
         self.ws_stats['total_requests'] += 1
         data = {}
         
+        # 🔥 v4.3.2+：WebSocket-only模式檢查（強制跳過歷史API）
+        if Config.WEBSOCKET_ONLY_KLINES:
+            logger.debug(f"🔒 {symbol} WebSocket-only模式啟用，跳過歷史API")
+            use_historical = False
+        
         # 🚀 v3.19.2+：優先使用歷史數據（立即啟動系統）
         if use_historical:
             try:
@@ -217,10 +222,10 @@ class DataService:
             except Exception as e:
                 logger.debug(f"📡 {symbol} WebSocket聚合異常: {e}")
         
-        # 🔥 v3.17.2+修復：僅對缺失的時間框架使用REST備援
+        # 🔥 v4.3.2+：WebSocket-only模式禁用REST備援
         missing_tfs = [tf for tf in timeframes if tf not in data or data[tf].empty]
         
-        if missing_tfs:
+        if missing_tfs and not Config.WEBSOCKET_ONLY_KLINES and not Config.DISABLE_REST_FALLBACK:
             logger.debug(f"📡 {symbol} 使用REST API補充 {missing_tfs}")
             tasks = [
                 self.get_klines_incremental(symbol, tf, limit=100)
@@ -235,6 +240,14 @@ class DataService:
                     data[tf] = pd.DataFrame()
                 else:
                     data[tf] = result
+        elif missing_tfs:
+            # v4.3.2+：WebSocket-only模式下，缺失數據返回空DataFrame
+            logger.debug(
+                f"🔒 {symbol} WebSocket-only模式：{missing_tfs} 數據不足，"
+                f"請等待WebSocket累積數據"
+            )
+            for tf in missing_tfs:
+                data[tf] = pd.DataFrame()
         
         # 🔥 v3.17.2+修復：統計WebSocket命中率（包含部分fallback）
         ws_count = len([tf for tf in timeframes if tf in data and tf not in missing_tfs])

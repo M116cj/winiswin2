@@ -111,7 +111,12 @@ class UnifiedDataPipeline:
         """
         获取多时间框架数据（主入口）
         
-        3层Fallback策略：
+        v4.3.2+ WebSocket-only模式：
+        - 仅使用WebSocket数据（1m聚合→5m/15m/1h）
+        - 禁用历史API和REST备援
+        - 数据不足时返回空DataFrame并标记warming_up状态
+        
+        传统3层Fallback策略（WEBSOCKET_ONLY_KLINES=false时）：
         1. 历史API（优先）- 立即获取完整数据
         2. WebSocket（补充）- 实时数据聚合
         3. REST API（备援）- 最终保障
@@ -124,11 +129,33 @@ class UnifiedDataPipeline:
         Returns:
             时间框架 → DataFrame 映射
         """
-        self._total_requests += 1
+        from src.config import Config
         
+        self._total_requests += 1
         data = {}
         
-        # Layer 1: 历史API批量获取（v3.19.2优先策略）
+        # 🔥 v4.3.2+：WebSocket-only严格模式
+        if Config.WEBSOCKET_ONLY_KLINES:
+            logger.debug(f"🔒 {symbol} WebSocket-only模式：跳过历史API和REST备援")
+            
+            # 唯一数据源：WebSocket
+            if self.ws_monitor:
+                ws_data = await self._get_websocket_data(symbol, timeframes, limit)
+                data.update(ws_data)
+            
+            # 验证数据完整性（标记warming_up状态）
+            for tf in timeframes:
+                if tf not in data or data[tf] is None or len(data[tf]) == 0:
+                    logger.debug(
+                        f"⏳ {symbol} {tf} 数据不足（warming_up），"
+                        f"等待WebSocket累积数据"
+                    )
+                    data[tf] = pd.DataFrame()
+            
+            return data
+        
+        # 传统3层Fallback模式（向后兼容）
+        # Layer 1: 历史API批量获取
         logger.debug(f"🔄 Layer 1: 尝试历史API批量获取 {symbol}")
         hist_data = await self._get_historical_batch(symbol, timeframes, limit)
         data.update(hist_data)
@@ -141,14 +168,15 @@ class UnifiedDataPipeline:
             data.update(ws_data)
         
         # Layer 3: REST API备援
-        still_missing = [
-            tf for tf in timeframes 
-            if tf not in data or data[tf] is None or len(data[tf]) < limit * 0.8
-        ]
-        if still_missing:
-            logger.debug(f"🔄 Layer 3: REST备援 {still_missing}")
-            rest_data = await self._get_rest_data(symbol, still_missing, limit)
-            data.update(rest_data)
+        if not Config.DISABLE_REST_FALLBACK:
+            still_missing = [
+                tf for tf in timeframes 
+                if tf not in data or data[tf] is None or len(data[tf]) < limit * 0.8
+            ]
+            if still_missing:
+                logger.debug(f"🔄 Layer 3: REST备援 {still_missing}")
+                rest_data = await self._get_rest_data(symbol, still_missing, limit)
+                data.update(rest_data)
         
         # 验证数据完整性
         for tf in timeframes:

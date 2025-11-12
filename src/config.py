@@ -49,7 +49,10 @@ class Config:
     # ========================================
     # 🔥 v4.1+：默认启用模型训练以支持在线学习
     DISABLE_MODEL_TRAINING: bool = os.getenv("DISABLE_MODEL_TRAINING", "false").lower() == "true"  # 启用模型训练（初始训练+重训练）
-    DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "false").lower() == "true"  # 禁用REST API fallback（仅在WebSocket稳定时使用）
+    
+    # 🔥 v4.3.2+：WebSocket-only K线数据模式（严格模式）
+    WEBSOCKET_ONLY_KLINES: bool = os.getenv("WEBSOCKET_ONLY_KLINES", "true").lower() == "true"  # 强制所有K线数据从WebSocket读取
+    DISABLE_REST_FALLBACK: bool = os.getenv("DISABLE_REST_FALLBACK", "true").lower() == "true"  # 禁用REST API fallback（v4.3.2默认启用）
     
     # ========================================
     # 🚀 K线预热配置 (v4.2+ Binance速率限制优化)
