@@ -700,6 +700,11 @@ class PositionController:
                     except Exception as e:
                         logger.warning(f"⚠️ 記錄全倉保護平倉失敗: {e}")
                 
+                # 🔥 v4.4.1 P1：從開倉時間記錄和數據庫中移除（清理持久化記錄）
+                if symbol in self.position_entry_times:
+                    del self.position_entry_times[symbol]
+                    await self._delete_entry_time(symbol)
+                
                 return True
             else:
                 return False
@@ -1063,6 +1068,11 @@ class PositionController:
             )
             
             logger.info(f"✅ 平倉成功: {symbol} | 訂單 ID={result.get('orderId')}")
+            
+            # 🔥 v4.4.1 P1：從開倉時間記錄和數據庫中移除（清理持久化記錄）
+            if symbol in self.position_entry_times:
+                del self.position_entry_times[symbol]
+                await self._delete_entry_time(symbol)
             
             # 🔥 v3.27+ 診斷日誌：檢查trade_recorder狀態
             logger.info(f"🔍 [DIAG] trade_recorder存在: {self.trade_recorder is not None}")
