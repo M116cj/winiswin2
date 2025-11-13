@@ -170,7 +170,8 @@ class TradingProtocolTester:
             from src.clients.order_validator import OrderValidator
             validator = OrderValidator()
             print(f"✅ OrderValidator已加載")
-            print(f"   最小名義價值閾值: {validator.min_notional_value} USDT")
+            print(f"   最小名義價值閾值: {validator.MIN_NOTIONAL} USDT")
+            print(f"   安全邊際: {validator.SAFETY_MARGIN:.2%}")
             results.append(True)
         except Exception as e:
             print(f"❌ OrderValidator加載失敗: {e}")
