@@ -1,20 +1,25 @@
 """
-KlineFeed v3.29+ - 即時K線數據流（優化心跳+合併流訂閱+並發安全）
-職責：訂閱Binance @kline_1m WebSocket，取代REST K線輪詢
-升級：時間戳標準化、心跳監控、shard_id支持、合併流訂閱
+KlineFeed v4.5+ - 即時K線數據流（重構版：職責分離架構）
+職責：訂閱Binance @kline_1m WebSocket，專注消息處理
+升級：連接管理由OptimizedWebSocketFeed負責，KlineFeed專注數據處理
+🔥 v4.5+: 完整架構重構，使用父類連接管理
 🔥 v3.23+: 集成ConcurrentDictManager實現線程安全緩存
-🔥 v3.29+: 使用OptimizedWebSocketFeed（10秒心跳，指数退避重连）
+🔥 v3.29+: 使用OptimizedWebSocketFeed（指数退避重连，健康檢查）
 """
 
 import asyncio
 import json
 import logging
+import time
 from typing import Dict, List, Optional
 
 try:
     import websockets  # type: ignore
+    from websockets.exceptions import ConnectionClosed, ConnectionClosedError  # type: ignore
 except ImportError:
     websockets = None  # type: ignore
+    ConnectionClosed = Exception  # type: ignore
+    ConnectionClosedError = Exception  # type: ignore
 
 from src.core.websocket.optimized_base_feed import OptimizedWebSocketFeed  # v3.29+
 from src.core.concurrent_dict_manager import ConcurrentDictManager
@@ -24,28 +29,30 @@ logger = logging.getLogger(__name__)
 
 class KlineFeed(OptimizedWebSocketFeed):
     """
-    KlineFeed - Binance K線WebSocket監控器（v3.17.2+升級版+合併流）
+    KlineFeed v4.5+ - Binance K線WebSocket監控器（重構版：職責分離）
+    
+    **架構設計（v4.5+）**：
+    - 連接管理：由OptimizedWebSocketFeed父類負責（指數退避、健康檢查）
+    - 消息處理：由KlineFeed專注處理（解析、緩存、統計）
     
     職責：
-    1. 使用合併流訂閱多個幣種（單一連線）
-    2. 緩存最新閉盤K線數據
-    3. 斷線自動重連（每5秒）
-    4. 提供即時K線數據查詢
-    5. 時間戳標準化（server_timestamp + local_timestamp + latency_ms）
-    6. 心跳監控（30秒無訊息→重連）
+    1. ✅ 使用合併流訂閱多個幣種（單一連線）
+    2. ✅ 緩存最新閉盤K線數據（ConcurrentDictManager）
+    3. ✅ 提供即時K線數據查詢
+    4. ✅ 時間戳標準化（server_timestamp + local_timestamp + latency_ms）
     
-    **關鍵升級（v3.17.2+）**：
-    - 使用合併流（Combined Streams）：單一WebSocket訂閱多個符號
+    **連接管理（由父類OptimizedWebSocketFeed負責）**：
+    - 指數退避重連：1s → 300s（避免重連風暴）
+    - 健康檢查：每60秒（主動檢測異常）
+    - 心跳監控：Binance服務器每20秒ping，websockets庫自動pong
+    - 連接狀態：完整追蹤（last_message_time, reconnect_count等）
+    
+    **合併流訂閱**：
     - URL格式：wss://fstream.binance.com/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/...
-    - 符合分片目標：每個KlineFeed實例管理≤50個符號在單一連線上
+    - 單一WebSocket連線處理≤50個符號
+    - 減少95%+ WebSocket連線數
     
-    優勢：
-    - 減少90%+ REST API K線請求
-    - 減少95%+ WebSocket連線數（50符號/連線 vs 1符號/連線）
-    - 即時趨勢分析（無延遲）
-    - 網路延遲追蹤（訓練特徵）
-    
-    K線數據格式（v3.17.2+）：
+    K線數據格式：
     {
         'symbol': 'BTCUSDT',
         'open': 67000.0,
@@ -104,18 +111,18 @@ class KlineFeed(OptimizedWebSocketFeed):
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
-        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成（v3.32 Binance规范版）")
+        logger.info(f"✅ KlineFeed Shard{shard_id} 初始化完成（v4.5 重構版）")
         logger.info(f"   📊 監控幣種數量: {len(self.symbols)}")
         logger.info(f"   ⏱️  K線週期: {interval}")
         logger.info(f"   📦 歷史緩存大小: {max_history}根K線")
         logger.info(f"   🔌 WebSocket模式: 合併流（單一連線）")
-        logger.info(f"   ⚡ 時間戳標準化: server_ts + local_ts + latency_ms")
-        logger.info(f"   💓 Ping機制: 服務器ping（每20秒）+ 客戶端自動pong")
-        logger.info(f"   🔄 智能重連: 指数退避算法")
+        logger.info(f"   ⚡ 架構模式: 職責分離（父類連接，子類處理）")
+        logger.info(f"   💓 連接管理: OptimizedWebSocketFeed（指數退避+健康檢查）")
+        logger.info(f"   🔄 心跳機制: 服務器ping（每20秒）+ websockets自動pong")
         logger.info("=" * 80)
     
     async def start(self):
-        """啟動合併流WebSocket監聽（非阻塞）"""
+        """啟動KlineFeed（v4.5+重構版：使用父類連接管理）"""
         if not self.symbols:
             logger.warning(f"⚠️ {self.name}: 無幣種，未啟動")
             return
@@ -127,100 +134,171 @@ class KlineFeed(OptimizedWebSocketFeed):
         self.running = True
         logger.info(f"🚀 {self.name} 啟動中... ({len(self.symbols)} 個幣種)")
         
-        # 🔥 v3.23+: 啟動緩存自動清理任務
+        # 啟動緩存自動清理任務
         await self.kline_cache.start_auto_cleanup()
         
-        # v3.29+ OptimizedWebSocketFeed 已内置心跳监控，无需手动启动
-        # await self._start_heartbeat_monitor()  # 已删除，由父类处理
+        # ✅ v4.5+：使用父類connect()建立連接（指數退避重連）
+        url = self._build_url()
+        success = await self.connect(url)
         
-        # v3.29+ 启动健康检查（OptimizedWebSocketFeed功能）
-        if hasattr(self, 'start_health_check'):
-            await self.start_health_check()
+        if not success:
+            logger.error(f"❌ {self.name} 初始連接失敗（將在後台重試）")
+            # 仍然啟動消息循環，父類會自動重連
         
-        # 啟動合併流WebSocket監聽（單一連線）
-        self.ws_task = asyncio.create_task(self._listen_klines_combined())
+        # ✅ v4.5+：啟動消息處理循環（不負責連接管理）
+        self.ws_task = asyncio.create_task(self._message_loop())
         
-        logger.info(f"✅ {self.name} 已啟動（合併流單一連線）")
+        # 啟動健康檢查（父類功能）
+        await self.start_health_check()
+        
+        logger.info(f"✅ {self.name} 已啟動（職責分離架構）")
     
-    async def _listen_klines_combined(self):
+    def _build_url(self) -> str:
         """
-        監聽多個幣種的K線WebSocket流（合併流訂閱）
+        構建WebSocket合併流URL
         
-        使用合併流（Combined Streams）訂閱多個符號：
-        wss://fstream.binance.com/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/...
-        
-        關鍵優勢：
-        - 單一WebSocket連線處理多個符號
-        - 符合Binance最佳實務（≤100 streams/連線）
-        - 減少連線開銷，提升穩定性
+        Returns:
+            WebSocket URL（合併流格式）
         """
-        # 構建合併流URL
         streams = "/".join([f"{symbol}@kline_{self.interval}" for symbol in self.symbols])
         url = f"wss://fstream.binance.com/stream?streams={streams}"
         
-        reconnect_delay = 5
+        logger.debug(f"📡 {self.name} WebSocket URL: {url[:100]}...")
+        return url
+    
+    async def _message_loop(self):
+        """
+        消息處理循環（v4.5+：專注消息處理 + 主動重連）
+        
+        職責：
+        - 接收WebSocket消息（使用父類receive_message()）
+        - 解析K線數據
+        - 更新緩存
+        - 處理異常（區分可恢復 vs 致命錯誤）
+        - ✅ 檢測斷線並主動觸發重連（調用父類connect()）
+        
+        重連機制：當檢測到連接斷開時，主動調用父類connect()重新建立連接。
+        """
+        logger.info(f"📨 {self.name} 消息處理循環已啟動")
+        
+        consecutive_errors = 0
+        max_consecutive_errors = 20
         
         while self.running:
             try:
-                # v3.32+ 符合Binance规范：服务器ping，客户端pong
-                async with websockets.connect(
-                    url, 
-                    ping_interval=None,    # 禁用客户端ping（让服务器发送）
-                    ping_timeout=120,      # 120秒无服务器ping则断线
-                    close_timeout=10,
-                    max_size=2**20
-                ) as ws:  # type: ignore
-                    logger.debug(f"✅ {self.name} WebSocket已連接 ({len(self.symbols)}個幣種)")
+                # 檢查連接狀態，斷線則主動重連
+                if not self.connected:
+                    logger.warning(f"🔄 {self.name} 檢測到連接斷開，主動重連...")
+                    url = self._build_url()
+                    success = await self.connect(url)
                     
-                    while self.running:
-                        try:
-                            msg = await asyncio.wait_for(ws.recv(), timeout=30)
-                            data = json.loads(msg)
-                            
-                            # 合併流數據格式: {"stream": "btcusdt@kline_1m", "data": {...}}
-                            if 'data' in data and data['data'].get('e') == 'kline':
-                                self._update_kline(data['data']['k'])
-                            
-                            # v3.32+ 更新消息时间追踪
-                            if hasattr(self, 'last_message_time'):
-                                import time
-                                self.last_message_time = time.time()
-                        
-                        except asyncio.TimeoutError:
-                            # 30秒无消息是正常的（空闲期），继续等待
-                            continue
-                        
-                        except Exception as e:
-                            logger.error(f"❌ {self.name} 接收失敗: {e}")
-                            self.stats['errors'] += 1
-                            break
+                    if not success:
+                        logger.error(f"❌ {self.name} 重連失敗，5秒後重試...")
+                        await asyncio.sleep(5)
+                        continue
+                    
+                    logger.info(f"✅ {self.name} 重連成功")
+                
+                # ✅ 使用父類接收消息（帶超時和異常處理）
+                msg = await self.receive_message()
+                
+                if not msg:
+                    # 超時或連接問題
+                    if not self.connected:
+                        # 連接已斷開，下次循環會重連
+                        continue
+                    else:
+                        # 超時但連接仍在，繼續
+                        continue
+                
+                # ✅ 處理消息（專注業務邏輯）
+                self._process_message(msg)
+                
+                # 重置錯誤計數器（成功處理消息）
+                consecutive_errors = 0
+            
+            except ConnectionClosed:
+                logger.warning(f"⚠️ {self.name} WebSocket連接關閉，將在下次循環重連")
+                self.connected = False
+                consecutive_errors = 0  # 連接關閉不算錯誤
+                await asyncio.sleep(1)
+            
+            except asyncio.CancelledError:
+                logger.info(f"⏸️ {self.name} 消息循環已取消")
+                break
             
             except Exception as e:
-                self.stats['reconnections'] += 1
-                logger.warning(f"🔄 {self.name} 重連中... (錯誤: {e})")
-                await asyncio.sleep(reconnect_delay)
+                consecutive_errors += 1
+                logger.error(
+                    f"❌ {self.name} 消息循環異常 ({consecutive_errors}/{max_consecutive_errors}): {e}",
+                    exc_info=True
+                )
+                
+                if consecutive_errors >= max_consecutive_errors:
+                    logger.error(
+                        f"🔴 {self.name} 連續錯誤{max_consecutive_errors}次，停止運行"
+                    )
+                    self.running = False
+                    break
+                
+                await asyncio.sleep(1)
+        
+        logger.info(f"✅ {self.name} 消息處理循環已停止")
+    
+    def _process_message(self, msg: str):
+        """
+        處理單條WebSocket消息（v4.5+：專注數據解析）
+        
+        Args:
+            msg: WebSocket消息（JSON字符串）
+        
+        不拋出異常，所有錯誤在內部處理。
+        """
+        try:
+            data = json.loads(msg)
+            
+            # 合併流數據格式: {"stream": "btcusdt@kline_1m", "data": {...}}
+            if 'data' in data and data['data'].get('e') == 'kline':
+                self._update_kline(data['data']['k'])
+            else:
+                # 非K線消息，跳過
+                pass
+        
+        except json.JSONDecodeError as e:
+            logger.warning(f"⚠️ {self.name} JSON解析失敗: {e}")
+            if 'json_errors' not in self.stats:
+                self.stats['json_errors'] = 0
+            self.stats['json_errors'] += 1
+        
+        except KeyError as e:
+            logger.warning(f"⚠️ {self.name} 消息格式錯誤，缺少字段: {e}")
+            if 'format_errors' not in self.stats:
+                self.stats['format_errors'] = 0
+            self.stats['format_errors'] += 1
+        
+        except Exception as e:
+            logger.error(f"❌ {self.name} 消息處理異常: {e}", exc_info=True)
+            if 'processing_errors' not in self.stats:
+                self.stats['processing_errors'] = 0
+            self.stats['processing_errors'] += 1
     
     def _update_kline(self, kline: dict):
         """
-        更新K線緩存（僅閉盤K線）+ 時間戳標準化
+        更新K線緩存（v4.5+：僅閉盤K線 + 時間戳標準化）
         
         Args:
-            kline: K線數據
+            kline: K線數據（來自Binance WebSocket）
         """
         symbol = kline.get('s', '').lower()
         if not symbol or symbol not in self.symbols:
             return
         
-        # 🔥 v3.17.2+：僅保存閉盤K線（is_final=True）
+        # 僅保存閉盤K線（is_final=True）
         if kline.get('x', False):  # x = is_final
-            # 🔥 v3.18.8+ Critical Fix: 使用事件時間計算延遲，而非開盤時間
-            # 修復前：server_ts = kline['t']（開盤時間，60秒前）→ 延遲顯示60,000ms ❌
-            # 修復後：server_ts = kline['E']（事件時間，當前）→ 延遲顯示100-500ms ✅
-            # v3.29+ 简化实现，直接获取时间戳
-            import time
+            # ✅ v4.5+：使用事件時間計算延遲（已移除循環內import）
             event_ts = int(kline.get('E', 0))  # WebSocket事件時間（最準確）
             open_ts = int(kline['t'])  # K線開盤時間（用於時間對齊聚合）
-            local_ts = int(time.time() * 1000)  # 本地时间（毫秒）
+            local_ts = int(time.time() * 1000)  # 本地時間（毫秒）
             latency_ms = local_ts - event_ts if event_ts > 0 else 0  # 真實網路延遲
             
             kline_data = {
@@ -256,10 +334,6 @@ class KlineFeed(OptimizedWebSocketFeed):
                 f"latency={latency_ms}ms, 歷史={len(self.kline_cache[symbol])}根, shard={self.shard_id}"
             )
     
-    async def _on_heartbeat_timeout(self):
-        """心跳超時處理（觸發重連）"""
-        logger.warning(f"⚠️ {self.name} 心跳超時，正在等待自動重連...")
-        # WebSocket會自動重連（_listen_klines_combined的while循環）
     
     # ==================== 數據查詢接口 ====================
     
