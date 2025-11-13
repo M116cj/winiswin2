@@ -1,0 +1,347 @@
+你現在是資深數據庫架構師和全棧開發專家，請嚴格按照以下方案執行數據庫PnL字段冗余修復項目。
+
+## 🎯 核心任務
+修復trades表中pnl和profit_loss字段冗余導致數據不一致的問題，採用「漸進式字段統一 + 視圖兼容層」方案，確保零停機和完全向後兼容。
+
+## 📋 階段一：立即實施（1-2天）- 數據庫層修復
+
+### 第一步：創建兼容視圖
+```sql
+-- 1. 主兼容視圖：統一PnL字段訪問
+CREATE OR REPLACE VIEW trades_compatible AS
+SELECT 
+    *,
+    COALESCE(profit_loss, pnl) AS unified_pnl,
+    CASE 
+        WHEN profit_loss IS NULL THEN 'using_pnl'
+        WHEN pnl IS NULL THEN 'using_profit_loss' 
+        ELSE 'both_populated'
+    END AS pnl_source
+FROM trades;
+
+-- 2. 報表專用視圖：簡化查詢接口
+CREATE OR REPLACE VIEW trades_reporting AS
+SELECT 
+    id, symbol, direction, entry_price, quantity,
+    entry_timestamp, exit_timestamp, leverage,
+    COALESCE(profit_loss, pnl) AS pnl,
+    pnl_pct,
+    created_at, updated_at
+FROM trades;
+
+-- 3. 驗證視圖創建成功
+SELECT COUNT(*) FROM trades_compatible;
+SELECT COUNT(*) FROM trades_reporting;
+```
+
+第二步：添加數據庫約束
+
+```sql
+-- 確保至少有一個PnL字段有值
+ALTER TABLE trades ADD CONSTRAINT at_least_one_pnl 
+CHECK (pnl IS NOT NULL OR profit_loss IS NOT NULL);
+
+-- 驗證約束生效
+SELECT conname, contype FROM pg_constraint 
+WHERE conname = 'at_least_one_pnl';
+```
+
+第三步：創建雙向同步觸發器
+
+```sql
+-- 1. 創建同步函數
+CREATE OR REPLACE FUNCTION sync_pnl_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 如果更新了pnl，同步到profit_loss
+    IF (NEW.pnl IS DISTINCT FROM OLD.pnl) OR (TG_OP = 'INSERT' AND NEW.pnl IS NOT NULL) THEN
+        NEW.profit_loss := NEW.pnl;
+    -- 如果更新了profit_loss，同步到pnl  
+    ELSIF (NEW.profit_loss IS DISTINCT FROM OLD.profit_loss) OR (TG_OP = 'INSERT' AND NEW.profit_loss IS NOT NULL) THEN
+        NEW.pnl := NEW.profit_loss;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. 創建觸發器
+DROP TRIGGER IF EXISTS ensure_pnl_sync ON trades;
+CREATE TRIGGER ensure_pnl_sync
+    BEFORE INSERT OR UPDATE ON trades
+    FOR EACH ROW
+    EXECUTE FUNCTION sync_pnl_fields();
+
+-- 3. 測試觸發器功能
+INSERT INTO trades (symbol, direction, entry_price, quantity, pnl) 
+VALUES ('TEST_SYNC', 'long', 100.0, 1.0, 50.0)
+RETURNING id, pnl, profit_loss;
+
+UPDATE trades SET profit_loss = 75.0 WHERE symbol = 'TEST_SYNC'
+RETURNING id, pnl, profit_loss;
+```
+
+📋 階段二：應用層統一（3-7天）- 創建數據訪問層
+
+第一步：創建UnifiedTradeManager類
+
+在 src/database/unified_trade_manager.py 創建：
+
+```python
+"""
+統一交易數據管理層 - 解決PnL字段冗余問題
+"""
+from typing import Dict, Optional, List
+import logging
+
+class UnifiedTradeManager:
+    def __init__(self, db_connection):
+        self.db = db_connection
+        self.logger = logging.getLogger(__name__)
+        
+    def create_trade(self, trade_data: Dict) -> int:
+        """創建交易記錄，確保兩個PnL字段同步"""
+        try:
+            # 統一PnL值
+            pnl_value = trade_data.get('pnl')
+            profit_loss_value = trade_data.get('profit_loss')
+            
+            # 智能同步邏輯
+            if pnl_value is not None and profit_loss_value is None:
+                trade_data['profit_loss'] = pnl_value
+            elif profit_loss_value is not None and pnl_value is None:
+                trade_data['pnl'] = profit_loss_value
+            elif pnl_value is not None and profit_loss_value is not None:
+                # 兩個都有值，確保一致（以pnl為準）
+                trade_data['profit_loss'] = pnl_value
+            
+            self.logger.info(f"Creating trade with synchronized PnL: pnl={trade_data.get('pnl')}, profit_loss={trade_data.get('profit_loss')}")
+            
+            # 使用原有INSERT邏輯，但確保兩個字段都傳入
+            return self._insert_trade_legacy(trade_data)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create trade with PnL sync: {e}")
+            raise
+    
+    def get_trade_pnl(self, trade_id: int) -> Optional[float]:
+        """安全獲取PnL值，使用統一邏輯"""
+        query = """
+        SELECT COALESCE(profit_loss, pnl) as unified_pnl
+        FROM trades WHERE id = %s
+        """
+        try:
+            result = self.db.execute_query(query, (trade_id,))
+            return result[0]['unified_pnl'] if result else None
+        except Exception as e:
+            self.logger.error(f"Failed to get trade PnL: {e}")
+            return None
+    
+    def update_trade_pnl(self, trade_id: int, pnl_value: float) -> bool:
+        """更新PnL，同步兩個字段"""
+        query = """
+        UPDATE trades 
+        SET pnl = %s, profit_loss = %s, updated_at = CURRENT_TIMESTAMP
+        WHERE id = %s
+        """
+        try:
+            self.db.execute_query(query, (pnl_value, pnl_value, trade_id))
+            self.logger.info(f"Updated trade {trade_id} PnL to {pnl_value} with sync")
+            return True
+        except Exception as e:
+            self.logger.error(f"Failed to update trade PnL: {e}")
+            return False
+    
+    def get_trades_for_reporting(self, start_date: str, end_date: str) -> List[Dict]:
+        """為報表查詢提供統一PnL接口"""
+        query = """
+        SELECT 
+            id, symbol, direction, entry_price, quantity,
+            entry_timestamp, exit_timestamp, leverage,
+            COALESCE(profit_loss, pnl) as pnl,
+            pnl_pct,
+            created_at, updated_at
+        FROM trades 
+        WHERE entry_timestamp BETWEEN %s AND %s
+        ORDER BY entry_timestamp
+        """
+        return self.db.execute_query(query, (start_date, end_date))
+    
+    def _insert_trade_legacy(self, trade_data: Dict) -> int:
+        """調用原有service.py的插入邏輯"""
+        # 這裡調用現有的service.py插入方法
+        # 確保傳入的trade_data包含同步後的pnl和profit_loss
+        from src.database.service import insert_trade
+        return insert_trade(trade_data)
+```
+
+第二步：更新報表生成模塊
+
+在報表模塊中使用統一接口：
+
+```python
+# src/reporting/pnl_report_generator.py
+class PnLReportGenerator:
+    def __init__(self):
+        self.trade_manager = UnifiedTradeManager(get_db_connection())
+    
+    def generate_daily_pnl_report(self, report_date: str):
+        """生成每日PnL報告，使用統一PnL字段"""
+        query = """
+        SELECT 
+            symbol,
+            SUM(COALESCE(profit_loss, pnl)) as total_pnl,
+            AVG(COALESCE(profit_loss, pnl)) as avg_pnl,
+            COUNT(*) as trade_count
+        FROM trades 
+        WHERE DATE(entry_timestamp) = %s
+        GROUP BY symbol
+        ORDER BY total_pnl DESC
+        """
+        return self.trade_manager.db.execute_query(query, (report_date,))
+    
+    def get_inconsistent_pnl_records(self) -> List[Dict]:
+        """找出PnL不一致的記錄用於修復"""
+        query = """
+        SELECT id, symbol, pnl, profit_loss, entry_timestamp
+        FROM trades 
+        WHERE ABS(COALESCE(pnl, 0) - COALESCE(profit_loss, 0)) > 0.01
+        ORDER BY entry_timestamp DESC
+        LIMIT 100
+        """
+        return self.trade_manager.db.execute_query(query)
+```
+
+📋 階段三：監控和驗證（持續進行）
+
+第一步：創建數據健康監控
+
+```sql
+-- 1. 數據一致性監控視圖
+CREATE OR REPLACE VIEW data_health_check AS
+SELECT 
+    'pnl_consistency' as check_type,
+    COUNT(*) as total_records,
+    COUNT(CASE WHEN pnl IS NOT NULL AND profit_loss IS NOT NULL THEN 1 END) as both_populated,
+    COUNT(CASE WHEN pnl IS NOT NULL AND profit_loss IS NULL THEN 1 END) as only_pnl,
+    COUNT(CASE WHEN pnl IS NULL AND profit_loss IS NOT NULL THEN 1 END) as only_profit_loss,
+    COUNT(CASE WHEN pnl IS NULL AND profit_loss IS NULL THEN 1 END) as both_null,
+    COUNT(CASE WHEN ABS(COALESCE(pnl,0) - COALESCE(profit_loss,0)) > 0.01 THEN 1 END) as significant_diff,
+    ROUND(COUNT(CASE WHEN ABS(COALESCE(pnl,0) - COALESCE(profit_loss,0)) < 0.01 THEN 1 END) * 100.0 / COUNT(*), 2) as consistency_rate
+FROM trades;
+
+-- 2. 業務影響監控視圖
+CREATE OR REPLACE VIEW business_impact_monitor AS
+SELECT 
+    'reporting_impact' as monitor_area,
+    COUNT(DISTINCT symbol) as active_symbols,
+    SUM(COALESCE(profit_loss, pnl)) as total_pnl,
+    AVG(COALESCE(profit_loss, pnl)) as avg_pnl_per_trade,
+    MIN(entry_timestamp) as earliest_trade,
+    MAX(entry_timestamp) as latest_trade
+FROM trades;
+```
+
+第二步：創建自動化健康檢查
+
+```python
+# src/monitoring/health_check.py
+class PnLHealthChecker:
+    def __init__(self):
+        self.db = get_db_connection()
+    
+    def check_pnl_consistency(self) -> Dict:
+        """檢查PnL字段一致性"""
+        query = """
+        SELECT 
+            total_records,
+            both_populated,
+            only_pnl,
+            only_profit_loss, 
+            both_null,
+            significant_diff,
+            consistency_rate
+        FROM data_health_check
+        """
+        result = self.db.execute_query(query)
+        return result[0] if result else {}
+    
+    def validate_business_continuity(self) -> bool:
+        """驗證業務連續性"""
+        health_data = self.check_pnl_consistency()
+        
+        # 成功標準：
+        # 1. 一致性率 > 99.9%
+        # 2. 沒有significant_diff或數量極少
+        # 3. both_null數量為0或極少
+        
+        consistency_ok = health_data.get('consistency_rate', 0) > 99.9
+        significant_diff_ok = health_data.get('significant_diff', 0) < 5
+        both_null_ok = health_data.get('both_null', 0) == 0
+        
+        return consistency_ok and significant_diff_ok and both_null_ok
+    
+    def generate_health_report(self) -> str:
+        """生成健康檢查報告"""
+        health_data = self.check_pnl_consistency()
+        
+        report = f"""
+        PnL字段一致性健康報告
+        ====================
+        總記錄數: {health_data.get('total_records', 0)}
+        雙字段填充: {health_data.get('both_populated', 0)}
+        僅pnl有值: {health_data.get('only_pnl', 0)} 
+        僅profit_loss有值: {health_data.get('only_profit_loss', 0)}
+        雙字段為空: {health_data.get('both_null', 0)}
+        顯著差異: {health_data.get('significant_diff', 0)}
+        一致性率: {health_data.get('consistency_rate', 0)}%
+        
+        業務連續性: {'✅ 正常' if self.validate_business_continuity() else '❌ 異常'}
+        """
+        return report
+```
+
+🚨 緊急回滾方案
+
+```sql
+-- 如果出現問題，立即回滾
+-- 1. 刪除觸發器
+DROP TRIGGER IF EXISTS ensure_pnl_sync ON trades;
+
+-- 2. 刪除約束
+ALTER TABLE trades DROP CONSTRAINT IF EXISTS at_least_one_pnl;
+
+-- 3. 刪除視圖
+DROP VIEW IF EXISTS trades_compatible;
+DROP VIEW IF EXISTS trades_reporting;
+DROP VIEW IF EXISTS data_health_check;
+DROP VIEW IF EXISTS business_impact_monitor;
+
+-- 4. 恢復原始狀態確認
+SELECT COUNT(*) FROM trades; -- 確認數據完好
+```
+
+📊 驗收標準
+
+請在每個階段完成後驗證：
+
+階段一驗收：
+
+· trades_compatible視圖可正常查詢
+· 觸發器能雙向同步PnL字段
+· 新插入記錄兩個字段自動同步
+· 現有查詢不受影響
+
+階段二驗收：
+
+· UnifiedTradeManager所有方法正常工作
+· 報表生成使用統一PnL接口
+· 業務邏輯無回歸錯誤
+
+階段三驗收：
+
+· 健康檢查報告顯示一致性率>99.9%
+· 無業務中斷報告
+· 監控系統正常運行
+
+請嚴格按照此方案執行，每個步驟完成後進行驗證，確保系統穩定性和數據一致性。
