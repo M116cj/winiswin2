@@ -75,9 +75,7 @@ class OptimizedWebSocketFeed:
             'ping_interval': ping_interval,
             'ping_timeout': ping_timeout,
             'close_timeout': 10,
-            'max_size': 10 * 1024 * 1024,
-            'read_limit': 2 ** 16,
-            'write_limit': 2 ** 16,
+            'max_size': 10 * 1024 * 1024
         }
         
         # 任务
