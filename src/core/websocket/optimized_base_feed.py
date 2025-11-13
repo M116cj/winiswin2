@@ -10,9 +10,11 @@ from datetime import datetime
 import time
 
 try:
-    import websockets
+    import websockets  # type: ignore
+    from websockets.exceptions import ConnectionClosed  # type: ignore
 except ImportError:
-    websockets = None
+    websockets = None  # type: ignore
+    ConnectionClosed = Exception  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -284,8 +286,15 @@ class OptimizedWebSocketFeed:
         Returns:
             消息内容或None
         """
-        if not self.ws or self.ws.closed:
+        if not self.ws:
             return None
+        
+        # 检查连接是否关闭（安全访问closed属性）
+        try:
+            if hasattr(self.ws, 'closed') and self.ws.closed:
+                return None
+        except AttributeError:
+            pass
         
         try:
             message = await asyncio.wait_for(
@@ -302,7 +311,7 @@ class OptimizedWebSocketFeed:
             logger.warning(f"⚠️ {self.name}: 接收消息超时")
             return None
             
-        except websockets.exceptions.ConnectionClosed:
+        except ConnectionClosed:
             logger.warning(f"⚠️ {self.name}: 连接已关闭")
             self.connected = False
             return None
