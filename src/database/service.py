@@ -174,18 +174,22 @@ class TradingDataService:
         self,
         symbol: Optional[str] = None,
         limit: int = 100,
-        status: Optional[str] = None
+        status: Optional[str] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None
     ) -> List[Dict]:
         """
-        获取交易历史
+        获取交易历史（支持时间范围过滤）
         
         Args:
             symbol: 交易对（可选）
             limit: 返回记录数限制
             status: 交易状态（可选）
+            start_time: 开始时间（可选）
+            end_time: 结束时间（可选）
             
         Returns:
-            交易记录列表
+            交易记录列表，按entry_timestamp DESC排序
         """
         try:
             conditions = []
@@ -198,6 +202,15 @@ class TradingDataService:
             if status:
                 conditions.append("status = %s")
                 params.append(status)
+            
+            # 时间范围过滤（在SQL层面执行）
+            if start_time:
+                conditions.append("entry_timestamp >= %s")
+                params.append(start_time.isoformat() + 'Z')
+            
+            if end_time:
+                conditions.append("entry_timestamp <= %s")
+                params.append(end_time.isoformat() + 'Z')
             
             where_clause = ""
             if conditions:

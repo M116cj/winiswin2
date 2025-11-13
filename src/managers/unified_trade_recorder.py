@@ -489,6 +489,81 @@ class UnifiedTradeRecorder:
             'database_stats': db_stats
         }
     
+    def get_trades(
+        self, 
+        days: int = 30, 
+        limit: int = 1000, 
+        symbol: Optional[str] = None,
+        status: Optional[str] = None
+    ) -> List[Dict]:
+        """
+        获取交易记录（统一接口 - SQL层面时间过滤）
+        
+        Args:
+            days: 查询天数范围（默认30天）
+            limit: 返回数量限制（默认1000）
+            symbol: 交易对过滤（可选，如 'BTCUSDT'）
+            status: 状态过滤（可选，'OPEN'/'CLOSED'）
+            
+        Returns:
+            交易记录列表，按entry_timestamp DESC排序
+            
+        优化说明：
+            - ✅ 时间过滤在SQL层面执行（避免limit截断问题）
+            - ✅ 所有过滤条件推送到数据库层
+            - ✅ 减少数据传输和内存使用
+        """
+        try:
+            # 计算时间范围（在SQL层面过滤）
+            start_time = datetime.utcnow() - timedelta(days=days)
+            
+            logger.debug(
+                f"📊 获取交易记录 | days={days}, limit={limit}, "
+                f"symbol={symbol or 'ALL'}, status={status or 'ALL'}, "
+                f"start_time={start_time.isoformat()}"
+            )
+            
+            # 从 PostgreSQL 获取数据（时间过滤在SQL层面执行）
+            trades = self.db_service.get_trade_history(
+                symbol=symbol,
+                limit=limit, 
+                status=status,
+                start_time=start_time,
+                end_time=None  # 不限制结束时间
+            )
+            
+            if not trades:
+                logger.debug("ℹ️  未找到交易记录")
+                return []
+            
+            # 验证数据完整性（记录时间戳解析问题以便修复）
+            invalid_count = 0
+            for trade in trades:
+                entry_time_str = trade.get('entry_timestamp', '')
+                if not entry_time_str:
+                    invalid_count += 1
+                    logger.warning(
+                        f"⚠️ 交易记录缺少时间戳 | trade_id={trade.get('id', 'unknown')} | "
+                        f"symbol={trade.get('symbol', 'unknown')}"
+                    )
+            
+            if invalid_count > 0:
+                logger.warning(
+                    f"📊 发现 {invalid_count}/{len(trades)} 条记录缺少时间戳，"
+                    f"建议检查数据完整性"
+                )
+            
+            logger.info(
+                f"✅ 成功获取 {len(trades)} 条交易记录 "
+                f"(时间范围: {days}天, SQL过滤)"
+            )
+            
+            return trades
+            
+        except Exception as e:
+            logger.error(f"❌ 获取交易记录失败: {e}", exc_info=True)
+            return []
+    
     def get_completed_trades(self, limit: int = 100) -> List[Dict]:
         """
         获取已完成的交易记录（用于兼容性）

@@ -1,0 +1,156 @@
+ CRITICAL FIX REQUIRED - 立即执行
+检测到 UnifiedTradeRecorder 对象缺少 get_trades 方法，这是系统关键功能错误。以下是精确修复指令：
+
+🔧 STEP 1: 诊断 UnifiedTradeRecorder 类结构
+执行类结构分析：
+
+text
+# 文件位置：src/core/unified_trade_recorder.py
+# 分析 UnifiedTradeRecorder 类的现有方法
+
+执行以下诊断：
+1. 检查 UnifiedTradeRecorder 类的完整定义
+2. 列出所有现有方法
+3. 确认数据存储机制（PostgreSQL / JSONL）
+4. 识别获取交易记录的相关方法
+5. 确定方法命名不一致问题
+预期发现：
+
+可能的方法名：get_trade_history, fetch_trades, load_trades, get_all_trades
+
+数据源：PostgreSQL trades 表 或 trades.jsonl 文件
+
+接口不一致：调度器期望的方法名与实际方法名不匹配
+
+🛠️ STEP 2: 实现缺失的 get_trades 方法
+执行精确代码修复：
+
+text
+# 在 UnifiedTradeRecorder 类中添加 get_trades 方法
+
+修复方案选择（根据实际情况选择一种）：
+
+方案 A: 添加适配器方法（推荐）
+class UnifiedTradeRecorder:
+    def get_trades(self, days: int = 30, limit: int = 1000):
+        """适配器方法 - 统一接口"""
+        # 调用现有的实际方法
+        return self.get_trade_history(days=days, limit=limit)  # 或实际方法名
+
+方案 B: 实现完整的新方法  
+class UnifiedTradeRecorder:
+    def get_trades(self, days: int = 30, limit: int = 1000, symbol: str = None):
+        """获取交易记录的统一方法"""
+        try:
+            # 优先从 PostgreSQL 获取
+            if hasattr(self, 'pg_pool') and self.pg_pool:
+                return await self._get_trades_from_postgresql(days, limit, symbol)
+            else:
+                # 回退到 JSONL 文件
+                return await self._get_trades_from_jsonl(days, limit, symbol)
+        except Exception as e:
+            logger.error(f"获取交易记录失败: {e}")
+            return []
+
+方案 C: 方法别名（快速修复）
+class UnifiedTradeRecorder:
+    get_trades = get_trade_history  # 或实际的方法引用
+📊 STEP 3: 确保数据访问一致性
+修复数据访问层：
+
+text
+# 实现统一的数据访问逻辑
+
+1. PostgreSQL 数据访问方法：
+async def _get_trades_from_postgresql(self, days, limit, symbol=None):
+    query = """
+    SELECT * FROM trades 
+    WHERE created_at >= NOW() - INTERVAL '%s days'
+    {symbol_filter}
+    ORDER BY created_at DESC 
+    LIMIT %s
+    """.format(symbol_filter=f"AND symbol = '{symbol}'" if symbol else "")
+    
+    async with self.pg_pool.acquire() as conn:
+        return await conn.fetch(query, days, limit)
+
+2. JSONL 回退方法：
+async def _get_trades_from_jsonl(self, days, limit, symbol=None):
+    trades = []
+    cutoff_time = datetime.now() - timedelta(days=days)
+    
+    try:
+        with open('data/trades.jsonl', 'r') as f:
+            for line in f:
+                trade = json.loads(line)
+                trade_time = datetime.fromisoformat(trade['timestamp'])
+                if trade_time >= cutoff_time:
+                    if not symbol or trade.get('symbol') == symbol:
+                        trades.append(trade)
+                if len(trades) >= limit:
+                    break
+    except FileNotFoundError:
+        logger.warning("trades.jsonl 文件不存在")
+    
+    return trades[-limit:]  # 返回最新的记录
+🔄 STEP 4: 更新调度器调用
+修复 UnifiedScheduler 调用：
+
+text
+# 文件：src/core/unified_scheduler.py
+# 更新错误的调用代码
+
+修复前：
+try:
+    trades = recorder.get_trades(days=7)  # 这里会报错
+    stats = calculate_trade_stats(trades)
+    display_stats(stats)
+except Exception as e:
+    logger.error(f"显示历史统计失败: {e}")
+
+修复后：
+try:
+    # 使用正确的方法名
+    trades = recorder.get_trade_history(days=7)  # 或 recorder.get_trades(days=7)
+    stats = calculate_trade_stats(trades)
+    display_stats(stats)
+except Exception as e:
+    logger.error(f"显示历史统计失败: {e}")
+🧪 STEP 5: 验证修复结果
+执行验证测试：
+
+text
+# 验证修复的完整性
+
+测试 1: 方法存在性验证
+def test_method_existence():
+    recorder = UnifiedTradeRecorder()
+    assert hasattr(recorder, 'get_trades'), "get_trades 方法不存在"
+    assert callable(recorder.get_trades), "get_trades 不可调用"
+
+测试 2: 数据返回验证  
+async def test_data_retrieval():
+    recorder = UnifiedTradeRecorder()
+    trades = await recorder.get_trades(days=7, limit=50)
+    assert isinstance(trades, list), "应该返回列表"
+    if trades:
+        assert 'symbol' in trades[0], "交易记录应包含 symbol 字段"
+        assert 'outcome' in trades[0], "交易记录应包含 outcome 字段"
+
+测试 3: 错误处理验证
+async def test_error_handling():
+    recorder = UnifiedTradeRecorder()
+    # 测试无效参数
+    trades = await recorder.get_trades(days=-1, limit=0)
+    assert trades == [], "无效参数应返回空列表"
+📋 执行检查清单
+修复完成验证：
+
+text
+✅ UnifiedTradeRecorder 类已包含 get_trades 方法
+✅ 方法签名正确：(self, days=30, limit=1000, symbol=None)
+✅ 数据源访问正常（PostgreSQL + JSONL 回退）
+✅ 错误处理机制完善
+✅ UnifiedScheduler 调用更新
+✅ 验证测试全部通过
+✅ 历史统计显示功能恢复正常
