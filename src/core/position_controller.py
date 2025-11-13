@@ -8,6 +8,9 @@ import asyncio
 from typing import List, Dict, Optional
 import logging
 from datetime import datetime
+import os
+
+import asyncpg  # 🔥 v4.4.1 P1: 異步數據庫操作（持久化持倉時間）
 
 from src.core.position_monitor_24x7 import PositionMonitor24x7
 
@@ -90,6 +93,10 @@ class PositionController:
         self.liquidating_symbols = set()  # 正在平倉的symbol集合（避免重複平倉）
         self.last_time_stop_check = 0  # 上次檢查時間戳
         
+        # 🔥 v4.4.1 P1：數據庫連接（持久化持倉時間）
+        self.db_pool: Optional[asyncpg.Pool] = None
+        self._db_initialized = False
+        
         logger.info("=" * 80)
         logger.info("✅ PositionController v3.28+ 初始化完成（全倉保護 + 時間止損）")
         logger.info(f"   ⏱️  監控間隔: {monitor_interval} 秒")
@@ -112,6 +119,10 @@ class PositionController:
         """啟動 24/7 倉位監控（整合 PositionMonitor24x7，共享API調用）"""
         self.is_running = True
         logger.info("🚀 PositionController 24/7 監控已啟動（整合進場失效+逆勢檢測）")
+        
+        # 🔥 v4.4.1 P1：初始化數據庫連接並恢復持倉時間
+        await self._initialize_database()
+        await self._restore_position_entry_times()
         
         # 🔥 v3.17.10+：不再獨立啟動PositionMonitor24x7，改為共享API調用
         # 避免重複調用導致 HTTP 429 速率限制
@@ -147,6 +158,129 @@ class PositionController:
         # 🔥 v3.28+：顯示時間止損統計
         if self.stats['time_based_stops'] > 0:
             logger.info(f"   ⏰ 時間止損平倉: {self.stats['time_based_stops']} 次")
+        
+        # 🔥 v4.4.1 P1：關閉數據庫連接
+        await self._close_database()
+    
+    async def _initialize_database(self):
+        """
+        🔥 v4.4.1 P1：初始化數據庫連接池
+        """
+        if self._db_initialized:
+            return
+        
+        try:
+            database_url = os.environ.get('DATABASE_URL')
+            if not database_url:
+                logger.warning("⚠️ DATABASE_URL 未設置，持倉時間持久化功能禁用")
+                return
+            
+            # 創建連接池（最小1個，最大5個連接）
+            self.db_pool = await asyncpg.create_pool(
+                database_url,
+                min_size=1,
+                max_size=5,
+                timeout=30,
+                command_timeout=10
+            )
+            
+            self._db_initialized = True
+            logger.info("✅ 數據庫連接池初始化成功（持倉時間持久化）")
+            
+        except Exception as e:
+            logger.error(f"❌ 數據庫連接池初始化失敗: {e}，持倉時間持久化功能禁用")
+            self.db_pool = None
+            self._db_initialized = False
+    
+    async def _close_database(self):
+        """
+        🔥 v4.4.1 P1：關閉數據庫連接池
+        """
+        if self.db_pool:
+            try:
+                await self.db_pool.close()
+                logger.info("✅ 數據庫連接池已關閉")
+            except Exception as e:
+                logger.error(f"❌ 關閉數據庫連接池失敗: {e}")
+            finally:
+                self.db_pool = None
+                self._db_initialized = False
+    
+    async def _restore_position_entry_times(self):
+        """
+        🔥 v4.4.1 P1：從數據庫恢復持倉開仓時間（防止系統重啟計時重置）
+        """
+        if not self._db_initialized or not self.db_pool:
+            logger.debug("數據庫未初始化，跳過持倉時間恢復")
+            return
+        
+        try:
+            async with self.db_pool.acquire() as conn:
+                rows = await conn.fetch(
+                    "SELECT symbol, entry_time FROM position_entry_times"
+                )
+                
+                if rows:
+                    for row in rows:
+                        self.position_entry_times[row['symbol']] = row['entry_time']
+                    
+                    logger.info(
+                        f"✅ 從數據庫恢復 {len(rows)} 個持倉開倉時間 "
+                        f"(symbols: {', '.join([r['symbol'] for r in rows])})"
+                    )
+                else:
+                    logger.debug("數據庫中無持倉時間記錄")
+                    
+        except Exception as e:
+            logger.error(f"❌ 恢復持倉時間失敗: {e}", exc_info=True)
+    
+    async def _persist_entry_time(self, symbol: str, entry_time: float):
+        """
+        🔥 v4.4.1 P1：持久化持倉開倉時間到數據庫
+        
+        Args:
+            symbol: 交易對符號
+            entry_time: 開倉時間戳（Unix秒）
+        """
+        if not self._db_initialized or not self.db_pool:
+            return
+        
+        try:
+            async with self.db_pool.acquire() as conn:
+                await conn.execute(
+                    """
+                    INSERT INTO position_entry_times (symbol, entry_time, updated_at)
+                    VALUES ($1, $2, CURRENT_TIMESTAMP)
+                    ON CONFLICT (symbol)
+                    DO UPDATE SET entry_time = $2, updated_at = CURRENT_TIMESTAMP
+                    """,
+                    symbol, entry_time
+                )
+                logger.debug(f"💾 持倉時間已持久化: {symbol} @ {entry_time}")
+                
+        except Exception as e:
+            logger.error(f"❌ 持久化持倉時間失敗 ({symbol}): {e}")
+    
+    async def _delete_entry_time(self, symbol: str):
+        """
+        🔥 v4.4.1 P1：從數據庫刪除持倉開倉時間（平倉後清理）
+        
+        Args:
+            symbol: 交易對符號
+        """
+        if not self._db_initialized or not self.db_pool:
+            return
+        
+        try:
+            async with self.db_pool.acquire() as conn:
+                await conn.execute(
+                    "DELETE FROM position_entry_times WHERE symbol = $1",
+                    symbol
+                )
+                logger.debug(f"🗑️  持倉時間已刪除: {symbol}")
+                
+        except Exception as e:
+            logger.error(f"❌ 刪除持倉時間失敗 ({symbol}): {e}")
     
     async def _monitoring_cycle(self):
         """單次監控週期（整合PositionMonitor24x7檢測，共享API調用）"""
@@ -632,6 +766,10 @@ class PositionController:
                     # 首次發現此持倉，記錄當前時間為開倉時間
                     self.position_entry_times[symbol] = current_time
                     logger.debug(f"⏰ 記錄持倉開倉時間: {symbol} @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                    
+                    # 🔥 v4.4.1 P1：持久化到數據庫（防止重啟計時重置）
+                    await self._persist_entry_time(symbol, current_time)
+                    
                     continue  # 剛開倉，無需檢查
                 
                 entry_time = self.position_entry_times[symbol]
@@ -682,7 +820,7 @@ class PositionController:
     
     async def _force_close_time_based(self, position: Dict, holding_hours: float) -> bool:
         """
-        🔥 v3.28+ 時間基礎強制平倉（市價單，Priority HIGH）
+        🔥 v4.4.1 P2: 時間基礎強制平倉（市價單，Priority CRITICAL，帶重試機制）
         
         Args:
             position: 要平倉的倉位信息
@@ -731,16 +869,47 @@ class PositionController:
             # Fix: 改用CRITICAL優先級（與全倉保護一致），確保任何情況下都能平倉
             from src.core.circuit_breaker import Priority
             
-            # 使用市價單立即平倉（CRITICAL優先級 + 白名單操作）
-            result = await self.binance_client.place_order(
-                symbol=symbol,
-                side=side,
-                order_type="MARKET",
-                quantity=quantity,
-                priority=Priority.CRITICAL,  # ✅ v4.4.1: HIGH→CRITICAL（确保bypass熔断器BLOCKED）
-                operation_type="close_position",
-                **order_params
-            )
+            # 🔥 v4.4.1 P2：添加重試機制（最多3次，指數退避）
+            max_retries = 3
+            result = None
+            
+            for attempt in range(max_retries):
+                try:
+                    # 使用市價單立即平倉（CRITICAL優先級 + 白名單操作）
+                    result = await self.binance_client.place_order(
+                        symbol=symbol,
+                        side=side,
+                        order_type="MARKET",
+                        quantity=quantity,
+                        priority=Priority.CRITICAL,  # ✅ v4.4.1: HIGH→CRITICAL（确保bypass熔断器BLOCKED）
+                        operation_type="close_position",
+                        **order_params
+                    )
+                    
+                    if result:
+                        # 成功，跳出重試循環
+                        break
+                    else:
+                        # 失敗但無異常，等待後重試
+                        if attempt < max_retries - 1:
+                            wait_time = 2 ** attempt  # 1s, 2s, 4s (指數退避)
+                            logger.warning(
+                                f"⚠️ 時間止損平倉失敗（{symbol}），{wait_time}秒後重試 "
+                                f"({attempt + 1}/{max_retries})"
+                            )
+                            await asyncio.sleep(wait_time)
+                        else:
+                            logger.error(f"❌ 時間止損平倉重試{max_retries}次後仍失敗: {symbol}")
+                            
+                except Exception as e:
+                    logger.error(f"❌ 時間止損平倉異常 ({symbol}, 嘗試{attempt + 1}/{max_retries}): {e}")
+                    if attempt < max_retries - 1:
+                        wait_time = 2 ** attempt  # 指數退避
+                        logger.warning(f"⚠️ {wait_time}秒後重試...")
+                        await asyncio.sleep(wait_time)
+                    else:
+                        logger.critical(f"🔴 時間止損平倉重試{max_retries}次後仍異常: {symbol}")
+                        raise  # 重新拋出最後一次異常
             
             if result:
                 logger.warning(
@@ -776,6 +945,9 @@ class PositionController:
                 # 從開倉時間記錄中移除
                 if symbol in self.position_entry_times:
                     del self.position_entry_times[symbol]
+                    
+                    # 🔥 v4.4.1 P1：從數據庫刪除（清理持久化記錄）
+                    await self._delete_entry_time(symbol)
                 
                 return True
             else:

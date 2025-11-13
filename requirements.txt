@@ -53,3 +53,4 @@ scikit-learn==1.7.2
 # - For Railway deployment: only core dependencies needed
 # - Optional extras reduce deployment size by ~200MB
 # =============================================================================
+asyncpg
