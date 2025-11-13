@@ -67,7 +67,6 @@ def _create_trades_table(db_manager: DatabaseManager) -> bool:
             -- 盈亏信息
             pnl DECIMAL(18, 8),
             pnl_pct DECIMAL(10, 4),
-            profit_loss DECIMAL(18, 8),
             
             -- 交易状态
             status VARCHAR(20) DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'CLOSED', 'CANCELLED')),
