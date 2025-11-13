@@ -726,16 +726,18 @@ class PositionController:
                 order_params['reduceOnly'] = "true"
                 logger.info("  One-Way Mode: reduceOnly=\"true\"")
             
-            # 使用HIGH優先級（低於CRITICAL，但高於NORMAL）
+            # 🔥 v4.4.1 Critical Fix: 使用CRITICAL優先級確保bypass熔斷器
+            # Bug: HIGH優先級在熔斷器BLOCKED時會被阻斷，導致時間止損失效
+            # Fix: 改用CRITICAL優先級（與全倉保護一致），確保任何情況下都能平倉
             from src.core.circuit_breaker import Priority
             
-            # 使用市價單立即平倉
+            # 使用市價單立即平倉（CRITICAL優先級 + 白名單操作）
             result = await self.binance_client.place_order(
                 symbol=symbol,
                 side=side,
                 order_type="MARKET",
                 quantity=quantity,
-                priority=Priority.HIGH,
+                priority=Priority.CRITICAL,  # ✅ v4.4.1: HIGH→CRITICAL（确保bypass熔断器BLOCKED）
                 operation_type="close_position",
                 **order_params
             )

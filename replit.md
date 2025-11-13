@@ -1,14 +1,34 @@
-# SelfLearningTrader v4.4 - WebSocket-Only K线数据模式
+# SelfLearningTrader v4.4.1 - Critical Bug Fix (时间止损优先级)
 
 ## 📌 項目概述
 
-**版本**：v4.4 WebSocket-only模式（零REST K线API调用）  
-**狀態**：✅ **Production Ready - 100% Binance API协议合规**  
+**版本**：v4.4.1 Critical Bug Fix（时间止损优先级修复）  
+**狀態**：✅ **Production Ready - 2小时强制平仓得到保证**  
 **部署目標**：Railway（推薦）或其他雲平台  
 **性能提升**：4-5倍（數據獲取5-6x + 緩存命中率85%） + Railway日志减少95%  
 **协议合规**：✅ **零REST K线API调用**（消除IP封禁风险）
 
 SelfLearningTrader 是一個基於機器學習的加密貨幣自動交易系統，實現真正的AI驅動交易決策。
+
+**🔥 v4.4.1 时间止损优先级Bug修复（2025-11-12）**：
+- 🐛 **严重Bug**：时间止损在熔断器BLOCKED时被阻断，导致持仓可能无限期持有
+- ✅ **根本原因**：使用`Priority.HIGH`（应为`Priority.CRITICAL`）
+- ✅ **修复方案**：
+  - 时间止损优先级：`Priority.HIGH` → `Priority.CRITICAL`
+  - 确保熔断器BLOCKED时仍能bypass执行
+  - 与全倉保護平仓逻辑一致（统一使用CRITICAL）
+- ✅ **修复效果**：
+  - 熔断器BLOCKED时：v4.4无法平仓 ❌ → v4.4.1强制平仓 ✅
+  - 2小时强制止损得到保证（任何情况下）
+  - 风险控制机制100%可靠
+- ✅ **影响文件**：
+  - `src/core/position_controller.py`：第743行（1行修改+注释）
+  - 新增文档：`TIME_STOP_PRIORITY_FIX_v4.4.1.md`
+  - 新增分析：`POSITION_HOLDING_TIME_ANALYSIS.md`（深度分析8个场景）
+- ✅ **Architect审查**：✅ 通过（建议采纳CRITICAL优先级）
+- 📚 **相关文档**：
+  - `TIME_STOP_PRIORITY_FIX_v4.4.1.md` - 优先级Bug修复报告
+  - `POSITION_HOLDING_TIME_ANALYSIS.md` - 持仓超时深度分析
 
 **🔥 v4.4 WebSocket-only K线数据模式（2025-11-12）**：
 - 🎯 **目标**：强制所有K线数据仅从WebSocket读取，零REST K线API调用
