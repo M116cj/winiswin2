@@ -80,6 +80,13 @@ class SelfLearningTrader:
             self.ml_model = None
             self.ml_enabled = False
         
+        # 🚀 v4.6.0: 批量ML推理支持（Phase 1A3）
+        self.batch_ml_enabled = (
+            self.ml_enabled and 
+            hasattr(self.config, 'BATCH_ML_INFERENCE_ENABLED') and 
+            self.config.BATCH_ML_INFERENCE_ENABLED
+        )
+        
         # 🔥 v3.18.7+ 模型啟動豁免機制
         self.bootstrap_enabled = self.config.BOOTSTRAP_TRADE_LIMIT > 0
         self._completed_trades_cache = None  # 緩存交易計數（避免重複讀取文件）

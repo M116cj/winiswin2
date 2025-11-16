@@ -109,6 +109,48 @@ class MLModelWrapper:
             logger.error(f"❌ 预测失败: {e}")
             return None
     
+    def predict_batch(self, features_list: List[List[float]]) -> Optional[List[float]]:
+        """
+        批量预测获胜概率（v4.6.0优化）
+        
+        相比单次预测，批量预测性能提升：
+        - 减少DMatrix创建开销（N次 → 1次）
+        - 减少模型调用开销（N次 → 1次）
+        - 预期性能提升：2.5x
+        
+        Args:
+            features_list: 多个交易对的特征列表，形状 (N, 12)
+        
+        Returns:
+            获胜概率列表，或None（如果模型未加载）
+        """
+        if not self.is_loaded or self.model is None:
+            return None
+        
+        if not features_list:
+            return []
+        
+        try:
+            import xgboost as xgb
+            
+            # 验证每个特征的长度
+            for i, features in enumerate(features_list):
+                if len(features) != 12:
+                    logger.warning(f"⚠️ 批量预测中第{i}个特征数量错误: {len(features)} != 12")
+                    return None
+            
+            # 创建批量DMatrix（一次性创建）
+            dmatrix = xgb.DMatrix(features_list)
+            
+            # 批量预测（一次模型调用）
+            predictions = self.model.predict(dmatrix)
+            
+            return [float(p) for p in predictions]
+            
+        except Exception as e:
+            logger.error(f"❌ 批量预测失败: {e}")
+            return None
+    
     def predict_from_signal(self, signal: Dict) -> Optional[float]:
         """
         从信号字典预测获胜概率

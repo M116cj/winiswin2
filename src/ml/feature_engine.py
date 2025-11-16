@@ -32,7 +32,7 @@ class FeatureEngine:
     2. 移除傳統技術指標（簡化為純機構交易邏輯）
     """
     
-    def __init__(self):
+    def __init__(self, use_resource_pool: bool = True):
         """初始化特徵工程引擎"""
         # 🔥 v3.19：訂單流緩衝（用於計算實時訂單流）
         self.trade_buffer: Deque[Dict] = deque(maxlen=1000)
@@ -40,6 +40,20 @@ class FeatureEngine:
         # v3.17.2+: WebSocket特徵追蹤
         self.latency_history: Deque[float] = deque(maxlen=100)
         self.shard_load_counter: Dict[int, int] = {}
+        
+        # 🚀 v4.6.0: 資源池化（Phase 1A4）
+        self.use_resource_pool = use_resource_pool
+        self._feature_dict_pool = None
+        if use_resource_pool:
+            try:
+                from src.config import Config
+                if Config.RESOURCE_POOL_ENABLED:
+                    from src.utils.resource_pool import get_global_pools
+                    pools = get_global_pools()
+                    self._feature_dict_pool = pools.feature_dict_pool
+                    logger.info("   🚀 資源池已啟用：FeatureDict復用")
+            except Exception as e:
+                logger.debug(f"資源池初始化失敗（降級為標準模式）: {e}")
         
         logger.info("=" * 60)
         logger.info("✅ 特徵工程引擎已創建 v4.0 (Pure ICT/SMC + Unified Schema)")
@@ -69,12 +83,45 @@ class FeatureEngine:
             純ICT/SMC特徵字典（12個特徵）
         """
         # 🔥 v3.19：只構建ICT/SMC特徵（12個）
-        ict_smc_features = self._build_ict_smc_features(
-            signal, 
-            klines_data=klines_data,
-            trade_data=trade_data,
-            depth_data=depth_data
-        )
+        # 🚀 v4.6.0修復版2: 異常安全的資源池化（try/finally確保釋放）
+        if self._feature_dict_pool:
+            pooled_dict = None
+            try:
+                # 從池中獲取臨時字典
+                pooled_dict = self._feature_dict_pool.acquire()
+                
+                # 原地計算特徵（避免臨時分配）
+                self._build_ict_smc_features_inplace(
+                    pooled_dict,
+                    signal,
+                    klines_data=klines_data,
+                    trade_data=trade_data,
+                    depth_data=depth_data
+                )
+                
+                # 複製一份返回給調用者（保持原API不變）
+                ict_smc_features = pooled_dict.copy()
+                
+            except Exception as e:
+                # 特徵計算失敗，降級為標準模式
+                logger.debug(f"資源池特徵計算失敗，使用標準模式: {e}")
+                ict_smc_features = self._build_ict_smc_features(
+                    signal, 
+                    klines_data=klines_data,
+                    trade_data=trade_data,
+                    depth_data=depth_data
+                )
+            finally:
+                # 🔥 關鍵修復：無論成功或失敗，都歸還到池中
+                if pooled_dict is not None:
+                    self._feature_dict_pool.release(pooled_dict)
+        else:
+            ict_smc_features = self._build_ict_smc_features(
+                signal, 
+                klines_data=klines_data,
+                trade_data=trade_data,
+                depth_data=depth_data
+            )
         
         logger.debug(
             f"✅ 構建12個ICT/SMC特徵: {signal.get('symbol', 'UNKNOWN')} "
@@ -138,6 +185,83 @@ class FeatureEngine:
             return data.to_dict('records')
         # 如果已經是列表，直接返回
         return data
+    
+    def _build_ict_smc_features_inplace(
+        self,
+        features: Dict,
+        signal: Dict,
+        klines_data: Optional[Dict] = None,
+        trade_data: Optional[List[Dict]] = None,
+        depth_data: Optional[Dict] = None
+    ) -> None:
+        """
+        原地更新特徵字典（v4.6.0資源池優化 - 修復版）
+        
+        直接在提供的dict中計算特徵，避免臨時分配
+        """
+        # 獲取K線數據
+        if klines_data is None:
+            klines_data = {
+                '1h': signal.get('klines_1h', []),
+                '15m': signal.get('klines_15m', []),
+                '5m': signal.get('klines_5m', [])
+            }
+        
+        klines_1h = klines_data.get('1h', [])
+        klines_15m = klines_data.get('15m', [])
+        klines_5m = klines_data.get('5m', [])
+        
+        # 轉換DataFrame為字典列表（ICTTools需要此格式）
+        klines_1h_list = self._convert_to_dict_list(klines_1h)
+        klines_15m_list = self._convert_to_dict_list(klines_15m)
+        klines_5m_list = self._convert_to_dict_list(klines_5m)
+        
+        # 獲取當前價格和ATR
+        current_price = signal.get('entry_price', 0)
+        atr = signal.get('indicators', {}).get('atr', 0)
+        
+        # === 8個基礎特徵 - 直接寫入features dict ===
+        
+        features['market_structure'] = ICTTools.calculate_market_structure(klines_1h_list) if self._is_valid_data(klines_1h) else 0
+        features['order_blocks_count'] = ICTTools.detect_order_blocks(klines_15m_list) if self._is_valid_data(klines_15m) else 0
+        
+        features['institutional_candle'] = 0
+        if self._is_valid_data(klines_5m) and len(klines_5m) > 20:
+            features['institutional_candle'] = ICTTools.detect_institutional_candle(
+                klines_5m_list[-1], 
+                klines_5m_list
+            )
+        
+        features['liquidity_grab'] = 0
+        if self._is_valid_data(klines_5m) and atr > 0:
+            features['liquidity_grab'] = ICTTools.detect_liquidity_grab(klines_5m_list, atr)
+        
+        features['order_flow'] = self._calculate_order_flow(trade_data) if trade_data else 0.0
+        features['fvg_count'] = ICTTools.detect_fvg(klines_5m_list) if self._is_valid_data(klines_5m) else 0
+        features['trend_alignment_enhanced'] = self._calculate_trend_alignment_enhanced(
+            klines_1h, klines_15m, klines_5m
+        )
+        
+        features['swing_high_distance'] = 0.0
+        if self._is_valid_data(klines_15m) and current_price > 0 and atr > 0:
+            features['swing_high_distance'] = ICTTools.calculate_swing_distance(
+                klines_15m_list, current_price, atr, 'high'
+            )
+        
+        # === 4個合成特徵 - 直接寫入features dict ===
+        
+        features['structure_integrity'] = self._calculate_structure_integrity(
+            features['market_structure'], features['fvg_count'], features['order_blocks_count']
+        )
+        features['institutional_participation'] = self._calculate_institutional_participation(
+            features['institutional_candle'], features['order_flow'], features['liquidity_grab']
+        )
+        features['timeframe_convergence'] = self._calculate_timeframe_convergence(
+            klines_1h, klines_15m, klines_5m
+        )
+        features['liquidity_context'] = self._calculate_liquidity_context(
+            depth_data, features['liquidity_grab']
+        )
     
     def _build_ict_smc_features(
         self,
