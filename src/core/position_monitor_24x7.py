@@ -9,14 +9,14 @@ v3.18+ 新特性：
 - 7種智能出場情境（強制止盈、虧損熔斷、智能持倉、進場失效、逆勢、追蹤止盈、OCO）
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
 from src.core.evaluation_engine import EvaluationEngine, MarketContext
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class PositionMonitor24x7:

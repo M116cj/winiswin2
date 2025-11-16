@@ -6,7 +6,7 @@ PositionController v3.17.10+ - 24/7 倉位全權控制
 
 import asyncio
 from typing import List, Dict, Optional
-import logging
+from src.utils.logger_factory import get_logger
 from datetime import datetime
 import os
 
@@ -14,7 +14,7 @@ import asyncpg  # 🔥 v4.4.1 P1: 異步數據庫操作（持久化持倉時間�
 
 from src.core.position_monitor_24x7 import PositionMonitor24x7
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class PositionController:

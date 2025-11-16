@@ -21,7 +21,7 @@
 - 预期计算时间减少：2.65-5.3秒 → 0.5-1秒（5倍）
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import hashlib
 import pandas as pd
 import numpy as np
@@ -30,7 +30,7 @@ from dataclasses import dataclass
 
 from .intelligent_cache import IntelligentCache, generate_cache_key
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

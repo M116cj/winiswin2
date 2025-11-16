@@ -22,7 +22,7 @@
 - 性能优化：读写分离，减少锁竞争
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 import threading
 import time
@@ -32,7 +32,7 @@ from datetime import datetime
 
 from src.core.exception_handler import ExceptionHandler
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 K = TypeVar('K')  # Key type
 V = TypeVar('V')  # Value type

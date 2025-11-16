@@ -15,13 +15,13 @@ SelfLearningTrader              PositionMonitor24x7
 (開倉時評估)                    (監控時即時評估)
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import time
 import numpy as np
 from typing import Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

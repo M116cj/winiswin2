@@ -4,13 +4,13 @@ ShardFeed v3.17.2+ - WebSocket分片管理器
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional
 
 from src.core.websocket.kline_feed import KlineFeed
 from src.core.websocket.price_feed import PriceFeed
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ShardFeed:

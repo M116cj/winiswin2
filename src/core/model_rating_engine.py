@@ -3,12 +3,12 @@ v3.17+ 模型評級引擎
 100 分制評分系統，6 大維度
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Any
 from datetime import datetime, timedelta
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ModelRatingEngine:

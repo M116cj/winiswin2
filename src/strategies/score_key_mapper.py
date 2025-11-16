@@ -5,10 +5,10 @@
 - 传统模式和纯ICT模式使用不同的 sub_scores 键名
 - 提供统一的访问接口，自动适配不同模式
 """
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ScoreKeyMapper:

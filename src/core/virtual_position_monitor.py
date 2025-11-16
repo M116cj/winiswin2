@@ -7,11 +7,11 @@
 - 導致模型過度樂觀，實盤表現差於虛擬倉位
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional
 from src.core.data_models import VirtualPosition
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class VirtualPositionMonitor:

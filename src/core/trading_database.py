@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import json
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional, Any
 import threading
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class TradingDatabase:
     """高性能交易数据库系统（v3.20+）"""

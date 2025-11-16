@@ -6,13 +6,12 @@
 import pandas as pd
 import numpy as np
 from typing import Dict, Optional, Any
-import logging
-
+from src.utils.logger_factory import get_logger
 from src.core.elite import EliteTechnicalEngine
 from src.config import Config
 from src.utils.signal_details_logger import get_signal_details_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class RuleBasedSignalGenerator:

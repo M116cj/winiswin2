@@ -5,11 +5,11 @@ BaseFeed v3.17.2+ - WebSocket Feed基類
 
 import asyncio
 import time
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional, Callable, Any
 from abc import ABC, abstractmethod
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class BaseFeed(ABC):

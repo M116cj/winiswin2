@@ -9,7 +9,7 @@ v4.0 Feature Unification:
 
 import os
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
@@ -22,7 +22,7 @@ from src.ml.feature_schema import (
     FEATURE_DEFAULTS
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ModelInitializer:

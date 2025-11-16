@@ -7,12 +7,11 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
-import logging
-
+from src.utils.logger_factory import get_logger
 from src.core.elite import EliteTechnicalEngine
 from src.config import Config
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ICTStrategy:

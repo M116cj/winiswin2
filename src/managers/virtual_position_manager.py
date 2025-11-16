@@ -8,7 +8,7 @@ import json
 import os
 from typing import Dict, List, Optional, Callable
 from datetime import datetime, timedelta
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 import aiofiles
 import threading
@@ -19,7 +19,7 @@ from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMoni
 from src.managers.virtual_position_events import VirtualPositionEvent
 from src.core.virtual_position_monitor import VirtualPositionMonitor
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # 性能优化模块（可选）
 try:

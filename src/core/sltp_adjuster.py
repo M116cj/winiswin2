@@ -3,10 +3,10 @@ v3.17+ 動態 SL/TP 調整器
 高槓桿 → 寬止損/止盈，避免過早觸發
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Tuple
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class SLTPAdjuster:

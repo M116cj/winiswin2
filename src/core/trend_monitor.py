@@ -4,13 +4,13 @@ v3.17+ 實時趨勢監控器
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 from enum import Enum
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class TrendState(Enum):

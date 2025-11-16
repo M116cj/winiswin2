@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from typing import Dict, Optional, List
 from datetime import datetime
-import logging
+from src.utils.logger_factory import get_logger
 import json
 import time
 import random
@@ -19,7 +19,7 @@ from src.core.sltp_adjuster import SLTPAdjuster
 from src.config import Config
 from src.utils.signal_details_logger import get_signal_details_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class SelfLearningTrader:

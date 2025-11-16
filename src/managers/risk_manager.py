@@ -4,10 +4,10 @@
 此文件僅保留向後兼容接口
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Tuple, Dict, Any
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class RiskManager:

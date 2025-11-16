@@ -3,10 +3,10 @@
 根據配置創建合適的交易策略
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Any
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class StrategyFactory:

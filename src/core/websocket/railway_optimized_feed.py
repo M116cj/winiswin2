@@ -5,7 +5,7 @@ Created: 2025-11-12 v4.3
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Optional, Dict, Any
 from datetime import datetime
@@ -19,7 +19,7 @@ except ImportError:
     ConnectionClosedError = Exception
     ConnectionClosedOK = Exception
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class RailwayOptimizedFeed:

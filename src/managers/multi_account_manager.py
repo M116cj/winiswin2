@@ -4,12 +4,12 @@ Multi-Account Manager v3.29+ - 多账号同时管理系统
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class AccountType(Enum):

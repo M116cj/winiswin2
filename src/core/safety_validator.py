@@ -9,11 +9,11 @@
 """
 
 import math
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Optional, Union
 from src.core.exception_handler import ExceptionHandler
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ValidationError(Exception):

@@ -7,12 +7,12 @@
 - 關鍵方法添加安全執行保護
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional
 from dataclasses import dataclass
 from src.core.exception_handler import ExceptionHandler
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

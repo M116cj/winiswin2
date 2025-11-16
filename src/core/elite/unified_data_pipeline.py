@@ -28,7 +28,7 @@
 - 代码重复：5个方法 → 2个核心方法
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 import pandas as pd
 from typing import Dict, List, Optional, Any
@@ -36,7 +36,7 @@ from datetime import datetime, timedelta
 
 from .intelligent_cache import IntelligentCache, generate_cache_key
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class UnifiedDataPipeline:

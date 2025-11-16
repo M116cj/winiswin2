@@ -5,9 +5,8 @@
 
 import time
 from typing import Any, Optional
-import logging
-
-logger = logging.getLogger(__name__)
+from src.utils.logger_factory import get_logger
+logger = get_logger(__name__)
 
 class CacheManager:
     """統一緩存管理器"""

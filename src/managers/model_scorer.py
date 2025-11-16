@@ -7,9 +7,8 @@
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 import statistics
-import logging
-
-logger = logging.getLogger(__name__)
+from src.utils.logger_factory import get_logger
+logger = get_logger(__name__)
 
 
 class ModelScorer:

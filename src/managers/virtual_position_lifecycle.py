@@ -4,7 +4,7 @@
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Dict, List, Optional, Callable
 from collections import defaultdict
@@ -15,7 +15,7 @@ from src.managers.virtual_position_events import (
 )
 from src.core.data_models import VirtualPosition
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class VirtualPositionLifecycleMonitor:

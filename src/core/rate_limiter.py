@@ -6,9 +6,8 @@
 import time
 import asyncio
 from collections import deque
-import logging
-
-logger = logging.getLogger(__name__)
+from src.utils.logger_factory import get_logger
+logger = get_logger(__name__)
 
 class RateLimiter:
     """API 請求限流器"""

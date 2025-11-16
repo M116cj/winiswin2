@@ -4,13 +4,13 @@
 Created: 2025-11-11 v4.2.1
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Dict, Optional, Tuple, Any
 from decimal import Decimal, ROUND_DOWN
 import math
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class OrderValidator:
     """

@@ -3,11 +3,11 @@
 优化5：智能监控频率调整
 """
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Dict, Callable, Set
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class SmartMonitoringScheduler:

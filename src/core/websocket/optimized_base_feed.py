@@ -4,7 +4,7 @@ Optimized WebSocket Feed v3.29+ - 优化心跳和重连机制
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Optional
 from datetime import datetime
 import time
@@ -16,7 +16,7 @@ except ImportError:
     websockets = None  # type: ignore
     ConnectionClosed = Exception  # type: ignore
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class OptimizedWebSocketFeed:

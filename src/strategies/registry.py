@@ -20,11 +20,11 @@
         results[name] = func(df, config)
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Callable, Any, Optional, List
 from dataclasses import dataclass
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

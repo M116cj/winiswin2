@@ -3,11 +3,11 @@
 监控WebSocket消息的有效性、价格合理性和数据连续性
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional
 from datetime import datetime
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class DataQualityMonitor:
     """数据质量监控器 - 实时验证WebSocket消息质量"""

@@ -4,14 +4,14 @@
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Set, Callable, Dict, List, Optional
 from datetime import datetime, timedelta
 
 from .data_quality_monitor import DataQualityMonitor
 from .data_gap_handler import DataGapHandler
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class AdvancedWebSocketManager:
     """

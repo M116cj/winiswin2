@@ -5,7 +5,7 @@ WebSocketManager v3.17.2+ - 統一WebSocket管理器（完整升級版）
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 import re
 from typing import Dict, List, Optional, Any
 
@@ -14,7 +14,7 @@ from src.core.websocket.account_feed import AccountFeed
 from src.core.symbol_selector import SymbolSelector
 from src.config import Config
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # 🔥 v3.18+ 修復：硬編碼的高流動性USDT永續合約列表（REST API失敗時的fallback）
 # v3.29+ 修正：Meme币正确符号格式（1000PEPEUSDT不是PEPEUSDT）

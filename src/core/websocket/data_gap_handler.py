@@ -3,12 +3,12 @@
 检测并修复WebSocket数据流中的缺口
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 from typing import Dict, Optional
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class DataGapHandler:
     """数据缺口处理器 - 自动检测和修复数据缺口"""

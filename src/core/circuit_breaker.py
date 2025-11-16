@@ -5,12 +5,13 @@
 
 import time
 import logging
+from src.utils.logger_factory import get_logger
 from enum import Enum
 from typing import Optional, Tuple, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 bypass_logger = logging.getLogger(f"{__name__}.bypass")  # 專用bypass審計日誌
 
 class CircuitState(Enum):
@@ -69,7 +70,7 @@ class GradedCircuitBreaker:
         blocked_threshold: int = 5,
         timeout: int = 60,
         throttle_delay: float = 2.0,
-        bypass_whitelist: list = None,
+        bypass_whitelist: Optional[list] = None,
         auto_decay: bool = True
     ):
         """
@@ -174,7 +175,7 @@ class GradedCircuitBreaker:
             (是否bypass, bypass原因)
         """
         # 1. 檢查臨時bypass
-        if self._check_temporary_bypass():
+        if self._check_temporary_bypass() and self.temp_bypass is not None:
             return True, f"臨時bypass生效({self.temp_bypass.reason})"
         
         # 2. 根據級別和優先級判斷

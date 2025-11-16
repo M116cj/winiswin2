@@ -3,14 +3,14 @@ v3.17+ 每日報告生成器
 生成 JSON + Markdown 報告，並輸出到 Railway Logs
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import json
 import os
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class DailyReporter:

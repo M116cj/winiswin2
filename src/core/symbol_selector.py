@@ -4,12 +4,12 @@ SymbolSelector v3.17.2+ - 動態波動率交易對選擇器
 """
 
 import asyncio
-import logging
+from src.utils.logger_factory import get_logger
 import re
 from typing import List, Dict, Any, Optional
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class SymbolSelector:

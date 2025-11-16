@@ -9,7 +9,7 @@ CapitalAllocator v3.23+ - 動態預算池 + 質量加權分配 + 安全驗證
 6. 🔥 v3.23+: 集成 ExceptionHandler 統一異常處理
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
@@ -18,7 +18,7 @@ from src.core.safety_validator import SafetyValidator, ValidationError
 from src.core.margin_safety_controller import MarginSafetyController
 from src.core.exception_handler import ExceptionHandler
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

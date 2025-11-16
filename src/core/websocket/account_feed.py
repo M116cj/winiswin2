@@ -6,7 +6,7 @@ AccountFeed v3.17.2+ - 即時帳戶/倉位數據流（升級版）
 
 import asyncio
 import json
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional, Any
 from datetime import datetime
 
@@ -17,7 +17,7 @@ except ImportError:
 
 from src.core.websocket.base_feed import BaseFeed
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class AccountFeed(BaseFeed):

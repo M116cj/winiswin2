@@ -9,7 +9,7 @@ KlineFeed v4.5+ - 即時K線數據流（重構版：職責分離架構）
 
 import asyncio
 import json
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Dict, List, Optional
 
@@ -24,7 +24,7 @@ except ImportError:
 from src.core.websocket.optimized_base_feed import OptimizedWebSocketFeed  # v3.29+
 from src.core.concurrent_dict_manager import ConcurrentDictManager
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class KlineFeed(OptimizedWebSocketFeed):

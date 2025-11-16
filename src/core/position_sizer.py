@@ -3,12 +3,12 @@ v3.17+ 倉位計算器
 計算倉位數量，並確保符合 Binance 交易對規格
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Optional, Dict, Any
 import asyncio
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class PositionSizer:

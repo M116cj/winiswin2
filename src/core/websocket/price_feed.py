@@ -5,7 +5,7 @@ PriceFeed v3.17.2+ - bookTicker即時價格流
 
 import asyncio
 import json
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional
 import time
 
@@ -16,7 +16,7 @@ except ImportError:
 
 from src.core.websocket.base_feed import BaseFeed
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class PriceFeed(BaseFeed):

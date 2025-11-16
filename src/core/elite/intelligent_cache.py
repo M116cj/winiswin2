@@ -22,7 +22,7 @@
 import time
 import hashlib
 import pickle
-import logging
+from src.utils.logger_factory import get_logger
 import os
 from pathlib import Path
 from typing import Any, Optional, Dict, Tuple
@@ -30,7 +30,7 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

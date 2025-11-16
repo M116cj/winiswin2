@@ -32,13 +32,13 @@
         position_size *= state_machine.get_risk_multiplier()  # 0.5x
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional, Dict
 import time
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class TradingState(Enum):

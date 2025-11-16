@@ -1,8 +1,8 @@
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, Optional, Tuple
 from datetime import datetime
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class DatabaseEnhancedGenerator:
     """数据库增强的信号生成器（v3.20+ 包装类）"""

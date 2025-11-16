@@ -10,7 +10,7 @@ v3.18+ 新特性:
 - 完整original_signal存儲
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Optional, Dict, Any
 import pandas as pd
 
@@ -19,7 +19,7 @@ from src.core.position_sizer import PositionSizer
 from src.core.sltp_adjuster import SLTPAdjuster
 from src.core.evaluation_engine import EvaluationEngine, MarketContext
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class SelfLearningTraderController:

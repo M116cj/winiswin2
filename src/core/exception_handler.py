@@ -13,12 +13,12 @@ import functools
 import asyncio
 import aiohttp
 import json
-import logging
+from src.utils.logger_factory import get_logger
 import time
 from typing import Callable, Any, Optional, Union
 from inspect import iscoroutinefunction
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ExceptionHandler:
@@ -40,19 +40,19 @@ class ExceptionHandler:
             try:
                 return await func(*args, **kwargs)
             except asyncio.TimeoutError as e:
-                logger.error(f"⏰ API調用超時: {func.__name__}")
+                logger.error(f"⏰ API調用超時: {func.__name__}", exc_info=True)
                 raise
             except aiohttp.ClientError as e:
-                logger.error(f"🌐 網絡錯誤: {func.__name__} - {e}")
+                logger.error(f"🌐 網絡錯誤: {func.__name__} - {e}", exc_info=True)
                 raise
             except json.JSONDecodeError as e:
-                logger.error(f"📄 JSON解析錯誤: {func.__name__} - {e}")
+                logger.error(f"📄 JSON解析錯誤: {func.__name__} - {e}", exc_info=True)
                 raise
             except (KeyboardInterrupt, asyncio.CancelledError):
                 logger.info(f"⚠️ 用戶中斷或任務取消: {func.__name__}")
                 raise
             except Exception as e:
-                logger.error(f"❌ 未預期錯誤: {func.__name__} - {type(e).__name__}: {e}")
+                logger.error(f"❌ 未預期錯誤: {func.__name__} - {type(e).__name__}: {e}", exc_info=True)
                 raise
         return wrapper
     
@@ -91,14 +91,16 @@ class ExceptionHandler:
                                 logger.critical(
                                     f"💥 關鍵操作失敗（{max_retries}次重試後）: {func.__name__}\n"
                                     f"   錯誤類型: {type(e).__name__}\n"
-                                    f"   錯誤信息: {e}"
+                                    f"   錯誤信息: {e}",
+                                    exc_info=True
                                 )
                                 raise
                             else:
                                 backoff_time = backoff_base ** attempt
                                 logger.warning(
                                     f"⚠️ 關鍵操作失敗，{backoff_time:.1f}秒後重試 "
-                                    f"({attempt + 1}/{max_retries}): {func.__name__} - {e}"
+                                    f"({attempt + 1}/{max_retries}): {func.__name__} - {e}",
+                                    exc_info=True
                                 )
                                 await asyncio.sleep(backoff_time)
                     
@@ -125,14 +127,16 @@ class ExceptionHandler:
                                 logger.critical(
                                     f"💥 關鍵操作失敗（{max_retries}次重試後）: {func.__name__}\n"
                                     f"   錯誤類型: {type(e).__name__}\n"
-                                    f"   錯誤信息: {e}"
+                                    f"   錯誤信息: {e}",
+                                    exc_info=True
                                 )
                                 raise
                             else:
                                 backoff_time = backoff_base ** attempt
                                 logger.warning(
                                     f"⚠️ 關鍵操作失敗，{backoff_time:.1f}秒後重試 "
-                                    f"({attempt + 1}/{max_retries}): {func.__name__} - {e}"
+                                    f"({attempt + 1}/{max_retries}): {func.__name__} - {e}",
+                                    exc_info=True
                                 )
                                 time.sleep(backoff_time)
                     
@@ -166,7 +170,8 @@ class ExceptionHandler:
                         logger.error(
                             f"❌ 安全執行失敗，返回默認值: {func.__name__}\n"
                             f"   錯誤: {type(e).__name__}: {e}\n"
-                            f"   默認返回值: {default_return}"
+                            f"   默認返回值: {default_return}",
+                            exc_info=True
                         )
                         return default_return
                 return async_wrapper
@@ -182,7 +187,8 @@ class ExceptionHandler:
                         logger.error(
                             f"❌ 安全執行失敗，返回默認值: {func.__name__}\n"
                             f"   錯誤: {type(e).__name__}: {e}\n"
-                            f"   默認返回值: {default_return}"
+                            f"   默認返回值: {default_return}",
+                            exc_info=True
                         )
                         return default_return
                 return sync_wrapper
@@ -202,10 +208,11 @@ class ExceptionHandler:
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
-                    logger.exception(
+                    logger.error(
                         f"❌ 異常發生在 {func.__name__}\n"
                         f"   錯誤類型: {type(e).__name__}\n"
-                        f"   錯誤信息: {e}"
+                        f"   錯誤信息: {e}",
+                        exc_info=True
                     )
                     raise
             return async_wrapper
@@ -216,10 +223,11 @@ class ExceptionHandler:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
-                    logger.exception(
+                    logger.error(
                         f"❌ 異常發生在 {func.__name__}\n"
                         f"   錯誤類型: {type(e).__name__}\n"
-                        f"   錯誤信息: {e}"
+                        f"   錯誤信息: {e}",
+                        exc_info=True
                     )
                     raise
             return sync_wrapper

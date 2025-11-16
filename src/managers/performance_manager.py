@@ -17,7 +17,7 @@
 
 import json
 import os
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
 from dataclasses import dataclass
@@ -25,7 +25,7 @@ import time
 
 from src.config import Config
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

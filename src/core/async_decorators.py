@@ -15,12 +15,12 @@
         return await self._request('GET', '/fapi/v1/klines', ...)
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 import asyncio
 from functools import wraps
 from typing import Callable, Optional, Any, TypeVar
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 T = TypeVar('T')
 

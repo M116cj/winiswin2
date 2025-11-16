@@ -5,10 +5,10 @@ v3.18.7+ 槓桿引擎（豁免期策略）
 正常期（101+筆）：無限制（模型自行判定）
 """
 
-import logging
+from src.utils.logger_factory import get_logger
 from typing import Optional
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class LeverageEngine:

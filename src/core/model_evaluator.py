@@ -4,13 +4,13 @@ ModelEvaluator v3.17+ - 100 分制模型評級系統
 """
 
 import json
-import logging
+from src.utils.logger_factory import get_logger
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ModelEvaluator:
