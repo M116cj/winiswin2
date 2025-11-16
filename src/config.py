@@ -340,6 +340,10 @@ class Config:
         (os.cpu_count() or 1) + 4
     )
     
+    # ===== v4.6.0+: 並發市場掃描配置（asyncio優化）=====
+    CONCURRENT_SCAN_LIMIT: int = int(os.getenv("CONCURRENT_SCAN_LIMIT", "20"))  # 同時分析的交易對數量上限
+    PROCESS_TIMEOUT_SECONDS: int = int(os.getenv("PROCESS_TIMEOUT_SECONDS", "30"))  # 單個分析任務超時時間
+    
     # ===== v3.17+ PositionController 配置 =====
     POSITION_MONITOR_ENABLED: bool = os.getenv("POSITION_MONITOR_ENABLED", "true").lower() == "true"
     POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "60"))  # v3.17.2+: 改為1分鐘
