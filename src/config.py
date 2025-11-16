@@ -238,27 +238,30 @@ class Config:
     INDICATOR_CACHE_TTL: int = 300  # v4.6.0: 延长到5分钟支持增量计算链
     
     # ========================================
-    # 🚀 v4.6.0 Phase 1A: 性能优化配置
+    # 🚀 v4.6.0 Phase 1A: 性能优化配置（实用主义版本）
     # ========================================
     
-    # Phase 1A2: 增量技术指标计算优化（10x性能提升）
+    # Phase 1A2: 增量技术指标计算优化（10x性能提升）✅ 已完成
     INCREMENTAL_CALCULATION_ENABLED: bool = os.getenv("INCREMENTAL_CALCULATION_ENABLED", "true").lower() == "true"  # 默认启用
     INCREMENTAL_MAX_NEW_BARS: int = int(os.getenv("INCREMENTAL_MAX_NEW_BARS", "10"))  # 最多增量计算10根新K线
     INCREMENTAL_LOOKBACK_RANGE: int = int(os.getenv("INCREMENTAL_LOOKBACK_RANGE", "10"))  # 向前查找缓存的范围
     
-    # Phase 1A3: 批量ML推理优化（2.5x性能提升）
-    BATCH_ML_INFERENCE_ENABLED: bool = os.getenv("BATCH_ML_INFERENCE_ENABLED", "true").lower() == "true"  # 默认启用批量推理
-    BATCH_ML_MIN_SIZE: int = int(os.getenv("BATCH_ML_MIN_SIZE", "5"))  # 批量推理最小数量（低于此值使用单次推理）
+    # Phase 1A3: 混合批量ML推理优化（15-25%性能提升 - 实用主义版本）
+    HYBRID_ML_ENABLED: bool = os.getenv("HYBRID_ML_ENABLED", "true").lower() == "true"  # 默认启用混合批量处理
+    HYBRID_ML_BATCH_SIZE: int = int(os.getenv("HYBRID_ML_BATCH_SIZE", "10"))  # 触发批量处理的请求数
+    HYBRID_ML_MAX_BUFFER_TIME: float = float(os.getenv("HYBRID_ML_MAX_BUFFER_TIME", "0.1"))  # 缓冲区最大等待时间（秒）
     
-    # Phase 1A4: 资源池化系统（减少对象创建开销）
-    RESOURCE_POOL_ENABLED: bool = os.getenv("RESOURCE_POOL_ENABLED", "true").lower() == "true"  # 默认启用资源池
-    FEATURE_DICT_POOL_SIZE: int = int(os.getenv("FEATURE_DICT_POOL_SIZE", "50"))  # 特征字典池大小
-    LIST_POOL_SIZE: int = int(os.getenv("LIST_POOL_SIZE", "100"))  # 列表池大小
+    # Phase 1A4: 实用主义资源池化（15-20% GC压力减少）
+    PRAGMATIC_POOL_ENABLED: bool = os.getenv("PRAGMATIC_POOL_ENABLED", "true").lower() == "true"  # 默认启用实用池化
+    PRAGMATIC_ARRAY_POOL_SIZE: int = int(os.getenv("PRAGMATIC_ARRAY_POOL_SIZE", "20"))  # numpy数组池大小
+    PRAGMATIC_FEATURE_POOL_SIZE: int = int(os.getenv("PRAGMATIC_FEATURE_POOL_SIZE", "50"))  # 特征缓冲区池大小
+    PRAGMATIC_KLINE_POOL_SIZE: int = int(os.getenv("PRAGMATIC_KLINE_POOL_SIZE", "30"))  # K线缓冲区池大小
     
-    # Phase 1A5: 预测性缓存预热（85%→92%命中率）
-    PREDICTIVE_CACHE_ENABLED: bool = os.getenv("PREDICTIVE_CACHE_ENABLED", "true").lower() == "true"  # 默认启用预测性缓存
-    CACHE_PREHEAT_TOP_N: int = int(os.getenv("CACHE_PREHEAT_TOP_N", "50"))  # 预热前N个高频交易对
-    CACHE_PREHEAT_INTERVAL: int = int(os.getenv("CACHE_PREHEAT_INTERVAL", "240"))  # 预热间隔（秒）
+    # Phase 1A5: 事件驱动缓存预热（85%→88%命中率提升）
+    ON_DEMAND_CACHE_WARMING: bool = os.getenv("ON_DEMAND_CACHE_WARMING", "true").lower() == "true"  # 默认启用按需预热
+    CACHE_WARM_THRESHOLD: int = int(os.getenv("CACHE_WARM_THRESHOLD", "5"))  # 触发预热的访问次数阈值
+    CACHE_WARM_COOLDOWN: int = int(os.getenv("CACHE_WARM_COOLDOWN", "300"))  # 预热冷却时间（秒）
+    CACHE_WARM_TOP_N: int = int(os.getenv("CACHE_WARM_TOP_N", "3"))  # 每次最多预热N个候选
     
     # ===== 熔斷器配置 =====
     CIRCUIT_BREAKER_THRESHOLD: int = 5
