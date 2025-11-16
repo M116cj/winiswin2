@@ -1,0 +1,278 @@
+```markdown
+# AI Trading System Redesign: Model-Centric Architecture Prompt
+
+## CONTEXT & PARADIGM SHIFT
+I need to fundamentally rethink my cryptocurrency trading system (SelfLearningTrader v4.6.0) by placing the learning model at the absolute center and treating everything else as replaceable infrastructure. The current 40k-line system has become over-engineered, with complex infrastructure overshadowing the core value creator: the ML model.
+
+## CORE PHILOSOPHY
+**"Only the learning model generates persistent alpha. Everything else is optimizable cost."**
+
+### Fundamental Principles
+1. **Model Primacy**: The ML model is the sole source of competitive advantage
+2. **Infrastructure Minimalism**: All non-model components should be simple, replaceable, and focused on serving the model
+3. **Iteration Velocity**: Maximize model experiment speed over infrastructure sophistication
+4. **Essential Complexity**: Remove any complexity that doesn't directly improve model quality
+
+## CURRENT SYSTEM PAIN POINTS
+- **40,374 lines** of code with only ~2,000 lines dedicated to core model logic
+- **Complex infrastructure** (3-level caching, 7-layer risk management, sophisticated order management) that slows model iteration
+- **Weekly model iteration cycles** due to infrastructure complexity
+- **70% development time** spent on infrastructure maintenance vs. model improvement
+
+## TARGET ARCHITECTURE: MODEL-CENTRIC DESIGN
+
+### Core Components (Preserve & Enhance)
+```python
+ESSENTIAL_COMPONENTS = {
+    "Model Factory": "Rapid model experimentation and deployment",
+    "Feature Engine": "Clean, consistent feature computation", 
+    "Model Serving": "Low-latency batch and real-time inference",
+    "Experiment Manager": "A/B testing and performance tracking",
+    "Feedback Collector": "Automated training data generation"
+}
+```
+
+Infrastructure to Radically Simplify
+
+```python
+SIMPLIFICATION_TARGETS = {
+    "Data Pipeline": {
+        "Current": "WebSocket clusters + 3-level caching + complex gap handling",
+        "Target": "Direct API calls + in-memory caching + simple retries",
+        "Reason": "Models need clean features, not sophisticated data infrastructure"
+    },
+    "Execution Engine": {
+        "Current": "Smart order routing + complex validation + retry logic",
+        "Target": "Direct API calls + basic validation + immediate execution",
+        "Reason": "Execution quality should be learned, not hard-coded"
+    },
+    "Risk Management": {
+        "Current": "7-layer exit strategies + dynamic leverage + complex monitoring",
+        "Target": "Simple stop-loss + position limits + learned risk assessment",
+        "Reason": "Risk should be managed through model learning, not fixed rules"
+    },
+    "Monitoring": {
+        "Current": "Detailed metrics, logging, analytics across all components",
+        "Target": "Core model performance + basic system health",
+        "Reason": "Focus monitoring on what actually matters for alpha generation"
+    }
+}
+```
+
+IMPLEMENTATION STRATEGY
+
+Phase 1: Rapid Experiment Platform (1-2 weeks)
+
+Build a minimal system that enables daily model iteration:
+
+```python
+class QuickExperimentFramework:
+    """Minimal framework for rapid model experimentation"""
+    
+    async def run_end_to_end_experiment(self, model_config, features):
+        # 1. Train model with new configuration
+        model = await self.train_model(model_config, features)
+        
+        # 2. Backtest on recent market data  
+        backtest_result = await self.quick_backtest(model, days=30)
+        
+        # 3. Small live test if backtest passes
+        if backtest_result.sharpe_ratio > 1.5:
+            return await self.minimal_live_test(model, capital=100)
+        
+        return backtest_result
+```
+
+Deliverables:
+
+· Model factory with version management
+· Automated backtesting pipeline
+· Small-scale live testing framework
+· Performance tracking dashboard
+
+Phase 2: Infrastructure Simplification (2 weeks)
+
+Radically simplify non-model components:
+
+```python
+SIMPLIFICATION_ACTIONS = {
+    "Data Layer": [
+        "Replace 3-level cache with simple in-memory cache",
+        "Remove complex WebSocket reconnection logic", 
+        "Simplify feature computation to essential signals only"
+    ],
+    "Execution Layer": [
+        "Replace smart order manager with direct API calls",
+        "Remove complex order validation - rely on exchange validation",
+        "Simplify position management to basic tracking"
+    ],
+    "Risk Layer": [
+        "Replace 7-layer exit strategy with simple stop-loss",
+        "Remove dynamic leverage - use fixed conservative leverage",
+        "Simplify monitoring to essential risk metrics"
+    ]
+}
+```
+
+Target Metrics:
+
+· Code reduction: 40k → 20k lines (50% reduction)
+· Model iteration speed: Weekly → Daily (7x improvement)
+· Infrastructure maintenance: 70% → 30% of dev time
+
+Phase 3: Learned Components (2-3 weeks)
+
+Replace hard-coded logic with learned behavior:
+
+```python
+LEARNED_COMPONENTS = {
+    "Risk Management": "Train model to predict position risk and adjust sizing",
+    "Execution Timing": "Learn optimal execution timing from market conditions", 
+    "Feature Selection": "Automated feature importance and selection",
+    "Market Regime": "Model that detects and adapts to market regimes"
+}
+```
+
+TECHNICAL SPECIFICATIONS
+
+Preserved Core ML Logic
+
+```python
+PRESERVE_THESE_COMPONENTS = {
+    "Feature Engineering": "12 ICT/SMC features (proven alpha source)",
+    "XGBoost Training": "Online learning every 50 trades", 
+    "Model Validation": "Backtesting and performance metrics",
+    "Data Schema": "Consistent feature interface"
+}
+```
+
+Radical Simplification Targets
+
+```python
+REMOVE_THESE_COMPONENTS = {
+    "Advanced Caching": "3-level cache → simple dict cache",
+    "Complex Order Management": "Smart order routing → direct API calls",
+    "Sophisticated Risk Rules": "7-layer exits → simple stop-loss/take-profit",
+    "Detailed Monitoring": "Comprehensive metrics → core performance metrics",
+    "Connection Management": "Complex reconnection logic → simple retries"
+}
+```
+
+New Minimal Architecture
+
+```python
+MINIMAL_ARCHITECTURE = {
+    "Data Module": "Binance API + in-memory cache + feature computation",
+    "Model Module": "Training + inference + experiment management", 
+    "Execution Module": "Direct API calls + basic validation",
+    "Risk Module": "Simple stop-loss + position limits",
+    "Monitor Module": "Core metrics + error tracking"
+}
+```
+
+SUCCESS CRITERIA
+
+Primary Metrics
+
+```python
+SUCCESS_METRICS = {
+    "Development Velocity": {
+        "Current": "1 model iteration per week",
+        "Target": "1 model iteration per day", 
+        "Improvement": "7x faster experimentation"
+    },
+    "Code Complexity": {
+        "Current": "40,374 lines, 111 files",
+        "Target": "15,000-20,000 lines, 40-50 files",
+        "Improvement": "50-60% reduction"
+    },
+    "Development Focus": {
+        "Current": "70% infrastructure, 30% models",
+        "Target": "30% infrastructure, 70% models", 
+        "Improvement": "More than 2x focus on value creation"
+    }
+}
+```
+
+Quality Gates
+
+```python
+QUALITY_GATES = {
+    "Model Performance": "No degradation in backtest Sharpe ratio",
+    "System Reliability": "99%+ uptime maintained", 
+    "Execution Quality": "Fill rates within 5% of current system",
+    "Risk Control": "Maximum drawdown within acceptable bounds"
+}
+```
+
+MIGRATION STRATEGY
+
+Parallel Operation
+
+```python
+MIGRATION_APPROACH = {
+    "Phase 1": "Build new minimal system alongside existing system",
+    "Phase 2": "Run both systems in parallel with small capital",
+    "Phase 3": "Gradually shift capital to new system as confidence grows",
+    "Phase 4": "Decommission old system once new system proves superior"
+}
+```
+
+Risk Mitigation
+
+```python
+RISK_CONTROLS = {
+    "Capital Protection": "Start with $100-500 in new system",
+    "Performance Monitoring": "Daily comparison of both systems",
+    "Circuit Breakers": "Automatic shutdown if abnormal behavior detected",
+    "Rollback Plan": "Quick restoration to old system if needed"
+}
+```
+
+DELIVERABLES REQUESTED
+
+Code Deliverables
+
+1. Minimal Model-Centric Codebase (15-20k lines target)
+2. Rapid Experiment Framework
+3. Simplified Infrastructure Components
+4. Automated Testing Suite
+5. Deployment Configuration
+
+Documentation
+
+1. Architecture Decision Record explaining simplification choices
+2. Model Experimentation Guide
+3. Performance Comparison Report
+4. Migration Playbook
+
+CONSTRAINTS & REQUIREMENTS
+
+Must Maintain
+
+· ✅ Current model performance levels
+· ✅ Basic risk controls (2% per trade, 5% daily stop-loss)
+· ✅ Exchange API compatibility (Binance futures)
+· ✅ Real-time trading capability
+
+Can Sacrifice
+
+· ❌ Sophisticated order execution logic
+· ❌ Complex caching strategies
+· ❌ Detailed monitoring metrics
+· ❌ Advanced risk management rules
+· ❌ Comprehensive error handling
+
+ULTIMATE GOAL
+
+Create a trading system where:
+
+· 80% of development time is spent on model improvement
+· Model iteration cycles are measured in hours, not weeks
+· Infrastructure complexity doesn't impede alpha discovery
+· The system's value is clearly tied to model quality, not engineering sophistication
+
+Please architect and implement this model-centric trading system, making ruthless prioritization decisions that serve the core philosophy: only the learning model matters, everything else should be minimal and serve the model.
+
+```
+```
