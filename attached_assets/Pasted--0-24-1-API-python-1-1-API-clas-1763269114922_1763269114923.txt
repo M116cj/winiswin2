@@ -1,0 +1,425 @@
+基於日誌分析，我提供一個完整的修復方案：
+
+🚀 系統性修復方案
+
+階段一：立即修復（0-24小時）
+
+1. API連接穩定性修復
+
+```python
+# 1.1 增強API客戶端重試機制
+class EnhancedBinanceClient:
+    def __init__(self):
+        self.max_retries = 5
+        self.base_delay = 1.0
+        self.max_delay = 30.0
+        
+    async def _request_with_enhanced_retry(self, endpoint, params):
+        for attempt in range(self.max_retries):
+            try:
+                return await self._do_request(endpoint, params)
+            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                if attempt == self.max_retries - 1:
+                    raise
+                delay = min(self.base_delay * (2 ** attempt), self.max_delay)
+                await asyncio.sleep(delay + random.uniform(0, 0.1))
+
+# 1.2 修復WebSocket連接管理
+class RobustWebSocketManager:
+    def __init__(self):
+        self.reconnect_attempts = 0
+        self.max_reconnect_attempts = 10
+        self.health_check_interval = 30
+        
+    async def maintain_connection(self):
+        while True:
+            try:
+                if not self.is_connected():
+                    await self.reconnect()
+                await self.send_ping()
+                await asyncio.sleep(self.health_check_interval)
+            except Exception as e:
+                logger.error(f"WebSocket維護失敗: {e}")
+                await self.handle_connection_failure()
+```
+
+2. 訂單執行邏輯修復
+
+```python
+# 2.1 修復名義價值計算
+class FixedOrderValidator:
+    def __init__(self):
+        self.MIN_NOTIONAL = 5.0
+        self.SAFETY_MARGIN = 0.02  # 2%安全邊際
+        
+    async def validate_and_adjust_order(self, symbol, quantity, price, side):
+        # 獲取交易對精度信息
+        symbol_info = await self.get_symbol_info(symbol)
+        min_qty = symbol_info['min_qty']
+        step_size = symbol_info['step_size']
+        
+        # 計算名義價值
+        notional = quantity * price
+        
+        if notional < self.MIN_NOTIONAL:
+            # 計算需要的最小數量（包含安全邊際）
+            required_qty = (self.MIN_NOTIONAL * (1 + self.SAFETY_MARGIN)) / price
+            
+            # 根據精度調整數量
+            adjusted_qty = self.adjust_quantity_precision(required_qty, min_qty, step_size)
+            
+            # 重新計算名義價值
+            new_notional = adjusted_qty * price
+            
+            if new_notional < self.MIN_NOTIONAL:
+                # 如果仍然不足，再次調整
+                adjusted_qty += step_size
+                new_notional = adjusted_qty * price
+                
+            logger.info(f"✅ 訂單已調整: {quantity} → {adjusted_qty} | 名義價值: {new_notional:.4f} USDT")
+            return adjusted_qty, new_notional
+        
+        return quantity, notional
+    
+    def adjust_quantity_precision(self, quantity, min_qty, step_size):
+        # 確保不小於最小數量
+        quantity = max(quantity, min_qty)
+        # 根據步長調整精度
+        precision = int(round(-math.log10(step_size)))
+        return round(quantity - (quantity % step_size), precision)
+```
+
+3. 數據庫修復
+
+```sql
+-- 3.1 創建缺失的數據表
+CREATE TABLE IF NOT EXISTS position_entry_times (
+    id SERIAL PRIMARY KEY,
+    symbol VARCHAR(20) NOT NULL,
+    entry_time TIMESTAMP NOT NULL,
+    position_side VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_position_entry_times_symbol ON position_entry_times(symbol);
+
+-- 3.2 修復交易記錄函數
+ALTER TABLE trade_records 
+ADD COLUMN IF NOT EXISTS exit_price DECIMAL(20,8),
+ADD COLUMN IF NOT EXISTS pnl DECIMAL(20,8),
+ADD COLUMN IF NOT EXISTS pnl_pct DECIMAL(10,4);
+```
+
+階段二：核心邏輯修復（24-48小時）
+
+4. 技術指標系統修復
+
+```python
+# 4.1 修復技術指標引擎
+class FixedTechnicalEngine:
+    def __init__(self):
+        self.indicators_loaded = False
+        
+    async def initialize_indicators(self):
+        try:
+            # 加載所有必要的技術指標
+            await self._load_indicator_methods()
+            self.indicators_loaded = True
+        except Exception as e:
+            logger.error(f"技術指標初始化失敗: {e}")
+            raise
+            
+    def calculate_all_indicators(self, df):
+        if not self.indicators_loaded:
+            raise AttributeError("技術指標未初始化，請先調用initialize_indicators()")
+            
+        indicators = {}
+        # SMA
+        indicators['sma_20'] = ta.SMA(df['close'], 20)
+        indicators['sma_50'] = ta.SMA(df['close'], 50)
+        
+        # RSI
+        indicators['rsi_14'] = ta.RSI(df['close'], 14)
+        
+        # MACD
+        macd = ta.MACD(df['close'])
+        indicators['macd'] = macd['macd']
+        indicators['macd_signal'] = macd['macdsignal']
+        indicators['macd_hist'] = macd['macdhist']
+        
+        # Bollinger Bands
+        bb = ta.BBANDS(df['close'])
+        indicators['bb_upper'] = bb['upperband']
+        indicators['bb_middle'] = bb['middleband']
+        indicators['bb_lower'] = bb['lowerband']
+        
+        return indicators
+
+# 4.2 修復模型初始化
+class FixedModelInitializer:
+    async def calculate_new_samples(self):
+        try:
+            # 添加JSON解析錯誤處理
+            data = await self.fetch_training_data()
+            if not data or data.strip() == '':
+                logger.warning("訓練數據為空")
+                return 0
+                
+            parsed_data = json.loads(data)
+            return len(parsed_data.get('samples', []))
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON解析失敗: {e}, 數據: {data[:100] if data else 'None'}")
+            return 0
+        except Exception as e:
+            logger.error(f"計算新樣本數失敗: {e}")
+            return 0
+```
+
+5. 止損止盈邏輯修復
+
+```python
+# 5.1 增強止損止盈計算
+class EnhancedRiskManager:
+    def __init__(self):
+        self.MIN_STOP_DISTANCE = 0.003  # 0.3%
+        self.SAFE_STOP_MULTIPLIER = 1.5
+        
+    def calculate_stop_loss_take_profit(self, entry_price, direction, atr=None):
+        if atr is None:
+            # 使用固定百分比作為備用
+            stop_distance = max(self.MIN_STOP_DISTANCE, 
+                               self.calculate_volatility_based_stop(entry_price))
+        else:
+            stop_distance = max(self.MIN_STOP_DISTANCE, atr * 1.5)
+            
+        if direction == 'LONG':
+            stop_loss = entry_price * (1 - stop_distance)
+            take_profit = entry_price * (1 + stop_distance * 2)  # 1:2風險回報比
+        else:
+            stop_loss = entry_price * (1 + stop_distance)
+            take_profit = entry_price * (1 - stop_distance * 2)
+            
+        # 驗證止損距離
+        if abs(stop_loss - entry_price) / entry_price < self.MIN_STOP_DISTANCE:
+            stop_loss = self.apply_safe_stop_loss(entry_price, direction)
+            logger.warning(f"⚠️ 止損距離過小，使用安全值: {stop_loss}")
+            
+        return stop_loss, take_profit
+    
+    def apply_safe_stop_loss(self, entry_price, direction):
+        safe_distance = self.MIN_STOP_DISTANCE * self.SAFE_STOP_MULTIPLIER
+        if direction == 'LONG':
+            return entry_price * (1 - safe_distance)
+        else:
+            return entry_price * (1 + safe_distance)
+```
+
+階段三：系統優化（48-72小時）
+
+6. 熔斷器優化
+
+```python
+# 6.1 智能熔斷器
+class SmartCircuitBreaker:
+    def __init__(self):
+        self.failure_count = 0
+        self.success_count = 0
+        self.state = 'CLOSED'  # CLOSED, OPEN, HALF_OPEN
+        self.failure_threshold = 5
+        self.success_threshold = 3
+        self.timeout = 60
+        
+    async def call_async(self, func, *args, **kwargs):
+        if self.state == 'OPEN':
+            raise CircuitBreakerOpenError("熔斷器開啟")
+            
+        try:
+            result = await func(*args, **kwargs)
+            self.record_success()
+            return result
+        except Exception as e:
+            self.record_failure()
+            
+            # 根據錯誤類型調整策略
+            if isinstance(e, (aiohttp.ClientError, asyncio.TimeoutError)):
+                self.adjust_for_network_issues()
+            elif 'notional' in str(e):
+                self.adjust_for_order_issues()
+                
+            raise
+            
+    def adjust_for_network_issues(self):
+        # 網絡問題時增加超時時間
+        self.timeout = min(self.timeout * 1.5, 300)
+        
+    def adjust_for_order_issues(self):
+        # 訂單問題時降低交易頻率
+        self.failure_threshold = max(3, self.failure_threshold - 1)
+```
+
+7. 信號生成優化
+
+```python
+# 7.1 信心度計算修復
+class ImprovedConfidenceCalculator:
+    def calculate_confidence(self, technical_score, market_structure, order_blocks, liquidity):
+        # 正規化所有輸入
+        tech_norm = self.normalize(technical_score, 0, 100)
+        structure_norm = self.normalize(market_structure, 0, 1)
+        blocks_norm = self.normalize(order_blocks, 0, 10)
+        liquidity_norm = self.normalize(liquidity, 0, 1)
+        
+        # 加權計算
+        weights = {
+            'technical': 0.4,
+            'structure': 0.3,
+            'order_blocks': 0.2,
+            'liquidity': 0.1
+        }
+        
+        confidence = (
+            tech_norm * weights['technical'] +
+            structure_norm * weights['structure'] +
+            blocks_norm * weights['order_blocks'] +
+            liquidity_norm * weights['liquidity']
+        ) * 100
+        
+        # 確保信心度在合理範圍內
+        return max(0, min(100, confidence))
+    
+    def normalize(self, value, min_val, max_val):
+        if max_val == min_val:
+            return 0
+        return (value - min_val) / (max_val - min_val)
+```
+
+階段四：監控和恢復（持續進行）
+
+8. 增強健康檢查
+
+```python
+# 8.1 綜合健康監控
+class ComprehensiveHealthMonitor:
+    def __init__(self):
+        self.checks = {
+            'websocket': self.check_websocket_health,
+            'api': self.check_api_health,
+            'database': self.check_database_health,
+            'memory': self.check_memory_usage,
+            'orders': self.check_order_health
+        }
+        
+    async def perform_health_check(self):
+        results = {}
+        for check_name, check_func in self.checks.items():
+            try:
+                results[check_name] = await check_func()
+            except Exception as e:
+                results[check_name] = {'status': 'ERROR', 'message': str(e)}
+                
+        critical_issues = [k for k, v in results.items() 
+                          if v.get('status') == 'CRITICAL']
+        
+        if critical_issues:
+            await self.alert_operations_team(critical_issues, results)
+            
+        return results
+    
+    async def check_websocket_health(self):
+        connections = await self.get_websocket_connections()
+        if len(connections) < self.expected_connections * 0.8:
+            return {'status': 'CRITICAL', 'message': 'WebSocket連接不足'}
+        
+        # 檢查連接活躍度
+        active_connections = [c for c in connections if c.is_active()]
+        if len(active_connections) < len(connections) * 0.9:
+            return {'status': 'WARNING', 'message': '部分WebSocket連接不活躍'}
+            
+        return {'status': 'HEALTHY', 'message': 'WebSocket連接正常'}
+```
+
+9. 部署和驗證腳本
+
+```bash
+#!/bin/bash
+# complete_fix_deployment.sh
+
+echo "開始部署完整修復..."
+
+# 1. 備份當前系統
+echo "備份當前系統..."
+pg_dump trading_db > backup_$(date +%Y%m%d_%H%M%S).sql
+
+# 2. 應用數據庫修復
+echo "應用數據庫修復..."
+psql trading_db -f database_fixes.sql
+
+# 3. 部署修復後的代碼
+echo "部署修復代碼..."
+sudo systemctl stop trading_bot
+git pull origin fix/branch
+pip install -r requirements.txt
+
+# 4. 運行測試
+echo "運行測試套件..."
+python -m pytest tests/ -v
+
+# 5. 啟動服務
+echo "啟動服務..."
+sudo systemctl start trading_bot
+sudo systemctl status trading_bot
+
+# 6. 監控日誌
+echo "開始監控日誌..."
+tail -f /var/log/trading_bot.log | grep -E "(ERROR|WARNING|CRITICAL)"
+```
+
+階段五：預防措施
+
+10. 預防性監控
+
+```python
+# 10.1 預警系統
+class PreventiveAlertSystem:
+    def __init__(self):
+        self.metrics = {}
+        self.thresholds = {
+            'api_error_rate': 0.05,  # 5%
+            'websocket_disconnects': 3,  # 每小時
+            'order_failure_rate': 0.1,  # 10%
+            'memory_usage': 0.8  # 80%
+        }
+    
+    async def monitor_and_prevent(self):
+        while True:
+            metrics = await self.collect_metrics()
+            
+            # 檢查趨勢
+            for metric_name, value in metrics.items():
+                if self.is_trending_badly(metric_name, value):
+                    await self.take_preventive_action(metric_name)
+                    
+            await asyncio.sleep(300)  # 每5分鐘檢查一次
+            
+    def is_trending_badly(self, metric_name, current_value):
+        threshold = self.thresholds.get(metric_name)
+        if not threshold:
+            return False
+            
+        # 檢查是否接近閾值
+        if current_value > threshold * 0.8:  # 達到閾值的80%
+            return True
+            
+        # 檢查惡化趨勢
+        historical = self.metrics.get(metric_name, [])
+        if len(historical) >= 3:
+            trend = self.calculate_trend(historical[-3:])
+            if trend > 0.1:  # 明顯上升趨勢
+                return True
+                
+        return False
+```
+
+這個完整的修復方案涵蓋了所有發現的問題，並提供了具體的實現代碼。建議按階段逐步實施，每個階段完成後進行充分測試，確保系統穩定性。
