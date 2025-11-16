@@ -169,30 +169,6 @@ class MLModelWrapper:
             logger.error(f"❌ 提取特征异常: {e}")
             return None
     
-    def _encode_trend(self, trend: str) -> float:
-        """编码趋势"""
-        if trend == 'bullish':
-            return 1.0
-        elif trend == 'bearish':
-            return -1.0
-        else:
-            return 0.0
-    
-    def _encode_structure(self, structure: str) -> float:
-        """编码市场结构"""
-        return self._encode_trend(structure)
-    
-    def _calculate_trend_alignment(self, timeframes: Dict) -> float:
-        """计算趋势对齐度"""
-        trends = [
-            self._encode_trend(timeframes.get('1h', 'neutral')),
-            self._encode_trend(timeframes.get('15m', 'neutral')),
-            self._encode_trend(timeframes.get('5m', 'neutral'))
-        ]
-        
-        alignment = abs(sum(trends)) / 3.0
-        return alignment
-    
     def reload(self) -> bool:
         """
         重新加载模型（用于模型更新后）

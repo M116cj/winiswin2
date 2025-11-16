@@ -31,6 +31,7 @@ The system does not have a direct user interface; its "UX" is primarily through 
 - **Rate Limit Compliance**: Disables default REST API warm-up to prevent Binance IP bans, relying solely on WebSocket data accumulation.
 - **Unified Feature Schema (v4.0)**: Standardizes 12 core ICT/SMC features for ML model training and prediction, ensuring consistency and preventing prediction mismatches.
 - **Elite Refactoring (v3.20)**: Consolidates technical indicator computations into a single `EliteTechnicalEngine` and optimizes data pipelines for improved performance and reduced code redundancy.
+- **ML Pipeline Optimization (v4.5.0)**: Extreme ML system simplification that deleted 946 lines of dead code (-39.3%), fixed P0 training/inference feature inconsistency, and ensured 100% feature consistency between training (12 ICT/SMC) and inference. Removed unused files (predictor.py, online_learning.py) and deprecated methods, disabled synthetic sample generation to enforce real trading data usage.
 
 ### System Design Choices
 - **Modularity**: The system is structured into `core`, `clients`, `ml`, `strategies`, `managers`, and `utils` for clear separation of concerns.

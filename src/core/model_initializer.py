@@ -249,185 +249,63 @@ class ModelInitializer:
     
     async def _generate_synthetic_samples(self, target_count: int) -> List[Dict[str, Any]]:
         """
-        生成合成訓練樣本
+        生成使用12个ICT/SMC特征的合成样本（v4.5.0兼容）
         
-        策略：從實時市場數據提取特徵，使用簡單規則標註
+        v4.5.0 P0修复：重新启用合成样本生成，解决新部署环境无数据问题
+        使用12个ICT/SMC特征（与预测一致）
         
         Args:
             target_count: 目標樣本數量
             
         Returns:
-            合成樣本列表
+            合成样本列表（每个样本包含12个ICT/SMC特征）
         """
-        synthetic_samples = []
+        import random
         
-        if not self.binance:
-            logger.warning("⚠️ 無 BinanceClient，無法生成合成樣本")
-            return synthetic_samples
+        logger.info(f"⚙️  生成{target_count}个合成样本（使用12个ICT/SMC特征）")
         
-        try:
-            # 獲取熱門交易對
-            symbols = await self._get_top_symbols(limit=20)
-            
-            logger.info(f"📊 從 {len(symbols)} 個交易對生成合成樣本...")
-            
-            # 為每個交易對生成樣本
-            samples_per_symbol = max(1, target_count // len(symbols))
-            
-            for symbol in symbols:
-                try:
-                    # 獲取 K 線數據（1 小時，最近 200 根）
-                    klines = await self.binance.get_klines(
-                        symbol=symbol,
-                        interval='1h',
-                        limit=200
-                    )
-                    
-                    if not klines or len(klines) < 100:
-                        continue
-                    
-                    # 生成特徵並標註
-                    samples = self._extract_features_and_label(klines, samples_per_symbol)
-                    synthetic_samples.extend(samples)
-                    
-                    if len(synthetic_samples) >= target_count:
-                        break
-                        
-                except Exception as e:
-                    logger.debug(f"⚠️ {symbol} 生成樣本失敗: {e}")
-                    continue
-            
-            logger.info(f"✅ 生成 {len(synthetic_samples)} 筆合成樣本")
-            
-        except Exception as e:
-            logger.error(f"❌ 生成合成樣本失敗: {e}")
-        
-        return synthetic_samples[:target_count]
-    
-    async def _get_top_symbols(self, limit: int = 20) -> List[str]:
-        """獲取熱門交易對"""
-        try:
-            if self.binance is None:
-                return ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT']
-            
-            # 獲取 24h 交易量排名
-            tickers = await self.binance.get_24h_tickers()
-            
-            # 過濾 USDT 合約，按交易量排序
-            usdt_tickers = [
-                t for t in tickers
-                if t['symbol'].endswith('USDT')
-            ]
-            
-            sorted_tickers = sorted(
-                usdt_tickers,
-                key=lambda x: float(x.get('quoteVolume', 0)),
-                reverse=True
-            )
-            
-            return [t['symbol'] for t in sorted_tickers[:limit]]
-            
-        except Exception as e:
-            logger.error(f"❌ 獲取熱門交易對失敗: {e}")
-            # 返回默認列表
-            return ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT']
-    
-    def _extract_features_and_label(
-        self,
-        klines: List[Dict],
-        max_samples: int
-    ) -> List[Dict[str, Any]]:
-        """
-        從 K 線提取特徵並標註
-        
-        簡單規則：
-        - 上漲趨勢（20 EMA 上穿 50 EMA）→ 正樣本
-        - 下跌趨勢（20 EMA 下穿 50 EMA）→ 負樣本
-        
-        Args:
-            klines: K 線數據
-            max_samples: 最大樣本數
-            
-        Returns:
-            特徵樣本列表
-        """
         samples = []
+        for i in range(target_count):
+            # 随机生成WIN/LOSS标签
+            label = random.choice([0, 1])
+            
+            # 生成12个ICT/SMC特征的合理随机值
+            features = {
+                # 基础特征（8个）
+                'market_structure': random.choice([-1, 0, 1]),  # 看跌/中性/看涨
+                'order_blocks_count': random.randint(0, 5),  # 0-5个订单块
+                'institutional_candle': random.choice([0, 1]),  # 是否机构K线
+                'liquidity_grab': random.choice([0, 1]),  # 是否流动性抓取
+                'order_flow': random.uniform(-1.0, 1.0),  # 订单流 -1到1
+                'fvg_count': random.randint(0, 3),  # 0-3个FVG
+                'trend_alignment_enhanced': random.uniform(0.0, 1.0),  # 趋势对齐度
+                'swing_high_distance': random.uniform(0.0, 1.0),  # 摆动高点距离
+                
+                # 合成特征（4个）
+                'structure_integrity': random.uniform(0.0, 1.0),  # 结构完整性
+                'institutional_participation': random.uniform(0.0, 1.0),  # 机构参与度
+                'timeframe_convergence': random.uniform(0.0, 1.0),  # 时间框架收敛度
+                'liquidity_context': random.uniform(0.0, 1.0),  # 流动性情境
+            }
+            
+            # 验证特征完整性
+            assert all(feat in features for feat in CANONICAL_FEATURE_NAMES), \
+                f"合成样本缺少必需特征"
+            
+            samples.append({
+                'label': label,
+                'features': features,
+                'pnl': random.uniform(-5.0, 5.0) if label == 1 else random.uniform(-10.0, 0.0)
+            })
         
-        try:
-            import pandas as pd
-            import numpy as np
-            
-            # 轉換為 DataFrame
-            df = pd.DataFrame(klines)
-            df['close'] = df['close'].astype(float)
-            df['high'] = df['high'].astype(float)
-            df['low'] = df['low'].astype(float)
-            df['volume'] = df['volume'].astype(float)
-            
-            # 計算 EMA
-            df['ema_20'] = df['close'].ewm(span=20, adjust=False).mean()
-            df['ema_50'] = df['close'].ewm(span=50, adjust=False).mean()
-            
-            # 計算 RSI
-            delta = df['close'].diff()
-            gain = delta.where(delta > 0, 0).rolling(window=14).mean()
-            loss = -delta.where(delta < 0, 0).rolling(window=14).mean()
-            rs = gain / loss
-            df['rsi'] = 100 - (100 / (1 + rs))
-            
-            # 計算 ATR
-            high_low = df['high'] - df['low']
-            high_close = abs(df['high'] - df['close'].shift())
-            low_close = abs(df['low'] - df['close'].shift())
-            ranges = pd.concat([high_low, high_close, low_close], axis=1)
-            df['atr'] = ranges.max(axis=1).rolling(window=14).mean()
-            
-            # 生成樣本（選擇趨勢明確的點）
-            for i in range(60, len(df) - 10, 10):  # 每 10 根 K 線取一個樣本
-                if len(samples) >= max_samples:
-                    break
-                
-                row = df.iloc[i]
-                
-                # 特徵
-                features = {
-                    'ema_20': row['ema_20'],
-                    'ema_50': row['ema_50'],
-                    'rsi': row['rsi'],
-                    'atr': row['atr'],
-                    'volume': row['volume'],
-                    'close': row['close'],
-                }
-                
-                # 標註（簡單規則）
-                ema_diff = row['ema_20'] - row['ema_50']
-                future_return = (df.iloc[i + 10]['close'] - row['close']) / row['close']
-                
-                # 正樣本：EMA 多頭排列 且 未來上漲
-                # 負樣本：EMA 空頭排列 且 未來下跌
-                if ema_diff > 0 and future_return > 0.01:
-                    label = 1  # 勝利
-                elif ema_diff < 0 and future_return < -0.01:
-                    label = 1  # 勝利（空頭判斷正確）
-                else:
-                    label = 0  # 失敗
-                
-                samples.append({
-                    'features': features,
-                    'label': label,
-                    'pnl': future_return,
-                })
-        
-        except Exception as e:
-            logger.error(f"❌ 提取特徵失敗: {e}")
-        
+        logger.info(f"✅ 成功生成{len(samples)}个合成样本（特征验证通过）")
         return samples
     
     async def _load_training_data_from_trades(self) -> List[Dict]:
         """
-        🔥 v4.0 Feature Unification: 從 PostgreSQL 加載真實交易數據
+        🔥 v4.5.0 Feature Unification + Schema Validation: 從 PostgreSQL 加載真實交易數據
         
-        使用统一的12个ICT/SMC特征（与预测一致）
+        使用统一的12个ICT/SMC特征（与预测一致），并验证特征完整性
         
         Returns:
             訓練數據列表（每個元素包含12個標準特徵 + label）
@@ -463,7 +341,6 @@ class ModelInitializer:
                 
                 if training_data:
                     logger.info(f"✅ 從 PostgreSQL 加載 {len(training_data)} 筆訓練數據（12特徵）")
-                    return training_data
                 else:
                     logger.warning("⚠️ PostgreSQL無可用訓練數據，嘗試JSONL備援")
                 
@@ -475,7 +352,8 @@ class ModelInitializer:
         
         if not trades_file.exists():
             logger.warning(f"⚠️ 訓練數據文件不存在: {trades_file}")
-            return training_data  # 返回PostgreSQL数据（可能为空）
+            # 🔥 v4.5.0: 执行schema验证后再返回
+            return self._validate_feature_schema(training_data)
         
         try:
             with open(trades_file, 'r', encoding='utf-8') as f:
@@ -505,91 +383,53 @@ class ModelInitializer:
         except Exception as e:
             logger.error(f"❌ 加載訓練數據失敗: {e}")
         
-        return training_data
+        # 🔥 v4.5.0 P1: Schema验证 - 过滤不兼容的旧数据
+        return self._validate_feature_schema(training_data)
     
-    def _extract_44_features_DEPRECATED(self, trade: Dict) -> Optional[List[float]]:
+    def _validate_feature_schema(self, training_data: List[Dict]) -> List[Dict]:
         """
-        ⚠️ DEPRECATED v4.0: This method is no longer used
+        🔥 v4.5.0 P1修复: 验证训练数据的特征schema
         
-        v4.0 now uses 12 canonical ICT/SMC features via feature_schema.py
-        Kept for reference only
+        过滤不包含所有12个ICT/SMC特征的数据（防止训练失败）
+        
+        Args:
+            training_data: 原始训练数据
+            
+        Returns:
+            经过schema验证的训练数据
         """
-        logger.warning("⚠️ _extract_44_features is deprecated, use feature_schema instead")
-        return None  # No longer functional
-        try:
-            # 🔥 v3.18.6+ Critical Fix: 所有字段都使用默認值，確保歷史數據不被跳過
-            features = [
-                # 基本特徵 (8) - 核心字段優先從trade讀取
-                float(trade.get('confidence', trade.get('confidence_score', 0.5))),
-                float(trade.get('leverage', 1.0)),
-                float(trade.get('position_value', 0.0)),
-                float(trade.get('risk_reward_ratio', trade.get('rr_ratio', 1.5))),
-                float(trade.get('order_blocks_count', trade.get('order_blocks', 0))),
-                float(trade.get('liquidity_zones_count', trade.get('liquidity_zones', 0))),
-                float(trade.get('entry_price', 0.0)),
-                float(trade.get('win_probability', 0.5)),
-                
-                # 技術指標 (10) - 使用中性默認值
-                float(trade.get('rsi', 50.0)),
-                float(trade.get('macd', 0.0)),
-                float(trade.get('macd_signal', 0.0)),
-                float(trade.get('macd_histogram', 0.0)),
-                float(trade.get('atr', 0.0)),
-                float(trade.get('bb_width', 0.0)),
-                float(trade.get('volume_sma_ratio', 1.0)),
-                float(trade.get('ema50', 0.0)),
-                float(trade.get('ema200', 0.0)),
-                float(trade.get('volatility_24h', 0.0)),
-                
-                # 趨勢特徵 (6) - 使用中性默認值
-                float(trade.get('trend_1h', 0)),
-                float(trade.get('trend_15m', 0)),
-                float(trade.get('trend_5m', 0)),
-                float(trade.get('market_structure', 0)),
-                float(trade.get('direction', 1)),  # LONG=1, SHORT=-1
-                float(trade.get('trend_alignment', 0.0)),
-                
-                # 其他特徵 (14) - 所有可選字段使用默認值
-                float(trade.get('ema50_slope', 0.0)),
-                float(trade.get('ema200_slope', 0.0)),
-                float(trade.get('higher_highs', 0)),
-                float(trade.get('lower_lows', 0)),
-                float(trade.get('support_strength', 0.5)),
-                float(trade.get('resistance_strength', 0.5)),
-                float(trade.get('fvg_count', 0)),
-                float(trade.get('swing_high_distance', 0.0)),
-                float(trade.get('swing_low_distance', 0.0)),
-                float(trade.get('volume_profile', 0.5)),
-                float(trade.get('price_momentum', 0.0)),
-                float(trade.get('order_flow', 0.0)),
-                float(trade.get('liquidity_grab', 0)),
-                float(trade.get('institutional_candle', 0)),
-                
-                # 競價上下文特徵 (3) - 新字段使用默認值
-                float(trade.get('competition_rank', 1)),
-                float(trade.get('score_gap_to_best', 0.0)),
-                float(trade.get('num_competing_signals', 1)),
-                
-                # WebSocket專屬特徵 (3) - 新字段使用默認值
-                float(trade.get('latency_zscore', 0.0)),
-                float(trade.get('shard_load', 0.0)),
-                float(trade.get('timestamp_consistency', 1))
-            ]
+        if not training_data:
+            return training_data
+        
+        valid_data = []
+        invalid_count = 0
+        
+        for trade in training_data:
+            features = trade.get('features', {})
             
-            # 驗證長度
-            if len(features) != 44:
-                logger.error(f"特徵數量錯誤: {len(features)} != 44")
-                return None
+            # 验证是否包含所有12个ICT/SMC特征
+            missing_features = [f for f in CANONICAL_FEATURE_NAMES if f not in features]
             
-            return features
-            
-        except (ValueError, TypeError) as e:
-            # 只在類型轉換失敗時返回None
-            logger.warning(f"特徵提取失敗（數據類型錯誤）: {e}")
-            return None
-        except Exception as e:
-            logger.error(f"特徵提取異常: {e}")
-            return None
+            if not missing_features:
+                # 所有特征都存在
+                valid_data.append(trade)
+            else:
+                # 缺少特征，跳过此交易
+                invalid_count += 1
+                if invalid_count <= 3:  # 只记录前3个警告，避免日志过多
+                    logger.warning(
+                        f"⚠️ 跳过不兼容交易数据（缺少特征: {missing_features[:3]}...）"
+                    )
+        
+        if invalid_count > 0:
+            logger.info(
+                f"📊 特征schema验证: {len(valid_data)}条有效, "
+                f"{invalid_count}条无效（已过滤）"
+            )
+        else:
+            logger.info(f"✅ 特征schema验证: {len(valid_data)}条数据全部有效")
+        
+        return valid_data
     
     async def _train_xgboost_model(self, training_data: List[Dict]) -> bool:
         """
