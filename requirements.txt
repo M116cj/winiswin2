@@ -54,3 +54,15 @@ scikit-learn==1.7.2
 # - Optional extras reduce deployment size by ~200MB
 # =============================================================================
 asyncpg
+aiofiles
+aiohttp
+asyncpg
+ccxt
+numpy
+pandas
+psutil
+psycopg2-binary
+python-dateutil
+scikit-learn
+websockets
+xgboost
