@@ -1,0 +1,173 @@
+You are an expert Machine Learning System Optimization Engineer.
+Your task is to globally simplify, remove, refactor, and accelerate the ML pipeline so the entire system becomes:
+	•	Minimal
+	•	Consistent
+	•	Fast
+	•	Maintainable
+	•	Free of unused or redundant components
+
+You must eliminate all ML-related code that does not contribute to the active prediction pipeline.
+
+⸻
+
+Primary Objectives (Non-negotiable)
+	1.	Remove all ML features, code paths, modules, and logic not used during training or inference.
+	2.	Simplify and shrink the feature engineering pipeline, retaining only essential features.
+	3.	Collapse the system into a single, clean, minimal ML pipeline for training and inference.
+	4.	Optimize model runtime efficiency, CPU/GPU usage, and memory footprint.
+	5.	Eliminate historical versions, unused checkpoints, experimental models, and deprecated code.
+
+⸻
+
+Scope of Work (Replit AI Must Perform)
+
+A. ML Dependency & Usage Analysis
+
+Construct a full dependency graph of ML-related code, including:
+	•	Data loading
+	•	Feature engineering
+	•	Preprocessing
+	•	Model training
+	•	Model saving/loading
+	•	Inference
+Identify all unused or redundant components and mark them for removal.
+
+⸻
+
+B. Feature Engineering Reduction
+
+Remove:
+	•	Unused features
+	•	Duplicate features
+	•	Highly correlated redundant features
+	•	Deprecated preprocessing logic
+	•	Features referenced in code but never consumed by the model
+	•	Any transformation that adds computational cost without measurable model benefit
+
+Retain only verified essential features.
+
+⸻
+
+C. Model Consolidation & Simplification
+
+Replit AI must:
+	•	Remove outdated or alternative model versions
+	•	Remove stacking, ensembling, model switching logic
+	•	Delete unused model wrappers
+	•	Merge the system into one single active model
+	•	Remove experimental layers, callbacks, tuning scripts, or test-only components
+	•	Minimize the training and inference footprint
+
+Only one model architecture and one inference path may remain.
+
+⸻
+
+D. Training Pipeline Cleanup
+
+Replit AI must:
+	•	Delete unused training functions & obsolete training loops
+	•	Remove unnecessary epochs, callbacks, logging, debugging tools
+	•	Collapse preprocessing into one unified, minimal pipeline
+	•	Remove test-only augmentations, experimental preprocessors, or heavy transformations
+	•	Enforce a single, canonical training entrypoint
+	•	Ensure preprocessing used in training exactly matches inference
+
+⸻
+
+E. Inference Pipeline Optimization
+
+Replit AI must:
+	•	Merge all prediction flows into a single clear inference function
+	•	Remove unnecessary wrappers, validation layers, or defensive checks
+	•	Remove repeated transformations
+	•	Replace slow operations (e.g., pandas-heavy code) with optimized equivalents
+	•	Minimize data conversion steps
+	•	Ensure inference runs with minimal overhead
+
+⸻
+
+Required Outputs (Replit AI Must Return All Items)
+
+1. Comprehensive Deletion Report
+
+A precise list of all removed items, including:
+	•	Files
+	•	Modules
+	•	Classes
+	•	Functions
+	•	Features
+	•	Training utilities
+	•	Model versions
+Each entry must include a short deletion理由 and impact assessment.
+
+⸻
+
+2. Final Minimal ML Architecture Description
+
+Text-based architecture summary including:
+	•	Remaining features
+	•	Final model choice
+	•	Final preprocessing pipeline
+	•	Final training pipeline (simplified)
+	•	Final inference call graph
+
+This must describe the minimal system clearly and unambiguously.
+
+⸻
+
+3. Fully Refactored ML Code Output
+
+Replit AI must output the entire optimized ML codebase, including:
+	•	Final feature engineering code
+	•	Final data preparation
+	•	Final model code
+	•	Final training entrypoint
+	•	Final inference path
+	•	All auxiliary code required for execution
+
+No deprecated code may remain.
+
+⸻
+
+4. Performance Improvement Analysis
+
+Replit AI must quantify improvements in terms of:
+	•	Training time
+	•	Inference time
+	•	Model size
+	•	Feature count reduction
+	•	Memory usage
+	•	CPU/GPU load
+
+Include a clear explanation of why each improvement occurred.
+
+⸻
+
+5. Regression Validation Checklist
+
+List the minimum verification requirements to ensure correctness:
+	•	Input shape validation
+	•	Output shape and format validation
+	•	Feature ordering and mapping validation
+	•	Consistency between training and inference pipelines
+	•	Minimal test sample that must run end-to-end
+
+⸻
+
+Strict Rules (Replit AI Must Follow Them Exactly)
+	1.	Any ML code not referenced in the actual training or inference graph must be deleted.
+	2.	No “future expansion”, unused utilities, or inactive code branches are allowed.
+	3.	Feature engineering must have a single unified source of truth.
+	4.	Training and inference must share identical preprocessing logic.
+	5.	No multiple model versions, checkpoints, or selection logic may remain.
+	6.	No duplicated code or redundant abstractions may remain.
+	7.	Final system must be the smallest possible functional ML pipeline.
+
+⸻
+
+Final Instruction to Replit AI (Execute Exactly)
+
+Perform a full global optimization of the ML system.
+Remove all non-essential ML code, features, models, and pipelines.
+Refactor the entire ML workflow into a minimal, efficient, single-model training and inference system.
+Return the complete optimized codebase and full analysis.
