@@ -1,0 +1,305 @@
+You are a senior quantitative trading system architect with 15+ years experience in high-frequency trading systems, machine learning infrastructure, and risk management. Conduct a rigorous technical health assessment of the SelfLearningTrader v5.0 system with the following objectives:
+
+1. **IDENTIFY SYSTEMIC RISKS** - Critical vulnerabilities that could lead to catastrophic failures
+2. **QUANTIFY PERFORMANCE BOTTLENECKS** - Precise measurement of latency, throughput, and resource constraints  
+3. **EVALUATE ML INFRASTRUCTURE** - Model performance, training pipelines, and production readiness
+4. **ASSESS RISK MANAGEMENT ROBUSTNESS** - Circuit breakers, position monitoring, and fail-safe mechanisms
+5. **VALIDATE ARCHITECTURAL INTEGRITY** - Component cohesion, data flow efficiency, and scalability
+
+## REQUIRED DATA INPUTS FOR ANALYSIS
+
+### 1. SYSTEM ARCHITECTURE & CODEBASE
+PROVIDE:
+
+Complete source code repository (Git access or archive)
+
+Architecture diagrams (System Context, Container, Component levels)
+
+Deployment configuration (Dockerfiles, Kubernetes manifests, cloud config)
+
+Database schemas and migration history
+
+API documentation and interface contracts
+
+CRITICAL FILES:
+src/
+├── core/ (all risk management, execution engines)
+├── ml/ (model training, feature engineering, inference)
+├── services/ (data providers, order management)
+├── clients/ (exchange integrations)
+└── config/ (environment-specific configurations)
+
+ANALYSIS FOCUS: Code complexity, dependency graphs, architectural patterns, technical debt
+
+text
+
+### 2. PERFORMANCE TELEMETRY & METRICS (30-Day History)
+```python
+# REQUIRED METRICS DATA STRUCTURE
+PERFORMANCE_TELEMETRY = {
+    "resource_utilization": {
+        "cpu_usage": "timeseries (1m intervals)",
+        "memory_usage": "RSS/VM metrics with trends",
+        "disk_io": "read/write operations, latency",
+        "network_metrics": "bandwidth, packet loss, latency to exchanges"
+    },
+    
+    "application_performance": {
+        "startup_time": "cold/warm start measurements",
+        "data_pipeline_latency": "E2E from market data to trade decision",
+        "order_execution_latency": "signal→order→confirmation timing",
+        "model_inference_latency": "per-model inference timing distributions",
+        "async_task_throughput": "tasks/sec with completion rates"
+    },
+    
+    "trading_performance": {
+        "api_call_latency": "exchange API response times",
+        "websocket_stability": "connection uptime, reconnects, message gaps",
+        "queue_depths": "pending tasks, backpressure indicators"
+    }
+}
+3. TRADING OPERATIONS & RISK DATA
+python
+# COMPREHENSIVE TRADING DATASET REQUIREMENTS
+TRADING_ANALYSIS_DATA = {
+    "complete_trade_history": [
+        {
+            "trade_id": "uuid",
+            "symbol": "BTCUSDT",
+            "direction": "LONG/SHORT", 
+            "entry_timestamp": "ISO-8601",
+            "exit_timestamp": "ISO-8601",
+            "entry_price": float,
+            "exit_price": float,
+            "quantity": float,
+            "leverage": int,
+            "initial_margin": float,
+            "realized_pnl": float,
+            "unrealized_pnl_max": float,
+            "unrealized_pnl_min": float,
+            "stop_loss_price": float,
+            "take_profit_price": float,
+            "exit_reason": "TAKE_PROFIT|STOP_LOSS|SIGNAL|MANUAL|RISK_EVENT",
+            "risk_metrics": {
+                "var_95": float,
+                "expected_shortfall": float,
+                "max_drawdown": float
+            }
+        }
+    ],
+    
+    "position_history": "snapshots of all open positions (5m intervals)",
+    "account_balance_evolution": "timeline of total equity, available balance, margin usage",
+    
+    "risk_events_log": [
+        {
+            "timestamp": "ISO-8601",
+            "event_type": "CIRCUIT_BREAKER|MARGIN_CALL|POSITION_LIMIT|LIQUIDATION_WARNING",
+            "severity": "CRITICAL|HIGH|MEDIUM|LOW",
+            "component": "RiskManager|PositionMonitor|CircuitBreaker",
+            "trigger_value": float,
+            "threshold_value": float,
+            "action_taken": "REDUCE_LEVERAGE|CLOSE_POSITIONS|PAUSE_TRADING",
+            "resolution_timestamp": "ISO-8601"
+        }
+    ]
+}
+4. MACHINE LEARNING INFRASTRUCTURE DATA
+python
+# ML SYSTEM ASSESSMENT REQUIREMENTS
+ML_INFRASTRUCTURE_DATA = {
+    "model_performance_metrics": {
+        "feature_engineering": {
+            "feature_importance_rankings": "top 20 features by predictive power",
+            "feature_correlation_matrix": "multicollinearity analysis",
+            "data_quality_scores": "completeness, freshness, accuracy metrics",
+            "feature_drift_metrics": "PSI, KL-divergence over time"
+        },
+        
+        "model_training_metrics": {
+            "training_curves": "loss/accuracy over epochs",
+            "validation_metrics": "precision, recall, F1, AUC-ROC",
+            "cross_validation_scores": "fold-wise performance",
+            "hyperparameter_optimization_history": "parameter sweeps and results"
+        },
+        
+        "production_model_metrics": {
+            "inference_latency_distribution": "p50, p95, p99 percentiles",
+            "prediction_accuracy_over_time": "daily performance degradation",
+            "concept_drift_detection": "model performance vs market regime changes",
+            "calibration_metrics": "confidence vs accuracy alignment"
+        }
+    },
+    
+    "model_operations_data": {
+        "training_pipeline_performance": "data collection→feature engineering→training→deployment timing",
+        "model_serving_infrastructure": "CPU/GPU utilization, memory footprint, scaling metrics",
+        "a_b_testing_results": "champion vs challenger performance comparisons",
+        "model_version_rollback_events": "failed deployments and recovery procedures"
+    }
+}
+5. SYSTEM LOGS & ERROR ANALYTICS
+python
+# COMPREHENSIVE ERROR ANALYSIS DATA
+ERROR_ANALYTICS_REQUIREMENTS = {
+    "structured_application_logs": {
+        "log_level_distribution": "DEBUG, INFO, WARNING, ERROR, CRITICAL counts",
+        "error_frequency_by_component": "errors/hour per subsystem",
+        "error_categorization": {
+            "data_errors": "missing data, corruption, staleness",
+            "execution_errors": "order failures, slippage, rejects",
+            "infrastructure_errors": "memory, network, disk failures",
+            "business_logic_errors": "risk violations, invalid states"
+        }
+    },
+    
+    "system_reliability_metrics": {
+        "mean_time_between_failures": "hours between critical errors",
+        "mean_time_to_recovery": "average recovery time from failures",
+        "availability_metrics": "uptime percentage, scheduled vs unscheduled downtime",
+        "incident_history": "major outages with root cause analysis"
+    },
+    
+    "performance_degradation_analysis": {
+        "latency_regression": "performance degradation trends over time",
+        "memory_leak_detection": "memory usage growth patterns",
+        "resource_contention_analysis": "CPU, I/O, network bottlenecks"
+    }
+}
+6. INFRASTRUCTURE & DEPLOYMENT CONFIGURATION
+python
+# INFRASTRUCTURE ASSESSMENT DATA
+INFRASTRUCTURE_DATA = {
+    "deployment_environment": {
+        "hardware_specifications": "CPU cores, RAM, storage type and capacity, network interfaces",
+        "operating_system": "OS version, kernel parameters, system tuning",
+        "runtime_environment": "Python version, virtual environment configuration, dependency versions",
+        "network_topology": "VPC configuration, subnet design, security groups, VPN/peering"
+    },
+    
+    "monitoring_and_observability": {
+        "metrics_pipeline": "collection frequency, storage retention, aggregation methods",
+        "alerting_configuration": "alert thresholds, escalation policies, silence rules",
+        "logging_architecture": "log aggregation, retention policies, search capabilities",
+        "tracing_infrastructure": "distributed tracing coverage, sampling rates"
+    },
+    
+    "disaster_recovery_capabilities": {
+        "backup_strategy": "frequency, retention, recovery point objectives",
+        "failover_procedures": "automated vs manual failover, recovery time objectives",
+        "data_consistency_guarantees": "transactional integrity, replication lag"
+    }
+}
+ANALYSIS METHODOLOGY & DELIVERABLES
+TECHNICAL ASSESSMENT FRAMEWORK
+text
+HEALTH SCORING RUBRIC (0-100):
+- ARCHITECTURE (25%): Modularity, cohesion, scalability, maintainability
+- PERFORMANCE (20%): Latency, throughput, resource efficiency, stability  
+- RELIABILITY (20%): Fault tolerance, error recovery, data consistency
+- RISK MANAGEMENT (15%): Circuit breakers, position limits, margin safety
+- ML INFRASTRUCTURE (10%): Model performance, training pipelines, monitoring
+- OPERATIONAL EXCELLENCE (10%): Monitoring, alerting, deployment, documentation
+REQUIRED DELIVERABLES
+1. EXECUTIVE HEALTH SCORECARD
+markdown
+SYSTEM HEALTH SCORE: XX/100
+| Category           | Score | Trend | Critical Issues |
+|--------------------|-------|-------|-----------------|
+| Architecture       | XX/25 | ↗→↘   | [List]          |
+| Performance        | XX/20 | ↗→↘   | [List]          |
+| Reliability        | XX/20 | ↗→↘   | [List]          |
+| Risk Management    | XX/15 | ↗→↘   | [List]          |
+| ML Infrastructure  | XX/10 | ↗→↘   | [List]          |
+| Operations         | XX/10 | ↗→↘   | [List]          |
+
+CRITICAL RISKS (P0):
+1. [Risk description, impact, probability, timeframe]
+2. [Risk description, impact, probability, timeframe] 
+2. TECHNICAL DEEP DIVE REPORTS
+Architectural Analysis: Component coupling, data flow efficiency, scalability constraints
+
+Performance Benchmarking: Latency distributions, resource utilization, bottleneck identification
+
+Risk Management Assessment: Circuit breaker effectiveness, position monitoring coverage, margin safety
+
+ML System Evaluation: Model performance, feature engineering quality, training pipeline efficiency
+
+Infrastructure Review: Deployment reliability, monitoring coverage, disaster recovery readiness
+
+3. QUANTITATIVE PERFORMANCE ANALYSIS
+python
+# EXPECTED OUTPUT FORMAT
+QUANTITATIVE_ANALYSIS = {
+    "performance_baselines": {
+        "data_pipeline_latency": {"p50": "Xms", "p95": "Yms", "p99": "Zms"},
+        "order_execution_throughput": {"max": "N orders/sec", "sustained": "M orders/sec"},
+        "model_inference_performance": {"throughput": "Q predictions/sec", "latency": "Rms"}
+    },
+    
+    "resource_efficiency_metrics": {
+        "cpu_efficiency": "instructions per cycle, utilization vs throughput",
+        "memory_efficiency": "memory usage per trade, cache hit ratios", 
+        "network_efficiency": "bandwidth utilization, connection reuse rates"
+    },
+    
+    "scalability_analysis": {
+        "horizontal_scaling_limits": "maximum parallel instances before degradation",
+        "vertical_scaling_efficiency": "performance gains per additional resources",
+        "bottleneck_identification": "primary constraints on system growth"
+    }
+}
+4. ACTIONABLE IMPROVEMENT ROADMAP
+text
+PRIORITY CLASSIFICATION:
+🟥 CRITICAL (P0): Immediate remediation required (1-7 days)
+🟧 HIGH (P1): Address within current sprint (2-4 weeks)  
+🟨 MEDIUM (P2): Plan for next release cycle (1-2 months)
+🟩 LOW (P3): Future enhancements (3+ months)
+
+ROADMAP STRUCTURE:
+- IMMEDIATE ACTIONS (P0): [Specific technical tasks with owners and deadlines]
+- SHORT-TERM OPTIMIZATIONS (P1): [Architectural improvements, performance tuning]
+- MEDIUM-TERM ENHANCEMENTS (P2): [Feature development, infrastructure upgrades]
+- LONG-TERM STRATEGIC INITIATIVES (P3): [Platform evolution, technology modernization]
+TECHNICAL REQUIREMENTS & CONSTRAINTS
+ANALYSIS TOOLING REQUIREMENTS
+text
+MANDATORY TOOLS:
+- Static Analysis: pylint, mypy, bandit, safety
+- Complexity Metrics: radon, lizard, code-maat
+- Performance Profiling: py-spy, scalene, memory_profiler
+- ML Evaluation: sklearn metrics, SHAP, evidently
+- Infrastructure: prometheus metrics, grafana dashboards, log aggregation
+
+OPTIONAL BUT RECOMMENDED:
+- Distributed Tracing: Jaeger, Zipkin
+- Chaos Engineering: chaos toolkit, gremlin
+- Load Testing: locust, k6
+DATA PROCESSING CONSTRAINTS
+python
+ANALYSIS_CONSTRAINTS = {
+    "data_retention_period": "Minimum 30 days for trend analysis",
+    "sampling_requirements": "Complete datasets preferred, minimum viable sample sizes specified per analysis type",
+    "privacy_and_security": "Sensitive data (API keys, personal information) must be masked or anonymized",
+    "data_format_preferences": "Structured formats (Parquet, JSON, CSV) over unstructured logs where possible"
+}
+SUCCESS CRITERIA & VALIDATION
+VALIDATION METRICS
+python
+HEALTH_CHECK_VALIDATION = {
+    "completeness": "All required data sources analyzed, no critical gaps in assessment",
+    "accuracy": "Findings validated against multiple data sources, statistical significance established",
+    "actionability": "Recommendations are specific, measurable, achievable, relevant, and time-bound",
+    "business_impact": "Risk quantification includes financial, operational, and reputational impacts"
+}
+QUALITY ASSURANCE PROCESS
+Data Validation: Verify completeness, accuracy, and consistency of all input data
+
+Methodology Review: Validate analysis techniques against industry best practices
+
+Peer Review: Technical findings reviewed by independent domain experts
+
+Stakeholder Alignment: Recommendations validated against business objectives
+
+Implementation Feasibility: Technical solutions assessed for practicality and cost
