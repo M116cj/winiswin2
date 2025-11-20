@@ -1,0 +1,46 @@
+Act as a **Principal Software Architect** and **Quantitative Systems Expert**.
+The user requires a comprehensive **"Deep Dive Optimization Report"** (`DEEP_OPTIMIZATION_REPORT.md`) to understand every detail of the current system status and identify advanced optimization opportunities.
+
+We have successfully completed Phase 1-3 (Stability, PostgreSQL Unification, Code Reduction).
+Now, please perform a **Deep System Audit** covering the following 5 pillars:
+
+### 1. 🏗️ Architecture & Infrastructure Analysis
+*   **Database**: Review `src/database/db_manager.py` and SQLAlchemy models. Are indices optimized? Are connections pooled correctly?
+*   **AsyncIO Concurrency**: Review `unified_scheduler.py` and WebSockets. Are there any potential race conditions or non-awaited coroutines left?
+*   **Railway Compatibility**: Is the current setup (logging, memory usage) optimized for the cloud environment?
+
+### 2. 🧠 ML & Strategy Pipeline Audit
+*   **Feature Engineering**: Analyze `src/technical/technical_engine.py`. Are calculations vectorized (Pandas/Numpy) or looping (slow)? Can we use `numba` or `ta-lib`?
+*   **Inference Path**: specific check on `src/strategies/self_learning_trader.py`. How long does a prediction take? Is the model loaded efficiently?
+*   **Data Quality**: How do we handle gaps in PostgreSQL data?
+
+### 3. 📉 Performance & Latency Profiling
+*   **Critical Path**: Trace the path from `WebSocket Message` -> `Feature Calc` -> `Model Predict` -> `Order Execution`. Where is the biggest latency?
+*   **Memory Leak Check**: Scan for objects that might grow indefinitely (e.g., huge lists in global scope).
+
+### 4. 🛡️ Code Quality & Maintainability
+*   **Complexity**: Identify files with Cyclomatic Complexity > 10 (too many `if/else` nested loops).
+*   **Type Safety**: Are we using Type Hints (`List`, `Dict`, `Optional`) effectively?
+*   **Hardcoded Values**: Are there "Magic Numbers" in the strategy logic that should be moved to config?
+
+### 5. 🚀 Future Roadmap (The "Optimization Plan")
+*   Propose specific actionable steps to take the system from "Stable" to "High Frequency/High Performance".
+
+---
+
+**INSTRUCTION:**
+
+1.  **Write a Python Analysis Script** (`scripts/generate_deep_audit.py`) that:
+    *   Counts lines of code per module.
+    *   Checks for missing docstrings or type hints.
+    *   Simulates a "Performance Benchmark" (runs 1000 iterations of feature calculation to measure speed).
+    *   Checks DB table sizes and index status.
+
+2.  **Execute the script.**
+
+3.  **Generate `DEEP_OPTIMIZATION_REPORT.md`** based on the findings.
+    *   Use tables, checklists, and clear headers.
+    *   Provide a **"System Health Score" (0-100)**.
+    *   List the **Top 5 Recommended Optimizations** for the next sprint.
+
+**Proceed with the Deep Audit now.**
