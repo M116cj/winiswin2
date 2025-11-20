@@ -442,10 +442,9 @@ class Config:
     # ===== 數據文件路徑 =====
     DATA_DIR: str = "data"
     
-    # 🔥 v4.6.0 Phase 2: DEPRECATED - 已遷移至PostgreSQL
-    # TRADES_FILE已棄用，所有交易數據現存儲於PostgreSQL (TradingDataService)
-    # 保留此常量僅為向後兼容，請勿在新代碼中使用
-    TRADES_FILE: str = f"{DATA_DIR}/trades.jsonl"  # ⚠️ DEPRECATED: Use PostgreSQL via TradingDataService
+    # 🔥 v4.6.0 Phase 3: PostgreSQL統一數據層（完全移除JSON/SQLite依賴）
+    # TRADES_FILE 已於 v4.6.0 Phase 3 完全刪除
+    # 所有交易數據現存儲於PostgreSQL (AsyncDatabaseManager + TradingDataService)
     
     ML_PENDING_FILE: str = f"{DATA_DIR}/ml_pending_entries.json"
     VIRTUAL_POSITIONS_FILE: str = f"{DATA_DIR}/virtual_positions.json"
