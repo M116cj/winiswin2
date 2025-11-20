@@ -1,0 +1,51 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+**CRITICAL ALERT**: The production system on Railway is crashing and unstable.
+Based on the latest logs, we have identified 3 distinct failures that need immediate code-level fixes.
+
+Please execute the following **Emergency Repair Plan** strictly:
+
+### 1. Fix Critical Async Logic Bug (The "Never Awaited" Error)
+**Symptoms**: Logs show `RuntimeWarning: coroutine 'UnifiedTradeRecorder.get_trades' was never awaited` and crashes with `'coroutine' object is not iterable`.
+**Root Cause**: Missing `await` keywords in `unified_scheduler.py` when calling async methods.
+**Action**:
+*   Open `src/core/unified_scheduler.py`.
+*   Locate `_display_historical_stats()` and `_display_model_rating()`.
+*   **FIX**: Change `trades = self.recorder.get_trades(...)` to `trades = await self.recorder.get_trades(...)`.
+*   **FIX**: Ensure any other DB calls (like `get_statistics`) inside these methods are also awaited.
+
+### 2. Implement Database Connection Resilience (The "Crash Loop" Fix)
+**Symptoms**: The app crashes immediately with `TimeoutError` if the DB is restarting or upgrading.
+**Root Cause**: `src/database/async_manager.py` raises an exception immediately upon connection failure.
+**Action**:
+*   Modify `initialize()` in `src/database/async_manager.py`.
+*   **Implement a Retry Loop**: Wrap the `asyncpg.create_pool` call in a loop that tries **5 times** with a **5-second delay** between attempts.
+*   Log a warning like `⚠️ DB Connection failed, retrying in 5s... (Attempt 1/5)` instead of crashing.
+*   Only raise the exception after all retries fail.
+
+### 3. Harden WebSocket Stability (The "Ping Timeout" Fix)
+**Symptoms**: Frequent `ping_timeout` warnings and `Connection reset` errors.
+**Root Cause**: Default timeout settings are too strict for the cloud environment network latency.
+**Action**:
+*   Update `src/core/websocket/optimized_base_feed.py` (and check `kline_feed.py` / `price_feed.py`).
+*   **Set Parameters**:
+    *   `ping_interval = 25` (Keep connection alive frequently)
+    *   `ping_timeout = 60` (Allow up to 60s delay before declaring death)
+    *   `close_timeout = 10`
+*   **Verify**: Ensure `on_message` handlers are wrapped in non-blocking calls if they perform heavy logic.
+
+### 4. Fix Data Starvation Logging
+**Symptoms**: Logs spam `ERROR - 🚨 Serious issue: Average analysis time 0.0ms`.
+**Action**:
+*   In `src/core/unified_scheduler.py` -> `_execute_trading_cycle`:
+    *   Add a **Data Guard**: `if not self.market_data: logger.warning("⚠️ Waiting for market data..."); return`.
+    *   This prevents the strategy from running on empty data and throwing errors.
+
+---
+
+**EXECUTION INSTRUCTIONS:**
+1.  Apply the code fixes to the 4 files mentioned above.
+2.  Generate a file named `RAILWAY_CONFIG_NOTE.md` containing a reminder for the user: "Please ensure Railway PostgreSQL Docker Image is pinned to version 16 (e.g., `postgres:16`) to avoid incompatible data errors."
+3.  Run a syntax check to ensure no errors were introduced.
+
+**Proceed immediately.**

@@ -767,7 +767,8 @@ class UnifiedScheduler:
                 
                 try:
                     if self.trade_recorder:
-                        all_trades = self.trade_recorder.get_trades()
+                        # 🔥 CRITICAL FIX: Add missing await keyword
+                        all_trades = await self.trade_recorder.get_trades()
                         open_trades = [
                             t for t in all_trades 
                             if t.get('symbol') == symbol 

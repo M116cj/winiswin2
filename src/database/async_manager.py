@@ -113,7 +113,7 @@ class AsyncDatabaseManager:
     
     async def initialize(self) -> None:
         """
-        初始化异步连接池
+        初始化异步连接池（带重试机制）
         
         必须在使用前调用此方法
         """
@@ -121,30 +121,46 @@ class AsyncDatabaseManager:
             logger.debug("连接池已初始化，跳过")
             return
         
-        try:
-            database_url = self._get_database_url()
-            connection_url = self._prepare_connection_url(database_url)
-            
-            logger.info("📡 初始化PostgreSQL异步连接池...")
-            logger.debug(f"   最小连接数: {self.min_connections}")
-            logger.debug(f"   最大连接数: {self.max_connections}")
-            
-            self.pool = await asyncpg.create_pool(
-                connection_url,
-                min_size=self.min_connections,
-                max_size=self.max_connections,
-                timeout=self.connection_timeout,
-                command_timeout=self.command_timeout
-            )
-            
-            self._is_initialized = True
-            logger.info("✅ PostgreSQL异步连接池初始化成功")
-            
-        except Exception as e:
-            logger.error(f"❌ 连接池初始化失败: {e}")
-            logger.exception("详细错误信息:")
-            self._is_initialized = False
-            raise
+        database_url = self._get_database_url()
+        connection_url = self._prepare_connection_url(database_url)
+        
+        # 🔥 CRITICAL FIX: Implement retry loop for database connection resilience
+        max_retries = 5
+        retry_delay = 5  # seconds
+        
+        for attempt in range(1, max_retries + 1):
+            try:
+                logger.info(f"📡 初始化PostgreSQL异步连接池... (尝试 {attempt}/{max_retries})")
+                logger.debug(f"   最小连接数: {self.min_connections}")
+                logger.debug(f"   最大连接数: {self.max_connections}")
+                
+                self.pool = await asyncpg.create_pool(
+                    connection_url,
+                    min_size=self.min_connections,
+                    max_size=self.max_connections,
+                    timeout=self.connection_timeout,
+                    command_timeout=self.command_timeout
+                )
+                
+                self._is_initialized = True
+                logger.info("✅ PostgreSQL异步连接池初始化成功")
+                return  # Success - exit retry loop
+                
+            except Exception as e:
+                self._is_initialized = False
+                
+                if attempt < max_retries:
+                    logger.warning(
+                        f"⚠️ DB连接失败，{retry_delay}秒后重试... "
+                        f"(尝试 {attempt}/{max_retries}): {e}"
+                    )
+                    import asyncio
+                    await asyncio.sleep(retry_delay)
+                else:
+                    # Final attempt failed - raise exception
+                    logger.error(f"❌ 连接池初始化失败（已重试{max_retries}次）: {e}")
+                    logger.exception("详细错误信息:")
+                    raise
     
     async def close(self) -> None:
         """
