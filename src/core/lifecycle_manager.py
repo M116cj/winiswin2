@@ -162,10 +162,16 @@ class LifecycleManager:
         logger.info("🐶 看门狗已停止")
     
     def _watchdog_monitor(self):
-        """Watchdog monitor thread (runs in background)"""
+        """
+        Watchdog monitor thread (runs in background)
+        
+        🔧 FIX: Removed self.is_running check so watchdog monitors from start
+        """
         logger.info("🐶 看门狗监控线程已启动")
         
-        while self.watchdog_enabled and self.is_running:
+        # 🔧 FIX: Only check watchdog_enabled, not is_running
+        # This allows watchdog to monitor even during initialization
+        while self.watchdog_enabled:
             try:
                 current_time = time.time()
                 time_since_heartbeat = current_time - self.last_heartbeat
@@ -213,16 +219,19 @@ class LifecycleManager:
         
         logger.info("📡 信号处理器已注册: SIGINT, SIGTERM")
     
-    async def shutdown(self):
+    async def shutdown(self, exit_code: int = 0):
         """
         Execute graceful shutdown sequence
+        
+        Args:
+            exit_code: Exit code (0=success, 1=error) - used by run() to indicate failure
         
         Sequence:
         1. Set is_running = False (stop new operations)
         2. Persist state (flush logs/stats)
         3. Close components in priority order
         4. Stop watchdog
-        5. Exit
+        5. Exit (only if not being managed by StartupManager)
         """
         if self.shutdown_initiated:
             logger.warning("⚠️ 关闭已在进行中，跳过")
@@ -273,7 +282,7 @@ class LifecycleManager:
         self.stop_watchdog()
         logger.info("✅ 步骤 4/5: 看门狗已停止")
         
-        # Step 5: Calculate uptime and exit
+        # Step 5: Calculate uptime
         if self.stats['start_time']:
             uptime = (datetime.now() - self.stats['start_time']).total_seconds()
             self.stats['uptime_seconds'] = uptime
@@ -283,11 +292,11 @@ class LifecycleManager:
         
         logger.info("=" * 80)
         logger.info("✅ 步骤 5/5: 优雅关闭完成")
-        logger.info("   👋 系统即将退出...")
+        if exit_code != 0:
+            logger.error(f"   ❌ 退出码: {exit_code} (错误)")
         logger.info("=" * 80)
         
-        # Exit gracefully
-        sys.exit(0)
+        # 🔧 FIX: Don't call sys.exit() here - let StartupManager handle exit codes
     
     async def run(self, main_coroutine):
         """
@@ -303,6 +312,9 @@ class LifecycleManager:
             
             lifecycle = LifecycleManager.get_instance()
             lifecycle.run(main())
+        
+        Raises:
+            Any exception from main_coroutine (for proper exit code propagation)
         """
         self.is_running = True
         self.stats['start_time'] = datetime.now()
@@ -318,17 +330,19 @@ class LifecycleManager:
             
         except KeyboardInterrupt:
             logger.info("⌨️ 键盘中断 (Ctrl+C)")
-            await self.shutdown()
+            await self.shutdown(exit_code=0)
+            # 🔧 FIX: Don't re-raise KeyboardInterrupt (clean exit)
             
         except Exception as e:
             logger.error(f"❌ 主应用异常: {e}")
             logger.exception("详细错误:")
-            await self.shutdown()
+            await self.shutdown(exit_code=1)
+            # 🔧 FIX: Re-raise to propagate error for exit code
             raise
         
         finally:
             if not self.shutdown_initiated:
-                await self.shutdown()
+                await self.shutdown(exit_code=0)
     
     def get_stats(self) -> Dict[str, Any]:
         """Get lifecycle manager statistics"""

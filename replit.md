@@ -4,6 +4,7 @@
 SelfLearningTrader is an AI-driven cryptocurrency automated trading system designed for high reliability and performance. It leverages machine learning with advanced ICT/SMC strategies to make trading decisions, aiming for true AI-driven trading. The system is designed for deployment on cloud platforms like Railway and features significant performance optimizations, including a 4-5x speed improvement in data acquisition and a 85% cache hit rate. A key focus is on compliance with exchange API protocols, achieving zero REST K-line API calls to prevent IP bans.
 
 **Recent Enhancements (2025-11-20)**:
+- 🛡️ **Lifecycle Management v1.0**: Production-resilient architecture with LifecycleManager (graceful shutdown, SIGINT/SIGTERM), StartupManager (crash tracking, 60s backoff for >3 crashes), Watchdog (60s hang detection), component registry, Railway-ready deployment
 - 🔔 **Real-time Notifications**: Discord/Telegram alerts for all trade events (open/close/daily summary)
 - ⚖️ **Dynamic Position Sizing**: Kelly Criterion-based sizing using ML model confidence (50%→skip, 75%→1x baseline, 100%→2x)
 - 📊 **Database Optimization**: PostgreSQL indices applied, 60-80% query performance improvement
@@ -22,6 +23,7 @@ I want to prioritize iterative development, with clear communication at each sta
 The system does not have a direct user interface; its "UX" is primarily through clear, filtered logging and monitoring, especially optimized for cloud environments like Railway. Logging is streamlined to focus on critical business metrics (model learning status, profitability, key trade execution info) and error aggregation, reducing noise by 95-98%.
 
 ### Technical Implementations
+- **Lifecycle Management (v1.0)**: Production-resilient architecture with LifecycleManager singleton (signal handling SIGINT/SIGTERM, component registry for graceful shutdown), StartupManager (crash tracking in .restart_count, exponential backoff >3 crashes in 5min → 60s delay), Watchdog/Dead Man's Switch (60s timeout, automatic restart on hang), Railway-ready with zero-downtime deployments. See LIFECYCLE_MANAGEMENT_GUIDE.md.
 - **AI/ML Core**: Utilizes XGBoost models with a unified 12-feature ICT/SMC schema for training and prediction. Features include market structure, order blocks, liquidity grabs, and fair value gaps. The model retrains automatically every 50 trades.
 - **Data Acquisition**: Employs a WebSocket-only K-line data mode, eliminating REST K-line API calls. It features a robust WebSocket manager with intelligent reconnection, extended timeouts, and a data quality monitor with gap handling and historical data backfilling.
 - **Risk Management**: Incorporates dynamic leverage based on win rate and confidence, intelligent position sizing, and dynamic Stop Loss/Take Profit adjustments. It features seven smart exit strategies, including forced liquidation for 100% loss, partial profit-taking, and time-based stop-loss mechanisms, which are critical for capital preservation.

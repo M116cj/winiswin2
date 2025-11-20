@@ -210,26 +210,27 @@ class StartupManager:
                 await asyncio.sleep(self.BACKOFF_DELAY)
                 logger.info("✅ 退避完成，继续启动...")
             
-            # Record successful start
-            await self.record_successful_start()
-            
             # Get lifecycle manager
             lifecycle = get_lifecycle_manager()
             
             # Run application with lifecycle management
             await lifecycle.run(main_coroutine)
             
+            # 🔧 FIX: Only record successful start AFTER coroutine completes
+            await self.record_successful_start()
+            
             return 0  # Graceful exit
             
         except KeyboardInterrupt:
             logger.info("⌨️ 键盘中断")
+            # Don't record as crash for keyboard interrupt
             return 0
             
         except Exception as e:
             logger.error(f"❌ 启动失败: {e}")
             logger.exception("详细错误:")
             
-            # Record crash
+            # 🔧 FIX: Record crash before returning error code
             await self.record_crash()
             
             return 1  # Error exit
