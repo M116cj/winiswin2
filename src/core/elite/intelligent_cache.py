@@ -152,16 +152,20 @@ class IntelligentCache:
     
     def __init__(
         self, 
-        l1_max_size: int = 5000, 
-        enable_l2: bool = True,
+        l1_max_size: int = 1000,     # 🔥 Phase 2: 从5000降低到1000
+        enable_l2: bool = False,     # 🔥 Phase 2: 默认禁用L2（节省250MB内存）
         l2_cache_dir: str = '/tmp/elite_cache'
     ):
         """
         初始化智能缓存
         
+        🔥 Phase 2优化：
+        - L1默认1000条目（实际需求）
+        - L2默认禁用（防止内存浪费）
+        
         Args:
             l1_max_size: L1缓存最大条目数
-            enable_l2: 是否启用L2持久化（v3.20 Phase 3已实现）
+            enable_l2: 是否启用L2持久化（默认禁用以节省内存）
             l2_cache_dir: L2缓存目录路径
         """
         self.l1_cache = LRUCache(max_size=l1_max_size)
@@ -175,9 +179,9 @@ class IntelligentCache:
             self._clean_expired_l2()  # 启动时清理过期缓存
         
         logger.info(
-            f"✅ IntelligentCache 初始化完成\n"
+            f"✅ IntelligentCache 初始化完成 (Phase 2优化)\n"
             f"   📦 L1内存缓存: {l1_max_size} 条目\n"
-            f"   💾 L2持久化: {'启用 (' + str(self.l2_cache_dir) + ')' if enable_l2 else '禁用'}"
+            f"   💾 L2持久化: {'启用 (' + str(self.l2_cache_dir) + ')' if enable_l2 else '❌ 禁用（节省250MB内存）'}"
         )
     
     def get(self, key: str) -> Optional[Any]:
