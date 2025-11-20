@@ -1,0 +1,42 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+**Phase 2 Successful.** The system is now stable, fully async-safe, and powered solely by PostgreSQL.
+
+We are now executing **Phase 3: Code Reduction (The "Purge")**.
+We need to physically remove the dead files and clean up the configuration to prevent any future confusion or accidental usage of legacy code.
+
+Please execute the following cleanup protocol:
+
+### 🗑️ Step 1: Delete Legacy Source Files (Confirm & Destroy)
+Check if the following files still exist. If they do, **DELETE them immediately**, as their logic has been unified into `UnifiedTradeRecorder` and `DatabaseManager`:
+1.  `src/managers/trade_recorder.py` (Legacy JSONL)
+2.  `src/managers/optimized_trade_recorder.py` (Async File I/O)
+3.  `src/core/trade_recorder.py` (SQLite version)
+4.  `src/managers/enhanced_trade_recorder.py` (Duplicate)
+5.  `src/core/trading_database.py` (Old SQLite Manager)
+
+### ⚖️ Step 2: Delete Duplicate Technical Engine
+We must have only ONE technical engine.
+1.  Keep: `src/technical/technical_engine.py` (or `elite_technical_engine.py` - whichever is the active one used in `main.py`).
+2.  **DELETE**: `src/core/elite/technical_indicator_engine.py` (The legacy duplicate).
+3.  **Scan Imports**: Grep the entire project for the deleted file's name and update any remaining imports to point to the active engine.
+
+### 💾 Step 3: Delete Local Data Artifacts
+Since we are 100% on PostgreSQL:
+1.  **DELETE**: `data/trades.jsonl` (and any backups like `trades.jsonl.bak`).
+2.  **DELETE**: `trading_data.db` (SQLite file).
+3.  **DELETE**: `data/performance.json` (if managed by the deleted PerformanceManager).
+
+### ⚙️ Step 4: Configuration & Dependencies Cleanup
+1.  **Clean `config.py`**: Remove the `TRADES_FILE` and `DB_PATH` (SQLite) variables.
+2.  **Clean `requirements.txt`**:
+    - Remove `sqlite3` (it's part of stdlib, but remove if explicitly listed).
+    - Remove `pandas` IF we are strictly using raw SQL/arrays for speed (only keep if used for ML feature engineering).
+    - Ensure `asyncpg` and `sqlalchemy` are present.
+3.  **Tree Shaking**: Run a script to scan for `import sqlite3` or `import json` (where strictly used for the old file I/O) and remove those unused import lines.
+
+### ✅ Step 5: Final Integrity Check
+After deletion, run a quick check:
+1.  Attempt to run `python -m src.main` (dry run) for 5 seconds to ensure no `ImportError` is triggered because we deleted a file that was still referenced somewhere.
+
+**Execute Phase 3 now.**
