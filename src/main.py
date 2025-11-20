@@ -62,6 +62,10 @@ from src.database.initializer import initialize_database
 # 🔥 Performance Upgrade: Redis caching layer
 from src.database.redis_manager import RedisManager
 
+# 🛡️ v1.0+: Lifecycle management (graceful shutdown, watchdog, smart startup)
+from src.core.lifecycle_manager import get_lifecycle_manager
+from src.core.startup_manager import get_startup_manager
+
 # 配置日誌
 logging.basicConfig(
     level=logging.INFO,
@@ -124,6 +128,9 @@ class SelfLearningTradingSystem:
         
         # 🔥 Performance Upgrade: Redis caching layer
         self.redis_manager: Optional[RedisManager] = None
+        
+        # 🛡️ v1.0+: Lifecycle management
+        self.lifecycle_manager = None
         
         # 其他组件
         self.health_monitor: Optional[SystemHealthMonitor] = None
@@ -268,13 +275,17 @@ class SelfLearningTradingSystem:
             self.technical_engine = EliteTechnicalEngine()
             logger.debug("✅ 统一技术引擎初始化完成")
             
-            # UnifiedScheduler（核心調度器）
+            # 🛡️ v1.0+: Get lifecycle manager instance
+            self.lifecycle_manager = get_lifecycle_manager()
+            
+            # UnifiedScheduler（核心調度器，帶生命週期管理）
             self.scheduler = UnifiedScheduler(
                 config=self.config,  # type: ignore  # Config類級別配置
                 binance_client=self.binance_client,
                 data_service=self.data_service,
                 trade_recorder=self.trade_recorder,
-                model_initializer=self.model_initializer  # 🔥 v3.17.10+
+                model_initializer=self.model_initializer,  # 🔥 v3.17.10+
+                lifecycle_manager=self.lifecycle_manager  # 🛡️ v1.0+
             )
             logger.debug("✅ UnifiedScheduler 初始化完成")
             
@@ -296,12 +307,32 @@ class SelfLearningTradingSystem:
             await self.health_monitor.start_monitoring()
             logger.debug("✅ 健康监控已启动")
             
+            # 🛡️ v1.0+: Register components for graceful shutdown
+            self.lifecycle_manager.register_component("WebSocket", self.scheduler.websocket_manager.stop, priority=10)
+            self.lifecycle_manager.register_component("Redis", self._close_redis, priority=20)
+            self.lifecycle_manager.register_component("Database", self.db_manager.close, priority=30)
+            self.lifecycle_manager.register_component("HealthMonitor", self.health_monitor.stop, priority=5)
+            logger.debug("✅ 组件已注册到生命周期管理器")
+            
+            # 🛡️ v1.0+: Start watchdog (hang detection)
+            self.lifecycle_manager.start_watchdog()
+            logger.debug("✅ 看门狗已启动")
+            
             logger.info("✅ 系统初始化完成")
             return True
             
         except Exception as e:
             logger.error(f"❌ 初始化失敗: {e}", exc_info=True)
             return False
+    
+    async def _close_redis(self):
+        """Close Redis connection (for lifecycle manager)"""
+        if self.redis_manager:
+            try:
+                await self.redis_manager.close()
+                logger.info("✅ Redis连接已关闭")
+            except Exception as e:
+                logger.error(f"❌ Redis关闭失败: {e}")
     
     async def _test_connection_with_retry(
         self, 
@@ -350,28 +381,17 @@ class SelfLearningTradingSystem:
         logger.debug(f"  min_confidence: {self.config.MIN_CONFIDENCE * 100:.1f}%")
     
     async def run(self):
-        """啟動系統"""
-        try:
-            # 初始化
-            if not await self.initialize():
-                logger.error("初始化失敗，退出程序")
-                return
-            
-            # 設置信號處理
-            self._setup_signal_handlers()
-            
-            # 啟動 UnifiedScheduler
-            self.running = True
-            logger.debug("启动调度器...")
-            if self.scheduler:  # 類型檢查
-                await self.scheduler.start()
-            
-        except KeyboardInterrupt:
-            logger.info("\n⏸️  收到中斷信號，正在關閉...")
-        except Exception as e:
-            logger.error(f"❌ 系統運行失敗: {e}", exc_info=True)
-        finally:
-            await self.shutdown()
+        """啟動系統（由生命周期管理器控制）"""
+        # 初始化
+        if not await self.initialize():
+            logger.error("初始化失敗，退出程序")
+            raise RuntimeError("System initialization failed")
+        
+        # 啟動 UnifiedScheduler（生命週期管理器會處理信號和關閉）
+        self.running = True
+        logger.debug("启动调度器...")
+        if self.scheduler:  # 類型檢查
+            await self.scheduler.start()
     
     async def shutdown(self):
         """優雅關閉系統"""
@@ -428,16 +448,22 @@ class SelfLearningTradingSystem:
 
 
 async def main():
-    """主函數"""
+    """主函數（通過啟動管理器運行）"""
+    startup_manager = get_startup_manager()
     system = SelfLearningTradingSystem()
-    await system.run()
+    
+    # 使用startup_manager.safe_start進行智能啟動（帶崩潰追蹤和退避）
+    exit_code = await startup_manager.safe_start(system.run())
+    return exit_code
 
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        exit_code = asyncio.run(main())
+        sys.exit(exit_code)
     except KeyboardInterrupt:
         logger.info("\n程序已終止")
+        sys.exit(0)
     except Exception as e:
         logger.error(f"❌ 致命錯誤: {e}", exc_info=True)
         sys.exit(1)

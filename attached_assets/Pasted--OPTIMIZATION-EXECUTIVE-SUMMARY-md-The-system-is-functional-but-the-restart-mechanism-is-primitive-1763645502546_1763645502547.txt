@@ -1,0 +1,36 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+The system is functional, but the restart mechanism is primitive (crash-and-burn).
+We need to implement a **"System Lifecycle Manager"** to handle graceful shutdowns, hang detection, and smart recovery.
+
+Please implement the following architecture enhancements:
+
+### 1. 🛡️ Create `src/core/lifecycle_manager.py`
+Implement a singleton class `LifecycleManager` that acts as the system orchestrator.
+*   **Signal Handling**: Listen for `SIGINT` (Ctrl+C) and `SIGTERM` (Railway Deploy/Stop signal).
+*   **Component Registry**: Allow core components (DB, WebSocket, Recorder) to register their `shutdown()` methods.
+*   **Graceful Shutdown Sequence**:
+    1.  **Stop Strategy**: Set `is_running = False` to prevent new orders.
+    2.  **Persist State**: Force flush any pending logs/stats to DB/Redis.
+    3.  **Close Connections**: Disconnect WebSockets -> Close Redis -> Close PostgreSQL.
+    4.  **Exit**: `sys.exit(0)`.
+
+### 2. 🐶 Implement "Watchdog" (Dead Man's Switch)
+Add a background task in `UnifiedScheduler` that updates a "heartbeat" timestamp every 10 seconds.
+*   **Monitor**: Create a separate thread/task that checks this timestamp.
+*   **Logic**: If `last_heartbeat` is older than 60 seconds (System Frozen), log a CRITICAL error "🚨 System Hang Detected" and force `sys.exit(1)` to trigger a Railway restart.
+
+### 3. 🔄 Smart Startup (Exponential Backoff)
+Modify `src/main.py` to handle "Crash Loops".
+*   **Logic**:
+    *   Wrap the main execution in a `try...except`.
+    *   If an error occurs, catch it.
+    *   Check a local file `.restart_count`.
+    *   If crashes > 3 in 5 minutes: **Wait 60 seconds** before retrying (prevent API Ban).
+    *   Otherwise: Restart immediately.
+
+### 4. 📝 Integration
+*   Refactor `src/main.py` to use `LifecycleManager` as the entry/exit point.
+*   Ensure `DatabaseManager` and `WebSocketManager` expose a proper `close()` method for the lifecycle manager to call.
+
+**Execute this plan to make the system resilient.**

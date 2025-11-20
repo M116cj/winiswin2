@@ -58,7 +58,8 @@ class UnifiedScheduler:
         binance_client: BinanceClient,
         data_service: DataService,
         trade_recorder=None,
-        model_initializer=None
+        model_initializer=None,
+        lifecycle_manager=None  # 🛡️ v1.0+: System lifecycle manager
     ):
         """
         初始化 UnifiedScheduler
@@ -69,12 +70,14 @@ class UnifiedScheduler:
             data_service: 數據服務
             trade_recorder: 交易記錄器
             model_initializer: 模型初始化器（v3.17.10+）
+            lifecycle_manager: 生命周期管理器（v1.0+）
         """
         self.config = config
         self.binance_client = binance_client
         self.data_service = data_service
         self.trade_recorder = trade_recorder
         self.model_initializer = model_initializer  # 🔥 v3.17.10+
+        self.lifecycle_manager = lifecycle_manager  # 🛡️ v1.0+
         
         # 🔥 v3.18.6+：初始化WebSocketManager（監控所有可交易的USDT永續合約）
         # 注意：初始化時使用空列表，稍後在start()中加載所有交易對
@@ -236,12 +239,16 @@ class UnifiedScheduler:
             logger.error(f"❌ 倉位監控循環失敗: {e}", exc_info=True)
     
     async def _trading_cycle_loop(self):
-        """交易週期循環"""
+        """交易週期循環（帶看門狗心跳更新）"""
         try:
             logger.info("🔄 交易週期循環已啟動")
             
             while self.is_running:
                 try:
+                    # 🐶 Update watchdog heartbeat before execution
+                    if hasattr(self, 'lifecycle_manager') and self.lifecycle_manager:
+                        self.lifecycle_manager.update_heartbeat()
+                    
                     await self._execute_trading_cycle()
                     await asyncio.sleep(self.config.CYCLE_INTERVAL)
                     
