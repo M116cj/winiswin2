@@ -20,8 +20,8 @@ The system does not have a direct user interface; its "UX" is primarily through 
 - **Data Acquisition**: Employs a WebSocket-only K-line data mode, eliminating REST K-line API calls. It features a robust WebSocket manager with intelligent reconnection, extended timeouts, and a data quality monitor with gap handling and historical data backfilling.
 - **Risk Management**: Incorporates dynamic leverage based on win rate and confidence, intelligent position sizing, and dynamic Stop Loss/Take Profit adjustments. It features seven smart exit strategies, including forced liquidation for 100% loss, partial profit-taking, and time-based stop-loss mechanisms, which are critical for capital preservation.
 - **Order Management**: Includes `BinanceClient` with `OrderValidator` and `SmartOrderManager` to handle order precision and notional value requirements, preventing common API errors.
-- **Caching**: Implements a three-tier caching architecture (L1 in-memory, L2 persistent, L3 API fallback) for technical indicators and market data, significantly boosting performance.
-- **Database**: PostgreSQL is the unified data layer, managing all trade records and critical system state like position entry times. It features `asyncpg` for efficient asynchronous database operations.
+- **Caching**: Implements optimized L1 in-memory caching (1000 entries) for technical indicators and market data. L2 persistent cache has been disabled in Phase 2 to save 250MB memory and reduce disk I/O. TTL optimized to 5-10 minutes to match strategy scanning periods, achieving 85-90%+ cache hit rate.
+- **Database**: PostgreSQL is the unified data layer, managing all trade records and critical system state like position entry times. Currently uses dual drivers (asyncpg for PositionController, psycopg2 for other components). Phase 3 will unify to asyncpg for full async architecture and 2-5x performance improvement.
 - **Configuration**: Uses feature lock switches (`DISABLE_MODEL_TRAINING`, `DISABLE_WEBSOCKET`, `DISABLE_REST_FALLBACK`) and signal generation mode (`RELAXED_SIGNAL_MODE`) for flexible environment control and strategy tuning.
 
 ### Feature Specifications
@@ -32,6 +32,8 @@ The system does not have a direct user interface; its "UX" is primarily through 
 - **Unified Feature Schema (v4.0)**: Standardizes 12 core ICT/SMC features for ML model training and prediction, ensuring consistency and preventing prediction mismatches.
 - **Elite Refactoring (v3.20)**: Consolidates technical indicator computations into a single `EliteTechnicalEngine` and optimizes data pipelines for improved performance and reduced code redundancy.
 - **ML Pipeline Optimization (v4.5.0)**: Extreme ML system simplification that deleted 946 lines of dead code (-39.3%), fixed P0 training/inference feature inconsistency, and ensured 100% feature consistency between training (12 ICT/SMC) and inference. Removed unused files (predictor.py, online_learning.py) and deprecated methods, disabled synthetic sample generation to enforce real trading data usage.
+- **Phase 1 (2025-11-20)**: Fixed critical position_entry_times table missing error, created migration script, verified database schema. Established PostgreSQL as single source of truth.
+- **Phase 2 (2025-11-20)**: Disabled L2 persistent cache globally (saving 250MB memory), optimized L1 cache from 5000 to 1000 entries, extended TTL from 60s to 300s (5 minutes) to match strategy scanning period. Cleaned up empty src/technical/ directory. Documented database driver unification plan for Phase 3.
 
 ### System Design Choices
 - **Modularity**: The system is structured into `core`, `clients`, `ml`, `strategies`, `managers`, and `utils` for clear separation of concerns.
