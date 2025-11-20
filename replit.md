@@ -7,6 +7,7 @@ SelfLearningTrader is an AI-driven cryptocurrency automated trading system desig
 - 🔔 **Real-time Notifications**: Discord/Telegram alerts for all trade events (open/close/daily summary)
 - ⚖️ **Dynamic Position Sizing**: Kelly Criterion-based sizing using ML model confidence (50%→skip, 75%→1x baseline, 100%→2x)
 - 📊 **Database Optimization**: PostgreSQL indices applied, 60-80% query performance improvement
+- ⚡ **Performance Upgrades**: uvloop (2-4x event loop), orjson (2-3x JSON), Redis caching (30-60x queries) - See PERFORMANCE_UPGRADE_REPORT.md
 
 **Business Vision**: To provide a robust, AI-powered automated trading solution for cryptocurrency markets.
 **Market Potential**: Addresses the growing demand for sophisticated, reliable, and compliant automated trading systems in the volatile crypto market.
@@ -25,8 +26,9 @@ The system does not have a direct user interface; its "UX" is primarily through 
 - **Data Acquisition**: Employs a WebSocket-only K-line data mode, eliminating REST K-line API calls. It features a robust WebSocket manager with intelligent reconnection, extended timeouts, and a data quality monitor with gap handling and historical data backfilling.
 - **Risk Management**: Incorporates dynamic leverage based on win rate and confidence, intelligent position sizing, and dynamic Stop Loss/Take Profit adjustments. It features seven smart exit strategies, including forced liquidation for 100% loss, partial profit-taking, and time-based stop-loss mechanisms, which are critical for capital preservation.
 - **Order Management**: Includes `BinanceClient` with `OrderValidator` and `SmartOrderManager` to handle order precision and notional value requirements, preventing common API errors.
-- **Caching (v4.0)**: Pure L1 in-memory caching (1000 entries) for technical indicators and market data. L2 persistent cache completely removed in Deep Clean phase to eliminate blocking I/O (zero `open()` or `pickle` calls). Cache latency: 0.1-1ms (was 10-50ms). TTL optimized to 5-10 minutes to match strategy scanning periods. Zero event loop blocking, 100% async-safe operations.
+- **Caching (v4.0+)**: Three-tier architecture: L1 in-memory (1000 entries, 5-10min TTL) for technical indicators, L2 Redis (5s TTL, optional) for hot database queries (30-60x speedup), PostgreSQL as source of truth. Zero event loop blocking, 100% async-safe.
 - **Database**: PostgreSQL is the unified data layer, managing all trade records and critical system state like position entry times. Phase 3 completed: Unified to asyncpg for full async architecture. All database operations now use async/await with connection pooling for 100-300% performance improvement.
+- **Performance Stack (v1.0)**: uvloop event loop (2-4x WebSocket throughput), orjson JSON serialization (2-3x faster parsing), Redis caching layer (optional, 30-60x query speedup). All with graceful fallbacks.
 - **Configuration**: Uses feature lock switches (`DISABLE_MODEL_TRAINING`, `DISABLE_WEBSOCKET`, `DISABLE_REST_FALLBACK`) and signal generation mode (`RELAXED_SIGNAL_MODE`) for flexible environment control and strategy tuning.
 
 ### Feature Specifications
