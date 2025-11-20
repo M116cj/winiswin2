@@ -8,7 +8,13 @@ KlineFeed v4.5+ - 即時K線數據流（重構版：職責分離架構）
 """
 
 import asyncio
-import json
+# 🔥 Performance Upgrade: Use orjson for 2-3x faster JSON parsing
+try:
+    import orjson as json
+    _ORJSON_ENABLED = True
+except ImportError:
+    import json
+    _ORJSON_ENABLED = False
 from src.utils.logger_factory import get_logger
 import time
 from typing import Dict, List, Optional

@@ -4,7 +4,13 @@ PriceFeed v3.17.2+ - bookTicker即時價格流
 """
 
 import asyncio
-import json
+# 🔥 Performance Upgrade: Use orjson for 2-3x faster JSON parsing
+try:
+    import orjson as json
+    _ORJSON_ENABLED = True
+except ImportError:
+    import json
+    _ORJSON_ENABLED = False
 from src.utils.logger_factory import get_logger
 from typing import Dict, List, Optional
 import time

@@ -12,6 +12,11 @@ python-dateutil==2.8.2
 # Async I/O
 aiofiles==23.2.1
 
+# 🔥 Performance Optimizations (2025-11-20)
+uvloop==0.21.0  # 2-4x faster event loop for WebSockets
+orjson==3.10.11  # 2-3x faster JSON serialization
+redis==5.2.0  # Async Redis client for caching
+
 # Database (PostgreSQL) - Phase 3: Migrated to asyncpg
 asyncpg==0.30.0
 
@@ -55,3 +60,7 @@ scikit-learn==1.7.2
 # =============================================================================
 # Phase 3: Cleaned up duplicates and removed psycopg2-binary
 # All dependencies now listed above with pinned versions
+orjson==3.10.11
+redis==5.2.0
+tarsafe
+uvloop==0.21.0

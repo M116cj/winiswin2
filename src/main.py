@@ -27,7 +27,15 @@
 └───────────────────────────────────────┘
 """
 
+# 🔥 Performance Upgrade: Install uvloop for 2-4x faster event loop
 import asyncio
+try:
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    _UVLOOP_ENABLED = True
+except ImportError:
+    _UVLOOP_ENABLED = False
+
 import logging
 import signal
 import sys
@@ -50,6 +58,9 @@ from src.utils.smart_logger import create_smart_logger
 from src.database.async_manager import AsyncDatabaseManager
 from src.database.service import TradingDataService
 from src.database.initializer import initialize_database
+
+# 🔥 Performance Upgrade: Redis caching layer
+from src.database.redis_manager import RedisManager
 
 # 配置日誌
 logging.basicConfig(
@@ -111,6 +122,9 @@ class SelfLearningTradingSystem:
         self.db_manager: Optional[AsyncDatabaseManager] = None
         self.db_service: Optional[TradingDataService] = None
         
+        # 🔥 Performance Upgrade: Redis caching layer
+        self.redis_manager: Optional[RedisManager] = None
+        
         # 其他组件
         self.health_monitor: Optional[SystemHealthMonitor] = None
         self.technical_engine: Optional[EliteTechnicalEngine] = None
@@ -120,6 +134,12 @@ class SelfLearningTradingSystem:
         try:
             # 🔥 精简启动日志（Railway优化）
             logger.info("🚀 SelfLearningTrader v4.0+ 启动中...")
+            
+            # 🔥 Performance Upgrade: Report uvloop status
+            if _UVLOOP_ENABLED:
+                logger.info("⚡ uvloop已启用（2-4x WebSocket性能提升）")
+            else:
+                logger.warning("⚠️  uvloop未安装，使用标准asyncio事件循环")
             
             # 🔥 v3.26+ 全面配置驗證（使用新的ConfigValidator）
             is_valid, errors, warnings = validate_config(self.config)
@@ -194,9 +214,13 @@ class SelfLearningTradingSystem:
             
             logger.debug("✅ 数据库表结构初始化完成")
             
-            # 创建数据服务
-            self.db_service = TradingDataService(self.db_manager)
-            logger.debug("✅ PostgreSQL数据服务已创建")
+            # 🔥 Performance Upgrade: Initialize Redis caching layer
+            self.redis_manager = RedisManager()
+            await self.redis_manager.connect()
+            
+            # 创建数据服务（带Redis缓存）
+            self.db_service = TradingDataService(self.db_manager, redis_manager=self.redis_manager)
+            logger.debug("✅ PostgreSQL数据服务已创建（带Redis缓存）")
             
             # 🔥 v3.17.10+：模型評估器（用於特徵重要性分析）
             self.model_evaluator = ModelEvaluator(

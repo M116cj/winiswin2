@@ -5,7 +5,13 @@ AccountFeed v3.17.2+ - 即時帳戶/倉位數據流（升級版）
 """
 
 import asyncio
-import json
+# 🔥 Performance Upgrade: Use orjson for 2-3x faster JSON parsing
+try:
+    import orjson as json
+    _ORJSON_ENABLED = True
+except ImportError:
+    import json
+    _ORJSON_ENABLED = False
 from src.utils.logger_factory import get_logger
 from typing import Dict, Optional, Any
 from datetime import datetime
