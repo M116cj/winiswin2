@@ -1,3 +1,14 @@
+# ⚠️ DEPRECATED - v4.6.0 Phase 2
+
+**此文档已棄用**  
+所有交易數據已遷移至 PostgreSQL（UnifiedTradeRecorder）。  
+請參考 `src/managers/unified_trade_recorder.py` 和 `src/database/service.py` 獲取最新實現。
+
+**遷移日期**: 2025-11-20  
+**替代方案**: PostgreSQL + UnifiedTradeRecorder v4.0
+
+---
+
 ## 第2-3阶段修复集成摘要
 
 ## 📋 概述

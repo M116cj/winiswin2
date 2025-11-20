@@ -1,3 +1,14 @@
+# ⚠️ DEPRECATED - v4.6.0 Phase 2
+
+**此文檔已棄用**  
+v3.29 詳細集成指南已過時，系統已完全遷移至 PostgreSQL。  
+所有交易數據管理現由 UnifiedTradeRecorder v4.0 處理。
+
+**遷移日期**: 2025-11-20  
+**替代方案**: PostgreSQL + TradingDataService (`src/database/service.py`)
+
+---
+
 # SelfLearningTrader v3.29 详细集成指南
 
 **版本**: v3.29+  

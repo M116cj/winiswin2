@@ -197,10 +197,10 @@ class ModelInitializer:
     
     async def _collect_training_data(self) -> List[Dict[str, Any]]:
         """
-        🔥 v3.18.6+ Critical Fix: 收集訓練數據（優先使用trades.jsonl）
+        🔥 v4.6.0 Phase 2: 收集訓練數據（PostgreSQL唯一數據源）
         
         策略：
-        1. 🔥 優先從 trades.jsonl 加載真實交易數據（44個特徵）
+        1. 🔥 從 PostgreSQL 加載真實交易數據（12個ICT/SMC特徵）
         2. 若數據不足，使用市場數據生成合成樣本
         
         Returns:
@@ -208,15 +208,15 @@ class ModelInitializer:
         """
         training_data = []
         
-        # 🔥 v4.0+: 從 PostgreSQL/JSONL 加載真實交易數據
-        logger.info("📊 加載真實交易數據（PostgreSQL優先）...")
+        # 🔥 v4.6.0 Phase 2: 從 PostgreSQL 加載真實交易數據（已移除JSONL fallback）
+        logger.info("📊 加載真實交易數據（PostgreSQL唯一數據源）...")
         real_trades = await self._load_training_data_from_trades()
         
         if real_trades:
             logger.info(f"✅ 加載 {len(real_trades)} 筆真實交易數據（12特徵）")
             training_data.extend(real_trades)
         else:
-            logger.warning("⚠️ PostgreSQL/JSONL 無數據或不存在")
+            logger.warning("⚠️ PostgreSQL 無數據")
         
         # 策略 2: 若數據不足，生成合成樣本
         if len(training_data) < self.training_params['min_samples']:
@@ -303,7 +303,7 @@ class ModelInitializer:
     
     async def _load_training_data_from_trades(self) -> List[Dict]:
         """
-        🔥 v4.5.0 Feature Unification + Schema Validation: 從 PostgreSQL 加載真實交易數據
+        🔥 v4.6.0 Phase 2: 從 PostgreSQL 加載真實交易數據（唯一數據源）
         
         使用统一的12个ICT/SMC特征（与预测一致），并验证特征完整性
         
@@ -312,76 +312,52 @@ class ModelInitializer:
         """
         training_data = []
         
-        # v4.0: 优先从PostgreSQL读取
+        # 🔥 v4.6.0 Phase 2: PostgreSQL唯一数据源（已移除trades.jsonl fallback）
         if self.trade_recorder and hasattr(self.trade_recorder, 'data_service'):
             try:
-                trades = await self.trade_recorder.data_service.get_all_trades()
+                # 使用 get_trade_history 获取所有已关闭交易（用于训练）
+                trades = await self.trade_recorder.data_service.get_trade_history(
+                    status='CLOSED',
+                    limit=10000  # 足够大的限制
+                )
                 
                 for trade in trades:
-                    # 提取元数据中的特征
-                    metadata = trade.get('metadata', {})
-                    features_dict = metadata.get('features', {})
-                    
-                    # v4.0: 即使缺少features，也使用默认值（defensive）
-                    if not features_dict:
-                        logger.debug(f"⚠️ Trade {trade.get('id')} 缺少features，使用默认值")
-                        features_dict = {}
-                    
-                    # 提取12个标准特征（缺失字段使用FEATURE_DEFAULTS）
-                    canonical = extract_canonical_features(features_dict)
-                    
-                    # 确定标签（outcome: WIN=1, LOSS=0）
-                    label = 1 if trade.get('outcome') == 'WIN' else 0
-                    
-                    training_data.append({
-                        'features': canonical,
-                        'label': label,
-                        'pnl': float(trade.get('pnl', 0))
-                    })
+                    # Phase 3: asyncpg返回dict，直接访问字段
+                    if isinstance(trade, dict):
+                        # 提取元数据中的特征
+                        metadata = trade.get('metadata', {})
+                        features_dict = metadata.get('features', {}) if isinstance(metadata, dict) else {}
+                        
+                        # v4.0: 即使缺少features，也使用默认值（defensive）
+                        if not features_dict:
+                            logger.debug(f"⚠️ Trade {trade.get('id')} 缺少features，使用默认值")
+                            features_dict = {}
+                        
+                        # 提取12个标准特征（缺失字段使用FEATURE_DEFAULTS）
+                        canonical = extract_canonical_features(features_dict)
+                        
+                        # 确定标签（won: True=1, False=0）
+                        label = 1 if trade.get('won') is True else 0
+                        
+                        training_data.append({
+                            'features': canonical,
+                            'label': label,
+                            'pnl': float(trade.get('pnl', 0))
+                        })
+                    elif hasattr(trade, 'get'):
+                        # 向后兼容：处理_row_to_dict返回的数据
+                        raw_data = trade.get('raw_data')
+                        logger.debug(f"⚠️ 收到raw_data格式，可能需要更新_row_to_dict实现")
                 
                 if training_data:
                     logger.info(f"✅ 從 PostgreSQL 加載 {len(training_data)} 筆訓練數據（12特徵）")
                 else:
-                    logger.warning("⚠️ PostgreSQL無可用訓練數據，嘗試JSONL備援")
+                    logger.warning("⚠️ PostgreSQL 無可用訓練數據")
                 
             except Exception as e:
-                logger.warning(f"⚠️ 從PostgreSQL加載失敗: {e}，嘗試JSONL備援")
-        
-        # Fallback: 从trades.jsonl读取（向后兼容 or PostgreSQL不足）
-        trades_file = Path("data/trades.jsonl")
-        
-        if not trades_file.exists():
-            logger.warning(f"⚠️ 訓練數據文件不存在: {trades_file}")
-            # 🔥 v4.5.0: 执行schema验证后再返回
-            return self._validate_feature_schema(training_data)
-        
-        try:
-            with open(trades_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip():
-                        try:
-                            trade = json.loads(line)
-                            
-                            # v4.0: 从旧格式提取12个标准特征
-                            features_dict = trade.get('features', trade)
-                            canonical = extract_canonical_features(features_dict)
-                            
-                            label = int(trade.get('label', trade.get('outcome') == 'WIN'))
-                            
-                            training_data.append({
-                                'features': canonical,
-                                'label': label,
-                                'pnl': float(trade.get('pnl', 0))
-                            })
-                        except (json.JSONDecodeError, Exception) as e:
-                            logger.debug(f"跳過無效數據行: {e}")
-                            continue
-            
-            if training_data:
-                logger.info(f"✅ 從 {trades_file} 加載 {len(training_data)} 筆訓練數據（12特徵）")
-            
-        except Exception as e:
-            logger.error(f"❌ 加載訓練數據失敗: {e}")
+                logger.error(f"❌ 從 PostgreSQL 加載訓練數據失敗: {e}", exc_info=True)
+        else:
+            logger.warning("⚠️ TradeRecorder或DataService未配置，無法加載訓練數據")
         
         # 🔥 v4.5.0 P1: Schema验证 - 过滤不兼容的旧数据
         return self._validate_feature_schema(training_data)

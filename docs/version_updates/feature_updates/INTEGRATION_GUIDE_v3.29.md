@@ -1,3 +1,14 @@
+# ⚠️ DEPRECATED - v4.6.0 Phase 2
+
+**此文檔已棄用**  
+v3.29 集成指南已過時，系統已遷移至 PostgreSQL + UnifiedTradeRecorder v4.0。  
+請參考最新代碼實現。
+
+**遷移日期**: 2025-11-20  
+**替代方案**: 直接查看 `src/managers/unified_trade_recorder.py`
+
+---
+
 # SelfLearningTrader v3.29 集成指南
 
 ## ⚠️ Architect 审查反馈

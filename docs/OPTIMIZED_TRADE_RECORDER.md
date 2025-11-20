@@ -1,3 +1,14 @@
+# ⚠️ DEPRECATED - v4.6.0 Phase 2
+
+**此文檔已棄用**  
+OptimizedTradeRecorder 已被 UnifiedTradeRecorder v4.0 (PostgreSQL) 取代。  
+所有交易數據現存儲於 PostgreSQL，無需 JSONL 文件 I/O。
+
+**遷移日期**: 2025-11-20  
+**替代方案**: UnifiedTradeRecorder v4.0 (`src/managers/unified_trade_recorder.py`)
+
+---
+
 # OptimizedTradeRecorder - 批量I/O优化文档
 
 ## 📋 概述

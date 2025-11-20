@@ -172,6 +172,15 @@ class UnifiedScheduler:
             await self.websocket_manager.start()
             logger.info(f"✅ WebSocketManager已啟動（監控{len(self.websocket_manager.symbols)}個交易對）")
             
+            # 🔥 v4.6.0 Phase 2: 初始化交易計數緩存（避免event loop問題）
+            logger.info("📊 步驟3：初始化交易計數緩存...")
+            if hasattr(self.self_learning_trader, 'update_trade_count_cache'):
+                try:
+                    count = await self.self_learning_trader.update_trade_count_cache()
+                    logger.info(f"✅ 交易計數緩存已初始化: {count}筆已完成交易")
+                except Exception as e:
+                    logger.warning(f"⚠️ 交易計數緩存初始化失敗: {e}（將使用默認值0）")
+            
             # 啟動任務
             tasks = [
                 asyncio.create_task(self._position_monitoring_loop()),

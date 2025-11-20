@@ -87,10 +87,11 @@ class SelfLearningTrader:
             self.config.BATCH_ML_INFERENCE_ENABLED
         )
         
-        # 🔥 v3.18.7+ 模型啟動豁免機制
+        # 🔥 v3.18.7+ 模型啟動豁免機制（v4.6.0: PostgreSQL緩存版）
         self.bootstrap_enabled = self.config.BOOTSTRAP_TRADE_LIMIT > 0
-        self._completed_trades_cache = None  # 緩存交易計數（避免重複讀取文件）
+        self._completed_trades_cache = 0  # 緩存交易計數（從PostgreSQL更新）
         self._bootstrap_ended_logged = False  # 標記豁免期結束日誌是否已輸出
+        self._cache_last_updated = 0.0  # 緩存上次更新時間
         
         logger.debug("SelfLearningTrader 初始化完成")
         logger.debug(f"   ML狀態: {'已加載' if self.ml_enabled else '未加載'}")
@@ -1335,59 +1336,56 @@ class SelfLearningTrader:
                         f"❌ 創建虛擬倉位失敗 {signal.get('symbol', 'UNKNOWN')}: {e}"
                     )
     
-    def _count_completed_trades(self, use_cache: bool = True) -> int:
+    async def _count_completed_trades(self, use_cache: bool = True) -> int:
         """
-        統計已完成的交易數（v3.18.7+ 從持久化文件讀取，支持緩存）
+        🔥 v4.6.0 Phase 2: 統計已完成的交易數（PostgreSQL唯一數據源）
         
         Args:
-            use_cache: 是否使用緩存（默認True，避免重複讀取文件）
+            use_cache: 是否使用緩存（默認True，避免重複查詢）
         
         Returns:
-            已完成交易的總數量（從trades.jsonl計算）
+            已完成交易的總數量（從PostgreSQL計算）
         """
-        # 🔥 使用緩存避免重複讀取文件（性能優化）
-        if use_cache and self._completed_trades_cache is not None:
-            return self._completed_trades_cache
+        # 🔥 使用緩存避免重複查詢（性能優化）
+        import time
+        if use_cache and self._cache_last_updated > 0:
+            # Cache valid if updated within last 60 seconds
+            if time.time() - self._cache_last_updated < 60:
+                return self._completed_trades_cache
         
-        # 🔥 Critical Fix: 從 trades.jsonl 文件讀取總交易數
-        # 因為 completed_trades 列表會在每次 flush 時被清空（ML_FLUSH_COUNT=1）
-        from pathlib import Path
-        
-        trades_file = Path("data/trades.jsonl")
-        
-        if not trades_file.exists():
-            self._completed_trades_cache = 0
-            return 0
-        
-        try:
-            count = 0
-            with open(trades_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip():
-                        count += 1
-            
-            # 更新緩存
-            self._completed_trades_cache = count
-            return count
-            
-        except Exception as e:
-            logger.warning(f"⚠️ 讀取trades.jsonl失敗: {e}")
-            # 容錯：如果有trade_recorder，使用內存計數
-            if self.trade_recorder:
-                fallback_count = len(self.trade_recorder.completed_trades)
-                self._completed_trades_cache = fallback_count
-                return fallback_count
-            else:
+        # 🔥 v4.6.0 Phase 2: 從 PostgreSQL 讀取總交易數（已移除trades.jsonl fallback）
+        if self.trade_recorder and hasattr(self.trade_recorder, 'data_service'):
+            try:
+                count = await self.trade_recorder.data_service.get_trade_count('closed')
+                
+                # 更新緩存
+                self._completed_trades_cache = count
+                logger.debug(f"📊 已完成交易數（PostgreSQL）: {count}")
+                return count
+                
+            except Exception as e:
+                logger.warning(f"⚠️ 從PostgreSQL讀取交易數失敗: {e}")
                 self._completed_trades_cache = 0
                 return 0
+        else:
+            logger.warning("⚠️ TradeRecorder或DataService未配置，無法統計交易數")
+            self._completed_trades_cache = 0
+            return 0
     
-    def invalidate_trades_cache(self):
+    async def update_trade_count_cache(self):
         """
-        使交易計數緩存失效（在交易完成後調用）
+        🔥 v4.6.0 Phase 2: 更新交易計數緩存（async方法，從scheduler調用）
         
-        這個方法應該在trade_recorder.record_exit()後調用
+        這個方法應該：
+        1. 在系統啟動時調用一次
+        2. 在每個trading cycle開始時調用（可選）
+        3. 在交易完成後調用（自動更新）
         """
-        self._completed_trades_cache = None
+        import time
+        count = await self._count_completed_trades(use_cache=False)
+        self._cache_last_updated = time.time()
+        logger.debug(f"✅ 交易計數緩存已更新: {count}")
+        return count
     
     def _get_progressive_bootstrap_thresholds(self, trade_count: int) -> Dict:
         """
@@ -1440,7 +1438,10 @@ class SelfLearningTrader:
     
     def _get_current_thresholds(self) -> Dict:
         """
-        獲取當前應使用的門檻值（v4.1+ 漸進式豁免機制）
+        🔥 v4.6.0 Phase 2: 獲取當前應使用的門檻值（v4.1+ 漸進式豁免機制）
+        
+        ✅ FIXED: 使用緩存值避免在同步方法中調用async方法（event loop問題）
+        緩存由 update_trade_count_cache() 更新（從 UnifiedScheduler 調用）
         
         Returns:
             包含當前門檻的字典 {
@@ -1461,8 +1462,8 @@ class SelfLearningTrader:
                 'completed_trades': 0
             }
         
-        # 🔥 強制重新讀取交易數（use_cache=False）確保計數最新
-        completed_trades = self._count_completed_trades(use_cache=False)
+        # 🔥 v4.6.0 Phase 2: 使用緩存計數（避免 asyncio.run() 在 event loop 中崩潰）
+        completed_trades = self._completed_trades_cache
         
         # 🔥 v4.1+ 使用漸進式門檻
         if completed_trades < self.config.BOOTSTRAP_TRADE_LIMIT:
