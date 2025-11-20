@@ -1,0 +1,37 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+Based on the latest logs on Railway, the system is failing due to specific Code Logic Errors and Connection Instability.
+
+Please perform the following **Strict Fixes** immediately:
+
+### 1. Fix Critical Async/Await Bug in `UnifiedScheduler`
+The logs show: `RuntimeWarning: coroutine 'UnifiedTradeRecorder.get_trades' was never awaited` and `'coroutine' object is not iterable`.
+*   **File**: `src/core/unified_scheduler.py`
+*   **Action**:
+    *   Locate the `_display_historical_stats` method. Change the line calling `self.recorder.get_trades()` to use **`await`**.
+        *   *Example Fix*: Change `trades = self.recorder.get_trades(...)` to `trades = await self.recorder.get_trades(...)`.
+    *   Locate `_display_model_rating` and do the same.
+    *   Ensure any database call inside these methods is properly awaited.
+
+### 2. Fix WebSocket Stability (Ping Timeout)
+The logs are flooded with `ping_timeout` errors (Error 1011), causing constant reconnections and data gaps.
+*   **File**: `src/core/websocket/optimized_base_feed.py` (and `kline_feed.py` if it overrides params).
+*   **Action**:
+    *   Increase `ping_timeout` from the current value (likely 20s) to **60 seconds**.
+    *   Set `ping_interval` to **25 seconds**.
+    *   This allows more leniency for network latency on Railway without triggering a disconnect.
+
+### 3. Fix "0.0ms Skip" & Log Noise
+The system is spamming logs when data is missing or when signals are 0%.
+*   **File**: `src/core/unified_scheduler.py`
+*   **Action**:
+    *   **Data Guard**: Before running the strategy analysis loop, check if `self.market_data` is populated. If empty, log a single `WARNING: Waiting for market data warmup...` and **return early** (do not loop through 500 symbols).
+    *   **Log Silence**: Inside the analysis loop:
+        *   If `confidence == 0` AND `win_rate == 0`, set the log level to `DEBUG` (effectively hiding it from INFO logs).
+        *   Only print "Signal Analysis Diagnostics" tables if there is at least ONE valid candidate with `confidence > 0`.
+
+### 4. Fix JSON Corruption Warning
+*   **File**: `src/core/model_initializer.py`
+*   **Action**: Catch `json.JSONDecodeError` when reading flag files. If corrupted, assume the flag is False or count is 0, and overwrite the file with a clean state.
+
+**Execute these fixes now and generate a SHORT report.**

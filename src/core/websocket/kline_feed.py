@@ -89,8 +89,8 @@ class KlineFeed(OptimizedWebSocketFeed):
         # v3.32+ 使用符合Binance规范的WebSocket参数
         super().__init__(
             name=f"KlineFeed-Shard{shard_id}",
-            ping_interval=None,
-            ping_timeout=30,  # 🔥 Stability Fix: Railway network optimization
+            ping_interval=25,
+            ping_timeout=60,  # 🔥 Stability Fix v2: Railway network optimization enhanced
             max_reconnect_delay=300,
             health_check_interval=60
         )

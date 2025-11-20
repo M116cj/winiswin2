@@ -383,6 +383,30 @@ class UnifiedScheduler:
             signal_candidates = []  # 🔥 v3.19+：收集所有交易對的信心值/勝率用於診斷
             diagnostic_count = 0  # 🔥 v3.19.1: 數據診斷計數器
             
+            # 🔥 Critical Fix v2: Data guard to prevent log noise during warmup
+            # Check if data pipeline has warmed up before running analysis
+            if hasattr(self, 'data_pipeline') and hasattr(self.data_pipeline, 'kline_manager'):
+                # Quick check: verify at least some symbols have cached data
+                test_batch = symbols[:10]  # Check first 10 symbols
+                has_data = False
+                try:
+                    test_data = await self.data_pipeline.batch_get_multi_timeframe_data(
+                        test_batch,
+                        timeframes=['1h']
+                    )
+                    # Check if any symbol has valid data
+                    for symbol, data_dict in test_data.items():
+                        if data_dict and data_dict.get('1h') is not None and len(data_dict.get('1h', [])) > 0:
+                            has_data = True
+                            break
+                except Exception:
+                    pass
+                
+                if not has_data:
+                    logger.warning("⚠️ 市場數據預熱中... 等待WebSocket數據積累（跳過本次掃描）")
+                    logger.debug(f"   已重置 {len(symbols)} 個交易對的分析（避免無效日誌）")
+                    return
+            
             # 🔥 v3.19+ 診斷：時間分析（降级为DEBUG）
             import time
             total_data_time = 0
@@ -781,7 +805,7 @@ class UnifiedScheduler:
                 return
             
             # 獲取所有已平倉交易
-            all_trades = self.trade_recorder.get_trades()
+            all_trades = await self.trade_recorder.get_trades()
             closed_trades = [t for t in all_trades if t.get('status') == 'closed' and 'pnl' in t]
             
             if not closed_trades:
@@ -817,7 +841,7 @@ class UnifiedScheduler:
                 return ""
             
             # 獲取該交易對的未平倉交易記錄
-            all_trades = self.trade_recorder.get_trades()
+            all_trades = await self.trade_recorder.get_trades()
             open_trades = [
                 t for t in all_trades 
                 if t.get('symbol') == symbol 
@@ -844,7 +868,7 @@ class UnifiedScheduler:
                 return
             
             # 🔥 v3.18.4+：優先顯示已平倉交易的歷史評分
-            trades = self.trade_recorder.get_trades(days=1)
+            trades = await self.trade_recorder.get_trades(days=1)
             closed_trades = [t for t in trades if t.get('status') == 'closed']
             
             if closed_trades:

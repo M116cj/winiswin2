@@ -198,8 +198,8 @@ class AccountFeed(BaseFeed):
                 # v3.32+ 符合Binance规范：服务器ping，客户端pong
                 async with websockets.connect(
                     url, 
-                    ping_interval=None,    # 禁用客户端ping（让服务器发送）
-                    ping_timeout=30,       # 🔥 Stability Fix: Railway network optimization
+                    ping_interval=25,      # 🔥 Stability Fix v2: Railway network optimization
+                    ping_timeout=60,       # 🔥 Stability Fix v2: Railway network optimization enhanced
                     close_timeout=10,
                     max_size=2**20
                 ) as ws:  # type: ignore
