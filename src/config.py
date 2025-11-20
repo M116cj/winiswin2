@@ -443,8 +443,9 @@ class Config:
     DATA_DIR: str = "data"
     
     # 🔥 v4.6.0 Phase 3: PostgreSQL統一數據層（完全移除JSON/SQLite依賴）
-    # TRADES_FILE 已於 v4.6.0 Phase 3 完全刪除
+    # TRADES_FILE已棄用但保留stub以防潛在引用（無運行時使用）
     # 所有交易數據現存儲於PostgreSQL (AsyncDatabaseManager + TradingDataService)
+    TRADES_FILE: str = f"{DATA_DIR}/trades.jsonl"  # ⚠️ STUB ONLY: Not used, PostgreSQL is data source
     
     ML_PENDING_FILE: str = f"{DATA_DIR}/ml_pending_entries.json"
     VIRTUAL_POSITIONS_FILE: str = f"{DATA_DIR}/virtual_positions.json"
