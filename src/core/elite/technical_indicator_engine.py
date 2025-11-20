@@ -83,7 +83,10 @@ class EliteTechnicalEngine:
         Args:
             cache: 智能缓存实例（可选，自动创建）
         """
-        self.cache = cache or IntelligentCache(l1_max_size=5000)
+        self.cache = cache or IntelligentCache(
+            l1_max_size=1000,    # 🔥 Phase 2: 从5000降低到1000
+            enable_l2=False      # 🔥 Phase 2: 禁用L2持久化
+        )
         self._calculation_count = 0
         self._cache_hit_count = 0
         self._incremental_calc_count = 0
