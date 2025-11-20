@@ -410,7 +410,20 @@ class UnifiedScheduler:
                         try:
                             multi_tf_data = batch_data.get(symbol, {})
                             
+                            # 🔥 Stability Fix: Validate data quality before analysis
                             if not multi_tf_data:
+                                data_unavailable_count += 1
+                                continue
+                            
+                            # Check that at least one timeframe has valid data
+                            has_valid_data = False
+                            for tf, df in multi_tf_data.items():
+                                if df is not None and len(df) > 0:
+                                    has_valid_data = True
+                                    break
+                            
+                            if not has_valid_data:
+                                logger.debug(f"⚠️ {symbol}: 所有時間框架數據為空，跳過分析")
                                 data_unavailable_count += 1
                                 continue
                             
@@ -522,13 +535,14 @@ class UnifiedScheduler:
                     )
                 logger.info("=" * 80)
             
-            # 🔥 v3.20.7 Bug #6修復：詳細Stage7雙門檻驗證診斷
+            # 🔥 Stability Fix: Keep INFO summary for rejection visibility, only skip 0% entries
+            # Preserves Bug #6 intent (operator sees rejection stats) while reducing 0% noise
             if signal_candidates and not signals:
                 logger.info("=" * 80)
                 logger.info("🔍 Stage7 - 雙門檻驗證詳細診斷（前15個候選信號）")
                 logger.info("=" * 80)
                 
-                # 當前門檻設置
+                # 當前門檻設置 - Always show at INFO (critical context)
                 logger.info(f"📋 當前門檻設置:")
                 logger.info(f"   信心度  ≥ {self.config.MIN_CONFIDENCE*100:.0f}%")
                 logger.info(f"   勝率    ≥ {self.config.MIN_WIN_PROBABILITY*100:.0f}%")
@@ -544,7 +558,8 @@ class UnifiedScheduler:
                     'confidence_too_low': 0,
                     'win_rate_too_low': 0,
                     'total_candidates': len(signal_candidates),
-                    'passed': len(signals)
+                    'passed': len(signals),
+                    'zero_score_count': 0
                 }
                 
                 logger.info("📊 前15個候選信號詳情:")
@@ -565,13 +580,24 @@ class UnifiedScheduler:
                     
                     status = "✅ 通過" if has_signal else f"❌ 拒絕({', '.join(reasons) if reasons else '未知'})"
                     
-                    logger.info(
-                        f"  {i:2}. {symbol:12} | "
-                        f"信心={confidence:5.1f}% | "
-                        f"勝率={win_rate:5.1f}% | "
-                        f"{status}"
-                    )
+                    # 🔥 Stability Fix: Filter 0% entries to DEBUG, keep meaningful ones at INFO
+                    if confidence > 0 or win_rate > 0:
+                        logger.info(
+                            f"  {i:2}. {symbol:12} | "
+                            f"信心={confidence:5.1f}% | "
+                            f"勝率={win_rate:5.1f}% | "
+                            f"{status}"
+                        )
+                    else:
+                        rejection_stats['zero_score_count'] += 1
+                        logger.debug(
+                            f"  {i:2}. {symbol:12} | "
+                            f"信心={confidence:5.1f}% | "
+                            f"勝率={win_rate:5.1f}% | "
+                            f"{status} [0% spam]"
+                        )
                 
+                # Summary - Always at INFO (critical for operators)
                 logger.info("")
                 logger.info("📊 Stage7 拒絕統計:")
                 logger.info(f"   總候選信號: {rejection_stats['total_candidates']}")
@@ -581,6 +607,8 @@ class UnifiedScheduler:
                     logger.info(f"     - 信心度不足: {rejection_stats['confidence_too_low']}")
                 if rejection_stats['win_rate_too_low'] > 0:
                     logger.info(f"     - 勝率不足: {rejection_stats['win_rate_too_low']}")
+                if rejection_stats['zero_score_count'] > 0:
+                    logger.info(f"     - 0%信號已隱藏: {rejection_stats['zero_score_count']}個（見DEBUG日志）")
                 
                 logger.info("=" * 80)
             
