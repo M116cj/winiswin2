@@ -1,0 +1,95 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+You are acting as the **Senior System Architect**. We are executing a critical overhaul of the `winiswin2` trading system to fix architecture fragmentation, solve Railway disk space issues, and upgrade the ML feature engineering.
+
+Here is the **Master Execution Plan**. Please analyze the entire plan first, then strictly execute **Phase 1** immediately. Do not proceed to Phase 2 until I confirm Phase 1 is stable.
+
+---
+
+### 🚨 Phase 1: Emergency Fix & Core Database Foundation (High Priority)
+**Goal:** Fix the crashing `position_entry_times` error and unify the data layer.
+
+1.  **Fix Missing Schema (Critical)**:
+    - Analyze the error log: `relation "position_entry_times" does not exist`.
+    - In `src/database/models.py` (or create it), define a SQLAlchemy model for `PositionEntryTime` with:
+        - `symbol` (String, PK)
+        - `entry_time` (DateTime, Timezone-aware)
+        - `updated_at` (DateTime)
+    - Ensure `db_manager.py` initializes this table automatically (`Base.metadata.create_all`).
+
+2.  **Establish Single Source of Truth**:
+    - Create/Update `src/database/db_manager.py`:
+        - Use `SQLAlchemy` (Async) + `asyncpg`.
+        - Load `DATABASE_URL` from environment variables.
+        - Deprecate usage of `sqlite3` and `trades.jsonl`.
+
+3.  **Data Migration Script**:
+    - Create `scripts/migrate_system.py` to:
+        - Read legacy data from `data/trades.jsonl` and `trading_data.db`.
+        - Upsert this data into the new PostgreSQL `trades` table.
+        - Verify row counts match after migration.
+
+---
+
+### 🛠️ Phase 2: Logic Unification (De-Duplication)
+**Goal:** Remove the 4 conflicting recorders and dual engines.
+
+1.  **Unify Trade Recorder**:
+    - Analyze: `src/managers/trade_recorder.py`, `optimized_trade_recorder.py`, `enhanced_trade_recorder.py`, and `src/core/trade_recorder.py`.
+    - **Action**: Create `src/services/unified_trade_recorder.py`.
+        - Merge the best logic (logging, metrics, async DB writes) into this single class.
+        - Ensure it uses the `DatabaseManager` from Phase 1.
+    - **Refactor**: Update `main.py` to use ONLY `UnifiedTradeRecorder`.
+
+2.  **Unify Technical Engine**:
+    - Compare `src/core/elite/technical_indicator_engine.py` vs `src/technical/elite_technical_engine.py`.
+    - Keep the most feature-rich version as `src/technical/technical_engine.py`.
+    - Update all import paths to point to this single engine.
+
+---
+
+### ☁️ Phase 3: Storage Optimization (Hot/Cold Data Architecture)
+**Goal:** Solve Railway disk space limits without losing training data.
+
+1.  **S3/Parquet Archiver**:
+    - Create `src/services/data_archiver.py`.
+    - Implement `archive_old_data(days_to_keep=30)`:
+        - Query PostgreSQL for trades/market data older than 30 days.
+        - Convert to **Parquet** format (using `pyarrow`).
+        - Upload to S3/Cloudflare R2 (using `boto3` with env vars: `AWS_ACCESS_KEY`, `BUCKET_NAME`).
+        - **Delete** the archived rows from PostgreSQL *only after* successful upload verification.
+
+2.  **Auto-Scheduler**:
+    - Add a background task (APScheduler or simple loop) in `main.py` to run this archiver once every 24 hours.
+
+---
+
+### 🧠 Phase 4: Advanced Feature Engineering (Model Evolution)
+**Goal:** Improve data quality for ML training.
+
+1.  **Microstructure Features (Order Flow)**:
+    - Update `src/data_processor/feature_engineering.py`.
+    - Calculate and store:
+        - `OBI (Order Book Imbalance) = (Bid_Vol - Ask_Vol) / (Bid_Vol + Ask_Vol)`
+        - `Spread_Pct = (Ask - Bid) / Mid`
+    - Add `Hour_Sin` and `Hour_Cos` for cyclical time encoding.
+
+2.  **Triple Barrier Labeling**:
+    - Implement `get_triple_barrier_label(price, vol, horizon)` in the processor.
+    - Label 1 (Buy), -1 (Sell), 0 (Hold) based on volatility bounds, replacing simple Close>Open logic.
+
+3.  **Update Schema**:
+    - Add columns for `obi`, `spread_pct`, and `label` to the `MarketData` or `TrainingData` table in Postgres.
+
+---
+
+### 🧹 Phase 5: Final Cleanup
+1.  **Delete Dead Code**: Remove the 4 old recorder files, the unused technical engine, `trades.jsonl`, and `trading_data.db`.
+2.  **Dependencies**: Update `requirements.txt` (add `asyncpg`, `boto3`, `pyarrow`, `fastparquet`; remove `sqlite3` if applicable).
+
+---
+
+**INSTRUCTION:**
+Please start by executing **Phase 1** now. 
+Confirm when Phase 1 is complete and the `position_entry_times` table error is resolved. 
+Do not proceed to Phase 2 yet.

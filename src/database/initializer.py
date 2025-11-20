@@ -29,6 +29,7 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
         success &= _create_ml_models_table(db_manager)
         success &= _create_market_data_table(db_manager)
         success &= _create_trading_signals_table(db_manager)
+        success &= _create_position_entry_times_table(db_manager)
         
         if success:
             logger.debug("✅ 数据库表结构初始化完成")
@@ -361,4 +362,34 @@ def _create_trading_signals_table(db_manager: DatabaseManager) -> bool:
         
     except Exception as e:
         logger.error(f"❌ 创建 trading_signals 表失败: {e}")
+        return False
+
+
+def _create_position_entry_times_table(db_manager: DatabaseManager) -> bool:
+    """
+    创建持仓开仓时间表
+    用于持久化持仓进入时间，防止系统重启后时间基础止损计时重置
+    """
+    try:
+        logger.debug("创建 position_entry_times 表...")
+        
+        create_table_sql = """
+        CREATE TABLE IF NOT EXISTS position_entry_times (
+            symbol VARCHAR(20) PRIMARY KEY,
+            entry_time TIMESTAMPTZ NOT NULL,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        );
+        """
+        
+        db_manager.execute_query(create_table_sql, fetch=False)
+        
+        # 创建索引
+        index_sql = "CREATE INDEX IF NOT EXISTS idx_position_entry_times_entry_time ON position_entry_times(entry_time DESC);"
+        db_manager.execute_query(index_sql, fetch=False)
+        
+        logger.info("✅ position_entry_times 表创建成功")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ 创建 position_entry_times 表失败: {e}")
         return False
