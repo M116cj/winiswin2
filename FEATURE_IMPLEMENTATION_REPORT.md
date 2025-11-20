@@ -135,19 +135,28 @@ TELEGRAM_CHAT_ID=-1001234567890
 
 - **`src/core/position_sizer.py`** - Added Kelly Criterion logic (50 lines added)
 
-### ⚖️ Kelly Criterion Formula
+### ⚖️ Kelly Criterion Formula (v4.1.1 CORRECTED)
 
 ```python
 # Basic Kelly Criterion (simplified for trading)
-kelly_multiplier = (confidence - 0.5) * 2
+# v4.1.1 Fix: Changed multiplier from *2 to *4
+kelly_multiplier = (confidence - 0.5) * 4
 
 # Examples:
-# 50% confidence → 0.0x (don't open)
+# 50% confidence → 0.0x (don't open - no edge)
 # 60% confidence → 0.4x (40% of base size)
-# 75% confidence → 1.0x (full base size)
+# 75% confidence → 1.0x (full base size - BASELINE)
+# 85% confidence → 1.4x (140% of base size)
 # 90% confidence → 1.6x (160% of base size)
 # 100% confidence → 2.0x (200% of base size, capped at 10% account)
 ```
+
+**🔥 Critical Fix (v4.1.1)**:
+- Original formula `(confidence - 0.5) * 2` was incorrect
+- Fixed to `(confidence - 0.5) * 4` to match specification:
+  - 75% → 1.0x (baseline, not 0.5x)
+  - 100% → 2.0x (double, not 1.0x)
+- Removed `max(0.1, ...)` floor - now ≤50% confidence = skip trade entirely
 
 ### 📊 Position Sizing Logic
 
@@ -169,18 +178,18 @@ final_size = min(adjusted_size * leverage, account_balance * 0.10)  # Cap at 10%
 
 | Confidence | Kelly Mult | Base (5%) | Final Size | Notes |
 |------------|-----------|-----------|------------|-------|
-| 50% | 0.1x (min) | $100 | $10 | Minimum size |
+| ≤50% | 0.0x | $100 | **$0** | **Skip trade (no edge)** |
 | 60% | 0.4x | $100 | $40 | Low confidence |
-| 75% | 1.0x | $100 | $100 | Normal (baseline) |
+| 75% | 1.0x | $100 | $100 | **Normal (baseline)** |
 | 85% | 1.4x | $100 | $140 | High confidence |
-| 95% | 1.8x | $100 | $180 | Very high |
+| 90% | 1.6x | $100 | $160 | Very high |
 | 100% | 2.0x | $100 | $200 | Maximum (10% cap) |
 
-### 🛡️ Safety Limits
+### 🛡️ Safety Limits (v4.1.1 Updated)
 
-1. **Minimum Multiplier**: 0.1x (never zero, allows learning)
-2. **Maximum Position**: 10% of account (hard cap)
-3. **50% Account Limit**: Existing safety preserved
+1. **Minimum Confidence**: 50% (≤50% = skip trade entirely, no edge)
+2. **Maximum Position**: 10% of account (hard cap, enforced after Kelly)
+3. **50% Account Limit**: Existing safety preserved (final backstop)
 4. **Binance Filters**: All exchange limits respected
 
 ### 📈 Expected Benefits
