@@ -1,0 +1,39 @@
+Act as a **Senior QA Engineer** and **ML Ops Specialist**.
+We have completed the system optimization. Now, I need to verify that the entire system is functioning correctly and, most importantly, that the **Machine Learning Model is actually learning and predicting** given the new data architecture.
+
+Please create and execute a comprehensive diagnostic script: `scripts/verify_system_integrity.py`.
+
+This script must perform the following **4 Levels of Checks**. If any step fails, the script should stop and report the exact error.
+
+### 🔍 Level 1: Infrastructure & Database Check
+1.  **DB Connection**: Attempt to connect to PostgreSQL using the new `DatabaseManager`.
+2.  **Schema Validation**: Verify that the `trades` table and the new `position_entry_times` table exist.
+3.  **Write/Read Test**: Insert a dummy test record, read it back, and then delete it.
+4.  **Archiver Check**: Verify that `boto3` can be imported and that S3/R2 credentials are present in `os.environ` (do not actually upload, just check auth config).
+
+### ⚙️ Level 2: Component Integration Check
+1.  **Unified Recorder**: Instantiate `UnifiedTradeRecorder`. Verify it can handle a mock WebSocket message without crashing.
+2.  **Technical Engine**: Feed 100 rows of dummy OHLCV data into `src/technical/technical_engine.py`. Verify it returns the expected indicators (RSI, MACD) and **importantly**, that it doesn't return `NaN`s at the end of the series.
+
+### 🧠 Level 3: ML Model "Vital Signs" Check (CRITICAL)
+*This is the most important part. We need to ensure the "Brain" is alive.*
+1.  **Model Loading**: Load the existing model file (e.g., `.pth` or `.pkl`). If not found, initialize a new instance.
+2.  **Feature Compatibility**: Fetch the latest batch of data (including the new OBI and Triple Barrier features). **Verify the input shape** matches what the model expects.
+3.  **Inference Test (Forward Pass)**: Pass this data through the model.
+    - **Success Criteria**: The output must be a valid tensor/probability (e.g., `[0.1, 0.8, 0.1]`), NOT `NaN` or `Infinity`.
+4.  **Learning Test (Backward Pass)**: Perform a single dummy training step with a fake label.
+    - **Success Criteria**: Verify that `loss.backward()` executes without error and that the model weights have changed (compare weights before and after).
+    - *This proves the model is capable of learning.*
+
+### 🧹 Level 4: Ghost Code Check
+1.  Verify that the "Dead Files" we deleted in the previous step are truly gone.
+2.  Check `src/core/elite/intelligent_cache.py` to ensure no `open()` or `pickle` calls remain (blocking I/O check).
+
+**INSTRUCTION:**
+Write this script now and execute it. 
+Output a report styled like:
+`[PASS] Database Connection`
+`[PASS] Model Inference (Output: 0.75)`
+`[FAIL] Feature Shape Mismatch (Expected 12, Got 14)`
+
+**Proceed with creating and running the diagnostic script.**
