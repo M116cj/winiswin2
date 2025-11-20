@@ -1,0 +1,32 @@
+Act as a **Lead Code Quality Engineer**. I need you to perform a comprehensive **"Deep Clean and Optimization Audit"** on the entire codebase. 
+
+The system has recently undergone a migration from File-based/SQLite to PostgreSQL, and from multiple recorders to a Unified architecture. There is likely significant technical debt, dead code, and legacy logic left behind.
+
+Please execute the following 4-step protocol:
+
+### Step 1: The "Ghost Hunter" Scan (Identify Dead Code)
+Scan all `.py` files in the project and identify:
+1.  **Unused Imports**: Libraries imported but never used (e.g., `import sqlite3`, `import json`).
+2.  **Dead Functions/Classes**: Code blocks that are defined but have **zero** references in the entire project (excluding `main.py` or entry points).
+3.  **Legacy Files**: Identify files that look like duplicates or backups (e.g., `*_old.py`, `*_backup.py`, `temp_*.py`) or files we agreed to delete (old recorders/engines).
+4.  **Commented-Out Code**: Large blocks of code that are commented out (legacy logic).
+
+### Step 2: The "Logic Auditor" Scan (Structural Optimization)
+Analyze the code structure for:
+1.  **Hardcoded Secrets**: Check for any API keys or DB URLs hardcoded in files instead of using `os.getenv`.
+2.  **Blocking I/O in Async**: Look for synchronous calls (like `requests.get`, `time.sleep`, or standard file I/O) inside `async def` functions which block the event loop.
+3.  **Circular Dependencies**: Identify import loops that might cause instability.
+
+### Step 3: The "Cleanup Script" Generation
+**Do not delete files manually yet.** Instead, write a Python script named `scripts/system_cleanup.py` that I can run. This script should:
+1.  Use `autoflake` or similar logic to remove unused imports and variables programmatically.
+2.  List all "Suspected Dead Files" and ask for user confirmation (Y/N) before deleting them.
+3.  Scan for and report large blocks of commented-out code (lines starting with `#`) so I can review them.
+
+### Step 4: Optimization Report
+Finally, generate a markdown summary `OPTIMIZATION_REPORT.md` listing:
+1.  Files recommended for deletion.
+2.  Functions that seem redundant.
+3.  Specific performance bottlenecks found (e.g., "Loop in line 50 of X.py is inefficient").
+
+**Execute Step 1 and Step 2 now, and then present your findings before writing the script.**
