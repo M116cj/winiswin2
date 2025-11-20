@@ -1,14 +1,17 @@
 """
 Database Monitor - PostgreSQL 实时数据监控系统
 提供生产级的数据库性能监控和统计日志
+
+Phase 3: 迁移到AsyncDatabaseManager (asyncpg)
 """
 
+import asyncio
 import logging
 import time
 import threading
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
-from .manager import DatabaseManager
+from .async_manager import AsyncDatabaseManager
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +30,7 @@ class DatabaseMonitor:
     
     def __init__(
         self,
-        db_manager: DatabaseManager,
+        db_manager: AsyncDatabaseManager,
         refresh_interval: int = 60,
         auto_start: bool = False,
         enable_alerts: bool = True
@@ -36,7 +39,7 @@ class DatabaseMonitor:
         初始化监控服务
         
         Args:
-            db_manager: 数据库管理器实例
+            db_manager: 异步数据库管理器实例
             refresh_interval: 刷新间隔（秒），默认60秒
             auto_start: 是否自动启动监控，默认False
             enable_alerts: 是否启用警告，默认True
@@ -153,9 +156,9 @@ class DatabaseMonitor:
         else:
             logger.error(f"❌ 监控服务连续失败 {self._error_count} 次")
     
-    def get_real_time_stats(self, use_cache: bool = True) -> Optional[Dict[str, Any]]:
+    async def get_real_time_stats_async(self, use_cache: bool = True) -> Optional[Dict[str, Any]]:
         """
-        获取实时统计数据
+        获取实时统计数据（异步版本）
         
         Args:
             use_cache: 是否使用缓存（默认True）
@@ -172,11 +175,11 @@ class DatabaseMonitor:
             
             stats = {
                 'timestamp': datetime.utcnow().isoformat(),
-                'trades': self._get_trades_stats(),
-                'ml_models': self._get_ml_models_stats(),
-                'market_data': self._get_market_data_stats(),
-                'trading_signals': self._get_trading_signals_stats(),
-                'performance': self._get_performance_stats(),
+                'trades': await self._get_trades_stats_async(),
+                'ml_models': await self._get_ml_models_stats_async(),
+                'market_data': await self._get_market_data_stats_async(),
+                'trading_signals': await self._get_trading_signals_stats_async(),
+                'performance': await self._get_performance_stats_async(),
             }
             
             # 计算查询响应时间
@@ -194,6 +197,18 @@ class DatabaseMonitor:
             logger.exception("详细错误:")
             return None
     
+    def get_real_time_stats(self, use_cache: bool = True) -> Optional[Dict[str, Any]]:
+        """
+        获取实时统计数据（同步wrapper）
+        
+        Args:
+            use_cache: 是否使用缓存（默认True）
+            
+        Returns:
+            统计数据字典，失败返回None
+        """
+        return asyncio.run(self.get_real_time_stats_async(use_cache))
+    
     def _is_cache_valid(self) -> bool:
         """检查缓存是否有效"""
         if not self._cache_timestamp or not self._stats_cache:
@@ -202,8 +217,8 @@ class DatabaseMonitor:
         age = (datetime.utcnow() - self._cache_timestamp).total_seconds()
         return age < self._cache_ttl
     
-    def _get_trades_stats(self) -> Dict[str, Any]:
-        """获取交易记录统计"""
+    async def _get_trades_stats_async(self) -> Dict[str, Any]:
+        """获取交易记录统计（异步版本）"""
         try:
             query = """
                 SELECT
@@ -217,22 +232,22 @@ class DatabaseMonitor:
                 FROM trades;
             """
             
-            result = self.db_manager.execute_query(query, fetch=True)
+            result = await self.db_manager.fetch(query)
             
             if result and len(result) > 0:
                 row = result[0]
-                total = row[0] or 0
-                closed = row[2] or 0
-                winning = row[3] or 0
+                total = row['total_trades'] or 0
+                closed = row['closed_trades'] or 0
+                winning = row['winning_trades'] or 0
                 
                 return {
                     'total_trades': total,
-                    'open_positions': row[1] or 0,
+                    'open_positions': row['open_positions'] or 0,
                     'closed_trades': closed,
                     'winning_trades': winning,
-                    'today_trades': row[4] or 0,
-                    'avg_pnl_pct': float(row[5]) if row[5] else 0.0,
-                    'total_pnl': float(row[6]) if row[6] else 0.0,
+                    'today_trades': row['today_trades'] or 0,
+                    'avg_pnl_pct': float(row['avg_pnl_pct']) if row['avg_pnl_pct'] else 0.0,
+                    'total_pnl': float(row['total_pnl']) if row['total_pnl'] else 0.0,
                     'win_rate': round(winning / closed * 100, 1) if closed > 0 else 0.0
                 }
             
@@ -242,8 +257,12 @@ class DatabaseMonitor:
             logger.error(f"❌ 获取交易统计失败: {e}")
             return self._empty_trades_stats()
     
-    def _get_ml_models_stats(self) -> Dict[str, Any]:
-        """获取ML模型统计"""
+    def _get_trades_stats(self) -> Dict[str, Any]:
+        """获取交易记录统计（同步wrapper）"""
+        return asyncio.run(self._get_trades_stats_async())
+    
+    async def _get_ml_models_stats_async(self) -> Dict[str, Any]:
+        """获取ML模型统计（异步版本）"""
         try:
             query = """
                 SELECT
@@ -254,15 +273,15 @@ class DatabaseMonitor:
                 FROM ml_models;
             """
             
-            result = self.db_manager.execute_query(query, fetch=True)
+            result = await self.db_manager.fetch(query)
             
             if result and len(result) > 0:
                 row = result[0]
                 return {
-                    'total_models': row[0] or 0,
-                    'active_models': row[1] or 0,
-                    'latest_version': row[2] or 0,
-                    'avg_accuracy': float(row[3]) if row[3] else 0.0
+                    'total_models': row['total_models'] or 0,
+                    'active_models': row['active_models'] or 0,
+                    'latest_version': row['latest_version'] or 0,
+                    'avg_accuracy': float(row['avg_accuracy']) if row['avg_accuracy'] else 0.0
                 }
             
             return self._empty_ml_models_stats()
@@ -271,8 +290,12 @@ class DatabaseMonitor:
             logger.error(f"❌ 获取ML模型统计失败: {e}")
             return self._empty_ml_models_stats()
     
-    def _get_market_data_stats(self) -> Dict[str, Any]:
-        """获取市场数据统计"""
+    def _get_ml_models_stats(self) -> Dict[str, Any]:
+        """获取ML模型统计（同步wrapper）"""
+        return asyncio.run(self._get_ml_models_stats_async())
+    
+    async def _get_market_data_stats_async(self) -> Dict[str, Any]:
+        """获取市场数据统计（异步版本）"""
         try:
             query = """
                 SELECT
@@ -283,15 +306,15 @@ class DatabaseMonitor:
                 FROM market_data;
             """
             
-            result = self.db_manager.execute_query(query, fetch=True)
+            result = await self.db_manager.fetch(query)
             
             if result and len(result) > 0:
                 row = result[0]
                 return {
-                    'total_records': row[0] or 0,
-                    'today_records': row[1] or 0,
-                    'unique_symbols': row[2] or 0,
-                    'unique_timeframes': row[3] or 0
+                    'total_records': row['total_records'] or 0,
+                    'today_records': row['today_records'] or 0,
+                    'unique_symbols': row['unique_symbols'] or 0,
+                    'unique_timeframes': row['unique_timeframes'] or 0
                 }
             
             return self._empty_market_data_stats()
@@ -300,8 +323,12 @@ class DatabaseMonitor:
             logger.error(f"❌ 获取市场数据统计失败: {e}")
             return self._empty_market_data_stats()
     
-    def _get_trading_signals_stats(self) -> Dict[str, Any]:
-        """获取交易信号统计"""
+    def _get_market_data_stats(self) -> Dict[str, Any]:
+        """获取市场数据统计（同步wrapper）"""
+        return asyncio.run(self._get_market_data_stats_async())
+    
+    async def _get_trading_signals_stats_async(self) -> Dict[str, Any]:
+        """获取交易信号统计（异步版本）"""
         try:
             query = """
                 SELECT
@@ -312,15 +339,15 @@ class DatabaseMonitor:
                 FROM trading_signals;
             """
             
-            result = self.db_manager.execute_query(query, fetch=True)
+            result = await self.db_manager.fetch(query)
             
             if result and len(result) > 0:
                 row = result[0]
                 return {
-                    'total_signals': row[0] or 0,
-                    'pending_signals': row[1] or 0,
-                    'executed_signals': row[2] or 0,
-                    'today_signals': row[3] or 0
+                    'total_signals': row['total_signals'] or 0,
+                    'pending_signals': row['pending_signals'] or 0,
+                    'executed_signals': row['executed_signals'] or 0,
+                    'today_signals': row['today_signals'] or 0
                 }
             
             return self._empty_trading_signals_stats()
@@ -329,14 +356,18 @@ class DatabaseMonitor:
             logger.error(f"❌ 获取交易信号统计失败: {e}")
             return self._empty_trading_signals_stats()
     
-    def _get_performance_stats(self) -> Dict[str, Any]:
-        """获取性能统计"""
+    def _get_trading_signals_stats(self) -> Dict[str, Any]:
+        """获取交易信号统计（同步wrapper）"""
+        return asyncio.run(self._get_trading_signals_stats_async())
+    
+    async def _get_performance_stats_async(self) -> Dict[str, Any]:
+        """获取性能统计（异步版本）"""
         try:
             # 获取数据库连接池状态
             pool_status = self._get_pool_status()
             
             # 数据库健康检查
-            is_healthy = self.db_manager.check_health()
+            is_healthy = await self.db_manager.check_health()
             
             return {
                 'database_healthy': is_healthy,
@@ -356,11 +387,15 @@ class DatabaseMonitor:
                 'query_time_ms': 0
             }
     
+    def _get_performance_stats(self) -> Dict[str, Any]:
+        """获取性能统计（同步wrapper）"""
+        return asyncio.run(self._get_performance_stats_async())
+    
     def _get_pool_status(self) -> Dict[str, Any]:
         """获取连接池状态"""
         try:
-            if hasattr(self.db_manager, 'connection_pool') and self.db_manager.connection_pool:
-                # psycopg2 连接池没有直接的状态API，返回配置值
+            # asyncpg连接池状态
+            if hasattr(self.db_manager, 'pool') and self.db_manager.pool:
                 return {
                     'connections': self.db_manager.min_connections,
                     'max_connections': self.db_manager.max_connections

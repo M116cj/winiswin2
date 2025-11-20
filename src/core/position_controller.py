@@ -692,7 +692,7 @@ class PositionController:
                             'order_id': result.get('orderId')
                         }
                         
-                        self.trade_recorder.record_exit(trade_result)
+                        await self.trade_recorder.record_exit(trade_result)
                         logger.info(
                             f"📝 全倉保護平倉已記錄: {symbol} {side} {quantity} @ "
                             f"{position['current_price']} | 虧損${position['pnl']:.2f}"
@@ -936,7 +936,7 @@ class PositionController:
                             'order_id': result.get('orderId')
                         }
                         
-                        self.trade_recorder.record_exit(trade_result)
+                        await self.trade_recorder.record_exit(trade_result)
                         logger.info(
                             f"📝 時間止損平倉已記錄: {symbol} {side} {quantity} | "
                             f"持倉{holding_hours:.2f}h | 虧損${position['pnl']:.2f}"
@@ -1095,7 +1095,7 @@ class PositionController:
                     }
                     
                     logger.info(f"🔍 [DIAG] 調用record_exit: trade_result={trade_result}")
-                    self.trade_recorder.record_exit(trade_result)
+                    await self.trade_recorder.record_exit(trade_result)
                     logger.info(f"📝 已記錄平倉: {symbol} | PnL: {position.get('pnl', 0):+.2f} USDT ({position.get('pnl_pct', 0):+.2%})")
                 except Exception as e:
                     logger.error(f"❌ 記錄平倉數據失敗: {e}", exc_info=True)

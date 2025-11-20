@@ -1,21 +1,23 @@
 """
 Database Initializer - 数据表结构初始化
 创建所有必要的数据表、索引和约束
+
+Phase 3: 迁移到AsyncDatabaseManager (asyncpg)
 """
 
 import logging
 from typing import Optional
-from .manager import DatabaseManager
+from .async_manager import AsyncDatabaseManager
 
 logger = logging.getLogger(__name__)
 
 
-def initialize_database(db_manager: DatabaseManager) -> bool:
+async def initialize_database(db_manager: AsyncDatabaseManager) -> bool:
     """
     初始化所有数据表
     
     Args:
-        db_manager: 数据库管理器实例
+        db_manager: 异步数据库管理器实例
         
     Returns:
         True if successful, False otherwise
@@ -25,11 +27,11 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
         
         # 创建所有表
         success = True
-        success &= _create_trades_table(db_manager)
-        success &= _create_ml_models_table(db_manager)
-        success &= _create_market_data_table(db_manager)
-        success &= _create_trading_signals_table(db_manager)
-        success &= _create_position_entry_times_table(db_manager)
+        success &= await _create_trades_table(db_manager)
+        success &= await _create_ml_models_table(db_manager)
+        success &= await _create_market_data_table(db_manager)
+        success &= await _create_trading_signals_table(db_manager)
+        success &= await _create_position_entry_times_table(db_manager)
         
         if success:
             logger.debug("✅ 数据库表结构初始化完成")
@@ -44,7 +46,7 @@ def initialize_database(db_manager: DatabaseManager) -> bool:
         return False
 
 
-def _create_trades_table(db_manager: DatabaseManager) -> bool:
+async def _create_trades_table(db_manager: AsyncDatabaseManager) -> bool:
     """创建交易记录表"""
     try:
         logger.debug("创建 trades 表...")
@@ -145,7 +147,7 @@ def _create_trades_table(db_manager: DatabaseManager) -> bool:
         );
         """
         
-        db_manager.execute_query(create_table_sql, fetch=False)
+        await db_manager.execute(create_table_sql)
         
         # 创建索引
         indices = [
@@ -159,7 +161,7 @@ def _create_trades_table(db_manager: DatabaseManager) -> bool:
         ]
         
         for index_sql in indices:
-            db_manager.execute_query(index_sql, fetch=False)
+            await db_manager.execute(index_sql)
         
         logger.info("✅ trades 表创建成功")
         return True
@@ -169,7 +171,7 @@ def _create_trades_table(db_manager: DatabaseManager) -> bool:
         return False
 
 
-def _create_ml_models_table(db_manager: DatabaseManager) -> bool:
+async def _create_ml_models_table(db_manager: AsyncDatabaseManager) -> bool:
     """创建ML模型存储表"""
     try:
         logger.info("📝 创建 ml_models 表...")
@@ -213,7 +215,7 @@ def _create_ml_models_table(db_manager: DatabaseManager) -> bool:
         );
         """
         
-        db_manager.execute_query(create_table_sql, fetch=False)
+        await db_manager.execute(create_table_sql)
         
         # 创建索引
         indices = [
@@ -223,7 +225,7 @@ def _create_ml_models_table(db_manager: DatabaseManager) -> bool:
         ]
         
         for index_sql in indices:
-            db_manager.execute_query(index_sql, fetch=False)
+            await db_manager.execute(index_sql)
         
         logger.info("✅ ml_models 表创建成功")
         return True
@@ -233,7 +235,7 @@ def _create_ml_models_table(db_manager: DatabaseManager) -> bool:
         return False
 
 
-def _create_market_data_table(db_manager: DatabaseManager) -> bool:
+async def _create_market_data_table(db_manager: AsyncDatabaseManager) -> bool:
     """创建市场数据表"""
     try:
         logger.info("📝 创建 market_data 表...")
@@ -276,7 +278,7 @@ def _create_market_data_table(db_manager: DatabaseManager) -> bool:
         );
         """
         
-        db_manager.execute_query(create_table_sql, fetch=False)
+        await db_manager.execute(create_table_sql)
         
         # 创建索引
         indices = [
@@ -286,7 +288,7 @@ def _create_market_data_table(db_manager: DatabaseManager) -> bool:
         ]
         
         for index_sql in indices:
-            db_manager.execute_query(index_sql, fetch=False)
+            await db_manager.execute(index_sql)
         
         logger.info("✅ market_data 表创建成功")
         return True
@@ -296,7 +298,7 @@ def _create_market_data_table(db_manager: DatabaseManager) -> bool:
         return False
 
 
-def _create_trading_signals_table(db_manager: DatabaseManager) -> bool:
+async def _create_trading_signals_table(db_manager: AsyncDatabaseManager) -> bool:
     """创建交易信号表"""
     try:
         logger.info("📝 创建 trading_signals 表...")
@@ -343,7 +345,7 @@ def _create_trading_signals_table(db_manager: DatabaseManager) -> bool:
         );
         """
         
-        db_manager.execute_query(create_table_sql, fetch=False)
+        await db_manager.execute(create_table_sql)
         
         # 创建索引
         indices = [
@@ -355,7 +357,7 @@ def _create_trading_signals_table(db_manager: DatabaseManager) -> bool:
         ]
         
         for index_sql in indices:
-            db_manager.execute_query(index_sql, fetch=False)
+            await db_manager.execute(index_sql)
         
         logger.info("✅ trading_signals 表创建成功")
         return True
@@ -365,7 +367,7 @@ def _create_trading_signals_table(db_manager: DatabaseManager) -> bool:
         return False
 
 
-def _create_position_entry_times_table(db_manager: DatabaseManager) -> bool:
+async def _create_position_entry_times_table(db_manager: AsyncDatabaseManager) -> bool:
     """
     创建持仓开仓时间表
     用于持久化持仓进入时间，防止系统重启后时间基础止损计时重置
@@ -381,11 +383,11 @@ def _create_position_entry_times_table(db_manager: DatabaseManager) -> bool:
         );
         """
         
-        db_manager.execute_query(create_table_sql, fetch=False)
+        await db_manager.execute(create_table_sql)
         
         # 创建索引
         index_sql = "CREATE INDEX IF NOT EXISTS idx_position_entry_times_entry_time ON position_entry_times(entry_time DESC);"
-        db_manager.execute_query(index_sql, fetch=False)
+        await db_manager.execute(index_sql)
         
         logger.info("✅ position_entry_times 表创建成功")
         return True

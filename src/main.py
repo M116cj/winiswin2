@@ -46,8 +46,8 @@ from src.core.model_initializer import ModelInitializer
 from src.utils.config_validator import validate_config
 from src.utils.smart_logger import create_smart_logger
 
-# 🔥 v4.0+ PostgreSQL数据库支持
-from src.database.manager import DatabaseManager
+# 🔥 v4.0+ PostgreSQL数据库支持（Phase 3: AsyncDatabaseManager迁移）
+from src.database.async_manager import AsyncDatabaseManager
 from src.database.service import TradingDataService
 from src.database.initializer import initialize_database
 
@@ -107,8 +107,8 @@ class SelfLearningTradingSystem:
         self.model_initializer: Optional[ModelInitializer] = None
         self.scheduler: Optional[UnifiedScheduler] = None
         
-        # 🔥 v4.0+ PostgreSQL数据库组件
-        self.db_manager: Optional[DatabaseManager] = None
+        # 🔥 v4.0+ PostgreSQL数据库组件（Phase 3: AsyncDatabaseManager）
+        self.db_manager: Optional[AsyncDatabaseManager] = None
         self.db_service: Optional[TradingDataService] = None
         
         # 其他组件
@@ -175,18 +175,20 @@ class SelfLearningTradingSystem:
                 return False  # Fail fast - 数据库不可用时立即终止
             
             try:
-                self.db_manager = DatabaseManager(
+                self.db_manager = AsyncDatabaseManager(
                     min_connections=2,
                     max_connections=10,
                     connection_timeout=30
                 )
-                logger.debug("✅ 数据库连接池已创建")
+                # 初始化异步连接池
+                await self.db_manager.initialize()
+                logger.debug("✅ 数据库连接池已创建并初始化")
             except Exception as e:
                 logger.error(f"❌ 数据库连接失败: {e}")
                 return False  # Fail fast - 数据库连接失败时立即终止
             
             # 初始化数据表
-            if not initialize_database(self.db_manager):
+            if not await initialize_database(self.db_manager):
                 logger.error("❌ 数据库表初始化失败")
                 return False  # Fail fast - 表初始化失败时立即终止
             
@@ -374,7 +376,7 @@ class SelfLearningTradingSystem:
             # 关闭数据库连接池
             if self.db_manager:
                 logger.info("🔒 关闭数据库连接池...")
-                self.db_manager.close_all_connections()
+                await self.db_manager.close()
                 logger.info("✅ 数据库连接已关闭")
             
             logger.info("✅ 系統已安全關閉")

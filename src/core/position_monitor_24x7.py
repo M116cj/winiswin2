@@ -706,7 +706,7 @@ class PositionMonitor24x7:
                         }
                         
                         logger.info(f"🔍 [DIAG] PositionMonitor24x7 - 調用record_exit: {symbol}")
-                        self.trade_recorder.record_exit(trade_result)
+                        await self.trade_recorder.record_exit(trade_result)
                         logger.info(f"📝 平倉已記錄: {symbol} {side} {quantity} @ {current_price} | {reason} | PnL: ${pnl:+.2f}")
                     except Exception as e:
                         logger.error(f"❌ 記錄平倉失敗: {e}", exc_info=True)

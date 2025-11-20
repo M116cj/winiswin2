@@ -133,7 +133,7 @@ class UnifiedTradeRecorder:
         logger.info(f"   🧪 特征引擎: {'启用' if self.feature_engine else '禁用'}")
         logger.info("=" * 70)
     
-    def record_entry(
+    async def record_entry(
         self,
         symbol: str,
         direction: str,
@@ -212,7 +212,7 @@ class UnifiedTradeRecorder:
             logger.debug(f"   ML特征数量: {len(ml_features)}")
             
             # 保存到PostgreSQL
-            trade_id = self.db_service.save_trade(trade_data)
+            trade_id = await self.db_service.save_trade(trade_data)
             
             if trade_id:
                 self.stats.total_entries += 1
@@ -238,7 +238,7 @@ class UnifiedTradeRecorder:
             logger.error(f"❌ 记录开仓失败: {e}", exc_info=True)
             return None
     
-    def record_exit(
+    async def record_exit(
         self,
         trade_id: int,
         exit_price: float,
@@ -270,7 +270,7 @@ class UnifiedTradeRecorder:
             # 🔥 v3.34+ 增强日志：追踪平仓更新
             logger.info(f"📝 UnifiedTradeRecorder 开始记录平仓: trade_id={trade_id}, PnL={pnl:.2f}")
             
-            success = self.db_service.update_trade_status(
+            success = await self.db_service.update_trade_status(
                 trade_id=trade_id,
                 status='CLOSED',
                 exit_price=exit_price,
@@ -450,18 +450,13 @@ class UnifiedTradeRecorder:
             交易数量
         """
         try:
-            loop = asyncio.get_event_loop()
-            count = await loop.run_in_executor(
-                None, 
-                self.db_service.get_trade_count, 
-                filter_type
-            )
+            count = await self.db_service.get_trade_count(filter_type)
             return count
         except Exception as e:
             logger.error(f"❌ 获取交易数量失败: {e}")
             return 0
     
-    def get_statistics(self) -> Dict[str, Any]:
+    async def get_statistics(self) -> Dict[str, Any]:
         """
         获取统计信息
         
@@ -469,7 +464,7 @@ class UnifiedTradeRecorder:
             完整的统计数据
         """
         try:
-            db_stats = self.db_service.get_statistics()
+            db_stats = await self.db_service.get_statistics()
         except Exception as e:
             logger.warning(f"⚠️ 获取数据库统计失败: {e}")
             db_stats = {}
@@ -489,7 +484,7 @@ class UnifiedTradeRecorder:
             'database_stats': db_stats
         }
     
-    def get_trades(
+    async def get_trades(
         self, 
         days: int = 30, 
         limit: int = 1000, 
@@ -524,7 +519,7 @@ class UnifiedTradeRecorder:
             )
             
             # 从 PostgreSQL 获取数据（时间过滤在SQL层面执行）
-            trades = self.db_service.get_trade_history(
+            trades = await self.db_service.get_trade_history(
                 symbol=symbol,
                 limit=limit, 
                 status=status,
@@ -564,7 +559,7 @@ class UnifiedTradeRecorder:
             logger.error(f"❌ 获取交易记录失败: {e}", exc_info=True)
             return []
     
-    def get_completed_trades(self, limit: int = 100) -> List[Dict]:
+    async def get_completed_trades(self, limit: int = 100) -> List[Dict]:
         """
         获取已完成的交易记录（用于兼容性）
         
@@ -575,7 +570,7 @@ class UnifiedTradeRecorder:
             交易记录列表
         """
         try:
-            trades = self.db_service.get_trade_history(limit=limit, status='CLOSED')
+            trades = await self.db_service.get_trade_history(limit=limit, status='CLOSED')
             return trades or []
         except Exception as e:
             logger.error(f"❌ 获取已完成交易失败: {e}")
@@ -583,8 +578,16 @@ class UnifiedTradeRecorder:
     
     @property
     def completed_trades(self) -> List[Dict]:
-        """兼容性属性：返回已完成的交易"""
-        return self.get_completed_trades()
+        """
+        兼容性属性：返回已完成的交易
+        
+        注意：此属性已弃用，因为它无法正确调用async方法。
+        请直接使用 await get_completed_trades() 代替。
+        """
+        logger.warning(
+            "⚠️ completed_trades属性已弃用，请使用 await get_completed_trades() 代替"
+        )
+        return []
     
     def __repr__(self) -> str:
         return (

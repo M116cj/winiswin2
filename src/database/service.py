@@ -8,8 +8,13 @@ import pickle
 import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-from psycopg2.extras import Json
-from .manager import DatabaseManager
+from .async_manager import AsyncDatabaseManager
+
+# Phase 3: asyncpg自动处理dict→JSON转换，无需psycopg2.extras.Json
+# 直接传递dict即可，asyncpg会自动转换为JSONB
+def Json(value):
+    """向后兼容包装器：asyncpg自动处理JSON，直接返回值"""
+    return value
 
 logger = logging.getLogger(__name__)
 
@@ -23,20 +28,22 @@ class TradingDataService:
     - ML模型管理
     - 市场数据存储
     - 交易信号管理
+    
+    注意：Phase 3迁移 - 现在使用AsyncDatabaseManager（向后兼容execute_query方法）
     """
     
-    def __init__(self, db_manager: DatabaseManager):
+    def __init__(self, db_manager: AsyncDatabaseManager):
         """
         初始化交易数据服务
         
         Args:
-            db_manager: 数据库管理器实例
+            db_manager: 异步数据库管理器实例（兼容execute_query接口）
         """
         self.db = db_manager
     
     # ==================== 交易记录操作 ====================
     
-    def save_trade(self, trade_data: Dict[str, Any]) -> Optional[int]:
+    async def save_trade(self, trade_data: Dict[str, Any]) -> Optional[int]:
         """
         保存交易记录
         
@@ -151,13 +158,20 @@ class TradingDataService:
             logger.info(f"💾 准备保存交易: {trade_data.get('symbol')} {trade_data.get('direction')}")
             logger.debug(f"   SQL: INSERT INTO trades ... RETURNING id")
             
-            result = self.db.execute_query(query, params, fetch=True)
+            result = await self.db.execute_query(query, params, fetch=True)
             
             # 🔥 v3.34+ 修复：检测 RETURNING 是否返回结果
             logger.debug(f"   execute_query 返回值类型: {type(result)}, 内容: {result}")
             
             if result and len(result) > 0:
-                trade_id = result[0]  # 🔥 修复：fetchone() 返回 tuple，不是 list of tuples
+                # Phase 3: asyncpg返回dict（不是tuple），提取'id'字段
+                if isinstance(result[0], dict):
+                    trade_id = result[0].get('id')
+                elif isinstance(result[0], tuple):
+                    trade_id = result[0][0]
+                else:
+                    trade_id = result[0]
+                
                 logger.info(f"✅ 交易记录已保存，PostgreSQL ID: {trade_id}")
                 return trade_id
             else:
@@ -170,7 +184,7 @@ class TradingDataService:
             logger.exception("详细错误:")
             return None
     
-    def get_trade_history(
+    async def get_trade_history(
         self,
         symbol: Optional[str] = None,
         limit: int = 100,
@@ -225,7 +239,7 @@ class TradingDataService:
             
             params.append(limit)
             
-            result = self.db.execute_query(query, tuple(params), fetch=True)
+            result = await self.db.execute_query(query, tuple(params), fetch=True)
             
             if result:
                 logger.info(f"✅ 获取到 {len(result)} 条交易记录")
@@ -237,7 +251,7 @@ class TradingDataService:
             logger.error(f"❌ 获取交易历史失败: {e}")
             return []
     
-    def update_trade_status(
+    async def update_trade_status(
         self,
         trade_id: int,
         status: str,
@@ -278,7 +292,7 @@ class TradingDataService:
             
             params = (status, exit_price, exit_timestamp, status, pnl, pnl_pct, pnl, pnl, reason, trade_id)
             
-            self.db.execute_query(query, params, fetch=False)
+            await self.db.execute_query(query, params, fetch=False)
             logger.info(f"✅ 交易 {trade_id} 状态已更新为 {status}")
             return True
             
@@ -288,7 +302,7 @@ class TradingDataService:
     
     # ==================== ML模型操作 ====================
     
-    def save_ml_model(
+    async def save_ml_model(
         self,
         model_name: str,
         model: Any,
@@ -320,12 +334,13 @@ class TradingDataService:
             # 如果未指定版本，获取最新版本号并+1
             if version is None:
                 version_query = """
-                    SELECT COALESCE(MAX(version), 0) + 1
+                    SELECT COALESCE(MAX(version), 0) + 1 AS next_version
                     FROM ml_models
                     WHERE model_name = %s;
                 """
-                result = self.db.execute_query(version_query, (model_name,), fetch=True)
-                version = result[0][0] if result else 1
+                result = await self.db.execute_query(version_query, (model_name,), fetch=True)
+                # Phase 3: asyncpg返回dict，使用dict索引代替tuple索引
+                version = result[0].get('next_version', 1) if result else 1
             
             query = """
                 INSERT INTO ml_models (
@@ -350,10 +365,11 @@ class TradingDataService:
                 parameters.get('description') if parameters else None
             )
             
-            result = self.db.execute_query(query, params, fetch=True)
+            result = await self.db.execute_query(query, params, fetch=True)
             
             if result and len(result) > 0:
-                model_id = result[0][0]
+                # Phase 3: asyncpg返回dict，使用dict索引（RETURNING id）
+                model_id = result[0].get('id')
                 
                 # 如果设置为活跃，停用其他同名模型
                 if is_active:
@@ -362,7 +378,7 @@ class TradingDataService:
                         SET is_active = FALSE
                         WHERE model_name = %s AND id != %s;
                     """
-                    self.db.execute_query(deactivate_query, (model_name, model_id), fetch=False)
+                    await self.db.execute_query(deactivate_query, (model_name, model_id), fetch=False)
                 
                 logger.info(f"✅ ML模型已保存: {model_name} v{version}, ID: {model_id}")
                 return model_id
@@ -374,7 +390,7 @@ class TradingDataService:
             logger.exception("详细错误:")
             return None
     
-    def load_ml_model(
+    async def load_ml_model(
         self,
         model_name: str,
         version: Optional[int] = None
@@ -405,10 +421,11 @@ class TradingDataService:
                 """
                 params = (model_name,)
             
-            result = self.db.execute_query(query, params, fetch=True)
+            result = await self.db.execute_query(query, params, fetch=True)
             
             if result and len(result) > 0:
-                model_data = result[0][0]
+                # Phase 3: asyncpg返回dict，使用dict索引（SELECT model_data）
+                model_data = result[0].get('model_data')
                 model = pickle.loads(bytes(model_data))
                 logger.info(f"✅ ML模型已加载: {model_name}")
                 return model
@@ -428,7 +445,7 @@ class TradingDataService:
         # 暂时返回原始数据
         return {"raw_data": row}
     
-    def get_trade_count(self, filter_type: str = 'all') -> int:
+    async def get_trade_count(self, filter_type: str = 'all') -> int:
         """
         获取交易数量
         
@@ -445,21 +462,22 @@ class TradingDataService:
         try:
             if filter_type == 'all':
                 query = "SELECT COUNT(*) FROM trades;"
-                params = None
+                params = ()
             elif filter_type == 'closed':
                 query = "SELECT COUNT(*) FROM trades WHERE status = 'CLOSED';"
-                params = None
+                params = ()
             elif filter_type == 'open':
                 query = "SELECT COUNT(*) FROM trades WHERE status = 'OPEN';"
-                params = None
+                params = ()
             else:
                 query = "SELECT COUNT(*) FROM trades WHERE symbol = %s;"
                 params = (filter_type,)
             
-            result = self.db.execute_query(query, params, fetch=True)
+            result = await self.db.execute_query(query, params, fetch=True)
             
             if result and len(result) > 0:
-                count = result[0][0] or 0
+                # Phase 3: asyncpg返回dict，使用dict索引（SELECT COUNT(*) AS count）
+                count = result[0].get('count', 0) or 0
                 return count
             
             return 0
@@ -468,7 +486,7 @@ class TradingDataService:
             logger.error(f"❌ 获取交易数量失败: {e}")
             return 0
     
-    def get_statistics(self) -> Dict:
+    async def get_statistics(self) -> Dict:
         """获取交易统计数据"""
         try:
             query = """
@@ -481,15 +499,16 @@ class TradingDataService:
                 FROM trades;
             """
             
-            result = self.db.execute_query(query, fetch=True)
+            result = await self.db.execute_query(query, fetch=True)
             
             if result:
+                # Phase 3: asyncpg返回dict，使用dict索引（按SQL别名）
                 stats = {
-                    'total_trades': result[0][0] or 0,
-                    'closed_trades': result[0][1] or 0,
-                    'winning_trades': result[0][2] or 0,
-                    'avg_pnl_pct': float(result[0][3]) if result[0][3] else 0.0,
-                    'total_pnl': float(result[0][4]) if result[0][4] else 0.0
+                    'total_trades': result[0].get('total_trades', 0) or 0,
+                    'closed_trades': result[0].get('closed_trades', 0) or 0,
+                    'winning_trades': result[0].get('winning_trades', 0) or 0,
+                    'avg_pnl_pct': float(result[0].get('avg_pnl_pct', 0)) if result[0].get('avg_pnl_pct') else 0.0,
+                    'total_pnl': float(result[0].get('total_pnl', 0)) if result[0].get('total_pnl') else 0.0
                 }
                 
                 if stats['closed_trades'] > 0:

@@ -12,8 +12,8 @@ python-dateutil==2.8.2
 # Async I/O
 aiofiles==23.2.1
 
-# Database (PostgreSQL)
-psycopg2-binary==2.9.11
+# Database (PostgreSQL) - Phase 3: Migrated to asyncpg
+asyncpg==0.30.0
 
 # System Monitoring
 psutil==5.9.6
@@ -53,16 +53,5 @@ scikit-learn==1.7.2
 # - For Railway deployment: only core dependencies needed
 # - Optional extras reduce deployment size by ~200MB
 # =============================================================================
-asyncpg
-aiofiles
-aiohttp
-asyncpg
-ccxt
-numpy
-pandas
-psutil
-psycopg2-binary
-python-dateutil
-scikit-learn
-websockets
-xgboost
+# Phase 3: Cleaned up duplicates and removed psycopg2-binary
+# All dependencies now listed above with pinned versions

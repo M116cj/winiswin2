@@ -204,7 +204,7 @@ class TradingService:
                 # ✨ 記錄模擬開倉到TradeRecorder（修復學習模式0/30問題）
                 if self.trade_recorder:
                     try:
-                        self.trade_recorder.record_entry(signal, simulated_trade)
+                        await self.trade_recorder.record_entry(signal, simulated_trade)
                         logger.info(f"📝 已記錄模擬開倉: {symbol} (學習模式)")
                     except Exception as e:
                         logger.error(f"記錄模擬開倉失敗: {e}")
@@ -309,7 +309,7 @@ class TradingService:
             # 記錄開倉到TradeRecorder（用於學習模式）
             if self.trade_recorder:
                 try:
-                    self.trade_recorder.record_entry(signal, trade_result)
+                    await self.trade_recorder.record_entry(signal, trade_result)
                     logger.debug(f"📝 已記錄開倉到TradeRecorder: {symbol}")
                 except Exception as e:
                     logger.error(f"記錄開倉失敗: {e}")
@@ -409,7 +409,7 @@ class TradingService:
             # 記錄平倉到TradeRecorder
             if self.trade_recorder:
                 try:
-                    self.trade_recorder.record_exit(close_result)
+                    await self.trade_recorder.record_exit(close_result)
                     logger.debug(f"📝 已記錄平倉到TradeRecorder: {symbol}")
                 except Exception as e:
                     logger.error(f"記錄平倉失敗: {e}")
