@@ -81,10 +81,9 @@ class UnifiedDataPipeline:
         self.client = binance_client
         self.ws_monitor = websocket_monitor
         
-        # 🔥 Phase 2优化: 禁用L2持久化缓存（节省250MB内存）
+        # 🔥 v4.0优化: 纯L1内存缓存（消除阻塞I/O）
         self.cache = cache or IntelligentCache(
-            l1_max_size=1000,    # 从5000降低到1000（实际需求）
-            enable_l2=False,     # ❌ 禁用L2持久化（60秒TTL无意义）
+            l1_max_size=1000     # L1内存缓存（1000条目）
         )
         
         # 统计

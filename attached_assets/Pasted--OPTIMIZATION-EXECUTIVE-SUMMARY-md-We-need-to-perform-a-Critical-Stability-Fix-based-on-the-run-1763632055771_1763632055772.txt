@@ -1,0 +1,41 @@
+@OPTIMIZATION_EXECUTIVE_SUMMARY.md
+
+We need to perform a **Critical Stability Fix** based on the runtime logs. The system is suffering from WebSocket timeouts, JSON corruption, and excessive log noise.
+
+Please execute the following 4-step repair plan:
+
+### 1. Fix WebSocket "Keepalive Timeout" (Anti-Blocking)
+The error `sent 1011 (internal error) keepalive ping timeout` indicates the event loop is blocked or the timeout is too strict for Railway's network.
+*   **Action**: Modify `src/core/websocket/optimized_base_feed.py` (and `kline_feed.py` / `price_feed.py` if applicable).
+*   **Changes**:
+    *   Increase `ping_interval` to `20` seconds (was likely default 20).
+    *   Increase `ping_timeout` to `30` seconds (give it more time to respond).
+    *   **Crucial**: Ensure the `on_message` processing is truly async. If there are heavy calculations, wrap them in `await loop.run_in_executor(None, ...)` to avoid blocking the heartbeat.
+
+### 2. Fix "Expecting value: line 1 column 1" (Corrupted JSON)
+The `model_initializer` is crashing when reading empty JSON files.
+*   **Action**: Update `src/core/model_initializer.py`.
+*   **Changes**:
+    *   Wrap the JSON reading logic (e.g., `json.load`) in a `try...except` block.
+    *   Catch `json.JSONDecodeError` and `FileNotFoundError`.
+    *   If caught, return a safe default value (e.g., `0` samples) instead of crashing/logging an error.
+    *   Implement a "Safe Write" method that writes to a `.tmp` file first, then renames it to the target file to prevent corruption during crashes.
+
+### 3. Silence the Scheduler Log Noise
+The logs are flooded with "Confidence 0.0% | Rejected".
+*   **Action**: Update `src/core/unified_scheduler.py`.
+*   **Changes**:
+    *   In the signal analysis loop, **change the log level** of the rejection messages.
+    *   **Logic**:
+        *   If `confidence > 0` or `win_rate > 0`: Keep logging as `INFO`.
+        *   If `confidence == 0` AND `win_rate == 0`: Change log level to `DEBUG` (so it doesn't show in standard production logs).
+    *   Remove the "Signal Analysis Diagnostics (Top 10)" table printing if all top 10 have 0 confidence.
+
+### 4. Fix "0.0ms Analysis Skip"
+This is a symptom of empty data caused by the WebSocket issues.
+*   **Action**: Update `src/core/unified_scheduler.py`.
+*   **Changes**:
+    *   Before calling the strategy, check if the data exists.
+    *   If `df is None` or `df.empty`, log a **single** warning "Waiting for market data..." and `continue` the loop, instead of running the full analysis pipeline and reporting "0.0ms execution".
+
+**Execute these fixes immediately.**
