@@ -1,0 +1,45 @@
+@PHASES_1_2_3_COMPLETE_SUMMARY.md
+
+**Great work on the Infrastructure.** The body of the bot is now solid.
+Now we must verify the **"Brain" (The ML Model)**.
+
+The user is deeply concerned about whether the model is actually *learning* and if the new PostgreSQL data pipeline is feeding it correctly.
+
+Please create and run a diagnostic script: `scripts/verify_model_health.py`.
+This script must perform a **"Pulse Check"** on the AI components:
+
+### 🧪 Test 1: The Data Pathway (Postgres -> Features)
+1.  Initialize the `DatabaseManager`.
+2.  Fetch the last 100 candles for `BTCUSDT` from PostgreSQL.
+3.  **CRITICAL**: Pass this data through the `FeatureEngineer` (or Technical Engine).
+    - Assert that the output DataFrame is NOT empty.
+    - Assert that key columns (RSI, MACD, or the new Order Flow features if implemented) contains valid floats, **NOT `NaN`**.
+
+### 🧠 Test 2: Model "Forward Pass" (Inference)
+1.  Load the active model (from `.pth` or init a new one if missing).
+2.  Feed the processed data from Test 1 into the model.
+3.  **Check Output**: Ensure the prediction (Confidence/Signal) is a valid number between 0 and 1 (or expected range), and strictly **NOT `NaN`**.
+
+### 🎓 Test 3: Model "Backward Pass" (Evolution Capability)
+*This is the most important test.*
+1.  Take a snapshot of the model's current weights (e.g., `w_before = model.fc1.weight.clone()`).
+2.  Run a **dummy training step**:
+    - Feed data -> Get Output.
+    - Calculate a dummy loss (e.g., against a fake target).
+    - Run `loss.backward()` and `optimizer.step()`.
+3.  Take a snapshot of weights after (`w_after`).
+4.  **Verification**:
+    - If `w_before == w_after`: **FAIL** (The model is frozen/dead).
+    - If `w_before != w_after`: **PASS** (The model is capable of learning).
+
+### 💾 Test 4: State Persistence
+1.  Check if `market_regime` info can be saved to and loaded from the DB (or the new safe JSON storage).
+
+**Output Requirement:**
+Print a clear report like:
+`[PASS] Data Pipeline (100 rows, 0 NaNs)`
+`[PASS] Inference (Output: 0.65)`
+`[PASS] Learning Capability (Weights updated: Yes)`
+`[PASS] State Persistence`
+
+**Execute this diagnostic script now.**
