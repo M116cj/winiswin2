@@ -156,10 +156,12 @@ class PositionSizer:
         stop_loss: float,
         leverage: float,
         symbol: str = "BTCUSDT",
-        verbose: bool = False
+        verbose: bool = False,
+        confidence: Optional[float] = None  # 🔥 v4.1+ Kelly Criterion支持
     ) -> tuple[float, float]:
         """
         計算倉位數量（同步版本）
+        v4.1+ 新增基於信心度的Kelly Criterion動態倉位調整
         
         Args:
             account_equity: 賬戶權益（USDT）
@@ -168,6 +170,7 @@ class PositionSizer:
             leverage: 槓桿倍數
             symbol: 交易對符號
             verbose: 是否輸出詳細計算過程
+            confidence: 模型信心度（0.0-1.0），啟用Kelly Criterion（可選）
             
         Returns:
             (position_size, adjusted_stop_loss)
@@ -181,7 +184,7 @@ class PositionSizer:
         
         return loop.run_until_complete(
             self.calculate_position_size_async(
-                account_equity, entry_price, stop_loss, leverage, symbol, verbose
+                account_equity, entry_price, stop_loss, leverage, symbol, verbose, confidence
             )
         )
     
@@ -192,10 +195,12 @@ class PositionSizer:
         stop_loss: float,
         leverage: float,
         symbol: str = "BTCUSDT",
-        verbose: bool = False
+        verbose: bool = False,
+        confidence: Optional[float] = None  # 🔥 v4.1+ Kelly Criterion支持
     ) -> tuple[float, float]:
         """
         計算倉位數量（異步版本）- v3.18+ 硬性上限50%帳戶權益
+        v4.1+ 新增基於信心度的Kelly Criterion動態倉位調整
         
         Args:
             account_equity: 賬戶權益（USDT）
@@ -204,6 +209,7 @@ class PositionSizer:
             leverage: 槓桿倍數（無上限，最小0.5x）
             symbol: 交易對符號
             verbose: 是否輸出詳細計算過程
+            confidence: 模型信心度（0.0-1.0），啟用Kelly Criterion（可選）
             
         Returns:
             (position_size, adjusted_stop_loss)
@@ -211,8 +217,38 @@ class PositionSizer:
         # 1. 調整止損距離（確保 ≥ 0.3%）
         adjusted_sl = self._adjust_stop_loss(entry_price, stop_loss)
         
-        # 2. 計算保證金和名義價值
-        margin = account_equity * self.config.equity_usage_ratio
+        # 2. 🔥 v4.1+ Kelly Criterion: 基於信心度動態調整權益使用率
+        equity_ratio = self.config.equity_usage_ratio  # 默認5%
+        kelly_multiplier = 1.0
+        
+        if confidence is not None:
+            # Kelly公式修正版（v4.1.1）:
+            # Multiplier = (Confidence - 0.5) * 4
+            # - ≤50% 信心度 → 0x（不開倉，保護資本）
+            # - 75% 信心度 → 1x（基準倉位，正常風險）
+            # - 100% 信心度 → 2x（雙倉，極高信心）
+            kelly_multiplier = (confidence - 0.5) * 4
+            
+            # 🔥 關鍵：≤50%信心度不開倉（無邊緣優勢）
+            if kelly_multiplier <= 0:
+                logger.info(f"⚠️ 信心度過低（{confidence:.1%} ≤ 50%），跳過開倉")
+                return 0, adjusted_sl
+            
+            # 應用Kelly調整
+            equity_ratio = equity_ratio * kelly_multiplier
+            
+            # 🔥 安全上限：最大10%權益（防止過度激進）
+            equity_ratio = min(equity_ratio, 0.10)
+            
+            if verbose:
+                logger.info(f"🎲 Kelly Criterion調整 (v4.1.1修正):")
+                logger.info(f"   信心度: {confidence:.1%}")
+                logger.info(f"   Kelly乘數: {kelly_multiplier:.2f}x")
+                logger.info(f"   權益使用率: {self.config.equity_usage_ratio:.1%} → {equity_ratio:.1%}")
+                logger.info(f"   預期倉位: {'正常' if 0.9 <= kelly_multiplier <= 1.1 else '調整' if kelly_multiplier < 0.9 else '增強'}")
+        
+        # 3. 計算保證金和名義價值
+        margin = account_equity * equity_ratio
         notional = leverage * margin
         
         # 🔥 v3.18+ 新增：強制50%帳戶權益硬性上限（唯一限制）

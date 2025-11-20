@@ -29,6 +29,7 @@ from dataclasses import dataclass
 
 from src.database.service import TradingDataService
 from src.ml.feature_engine import FeatureEngine
+from src.services.notification_service import NotificationService
 from src.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
@@ -116,6 +117,13 @@ class UnifiedTradeRecorder:
             logger.warning(f"⚠️ FeatureEngine初始化失败: {e}，将跳过特征收集")
             self.feature_engine = None
         
+        # 🔥 v4.1+ 通知服务（Discord/Telegram）
+        try:
+            self.notification_service = NotificationService()
+        except Exception as e:
+            logger.warning(f"⚠️ NotificationService初始化失败: {e}")
+            self.notification_service = None
+        
         # 统计信息
         self.stats = RecorderStats()
         
@@ -126,11 +134,15 @@ class UnifiedTradeRecorder:
         # 部分平倉記錄
         self.partial_exits: List[Dict] = []
         
+        # 交易缓存（用于平仓时获取入场信息）
+        self._entry_cache: Dict[int, Dict] = {}
+        
         logger.info("=" * 70)
-        logger.info("✅ UnifiedTradeRecorder v4.0 初始化完成")
+        logger.info("✅ UnifiedTradeRecorder v4.1+ 初始化完成")
         logger.info("   📊 数据源: PostgreSQL（唯一）")
         logger.info(f"   🔄 重训练间隔: {retrain_interval}笔交易")
         logger.info(f"   🧪 特征引擎: {'启用' if self.feature_engine else '禁用'}")
+        logger.info(f"   📢 通知服务: {'启用' if self.notification_service and self.notification_service.enabled else '禁用'}")
         logger.info("=" * 70)
     
     async def record_entry(
@@ -225,6 +237,31 @@ class UnifiedTradeRecorder:
                 )
                 logger.info(f"📊 统计: 成功={self.stats.db_saves_success}, 失败={self.stats.db_saves_failed}")
                 
+                # 🔥 v4.1+ 缓存入场信息（用于平仓通知）
+                self._entry_cache[trade_id] = {
+                    'symbol': symbol,
+                    'direction': direction,
+                    'entry_price': entry_price,
+                    'quantity': quantity,
+                    'leverage': leverage,
+                    'entry_time': datetime.utcnow()
+                }
+                
+                # 🔥 v4.1+ 发送开仓通知（Fire-and-Forget）
+                if self.notification_service and self.notification_service.enabled:
+                    asyncio.create_task(
+                        self.notification_service.send_trade_open(
+                            symbol=symbol,
+                            direction=direction,
+                            entry_price=entry_price,
+                            quantity=quantity,
+                            leverage=leverage,
+                            confidence=signal_data.get('confidence', 0.5),
+                            stop_loss=kwargs.get('stop_loss'),
+                            take_profit=kwargs.get('take_profit')
+                        )
+                    )
+                
                 return trade_id
             else:
                 self.stats.db_saves_failed += 1
@@ -292,6 +329,36 @@ class UnifiedTradeRecorder:
                     f"ID: {trade_id} | PnL: {pnl:.2f} USDT ({pnl_pct:+.2f}%) | "
                     f"原因: {reason}"
                 )
+                
+                # 🔥 v4.1+ 发送平仓通知（Fire-and-Forget）
+                if self.notification_service and self.notification_service.enabled:
+                    # 从缓存或数据库获取入场信息
+                    entry_info = self._entry_cache.get(trade_id)
+                    
+                    if entry_info:
+                        # 计算持仓时间
+                        holding_duration = datetime.utcnow() - entry_info['entry_time']
+                        hours = holding_duration.total_seconds() / 3600
+                        if hours < 1:
+                            holding_time = f"{holding_duration.total_seconds() / 60:.0f}分钟"
+                        else:
+                            holding_time = f"{hours:.1f}小时"
+                        
+                        asyncio.create_task(
+                            self.notification_service.send_trade_close(
+                                symbol=entry_info['symbol'],
+                                direction=entry_info['direction'],
+                                entry_price=entry_info['entry_price'],
+                                exit_price=exit_price,
+                                pnl=pnl,
+                                pnl_pct=pnl_pct,
+                                reason=reason,
+                                holding_time=holding_time
+                            )
+                        )
+                        
+                        # 清理缓存
+                        del self._entry_cache[trade_id]
                 
                 # 检查是否需要重训练
                 self._check_retrain()
