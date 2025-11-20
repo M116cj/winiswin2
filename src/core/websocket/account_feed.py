@@ -199,7 +199,7 @@ class AccountFeed(BaseFeed):
                 async with websockets.connect(
                     url, 
                     ping_interval=None,    # 禁用客户端ping（让服务器发送）
-                    ping_timeout=120,      # 120秒无服务器ping则断线
+                    ping_timeout=30,       # 🔥 Stability Fix: Railway network optimization
                     close_timeout=10,
                     max_size=2**20
                 ) as ws:  # type: ignore

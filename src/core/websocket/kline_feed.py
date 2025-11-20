@@ -90,7 +90,7 @@ class KlineFeed(OptimizedWebSocketFeed):
         super().__init__(
             name=f"KlineFeed-Shard{shard_id}",
             ping_interval=None,
-            ping_timeout=120,
+            ping_timeout=30,  # 🔥 Stability Fix: Railway network optimization
             max_reconnect_delay=300,
             health_check_interval=60
         )

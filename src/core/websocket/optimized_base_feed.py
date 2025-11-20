@@ -36,7 +36,7 @@ class OptimizedWebSocketFeed:
         self,
         name: str = "WebSocketFeed",
         ping_interval: Optional[int] = None,
-        ping_timeout: int = 120,
+        ping_timeout: int = 30,
         max_reconnect_delay: int = 300,
         health_check_interval: int = 60
     ):
@@ -46,7 +46,7 @@ class OptimizedWebSocketFeed:
         Args:
             name: Feed名称
             ping_interval: 心跳间隔（None=禁用客户端ping，让服务器发送）
-            ping_timeout: 心跳超时（秒，默认120）
+            ping_timeout: 心跳超时（秒，默认30秒 - Railway网络优化）
             max_reconnect_delay: 最大重连延迟（秒）
             health_check_interval: 健康检查间隔（秒）
         """

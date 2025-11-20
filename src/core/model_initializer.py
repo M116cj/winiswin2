@@ -770,31 +770,48 @@ class ModelInitializer:
             if not regime_file.exists():
                 return None
             
+            # 🔥 Stability Fix: Safe JSON read with corruption handling
             with open(regime_file, 'r') as f:
-                data = json.load(f)
+                content = f.read().strip()
+                if not content:
+                    logger.debug("市場狀態文件為空，返回None")
+                    return None
+                data = json.loads(content)
                 return data.get('regime')
                 
+        except json.JSONDecodeError as e:
+            logger.warning(f"⚠️ 市場狀態JSON損壞（已忽略）: {e}")
+            return None
+        except FileNotFoundError:
+            return None
         except Exception as e:
             logger.error(f"讀取市場狀態失敗: {e}")
             return None
     
     def _update_last_market_regime(self, regime: str):
         """
-        更新市場狀態記錄
+        更新市場狀態記錄（使用安全寫入防止損壞）
         
         Args:
             regime: 新的市場狀態
         """
         try:
             regime_file = self.model_dir / "market_regime.json"
+            tmp_file = self.model_dir / "market_regime.json.tmp"
             
             data = {
                 'regime': regime,
                 'updated_at': datetime.now().isoformat()
             }
             
-            with open(regime_file, 'w') as f:
+            # 🔥 Stability Fix: Safe write (tmp file + rename)
+            with open(tmp_file, 'w') as f:
                 json.dump(data, f, indent=2)
+                f.flush()  # Ensure data is written to disk
+                os.fsync(f.fileno())  # Force OS to write to disk
+            
+            # Atomic rename (prevents corruption during crashes)
+            tmp_file.rename(regime_file)
                 
         except Exception as e:
             logger.error(f"更新市場狀態失敗: {e}")
@@ -814,8 +831,13 @@ class ModelInitializer:
             if not self.flag_file.exists():
                 return 0
             
+            # 🔥 Stability Fix: Safe JSON read with corruption handling
             with open(self.flag_file, 'r') as f:
-                flag_data = json.load(f)
+                content = f.read().strip()
+                if not content:
+                    logger.debug("Flag文件為空，返回0樣本")
+                    return 0
+                flag_data = json.loads(content)
                 last_trained = datetime.fromisoformat(flag_data.get('initialized_at', '1970-01-01'))
             
             # 計算新交易數
@@ -827,6 +849,11 @@ class ModelInitializer:
             
             return len(new_trades)
             
+        except json.JSONDecodeError as e:
+            logger.warning(f"⚠️ Flag文件JSON損壞（已忽略，返回0）: {e}")
+            return 0
+        except FileNotFoundError:
+            return 0
         except Exception as e:
             logger.error(f"計算新樣本數失敗: {e}")
             return 0
