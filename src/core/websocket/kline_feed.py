@@ -295,13 +295,29 @@ class KlineFeed(OptimizedWebSocketFeed):
         不拋出異常，所有錯誤在內部處理。
         """
         try:
+            # 🐛 Chain Reaction Fix: Check for None/invalid messages
+            if not msg:
+                logger.debug(f"⚠️ {self.name} 收到空消息，跳過")
+                return
+            
             data = json.loads(msg)
             
+            # 🐛 Chain Reaction Fix: Defensive check for None after parsing
+            if data is None:
+                logger.debug(f"⚠️ {self.name} JSON解析結果為None（可能是心跳信號），跳過")
+                return
+            
+            # 🐛 Chain Reaction Fix: Type check before subscripting
+            if not isinstance(data, dict):
+                logger.warning(f"⚠️ {self.name} 消息格式非字典: {type(data)}")
+                return
+            
             # 合併流數據格式: {"stream": "btcusdt@kline_1m", "data": {...}}
-            if 'data' in data and data['data'].get('e') == 'kline':
-                self._update_kline(data['data']['k'])
+            if 'data' in data and data['data'] is not None and isinstance(data['data'], dict):
+                if data['data'].get('e') == 'kline':
+                    self._update_kline(data['data']['k'])
             else:
-                # 非K線消息，跳過
+                # 非K線消息或格式不正確，跳過
                 pass
         
         except json.JSONDecodeError as e:
@@ -310,8 +326,14 @@ class KlineFeed(OptimizedWebSocketFeed):
                 self.stats['json_errors'] = 0
             self.stats['json_errors'] += 1
         
+        except TypeError as e:
+            logger.warning(f"⚠️ {self.name} 消息格式錯誤（NoneType）: {e}")
+            if 'format_errors' not in self.stats:
+                self.stats['format_errors'] = 0
+            self.stats['format_errors'] += 1
+        
         except KeyError as e:
-            logger.warning(f"⚠️ {self.name} 消息格式錯誤，缺少字段: {e}")
+            logger.warning(f"⚠️ {self.name} 消息格式錯誤（缺少字段）: {e}")
             if 'format_errors' not in self.stats:
                 self.stats['format_errors'] = 0
             self.stats['format_errors'] += 1

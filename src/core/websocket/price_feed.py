@@ -196,17 +196,34 @@ class PriceFeed(BaseFeed):
                 except asyncio.TimeoutError:
                     continue
                 
+                # 🐛 Chain Reaction Fix: Check for None/invalid messages
+                if not msg:
+                    logger.debug(f"⚠️ {self.name} 收到空消息，跳過")
+                    continue
+                
                 try:
                     data = json.loads(msg)
                     
+                    # 🐛 Chain Reaction Fix: Defensive check for None after parsing
+                    if data is None:
+                        logger.debug(f"⚠️ {self.name} JSON解析結果為None（可能是心跳信號），跳過")
+                        continue
+                    
+                    # 🐛 Chain Reaction Fix: Type check before subscripting
+                    if not isinstance(data, dict):
+                        logger.warning(f"⚠️ {self.name} 消息格式非字典: {type(data)}")
+                        continue
+                    
                     # 合併流數據格式: {"stream": "btcusdt@bookTicker", "data": {...}}
-                    if 'data' in data:
+                    if 'data' in data and data['data'] is not None:
                         self._update_price(data['data'])
                 
                 except json.JSONDecodeError:
                     logger.warning(f"⚠️ {self.name} JSON解析失敗")
+                except TypeError as e:
+                    logger.warning(f"⚠️ {self.name} 消息格式錯誤（NoneType）: {e}")
                 except KeyError as e:
-                    logger.warning(f"⚠️ {self.name} 消息格式錯誤: {e}")
+                    logger.warning(f"⚠️ {self.name} 消息格式錯誤（缺少字段）: {e}")
                 except Exception as e:
                     logger.error(f"❌ {self.name} 背景處理異常: {e}")
             

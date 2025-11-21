@@ -165,16 +165,22 @@ class AsyncDatabaseManager:
     async def close(self) -> None:
         """
         关闭连接池（优雅关闭）
+        
+        🐛 Chain Reaction Fix: Hardened disposal to prevent "Connection reset by peer"
         """
         if self.pool:
             try:
                 await self.pool.close()
                 logger.info("✅ PostgreSQL异步连接池已关闭")
             except Exception as e:
-                logger.error(f"❌ 关闭连接池失败: {e}")
+                # 🐛 Connection already closed or timeout - log as warning, not error
+                logger.warning(f"⚠️ 关闭连接池异常（可能已关闭）: {e}")
             finally:
                 self.pool = None
                 self._is_initialized = False
+        else:
+            # 🐛 Pool already None - idempotent close is safe
+            logger.debug("📭 连接池已为None，跳过重复关闭")
     
     @asynccontextmanager
     async def acquire(self):

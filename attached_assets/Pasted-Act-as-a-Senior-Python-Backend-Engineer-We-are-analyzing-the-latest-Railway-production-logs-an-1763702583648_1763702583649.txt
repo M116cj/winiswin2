@@ -1,0 +1,31 @@
+Act as a **Senior Python Backend Engineer**.
+We are analyzing the latest Railway production logs and have identified a **Chain Reaction Failure**.
+
+**Raw Logs:**
+```text
+1. src.core.websocket.price_feed - WARNING - 🔄 PriceFeed-Shard7 重連中... (錯誤: 'NoneType' object is not subscriptable)
+2. src.core.unified_scheduler - ERROR - 🚨 嚴重問題: 平均分析時間僅0.0ms...
+3. postgres [2985] LOG: could not receive data from client: Connection reset by peer
+Root Cause Analysis:
+The Trigger: The TypeError: 'NoneType' object is not subscriptable in PriceFeed suggests that the code is trying to access data (e.g., msg['data'] or msg[0]) on a variable that is None.
+The Crash: This unhandled exception causes the WebSocket task to crash.
+The Ripple Effect:
+The WebSocket disconnects -> Data stops flowing.
+The Scheduler sees empty data -> Reports "0.0ms analysis time".
+The Python process might be restarting or closing sockets abruptly -> DB logs "Connection reset by peer".
+Please execute the following Fix Protocol:
+1. 🐛 Fix PriceFeed Logic Error (Priority Critical)
+File: src/core/websocket/price_feed.py (and check kline_feed.py for similar patterns).
+Locate: The on_message or process_message method.
+Diagnosis: The incoming message parsing logic assumes data is always valid. It likely receives a heartbeat signal, an error message, or a None payload and tries to subscript it.
+Fix:
+Add Defensive Coding: Check if data is None: return or if not isinstance(data, dict): return.
+Wrap the parsing logic in a try...except TypeError block to log the malformed message instead of crashing the loop.
+2. 🛡️ Harden Database Connection
+File: src/database/async_manager.py (or db_manager.py).
+Action: The "Connection reset by peer" indicates abrupt disconnects. Ensure the dispose() or close() method is robust and doesn't raise errors if the pool is already closed.
+3. 📊 Fix Scheduler "Zero Data" Spam
+File: src/core/unified_scheduler.py.
+Action: The "0.0ms" error is a symptom of empty data.
+Modify the check: If len(market_data) == 0, log a WARNING ("Waiting for PriceFeed recovery...") instead of an ERROR. This reduces log noise while the WebSocket reconnects.
+Execute these fixes now and explain exactly which line of code caused the 'NoneType' error.

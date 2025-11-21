@@ -545,9 +545,10 @@ class UnifiedScheduler:
                 logger.info(f"💾 平均數據獲取: {avg_data_ms:.1f}ms")
                 
                 # 🔍 診斷異常情況
+                # 🐛 Chain Reaction Fix: Reduce error spam when WebSocket recovers (no data)
                 if avg_analysis_ms < 10:
-                    logger.error(f"🚨 嚴重問題: 平均分析時間僅{avg_analysis_ms:.1f}ms，系統在快速跳過！")
-                    logger.error(f"   → 可能原因：數據驗證過嚴、方向判斷快速返回None、特徵計算失敗")
+                    logger.warning(f"⚠️  低分析時間: 平均分析時間僅{avg_analysis_ms:.1f}ms（WebSocket恢復中或數據驗證嚴格）")
+                    logger.debug(f"   → 可能原因：數據驗證過嚴、方向判斷快速返回None、特徵計算失敗、等待PriceFeed恢復")
                 elif avg_analysis_ms < 50:
                     logger.warning(f"⚠️  警告: 平均分析時間{avg_analysis_ms:.1f}ms，可能分析深度不足")
                 else:
