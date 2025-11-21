@@ -1,0 +1,41 @@
+Act as a **Principal Software Architect**.
+We have completed the infrastructure migration (PostgreSQL/Redis/AsyncIO), but the system still has **Runtime Errors** and **Technical Debt**.
+
+We need to execute a **"Clean & Harden"** protocol to fix the immediate crashes, remove dead code, and optimize execution speed.
+
+Please execute the following 4-step plan strictly:
+
+### 1. 🚑 Fix Immediate Runtime Crashes (High Priority)
+Based on the latest logs, fix these specific bugs preventing startup/shutdown:
+*   **Fix `SystemHealthMonitor`**: In `src/monitoring/health_check.py`, add a `stop(self)` method. It is being called by `LifecycleManager` but doesn't exist.
+    *   *Implementation*: It should set a flag `self._running = False` and log "Health Monitor stopped".
+*   **Fix DB Query Type Error**: In `src/database/service.py`, finding the query raising `invalid input syntax for type timestamp`.
+    *   *Fix*: Ensure that `start_time` and `end_time` arguments passed to `asyncpg` are Python `datetime` objects, NOT strings. Use `datetime.fromisoformat()` if necessary.
+
+### 2. 🧹 Dead Code & Import Cleanup (Tree Shaking)
+*   **Scan & Remove**:
+    *   Unused imports across the entire project (especially `sqlite3`, `json` where `orjson` is used).
+    *   Unused variables and "ghost" functions that are defined but never referenced.
+*   **Legacy Files**: Check for any remaining `.jsonl` handlers or `sqlite` references in `src/utils` or `src/managers` and delete them if they are obsolete.
+
+### 3. 🛡️ Type Safety & Logic Hardening
+*   **Type Hints**: Add Python Type Hints (`List`, `Dict`, `Optional`, `float`) to the **Critical Path** files:
+    *   `src/core/position_controller.py`
+    *   `src/strategies/self_learning_trader.py`
+*   **Performance Benefit**: This allows the interpreter and JIT (if used later) to optimize better, and prevents runtime type errors.
+
+### 4. ⚡ Database Index Injection (Performance)
+*   Create and run a script `scripts/optimize_db.py` to apply the following indices to PostgreSQL if they don't exist:
+    ```sql
+    CREATE INDEX IF NOT EXISTS idx_trades_symbol_time ON trades (symbol, entry_time DESC);
+    CREATE INDEX IF NOT EXISTS idx_trades_win_pnl ON trades (win, pnl);
+    CREATE INDEX IF NOT EXISTS idx_kline_lookup ON market_data (symbol, timestamp DESC);
+    ```
+
+**Summary of Tasks:**
+1. Fix `SystemHealthMonitor.stop()`.
+2. Fix DB Timestamp Type casting.
+3. Remove unused imports/dead code.
+4. Apply Database Indices.
+
+**Execute this plan now.**
