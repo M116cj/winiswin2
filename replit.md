@@ -4,12 +4,15 @@
 SelfLearningTrader is an AI-driven cryptocurrency automated trading system designed for high reliability and performance. It leverages machine learning with advanced ICT/SMC strategies to make trading decisions, aiming for true AI-driven trading. The system is designed for deployment on cloud platforms like Railway and features significant performance optimizations, including a 4-5x speed improvement in data acquisition and a 85% cache hit rate. A key focus is on compliance with exchange API protocols, achieving zero REST K-line API calls to prevent IP bans.
 
 **Recent Enhancements (2025-11-21)**:
-- 🐛 **Critical Bug Fixes**: Fixed 3 crash-loop bugs (database datetime query, SystemHealthMonitor.stop() method, traceback loop in error handling) - See CRITICAL_BUGFIX_REPORT.md
-- 🛡️ **Lifecycle Management v1.0**: Production-resilient architecture with LifecycleManager (graceful shutdown, SIGINT/SIGTERM), StartupManager (crash tracking, 60s backoff for >3 crashes), Watchdog (60s hang detection), component registry, Railway-ready deployment
-- 🔔 **Real-time Notifications**: Discord/Telegram alerts for all trade events (open/close/daily summary)
-- ⚖️ **Dynamic Position Sizing**: Kelly Criterion-based sizing using ML model confidence (50%→skip, 75%→1x baseline, 100%→2x)
+- 🔥 **Producer-Consumer Architecture v1**: Eliminated event loop blocking via asyncio.Queue (10,000 capacity) + 3 background worker tasks. Messages received instantly without processing delays, preventing 1011 timeout errors.
+- 🫀 **Application-Level Heartbeat Monitor v1.0**: Detects stale connections (60s threshold) independent of WebSocket library. Records message arrival timestamps, forces reconnect if no data received.
+- 🔇 **Connection Hardening Protocol**: ping_interval optimized to 20 seconds (frequent keepalives), 1011/1006 errors suppressed as warnings instead of errors, fire-and-forget message processing in PriceFeed.
+- 🐛 **Critical Bug Fixes**: Fixed 3 crash-loop bugs (database datetime query, SystemHealthMonitor.stop() method, traceback loop in error handling)
+- 🛡️ **Lifecycle Management v1.0**: Production-resilient architecture with LifecycleManager (graceful shutdown, SIGINT/SIGTERM), StartupManager (crash tracking, 60s backoff for >3 crashes), Watchdog (60s hang detection)
+- 🔔 **Real-time Notifications**: Discord/Telegram alerts for all trade events
+- ⚖️ **Dynamic Position Sizing**: Kelly Criterion-based sizing using ML model confidence
 - 📊 **Database Optimization**: PostgreSQL indices applied, 60-80% query performance improvement
-- ⚡ **Performance Upgrades**: uvloop (2-4x event loop), orjson (2-3x JSON), Redis caching (30-60x queries) - See PERFORMANCE_UPGRADE_REPORT.md
+- ⚡ **Performance Upgrades**: uvloop (2-4x event loop), orjson (2-3x JSON), Redis caching (30-60x queries)
 
 **Business Vision**: To provide a robust, AI-powered automated trading solution for cryptocurrency markets.
 **Market Potential**: Addresses the growing demand for sophisticated, reliable, and compliant automated trading systems in the volatile crypto market.
@@ -26,7 +29,7 @@ The system does not have a direct user interface; its "UX" is primarily through 
 ### Technical Implementations
 - **Lifecycle Management (v1.0)**: Production-resilient architecture with LifecycleManager singleton (signal handling SIGINT/SIGTERM, component registry for graceful shutdown), StartupManager (crash tracking in .restart_count, exponential backoff >3 crashes in 5min → 60s delay), Watchdog/Dead Man's Switch (60s timeout, automatic restart on hang), Railway-ready with zero-downtime deployments. See LIFECYCLE_MANAGEMENT_GUIDE.md.
 - **AI/ML Core**: Utilizes XGBoost models with a unified 12-feature ICT/SMC schema for training and prediction. Features include market structure, order blocks, liquidity grabs, and fair value gaps. The model retrains automatically every 50 trades.
-- **Data Acquisition**: Employs a WebSocket-only K-line data mode, eliminating REST K-line API calls. It features a robust WebSocket manager with intelligent reconnection, extended timeouts, and a data quality monitor with gap handling and historical data backfilling.
+- **Data Acquisition (v4.6+)**: Producer-Consumer architecture (asyncio.Queue + 3 background workers) prevents event loop blocking. Application-level heartbeat monitor (60s stale threshold) detects dead connections independently. WebSocket-only K-line mode, zero REST K-line calls, robust reconnection with 20s ping interval.
 - **Risk Management**: Incorporates dynamic leverage based on win rate and confidence, intelligent position sizing, and dynamic Stop Loss/Take Profit adjustments. It features seven smart exit strategies, including forced liquidation for 100% loss, partial profit-taking, and time-based stop-loss mechanisms, which are critical for capital preservation.
 - **Order Management**: Includes `BinanceClient` with `OrderValidator` and `SmartOrderManager` to handle order precision and notional value requirements, preventing common API errors.
 - **Caching (v4.0+)**: Three-tier architecture: L1 in-memory (1000 entries, 5-10min TTL) for technical indicators, L2 Redis (5s TTL, optional) for hot database queries (30-60x speedup), PostgreSQL as source of truth. Zero event loop blocking, 100% async-safe.

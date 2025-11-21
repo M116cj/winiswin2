@@ -5,7 +5,7 @@ Optimized WebSocket Feed v3.29+ - 优化心跳和重连机制
 
 import asyncio
 from src.utils.logger_factory import get_logger
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 import time
 
@@ -83,21 +83,30 @@ class OptimizedWebSocketFeed:
         self.heartbeat_task: Optional[asyncio.Task] = None
         self.health_check_task: Optional[asyncio.Task] = None
         
+        # 🔥 Producer-Consumer Architecture v1: Message Queue
+        self.message_queue: asyncio.Queue = asyncio.Queue(maxsize=10000)
+        self.queue_workers: List[asyncio.Task] = []
+        self.num_workers = 3  # 3 concurrent worker tasks
+        self.last_message_ts: float = 0
+        
         # 统计
         self.stats = {
             'total_messages': 0,
             'total_errors': 0,
             'total_reconnects': 0,
             'uptime_seconds': 0,
-            'avg_latency_ms': 0
+            'avg_latency_ms': 0,
+            'queue_size': 0,
+            'queue_processed': 0
         }
         
         logger.info("=" * 80)
-        logger.info(f"✅ {name} 初始化完成（v3.32 Binance规范版）")
+        logger.info(f"✅ {name} 初始化完成（v3.32 Binance规范版 + Producer-Consumer架构）")
         logger.info(f"   💓 Ping机制: 服务器ping（每20秒）+ 客户端自动pong")
         logger.info(f"   ⏱️  Ping超时: {ping_timeout}秒")
         logger.info(f"   🔄 指数退避: 1s → {max_reconnect_delay}s")
         logger.info(f"   🏥 健康检查: 每{health_check_interval}秒")
+        logger.info(f"   📨 消息队列: 最大{self.message_queue.maxsize}条 + {self.num_workers}个worker")
         logger.info("=" * 80)
     
     async def connect(self, url: str) -> bool:
@@ -154,6 +163,14 @@ class OptimizedWebSocketFeed:
                     self.heartbeat_task = asyncio.create_task(
                         self._heartbeat_monitor()
                     )
+                
+                # 🔥 Producer-Consumer v1: Start queue worker tasks
+                if not self.queue_workers or all(t.done() for t in self.queue_workers):
+                    self.queue_workers = [
+                        asyncio.create_task(self._process_queue_worker(i))
+                        for i in range(self.num_workers)
+                    ]
+                    logger.info(f"📨 {self.name}: 启动{self.num_workers}个消息处理器")
                 
                 return True
                 
@@ -282,6 +299,8 @@ class OptimizedWebSocketFeed:
         """
         接收WebSocket消息（带异常处理）
         
+        🔥 Producer-Consumer v1: 消息推入队列（不在此处理）
+        
         Returns:
             消息内容或None
         """
@@ -302,7 +321,15 @@ class OptimizedWebSocketFeed:
             )
             
             self.last_message_time = time.time()
+            self.last_message_ts = time.time()  # 🔥 Application-level heartbeat
             self.stats['total_messages'] += 1
+            
+            # 🔥 Producer-Consumer v1: Push to queue (non-blocking)
+            try:
+                self.message_queue.put_nowait(message)
+                self.stats['queue_size'] = self.message_queue.qsize()
+            except asyncio.QueueFull:
+                logger.warning(f"⚠️ {self.name}: 队列满，丢弃消息")
             
             return message
             
@@ -330,6 +357,48 @@ class OptimizedWebSocketFeed:
             self.stats['total_errors'] += 1
             return None
     
+    async def _process_queue_worker(self, worker_id: int) -> None:
+        """
+        🔥 Producer-Consumer v1: Background worker processing messages from queue
+        
+        This runs in a separate task and doesn't block the WebSocket receive loop.
+        Multiple workers process messages concurrently for maximum throughput.
+        """
+        logger.info(f"👷 {self.name} Worker-{worker_id}: 已启动")
+        
+        while self.running:
+            try:
+                try:
+                    # Wait for message with 15s timeout to prevent indefinite blocking
+                    msg = await asyncio.wait_for(self.message_queue.get(), timeout=15.0)
+                except asyncio.TimeoutError:
+                    continue
+                
+                try:
+                    # Process the message (override in subclass)
+                    await self.process_message(msg)
+                    self.stats['queue_processed'] += 1
+                except Exception as e:
+                    logger.error(f"❌ {self.name} Worker-{worker_id} 处理失败: {e}")
+                finally:
+                    self.message_queue.task_done()
+            
+            except asyncio.CancelledError:
+                logger.info(f"👷 {self.name} Worker-{worker_id}: 已停止")
+                break
+            except Exception as e:
+                logger.error(f"❌ {self.name} Worker-{worker_id} 异常: {e}")
+                await asyncio.sleep(1)
+    
+    async def process_message(self, msg: str) -> None:
+        """
+        🔥 Producer-Consumer v1: Override this in subclass to process messages
+        
+        This is called by background workers, not in the WebSocket receive loop.
+        """
+        # Default implementation - override in subclass
+        pass
+    
     async def shutdown(self) -> None:
         """优雅关闭"""
         logger.info(f"🔄 {self.name}: 开始关闭...")
@@ -344,11 +413,16 @@ class OptimizedWebSocketFeed:
         if self.health_check_task:
             self.health_check_task.cancel()
         
+        # 🔥 Producer-Consumer v1: Cancel all worker tasks
+        for worker_task in self.queue_workers:
+            if worker_task and not worker_task.done():
+                worker_task.cancel()
+        
         # 关闭连接
         if self.ws:
             await self.ws.close()
         
-        logger.info(f"✅ {self.name}: 已关闭")
+        logger.info(f"✅ {self.name}: 已关闭 (处理了{self.stats.get('queue_processed', 0)}条消息)")
     
     def get_stats(self) -> dict:
         """获取统计信息"""

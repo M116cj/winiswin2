@@ -28,6 +28,7 @@ except ImportError:
     ConnectionClosedError = Exception  # type: ignore
 
 from src.core.websocket.optimized_base_feed import OptimizedWebSocketFeed  # v3.29+
+from src.core.websocket.heartbeat_monitor import ApplicationLevelHeartbeatMonitor  # 🔥 v1.0
 from src.core.concurrent_dict_manager import ConcurrentDictManager
 
 logger = get_logger(__name__)
@@ -114,6 +115,14 @@ class KlineFeed(OptimizedWebSocketFeed):
             max_size=1000  # 最多緩存1000個交易對
         )
         
+        # 🔥 Application-Level Heartbeat Monitor v1.0
+        self.heartbeat_monitor = ApplicationLevelHeartbeatMonitor(
+            name=f"KlineHeartbeat-Shard{shard_id}",
+            check_interval=10,  # 每10秒检查一次
+            stale_threshold=60,  # 60秒无数据则强制重连
+            on_stale_connection=self._on_stale_connection
+        )
+        
         self.ws_task: Optional[asyncio.Task] = None
         
         logger.info("=" * 80)
@@ -157,7 +166,10 @@ class KlineFeed(OptimizedWebSocketFeed):
         # 啟動健康檢查（父類功能）
         await self.start_health_check()
         
-        logger.info(f"✅ {self.name} 已啟動（職責分離架構）")
+        # 🔥 Start application-level heartbeat monitor
+        await self.heartbeat_monitor.start()
+        
+        logger.info(f"✅ {self.name} 已啟動（Producer-Consumer + AppLevel Heartbeat）")
     
     def _build_url(self) -> str:
         """
@@ -250,6 +262,28 @@ class KlineFeed(OptimizedWebSocketFeed):
                 await asyncio.sleep(1)
         
         logger.info(f"✅ {self.name} 消息處理循環已停止")
+    
+    async def _on_stale_connection(self) -> None:
+        """
+        🔥 Callback when application-level heartbeat detects stale connection
+        Force reconnect by closing WebSocket
+        """
+        logger.warning(f"🔴 {self.name} 应用层心跳：检测到死连接，强制重连...")
+        self.connected = False
+        if self.ws:
+            try:
+                await self.ws.close()
+            except Exception as e:
+                logger.warning(f"⚠️ {self.name} 关闭WebSocket失败: {e}")
+    
+    async def process_message(self, msg: str) -> None:
+        """
+        🔥 Producer-Consumer v1: Background worker processes K-line messages
+        Override parent class method
+        """
+        self._process_message(msg)
+        # 🔥 Record message receipt for application-level heartbeat
+        self.heartbeat_monitor.record_message()
     
     def _process_message(self, msg: str):
         """
