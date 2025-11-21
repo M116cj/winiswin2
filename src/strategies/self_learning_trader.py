@@ -419,7 +419,7 @@ class SelfLearningTrader:
         base_sl_pct: float,
         leverage: float,
         verbose: bool = False
-    ) -> tuple:
+    ) -> tuple[float, float]:
         """
         動態調整 SL/TP（高槓桿 → 寬止損）
         

@@ -115,7 +115,7 @@ class PositionController:
             logger.info("   ⏰ 時間止損: 停用")
         logger.info("=" * 80)
     
-    async def start_monitoring(self):
+    async def start_monitoring(self) -> None:
         """啟動 24/7 倉位監控（整合 PositionMonitor24x7，共享API調用）"""
         self.is_running = True
         logger.info("🚀 PositionController 24/7 監控已啟動（整合進場失效+逆勢檢測）")
@@ -136,7 +136,7 @@ class PositionController:
                 logger.error(f"❌ 監控週期失敗: {e}", exc_info=True)
                 await asyncio.sleep(self.monitor_interval)
     
-    async def stop_monitoring(self):
+    async def stop_monitoring(self) -> None:
         """停止監控"""
         self.is_running = False
         
@@ -234,7 +234,7 @@ class PositionController:
         except Exception as e:
             logger.error(f"❌ 恢復持倉時間失敗: {e}", exc_info=True)
     
-    async def _persist_entry_time(self, symbol: str, entry_time: float):
+    async def _persist_entry_time(self, symbol: str, entry_time: float) -> None:
         """
         🔥 v4.4.1 P1：持久化持倉開倉時間到數據庫
         
@@ -261,7 +261,7 @@ class PositionController:
         except Exception as e:
             logger.error(f"❌ 持久化持倉時間失敗 ({symbol}): {e}")
     
-    async def _delete_entry_time(self, symbol: str):
+    async def _delete_entry_time(self, symbol: str) -> None:
         """
         🔥 v4.4.1 P1：從數據庫刪除持倉開倉時間（平倉後清理）
         
@@ -282,7 +282,7 @@ class PositionController:
         except Exception as e:
             logger.error(f"❌ 刪除持倉時間失敗 ({symbol}): {e}")
     
-    async def _monitoring_cycle(self):
+    async def _monitoring_cycle(self) -> None:
         """單次監控週期（整合PositionMonitor24x7檢測，共享API調用）"""
         try:
             self.stats['total_checks'] += 1
@@ -970,7 +970,7 @@ class PositionController:
         position_id: str,
         decision: str,
         positions: List[Dict]
-    ):
+    ) -> None:
         """
         執行決策
         
