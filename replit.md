@@ -3,7 +3,8 @@
 ## Overview
 SelfLearningTrader is an AI-driven cryptocurrency automated trading system designed for high reliability and performance. It leverages machine learning with advanced ICT/SMC strategies to make trading decisions, aiming for true AI-driven trading. The system is designed for deployment on cloud platforms like Railway and features significant performance optimizations, including a 4-5x speed improvement in data acquisition and a 85% cache hit rate. A key focus is on compliance with exchange API protocols, achieving zero REST K-line API calls to prevent IP bans.
 
-**Recent Enhancements (2025-11-20)**:
+**Recent Enhancements (2025-11-21)**:
+- 🐛 **Critical Bug Fixes**: Fixed 3 crash-loop bugs (database datetime query, SystemHealthMonitor.stop() method, traceback loop in error handling) - See CRITICAL_BUGFIX_REPORT.md
 - 🛡️ **Lifecycle Management v1.0**: Production-resilient architecture with LifecycleManager (graceful shutdown, SIGINT/SIGTERM), StartupManager (crash tracking, 60s backoff for >3 crashes), Watchdog (60s hang detection), component registry, Railway-ready deployment
 - 🔔 **Real-time Notifications**: Discord/Telegram alerts for all trade events (open/close/daily summary)
 - ⚖️ **Dynamic Position Sizing**: Kelly Criterion-based sizing using ML model confidence (50%→skip, 75%→1x baseline, 100%→2x)
@@ -54,6 +55,12 @@ The system does not have a direct user interface; its "UX" is primarily through 
 - **Performance**: 60-80% query time reduction (150ms→30-60ms)
 - **System Health**: Improved from 78.9 (B) to 86.9 (A-)
 - **Applied via**: `scripts/apply_db_indices.py`
+
+#### Critical Bug Fixes (2025-11-21)
+- **Database Query Type Error**: Fixed asyncpg datetime parameter handling in `get_trade_history()` - now passes datetime objects directly instead of ISO strings
+- **SystemHealthMonitor.stop() Method**: Added alias method for lifecycle manager compatibility to prevent AttributeError during graceful shutdown
+- **Error Handling Traceback Loop**: Cleaned duplicate exception logging in StartupManager - lifecycle manager logs full traceback once, startup manager logs clean summary
+- **Status**: All 3 P0/P1 bugs fixed and verified via Railway logs, system ready for production deployment
 
 ### Legacy Feature Specifications
 - **Position Holding Time Persistence**: Stores and retrieves position entry times from PostgreSQL to ensure accurate time-based stop-loss even after system restarts.

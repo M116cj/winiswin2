@@ -120,6 +120,10 @@ class SystemHealthMonitor:
             self.monitoring_task.cancel()
         logger.info("🏥 健康监控已停止")
     
+    async def stop(self) -> None:
+        """停止健康监控 (别名方法，用于lifecycle manager兼容)"""
+        await self.stop_monitoring()
+    
     async def _monitoring_loop(self) -> None:
         """监控主循环"""
         while self.running:

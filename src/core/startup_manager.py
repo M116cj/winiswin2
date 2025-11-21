@@ -227,8 +227,9 @@ class StartupManager:
             return 0
             
         except Exception as e:
-            logger.error(f"❌ 启动失败: {e}")
-            logger.exception("详细错误:")
+            # 🔧 FIX: Don't log full traceback here (lifecycle_manager already did)
+            # Just log a clean error message to avoid traceback loops
+            logger.error(f"❌ 启动失败: {type(e).__name__}: {e}")
             
             # 🔧 FIX: Record crash before returning error code
             await self.record_crash()

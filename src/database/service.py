@@ -231,13 +231,14 @@ class TradingDataService:
                 params.append(status)
             
             # 时间范围过滤（在SQL层面执行）
+            # 🔧 FIX: Pass datetime objects directly to asyncpg (not ISO strings)
             if start_time:
                 conditions.append("entry_timestamp >= %s")
-                params.append(start_time.isoformat() + 'Z')
+                params.append(start_time)
             
             if end_time:
                 conditions.append("entry_timestamp <= %s")
-                params.append(end_time.isoformat() + 'Z')
+                params.append(end_time)
             
             where_clause = ""
             if conditions:
