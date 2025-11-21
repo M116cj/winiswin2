@@ -17,8 +17,11 @@ import time
 
 try:
     import websockets  # type: ignore
+    from websockets.exceptions import ConnectionClosedError, ConnectionClosed  # type: ignore
 except ImportError:
     websockets = None  # type: ignore
+    ConnectionClosedError = Exception  # type: ignore
+    ConnectionClosed = Exception  # type: ignore
 
 from src.core.websocket.base_feed import BaseFeed
 
@@ -70,10 +73,15 @@ class PriceFeed(BaseFeed):
         self.price_cache: Dict[str, Dict] = {}  # {symbol: price_data}
         self.ws_task: Optional[asyncio.Task] = None
         
+        # 🔥 Connection Hardening v1: Fire-and-forget queue for message processing
+        self.message_queue: asyncio.Queue = asyncio.Queue(maxsize=1000)
+        self.processor_task: Optional[asyncio.Task] = None
+        
         logger.info("=" * 80)
         logger.info(f"✅ PriceFeed Shard{shard_id} 初始化完成")
         logger.info(f"   📊 監控幣種數量: {len(self.symbols)}")
         logger.info(f"   📡 數據源: bookTicker（即時買賣價）")
+        logger.info(f"   🔄 架構: Fire-and-Forget隊列 + 背景處理")
         logger.info("=" * 80)
     
     async def start(self):
@@ -92,6 +100,9 @@ class PriceFeed(BaseFeed):
         # 啟動心跳監控
         await self._start_heartbeat_monitor()
         
+        # 🔥 Connection Hardening v1: Start background message processor
+        self.processor_task = asyncio.create_task(self._process_messages_background())
+        
         # 啟動WebSocket監聽
         self.ws_task = asyncio.create_task(self._listen_prices())
         
@@ -101,8 +112,9 @@ class PriceFeed(BaseFeed):
         """
         監聽bookTicker WebSocket流（合併訂閱）
         
-        使用合併流（Combined Streams）訂閱多個幣種：
-        wss://fstream.binance.com/stream?streams=btcusdt@bookTicker/ethusdt@bookTicker/...
+        使用合併流（Combined Streams）訂閱多個幣種。
+        🔥 Connection Hardening v1：消息推入隊列（fire-and-forget），不在此處理。
+        這保證WebSocket循環永遠不會被阻塞，心跳可以及時發送。
         """
         # 構建合併流URL
         streams = "/".join([f"{symbol}@bookTicker" for symbol in self.symbols])
@@ -112,10 +124,10 @@ class PriceFeed(BaseFeed):
         
         while self.running:
             try:
-                # v3.20.7 Railway環境優化：增加ping_timeout容忍網絡延遲
+                # 🔥 Connection Hardening v1: ping_interval=20秒（頻繁心跳防止1011）
                 async with websockets.connect(
                     url, 
-                    ping_interval=15,      # 每15秒發送ping
+                    ping_interval=20,      # 🔥 20秒發送ping（從15秒優化）
                     ping_timeout=60,       # 60秒等待pong回應（Railway環境網絡延遲優化）
                     close_timeout=10,      # 10秒關閉超時
                     max_size=2**20         # 1MB消息緩衝區
@@ -125,11 +137,17 @@ class PriceFeed(BaseFeed):
                     while self.running:
                         try:
                             msg = await asyncio.wait_for(ws.recv(), timeout=30)
-                            data = json.loads(msg)
                             
-                            # 合併流數據格式: {"stream": "btcusdt@bookTicker", "data": {...}}
-                            if 'data' in data:
-                                self._update_price(data['data'])
+                            # 🔥 Connection Hardening v1: 不在此處理，推入隊列
+                            try:
+                                self.message_queue.put_nowait(msg)
+                            except asyncio.QueueFull:
+                                logger.warning(f"⚠️ {self.name} 消息隊列滿，丟棄最舊消息")
+                                try:
+                                    self.message_queue.get_nowait()
+                                    self.message_queue.put_nowait(msg)
+                                except:
+                                    pass
                             
                             # 更新心跳
                             self._update_heartbeat()
@@ -141,6 +159,16 @@ class PriceFeed(BaseFeed):
                                 logger.warning(f"⚠️ {self.name} ping失敗，重連中...")
                                 break
                         
+                        except (ConnectionClosedError, ConnectionClosed) as e:
+                            # 🔥 Connection Hardening v1: Suppress 1011/1006 errors
+                            error_code = getattr(e, 'rcvd_then_sent', (None, None))[1] if hasattr(e, 'rcvd_then_sent') else None
+                            if error_code in (1011, 1006):
+                                logger.warning(f"⚠️ {self.name} 連接不穩定 ({error_code})，重連中...")
+                            else:
+                                logger.error(f"❌ {self.name} 接收失敗: {e}")
+                            self.stats['errors'] += 1
+                            break
+                        
                         except Exception as e:
                             logger.error(f"❌ {self.name} 接收失敗: {e}")
                             self.stats['errors'] += 1
@@ -150,6 +178,44 @@ class PriceFeed(BaseFeed):
                 self.stats['reconnections'] += 1
                 logger.warning(f"🔄 {self.name} 重連中... (錯誤: {e})")
                 await asyncio.sleep(reconnect_delay)
+    
+    async def _process_messages_background(self):
+        """
+        🔥 Connection Hardening v1: Background message processor
+        
+        此方法在獨立的asyncio任務中運行，從隊列拉取消息並處理。
+        這確保WebSocket循環不被消息處理阻塞，心跳永遠不會超時。
+        """
+        logger.info(f"📨 {self.name} 背景消息處理器已啟動")
+        
+        while self.running:
+            try:
+                # 等待隊列中的消息（超時15秒防止卡住）
+                try:
+                    msg = await asyncio.wait_for(self.message_queue.get(), timeout=15.0)
+                except asyncio.TimeoutError:
+                    continue
+                
+                try:
+                    data = json.loads(msg)
+                    
+                    # 合併流數據格式: {"stream": "btcusdt@bookTicker", "data": {...}}
+                    if 'data' in data:
+                        self._update_price(data['data'])
+                
+                except json.JSONDecodeError:
+                    logger.warning(f"⚠️ {self.name} JSON解析失敗")
+                except KeyError as e:
+                    logger.warning(f"⚠️ {self.name} 消息格式錯誤: {e}")
+                except Exception as e:
+                    logger.error(f"❌ {self.name} 背景處理異常: {e}")
+            
+            except asyncio.CancelledError:
+                logger.info(f"✅ {self.name} 背景消息處理器已停止")
+                break
+            except Exception as e:
+                logger.error(f"❌ {self.name} 背景處理器異常: {e}")
+                await asyncio.sleep(1)
     
     def _update_price(self, data: dict):
         """

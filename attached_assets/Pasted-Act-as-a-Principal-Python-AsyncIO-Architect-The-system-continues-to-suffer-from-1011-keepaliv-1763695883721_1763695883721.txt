@@ -1,0 +1,37 @@
+Act as a **Principal Python AsyncIO Architect**.
+The system continues to suffer from `1011 keepalive ping timeout` errors despite previous timeout adjustments.
+This confirms that the **Main Event Loop is getting blocked** by heavy message processing (DB writes, Feature calculations), causing the WebSocket client to miss heartbeats.
+
+We need to refactor the WebSocket architecture from a "Synchronous Processing" model to a **"Producer-Consumer Queue" model**.
+
+Please execute the following **3-Step Refactoring Plan**:
+
+### 1. 🏗️ Implement `MessageQueueManager` (The Buffer)
+*   **File**: Modify `src/core/websocket/optimized_base_feed.py`.
+*   **Action**:
+    *   Initialize an `asyncio.Queue(maxsize=10000)` in the class `__init__`.
+    *   **Crucial Change**: In the `_read_loop` (on_message), **DO NOT await the processing logic**.
+    *   Instead, simply `put_nowait()` the raw message into the queue. This operation is instant (O(1)) and guarantees the loop remains free to handle Pings/Pongs.
+
+### 2. ⚙️ Create Background Workers (The Consumers)
+*   **File**: `src/core/websocket/optimized_base_feed.py` (or specific feeds like `kline_feed.py`).
+*   **Action**:
+    *   Create a method `async def _process_queue_worker(self):`.
+    *   This worker runs in an infinite loop: `msg = await self.queue.get()`, then calls `self.process_message(msg)`, finally `self.queue.task_done()`.
+    *   **Concurrency**: Start **2-4 worker tasks** in `connect()` using `asyncio.create_task()`. This allows parallel processing of the backlog.
+
+### 3. 🩺 Implement "Application-Level" Heartbeat
+*   **File**: `src/core/websocket/heartbeat_monitor.py` (Create new).
+*   **Logic**:
+    *   Do not rely solely on the WebSocket library's ping.
+    *   Record `last_message_ts` every time a message enters the queue.
+    *   Run a background task every 10 seconds.
+    *   If `time.now() - last_message_ts > 60s`:
+        *   Log "🚨 No data received for 60s (Stale Connection)".
+        *   Forcefully call `self.ws.close()` to trigger the reconnection logic.
+
+### 4. 🧹 Verification
+*   Ensure that `uvloop` is active (check `main.py`).
+*   Ensure that `orjson` is used for parsing inside the Worker, not in the Receiver loop.
+
+**Execute this architecture refactor immediately.**

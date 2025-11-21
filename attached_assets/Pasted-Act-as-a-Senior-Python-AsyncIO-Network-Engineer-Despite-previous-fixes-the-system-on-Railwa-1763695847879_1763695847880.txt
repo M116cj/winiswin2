@@ -1,0 +1,41 @@
+Act as a **Senior Python AsyncIO Network Engineer**.
+
+Despite previous fixes, the system on Railway is still experiencing frequent WebSocket failures.
+**Error Logs:**
+- `ERROR - ❌ PriceFeed-Shard10 接收失敗: no close frame received or sent`
+- `ERROR - ❌ PriceFeed-Shard3 接收失敗: sent 1011 (internal error) keepalive ping timeout`
+
+**Root Cause Analysis:**
+The `1011 keepalive ping timeout` indicates that the **Async Event Loop is blocked** by heavy CPU operations (likely parsing large JSON messages or calculating indicators), preventing the WebSocket client from sending Pings in time. Additionally, Railway's network latency varies, triggering aggressive timeouts.
+
+Please execute the following **"Connection Hardening Protocol"** to fix this permanently:
+
+### 1. ⚡ Optimize Timeout Configuration (The "Golden Ratio")
+Modify `src/core/websocket/optimized_base_feed.py` (and ensure `price_feed.py` / `kline_feed.py` inherit or use these values).
+*   **`ping_interval`**: Set to **20** seconds (Send heartbeats frequently).
+*   **`ping_timeout`**: Set to **60** seconds (Give the server/network a LONG time to respond before killing the connection).
+*   **`close_timeout`**: Set to **10** seconds.
+*   **Rationale**: Railway networks can have jitter. We must be lenient with timeouts but aggressive with keepalives.
+
+### 2. 🛡️ Implement "Fire-and-Forget" Message Processing
+The `on_message` handler is likely blocking the heartbeat.
+*   **File**: `src/core/websocket/price_feed.py` (and `kline_feed.py`).
+*   **Action**:
+    *   Do **NOT** await the full processing of the message inside the websocket loop.
+    *   Instead, push the raw message into an `asyncio.Queue`.
+    *   Create a separate **Background Consumer Worker** task that pulls from this queue and processes the data.
+    *   **Benefit**: The WebSocket loop stays free to send Pings immediately, while the heavy lifting happens in the background worker.
+
+### 3. 🔇 Suppress "Expected" Error Logs
+The `1011` error, while annoying, initiates a retry. We don't need it to be a CRITICAL error spamming the logs.
+*   **Action**: In the `_read_loop` or `connect` method in `optimized_base_feed.py`:
+    *   Catch `websockets.exceptions.ConnectionClosedError` (specifically code 1011 or 1006).
+    *   Log this as a `WARNING` instead of `ERROR`: "⚠️ Connection unstable (1011/1006), reconnecting..."
+    *   Ensure the reconnection logic triggers immediately after this catch.
+
+### 4. 🧹 Verification Script
+Create `scripts/test_websocket_stability.py`.
+*   Connect to Binance Stream.
+*   Simulate a "Blocking Operation" (e.g., `time.sleep(0.1)` inside the loop - *don't actually block via time.sleep in async, calculate a huge prime number instead*) to see if the new architecture survives.
+
+**Execute this protocol now.**

@@ -11,10 +11,11 @@ import time
 
 try:
     import websockets  # type: ignore
-    from websockets.exceptions import ConnectionClosed  # type: ignore
+    from websockets.exceptions import ConnectionClosed, ConnectionClosedError  # type: ignore
 except ImportError:
     websockets = None  # type: ignore
     ConnectionClosed = Exception  # type: ignore
+    ConnectionClosedError = Exception  # type: ignore
 
 logger = get_logger(__name__)
 
@@ -35,7 +36,7 @@ class OptimizedWebSocketFeed:
     def __init__(
         self,
         name: str = "WebSocketFeed",
-        ping_interval: Optional[int] = 25,
+        ping_interval: Optional[int] = 20,
         ping_timeout: int = 60,
         max_reconnect_delay: int = 300,
         health_check_interval: int = 60
@@ -45,7 +46,7 @@ class OptimizedWebSocketFeed:
         
         Args:
             name: Feed名称
-            ping_interval: 心跳间隔（25秒 - Railway网络优化增强）
+            ping_interval: 心跳间隔（20秒 - 🔥 Connection Hardening v1: 频繁心跳防止1011超时）
             ping_timeout: 心跳超时（秒，默认60秒 - Railway网络优化增强）
             max_reconnect_delay: 最大重连延迟（秒）
             health_check_interval: 健康检查间隔（秒）
@@ -307,6 +308,16 @@ class OptimizedWebSocketFeed:
             
         except asyncio.TimeoutError:
             logger.warning(f"⚠️ {self.name}: 接收消息超时")
+            return None
+            
+        except ConnectionClosedError as e:
+            # 🔥 Connection Hardening v1: Suppress 1011/1006 as WARNING (expected in Railway)
+            error_code = getattr(e, 'rcvd_then_sent', (None, None))[1] if hasattr(e, 'rcvd_then_sent') else None
+            if error_code in (1011, 1006):
+                logger.warning(f"⚠️ {self.name}: 连接不稳定 ({error_code})，正在重连...")
+            else:
+                logger.warning(f"⚠️ {self.name}: 连接已关闭 ({error_code})")
+            self.connected = False
             return None
             
         except ConnectionClosed:
