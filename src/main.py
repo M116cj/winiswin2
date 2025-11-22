@@ -92,14 +92,7 @@ class SelfLearningTradingSystem:
             self.account_cache = AccountStateCache()
             logger.info("✅ Account cache initialized")
             
-            # 3. Initialize WebSocket feed (ShardFeed concrete implementation)
-            logger.info("🔌 Starting sharded WebSocket feed...")
-            self.shard_feed = ShardFeed(
-                all_symbols=["BTCUSDT", "ETHUSDT"]  # Will discover all pairs via universe
-            )
-            logger.info("✅ WebSocket feed initialized")
-            
-            # 4. Initialize cluster manager
+            # 3. Initialize cluster manager (MUST BE BEFORE ShardFeed)
             logger.info("🌐 Starting cluster manager (300+ pairs)...")
             self.cluster_manager = ClusterManager(
                 self.binance_client,
@@ -107,6 +100,25 @@ class SelfLearningTradingSystem:
             )
             await self.cluster_manager.start()
             logger.info("✅ Cluster manager started")
+            
+            # 4. Start sharded market coverage
+            logger.info("🌐 Starting sharded market coverage (300+ pairs)...")
+            
+            # Get all trading pairs from cluster manager universe
+            pairs = self.cluster_manager.pairs if self.cluster_manager.pairs else []
+            
+            if not pairs:
+                logger.warning("⚠️ No pairs discovered, using defaults")
+                pairs = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
+            
+            # Initialize shard feed with all pairs
+            self.shard_feed = ShardFeed(
+                all_symbols=pairs,
+                shard_id=0,
+                on_kline_callback=self.cluster_manager.on_kline_close
+            )
+            await self.shard_feed.start()
+            logger.info(f"✅ ShardFeed started ({len(pairs)} pairs)")
             
             # 5. Initialize strategy
             logger.info("⚙️ Initializing ICT scalper strategy...")

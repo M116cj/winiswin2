@@ -88,6 +88,16 @@ class UnifiedConfigManager:
         self.RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "2400"))
         self.RATE_LIMIT_PERIOD: int = int(os.getenv("RATE_LIMIT_PERIOD", "60"))
         
+        # ===== 熔斷器配置 =====
+        self.GRADED_CIRCUIT_BREAKER_ENABLED: bool = os.getenv("GRADED_CIRCUIT_BREAKER_ENABLED", "false").lower() == "true"
+        self.CIRCUIT_BREAKER_THRESHOLD: float = float(os.getenv("CIRCUIT_BREAKER_THRESHOLD", "0.5"))
+        self.CIRCUIT_BREAKER_TIMEOUT: int = int(os.getenv("CIRCUIT_BREAKER_TIMEOUT", "60"))
+        self.CIRCUIT_BREAKER_WARNING_THRESHOLD: float = float(os.getenv("CIRCUIT_BREAKER_WARNING_THRESHOLD", "0.3"))
+        self.CIRCUIT_BREAKER_THROTTLED_THRESHOLD: float = float(os.getenv("CIRCUIT_BREAKER_THROTTLED_THRESHOLD", "0.6"))
+        self.CIRCUIT_BREAKER_BLOCKED_THRESHOLD: float = float(os.getenv("CIRCUIT_BREAKER_BLOCKED_THRESHOLD", "0.8"))
+        self.CIRCUIT_BREAKER_THROTTLE_DELAY: int = int(os.getenv("CIRCUIT_BREAKER_THROTTLE_DELAY", "5"))
+        self.CIRCUIT_BREAKER_BYPASS_OPERATIONS: List[str] = os.getenv("CIRCUIT_BREAKER_BYPASS_OPERATIONS", "").split(",") if os.getenv("CIRCUIT_BREAKER_BYPASS_OPERATIONS") else []
+        
         # ===== 通知配置 =====
         self.DISCORD_TOKEN: str = (
             os.getenv("DISCORD_TOKEN", "") or 

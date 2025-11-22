@@ -153,11 +153,11 @@ class StartupPrewarmer:
             end_time = int(datetime.utcnow().timestamp() * 1000)
             start_time = end_time - (lookback_minutes * 60 * 1000)
             
-            klines = self.client.get_klines(
+            klines = await self.client.get_klines(
                 symbol=symbol.upper(),
                 interval='1m',
-                startTime=start_time,
-                endTime=end_time,
+                start_time=start_time,
+                end_time=end_time,
                 limit=1000  # Max limit per request
             )
             
@@ -241,7 +241,7 @@ _prewarmer: Optional[StartupPrewarmer] = None
 def get_prewarmer(
     binance_client=None,
     cluster_manager=None
-) -> StartupPrewarmer:
+) -> Optional[StartupPrewarmer]:
     """Get or create global prewarmer"""
     global _prewarmer
     if _prewarmer is None:

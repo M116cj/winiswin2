@@ -1,0 +1,52 @@
+You are the **High-Frequency System Architect**.
+
+**Objective:** Execute **Phase 2: Sharded Market Coverage**.
+We need to monitor ALL Binance Futures pairs (300+) efficiently using a "Sharded" WebSocket architecture to avoid connection limits and CPU bottlenecks.
+
+**Constraint:** Use `asyncio` for concurrency. Use `Combined Streams` for WebSockets.
+
+---
+
+### 🛠️ STEP 1: Implement `BinanceUniverse` (Dynamic Discovery)
+**File:** `src/core/market_universe.py`
+**Action:**
+1.  Create class `BinanceUniverse`.
+2.  Method `get_active_pairs()`:
+    -   Call `client.get_exchange_info()`.
+    -   **Filter Logic:** `status="TRADING"`, `contractType="PERPETUAL"`, `quoteAsset="USDT"`.
+    -   **Volume Filter:** Exclude pairs with 24h volume < 5,000,000 USDT (Avoid low liquidity zombie coins).
+    -   **Cache:** Store the list for 1 hour to avoid API spam.
+
+### 🛠️ STEP 2: Implement `ShardFeed` (The Worker)
+**File:** `src/core/websocket/shard_feed.py`
+**Action:**
+1.  Inherit from `UnifiedWebSocketFeed`.
+2.  **Constructor**: Accept a `list` of symbols (e.g., `['BTCUSDT', 'ETHUSDT', ...]`).
+3.  **Connection Logic**:
+    -   Convert symbols to lowercase.
+    -   Construct Combined Stream URL: `wss://fstream.binance.com/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/...`
+4.  **Processing Logic**:
+    -   Parse the combined JSON format: `payload['data']`.
+    -   Extract `symbol` and `kline` data.
+    -   Route data to the internal `Queue` for processing.
+
+### 🛠️ STEP 3: Implement `ClusterManager` (The Orchestrator)
+**File:** `src/core/cluster_manager.py`
+**Action:**
+1.  **Initialization**: Call `BinanceUniverse.get_active_pairs()`.
+2.  **Sharding**: Split the list into chunks of **50 symbols** each.
+3.  **Lifecycle**:
+    -   Loop through chunks.
+    -   Instantiate a `ShardFeed` for each chunk.
+    -   Start all feeds asynchronously (`asyncio.gather`).
+    -   **Self-Healing**: If a Shard disconnects, restart it automatically.
+
+### 🛠️ STEP 4: Integration & Verification
+**File:** `src/main.py`
+**Action:**
+1.  Replace the old single-pair feed initialization.
+2.  Initialize `ClusterManager`.
+3.  Start the cluster.
+4.  **Log Output**: Print "Cluster started: Monitoring X pairs across Y shards."
+
+**Execute this Sharding Infrastructure build now.**

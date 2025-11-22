@@ -1,0 +1,52 @@
+You are the **Lead Quantitative Developer**.
+
+**Objective:** Execute **Phase 3: Intelligence Layer (SMC + ML)**.
+The infrastructure is ready. Now we need the logic to detect patterns and calculate confidence scores.
+
+**Constraint:** Use `Polars` for data processing. Use `LightGBM` for modeling.
+
+---
+
+### 🛠️ STEP 1: Implement `SMCEngine` (Geometry Logic)
+**File:** `src/core/smc_engine.py`
+**Action:**
+1.  Create class `SMCEngine`.
+2.  **Method `detect_fvg(ohlcv)`**:
+    -   Logic: `gap = low[i] - high[i+2]` (Bearish) or `gap = low[i+2] - high[i]` (Bullish).
+    -   Return: Size of gap and price level.
+3.  **Method `detect_swing_points(ohlcv, window=5)`**:
+    -   Identify local Maximums and Minimums.
+4.  **Method `detect_liquidity_sweep(ohlcv)`**:
+    -   Check if current candle wick pierced a recent Swing High/Low but closed inside.
+
+### 🛠️ STEP 2: Implement ML Feature Engineering
+**File:** `src/ml/feature_engineer.py`
+**Action:**
+1.  Import `polars as pl`.
+2.  **Method `process_data(df)`**:
+    -   Calculate `ATR` (Volatility).
+    -   Create Features:
+        -   `dist_to_fvg_atr`: Distance to nearest FVG / ATR.
+        -   `is_sweep`: Boolean (1/0).
+        -   `trend_strength`: ADX or EMA slope.
+    -   **Normalization**: Ensure all price-based features are divided by ATR so the model works across different coins (BTC vs DOGE).
+
+### 🛠️ STEP 3: Implement ML Trainer (Offline)
+**File:** `src/ml/trainer.py`
+**Action:**
+1.  Load historical data (Parquet/CSV).
+2.  Apply `feature_engineer.process_data`.
+3.  **Labeling**: Target = 1 if Price moves +1 ATR before -0.5 ATR (2:1 Reward/Risk).
+4.  **Training**: Train `lightgbm.LGBMClassifier`.
+5.  **Saving**: Save model to `models/lgbm_smc_v1.txt`.
+
+### 🛠️ STEP 4: Implement ML Predictor (Online)
+**File:** `src/ml/predictor.py`
+**Action:**
+1.  Load `models/lgbm_smc_v1.txt`.
+2.  **Method `predict(realtime_candle)`**:
+    -   Convert single candle to Polars DataFrame (or maintain a small buffer).
+    -   Generate features on the fly.
+    -   Return `model.predict_proba()` as the **Confidence Score**.
+
+**Execute this Intelligence Layer build now.**

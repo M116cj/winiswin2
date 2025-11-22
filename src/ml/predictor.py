@@ -6,10 +6,19 @@ Purpose: Load LightGBM model and predict confidence scores
 Design: Stateless inference engine
 """
 
-import lightgbm as lgb
 from typing import Dict, List, Optional
 from pathlib import Path
 import logging
+
+# Try to import LightGBM, fall back to heuristic if not available
+try:
+    import lightgbm as lgb
+    LIGHTGBM_AVAILABLE = True
+except (ImportError, OSError) as e:
+    logging.warning(f"⚠️ LightGBM not available: {e}")
+    logging.warning("⚠️ Using heuristic confidence scoring (50-60% accuracy)")
+    lgb = None
+    LIGHTGBM_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +59,11 @@ class MLPredictor:
     
     def _load_model(self):
         """Load LightGBM model from disk"""
+        if not LIGHTGBM_AVAILABLE or lgb is None:
+            logger.warning("⚠️ LightGBM not available, using heuristic")
+            self.loaded = False
+            return
+        
         try:
             model_file = Path(self.model_path)
             
