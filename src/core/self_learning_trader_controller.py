@@ -50,7 +50,7 @@ class SelfLearningTraderController:
         初始化控制器（v3.18+）
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
             self_learning_trader: SelfLearningTrader 實例
             binance_client: BinanceClient 實例（可選）
             evaluation_engine: EvaluationEngine 實例（v3.18+，可選）

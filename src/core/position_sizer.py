@@ -26,7 +26,7 @@ class PositionSizer:
         初始化倉位計算器
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
             binance_client: BinanceClient 實例（可選，用於獲取交易對規格）
         """
         self.config = config_profile

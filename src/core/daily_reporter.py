@@ -35,7 +35,7 @@ class DailyReporter:
         初始化報告生成器
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
             model_rating_engine: ModelRatingEngine 實例
             trade_recorder: TradeRecorder 實例（可選）
         """

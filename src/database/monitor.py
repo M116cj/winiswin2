@@ -11,7 +11,7 @@ import time
 import threading
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
-from .async_manager import UnifiedDatabaseManager
+from .unified_database_manager import UnifiedDatabaseManager
 
 logger = logging.getLogger(__name__)
 

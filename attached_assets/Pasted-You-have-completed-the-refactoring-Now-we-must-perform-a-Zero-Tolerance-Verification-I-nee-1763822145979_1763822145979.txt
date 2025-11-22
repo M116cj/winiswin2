@@ -1,0 +1,41 @@
+You have completed the refactoring. Now, we must perform a **"Zero Tolerance" Verification**. 
+I need to ensure there are absolutely NO leftovers, NO broken imports, and NO "blind spots" missed during the rewrite.
+
+**Your Mission:** 
+Create and execute a diagnostic script `verify_refactor.py` to audit the entire `src/` directory programmatically.
+
+### 🛠️ STEP 1: Create the Verification Script (`verify_refactor.py`)
+Write a Python script that performs the following checks:
+
+1.  **The "Forbidden Imports" Check**:
+    -   Walk through every `.py` file in `src/`.
+    -   Fail if any file contains: `from src.config`, `import src.config`, `ConfigProfile`, `src.database.async_manager`.
+    -   *Goal:* Ensure deleted modules are truly dead to the system.
+
+2.  **The "Hidden Configuration" Check**:
+    -   Fail if any file (except `unified_config.py`) contains `os.getenv(` or `os.environ[`.
+    -   *Goal:* Ensure `UnifiedConfig` is the ONLY place reading environment variables.
+
+3.  **The "Async Hygiene" Check**:
+    -   Fail if any file containing `async def` also contains `time.sleep(` or `open(`.
+    -   *Goal:* Ensure we didn't miss any blocking calls in async functions.
+
+4.  **The "Import Integrity" Test (Dry Run)**:
+    -   Try to `from src.core.unified_config import config`.
+    -   Try to `from src.database.unified_db import UnifiedDatabaseManager`.
+    -   Catch `ImportError` or `AttributeError`.
+    -   *Goal:* Ensure the new files are syntax-error free and importable.
+
+5.  **The "Entry Point" Check**:
+    -   Read `main.py` (or `run.py`).
+    -   Verify string existence: `UnifiedDatabaseManager.initialize()` and `UnifiedDatabaseManager.close()`.
+
+### 🛠️ STEP 2: Execute & Fix
+1.  **Run** this script inside the environment.
+2.  **Report** the results.
+3.  **IMMEDIATELY FIX** any files that fail the verification.
+    -   If a file still imports `src.config`, change it to `src.core.unified_config`.
+    -   If a file has `time.sleep`, change it to `await asyncio.sleep`.
+    -   If `main.py` is missing initialization, add it.
+
+**Start by creating and running the verification script now.**

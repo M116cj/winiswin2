@@ -44,7 +44,7 @@ class TrendMonitor:
         
         Args:
             binance_client: BinanceClient 實例（可選）
-            config_profile: ConfigProfile 實例（可選）
+            config_profile: config manager instance（可選）
             signal_callback: 信號重評估回調函數（可選）
         """
         self.binance = binance_client

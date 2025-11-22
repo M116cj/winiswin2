@@ -42,7 +42,7 @@ class PositionMonitor24x7:
         初始化監控器（v3.18+）
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
             binance_client: BinanceClient 實例（可選）
             trade_recorder: TradeRecorder 實例（必須，用於歷史指標追蹤）
             data_service: DataService 實例（可選，用於獲取市場數據）

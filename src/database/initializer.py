@@ -7,7 +7,7 @@ Phase 3: 迁移到AsyncDatabaseManager (asyncpg)
 
 import logging
 from typing import Optional
-from .async_manager import UnifiedDatabaseManager
+from .unified_database_manager import UnifiedDatabaseManager
 
 logger = logging.getLogger(__name__)
 

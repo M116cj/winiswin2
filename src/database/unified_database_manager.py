@@ -3,7 +3,7 @@
 职责：单一入口管理asyncpg连接 + Redis缓存
 
 这个类解决了原有的"多个真理"问题：
-- 之前: AsyncDatabaseManager + RedisManager （两个独立的连接管理）
+- 之前: 两个独立的连接管理
 - 现在: UnifiedDatabaseManager （统一数据库和缓存层）
 
 设计：

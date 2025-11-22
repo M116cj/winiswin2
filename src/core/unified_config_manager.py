@@ -3,10 +3,10 @@
 职责：单一的真理来源，所有环境变量在此读取
 
 这个类解决了原有的"多个真理"问题：
-- 之前: Config.py + ConfigProfile.py （两个独立的os.getenv源）
+- 之前: 两个独立的环境变量源
 - 现在: UnifiedConfigManager （单一配置入口）
 
-所有代码应该从这个管理器读取配置，而不是直接访问Config或ConfigProfile。
+All code should read from this manager, not directly access environment variables.
 """
 
 import os
@@ -61,6 +61,10 @@ class UnifiedConfigManager:
         self.BINANCE_TRADING_API_SECRET: str = os.getenv("BINANCE_TRADING_API_SECRET", "") or self.BINANCE_API_SECRET
         self.BINANCE_TESTNET: bool = os.getenv("BINANCE_TESTNET", "false").lower() == "true"
         
+        # ===== 数据路径配置 =====
+        self.DATA_DIR: str = os.getenv("DATA_DIR", "data")
+        self.LOG_FILE: str = os.getenv("LOG_FILE", "logs/trading.log")
+        
         # ===== 数据库配置 =====
         self.DATABASE_URL: str = os.getenv("DATABASE_URL", "")
         self.DATABASE_PUBLIC_URL: str = os.getenv("DATABASE_PUBLIC_URL", "")
@@ -101,11 +105,22 @@ class UnifiedConfigManager:
         self.MIN_WIN_PROBABILITY: float = float(os.getenv("MIN_WIN_PROBABILITY", "0.45"))
         self.MIN_RR_RATIO: float = float(os.getenv("MIN_RR_RATIO", "0.8"))
         self.MAX_RR_RATIO: float = float(os.getenv("MAX_RR_RATIO", "5.0"))
+        self.MAX_TOTAL_BUDGET_RATIO: float = float(os.getenv("MAX_TOTAL_BUDGET_RATIO", "0.95"))
+        self.MAX_SINGLE_POSITION_RATIO: float = float(os.getenv("MAX_SINGLE_POSITION_RATIO", "0.30"))
+        self.MAX_TOTAL_MARGIN_RATIO: float = float(os.getenv("MAX_TOTAL_MARGIN_RATIO", "0.80"))
+        self.EQUITY_USAGE_RATIO: float = float(os.getenv("EQUITY_USAGE_RATIO", "0.90"))
+        self.MIN_NOTIONAL_VALUE: float = float(os.getenv("MIN_NOTIONAL_VALUE", "10.0"))
+        self.MIN_STOP_DISTANCE_PCT: float = float(os.getenv("MIN_STOP_DISTANCE_PCT", "0.005"))
+        self.RISK_KILL_THRESHOLD: float = float(os.getenv("RISK_KILL_THRESHOLD", "0.50"))
+        self.MIN_LEVERAGE: float = float(os.getenv("MIN_LEVERAGE", "0.5"))
+        self.SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("SIGNAL_QUALITY_THRESHOLD", "0.60"))
+        self.CROSS_MARGIN_PROTECTOR_THRESHOLD: float = float(os.getenv("CROSS_MARGIN_PROTECTOR_THRESHOLD", "0.85"))
         
         # ===== Bootstrap配置 =====
         self.BOOTSTRAP_TRADE_LIMIT: int = int(os.getenv("BOOTSTRAP_TRADE_LIMIT", "50"))
         self.BOOTSTRAP_MIN_WIN_PROBABILITY: float = float(os.getenv("BOOTSTRAP_MIN_WIN_PROBABILITY", "0.20"))
         self.BOOTSTRAP_MIN_CONFIDENCE: float = float(os.getenv("BOOTSTRAP_MIN_CONFIDENCE", "0.25"))
+        self.BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD: float = float(os.getenv("BOOTSTRAP_SIGNAL_QUALITY_THRESHOLD", "0.50"))
         
         # ===== WebSocket配置 =====
         self.WEBSOCKET_SYMBOL_LIMIT: int = int(os.getenv("WEBSOCKET_SYMBOL_LIMIT", "200"))
@@ -113,16 +128,35 @@ class UnifiedConfigManager:
         self.WEBSOCKET_HEARTBEAT_TIMEOUT: int = int(os.getenv("WEBSOCKET_HEARTBEAT_TIMEOUT", "30"))
         
         # ===== 技术指标参数 =====
-        self.EMA_FAST: int = 20
-        self.EMA_SLOW: int = 50
-        self.RSI_PERIOD: int = 14
-        self.ADX_PERIOD: int = 14
-        self.ADX_TREND_THRESHOLD: float = 20.0
+        self.EMA_FAST: int = int(os.getenv("EMA_FAST", "20"))
+        self.EMA_SLOW: int = int(os.getenv("EMA_SLOW", "50"))
+        self.RSI_PERIOD: int = int(os.getenv("RSI_PERIOD", "14"))
+        self.RSI_OVERBOUGHT: int = int(os.getenv("RSI_OVERBOUGHT", "70"))
+        self.RSI_OVERSOLD: int = int(os.getenv("RSI_OVERSOLD", "30"))
+        self.ADX_PERIOD: int = int(os.getenv("ADX_PERIOD", "14"))
+        self.ADX_TREND_THRESHOLD: float = float(os.getenv("ADX_TREND_THRESHOLD", "20.0"))
         self.ADX_HARD_REJECT_THRESHOLD: float = float(os.getenv("ADX_HARD_REJECT_THRESHOLD", "5.0"))
         self.ADX_WEAK_TREND_THRESHOLD: float = float(os.getenv("ADX_WEAK_TREND_THRESHOLD", "10.0"))
+        self.ATR_PERIOD: int = int(os.getenv("ATR_PERIOD", "14"))
+        self.ATR_MULTIPLIER: float = float(os.getenv("ATR_MULTIPLIER", "2.0"))
+        
+        # ===== 扫描和监控间隔 =====
+        self.SCAN_INTERVAL: int = int(os.getenv("SCAN_INTERVAL", "60"))
+        self.POSITION_MONITOR_INTERVAL: int = int(os.getenv("POSITION_MONITOR_INTERVAL", "30"))
         
         # ===== 时间框架 =====
         self.TIMEFRAMES: List[str] = ["1h", "15m", "5m"]
+        
+        # ===== XGBoost模型参数 =====
+        self.XGBOOST_N_ESTIMATORS: int = int(os.getenv("XGBOOST_N_ESTIMATORS", "30"))
+        self.XGBOOST_MAX_DEPTH: int = int(os.getenv("XGBOOST_MAX_DEPTH", "3"))
+        self.XGBOOST_MIN_CHILD_WEIGHT: int = int(os.getenv("XGBOOST_MIN_CHILD_WEIGHT", "50"))
+        self.XGBOOST_GAMMA: float = float(os.getenv("XGBOOST_GAMMA", "0.2"))
+        self.XGBOOST_SUBSAMPLE: float = float(os.getenv("XGBOOST_SUBSAMPLE", "0.6"))
+        self.XGBOOST_COLSAMPLE: float = float(os.getenv("XGBOOST_COLSAMPLE", "0.6"))
+        self.XGBOOST_LEARNING_RATE: float = float(os.getenv("XGBOOST_LEARNING_RATE", "0.05"))
+        self.INITIAL_TRAINING_SAMPLES: int = int(os.getenv("INITIAL_TRAINING_SAMPLES", "200"))
+        self.INITIAL_TRAINING_LOOKBACK_DAYS: int = int(os.getenv("INITIAL_TRAINING_LOOKBACK_DAYS", "30"))
         
         # ===== 报告和模型配置 =====
         self.REPORTS_DIR: str = os.getenv("REPORTS_DIR", "reports/daily")

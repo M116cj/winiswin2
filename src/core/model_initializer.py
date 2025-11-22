@@ -50,7 +50,7 @@ class ModelInitializer:
         Args:
             binance_client: BinanceClient 實例（可選）
             trade_recorder: TradeRecorder 實例（可選）
-            config_profile: ConfigProfile 實例（可選）
+            config_profile: config manager instance (optional)
             model_evaluator: ModelEvaluator 實例（可選，v3.17.10+）
         """
         self.binance = binance_client
@@ -68,17 +68,17 @@ class ModelInitializer:
         # 🔥 v4.1+ 優化級 XGBoost 參數（降低過擬合風險）
         self.training_params = {
             # 🌱 樹結構（控制複雜度）- OPTIMIZED
-            'n_estimators': int(os.getenv("XGBOOST_N_ESTIMATORS", "30")),        # 樹數量：100→30 (-70%)
-            'max_depth': int(os.getenv("XGBOOST_MAX_DEPTH", "3")),               # 樹深度：6→3 (-50%)
-            'min_child_weight': int(os.getenv("XGBOOST_MIN_CHILD_WEIGHT", "50")), # 葉節點最小樣本：10→50 (5x，兼容200樣本)
+            'n_estimators': int(config.XGBOOST_N_ESTIMATORS or "30"),        # 樹數量：100→30 (-70%)
+            'max_depth': int(config.XGBOOST_MAX_DEPTH or "3"),               # 樹深度：6→3 (-50%)
+            'min_child_weight': int(config.XGBOOST_MIN_CHILD_WEIGHT or "50"), # 葉節點最小樣本：10→50 (5x，兼容200樣本)
             
             # ⚖️ 正則化（提升泛化）- ENHANCED
-            'gamma': float(os.getenv("XGBOOST_GAMMA", "0.2")),                   # 分裂最小損失：0.1→0.2
-            'subsample': float(os.getenv("XGBOOST_SUBSAMPLE", "0.6")),           # 訓練樣本採樣：0.8→0.6
-            'colsample_bytree': float(os.getenv("XGBOOST_COLSAMPLE", "0.6")),    # 特徵採樣：0.8→0.6
+            'gamma': float(config.XGBOOST_GAMMA or "0.2"),                   # 分裂最小損失：0.1→0.2
+            'subsample': float(config.XGBOOST_SUBSAMPLE or "0.6"),           # 訓練樣本採樣：0.8→0.6
+            'colsample_bytree': float(config.XGBOOST_COLSAMPLE or "0.6"),    # 特徵採樣：0.8→0.6
             
             # 🚀 學習率（穩定收斂）- MORE STABLE
-            'learning_rate': float(os.getenv("XGBOOST_LEARNING_RATE", "0.05")),  # 學習步長：0.1→0.05
+            'learning_rate': float(config.XGBOOST_LEARNING_RATE or "0.05"),  # 學習步長：0.1→0.05
             
             # 🎯 目標函數（二分類）
             'objective': 'binary:logistic',     # 邏輯迴歸損失
@@ -90,8 +90,8 @@ class ModelInitializer:
             'verbosity': 0,                     # 靜默模式（適合生產）
             
             # 訓練數據配置
-            'min_samples': int(os.getenv("INITIAL_TRAINING_SAMPLES", "200")),
-            'lookback_days': int(os.getenv("INITIAL_TRAINING_LOOKBACK_DAYS", "30")),
+            'min_samples': int(config.INITIAL_TRAINING_SAMPLES or "200"),
+            'lookback_days': int(config.INITIAL_TRAINING_LOOKBACK_DAYS or "30"),
         }
         
         # ✅ STEP 1 VALIDATION

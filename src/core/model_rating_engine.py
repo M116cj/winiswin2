@@ -31,7 +31,7 @@ class ModelRatingEngine:
         初始化評級引擎
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
         """
         self.config = config_profile
         

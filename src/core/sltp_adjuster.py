@@ -24,7 +24,7 @@ class SLTPAdjuster:
         初始化 SL/TP 調整器
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
         """
         self.config = config_profile
         logger.info("✅ SL/TP 調整器初始化完成（v3.17+）")

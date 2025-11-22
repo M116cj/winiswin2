@@ -35,7 +35,7 @@ class LeverageEngine:
         初始化槓桿引擎（v3.18.7+ 豁免期策略）
         
         Args:
-            config_profile: ConfigProfile 實例
+            config_profile: config manager instance
         """
         self.config = config_profile
         logger.info("=" * 80)
