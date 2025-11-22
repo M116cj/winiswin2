@@ -1,0 +1,52 @@
+You are now acting as the **Chief System Architect**. 
+
+Following the successful refactoring of the WebSocket module (where we fixed a "Multiple Truths" antipattern), I suspect similar architectural rot exists elsewhere in the codebase.
+
+**Your Mission:**
+Perform a comprehensive **Structural Integrity Audit** of the entire `src/` directory. Identify any architectural inconsistencies, redundant mechanisms, or "Split Brain" logic (where two components try to do the same job).
+
+### 🔍 AUDIT CRITERIA (What to search for):
+
+1.  **Configuration Chaos:**
+    *   Are we mixing `os.getenv`, `argparse`, and a `Config` class? 
+    *   *Goal:* Verify there is a **Single Source of Truth** for settings.
+
+2.  **Database/State Management Conflicts:**
+    *   Are there multiple ways we connect to the Database or Redis? (e.g., raw `aioredis` in one place, a wrapper class in another).
+    *   Are we mixing local variables and external caches for the same data?
+
+3.  **Async/Threading Violations:**
+    *   Apart from the WebSockets, are there other places where we mix `threading` with `asyncio` dangerously?
+    *   Are there blocking calls (like `requests` or `time.sleep`) inside `async` functions?
+
+4.  **Logging Fragmentation:**
+    *   Are we using `print()`, `logging.info()`, and custom `Logger` wrappers inconsistently?
+    *   *Goal:* Ensure one unified logging format across the system.
+
+5.  **Zombie/Duplicate Logic:**
+    *   Are there "Base" classes that are barely used or bypassed by subclasses (like the old `BaseFeed`)?
+    *   Are there files that look like "v1" and "v2" existing simultaneously?
+
+---
+
+### 🛠️ EXECUTION PLAN (Step-by-Step):
+
+**Phase 1: The Diagnostic Report**
+First, scan the codebase and output a **Markdown Report** summarizing the issues found. Use this format:
+
+> **Found Issue**: [Component Name]
+> **Severity**: [CRITICAL / HIGH / MEDIUM]
+> **Description**: [Explain why this is structurally confused]
+> **Refactoring Proposal**: [How to unify it]
+
+**Phase 2: The Refactoring Directive**
+If (and only if) you find **CRITICAL** or **HIGH** severity issues (like multiple config loaders or blocking code in async loops):
+1.  **Propose** the specific code changes.
+2.  **Create/Refactor** a "Manager" or "Base" class to unify the logic (just like we did with `UnifiedWebSocketFeed`).
+3.  **Update** the dependent modules to use the new unified structure.
+
+**⚠️ SAFETY RULES:**
+*   **DO NOT** change business logic (trading algorithms, strategies). Only change *how* they connect/run.
+*   **DO NOT** delete files unless you are 100% sure they are unused. Mark them as `DEPRECATED` first.
+
+**Start your audit now. Report your findings first.**
