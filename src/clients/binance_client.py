@@ -12,7 +12,6 @@ from typing import Optional, Any
 import logging
 
 from src.core.unified_config_manager import config_manager as config
-from src.core.rate_limiter import RateLimiter
 from src.core.circuit_breaker import CircuitBreaker, GradedCircuitBreaker, Priority
 from src.core.cache_manager import CacheManager
 from src.clients.binance_errors import BinanceRequestError
@@ -41,10 +40,9 @@ class BinanceClient:
         else:
             self.base_url = "https://fapi.binance.com"
         
-        self.rate_limiter = RateLimiter(
-            max_requests=config.RATE_LIMIT_REQUESTS,
-            time_window=config.RATE_LIMIT_PERIOD
-        )
+        # Rate limiting: use simple counter (no external RateLimiter needed)
+        self._request_count = 0
+        self._last_reset_time = time.time()
         
         if config.GRADED_CIRCUIT_BREAKER_ENABLED:
             self.circuit_breaker = GradedCircuitBreaker(
@@ -123,7 +121,20 @@ class BinanceClient:
         if priority is None:
             priority = Priority.NORMAL
         
-        await self.rate_limiter.acquire()
+        # Simple rate limiter (reset every RATE_LIMIT_PERIOD seconds)
+        current_time = time.time()
+        if current_time - self._last_reset_time >= config.RATE_LIMIT_PERIOD:
+            self._request_count = 0
+            self._last_reset_time = current_time
+        
+        if self._request_count >= config.RATE_LIMIT_REQUESTS:
+            wait_time = config.RATE_LIMIT_PERIOD - (current_time - self._last_reset_time)
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
+                self._request_count = 0
+                self._last_reset_time = time.time()
+        
+        self._request_count += 1
         
         async def _do_request():
             if params is None:

@@ -178,6 +178,10 @@ class UnifiedConfigManager:
         self.MODEL_RATING_ENABLED: bool = os.getenv("MODEL_RATING_ENABLED", "true").lower() == "true"
         self.RATING_LOSS_PENALTY: float = float(os.getenv("RATING_LOSS_PENALTY", "15.0"))
         
+        # ===== 快取TTL配置 =====
+        self.CACHE_TTL_TICKER: int = int(os.getenv("CACHE_TTL_TICKER", "30"))
+        self.CACHE_TTL_ACCOUNT: int = int(os.getenv("CACHE_TTL_ACCOUNT", "60"))
+        
         UnifiedConfigManager._initialized = True
         logger.info("✅ UnifiedConfigManager 初始化完成")
     

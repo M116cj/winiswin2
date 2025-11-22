@@ -12,6 +12,7 @@ from datetime import datetime
 import logging
 
 from src.core.market_universe import get_universe
+from src.core.data_manager import get_data_manager
 from src.core.smc_engine import SMCEngine
 from src.ml.feature_engineer import get_feature_engineer
 from src.ml.predictor import get_predictor
@@ -54,6 +55,7 @@ class ClusterManager:
         
         # Components
         self.universe = get_universe(binance_client)
+        self.data_manager = get_data_manager(binance_client)  # ❄️ Cold start
         self.smc_engine = SMCEngine()
         self.feature_engineer = get_feature_engineer()
         self.predictor = get_predictor()
@@ -92,7 +94,34 @@ class ClusterManager:
             for pair in self.pairs:
                 self.kline_buffers[pair] = []
             
-            # 3. Start processing (actual shard workers are managed by WebSocketManager)
+            # 3. ❄️ COLD START: Fetch historical data to warm up indicators
+            logger.info("❄️ Cold Start: Fetching historical data...")
+            historical_data = await self.data_manager.ensure_history(self.pairs, interval='1m', limit=1000)
+            
+            # Pre-populate buffers with historical data
+            for symbol, df in historical_data.items():
+                if df is not None:
+                    try:
+                        # Convert Polars DataFrame to dict list
+                        klines = []
+                        for row in df.iter_rows(named=True):
+                            klines.append({
+                                'symbol': symbol,
+                                'open': row['open'],
+                                'high': row['high'],
+                                'low': row['low'],
+                                'close': row['close'],
+                                'volume': row['volume'],
+                                'time': row['timestamp']
+                            })
+                        self.kline_buffers[symbol] = klines
+                    except Exception as e:
+                        logger.warning(f"⚠️ Could not pre-populate {symbol}: {e}")
+            
+            self.warmup_complete = True
+            logger.info("✅ Cold start complete")
+            
+            # 4. Start processing (actual shard workers are managed by WebSocketManager)
             logger.info("🔄 Cluster ready to receive market data")
         
         except Exception as e:
