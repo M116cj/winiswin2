@@ -1,8 +1,8 @@
 """
-📡 Feed Process - Binance Data via CCXT + Ring Buffer Writer
+📡 Feed Process - Multi-Symbol Binance Data via CCXT + Ring Buffer Writer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Fetches real market data from Binance using CCXT library.
+Fetches real market data from Binance for 300+ pairs using CCXT library.
 Runs in separate process with own GIL.
 Writes to shared memory ring buffer.
 Never blocks. Handles 100,000+ ticks/sec.
@@ -22,6 +22,7 @@ except ImportError:
     pass
 
 from src.ring_buffer import get_ring_buffer
+from src.market_universe import BinanceUniverse
 
 logging.basicConfig(
     level=logging.INFO,
@@ -44,17 +45,28 @@ async def run_feed_real(symbols: Optional[List[str]] = None) -> None:
     """
     Run feed process: Binance (via CCXT) + Ring Buffer writer
     
-    Fetches 1-minute klines from Binance using CCXT.
+    Fetches 1-minute klines from Binance using CCXT for all symbols.
     
     Args:
-        symbols: Symbols to fetch (e.g., ["BTC/USDT", "ETH/USDT"])
+        symbols: Symbols to fetch (e.g., ["BTC/USDT", "ETH/USDT", ...])
+                 If None, discovers all active pairs
     """
-    if symbols is None:
-        symbols = ["BTC/USDT", "ETH/USDT"]
-    
     optimize_gc()
     
-    logger.info(f"🚀 Feed process started - connecting to Binance via CCXT (symbols={symbols})")
+    # Discover all active pairs if not provided
+    if symbols is None:
+        logger.info("🔍 Discovering all active Binance Futures pairs...")
+        universe = BinanceUniverse()
+        symbols = await universe.get_active_pairs()
+        
+        if not symbols:
+            logger.error("❌ Failed to discover pairs, using fallback")
+            symbols = ["BTC/USDT", "ETH/USDT"]
+        
+        logger.info(f"✅ Will monitor {len(symbols)} symbols")
+        logger.info(f"📊 First 10: {symbols[:10]}")
+    else:
+        logger.info(f"🚀 Feed process started with {len(symbols)} symbols: {symbols[:10]}...")
     
     # Get ring buffer (attach to existing)
     ring_buffer = get_ring_buffer(create=False)
@@ -63,16 +75,18 @@ async def run_feed_real(symbols: Optional[List[str]] = None) -> None:
     # Initialize Binance exchange
     exchange = ccxt.binance({
         'enableRateLimit': True,
-        'rateLimit': 100,
+        'rateLimit': 50,  # Reduced to handle many symbols
     })
     
     tick_count = 0
+    last_log_time = time()
     
     try:
         logger.info("🔌 Connecting to Binance via CCXT")
         
         while True:
             try:
+                # Fetch klines for all symbols in round-robin fashion
                 for symbol in symbols:
                     try:
                         # Fetch 1-minute klines (last 1 candle = most recent closed)
@@ -106,12 +120,16 @@ async def run_feed_real(symbols: Optional[List[str]] = None) -> None:
                         ring_buffer.write(candle)
                         
                         tick_count += 1
-                        if tick_count % 50 == 0:
-                            logger.debug(f"📊 Feed: {tick_count} ticks written from {symbol}")
                     
                     except Exception as e:
                         logger.debug(f"⚠️ Error fetching {symbol}: {e}")
                         continue
+                
+                # Log progress every 10 seconds
+                current_time = time()
+                if current_time - last_log_time > 10:
+                    logger.info(f"📊 Feed: {tick_count} ticks written, monitoring {len(symbols)} symbols")
+                    last_log_time = current_time
                 
                 # Fetch every 60 seconds (aligned to minute boundaries)
                 await asyncio.sleep(60)
@@ -130,15 +148,16 @@ async def run_feed_real(symbols: Optional[List[str]] = None) -> None:
 
 async def run_feed_simulated(symbols: Optional[List[str]] = None) -> None:
     """
-    Run feed process: Simulated WebSocket + Ring Buffer writer
+    Run feed process: Simulated data for testing
     (Fallback if real connection not available)
     """
     if symbols is None:
-        symbols = ["BTC/USDT", "ETH/USDT"]
+        symbols = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "MATIC/USDT"]
     
     optimize_gc()
     
-    logger.info(f"🚀 Feed process started - SIMULATED MODE (symbols={symbols})")
+    logger.info(f"🚀 Feed process started - SIMULATED MODE ({len(symbols)} symbols)")
+    logger.info(f"📊 Symbols: {symbols[:10]}...")
     
     # Get ring buffer (attach to existing)
     ring_buffer = get_ring_buffer(create=False)
@@ -146,16 +165,19 @@ async def run_feed_simulated(symbols: Optional[List[str]] = None) -> None:
     
     try:
         tick_count = 0
-        base_price = 42000.0
+        base_prices = {symbol: 40000 + i * 100 for i, symbol in enumerate(symbols[:100])}
         
         # Simulated WebSocket feed
         while True:
             await asyncio.sleep(0.001)  # Simulate 1000 ticks/sec
             
-            # Generate simulated tick
+            # Generate simulated ticks for random symbol
+            symbol = symbols[tick_count % len(symbols)]
+            base_price = base_prices.get(symbol, 40000.0)
+            
             current_time = time()
             tick = {
-                'symbol': 'BTC/USDT',
+                'symbol': symbol,
                 'open': base_price + (tick_count % 100),
                 'high': base_price + 500 + (tick_count % 100),
                 'low': base_price - 500 + (tick_count % 100),
@@ -177,7 +199,7 @@ async def run_feed_simulated(symbols: Optional[List[str]] = None) -> None:
             
             tick_count += 1
             if tick_count % 10000 == 0:
-                logger.info(f"📊 Feed: {tick_count} ticks written (SIMULATED)")
+                logger.info(f"📊 Feed: {tick_count} ticks written (SIMULATED, {len(symbols)} symbols)")
     
     except KeyboardInterrupt:
         logger.info("⏹️ Feed shutdown")

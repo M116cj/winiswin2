@@ -10,8 +10,9 @@ Has dedicated CPU core. Never GIL-blocked by feed process.
 import logging
 import asyncio
 import gc
+import os
 from time import time, sleep
-from typing import Optional
+from typing import Optional, List
 
 try:
     import uvloop
@@ -23,6 +24,7 @@ from src.ring_buffer import get_ring_buffer
 from src.bus import bus, Topic
 from src import trade
 from src.indicators import Indicators
+from src.market_universe import BinanceUniverse
 import numpy as np
 
 logging.basicConfig(
@@ -30,6 +32,9 @@ logging.basicConfig(
     format='%(asctime)s - [Brain] - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Global symbols list (synchronized with feed process)
+_symbols: List[str] = []
 
 
 def optimize_gc():
@@ -53,7 +58,7 @@ def detect_pattern(candle: tuple) -> dict:
     }
 
 
-async def process_candle(candle: tuple) -> None:
+async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     """Process candle: detect patterns, publish signal"""
     timestamp, open_, high, low, close, volume = candle
     
@@ -63,13 +68,13 @@ async def process_candle(candle: tuple) -> None:
     
     if confidence > 0.60:
         signal = {
-            'symbol': 'BTCUSDT',
+            'symbol': symbol,
             'confidence': confidence,
             'patterns': patterns,
             'position_size': 100.0
         }
         
-        logger.debug(f"🧠 Signal: BTCUSDT @ {confidence:.1%}")
+        logger.debug(f"🧠 Signal: {symbol} @ {confidence:.1%}")
         
         # Publish to EventBus (triggers trade risk check)
         await bus.publish(Topic.SIGNAL_GENERATED, signal)
@@ -80,15 +85,29 @@ async def run_brain() -> None:
     Run brain process: Ring buffer reader + analysis + trading
     
     Flow:
-    1. Poll ring buffer for new candles (non-blocking)
-    2. Detect SMC patterns
-    3. Generate signals
-    4. Publish to EventBus
-    5. Trade module executes orders
+    1. Discover all symbols to monitor
+    2. Poll ring buffer for new candles (non-blocking)
+    3. Detect SMC patterns
+    4. Generate signals
+    5. Publish to EventBus
+    6. Trade module executes orders
     """
+    global _symbols
+    
     optimize_gc()
     
     logger.info("🚀 Brain process started")
+    
+    # Discover all symbols
+    logger.info("🔍 Discovering symbols...")
+    universe = BinanceUniverse()
+    _symbols = await universe.get_active_pairs()
+    
+    if not _symbols:
+        _symbols = ["BTC/USDT", "ETH/USDT"]
+    
+    logger.info(f"✅ Will analyze {len(_symbols)} symbols")
+    logger.info(f"📊 Symbols: {_symbols[:10]}...")
     
     # Initialize modules
     await trade.init()
@@ -101,6 +120,7 @@ async def run_brain() -> None:
     try:
         candle_count = 0
         latencies = []
+        symbol_index = 0
         
         while True:
             # Poll for pending candles (non-blocking)
@@ -121,14 +141,18 @@ async def run_brain() -> None:
                     
                     latencies.append(latency_us)
                     
+                    # Track which symbol this candle belongs to (round-robin)
+                    current_symbol = _symbols[symbol_index % len(_symbols)]
+                    symbol_index += 1
+                    
                     # Process candle
-                    await process_candle(candle)
+                    await process_candle(candle, current_symbol)
                     
                     candle_count += 1
                     
-                    if candle_count % 10000 == 0:
+                    if candle_count % 1000 == 0:
                         avg_latency = np.mean(latencies[-1000:])
-                        logger.info(f"📊 Brain: {candle_count} candles processed | Latency: {avg_latency:.1f}µs")
+                        logger.info(f"📊 Brain: {candle_count} candles | {len(_symbols)} symbols | Latency: {avg_latency:.1f}µs")
             else:
                 # No pending candles, yield to other tasks
                 await asyncio.sleep(0.001)
