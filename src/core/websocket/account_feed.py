@@ -24,6 +24,7 @@ except ImportError:
 
 from src.utils.logger_factory import get_logger
 from .unified_feed import UnifiedWebSocketFeed
+from src.core.account_state_cache import account_state_cache
 
 logger = get_logger(__name__)
 
@@ -230,6 +231,13 @@ class AccountFeed(UnifiedWebSocketFeed):
                         'local_timestamp': local_ts,
                         'latency_ms': latency_ms
                     }
+                    
+                    # 🔥 写入AccountStateCache（本地优先架构）
+                    account_state_cache.update_balance(
+                        asset=asset,
+                        free=cross_wallet_balance,
+                        locked=total_margin
+                    )
             
             # 更新仓位
             if 'P' in account_data:
@@ -255,11 +263,25 @@ class AccountFeed(UnifiedWebSocketFeed):
                             f"size={position_amt}, pnl={position['up']}, "
                             f"latency={latency_ms}ms"
                         )
+                        
+                        # 🔥 写入AccountStateCache（本地优先架构）
+                        account_state_cache.update_position(
+                            symbol=symbol,
+                            amount=position_amt,
+                            entry_price=float(position['ep']),
+                            unrealized_pnl=float(position['up']),
+                            pnl_pct=float(position['up']) / (float(position['ep']) * abs(position_amt)) if position_amt != 0 else 0,
+                            margin_type=position.get('mt', 'cross'),
+                            leverage=float(position.get('lv', 1))
+                        )
                     else:
                         # 仓位已平仓
                         if symbol in self.position_cache:
                             del self.position_cache[symbol]
                             logger.debug(f"🔄 {symbol.upper()} 仓位已清除")
+                        
+                        # 🔥 从AccountStateCache移除平仓
+                        account_state_cache.remove_position(symbol)
         
         except Exception as e:
             logger.error(f"❌ 解析ACCOUNT_UPDATE失败: {e}")

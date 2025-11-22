@@ -18,6 +18,7 @@ from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.core.unified_config_manager import config_manager as config
 from src.utils.smart_logger import create_smart_logger
+from src.core.account_state_cache import account_state_cache
 
 # ✨ v3.26+ 性能优化：启用SmartLogger（减少重复日志）
 logger = create_smart_logger(
@@ -305,19 +306,25 @@ class UnifiedScheduler:
             # 步驟 1：獲取並顯示持倉狀態
             positions = await self._get_and_display_positions()
             
-            # 步驟 2：獲取賬戶餘額信息（v3.17.2+：優先使用WebSocket）
+            # 🔥 步驟 2：獲取賬戶餘額信息（本地優先、零API調用）
             account_info = None
             
-            # 🔥 v3.17.2+：優先從WebSocket獲取（無REST API請求）
-            if self.websocket_manager and self.websocket_manager.account_feed:
+            # 🔥 v4.0+：優先從本地緩存獲取（由WebSocket AccountFeed實時更新、零API請求）
+            usdt_balance = account_state_cache.get_balance('USDT')
+            if usdt_balance:
+                account_info = {
+                    'total_balance': usdt_balance['total'],
+                    'available_balance': usdt_balance['free'],
+                    'total_margin': usdt_balance['locked'],
+                    'unrealized_pnl': 0
+                }
+                logger.debug("💾 從本地緩存獲取帳戶餘額（零API調用）")
+            
+            # 備援：如果緩存為空，使用WebSocket（但緩存應該已被初始化）
+            if not account_info and self.websocket_manager and self.websocket_manager.account_feed:
                 account_info = self.websocket_manager.get_account_balance()
                 if account_info:
-                    logger.debug("📡 從WebSocket獲取帳戶餘額")
-            
-            # REST備援
-            if not account_info:
-                logger.debug("📡 WebSocket帳戶數據不可用，使用REST API備援")
-                account_info = await self.binance_client.get_account_balance()
+                    logger.debug("📡 備援：從WebSocket獲取帳戶餘額")
             
             total_balance = account_info['total_balance']
             available_balance = account_info['available_balance']
@@ -730,9 +737,25 @@ class UnifiedScheduler:
             return []
     
     async def _get_and_display_positions(self) -> List[Dict]:
-        """獲取並顯示當前持倉狀態"""
+        """獲取並顯示當前持倉狀態（本地優先、零API調用）"""
         try:
-            positions = await self.binance_client.get_positions()
+            # 🔥 v4.0+：優先從本地緩存獲取持倉（由WebSocket AccountFeed實時更新、零API請求）
+            cache_positions = account_state_cache.get_all_positions()
+            positions = []
+            
+            for symbol, pos_data in cache_positions.items():
+                positions.append({
+                    'symbol': symbol.upper(),
+                    'positionAmt': str(pos_data.get('amount', 0)),
+                    'entryPrice': str(pos_data.get('entry_price', 0)),
+                    'unRealizedProfit': str(pos_data.get('unrealized_pnl', 0)),
+                    'leverage': str(pos_data.get('leverage', 1)),
+                    'unrealizedProfit': str(pos_data.get('unrealized_pnl', 0)),  # Binance API field
+                    'is_cache_data': True
+                })
+            
+            if not positions:
+                logger.debug("💾 本地緩存無持倉（零API調用）")
             
             # 過濾出有持倉的交易對
             active_positions = [

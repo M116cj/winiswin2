@@ -13,6 +13,7 @@ import os
 import asyncpg  # 🔥 v4.4.1 P1: 異步數據庫操作（持久化持倉時間）
 
 from src.core.position_monitor_24x7 import PositionMonitor24x7
+from src.core.account_state_cache import account_state_cache
 
 logger = get_logger(__name__)
 
@@ -360,10 +361,19 @@ class PositionController:
                             'is_websocket_data': True
                         })
             
-            # 🔥 v3.17.2+：備援 - 使用REST API
+            # 🔥 v3.17.2+：備援 - 使用本地緩存（零API調用）
             if not raw_positions:
-                logger.info("📡 WebSocket無倉位數據，使用REST API備援")
-                raw_positions = await self.binance_client.get_position_info_async()
+                logger.info("📡 WebSocket無倉位數據，使用本地緩存")
+                cache_positions = account_state_cache.get_all_positions()
+                for symbol, pos_data in cache_positions.items():
+                    raw_positions.append({
+                        'symbol': symbol.upper(),
+                        'positionAmt': str(pos_data.get('amount', 0)),
+                        'entryPrice': str(pos_data.get('entry_price', 0)),
+                        'unRealizedProfit': str(pos_data.get('unrealized_pnl', 0)),
+                        'leverage': str(pos_data.get('leverage', 1)),
+                        'is_cache_data': True
+                    })
             
             positions = []
             for pos in raw_positions:
@@ -467,24 +477,26 @@ class PositionController:
                 logger.info(f"🛡️ 全倉保護冷卻中，剩餘 {time_left} 秒")
                 return False
             
-            # 步驟2：獲取帳戶餘額（🔥 v3.18.4：優先使用REST API，確保數據準確性）
-            # WebSocket的cw字段可能不等於available_balance，導致保證金計算錯誤
+            # 🔥 步驟2：獲取帳戶餘額（本地優先、零API調用）
+            # 從本地緩存獲取（由WebSocket實時更新）
             account_info = None
-            data_source = "REST"
+            data_source = "LocalCache"
             
             try:
-                # 優先使用REST API（確保準確性）
-                account_info = await self.binance_client.get_account_balance()
-                
-                # 備援：如果REST失敗，嘗試WebSocket（但可能不準確）
-                if not account_info and self.websocket_monitor:
-                    account_info = self.websocket_monitor.get_account_balance()
-                    data_source = "WebSocket（備援）"
-                    logger.debug("⚠️ REST API失敗，使用WebSocket備援數據")
+                # 🔥 優先使用本地緩存（由WebSocket AccountFeed實時更新）
+                usdt_balance = account_state_cache.get_balance('USDT')
+                if usdt_balance:
+                    account_info = {
+                        'total_balance': usdt_balance['total'],
+                        'available_balance': usdt_balance['free'],
+                        'total_margin': usdt_balance['locked'],
+                        'unrealized_pnl': 0
+                    }
+                    logger.debug("💾 從本地緩存獲取USDT余額（零API調用）")
                 
             except Exception as e:
-                logger.warning(f"⚠️ 獲取REST帳戶信息失敗: {e}")
-                # 最後備援：使用WebSocket
+                logger.warning(f"⚠️ 本地緩存無法使用: {e}")
+                # 如果緩存無法使用，嘗試WebSocket備援
                 if self.websocket_monitor:
                     account_info = self.websocket_monitor.get_account_balance()
                     data_source = "WebSocket（備援）"

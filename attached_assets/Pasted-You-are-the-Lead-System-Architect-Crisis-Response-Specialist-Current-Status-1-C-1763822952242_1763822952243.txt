@@ -1,0 +1,78 @@
+You are the **Lead System Architect** & **Crisis Response Specialist**.
+
+**Current Status:**
+1.  **CRITICAL CRASH:** The system fails to start because `UnifiedConfigManager` is missing the `RATE_LIMIT_REQUESTS` attribute (AttributeError).
+2.  **IP BAN (HTTP 418):** The system was banned by Binance because strategies are **polling** the REST API for balance/positions instead of using the WebSocket cache.
+
+**Mission:**
+Execute a **"Local-First, Zero-Polling"** architectural transformation. 
+We must fix the crash AND ensure that **Strategies/Controllers NEVER access the Network for data retrieval**, only for order execution.
+
+---
+
+### 🛠️ STEP 1: Fix The Startup Crash (Configuration)
+**File:** `src/core/unified_config.py`
+**Action:**
+1.  Add the missing field to the `UnifiedConfig` dataclass:
+    ```python
+    RATE_LIMIT_REQUESTS: int = 2400  # Default value
+    ```
+2.  Ensure `.load()` method reads this from `os.getenv` (with default 2400).
+3.  **Verify:** Check `src/clients/binance_client.py` to ensure it reads `config.RATE_LIMIT_REQUESTS` correctly without error.
+
+---
+
+### 🛠️ STEP 2: Implement "Internal Truth" (AccountStateCache)
+**File:** `src/core/account_state_cache.py` (Create this file)
+**Action:**
+Implement a **Singleton** class `AccountStateCache` that serves as the In-Memory Database for the strategy.
+-   **Storage:** `_balances` (dict), `_positions` (dict), `_open_orders` (dict).
+-   **Methods:**
+    -   `update_balance(asset, free, locked)`
+    -   `update_position(symbol, amount, entry_price, ...)`
+    -   `get_balance(asset)` -> returns float (Instant, No Network)
+    -   `get_all_positions()` -> returns list (Instant, No Network)
+-   **Constraint:** All "get" methods must simply return data from memory. NO `async/await` network calls allowed here.
+
+---
+
+### 🛠️ STEP 3: Rewire WebSocket to Write to Cache
+**File:** `src/core/websocket/account_feed.py`
+**Action:**
+Modify `AccountFeed` to act as the **Writer** for the Cache.
+1.  Import `AccountStateCache`.
+2.  In `process_message(msg)`:
+    -   **Event `outboundAccountPosition`**: Parse assets and call `AccountStateCache.update_balance(...)`.
+    -   **Event `ORDER_TRADE_UPDATE`**: Parse execution reports and call `AccountStateCache.update_position(...)`.
+    -   **Event `ACCOUNT_UPDATE`** (Futures): Parse position updates.
+3.  **Log Logic:** Only log "Balance Updated" or "Position Changed" when values actually change, to reduce log noise.
+
+---
+
+### 🛠️ STEP 4: Refactor Consumers to Read from Cache (Stop Polling)
+**Files:** `src/core/position_controller.py`, `src/core/leverage_engine.py`, `src/strategies/base_strategy.py`
+**Action:**
+1.  **Search**: Find all instances of `client.get_account_balance()` and `client.get_position_info()`.
+2.  **Replace**:
+    -   **During Initialization (`__init__` or `start`)**: Keep the API call *once* to populate initial state.
+    -   **During Main Loop (`monitor`, `analyze`, `run`)**: REPLACE with `AccountStateCache.get_balance(...)` or `AccountStateCache.get_all_positions()`.
+3.  **Constraint**: The main strategy loop must be **100% offline** regarding data retrieval. It should only touch the network when `client.create_order()` is called.
+
+---
+
+### 🛠️ STEP 5: Clean up Scheduler
+**File:** `src/core/unified_scheduler.py`
+**Action:**
+1.  **Disable**: Comment out or remove any scheduled tasks labeled "Account Sync", "Balance Check", or "Position Monitor" that run on a timer (e.g., every 10s).
+2.  **Retain**: Keep "Health Checks" and "Pinging" (if using WebSocket pings), but remove business logic polling.
+
+---
+
+### 🚨 STRICT ARCHITECTURAL RULES (Verification):
+1.  **Config**: `RATE_LIMIT_REQUESTS` MUST exist.
+2.  **Network Usage**:
+    -   **ALLOW**: `client.create_order`, `client.cancel_order`, `client.get_exchange_info` (once), `WebSocket` connection.
+    -   **DENY**: `client.get_account` (in loop), `client.get_position` (in loop), `requests.get`.
+3.  **Data Flow**: WebSocket -> Cache -> Strategy. (Never Strategy -> API).
+
+**Execute Steps 1 through 5 immediately to restore system stability.**
