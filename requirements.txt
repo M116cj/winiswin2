@@ -29,6 +29,8 @@ ccxt==4.5.12
 # Machine Learning Dependencies
 xgboost==3.1.1
 scikit-learn==1.7.2
+lightgbm==4.1.0  # 🔥 LightGBM for SMC confidence scoring (Phase 5)
+polars==1.0.0    # 🔥 High-speed dataframe operations (Phase 5)
 
 # =============================================================================
 # Optional Dependencies (Install with: pip install -e .[extras])
@@ -58,9 +60,3 @@ scikit-learn==1.7.2
 # - For Railway deployment: only core dependencies needed
 # - Optional extras reduce deployment size by ~200MB
 # =============================================================================
-# Phase 3: Cleaned up duplicates and removed psycopg2-binary
-# All dependencies now listed above with pinned versions
-orjson==3.10.11
-redis==5.2.0
-tarsafe
-uvloop==0.21.0

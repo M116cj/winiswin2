@@ -1,0 +1,114 @@
+You are the **Chief Quantitative Architect** leading a major system transformation.
+
+**Current State:** 
+A stable, zero-polling Python system based on `asyncio` and `UnifiedWebSocketFeed`.
+
+**The Vision (New Requirements):**
+1.  **Market Coverage:** Monitor **ALL** Binance Futures pairs (300+) 24/7.
+2.  **Strategy Logic:** Pure **SMC/ICT** (Smart Money Concepts) specifically for **M1/M5 Scalping**.
+3.  **Decision Making:** Use a **LightGBM model** to calculate a "Confidence Score" (Win Rate Probability) based on SMC geometric features.
+4.  **Execution:** High win-rate, small consistent profits. Max holding time **2 hours**. Dynamic position sizing based on confidence.
+
+**Mission:** Execute the **"SMC-Quant Sharded Engine"** transformation plan.
+
+---
+
+### 🏗️ PHASE 1: The Sharded Infrastructure (Handling 300+ Pairs)
+
+#### 1.1 Dynamic Universe Discovery
+**File:** `src/core/market_universe.py`
+**Action:**
+-   Create class `BinanceUniverse`.
+-   Method `get_all_active_pairs()`: Fetch `exchangeInfo`, filter for `status="TRADING"`, `contractType="PERPETUAL"`, `quoteAsset="USDT"`.
+-   **Constraint:** Cache the list to avoid API limits. Refresh every 1 hour.
+
+#### 1.2 Shard Worker (Combined Streams)
+**File:** `src/core/websocket/shard_feed.py`
+**Action:**
+-   Inherit from `UnifiedWebSocketFeed`.
+-   Accept a **list of symbols** (chunk size ~50).
+-   Construct **Combined Stream URL**: `wss://fstream.binance.com/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/...`
+-   Parse incoming messages and route them to the Strategy Engine.
+
+#### 1.3 Cluster Orchestrator
+**File:** `src/core/cluster_manager.py`
+**Action:**
+-   Fetch all pairs from `BinanceUniverse`.
+-   Split pairs into chunks of 50.
+-   Spawn a `ShardFeed` for each chunk.
+-   Manage lifecycle: If a shard dies, restart it.
+
+---
+
+### 🧠 PHASE 2: The Intelligence Layer (SMC + ML)
+
+#### 2.1 SMC Geometry Engine (The Features)
+**File:** `src/core/smc_engine.py`
+**Action:**
+-   Implement `SMCEngine` class (Stateless/Lightweight).
+-   **Methods**:
+    -   `detect_fvg(kline_window)`: Identify Fair Value Gaps.
+    -   `detect_order_block(kline_window)`: Identify potential OBs.
+    -   `detect_liquidity_sweep(kline_window)`: Check if recent High/Low was swept.
+    -   `detect_structure(kline_window)`: Identify BOS (Break of Structure).
+-   **Optimization:** Ensure efficient calculation (numpy/numba if possible) for M1 speed.
+
+#### 2.2 ML Feature Engineer (Polars)
+**File:** `src/ml/feature_engineer.py`
+**Action:**
+-   Use `polars` for high-speed data manipulation.
+-   Method `compute_features(ohlcv)`:
+    -   Normalize all distances by ATR (Volatility).
+    -   Convert SMC patterns into numerical features (e.g., `dist_to_fvg_atr`, `is_in_ob`).
+-   This will be used by both the Trainer (offline) and the Predictor (online).
+
+#### 2.3 ML Predictor (Inference)
+**File:** `src/ml/predictor.py`
+**Action:**
+-   Load a pre-trained LightGBM model (path: `models/lgbm_smc.txt`).
+-   Method `predict_confidence(features) -> float`: Returns probability (0.0 - 1.0).
+-   *Note:* If model file is missing, return a default neutral score (0.5) but log a warning.
+
+---
+
+### 🛡️ PHASE 3: Strategy & Risk Management
+
+#### 3.1 Dynamic Risk Manager
+**File:** `src/core/risk_manager.py`
+**Action:**
+-   Method `calculate_size(confidence, balance)`:
+    -   **Score > 0.85 (High Confidence)**: Risk 2.0% Equity.
+    -   **Score > 0.70 (Med Confidence)**: Risk 1.0% Equity.
+    -   **Score < 0.60**: Size = 0 (No Trade).
+-   Method `check_time_exit(position)`:
+    -   If `(now - entry_time) > 2 hours`: Return `True` (Force Close).
+    -   If `(now - entry_time) > 30 mins` AND `pnl < 0.1%`: Return `True` (Stagnation Exit).
+
+#### 3.2 The ICT Scalper Strategy
+**File:** `src/strategies/ict_scalper.py`
+**Action:**
+-   This is the central logic unit called by `ShardFeed`.
+-   **On M1 Candle Close**:
+    1.  Update `SMCEngine` state.
+    2.  If Pattern Detected (e.g., Sweep + Reversal into FVG):
+    3.  Call `MLPredictor.predict_confidence()`.
+    4.  Call `RiskManager.calculate_size()`.
+    5.  If Size > 0: Signal `PositionController` to execute.
+
+---
+
+### 🔗 PHASE 4: System Integration
+
+#### 4.1 Main Entry Point
+**File:** `src/main.py`
+**Action:**
+-   Initialize `UnifiedConfig` & `UnifiedDatabase`.
+-   Initialize `ClusterManager` to start scanning 300+ pairs.
+-   Start the **Execution Loop** (listening for signals from the Cluster).
+
+---
+
+### 🧪 Dependencies Check
+Ensure `lightgbm`, `polars`, `numpy`, `scikit-learn` are in `pyproject.toml`.
+
+**Execute this comprehensive transformation now. Prioritize structure and integration.**

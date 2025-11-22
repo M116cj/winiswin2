@@ -1,11 +1,11 @@
 # SelfLearningTrader - Project Overview
 
 ## Overview
-SelfLearningTrader is an AI-driven, high-reliability, and high-performance automated cryptocurrency trading system. It leverages machine learning and advanced ICT/SMC strategies for trading decisions, aiming for true AI-driven trading. The system is optimized for cloud deployment platforms like Railway, boasting significant performance enhancements, including 4-5x faster data acquisition and an 85% cache hit rate. A key focus is strict adherence to exchange API protocols, achieving zero REST K-line API calls to prevent IP bans.
+SelfLearningTrader is an AI-driven, high-reliability, and high-performance automated cryptocurrency trading system. It utilizes machine learning and advanced ICT/SMC strategies to make trading decisions, aiming for true AI-driven trading. The system is optimized for cloud deployment and features efficient data acquisition and cache utilization. A core principle is strict adherence to exchange API protocols to prevent issues like IP bans.
 
 **Business Vision**: To provide a reliable, AI-driven automated trading solution for the cryptocurrency market.
 **Market Potential**: Addresses the growing demand for advanced, reliable, and compliant automated trading systems in the volatile crypto market.
-**Project Ambition**: Achieve 95%+ reliability for critical operations (e.g., 2-hour forced liquidation), ensure 100% Binance API compliance, and continuously optimize trading signal generation and execution through machine learning.
+**Project Ambition**: Achieve 95%+ reliability for critical operations, ensure 100% Binance API compliance, and continuously optimize trading signal generation and execution through machine learning.
 
 ## User Preferences
 I prefer iterative development with clear communication at each stage. Please ask before making major architectural changes or significant modifications to core logic. I prefer detailed explanations for complex decisions and changes.
@@ -13,155 +13,59 @@ I prefer iterative development with clear communication at each stage. Please as
 ## System Architecture
 
 ### UI/UX Decisions
-The system lacks a direct user interface; its "UX" is primarily delivered through clear, filtered logging and monitoring, specifically optimized for cloud environments like Railway. Logging is streamlined to focus on critical business metrics (model learning status, profitability, key trade execution info) and aggregated errors, reducing noise by 95-98%.
+The system primarily relies on clear, filtered logging and monitoring, optimized for cloud environments. Logging is streamlined to focus on critical business metrics and aggregated errors, significantly reducing noise.
 
 ### Technical Implementations
 
 #### Unified Manager Architecture v5.0
-This architecture is built on the "Single Source of Truth" principle to eliminate architectural chaos and unify management patterns across key layers:
--   **WebSocket Layer**: `UnifiedWebSocketFeed` (single heartbeat, Producer-Consumer architecture).
--   **Configuration Layer**: `UnifiedConfigManager` (single entry point for all environment variables).
+This architecture follows the "Single Source of Truth" principle, unifying management across key layers:
+-   **WebSocket Layer**: `UnifiedWebSocketFeed` (single heartbeat, Producer-Consumer).
+-   **Configuration Layer**: `UnifiedConfigManager` (single entry point for environment variables).
 -   **Database Layer**: `UnifiedDatabaseManager` (unified interface for `asyncpg` and Redis).
 
 #### Other Implementations
--   **Lifecycle Management**: `LifecycleManager` (singleton for graceful shutdown, signal handling), `StartupManager` (crash tracking), `Watchdog/Dead Man's Switch` (auto-restart), Railway-optimized zero-downtime deployment.
--   **AI/ML Core**: XGBoost model using a unified 12-feature ICT/SMC architecture for training and prediction (market structure, order blocks, liquidity grabs, fair value gaps). Models retrain automatically every 50 trades.
--   **Data Acquisition**: Producer-Consumer architecture with `asyncio.Queue` and three background worker threads to prevent event loop blocking. Features application-layer heartbeat monitor and robust reconnection logic. Employs a WebSocket-only K-line mode, eliminating REST K-line calls.
--   **Risk Management**: Dynamic leverage based on win rate and confidence, intelligent position sizing, dynamic stop-loss/take-profit adjustments, and seven smart exit strategies focused on capital preservation.
--   **Order Management**: `BinanceClient`, `OrderValidator`, and `SmartOrderManager` handle order precision, nominal value requirements, and common API errors.
--   **Caching**: Three-tier architecture: L1 memory cache for technical indicators, optional L2 Redis for hot database queries (30-60x speedup), and PostgreSQL as the source of truth. All operations are 100% async-safe and non-blocking.
--   **Database**: PostgreSQL serves as the unified data layer for all trading records and critical system states. Fully asynchronous using `asyncpg` with connection pooling for 100-300% performance improvement.
--   **Performance Stack**: `uvloop` for event loop (2-4x WebSocket throughput), `orjson` for JSON serialization (2-3x faster parsing), and Redis caching. All include graceful fallbacks.
--   **Configuration**: Flexible environment control and strategy tuning via feature toggle switches (e.g., `DISABLE_MODEL_TRAINING`, `RELAXED_SIGNAL_MODE`).
+-   **Lifecycle Management**: Includes `LifecycleManager` for graceful shutdown, `StartupManager` for crash tracking, and `Watchdog/Dead Man's Switch` for auto-restart, with Railway-optimized zero-downtime deployment.
+-   **AI/ML Core**: Uses XGBoost and LightGBM models with a 12-feature ICT/SMC architecture (market structure, order blocks, liquidity grabs, fair value gaps). Models retrain automatically.
+-   **Data Acquisition**: Employs a Producer-Consumer architecture with `asyncio.Queue` and background workers, featuring a WebSocket-only K-line mode to eliminate REST K-line calls and robust reconnection logic.
+-   **Risk Management**: Implements dynamic leverage, intelligent position sizing via Kelly Criterion, dynamic stop-loss/take-profit, and smart exit strategies.
+-   **Order Management**: `BinanceClient`, `OrderValidator`, and `SmartOrderManager` handle order precision, nominal values, and API error handling.
+-   **Caching**: A three-tier architecture comprising L1 memory cache, optional L2 Redis for hot queries, and PostgreSQL as the source of truth, all asynchronously safe.
+-   **Database**: PostgreSQL serves as the unified data layer, utilizing `asyncpg` for asynchronous operations and connection pooling.
+-   **Performance Stack**: Integrates `uvloop` for event loop acceleration, `orjson` for faster JSON serialization, and Redis caching.
+-   **Configuration**: Flexible environment control and strategy tuning are managed via feature toggle switches.
 
 ### Feature Specifications
 
 #### Dynamic Position Sizing with Kelly Criterion
--   **Formula**: `kelly_multiplier = (confidence - 0.5) * 4`.
--   **Confidence Mapping**: Adjusts position size based on confidence (e.g., ≤50% skip, 75% baseline, 100% double).
--   **Safety Limits**: Capped at 10% account equity post-Kelly, with a 50% absolute account limit.
--   **Benefit**: Risk-adjusted scaling for better capital efficiency and mathematically optimal long-term growth.
+Position sizing is dynamically adjusted based on trade confidence using a Kelly multiplier, with safety limits applied to account equity.
 
 #### Real-time Notification System
--   **`NotificationService`**: Fire-and-forget asynchronous notifications for Discord/Telegram.
--   **Events**: Covers trade opening, closing, and daily summaries with detailed metrics.
--   **Safety**: Non-blocking, error-isolated, and rate-limited.
--   **Configuration**: Optional via environment variables (`DISCORD_WEBHOOK_URL` or `TELEGRAM_TOKEN` + `TELEGRAM_CHAT_ID`).
+A `NotificationService` provides fire-and-forget asynchronous notifications for trade events and daily summaries via Discord/Telegram, ensuring non-blocking, error-isolated, and rate-limited operation.
 
 #### Database Optimization
--   **Indexing**: Six PostgreSQL indexes (e.g., `win_status`, `entry_time`, `pnl`) significantly reduce query times (60-80% improvement).
+Extensive PostgreSQL indexing significantly reduces query times.
 
 #### Local-First, Zero-Polling Architecture
--   **Problem Addressed**: Eliminated 2,880+ daily REST API calls for account/position data, which previously led to high IP ban and rate limit risks.
--   **Solution**: Implemented `AccountStateCache` (an in-memory singleton) updated via WebSockets. All data reads for strategies are synchronous (<1ms) and from this cache, preventing network calls in the main loop.
--   **Impact**: Zero REST API calls for data retrieval, 250-600x faster response times for data access, eliminated IP ban and rate limit risks.
+The `AccountStateCache` (in-memory singleton) is updated via WebSockets, eliminating periodic REST API calls for account data. This design reduces API calls, speeds up data access, and mitigates IP ban risks. Cache reconciliation mechanisms periodically verify data consistency against the REST API.
 
 #### Event Loop Performance & Data Integrity
--   **`uvloop` Integration**: Provides 2-4x faster event loop processing, minimizing "Queue Full" warnings.
--   **Cache Reconciliation Mechanism**: `AccountStateCache.reconcile()` detects and auto-repairs cache drift (data inconsistencies from WebSocket packet loss) every 15 minutes by comparing cache data against REST API (source of truth).
--   **Low-Frequency Sync Task**: A scheduled task performs reconciliation every 15 minutes, reducing API calls to 96/day (a 97% reduction from prior polling).
--   **Logging Optimization**: `SmartLogger` uses rate limiting and aggregation to reduce debug noise by 90%, preventing I/O blocking from excessive logging.
+`uvloop` integration enhances event loop processing. A cache reconciliation mechanism detects and repairs data inconsistencies by comparing cache data with the REST API. Optimized logging via `SmartLogger` reduces debug noise and I/O blocking.
+
+### System Design Choices
+
+#### SMC-QUANT Sharded Engine
+Transforms the system into a specialized M1/M5 SMC Scalper for 300+ pairs by implementing:
+-   **Sharded Infrastructure**: `BinanceUniverse` discovers and caches trading pairs, `ShardFeed` combines streams, and `ClusterManager` orchestrates shards, buffers klines, and routes signals.
+-   **Intelligence Layer**: `SMCEngine` detects SMC patterns (FVG, OB, LS, BOS) and calculates ATR. `FeatureEngineer` converts patterns and OHLCV into 12 numerical features for ML. `MLPredictor` uses LightGBM to predict trade confidence.
+-   **Strategy & Risk Management**: `RiskManager` implements dynamic position sizing based on prediction confidence and enforces forced exits. `ICTScalper` routes signals and coordinates with `RiskManager` for order execution.
 
 ## External Dependencies
--   **Binance API**: Used for real-time market data (WebSocket streams for K-lines, account, order updates) and order execution (REST API for account/order operations).
--   **PostgreSQL**: Primary database for persisting trading records, position entry times, and other critical system states.
--   **XGBoost**: Machine learning library used for predictive trading models.
--   **Asyncpg**: Asynchronous PostgreSQL driver for efficient database interaction.
--   **Railway**: Recommended cloud deployment platform, with specific optimizations for its environment (e.g., `sslmode=require`, `RailwayOptimizedFeed`).
--   **NumPy/Pandas**: Utilized in the technical indicators engine and for vectorized computations in data manipulation.
+-   **Binance API**: For real-time market data (WebSocket streams) and order execution (REST API).
+-   **PostgreSQL**: Primary database for all trading records and system states.
+-   **XGBoost**: Machine learning library for predictive models.
+-   **LightGBM**: Machine learning library for predictive models.
+-   **Asyncpg**: Asynchronous PostgreSQL driver.
+-   **Railway**: Recommended cloud deployment platform.
+-   **NumPy/Pandas**: Used in the technical indicators engine and for vectorized data computations.
+-   **Polars**: Used for high-speed data operations in feature engineering.
 -   **Websockets library**: Python library for WebSocket communication.
----
-
-# 🎯 STRICT LOGGING CONFIGURATION (2025-11-22 Complete)
-
-## Mission: Reduce Log Noise by 95-98% in Railway
-
-### The Challenge
-Logs flooded with noise:
-- "Queue Full" warnings from WebSocket
-- Health check spam every second
-- Scheduler task updates for every cycle
-- WebSocket connection details
-- Position controller routine checks
-
-**Result**: Impossible to debug, high I/O overhead, Railway logs useless
-
-### The Solution: Strict Logging Configuration (NEW)
-
-#### Component 1: New Logging Config File
-- **File**: `src/core/logging_config.py` (NEW - 180 lines)
-- **Implementation**: `logging.config.dictConfig` with strict rules
-- **Root Logger**: WARNING level (silences 95% of noise)
-
-#### Component 2: Integration
-- **File**: `src/main.py` (MODIFIED)
-- **Change**: `setup_strict_logging()` called as FIRST initialization
-- **Execution Order**: uvloop → strict logging → rest of app
-
-#### Component 3: Whitelist (INFO level - SHOWN)
-```
-✅ src.ml.*           → Model training/inference
-✅ src.strategies.*   → Trade signals & decisions
-✅ src.managers.unified_trade_recorder → PnL/Orders
-```
-
-#### Component 4: Blacklist (ERROR level - HIDDEN)
-```
-❌ src.monitoring.health_check
-❌ src.core.unified_scheduler
-❌ src.core.websocket.*         → "Queue Full" SUPPRESSED
-❌ src.core.position_controller
-❌ src.core.lifecycle_manager
-❌ websockets, aiohttp, asyncio, urllib3
-```
-
-### Impact - Verified
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Log Lines/Min** | 200-400 | 5-10 | **95-98% ✅** |
-| **Disk I/O** | High | Minimal | **90%+ ✅** |
-| **CPU (logging)** | 5-8% | <1% | **87-93% ✅** |
-| **Memory (buffers)** | 50-100MB | 5-10MB | **80-90% ✅** |
-
-### Expected Output (Production)
-
-Long silence... then only critical events:
-```
-2025-11-22 15:00:00 - src.ml.model_wrapper - INFO - 🤖 Model Training Complete: Accuracy=65%
-2025-11-22 15:05:00 - src.strategies.self_learning_trader - INFO - 🚀 SIGNAL: BUY BTCUSDT @ 98000
-2025-11-22 15:10:00 - src.managers.unified_trade_recorder - INFO - ✅ ORDER EXECUTED: PnL=$500
-2025-11-22 15:15:00 - __main__ - ERROR - ❌ Database Connection Failed!
-```
-
-### Verification Checklist
-
-✅ Configuration file created
-✅ Main.py updated (setup called first)
-✅ Old logging removed
-✅ Syntax verified
-✅ Workflow tested - logs show only critical info
-✅ "Queue Full" warnings: SUPPRESSED
-✅ Health checks: SUPPRESSED
-✅ WebSocket noise: SUPPRESSED
-✅ Model operations: VISIBLE
-✅ Trading events: VISIBLE
-✅ Critical errors: VISIBLE
-
-### Files Modified
-
-| File | Changes | Purpose |
-|------|---------|---------|
-| `src/core/logging_config.py` | **CREATED** | Strict logging config (+180 lines) |
-| `src/main.py` | **MODIFIED** | Setup called first |
-
-### Deployment Status
-
-**System is NOW**:
-- ✅ 95-98% less log noise
-- ✅ 90% less disk I/O
-- ✅ 87-93% less CPU (logging)
-- ✅ 80-90% less memory
-- ✅ Railway production-optimized
-- ✅ Only business metrics shown
-
