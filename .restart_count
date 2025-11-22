@@ -1,9 +1,9 @@
 {
   "crashes": [
-    1763820971.974066
+    1763821426.0139587
   ],
-  "total_crashes": 4,
+  "total_crashes": 5,
   "total_restarts": 1,
-  "last_crash_time": "2025-11-22T14:16:11.974249",
+  "last_crash_time": "2025-11-22T14:23:46.014138",
   "last_successful_start": "2025-11-20T13:37:33.137684"
 }

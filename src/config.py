@@ -1,6 +1,9 @@
 """
-v3.17+ 精簡配置管理
-職責：環境變量、常量定義、配置驗證（移除所有固定槓桿參數）
+🔥 v5.0+ 配置管理 - 后向兼容性层
+職責：转发到UnifiedConfigManager（单一真理来源）
+
+这个文件现在是后向兼容性层，所有旧的导入自动转发到新的统一管理器。
+现有代码无需改变，自动获得新的管理器优势。
 """
 
 import os
@@ -8,8 +11,31 @@ import sys
 from typing import Optional, List
 import logging
 
+# 🔥 v5.0+: 导入统一配置管理器
+try:
+    from src.core.unified_config_manager import config_manager as unified_config
+    _UNIFIED_CONFIG_AVAILABLE = True
+except ImportError:
+    _UNIFIED_CONFIG_AVAILABLE = False
+    unified_config = None
+
 class Config:
-    """系統配置管理類（v4.0+ 支持PostgreSQL）"""
+    """
+    🔥 v5.0+ 配置管理类 - 后向兼容性层
+    
+    这个类现在转发所有属性访问到 UnifiedConfigManager。
+    现有代码无需改变，自动使用新的统一管理器。
+    """
+    
+    def __getattribute__(self, name):
+        """后向兼容性：转发所有属性访问到UnifiedConfigManager"""
+        if _UNIFIED_CONFIG_AVAILABLE and unified_config:
+            try:
+                return getattr(unified_config, name)
+            except AttributeError:
+                pass
+        # 回退到旧的逻辑
+        return super().__getattribute__(name)
     
     # ===== Binance API 配置 =====
     BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
