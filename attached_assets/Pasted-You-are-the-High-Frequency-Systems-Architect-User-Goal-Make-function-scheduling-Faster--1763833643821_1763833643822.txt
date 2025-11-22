@@ -1,0 +1,55 @@
+You are the **High-Frequency Systems Architect**.
+
+**User Goal:** Make function scheduling "Faster, Smoother, and More Stable."
+**Diagnosis:** The current `await brain.process()` allows CPU-heavy math to block the WebSocket Event Loop, causing jitter.
+**Solution:** Implement a **Priority-Based Offloading Dispatcher**.
+
+**Mission:** Create `src/dispatch.py` and integrate it into the main loop.
+
+---
+
+### ⚡ PHASE 1: THE DISPATCHER ENGINE
+**File:** `src/dispatch.py` (New Core Component)
+**Action:** Implement `TaskDispatcher` class.
+1.  **Thread Pool Executor**: Initialize a `ThreadPoolExecutor(max_workers=4)` for CPU-heavy tasks (SMC/ML).
+2.  **Priority Queue**: Use `asyncio.PriorityQueue`.
+    -   Items: `(Priority, Coroutine)`.
+    -   Levels: 
+        -   `0`: SYSTEM_CRITICAL (Error handling, Reconnect)
+        -   `1`: EXECUTION (Order placement, Cancellation)
+        -   `2`: ANALYSIS (SMC, ML Prediction) - *Run in Thread*
+        -   `3`: DATA_INGESTION (Saving to DB)
+3.  **Worker Loop**: Create a background task that constantly pulls from the Queue and executes.
+
+### 🧠 PHASE 2: OFFLOADING THE BRAIN (Non-Blocking Math)
+**File:** `src/dispatch.py`
+**Action:** Add method `submit_cpu_bound(func, *args)`.
+-   **Logic:** Wrap the function call in `loop.run_in_executor(self.thread_pool, func, *args)`.
+-   **Benefit:** The Main Loop (WebSockets) CONTINUES running while the Brain thinks. No more lag spikes.
+
+### 🔄 PHASE 3: INTEGRATION
+**File:** `src/main.py` & `src/data.py`
+**Action:**
+1.  Initialize `dispatcher = TaskDispatcher()` on startup.
+2.  **Refactor Data Ingestion**:
+    -   Instead of `await brain.process(candle)`, do:
+    -   `dispatcher.submit_cpu_bound(brain.process, candle)` (Fire and Forget).
+3.  **Refactor Execution**:
+    -   When Brain finds a signal, do:
+    -   `dispatcher.submit_priority(1, trade.execute_order, signal)` (High Priority).
+
+### 🏎️ PHASE 4: OBJECT POOLING (Memory Smoothness)
+**File:** `src/core/models.py`
+**Action:**
+Implement a simple **Object Pool** for `Candle` and `Signal` objects.
+-   **Pre-allocate** 10,000 objects on startup.
+-   **Acquire/Release**: When `data.py` needs a Candle, pop from pool. When `brain.py` is done, reset and push back to pool.
+-   **Result:** Drastically reduces Garbage Collection (GC) pauses.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  Verify that `SMC` calculations are running in a separate thread ID than the Main Loop.
+2.  Verify that High Priority tasks (Orders) are processed before queued Low Priority tasks (Data logging).
+
+**Execute this Scheduler Optimization now.**

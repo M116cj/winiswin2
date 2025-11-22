@@ -1,9 +1,10 @@
 """
-📡 Data Module - Market Data + Signal Generation (High-Performance)
+📡 Data Module - Market Data + Signal Generation (High-Performance + Dispatcher)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Merged: Feed (ingestion) + Brain (SMC analysis & signal generation)
 Includes time-based conflation to smooth high-frequency data streams.
+CPU-heavy analysis offloaded to thread pool via dispatcher.
 """
 
 import logging
@@ -14,6 +15,7 @@ from time import time
 
 from src.bus import bus, Topic
 from src.indicators import Indicators
+from src.dispatch import get_dispatcher, Priority
 
 logger = logging.getLogger(__name__)
 
@@ -82,8 +84,12 @@ async def _conflation_loop(symbols: List[str]) -> None:
     This dramatically smooths processing of high-frequency data streams.
     Instead of processing every tick, we process only the latest state
     at fixed intervals, eliminating micro-stutters.
+    
+    CPU-heavy analysis is offloaded to thread pool, preventing event loop blocking.
     """
     global _last_flush_time
+    
+    dispatcher = get_dispatcher()
     
     logger.info(f"🌊 Conflation loop started (interval={_conflation_interval*1000:.0f}ms, {len(symbols)} symbols)")
     
@@ -98,8 +104,11 @@ async def _conflation_loop(symbols: List[str]) -> None:
             for symbol in symbols:
                 if symbol in _latest_ticks:
                     tick = _latest_ticks[symbol]
-                    # Process the latest tick
-                    await _process_candle(tick)
+                    # Offload CPU-heavy analysis to thread pool (Priority.ANALYSIS)
+                    await dispatcher.submit_priority(
+                        Priority.ANALYSIS,
+                        _process_candle(tick)
+                    )
             
             _last_flush_time = current_time
             logger.debug(f"💫 Conflation flush (elapsed={elapsed*1000:.1f}ms, symbols={len([s for s in symbols if s in _latest_ticks])})")

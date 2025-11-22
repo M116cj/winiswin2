@@ -1,0 +1,55 @@
+You are the **Kernel-Level Systems Engineer**.
+
+**User Goal:** "Even faster, smoother."
+**Current Limit:** ThreadPools still contend for the GIL. Standard Multiprocessing uses slow Pickle serialization.
+**Solution:** Implement a **Shared Memory Ring Buffer (LMAX Disruptor Pattern)**.
+
+**Architecture:**
+1.  **Process 1 (Feed)**: Writes raw candle data (float64) directly into a shared memory block.
+2.  **Process 2 (Brain)**: Reads from the same memory block via a cursor, calculates SMC, and executes trades.
+3.  **No Locks**: Single-Writer / Single-Reader design eliminates the need for slow mutex locks.
+
+---
+
+### 🛠️ PHASE 1: THE SHARED RING BUFFER
+**File:** `src/ring_buffer.py` (New Core)
+**Action:**
+1.  Use `multiprocessing.shared_memory.SharedMemory`.
+2.  **Structure**: Pre-allocate a buffer for 10,000 slots.
+    -   Each slot is a `struct` of `(timestamp, open, high, low, close, volume)` -> 6 floats (48 bytes).
+    -   Total Size: ~480KB (Tiny, fits in CPU L2 Cache).
+3.  **Pointers**: Maintain `write_cursor` and `read_cursor` in a separate tiny shared memory block (`'I'` unsigned int).
+4.  **Methods**:
+    -   `write(candle_tuple)`: Writes floats to buffer at `write_cursor % size`. Increments cursor.
+    -   `read_new()`: Generator that yields new slots while `read_cursor < write_cursor`.
+
+### 🛠️ PHASE 2: SPLIT THE SYSTEM
+**File:** `src/main.py`
+**Action:**
+Refactor startup to launch two independent processes:
+1.  **Process Feed**:
+    -   Runs `uvloop` + WebSocket.
+    -   On tick -> `ring_buffer.write(data)`.
+    -   *Benefit:* It NEVER waits for the strategy. It can handle 100k ticks/sec.
+2.  **Process Brain**:
+    -   Runs `while True` loop (or `uvloop` for ordering).
+    -   Polls `ring_buffer.read_new()`.
+    -   Runs `SMC` + `ML` + `Trade`.
+    -   *Benefit:* It has its own CPU core and GIL.
+
+### 🛠️ PHASE 3: STRUCT PACKING (The Speed Secret)
+**File:** `src/data.py`
+**Action:**
+-   Use Python's `struct` module (`struct.pack`, `struct.unpack_from`) to interact with the buffer.
+-   **Why?** This is 50x faster than pickling objects.
+
+### 🛡️ PHASE 4: CLEANUP
+**Action:** Ensure `SharedMemory` is unlinked/closed properly on `KeyboardInterrupt` to avoid memory leaks in the OS.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  Verify that two processes are running (PID check).
+2.  Measure the latency between "Write" and "Read" (should be microseconds).
+
+**Execute this Kernel-Level Optimization.**

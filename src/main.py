@@ -1,9 +1,9 @@
 """
-🚀 Main - Quantum Event-Driven Trading Engine (High-Performance)
+🚀 Main - Quantum Event-Driven Trading Engine (High-Performance + Dispatcher)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Orchestration with uvloop event loop, GC optimization, and error resilience.
-Flow: Data (ticks) → Brain (signals) → Trade (execution) → State (updates)
+Orchestration with uvloop, GC optimization, priority dispatcher, and resilience.
+Flow: Data (ticks) → Dispatcher → Analysis (threaded) → Trade → State
 """
 
 import asyncio
@@ -19,6 +19,7 @@ except ImportError:
     logging.warning("⚠️ uvloop not installed, using default event loop")
 
 from src import data, trade
+from src.dispatch import init_dispatcher
 
 logging.basicConfig(
     level=logging.INFO,
@@ -52,23 +53,29 @@ def optimize_gc():
 
 async def main():
     """
-    Start quantum event-driven trading engine with resilience
+    Start quantum event-driven trading engine with priority dispatcher
     
     Flow:
     1. Optimize GC
-    2. Initialize modules (they auto-subscribe to EventBus)
-    3. Start data feed (heartbeat)
-    4. Keep alive with auto-reconnect
+    2. Initialize dispatcher (priority queue + thread pool)
+    3. Initialize modules (they auto-subscribe to EventBus)
+    4. Start data feed (heartbeat)
+    5. Keep alive with auto-reconnect
     """
     retry_count = 0
     max_retries = 5
     
     while retry_count < max_retries:
         try:
-            logger.info("🚀 Starting Quantum Event-Driven Engine (uvloop + GC optimized)")
+            logger.info("🚀 Starting Quantum Event-Driven Engine (uvloop + Dispatcher + GC optimized)")
             
             # Optimize garbage collection
             optimize_gc()
+            
+            # Initialize priority dispatcher
+            logger.info("⚡ Initializing TaskDispatcher...")
+            dispatcher = await init_dispatcher()
+            logger.info("✅ TaskDispatcher ready")
             
             # Initialize modules in order
             await trade.init()
@@ -90,7 +97,7 @@ async def main():
         
         except Exception as e:
             retry_count += 1
-            logger.error(f"❌ Error (retry {retry_count}/{max_retries}): {e}")
+            logger.error(f"❌ Error (retry {retry_count}/{max_retries}): {e}", exc_info=True)
             
             if retry_count < max_retries:
                 wait_time = 2 ** retry_count  # Exponential backoff
@@ -115,5 +122,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("Terminated by user")
     except Exception as e:
-        logger.critical(f"Fatal error: {e}")
+        logger.critical(f"Fatal error: {e}", exc_info=True)
         sys.exit(1)

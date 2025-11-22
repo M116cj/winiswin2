@@ -10,7 +10,7 @@ from typing import Tuple
 import numpy as np
 
 try:
-    from numba import jit, njit
+    from numba import jit, njit  # type: ignore
     HAS_NUMBA = True
 except ImportError:
     HAS_NUMBA = False
@@ -63,11 +63,11 @@ def _calculate_rsi_fast(prices: np.ndarray, period: int) -> float:
     avg_loss = np.mean(losses[-period:])
     
     if avg_loss == 0:
-        return float(100.0)
+        return 100.0
     
     rs = avg_gain / avg_loss
-    result: float = 100.0 - (100.0 / (1.0 + rs))
-    return result
+    rsi_value = 100.0 - (100.0 / (1.0 + rs))
+    return float(rsi_value)
 
 
 class Indicators:
