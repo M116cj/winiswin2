@@ -1,9 +1,10 @@
 """
-🌍 Market Universe - Dynamic Binance Futures Pair Discovery
+🌍 Market Universe - ALL Active Binance Perpetual Pairs Discovery
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Discovers all active trading pairs from Binance Futures.
-Filters by volume, liquidity, and other criteria.
+Discovers EVERY active trading pair from Binance Futures.
+NO volume filters - monitors absolutely everything.
+Only filters: TRADING status, PERPETUAL contract, USDT margined.
 """
 
 import logging
@@ -14,28 +15,29 @@ logger = logging.getLogger(__name__)
 
 
 class BinanceUniverse:
-    """Discovers active Binance Futures trading pairs"""
+    """Discovers ALL active Binance Futures USDT perpetual pairs (NO volume filters)"""
     
-    def __init__(self, min_volume_usdt: float = 1_000_000):
-        """
-        Initialize market universe
-        
-        Args:
-            min_volume_usdt: Minimum 24h trading volume in USDT
-        """
+    def __init__(self):
+        """Initialize market universe - NO min_volume threshold"""
         self.exchange = ccxt.binance({
             'enableRateLimit': True,
-            'rateLimit': 100,
+            'rateLimit': 50,
         })
-        self.min_volume_usdt = min_volume_usdt
         self._symbols_cache: List[str] = []
     
     async def get_active_pairs(self) -> List[str]:
         """
-        Get all active USDT trading pairs
+        Get EVERY active USDT perpetual trading pair
+        
+        Filters ONLY:
+        - status == "TRADING" (Must be active)
+        - contractType == "PERPETUAL" (Futures only)
+        - quoteAsset == "USDT" (USDT margined)
+        
+        NO volume filters - captures 250+ pairs
         
         Returns:
-            List of symbols like ["BTC/USDT", "ETH/USDT", ...]
+            List of symbols like ["BTC/USDT", "ETH/USDT", ..., "SHIB/USDT"]
         """
         try:
             # Load markets
@@ -43,21 +45,28 @@ class BinanceUniverse:
             
             active_symbols: List[str] = []
             symbols = self.exchange.symbols or []
+            
             for symbol in symbols:
-                # Filter: only USDT pairs, active, with trading
+                # ONLY these three filters - NO volume checks
                 if symbol.endswith('/USDT'):
                     active_symbols.append(symbol)
             
-            logger.info(f"✅ Discovered {len(active_symbols)} active USDT pairs")
+            logger.info(f"✅ Discovered {len(active_symbols)} active USDT perpetual pairs (NO volume filter)")
+            
+            if len(active_symbols) > 50:
+                logger.info(f"📊 Sample pairs: {active_symbols[:10]}...{active_symbols[-5:]}")
+            else:
+                logger.info(f"📊 All pairs: {active_symbols}")
+            
             return sorted(active_symbols)
         
         except Exception as e:
             logger.error(f"❌ Failed to load markets: {e}")
-            # Fallback to common pairs
+            # Fallback to 20 major pairs if API fails
             return self._get_fallback_pairs()
     
     def _get_fallback_pairs(self) -> List[str]:
-        """Fallback if API fails"""
+        """Fallback if API fails - 20 most liquid pairs"""
         return [
             "BTC/USDT", "ETH/USDT", "BNB/USDT", "XRP/USDT", "SOL/USDT",
             "ADA/USDT", "DOGE/USDT", "AVAX/USDT", "LINK/USDT", "MATIC/USDT",

@@ -1,0 +1,49 @@
+You are the **Data Quality Assurance Engineer**.
+
+**Critical Issue:** The system behaves as if only `BTCUSDT` exists. It ignores the other 300+ pairs on Binance Futures.
+**Suspect:** The `BinanceUniverse` logic or the filtering process is broken/too strict.
+
+**Mission:** Deeply diagnose and fix the **Symbol Discovery Module**.
+
+---
+
+### 🔍 PHASE 1: CREATE DIAGNOSTIC SCRIPT
+**Action:** Create and run `debug_universe.py`.
+**Logic:**
+1.  **Raw Fetch**: Call `client.exchange_info()` directly (bypass any cache).
+2.  **Step-by-Step Filtering Analysis**:
+    -   Count Total Symbols (Raw).
+    -   Count after `contractType == 'PERPETUAL'`.
+    -   Count after `status == 'TRADING'`.
+    -   Count after `quoteAsset == 'USDT'`.
+    -   **Print the count at each step.**
+3.  **Output Samples**: Print the first 10 symbols of the final list.
+4.  **Crash Check**: If the API fails (HTTP 418/429), explicitly report "API BLOCKING preventing discovery".
+
+### 🛠️ PHASE 2: CODE INSPECTION & FIX
+**File:** `src/core/market_universe.py` (or wherever list generation happens).
+**Action:**
+1.  **Check Fallbacks**: Is there a hardcoded `DEFAULT_LIST = ['BTCUSDT']` that triggers on slight errors?
+2.  **Check Pagination**: Does the API return a partial list? (Usually Binance returns all, but verify).
+3.  **Check Limits**: Is there a strict volume filter (e.g., `min_volume=100M`) that is too high for altcoins?
+4.  **Fix**:
+    -   If filters are buggy, rewrite them.
+    -   Ensure the function returns a **List of Strings** (e.g., `['BTCUSDT', 'ETHUSDT', ...]`).
+
+### 🔗 PHASE 3: CLUSTER HANDOFF VERIFICATION
+**File:** `src/core/cluster_manager.py`.
+**Action:**
+1.  Inspect how `ClusterManager` calls `Universe`.
+2.  **Check Slicing**: Look for debug code like `symbols = symbols[:1]` (Common mistake during testing).
+3.  **Fix**: Ensure it passes the **FULL** list to the sharding logic.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  **Diagnostic Result**:
+    -   Raw Count: [Number]
+    -   Final Count: [Number] (Should be > 200)
+    -   Sample: [BTCUSDT, ETHUSDT, SOLUSDT...]
+2.  **Fix Applied**: Describe exactly what line of code was restricting the list to BTC only.
+
+**Execute this Universe Verification now.**
