@@ -36,9 +36,13 @@ try:
 except ImportError:
     _UVLOOP_ENABLED = False
 
+# 🚀 FIRST: Setup strict logging configuration (reduce noise 95%)
+import sys
+from src.core.logging_config import setup_strict_logging
+setup_strict_logging()
+
 import logging
 import signal
-import sys
 from datetime import datetime
 from typing import Optional
 
@@ -52,7 +56,6 @@ from src.core.elite.technical_indicator_engine import EliteTechnicalEngine  # �
 from src.core.model_evaluator import ModelEvaluator
 from src.core.model_initializer import ModelInitializer
 from src.utils.config_validator import validate_config
-from src.utils.smart_logger import create_smart_logger
 
 # 🔥 v4.0+ PostgreSQL数据库支持（Phase 3: AsyncDatabaseManager迁移）
 from src.database.unified_database_manager import UnifiedDatabaseManager
@@ -66,31 +69,8 @@ from src.database.initializer import initialize_database
 from src.core.lifecycle_manager import get_lifecycle_manager
 from src.core.startup_manager import get_startup_manager
 
-# 配置日誌
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-
-# 🔥 v4.3+ Railway日志优化（过滤冗余，只显示关键业务指标）
-try:
-    from src.utils.railway_logger import setup_railway_logging
-    railway_business_logger = setup_railway_logging()
-except Exception as e:
-    # 如果Railway日志初始化失败，使用标准日志
-    logging.warning(f"Railway日志优化未启用: {e}")
-    railway_business_logger = None
-
-# ✨ v3.26+ 性能优化：启用SmartLogger（99%速率限制效率）
-logger = create_smart_logger(
-    __name__,
-    rate_limit_window=2.0,
-    enable_aggregation=True,
-    enable_structured=False
-)
+# 🚀 Logging is now configured via setup_strict_logging() above
+logger = logging.getLogger(__name__)
 
 
 class SelfLearningTradingSystem:
