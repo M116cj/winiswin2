@@ -1,0 +1,59 @@
+You are the **DevOps & System Optimization Specialist**.
+
+**Objective:** drastically reduce log noise in Railway. 
+The user ONLY wants to see:
+1.  **Model Operations** (ML predictions, training results).
+2.  **Critical Trading Events** (Buy/Sell orders, PnL).
+3.  **System Errors** (ERROR/CRITICAL logs).
+
+**Current Problem:** The logs are flooded with "Queue Full" warnings, "Health Check" info, "Scheduler" updates, and WebSocket connection details. This is causing I/O overhead and making debugging impossible.
+
+**Mission:** Implement a **"Strict Filtering" Logging Configuration**.
+
+### 🛠️ STEP 1: Rewrite Logger Configuration
+**File:** `src/utils/smart_logger.py` (or create `src/core/logging_config.py` if better)
+**Action:** 
+Implement `logging.config.dictConfig` with the following strict rules:
+
+1.  **Root Logger**: Set level to `WARNING`. (This silences all INFO logs by default).
+2.  **Format**: Use a clean format: `%(asctime)s - %(name)s - %(levelname)s - %(message)s`.
+
+3.  **Whitelist (Allow INFO):**
+    *   `src.ml` (To see model training/inference).
+    *   `src.strategies` (To see trade signals).
+    *   `src.managers.unified_trade_recorder` (To see PnL/Orders).
+    *   `src.clients.binance_client` (Only if it logs order execution, otherwise WARNING).
+
+4.  **Blacklist (Silence/Warning Only):**
+    *   `src.monitoring.health_check`: Set to `ERROR` (Hide "Healthy" spam).
+    *   `src.core.unified_scheduler`: Set to `ERROR` (Hide "Task started/stopped").
+    *   `src.core.websocket`: Set to `ERROR` (Hide "Queue Full" warnings and connection info).
+    *   `src.core.position_controller`: Set to `ERROR` (Hide routine checks).
+    *   `src.core.concurrent_dict_manager`: Set to `ERROR`.
+
+5.  **Third-Party Libraries (Silence):**
+    *   `websockets`: Set to `ERROR`.
+    *   `aiohttp`: Set to `ERROR`.
+    *   `asyncio`: Set to `ERROR`.
+    *   `urllib3`: Set to `ERROR`.
+
+### 🛠️ STEP 2: Apply Configuration on Startup
+**File:** `src/main.py`
+**Action:**
+- Import the new logging setup.
+- Call `setup_logging()` as the VERY FIRST line of code in `main()` or `run()`.
+
+### 🛠️ STEP 3: Code Cleanup (Optional but recommended)
+**Action:**
+- Scan `src/core/websocket/unified_feed.py`.
+- Look for the "Queue Full" log. Change it from `logger.warning` to `logger.debug` (so it is completely ignored in production unless debug mode is on). This is better than just filtering it, as it saves the string formatting cost.
+
+---
+
+### 🧪 Expected Log Output Example:
+*(Nothing prints for minutes...)*
+`2025-11-22 14:50:00 - src.ml.model_wrapper - INFO - 🤖 Model Training Complete: Accuracy=65%`
+`2025-11-22 14:55:00 - src.strategies.self_learning_trader - INFO - 🚀 SIGNAL: BUY BTCUSDT @ 98000`
+`2025-11-22 15:00:00 - root - ERROR - ❌ Database Connection Failed!`
+
+**Execute this configuration update now.**

@@ -189,7 +189,8 @@ class UnifiedScheduler:
             tasks = [
                 asyncio.create_task(self._position_monitoring_loop()),
                 asyncio.create_task(self._trading_cycle_loop()),
-                asyncio.create_task(self._daily_report_loop())
+                asyncio.create_task(self._daily_report_loop()),
+                asyncio.create_task(self._low_frequency_sync_loop())  # 🔥 每15分鐘一次缓存一致性检验
             ]
             
             logger.info("✅ 所有任務已啟動")
@@ -284,6 +285,59 @@ class UnifiedScheduler:
             
         except Exception as e:
             logger.error(f"❌ 每日報告循環失敗: {e}", exc_info=True)
+    
+    async def _low_frequency_sync_loop(self):
+        """🔥 低頻同步循環（每15分鐘一次）- 防止WebSocket缺包導致缓存漂移"""
+        try:
+            logger.info("🔄 低頻同步循環已啟動（每15分鐘檢查一次缓存一致性）")
+            
+            sync_count = 0
+            while self.is_running:
+                try:
+                    await asyncio.sleep(900)  # 等待15分鐘（900秒）
+                    
+                    if not self.is_running:
+                        break
+                    
+                    sync_count += 1
+                    logger.info(f"🔄 低頻同步 #{sync_count}: 檢查缓存一致性...")
+                    
+                    # 從REST API获取账户数据（完整调用）
+                    try:
+                        account_info = await self.binance_client.get_account_info()
+                        
+                        if account_info:
+                            # 通过 reconcile() 检查缓存是否存在漂移
+                            result = account_state_cache.reconcile(account_info)
+                            
+                            if result['status'] == 'warning':
+                                logger.warning(
+                                    f"⚠️ 缓存漂移检测: 已自动修复 "
+                                    f"{len(result['balance_mismatches'])} 个余额问题, "
+                                    f"{len(result['position_mismatches'])} 个持仓问题。"
+                                    f"WebSocket可能丢失了包。"
+                                )
+                            elif result['status'] == 'ok':
+                                logger.debug("✅ 缓存一致性验证通过 - 无漂移")
+                            else:
+                                logger.error(f"❌ 缓存一致性验证失败: {result}")
+                        else:
+                            logger.warning("⚠️ REST API获取账户信息失败（回调将继续使用缓存）")
+                    
+                    except Exception as e:
+                        logger.warning(f"⚠️ 低頻同步失敗: {e}（将继续使用缓存，下一个同步周期重试）")
+                        # 不中断循环，继续等待下一个同步周期
+                
+                except asyncio.CancelledError:
+                    logger.info("🛑 低頻同步循環已取消")
+                    break
+                
+                except Exception as e:
+                    logger.error(f"❌ 低頻同步循環異常: {e}", exc_info=True)
+                    # 继续运行，不中断
+        
+        except Exception as e:
+            logger.error(f"❌ 低頻同步循環啟動失敗: {e}", exc_info=True)
     
     async def _execute_trading_cycle(self):
         """執行單次交易週期"""

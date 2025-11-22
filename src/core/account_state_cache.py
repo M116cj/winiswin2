@@ -210,6 +210,153 @@ class AccountStateCache:
         self._open_orders.clear()
         self._update_count = 0
         logger.warning("⚠️  缓存已清空")
+    
+    # ==================== 数据一致性 ====================
+    
+    def reconcile(self, api_data: Dict) -> Dict:
+        """
+        🔥 数据一致性校验（防止WebSocket包丢失）
+        
+        与REST API数据对比，检测WebSocket丢包问题
+        
+        Args:
+            api_data: 来自REST API的账户数据
+        
+        Returns:
+            {
+                'status': 'ok' | 'warning' | 'error',
+                'balance_mismatches': [...],
+                'position_mismatches': [...],
+                'reconciled': bool
+            }
+        """
+        result = {
+            'status': 'ok',
+            'balance_mismatches': [],
+            'position_mismatches': [],
+            'reconciled': False
+        }
+        
+        try:
+            # 解析API数据中的余额
+            api_balances = {}
+            if 'balances' in api_data:
+                for b in api_data['balances']:
+                    asset = b.get('asset', '')
+                    free = float(b.get('free', 0))
+                    locked = float(b.get('locked', 0))
+                    if free > 0 or locked > 0:
+                        api_balances[asset] = {'free': free, 'locked': locked, 'total': free + locked}
+            
+            # 比较缓存余额
+            for asset, api_balance in api_balances.items():
+                cache_balance = self._balances.get(asset)
+                
+                if not cache_balance:
+                    result['balance_mismatches'].append({
+                        'asset': asset,
+                        'issue': 'missing_in_cache',
+                        'api': api_balance,
+                        'cache': None
+                    })
+                    # 更新缓存
+                    self._balances[asset] = api_balance
+                    result['reconciled'] = True
+                    logger.warning(f"⚠️ 缓存漂移: {asset} 在WebSocket中缺失，已从API恢复")
+                
+                elif abs(cache_balance['total'] - api_balance['total']) > 0.0001:
+                    result['balance_mismatches'].append({
+                        'asset': asset,
+                        'issue': 'amount_mismatch',
+                        'api': api_balance,
+                        'cache': cache_balance
+                    })
+                    # 更新缓存为API值（API是真实来源）
+                    old_total = cache_balance['total']
+                    self._balances[asset] = api_balance
+                    result['reconciled'] = True
+                    logger.warning(
+                        f"⚠️ 缓存漂移: {asset} 数额不匹配 "
+                        f"(缓存: {old_total:.8f}, API: {api_balance['total']:.8f}), "
+                        f"已更新缓存"
+                    )
+            
+            # 解析API数据中的持仓
+            api_positions = {}
+            if 'positions' in api_data:
+                for p in api_data['positions']:
+                    symbol = p.get('symbol', '').lower()
+                    amt = float(p.get('positionAmt', 0))
+                    if abs(amt) > 0.0001:
+                        api_positions[symbol] = {
+                            'amount': amt,
+                            'entry_price': float(p.get('entryPrice', 0)),
+                            'unrealized_pnl': float(p.get('unrealizedProfit', 0))
+                        }
+            
+            # 比较缓存持仓
+            for symbol, api_pos in api_positions.items():
+                cache_pos = self._positions.get(symbol)
+                
+                if not cache_pos:
+                    result['position_mismatches'].append({
+                        'symbol': symbol,
+                        'issue': 'missing_in_cache',
+                        'api': api_pos,
+                        'cache': None
+                    })
+                    self._positions[symbol] = api_pos
+                    result['reconciled'] = True
+                    logger.warning(f"⚠️ 缓存漂移: {symbol} 持仓在WebSocket中缺失，已从API恢复")
+                
+                elif abs(cache_pos['amount'] - api_pos['amount']) > 0.0001:
+                    result['position_mismatches'].append({
+                        'symbol': symbol,
+                        'issue': 'amount_mismatch',
+                        'api': api_pos,
+                        'cache': cache_pos
+                    })
+                    old_amount = cache_pos['amount']
+                    self._positions[symbol] = api_pos
+                    result['reconciled'] = True
+                    logger.warning(
+                        f"⚠️ 缓存漂移: {symbol} 持仓不匹配 "
+                        f"(缓存: {old_amount}, API: {api_pos['amount']}), "
+                        f"已更新缓存"
+                    )
+            
+            # 检查缓存中存在但API中不存在的持仓（已平仓）
+            for symbol in list(self._positions.keys()):
+                if symbol not in api_positions:
+                    result['position_mismatches'].append({
+                        'symbol': symbol,
+                        'issue': 'closed_in_api',
+                        'api': None,
+                        'cache': self._positions[symbol]
+                    })
+                    del self._positions[symbol]
+                    result['reconciled'] = True
+                    logger.warning(f"⚠️ 缓存漂移: {symbol} 已平仓但缓存中仍存在，已清除")
+            
+            # 设置状态
+            if result['reconciled']:
+                if result['balance_mismatches'] or result['position_mismatches']:
+                    result['status'] = 'warning'
+                    logger.warning(
+                        f"⚠️ 检测到缓存漂移: {len(result['balance_mismatches'])} 个余额问题, "
+                        f"{len(result['position_mismatches'])} 个持仓问题。"
+                        f"已自动修复。这表明WebSocket可能丢失了部分包。"
+                    )
+            else:
+                result['status'] = 'ok'
+                logger.debug("✅ 缓存一致性验证: 无漂移")
+            
+            return result
+        
+        except Exception as e:
+            logger.error(f"❌ 缓存一致性校验失败: {e}")
+            result['status'] = 'error'
+            return result
 
 
 # 全局单例实例
