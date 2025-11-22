@@ -37,6 +37,10 @@ _account_state = {
 # Lock for async-safe state mutations
 _state_lock = asyncio.Lock()
 
+# FIX 2: Failed Order Cooldown - Prevent infinite retry loops
+# Maps symbol -> timestamp of last failed order
+_failed_order_cooldown: Dict[str, float] = {}
+
 
 def _generate_signature(query_string: str) -> str:
     """
@@ -52,12 +56,17 @@ def _generate_signature(query_string: str) -> str:
         logger.error("❌ BINANCE_API_SECRET not set - cannot sign requests")
         return ""
     
+    # FIX 3: Debugging - Log masked API key for verification
+    key_preview = f"{BINANCE_API_SECRET[:3]}***{BINANCE_API_SECRET[-3:]}" if len(BINANCE_API_SECRET) >= 6 else "***"
+    logger.debug(f"🔐 Signing request with API key: {key_preview} (length: {len(BINANCE_API_SECRET)})")
+    
     signature = hmac.new(
         BINANCE_API_SECRET.encode('utf-8'),
         query_string.encode('utf-8'),
         hashlib.sha256
     ).hexdigest()
     
+    logger.debug(f"✅ Signature generated: {signature[:16]}...")
     return signature
 
 
@@ -207,10 +216,19 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
                     except:
                         pass
                     
+                    # FIX 2: Record cooldown for this symbol to prevent infinite retry loops
+                    _failed_order_cooldown[symbol] = time.time()
+                    logger.info(f"❄️ COOLDOWN ACTIVATED: {symbol} - Skipping new signals for 60 seconds")
+                    
                     return None
     
     except Exception as e:
         logger.error(f"❌ Order execution failed: {e}", exc_info=True)
+        
+        # FIX 2: Record cooldown for exception cases too
+        _failed_order_cooldown[symbol] = time.time()
+        logger.info(f"❄️ COOLDOWN ACTIVATED: {symbol} - Exception during order execution")
+        
         return None
 
 
@@ -327,6 +345,21 @@ async def _check_risk(signal: Dict) -> None:
     symbol = signal.get('symbol', '')
     confidence = signal.get('confidence', 0)
     position_size = signal.get('position_size', 0)
+    
+    # FIX 2: Check if this symbol is in cooldown (failed order recently)
+    current_time = time.time()
+    COOLDOWN_DURATION = 60  # 60 seconds cooldown after failed order
+    
+    if symbol in _failed_order_cooldown:
+        time_since_failure = current_time - _failed_order_cooldown[symbol]
+        if time_since_failure < COOLDOWN_DURATION:
+            remaining = COOLDOWN_DURATION - time_since_failure
+            logger.info(f"⏸️ COOLDOWN: {symbol} - Failed order 🔄 in progress, skipping signal (remaining: {remaining:.0f}s)")
+            return  # Ignore this signal
+        else:
+            # Cooldown expired, remove from dict
+            del _failed_order_cooldown[symbol]
+            logger.info(f"✅ Cooldown expired: {symbol} - Ready for new signals")
     
     # Get current state (thread-safe)
     async with _state_lock:

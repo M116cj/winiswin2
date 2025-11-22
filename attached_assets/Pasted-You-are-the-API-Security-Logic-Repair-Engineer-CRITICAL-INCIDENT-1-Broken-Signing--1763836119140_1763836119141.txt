@@ -1,0 +1,81 @@
+You are the **API Security & Logic Repair Engineer**.
+
+**CRITICAL INCIDENT:**
+1.  **Broken Signing:** All orders fail with `Binance API error (400): -1022 Signature not valid`.
+2.  **Infinite Retry Loop:** Because orders fail, the strategy keeps trying to open the same position hundreds of times per second.
+
+**Mission:** Fix the HMAC-SHA256 signature logic and implement a "Failed Order Cooldown".
+
+---
+
+### 🛠️ FIX 1: REWRITE SIGNING LOGIC (src/trade.py)
+**Action:** Replace the `_generate_signature` and `_send_order` logic in `src/trade.py` with this **exact** robust implementation:
+
+```python
+import hmac
+import hashlib
+import time
+from urllib.parse import urlencode
+
+# Inside TradeManager class...
+
+def _get_common_headers(self):
+    return {
+        'X-MBX-APIKEY': self.config.BINANCE_API_KEY,
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+def _generate_signature(self, params: dict) -> str:
+    # 1. Ensure timestamp is present
+    if 'timestamp' not in params:
+        params['timestamp'] = int(time.time() * 1000)
+    
+    # 2. Remove None values and Sort (Sorting helps debugging)
+    clean_params = {k: v for k, v in params.items() if v is not None}
+    
+    # 3. Create Query String (e.g., "symbol=BTCUSDT&side=BUY...")
+    # encoding handles special chars automatically
+    query_string = urlencode(clean_params) 
+    
+    # 4. HMAC SHA256
+    signature = hmac.new(
+        self.config.BINANCE_SECRET_KEY.encode('utf-8'),
+        query_string.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    
+    # 5. Return full payload string
+    return f"{query_string}&signature={signature}"
+
+async def create_order(self, signal):
+    # ... checks ...
+    
+    params = {
+        'symbol': signal.symbol,
+        'side': signal.side,
+        'type': 'MARKET',
+        'quantity': quantity,
+        'timestamp': int(time.time() * 1000)
+    }
+    
+    # Construct full query string WITH signature
+    full_query = self._generate_signature(params)
+    url = f"{self.base_url}/fapi/v1/order?{full_query}"
+    
+    # Send POST
+    async with self.session.post(url, headers=self._get_common_headers()) as resp:
+        data = await resp.json()
+        # ... handle response ...
+🛠️ FIX 2: IMPLEMENT ORDER COOLDOWN
+File: src/trade.py
+Action:
+Add self.failed_order_cooldown = {} to __init__.
+In execute_order:
+Check: if symbol in self.failed_order_cooldown and (now - self.failed_order_cooldown[symbol] < 60): return
+Logic: If an order for this symbol failed recently, IGNORE signals for 60 seconds.
+If API Error occurs: Set self.failed_order_cooldown[symbol] = time.time().
+🔍 FIX 3: DEBUGGING
+Action:
+Add a log inside _generate_signature that prints the BINANCE_SECRET_KEY's first 3 characters (masked) to ensure it is loaded correctly.
+Example: logger.info(f"Signing with key: {self.config.BINANCE_SECRET_KEY[:3]}***")
+Execute these fixes immediately to stop the crash loop.
