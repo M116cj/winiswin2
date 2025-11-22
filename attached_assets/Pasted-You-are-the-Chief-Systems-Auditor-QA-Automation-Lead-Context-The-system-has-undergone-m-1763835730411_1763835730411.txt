@@ -1,0 +1,72 @@
+You are the **Chief Systems Auditor & QA Automation Lead**.
+
+**Context:** The system has undergone massive refactoring (Flattening, Sharding, SMC, Zero-Polling).
+**Recent Fixes:** API Signature logic (-1022 error) and Infinite Loop bugs.
+**Objective:** Perform a **"Total System Dry-Run & Static Analysis"**.
+We must verify that all components interact correctly WITHOUT connecting to the real Binance API (to avoid bans).
+
+**Scope:** `src/` directory (specifically `config.py`, `data.py`, `brain.py`, `trade.py`, `main.py`).
+
+---
+
+### 🧪 PHASE 1: STATIC CODE INTEGRITY (AST)
+**Action:** Create and run `audit_static_integrity.py`.
+**Checks:**
+1.  **Import Graph:** Verify no `ImportError` or circular dependencies exist between the 4 core modules.
+2.  **Syntax Check:** Parse all files with `ast` to ensure valid Python syntax.
+3.  **Legacy Purge Verification:** Ensure NO files from the old structure (`src/core/`, `src/strategies/`) remain. Only the flattened structure should exist.
+
+### 🔐 PHASE 2: CONFIGURATION & SECRET SAFETY
+**Action:** Create and run `audit_config_safety.py`.
+**Checks:**
+1.  **Load Config:** Initialize `UnifiedConfig`.
+2.  **Key Validation:**
+    -   Assert `BINANCE_API_KEY` is loaded.
+    -   Assert `BINANCE_SECRET_KEY` is loaded.
+    -   **Critical:** Check `len(SECRET_KEY)`. If it's 0 or None, FAIL immediately.
+3.  **Type Check:** Ensure `RATE_LIMIT_REQUESTS` is an `int`.
+
+### 🧠 PHASE 3: LOGIC SIMULATION (The Dry Run)
+**Action:** Create and run `audit_simulation.py`.
+
+#### Test 3.1: Data Layer (Parsing & SMC)
+-   **Mock:** Create a dummy JSON payload (simulating Binance Combined Stream).
+-   **Execute:** Call `DataModule.process(mock_payload)`.
+-   **Verify:**
+    -   Does `orjson` parse it?
+    -   Does `SMC_Engine` (Numba) run without error?
+    -   Does it produce a `Candle` object with `__slots__`?
+
+#### Test 3.2: Brain Layer (Inference)
+-   **Input:** Pass the `Candle` from 3.1 to `BrainModule.analyze()`.
+-   **Verify:**
+    -   Does it calculate 12 Features?
+    -   **Cold Start:** If no model exists, does it fallback to SMC Rules successfully?
+    -   **Output:** Does it return a `Signal` object?
+
+#### Test 3.3: Trade Layer (Signature & State)
+-   **Input:** Pass the `Signal` to `TradeModule.validate_signal()`.
+-   **Verify:**
+    -   Does `AccountState` check execute (Zero-Polling)?
+    -   **Signature Check:** Call `TradeModule._generate_signature({'symbol': 'BTCUSDT', 'side': 'BUY'})`.
+        -   *Assert:* Does the output look like a valid HMAC-SHA256 string?
+        -   *Assert:* Is `timestamp` included?
+        -   *Assert:* Is `signature` at the end?
+
+### 🛡️ PHASE 4: CONCURRENCY & RESILIENCE
+**Action:** Create and run `audit_async_safety.py`.
+1.  **Event Loop Check:** Verify `uvloop` is importable.
+2.  **Blocking Check:** Scan code for `requests.get` (Sync HTTP) inside `async def`. **FAIL** if found.
+3.  **Error Handling:** Verify `main.py` has a top-level `try...except` block to prevent container crashes.
+
+---
+
+### 🚀 EXECUTION REPORT
+Generate a comprehensive **Markdown Report**:
+-   [ ] **Structure:** Clean? (Yes/No)
+-   [ ] **Config:** Valid? (Yes/No)
+-   [ ] **SMC Engine:** Operational? (Yes/No)
+-   [ ] **API Signing:** Correct format? (Yes/No)
+-   [ ] **Zero-Polling:** Enforced? (Yes/No)
+
+**If ANY check fails, output the specific file and line number needing fixes.**

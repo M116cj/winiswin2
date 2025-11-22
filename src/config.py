@@ -16,6 +16,18 @@ class Config:
     BINANCE_API_KEY = os.getenv('BINANCE_API_KEY', '')
     BINANCE_API_SECRET = os.getenv('BINANCE_API_SECRET', '')
     
+    # Validate API credentials (fail fast if misconfigured)
+    @staticmethod
+    def validate_binance_keys():
+        """Validate Binance API keys are properly configured"""
+        if not Config.BINANCE_API_KEY or not Config.BINANCE_API_SECRET:
+            raise ValueError(
+                "❌ Binance API credentials not configured!\n"
+                "Set environment variables:\n"
+                "  BINANCE_API_KEY=your_key\n"
+                "  BINANCE_API_SECRET=your_secret"
+            )
+    
     # Database
     DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://localhost/slt')
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')

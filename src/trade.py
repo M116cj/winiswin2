@@ -39,12 +39,73 @@ _state_lock = asyncio.Lock()
 
 
 def _generate_signature(query_string: str) -> str:
-    """Generate HMAC-SHA256 signature for Binance API"""
-    return hmac.new(
+    """
+    Generate HMAC-SHA256 signature for Binance API
+    
+    Critical steps:
+    1. Query string must be properly formed before signing
+    2. Secret key MUST be encoded as bytes (UTF-8)
+    3. Query string MUST be encoded as bytes (UTF-8)
+    4. Use hexdigest() to get hex string output
+    """
+    if not BINANCE_API_SECRET:
+        logger.error("❌ BINANCE_API_SECRET not set - cannot sign requests")
+        return ""
+    
+    signature = hmac.new(
         BINANCE_API_SECRET.encode('utf-8'),
         query_string.encode('utf-8'),
         hashlib.sha256
     ).hexdigest()
+    
+    return signature
+
+
+def _build_signed_request(params: Dict) -> str:
+    """
+    Build properly signed query string for Binance API
+    
+    Process:
+    1. Ensure timestamp exists
+    2. Clean parameters (remove None values, convert to strings)
+    3. Build query string
+    4. Generate signature
+    5. Append signature
+    
+    Returns:
+        Complete signed query string ready for API request
+    """
+    # Step 1: Ensure timestamp
+    if 'timestamp' not in params:
+        params['timestamp'] = int(time.time() * 1000)
+    
+    # Step 2: Clean parameters (remove None/empty values)
+    clean_params = {}
+    for k, v in params.items():
+        if v is not None and v != '':
+            # Convert numbers to strings for urlencode
+            if isinstance(v, (int, float)):
+                clean_params[k] = str(v)
+            else:
+                clean_params[k] = v
+    
+    # Step 3: Build query string (parameters are now strings)
+    query_string = urlencode(clean_params)
+    
+    logger.debug(f"Query string before signing: {query_string}")
+    
+    # Step 4: Generate signature
+    signature = _generate_signature(query_string)
+    
+    if not signature:
+        logger.error("❌ Signature generation failed")
+        return ""
+    
+    # Step 5: Append signature
+    signed_request = f"{query_string}&signature={signature}"
+    logger.debug(f"Signed request built (signature: {signature[:16]}...)")
+    
+    return signed_request
 
 
 async def _execute_order_live(order: Dict) -> Optional[Dict]:
@@ -67,52 +128,89 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
     order_type = order.get('type', 'MARKET')
     
     try:
-        # Prepare order parameters
+        # Validate quantity is numeric
+        if not isinstance(quantity, (int, float)) or quantity <= 0:
+            logger.error(f"❌ Invalid quantity: {quantity} (must be numeric and > 0)")
+            return None
+        
+        # Convert quantity to string (Binance API expects string)
+        quantity_str = str(float(quantity))
+        
+        # Prepare order parameters (all as base types, will be converted to strings)
         params = {
-            'symbol': symbol,
-            'side': side,
-            'type': order_type,
-            'quantity': quantity,
+            'symbol': symbol,  # e.g., "BTCUSDT"
+            'side': side,      # "BUY" or "SELL"
+            'type': order_type,  # "MARKET" or "LIMIT"
+            'quantity': float(quantity),  # Keep as float for now, will stringify in _build_signed_request
             'timestamp': int(time.time() * 1000),
             'recvWindow': 5000
         }
         
-        # Build query string and sign
-        query_string = urlencode(params)
-        signature = _generate_signature(query_string)
+        # Build properly signed request
+        signed_query = _build_signed_request(params)
+        if not signed_query:
+            logger.error("❌ Failed to build signed request")
+            return None
         
-        # Build request
-        url = f"{BINANCE_BASE_URL}/fapi/v1/order?{query_string}&signature={signature}"
+        # Build complete URL
+        url = f"{BINANCE_BASE_URL}/fapi/v1/order?{signed_query}"
         headers = {
-            'X-MBX-APIKEY': BINANCE_API_KEY
+            'X-MBX-APIKEY': BINANCE_API_KEY,
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
         
-        logger.info(f"📤 Sending order to Binance: {symbol} {side} {quantity}")
+        logger.info(f"📤 Sending order to Binance: {symbol} {side} {quantity_str} units")
+        logger.debug(f"URL: {url[:100]}...")  # Log partial URL for debug
         
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                response_text = await resp.text()
+                
                 if resp.status == 200:
                     result = await resp.json()
                     
+                    # Extract price from response
+                    avg_price = float(result.get('avgPrice', 0))
+                    
+                    # Validate response contains required fields
+                    if not result.get('orderId'):
+                        logger.error(f"❌ Invalid response: missing orderId")
+                        return None
+                    
                     filled_order = {
-                        'symbol': symbol,
-                        'side': side,
-                        'quantity': quantity,
-                        'price': float(result.get('avgPrice', 0)),
+                        'symbol': symbol,  # BTCUSDT
+                        'side': side,  # BUY/SELL
+                        'quantity': float(quantity_str),  # Quantity in base asset (BTC, ETH, etc)
+                        'price': avg_price,  # Price in quote asset (USDT)
+                        'cost': avg_price * float(quantity_str),  # Total cost in quote asset
                         'orderId': result.get('orderId', ''),
                         'status': result.get('status', 'FILLED'),
-                        'timestamp': result.get('time', int(time.time() * 1000))
+                        'timestamp': result.get('time', int(time.time() * 1000)),
+                        'commission': float(result.get('commission', 0))
                     }
                     
-                    logger.info(f"✅ Order executed: {symbol} {side} {quantity} @ {filled_order['price']}")
+                    logger.info(
+                        f"✅ Order executed: {symbol} {side} {quantity_str} @ ${avg_price:.2f} USDT "
+                        f"(Total: ${filled_order['cost']:.2f})"
+                    )
                     return filled_order
                 else:
-                    error_text = await resp.text()
-                    logger.error(f"❌ Binance API error ({resp.status}): {error_text}")
+                    logger.error(f"❌ Binance API error ({resp.status}): {response_text}")
+                    
+                    # Try to parse error message
+                    try:
+                        error_json = await resp.json()
+                        error_msg = error_json.get('msg', 'Unknown error')
+                        error_code = error_json.get('code', 'Unknown')
+                        logger.error(f"   Error Code: {error_code}")
+                        logger.error(f"   Error Message: {error_msg}")
+                    except:
+                        pass
+                    
                     return None
     
     except Exception as e:
-        logger.error(f"❌ Order execution failed: {e}")
+        logger.error(f"❌ Order execution failed: {e}", exc_info=True)
         return None
 
 
