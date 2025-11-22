@@ -1,0 +1,60 @@
+You are the **Lead System Reliability Engineer (SRE)**.
+
+**Context:** The system has just been refactored into a **Sharded, Zero-Polling, SMC-Quant Architecture**.
+**Mission:** Perform a **Deep Code Logic & Integrity Audit**. 
+Do not just check if files exist. Check if the **logic inside them** connects correctly and adheres to our strict architectural rules.
+
+**Action:** Create and run a powerful diagnostic script `system_deep_scan.py` that uses Python's `ast` (Abstract Syntax Tree) module to enforce the following:
+
+---
+
+### 🔍 AUDIT 1: The "Zero-Polling" Enforcement
+**Logic to Check:**
+1.  Scan `src/strategies/` and `src/core/position_controller.py`.
+2.  **Fail** if any `async def` function contains calls to `client.get_account` or `client.get_position` or `requests.get`.
+3.  **Pass** ONLY if they call `AccountStateCache.get_balance` or `AccountStateCache.get_all_positions`.
+4.  *Goal:* Prove that the main loop is 100% offline/cached.
+
+### 🔍 AUDIT 2: The "SMC Pipeline" Connection
+**Logic to Check:**
+1.  Scan `src/strategies/ict_scalper.py` (or the main strategy file).
+2.  **Verify** it imports and instantiates `SMCEngine`.
+3.  **Verify** it calls `predict_confidence` (from ML module).
+4.  **Verify** it calls `RiskManager.calculate_size`.
+5.  *Goal:* Ensure the Strategy is actually using the new Engines, not just running empty logic.
+
+### 🔍 AUDIT 3: Sharding & Concurrency
+**Logic to Check:**
+1.  Scan `src/core/cluster_manager.py`.
+2.  **Verify** usage of `multiprocessing` or `asyncio.gather` to spawn workers.
+3.  Scan `src/core/websocket/shard_feed.py`.
+4.  **Verify** it accepts a `list` of symbols (not a single string) to confirm Combined Streams are implemented.
+
+### 🔍 AUDIT 4: Data Science Stack Integrity
+**Logic to Check:**
+1.  Scan `src/ml/feature_engineer.py`.
+2.  **Verify** it imports `polars` (Strictly NO `pandas` allowed in the hot path).
+3.  Scan `src/ml/predictor.py`.
+4.  **Verify** it attempts to load a LightGBM model file.
+
+### 🔍 AUDIT 5: Circular Dependency & Import Graph
+**Logic to Check:**
+1.  Build an import graph of the `src/` directory.
+2.  **Detect** any cycles (e.g., A imports B, B imports A).
+3.  **Report** any "Orphaned Files" (files that exist but are never imported by main execution flow).
+
+---
+
+### 🚀 EXECUTION PROTOCOL:
+
+1.  **Generate** the `system_deep_scan.py` script using `ast` for static analysis.
+2.  **Run** the script.
+3.  **Output a "System Health Matrix"**:
+    *   [ ] Zero-Polling Compliance
+    *   [ ] SMC Engine Wiring
+    *   [ ] Sharding Logic
+    *   [ ] Polars Integration
+    *   [ ] Circular Imports
+4.  **CRITICAL FIX:** If any check fails, **automatically generate the code fix** for that specific module immediately after the report.
+
+**Start the Deep Scan now.**

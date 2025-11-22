@@ -145,7 +145,7 @@ class ClusterManager:
     
     async def _process_signal(self, symbol: str):
         """
-        Process a single symbol for trading signal
+        Process a single symbol for trading signal (CONCURRENT)
         
         Args:
             symbol: Trading symbol
@@ -155,7 +155,7 @@ class ClusterManager:
             return
         
         try:
-            # 1. Detect SMC patterns
+            # 1. Detect SMC patterns (vectorized, fast)
             smc_results = {
                 'fvg': self.smc_engine.detect_fvg(klines[-5:]),
                 'order_block': self.smc_engine.detect_order_block(klines),
@@ -163,10 +163,10 @@ class ClusterManager:
                 'structure': self.smc_engine.detect_structure(klines)
             }
             
-            # 2. Compute ML features
+            # 2. Compute ML features (polars-optimized)
             features = self.feature_engineer.compute_features(klines, smc_results)
             
-            # 3. Get confidence from ML
+            # 3. Get confidence from ML (LightGBM inference)
             confidence = self.predictor.predict_confidence(features)
             
             # Only process if high enough confidence
@@ -209,6 +209,23 @@ class ClusterManager:
         
         except Exception as e:
             logger.error(f"❌ Signal processing error for {symbol}: {e}")
+    
+    async def process_batch_signals(self, symbols: List[str]):
+        """
+        🔥 Process multiple symbols in parallel using asyncio.gather
+        
+        This enables concurrent processing of 300+ pairs across shards
+        
+        Args:
+            symbols: List of trading symbols to process in parallel
+        """
+        tasks = []
+        for symbol in symbols:
+            if symbol in self.kline_buffers and len(self.kline_buffers[symbol]) > 0:
+                tasks.append(self._process_signal(symbol))
+        
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
     
     async def stop(self):
         """Stop the cluster"""

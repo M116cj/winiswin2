@@ -3,10 +3,17 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Purpose: Execute SMC/ICT signals with LightGBM confidence filtering
+Architecture: Full pipeline integration with SMCEngine, FeatureEngineer, MLPredictor
 """
 
 from typing import Dict, Optional, List
 import logging
+
+# 🔥 SMC-Quant Pipeline Imports (Full Integration)
+from src.core.smc_engine import SMCEngine
+from src.ml.feature_engineer import get_feature_engineer
+from src.ml.predictor import get_predictor
+from src.core.risk_manager import get_risk_manager
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +31,17 @@ class ICTScalper:
     """
     
     def __init__(self):
-        """Initialize scalper"""
+        """Initialize scalper with full SMC-Quant pipeline"""
         self.name = "ICT Scalper v1.0"
         self.trades: Dict[str, Dict] = {}  # {symbol: trade_info}
-        logger.info(f"✅ {self.name} initialized")
+        
+        # 🔥 Initialize ML Pipeline Components
+        self.smc_engine = SMCEngine()
+        self.feature_engineer = get_feature_engineer()
+        self.predictor = get_predictor()
+        self.risk_manager = get_risk_manager()
+        
+        logger.info(f"✅ {self.name} initialized with SMC-Quant pipeline")
     
     def on_signal(self, signal: Dict) -> Optional[Dict]:
         """
