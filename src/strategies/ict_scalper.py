@@ -75,6 +75,62 @@ class ICTScalper:
         
         return order
     
+    def validate_holding_logic(self, position: Dict, current_features: Dict) -> bool:
+        """
+        PART 2: Signal Decay - Real-time validation of holding logic
+        
+        Re-calculate 12 features on every new candle.
+        Return False if entry logic becomes invalid → trigger immediate market close
+        
+        Args:
+            position: Current position info
+            current_features: Fresh 12-feature vector
+        
+        Returns: True if hold valid, False if signal decayed (close position)
+        """
+        if not position or not current_features:
+            return False
+        
+        symbol = position.get('symbol', '')
+        side = position.get('side', 'BUY')
+        entry_features = position.get('entry_features', {})
+        
+        # CRITICAL: Check if market_structure flipped (BOS/ChoCh invalidated)
+        entry_structure = entry_features.get('market_structure', 0)
+        current_structure = current_features.get('market_structure', 0)
+        
+        if entry_structure != current_structure and entry_structure != 0:
+            logger.warning(f"⚠️ Signal Decay: {symbol} market_structure flipped (was {entry_structure}, now {current_structure})")
+            return False  # Trigger immediate market close
+        
+        # CRITICAL: Check if FVG proximity becomes invalid (gap filled)
+        fvg_prox_current = current_features.get('fvg_proximity', 0)
+        fvg_prox_entry = entry_features.get('fvg_proximity', 0)
+        
+        if abs(fvg_prox_current) > abs(fvg_prox_entry) + 1.0:
+            # Gap has filled beyond entry distance → FVG invalidated
+            logger.warning(f"⚠️ Signal Decay: {symbol} FVG gap filled (proximity: {fvg_prox_entry:.2f} → {fvg_prox_current:.2f})")
+            return False  # Trigger immediate market close
+        
+        # Check if price moved against position with no recovery
+        entry_price = position.get('entry_price', 0)
+        current_price = current_features.get('close_price', entry_price)
+        
+        if side == 'BUY' and current_price < entry_price * 0.99:
+            # Price dropped >1% after entry without recovery signal
+            if current_features.get('liquidity_grab', 0) == 0:
+                logger.warning(f"⚠️ Signal Decay: {symbol} price dropped without LS support")
+                return False  # No liquidity grab to support position
+        
+        elif side == 'SELL' and current_price > entry_price * 1.01:
+            # Price jumped >1% after entry without recovery signal
+            if current_features.get('liquidity_grab', 0) == 0:
+                logger.warning(f"⚠️ Signal Decay: {symbol} price jumped without LS support")
+                return False
+        
+        # All checks passed - hold position
+        return True
+    
     def check_exit(self, position: Dict) -> Optional[str]:
         """
         Check if position should be exited

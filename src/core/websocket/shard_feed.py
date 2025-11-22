@@ -9,12 +9,19 @@ Design: Concrete implementation inheriting from UnifiedWebSocketFeed
 import asyncio
 import json
 import logging
-from typing import List, Optional, Callable
+from typing import List, Optional, Callable, Dict
+from collections import defaultdict
+import time
 
 try:
     import websockets
 except ImportError:
     websockets = None
+
+try:
+    import orjson
+except ImportError:
+    orjson = None
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +69,18 @@ class ShardFeed:
         self.stats = {
             'messages_received': 0,
             'reconnections': 0,
-            'errors': 0
+            'errors': 0,
+            'batches_flushed': 0,
+            'batch_total_messages': 0
         }
         
-        logger.info(f"✅ ShardFeed {shard_id} initialized ({len(all_symbols)} symbols)")
+        # Micro-Batching for efficiency (PART 1: ABC Coexistence)
+        self._batch_buffer: Dict[str, List] = defaultdict(list)
+        self._batch_flush_interval = 0.1  # 100ms batch window
+        self._last_batch_flush = time.time()
+        self._batch_flusher_task = None
+        
+        logger.info(f"✅ ShardFeed {shard_id} initialized ({len(all_symbols)} symbols) with Micro-Batching")
     
     def _build_combined_stream_url(self) -> str:
         """
@@ -119,39 +134,16 @@ class ShardFeed:
     
     async def _process_message(self, message: str):
         """
-        Parse combined stream message and route klines
+        Parse combined stream message and add to micro-batch buffer
         
-        Combined stream format:
-        {
-            "stream": "btcusdt@kline_1m",
-            "data": {
-                "e": "kline",
-                "E": 1234567890000,
-                "s": "BTCUSDT",
-                "k": {
-                    "t": 1234567860000,
-                    "T": 1234567919999,
-                    "s": "BTCUSDT",
-                    "i": "1m",
-                    "f": 100,
-                    "L": 200,
-                    "o": "10000",
-                    "c": "10100",
-                    "h": "10200",
-                    "l": "9900",
-                    "v": "1000",
-                    "n": 100,
-                    "x": true,  # Is this candle closed?
-                    "q": "10150000",
-                    "V": "500",
-                    "Q": "5075000",
-                    "B": "0"
-                }
-            }
-        }
+        Zero-copy parsing with orjson + buffering for efficiency
         """
         try:
-            payload = json.loads(message)
+            # PART 1: Zero-copy parsing with orjson
+            if orjson:
+                payload = orjson.loads(message)
+            else:
+                payload = json.loads(message)
             
             if 'data' not in payload:
                 return
@@ -186,13 +178,37 @@ class ShardFeed:
             
             self.stats['messages_received'] += 1
             
-            # Route to callback
-            if self.on_kline_callback:
-                await self.on_kline_callback(kline)
+            # PART 1: Add to micro-batch buffer (low RAM usage)
+            self._batch_buffer[symbol].append(kline)
+            self.stats['batch_total_messages'] += 1
         
         except Exception as e:
             logger.error(f"❌ Shard {self.shard_id} parse error: {e}")
             self.stats['errors'] += 1
+    
+    async def _batch_flusher(self):
+        """
+        Periodic batch flusher (Controlled CPU load)
+        
+        Flushes buffered klines every 100ms to prevent memory buildup
+        """
+        while self.running:
+            try:
+                # Wait for batch window
+                await asyncio.sleep(self._batch_flush_interval)
+                
+                # Flush all buffered klines
+                if self._batch_buffer and self.on_kline_callback:
+                    for symbol, klines in list(self._batch_buffer.items()):
+                        for kline in klines:
+                            await self.on_kline_callback(kline)
+                        self.stats['batches_flushed'] += 1
+                    
+                    self._batch_buffer.clear()
+                    self._last_batch_flush = time.time()
+            
+            except Exception as e:
+                logger.error(f"❌ Batch flusher error: {e}")
     
     async def start(self):
         """Start the shard feed"""
@@ -202,7 +218,11 @@ class ShardFeed:
         
         self.running = True
         self._connection_task = asyncio.create_task(self._reconnect_loop())
-        logger.info(f"🚀 Shard {self.shard_id} started")
+        
+        # PART 1: Start batch flusher
+        self._batch_flusher_task = asyncio.create_task(self._batch_flusher())
+        
+        logger.info(f"🚀 Shard {self.shard_id} started with Micro-Batching ({self._batch_flush_interval}s window)")
     
     async def _reconnect_loop(self):
         """
@@ -225,6 +245,13 @@ class ShardFeed:
         """Stop the shard feed"""
         self.running = False
         
+        # Flush any remaining buffer
+        if self._batch_buffer and self.on_kline_callback:
+            for symbol, klines in self._batch_buffer.items():
+                for kline in klines:
+                    await self.on_kline_callback(kline)
+            self._batch_buffer.clear()
+        
         if self._ws:
             try:
                 await self._ws.close()
@@ -238,7 +265,15 @@ class ShardFeed:
             except asyncio.CancelledError:
                 pass
         
-        logger.info(f"✅ Shard {self.shard_id} stopped")
+        # Stop batch flusher
+        if self._batch_flusher_task:
+            self._batch_flusher_task.cancel()
+            try:
+                await self._batch_flusher_task
+            except asyncio.CancelledError:
+                pass
+        
+        logger.info(f"✅ Shard {self.shard_id} stopped (batches: {self.stats['batches_flushed']})")
     
     def get_stats(self) -> dict:
         """Get shard statistics"""

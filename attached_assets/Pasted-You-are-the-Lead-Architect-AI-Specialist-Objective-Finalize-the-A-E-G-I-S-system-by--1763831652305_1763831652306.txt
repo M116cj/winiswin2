@@ -1,0 +1,89 @@
+You are the **Lead Architect & AI Specialist**.
+
+**Objective:** Finalize the "A.E.G.I.S." system by integrating specific efficiency protocols, a defined feature set, and a hybrid online learning engine.
+
+**Core Requirements:**
+1.  **Efficiency:** Implement `orjson` + `__slots__` + `Micro-Batching` simultaneously.
+2.  **The Brain:** Use strictly the **12 defined features** (ATR Normalized). Implement "Signal Decay" (auto-close if entry logic fails).
+3.  **Learning:** Integrated Teacher-Student mode with Experience Replay and Forgetting.
+4.  **MLOps:** Auto-Gap Filling and Drift Detection.
+5.  **Risk Constraint:** Trades 1-50 capped at 1x-3x leverage. Trades 51+ uncapped.
+
+---
+
+### ⚡ PART 1: SYSTEM INTERNAL EFFICIENCY (ABC Coexistence)
+**File:** `src/core/models.py` & `src/core/websocket/shard_feed.py`
+**Action:**
+1.  **Define `Candle` with `__slots__`**:
+    ```python
+    class Candle:
+        __slots__ = ('ts', 'o', 'h', 'l', 'c', 'v')
+        # ... init ...
+    ```
+2.  **Implement Micro-Batching with `orjson`**:
+    -   Inside `ShardFeed`, use `orjson.loads(msg)`.
+    -   Maintain a buffer `self._batch_buffer = {}`.
+    -   Run a loop `while True: await asyncio.sleep(0.1)` to flush the buffer to the Strategy.
+    -   *Result:* Zero-copy parsing + Low RAM usage + Controlled CPU load.
+
+---
+
+### 🧠 PART 2: THE BRAIN (Features & Real-time Validation)
+**File:** `src/ml/feature_engineer.py`
+**Action:**
+Implement `compute_features(ohlcv)` using **Polars**. 
+**CRITICAL:** Calculate `ATR` first. All distances must be divided by `ATR`.
+**Feature List (Strict adherence):**
+1.  `market_structure`: {-1, 0, 1} (BOS/CHoCH detection).
+2.  `order_blocks_count`: {0, 1} (Is current price inside OB?).
+3.  `institutional_candle`: float [0, 1] (Volume * BodySize relative to avg).
+4.  **`liquidity_grab`**: {0, 1} (Did we sweep a Swing High/Low?).
+5.  `fvg_size_atr`: float (Gap Size / ATR).
+6.  `fvg_proximity`: float (Distance to FVG / ATR).
+7.  `ob_proximity`: float (Distance to OB / ATR).
+8.  `atr_normalized_volume`: float (Vol / AvgVol).
+9.  `rsi_14`: float [0, 1].
+10. `momentum_atr`: float (ROC / ATR).
+11. `time_to_next_level`: float (Distance to Support/Resistance / ATR).
+12. `confidence_ensemble`: (Placeholder for model output).
+
+**File:** `src/strategies/ict_scalper.py`
+**Action:**
+Implement `validate_holding_logic(position)`:
+-   Re-calculate the 12 features on every new candle.
+-   **Logic:** If `market_structure` flips OR `fvg_proximity` becomes invalid (gap filled):
+    -   Return `False` (Signal Decayed).
+    -   Trigger **Immediate Market Close**.
+
+---
+
+### 🔄 PART 3: INTEGRATED ONLINE LEARNING (Teacher-Student)
+**File:** `src/ml/hybrid_learner.py` (New Central Brain)
+**Action:**
+1.  **Experience Replay**: Use Redis List to store last 5,000 trade results `(Features, Outcome)`.
+2.  **Teacher-Student Logic**:
+    -   Get `total_trade_count` from DB.
+    -   **IF count < 50 (Teacher Phase)**:
+        -   Use SMC Rule Logic (e.g., if Liquidity Grab + FVG -> Buy).
+        -   Enforce **Max Leverage = 3x**.
+    -   **IF count >= 50 (Student Phase)**:
+        -   Train `LightGBM` on the Replay Buffer.
+        -   Use Model Prediction confidence.
+        -   Unlock Dynamic Leverage (up to Max allowed).
+3.  **Forgetting**: When adding new experience, if Buffer > 5000, pop the oldest.
+
+---
+
+### 🛡️ PART 4: MLOPS (Stability & Monitoring)
+**File:** `src/core/data_manager.py` (Gap Filling)
+**Action:**
+-   In `ShardFeed`, check `current_ts - last_ts`.
+-   If gap > 1 min: Pause -> Fetch missing via REST -> Resume.
+
+**File:** `src/ml/drift_detector.py`
+**Action:**
+-   After each training (every 50 trades):
+    -   Check `model.feature_importance()`.
+    -   **Alert:** If `liquidity_grab` (Priority High) drops out of Top 5 features, log "⚠️ CRITICAL: Model ignoring Liquidity Grabs".
+
+**Execute this integrated Master Plan.**
