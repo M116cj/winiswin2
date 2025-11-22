@@ -1,0 +1,70 @@
+You are the **Repository Administrator & Archivist**.
+
+**User Objective:**
+1.  **Consolidate Documentation:** Find all markdown reports (Audit logs, Architecture plans, etc.), rename them sequentially based on their content date/version, and move them to a single folder.
+2.  **Purge Legacy Code:** STRICTLY delete ANY file that does not belong to the current "SMC-Quant Sharded Architecture". Only the latest code remains.
+
+---
+
+### 🗂️ PHASE 1: DOCUMENTATION ARCHIVAL
+**Action:** Create and run `archive_docs.py`.
+
+**Logic:**
+1.  **Create Directory:** `docs/version_history/`.
+2.  **Scan:** Look for all `*.md` files in the root and subdirectories (excluding `README.md` and `ARCHITECTURE.md`).
+3.  **Parse:** Read the content of each file. Look for:
+    -   "Date: YYYY-MM-DD"
+    -   "Version: X.X"
+    -   "Report Generated: ..."
+4.  **Sort:** Order files chronologically based on the extracted date.
+5.  **Rename & Move:**
+    -   Format: `v{Index}_{YYYYMMDD}_{Original_Topic}.md`
+    -   Example: `v01_20251121_Websocket_Audit.md`, `v02_20251122_Architecture_Plan.md`.
+    -   Move to `docs/version_history/`.
+
+---
+
+### 🧹 PHASE 2: CODEBASE STERILIZATION (The Allowlist Purge)
+**Action:** Create and run `purge_legacy_code.py`.
+
+**The "Golden Allowlist" (DO NOT DELETE THESE):**
+*   `src/main.py`
+*   `src/core/unified_config.py`
+*   `src/core/account_state_cache.py`
+*   `src/core/cluster_manager.py`
+*   `src/core/market_universe.py`
+*   `src/core/smc_engine.py`
+*   `src/core/risk_manager.py`
+*   `src/core/data_manager.py` (Historical Data)
+*   `src/core/websocket/unified_feed.py`
+*   `src/core/websocket/shard_feed.py`
+*   `src/core/websocket/account_feed.py`
+*   `src/database/unified_db.py`
+*   `src/strategies/ict_scalper.py`
+*   `src/ml/feature_engineer.py`
+*   `src/ml/trainer.py`
+*   `src/ml/predictor.py`
+*   `src/ml/feature_schema.py`
+*   `src/clients/binance_client.py`
+*   `src/utils/smart_logger.py`
+*   `src/api/server.py` (FastAPI)
+*   `src/api/templates/dashboard.html`
+*   `requirements.txt` / `pyproject.toml`
+*   `README.md` / `ARCHITECTURE.md`
+*   Any `__init__.py`
+
+**The Purge Logic:**
+1.  Walk through the entire `src/` directory.
+2.  If a file is **NOT** in the "Golden Allowlist":
+    -   **DELETE IT**.
+    -   This includes: `base_feed.py`, `price_feed.py`, `kline_feed.py`, `optimized_*.py`, `old_strategy.py`, `model_wrapper.py`, `*.bak`, `*.old`.
+3.  **Clean Empty Folders:** Remove any directories that become empty after file deletion.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  List all renamed and archived documentation files.
+2.  List all **DELETED** legacy code files.
+3.  Verify that the remaining structure matches the "SMC-Quant Architecture" exactly.
+
+**Execute the Archival and Purge process now.**

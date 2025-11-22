@@ -5,16 +5,8 @@
 Phase 3+: 迁移到 UnifiedDatabaseManager (asyncpg + Redis)
 """
 
-from .service import TradingDataService
-from .initializer import initialize_database
-from .unified_database_manager import UnifiedDatabaseManager, database_manager
+from .unified_database_manager import UnifiedDatabaseManager
 
 __all__ = [
-    # 新API（统一管理器）
     'UnifiedDatabaseManager',
-    'database_manager',
-    
-    # 服务
-    'TradingDataService',
-    'initialize_database',
 ]
