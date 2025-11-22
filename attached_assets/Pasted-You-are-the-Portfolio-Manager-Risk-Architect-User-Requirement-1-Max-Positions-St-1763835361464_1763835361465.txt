@@ -1,0 +1,87 @@
+You are the **Portfolio Manager & Risk Architect**.
+
+**User Requirement:**
+1.  **Max Positions:** Strictly limited to **3** concurrent positions.
+2.  **Elite Rotation:** If a new signal arrives and slots are full:
+    -   Compare the New Signal's `confidence` vs. the `confidence` of all 3 existing positions.
+    -   Identify the **Weakest Position** (lowest confidence).
+    -   **Condition:** IF `New_Confidence > Weakest_Confidence` AND `Weakest_Position.PnL > 0` (Profitable):
+        -   **Action:** CLOSE the Weakest Position immediately (Secure Profit).
+        -   **Action:** OPEN the New Position (Upgrade Quality).
+    -   **Else:** Reject the new signal.
+
+**Current State:** The system likely rejects new signals if `len(positions) >= 3`.
+
+**Mission:** Upgrade `src/trade.py` to implement this rotation logic.
+
+---
+
+### 🛠️ STEP 1: ENHANCE POSITION METADATA
+**File:** `src/trade.py` (AccountStateCache section)
+**Action:**
+-   Ensure that when a position is opened, we store its `entry_confidence` in the `AccountState`.
+-   If reading from Binance API (Cold Start), default `entry_confidence` to `0.5` (Neutral) if unknown.
+
+### 🛠️ STEP 2: IMPLEMENT ROTATION LOGIC
+**File:** `src/trade.py` (Execution Logic)
+**Action:** Refactor the `on_signal_received(signal)` function.
+
+**Pseudocode to Implement:**
+```python
+current_positions = account.get_active_positions()
+
+# Case 1: Slots Available
+if len(current_positions) < 3:
+    execute_order(signal)
+    return
+
+# Case 2: Slots Full - Check for Upgrade
+if len(current_positions) >= 3:
+    # 1. Find Weakest
+    # Sort positions by confidence (stored in metadata)
+    sorted_positions = sorted(current_positions, key=lambda p: p.confidence)
+    weakest_pos = sorted_positions[0]
+
+    # 2. Compare
+    if signal.confidence > weakest_pos.confidence:
+        # 3. Check Profitability (Crucial: Only swap if profitable)
+        current_pnl = calculate_pnl(weakest_pos) # Need real-time price
+        
+        if current_pnl > 0:
+            logger.info(f"♻️ ROTATION: Swapping {weakest_pos.symbol} (Conf: {weakest_pos.confidence}, PnL: +{current_pnl}) for {signal.symbol} (Conf: {signal.confidence})")
+            
+            # Execute Swap
+            await close_position(weakest_pos)
+            await execute_order(signal)
+        else:
+            logger.info(f"❌ Rotation Rejected: Weakest pos {weakest_pos.symbol} is losing money (PnL: {current_pnl}). Holding.")
+    else:
+        logger.info(f"❌ Signal Rejected: New confidence {signal.confidence} not higher than weakest existing.")
+🛠️ STEP 3: UPDATE CONFIG
+File: src/config.py
+Action:
+Ensure MAX_OPEN_POSITIONS = 3.
+Execute this Logic Upgrade.
+code
+Code
+---
+
+### 💡 這個機制運作的場景模擬
+
+假設系統現在持有三個倉位：
+1.  **ETH (信心 0.75, 盈利 +$50)**
+2.  **SOL (信心 0.80, 盈利 +$20)**
+3.  **DOGE (信心 0.65, 盈利 +$10)** -> **目前最弱**
+
+**情況 A**：
+SMC 引擎發現了一個 **BTC** 的機會，信心值 **0.90** (超高)。
+*   系統比對：BTC (0.90) > DOGE (0.65)。
+*   檢查 DOGE：盈利狀態 (+$10)。
+*   **結果**：系統會 **賣出 DOGE** (落袋為安)，然後 **買入 BTC**。您的持倉組合變強了。
+
+**情況 B**：
+SMC 引擎發現了 **BTC** 機會，信心值 **0.90**。
+*   系統比對：BTC (0.90) > DOGE (0.65)。
+*   檢查 DOGE：**虧損狀態 (-$5)**。
+*   **結果**：系統 **拒絕** 這次輪換。
+*   **原因**：因為您的策略是「穩定的低盈利」，我們不希望為了換倉而實現虧損（Realize Loss）。系統會選擇等待 DOGE 回本或觸發硬性止損。

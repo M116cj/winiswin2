@@ -104,7 +104,12 @@ async def run_brain() -> None:
     _symbols = await universe.get_active_pairs()
     
     if not _symbols:
-        _symbols = ["BTC/USDT", "ETH/USDT"]
+        _symbols = [
+            "BTC/USDT", "ETH/USDT", "BNB/USDT", "XRP/USDT", "SOL/USDT",
+            "ADA/USDT", "DOGE/USDT", "AVAX/USDT", "LINK/USDT", "MATIC/USDT",
+            "FTT/USDT", "TRX/USDT", "ARB/USDT", "OP/USDT", "LTC/USDT",
+            "BCH/USDT", "ETC/USDT", "XLM/USDT", "ATOM/USDT", "UNI/USDT"
+        ]
     
     logger.info(f"✅ Will analyze {len(_symbols)} symbols")
     logger.info(f"📊 Symbols: {_symbols[:10]}...")

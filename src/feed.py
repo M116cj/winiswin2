@@ -61,7 +61,12 @@ async def run_feed_real(symbols: Optional[List[str]] = None) -> None:
         
         if not symbols:
             logger.error("❌ Failed to discover pairs, using fallback")
-            symbols = ["BTC/USDT", "ETH/USDT"]
+            symbols = [
+                "BTC/USDT", "ETH/USDT", "BNB/USDT", "XRP/USDT", "SOL/USDT",
+                "ADA/USDT", "DOGE/USDT", "AVAX/USDT", "LINK/USDT", "MATIC/USDT",
+                "FTT/USDT", "TRX/USDT", "ARB/USDT", "OP/USDT", "LTC/USDT",
+                "BCH/USDT", "ETC/USDT", "XLM/USDT", "ATOM/USDT", "UNI/USDT"
+            ]
         
         logger.info(f"✅ Will monitor {len(symbols)} symbols")
         logger.info(f"📊 First 10: {symbols[:10]}")
