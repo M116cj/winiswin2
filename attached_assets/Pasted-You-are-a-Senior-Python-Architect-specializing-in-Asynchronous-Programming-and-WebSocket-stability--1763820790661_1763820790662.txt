@@ -1,0 +1,114 @@
+You are a Senior Python Architect specializing in Asynchronous Programming and WebSocket stability. 
+
+I have a critical architectural flaw in my current WebSocket implementation causing "Triple Heartbeat Conflicts" and "Message Loss". 
+
+Please execute the following **"Unified Architecture Refactoring Plan"** to fix the stability issues. 
+
+### 🛑 CRITICAL RULES:
+1. **Ignore** existing `BaseFeed`, `OptimizedWebSocketFeed`, and `ApplicationLevelHeartbeatMonitor` logic. We are replacing them with a single source of truth.
+2. **Do NOT** try to patch the old files. We will create a new base class and rewrite the subclasses to inherit from it.
+3. Ensure all imports use relative paths correctly (e.g., `from .unified_feed import UnifiedWebSocketFeed`).
+
+---
+
+### 📝 STEP 1: Create the "Golden Base" Class
+Create a new file `src/core/websocket/unified_feed.py`. 
+This class must implement:
+- `websockets` library connection management.
+- `asyncio.Queue` for the producer-consumer pattern.
+- A single heartbeat mechanism (Ping Interval: 20s, Ping Timeout: 20s).
+- Automatic exponential backoff reconnection.
+- Abstract methods `on_connect(ws)` and `process_message(raw_msg)`.
+
+### 📝 STEP 2: Rewrite `PriceFeed`
+Overwrite `src/core/websocket/price_feed.py` completely.
+- **Inheritance**: Must inherit from `UnifiedWebSocketFeed`.
+- **Fix Bug**: Remove the `queue.get_nowait()` logic that was causing message loss. Just use the parent class's queue mechanism.
+- **Logic**: Parse the trade stream JSON and handle the price data.
+
+### 📝 STEP 3: Rewrite `KlineFeed`
+Overwrite `src/core/websocket/kline_feed.py` completely.
+- **Inheritance**: Must inherit from `UnifiedWebSocketFeed`.
+- **Removal**: COMPLETELY REMOVE `ApplicationLevelHeartbeatMonitor` or any reference to it.
+- **Logic**: Parse the kline JSON and process OHLCV data.
+
+### 📝 STEP 4: Rewrite `AccountFeed`
+Overwrite `src/core/websocket/account_feed.py` completely.
+- **Inheritance**: Must inherit from `UnifiedWebSocketFeed`.
+- **Removal**: Remove the custom `while True` loop and custom ping logic.
+- **Logic**: Implement `process_message` to handle `outboundAccountPosition` and `executionReport`.
+
+---
+
+### 🧠 Implementation Reference (Use this logic):
+
+**unified_feed.py skeleton:**
+```python
+import asyncio
+import json
+import logging
+import websockets
+from abc import ABC, abstractmethod
+from typing import Optional
+
+class UnifiedWebSocketFeed(ABC):
+    def __init__(self, url: str, feed_name: str):
+        self.url = url
+        self.name = feed_name
+        self.logger = logging.getLogger(f"WS.{feed_name}")
+        self._queue = asyncio.Queue(maxsize=1000)
+        self._stop_event = asyncio.Event()
+        self._ws = None
+        # Standardized Heartbeat
+        self.PING_INTERVAL = 20 
+        self.PING_TIMEOUT = 20
+        self.RECONNECT_DELAY = 5
+
+    async def start(self):
+        self._stop_event.clear()
+        asyncio.create_task(self._consumer_worker())
+        await self._connection_loop()
+
+    async def stop(self):
+        self._stop_event.set()
+        if self._ws: await self._ws.close()
+
+    async def _connection_loop(self):
+        retry_count = 0
+        while not self._stop_event.is_set():
+            try:
+                async with websockets.connect(
+                    self.url, 
+                    ping_interval=self.PING_INTERVAL, 
+                    ping_timeout=self.PING_TIMEOUT
+                ) as websocket:
+                    self._ws = websocket
+                    self.logger.info(f"Connected to {self.url}")
+                    retry_count = 0
+                    await self.on_connect(websocket)
+                    async for message in websocket:
+                        if not self._queue.full():
+                            self._queue.put_nowait(message)
+            except Exception as e:
+                self.logger.error(f"Connection lost: {e}")
+            
+            if not self._stop_event.is_set():
+                await asyncio.sleep(min(60, self.RECONNECT_DELAY * (2 ** retry_count)))
+                retry_count += 1
+
+    async def _consumer_worker(self):
+        while not self._stop_event.is_set():
+            try:
+                msg = await asyncio.wait_for(self._queue.get(), timeout=1.0)
+                await self.process_message(msg)
+                self._queue.task_done()
+            except asyncio.TimeoutError:
+                continue
+            except Exception as e:
+                self.logger.error(f"Worker error: {e}")
+
+    @abstractmethod
+    async def on_connect(self, ws): pass
+
+    @abstractmethod
+    async def process_message(self, raw_msg): pass
