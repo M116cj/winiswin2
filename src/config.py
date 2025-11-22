@@ -24,6 +24,7 @@ class Config:
     MAX_LEVERAGE_TEACHER = 3.0
     MAX_LEVERAGE_STUDENT = 10.0
     TEACHER_THRESHOLD = 50
+    MAX_OPEN_POSITIONS = 3  # Elite rotation: max 3 concurrent positions
     
     # Indicators
     ATR_PERIOD = 14

@@ -1,0 +1,55 @@
+You are the **API Integration Specialist**.
+
+**Critical Error:** `Binance API error (400): {"code":-1022,"msg":"Signature for this request is not valid."}`
+**Context:** After the "Great Merge", the signing logic in `src/trade.py` (formerly `binance_client.py`) is likely broken.
+
+**Mission:** Diagnose and Fix the HMAC-SHA256 signing logic.
+
+---
+
+### 🛠️ STEP 1: VERIFY CONFIGURATION
+**File:** `src/config.py`
+**Action:**
+-   Ensure `BINANCE_SECRET_KEY` is loaded correctly from `os.getenv`.
+-   **Add Validation:** In `__init__`, raise a `ValueError` immediately if `BINANCE_SECRET_KEY` is None or empty. Don't wait for a trade to fail.
+
+### 🛠️ STEP 2: REWRITE SIGNING LOGIC
+**File:** `src/trade.py` (The Client/Execution section)
+**Action:** Refactor the `_generate_signature` and `_request` methods.
+
+**Correct Logic Implementation:**
+1.  **Prepare Payload:** Combine all parameters (including `timestamp`) into a query string *before* signing.
+2.  **Ordering:** `timestamp` MUST be in the parameters. `signature` MUST be appended at the very end.
+3.  **Encoding:** Ensure the Secret Key is encoded as `bytes` (UTF-8).
+4.  **Hashing:** Use `hmac.new(secret_bytes, payload_bytes, hashlib.sha256).hexdigest()`.
+
+**Code Reference (Fix your logic to match this):**
+```python
+import hmac
+import hashlib
+import time
+from urllib.parse import urlencode
+
+# inside the class...
+def _get_headers(self):
+    return {'X-MBX-APIKEY': self.api_key}
+
+def _sign_params(self, params: dict):
+    # 1. Ensure timestamp exists
+    if 'timestamp' not in params:
+        params['timestamp'] = int(time.time() * 1000)
+    
+    # 2. Create Query String (Sort is strictly NOT required by Binance but good for debug)
+    # Convert bools to lower case strings if necessary, remove None values
+    clean_params = {k: v for k, v in params.items() if v is not None}
+    query_string = urlencode(clean_params)
+    
+    # 3. Generate Signature
+    signature = hmac.new(
+        self.secret_key.encode('utf-8'),
+        query_string.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    
+    # 4. Append Signature
+    return f"{query_string}&signature={signature}"

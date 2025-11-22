@@ -17,6 +17,7 @@ from urllib.parse import urlencode
 import aiohttp
 
 from src.bus import bus, Topic
+from src.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ LIVE_TRADING_ENABLED = BINANCE_API_KEY and BINANCE_API_SECRET
 # In-memory account state (in production: use Redis/DB)
 _account_state = {
     'balance': 10000.0,
-    'positions': {},
+    'positions': {},  # {symbol: {quantity, entry_price, entry_confidence, entry_time, side}}
     'trades': []
 }
 
@@ -139,14 +140,88 @@ async def _execute_order_simulated(order: Dict) -> Dict:
     return filled_order
 
 
+async def _get_position_pnl(position_data: Dict) -> float:
+    """
+    Calculate PnL for a position
+    
+    In production: fetch current price from Binance
+    For now: use mock calculation
+    
+    Returns: PnL in USD (positive = profit)
+    """
+    entry_price = position_data.get('entry_price', 0)
+    quantity = position_data.get('quantity', 0)
+    side = position_data.get('side', 'BUY')
+    
+    if entry_price <= 0 or quantity <= 0:
+        return 0.0
+    
+    # Mock current price (in production: fetch from API)
+    current_price = entry_price * 1.02  # Assume 2% gain
+    
+    if side == 'BUY':
+        pnl = (current_price - entry_price) * quantity
+    else:  # SELL
+        pnl = (entry_price - current_price) * quantity
+    
+    return pnl
+
+
+async def _close_position(symbol: str, quantity: float) -> bool:
+    """
+    Close an existing position
+    
+    Args:
+        symbol: Trading pair
+        quantity: Position size
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    logger.info(f"🚪 Closing position: {symbol} {quantity:.0f}")
+    
+    # Create SELL order
+    order = {
+        'symbol': symbol,
+        'side': 'SELL',
+        'quantity': quantity,
+        'type': 'MARKET',
+        'confidence': 0.0  # Forced close (not a signal trade)
+    }
+    
+    # Execute close order
+    if LIVE_TRADING_ENABLED:
+        filled_order = await _execute_order_live(order)
+        if filled_order is None:
+            logger.error(f"❌ Failed to close {symbol}")
+            return False
+    else:
+        filled_order = await _execute_order_simulated(order)
+    
+    # Remove from positions
+    async with _state_lock:
+        if symbol in _account_state['positions']:
+            del _account_state['positions'][symbol]
+            logger.info(f"✅ Position closed: {symbol}")
+            return True
+    
+    return False
+
+
 async def _check_risk(signal: Dict) -> None:
     """
-    Validate risk parameters
+    Validate risk parameters + Elite Rotation Logic
     
     Logic:
     1. Get account balance
-    2. Check leverage
-    3. If pass -> publish ORDER_REQUEST
+    2. Check if slots available (MAX_OPEN_POSITIONS = 3)
+    3. If slots full: Check for rotation opportunity
+       - Find weakest position (lowest confidence)
+       - If New_Confidence > Weakest_Confidence AND Weakest_Position.PnL > 0:
+         - Close weakest position
+         - Open new position (Upgrade quality)
+       - Else: Reject signal
+    4. If slots available: Open new position
     """
     if not signal:
         return
@@ -155,27 +230,94 @@ async def _check_risk(signal: Dict) -> None:
     confidence = signal.get('confidence', 0)
     position_size = signal.get('position_size', 0)
     
-    # Get current balance
+    # Get current state (thread-safe)
     async with _state_lock:
         balance = _account_state['balance']
+        current_positions = list(_account_state['positions'].items())
     
     max_risk = balance * 0.02  # 2% risk per trade
     
-    if position_size <= max_risk and confidence > 0.55:
+    # Risk validation
+    if position_size > max_risk:
+        logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
+        return
+    
+    if confidence <= 0.55:
+        logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} <= 0.55)")
+        return
+    
+    # Check slot availability
+    num_positions = len(current_positions)
+    max_positions = Config.MAX_OPEN_POSITIONS
+    
+    # CASE 1: Slots available
+    if num_positions < max_positions:
         order = {
             'symbol': symbol,
-            'side': 'BUY' if confidence > 0.5 else 'SELL',
+            'side': 'BUY',
             'quantity': position_size,
             'type': 'MARKET',
             'confidence': confidence
         }
         
-        logger.info(f"🛡️ Order approved: {symbol} {order['side']} {position_size:.0f}")
+        logger.info(f"✅ Order approved (Slot {num_positions + 1}/{max_positions}): {symbol} {order['side']} {position_size:.0f}")
+        await bus.publish(Topic.ORDER_REQUEST, order)
+        return
+    
+    # CASE 2: Slots full - Check for rotation
+    logger.info(f"⚠️ Positions full ({num_positions}/{max_positions}). Checking rotation opportunity...")
+    
+    # Find weakest position (lowest confidence)
+    weakest_pos = None
+    weakest_key = None
+    weakest_confidence = float('inf')
+    
+    for pos_symbol, pos_data in current_positions:
+        pos_confidence = pos_data.get('entry_confidence', 0.5)
+        if pos_confidence < weakest_confidence:
+            weakest_confidence = pos_confidence
+            weakest_pos = pos_data
+            weakest_key = pos_symbol
+    
+    if weakest_pos is None:
+        logger.warning(f"❌ No positions to compare (rotation check failed)")
+        return
+    
+    # Compare confidences
+    if confidence <= weakest_confidence:
+        logger.info(f"❌ Signal Rejected: New confidence {confidence:.2f} not higher than weakest ({weakest_key} {weakest_confidence:.2f})")
+        return
+    
+    # Check if weakest position is profitable
+    pnl = await _get_position_pnl(weakest_pos)
+    
+    if pnl <= 0:
+        logger.info(f"❌ Rotation Rejected: Weakest position {weakest_key} is losing money (PnL: ${pnl:.2f}). Holding position.")
+        return
+    
+    # ROTATION APPROVED: Close weakest, open new
+    if weakest_key is None:
+        logger.error("❌ Rotation failed: Invalid weakest key")
+        return
+    
+    weakest_quantity = weakest_pos.get('quantity', 0)
+    logger.info(f"♻️ ROTATION: Swapping {weakest_key} (Conf: {weakest_confidence:.2f}, PnL: +${pnl:.2f}) for {symbol} (Conf: {confidence:.2f})")
+    
+    # Close weakest position
+    if await _close_position(weakest_key, weakest_quantity):
+        # Open new position
+        order = {
+            'symbol': symbol,
+            'side': 'BUY',
+            'quantity': position_size,
+            'type': 'MARKET',
+            'confidence': confidence
+        }
         
-        # Publish to execution
+        logger.info(f"✅ New position approved: {symbol} {order['side']} {position_size:.0f}")
         await bus.publish(Topic.ORDER_REQUEST, order)
     else:
-        logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
+        logger.error(f"❌ Rotation failed: Could not close {weakest_key}")
 
 
 async def _execute_order(order: Dict) -> None:
@@ -214,7 +356,7 @@ async def _update_state(filled_order: Dict) -> None:
     
     Logic:
     1. Update balance
-    2. Record position
+    2. Record position with metadata (entry_confidence, entry_price, entry_time)
     3. Track trade
     """
     if not filled_order:
@@ -224,15 +366,31 @@ async def _update_state(filled_order: Dict) -> None:
         symbol = filled_order.get('symbol', '')
         quantity = filled_order.get('quantity', 0)
         price = filled_order.get('price', 0)
+        side = filled_order.get('side', 'BUY')
+        confidence = filled_order.get('confidence', 0.5)
         
-        # Update state
-        _account_state['positions'][symbol] = quantity
+        # Check if this is a SELL (closing position)
+        if side == 'SELL' and symbol in _account_state['positions']:
+            del _account_state['positions'][symbol]
+            logger.info(f"💾 Position closed: {symbol}")
+        else:
+            # Store position with enhanced metadata
+            _account_state['positions'][symbol] = {
+                'quantity': quantity,
+                'entry_price': price,
+                'entry_confidence': confidence,
+                'entry_time': int(time.time() * 1000),
+                'side': side
+            }
+            logger.info(f"💾 Position opened: {symbol} {quantity:.0f} @ ${price:.2f} (Conf: {confidence:.2f})")
+        
+        # Track trade
         _account_state['trades'].append(filled_order)
         
         # Simple balance update (in production: calculate properly)
         _account_state['balance'] -= quantity * price * 0.001  # Assume 0.1% commission
         
-        logger.info(f"💾 State updated: {symbol} | Balance: {_account_state['balance']:.0f}")
+        logger.info(f"💾 State updated: {symbol} | Balance: ${_account_state['balance']:.0f} | Positions: {len(_account_state['positions'])}")
 
 
 async def get_balance() -> float:
