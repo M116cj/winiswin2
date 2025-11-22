@@ -77,17 +77,18 @@ class FeatureEngineer:
         
         return float(rsi)
     
-    def compute_features(self, ohlcv: List[Dict], smc_results: Dict) -> Dict:
+    def compute_features(self, ohlcv: List[Dict], smc_results: Dict, min_size: int = 5) -> Dict:
         """
         Convert SMC patterns + OHLCV into numerical features
         
         Args:
             ohlcv: List of kline dicts
             smc_results: Results from SMCEngine (FVG, OB, LS, BOS)
+            min_size: Minimum buffer size (default 5, use 20 in production)
         
         Returns: Dict of features for ML model
         """
-        if not ohlcv or len(ohlcv) < 5:
+        if not ohlcv or len(ohlcv) < min_size:
             return {name: 0.0 for name in self.feature_names}
         
         # Extract raw data

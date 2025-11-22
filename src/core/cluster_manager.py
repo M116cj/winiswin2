@@ -63,6 +63,7 @@ class ClusterManager:
         self.running = False
         self.pairs: List[str] = []
         self.kline_buffers: Dict[str, List] = {}  # {symbol: klines}
+        self.warmup_complete = False  # 🔥 Cold start flag
         
         # Statistics
         self.stats = {
@@ -123,8 +124,15 @@ class ClusterManager:
             if len(self.kline_buffers[symbol]) > 100:
                 self.kline_buffers[symbol] = self.kline_buffers[symbol][-100:]
             
-            # Need minimum data
-            if len(self.kline_buffers[symbol]) < 5:
+            # 🔥 COLD START MITIGATION:
+            # - Need ≥20 candles for reliable indicators (RSI, ATR)
+            # - Use ≥5 for early testing but with caution
+            MIN_BUFFER_SIZE = 20  # Production: wait for full history
+            MIN_BUFFER_WARMUP = 5   # During warmup: accept earlier signals
+            
+            min_required = MIN_BUFFER_WARMUP if not self.warmup_complete else MIN_BUFFER_SIZE
+            
+            if len(self.kline_buffers[symbol]) < min_required:
                 return
             
             self.stats['klines_processed'] += 1
