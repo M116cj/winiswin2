@@ -1,59 +1,55 @@
 """
-🚀 SelfLearningTrader - SMC-Quant Sharded Engine v5.1
+🚀 Main - Quantum Event-Driven Orchestration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Production Entry Point (Pure Orchestration)
+Pure orchestration. Components auto-subscribe on init. Start feed, keep alive.
+Everything talks through EventBus. ZERO direct coupling.
 """
 
 import asyncio
 import logging
 
-try:
-    import uvloop
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-except ImportError:
-    pass
+from src.bus import bus
+from src.components import feed, brain, gatekeeper, hand, memory
 
-from src.core.cluster_manager import ClusterManager
-from src.core.websocket.shard_feed import ShardFeed
-from src.core.account_state_cache import AccountStateCache
-
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class SelfLearningTradingSystem:
-    """Main orchestration system - delegates all work"""
+async def main():
+    """
+    Start quantum event-driven engine
     
-    async def run(self):
-        """Start trading engine"""
-        logger.info("🚀 Starting SMC-Quant Engine...")
+    Flow:
+    1. Initialize components (they auto-subscribe to EventBus)
+    2. Start feed (heartbeat)
+    3. Keep alive
+    """
+    try:
+        logger.info("🚀 Starting Quantum Event-Driven Engine")
         
-        cache = AccountStateCache()
-        manager = ClusterManager(None, on_signal_callback=self._on_signal)
-        await manager.start()
+        # Initialize components in order (they subscribe to EventBus)
+        await memory.init()
+        await hand.init()
+        await gatekeeper.init()
+        await brain.init()
         
-        pairs = manager.pairs or ["BTCUSDT", "ETHUSDT"]
-        feed = ShardFeed(pairs, 0, manager.on_kline_close)
+        logger.info("✅ All components initialized")
+        
+        # Start feed (the heartbeat that triggers everything)
         await feed.start()
         
-        try:
-            logger.info("✅ Engine running...")
-            while True:
-                await asyncio.sleep(60)
-        except KeyboardInterrupt:
-            logger.info("⏹️ Stopping...")
-        finally:
-            await feed.stop()
-            await manager.stop()
+        # Keep running
+        while True:
+            await asyncio.sleep(1)
     
-    @staticmethod
-    def _on_signal(signal):
-        logger.info(f"📊 Signal: {signal.get('symbol')} @ {signal.get('confidence'):.1%}")
-
-
-async def main():
-    """Entry point"""
-    system = SelfLearningTradingSystem()
-    await system.run()
+    except KeyboardInterrupt:
+        logger.info("⏹️ Shutdown requested")
+    except Exception as e:
+        logger.error(f"❌ Fatal error: {e}")
+    finally:
+        await feed.stop()
+        logger.info("🛑 Shutdown complete")
 
 
 if __name__ == "__main__":

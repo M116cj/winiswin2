@@ -1,0 +1,70 @@
+You are the **System Purist & Architect**.
+
+**User Feedback:** "It's still not enough." The user demands **Absolute Minimalism** and **Zero Coupling**.
+**Current Problem:** Components still import each other directly (Tight Coupling). The folder structure is too deep.
+
+**Mission:** Refactor to a **"Quantum Event-Driven Architecture"**.
+1.  **Flatten**: No more sub-directories like `src/core/websocket/`. Everything lives in `src/components/`.
+2.  **Decouple**: Implement a global **EventBus**. Components must NOT import each other. They only talk to the Bus.
+3.  **Functionalize**: Convert heavy Classes into pure stateless Modules/Functions where possible.
+
+---
+
+### 📡 PHASE 1: THE CENTRAL NERVOUS SYSTEM (Event Bus)
+**Action:** Create `src/bus.py`.
+**Logic:**
+-   A lightweight, async `EventBus` singleton.
+-   Methods: `subscribe(topic, callback)`, `publish(topic, data)`.
+-   Topics Enum: `TICK_UPDATE`, `SIGNAL_GENERATED`, `ORDER_REQUEST`, `ORDER_FILLED`, `SYSTEM_SHUTDOWN`.
+
+### 💥 PHASE 2: ATOMIC EXPLOSION (Flatten & Functionalize)
+**Action:** Move and refactor files into a flat `src/components/` directory.
+
+1.  **`src/components/feed.py`** (Was `shard_feed.py` + `account_feed.py`)
+    -   **Logic:** Connects to WS. On message -> `bus.publish(TICK_UPDATE, data)`.
+    -   *Change:* It knows NOTHING about the strategy.
+
+2.  **`src/components/brain.py`** (Was `ict_scalper.py` + `smc_engine.py` + `ml`)
+    -   **Logic:** `bus.subscribe(TICK_UPDATE, process_candle)`.
+    -   Function `process_candle`: Calculates SMC + ML.
+    -   If opportunity -> `bus.publish(SIGNAL_GENERATED, signal)`.
+    -   *Change:* Pure logic. No order execution code here.
+
+3.  **src/components/gatekeeper.py** (Was `risk_manager.py`)
+    -   **Logic:** `bus.subscribe(SIGNAL_GENERATED, check_risk)`.
+    -   Function `check_risk`: Checks balance/leverage.
+    -   If pass -> `bus.publish(ORDER_REQUEST, order)`.
+
+4.  **`src/components/hand.py`** (Was `position_controller.py` + `binance_client.py`)
+    -   **Logic:** `bus.subscribe(ORDER_REQUEST, execute_order)`.
+    -   Function `execute_order`: Sends HTTP request.
+
+5.  **`src/components/memory.py`** (Was `account_state_cache.py`)
+    -   **Logic:** Listens to `ORDER_FILLED` to update state.
+
+### 🧹 PHASE 3: DELETE THE HIERARCHY
+**Action:** Create `flatten_system.py`.
+1.  Move the specific logic above to `src/components/`.
+2.  **DELETE** `src/core/`, `src/strategies/`, `src/websocket/`, `src/database/`, `src/ml/`.
+3.  Keep `src/config.py` (UnifiedConfig) and `src/bus.py` at root `src/`.
+
+### 🚀 PHASE 4: THE NEW MAIN
+**File:** `src/main.py`
+**Logic:**
+```python
+import asyncio
+from src.bus import EventBus
+from src.components import feed, brain, gatekeeper, hand, memory
+
+async def main():
+    # 1. Initialize Components (They auto-subscribe)
+    await memory.init()
+    await hand.init()
+    await gatekeeper.init()
+    await brain.init()
+    
+    # 2. Start Feed (The Heartbeat)
+    await feed.start()
+
+    # 3. Keep alive
+    while True: await asyncio.sleep(1)
