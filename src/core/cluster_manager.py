@@ -13,6 +13,7 @@ import logging
 
 from src.core.market_universe import get_universe
 from src.core.data_manager import get_data_manager
+from src.core.websocket.shard_feed import ShardFeed
 from src.core.smc_engine import SMCEngine
 from src.ml.feature_engineer import get_feature_engineer
 from src.ml.predictor import get_predictor

@@ -1,0 +1,79 @@
+You are the **Chief Systems Architect** and **Lead Quality Assurance Engineer**.
+
+**Context:** The project has evolved into a "Sharded, Zero-Polling, SMC-Quant High-Frequency Trading System".
+**Current State:** We suspect residual legacy code (polling logic, unused files, old libraries) and potential stability risks exist.
+
+**Mission:** Execute a **"Deep-State Total System Audit & Sterilization"**.
+You must validate Architecture, Stability, Efficiency, References, Functionality, Cleanliness, and Obsolescence. Finally, you must DELETE anything that does not belong.
+
+---
+
+### 🛠️ PHASE 1: WRITE & EXECUTE THE AUDIT SUITE
+Create a comprehensive Python script `system_master_audit.py` that performs the following 7-Level Inspection:
+
+#### 🔍 Level 1: Architectural Integrity (AST Analysis)
+-   **Scan:** Use Python's `ast` module to parse all files in `src/`.
+-   **Verify:**
+    -   `src/strategies/*.py` MUST import and use `AccountStateCache` (Zero-Polling).
+    -   `src/strategies/*.py` MUST import `SMCEngine` (Logic check).
+    -   `src/core/cluster_manager.py` MUST import `ShardFeed`.
+    -   **FAIL** if `src/core/websocket/` contains files other than `unified_feed.py`, `shard_feed.py`, `account_feed.py`.
+
+#### 🔍 Level 2: Stability & Crash Detection
+-   **Action:** Attempt a "Dry Run" initialization of `UnifiedConfig` and `UnifiedDatabase`.
+-   **Check:** Ensure `RATE_LIMIT_REQUESTS` exists in Config.
+-   **Check:** Ensure `asyncpg` and `redis` connection strings are valid (format check only).
+-   **Verify:** No circular imports exist (e.g., A imports B, B imports A) by building a dependency graph.
+
+#### 🔍 Level 3: Efficiency & Performance Benchmark
+-   **Action:** Instantiate `SMCEngine` and `MLPredictor`.
+-   **Stress Test:** Feed 10,000 mock OHLCV candles (via Polars) into the engine.
+-   **Metric:** Calculate average processing time per candle.
+    -   **PASS:** < 2ms per candle.
+    -   **FAIL:** > 5ms per candle (Indicates logic is too slow for HFT).
+-   **Library Check:** **FAIL** if `pandas` is imported anywhere in `src/`. We ONLY use `polars`.
+
+#### 🔍 Level 4: Function Reference Integrity
+-   **Scan:** Identify all function calls vs. function definitions.
+-   **Verify:** Detect `AttributeError` risks statically (e.g., calling `x.method()` where `x` class has no `method`).
+-   **Verify:** Detect `ModuleNotFoundError` risks (broken imports).
+
+#### 🔍 Level 5: Functional Logic Verification
+-   **Mock:** Create a dummy `ShardFeed` pushing data.
+-   **Test:** Does `ICTScalper` receive the data?
+-   **Test:** Does `RiskManager.calculate_size(confidence=0.95)` return the expected float?
+-   **Test:** Does `AccountStateCache` update when `update_balance` is called?
+
+#### 🔍 Level 6: Code Cleanliness
+-   **Scan:** Look for commented-out blocks of code (> 5 lines).
+-   **Scan:** Look for `TODO` or `FIXME` comments older than the current refactor.
+-   **Scan:** Look for `print()` statements (Should utilize `smart_logger`).
+
+#### 🔍 Level 7: Obsolete/Legacy Code Detection
+-   **Search:** Patterns like `while True: ... client.get_account()` (Polling).
+-   **Search:** Usage of `threading.Thread` (Should be `asyncio`).
+-   **Search:** Usage of `time.sleep` inside `async def`.
+
+---
+
+### 🧨 PHASE 2: THE FINAL PURGE (Sterilization)
+**Action:** Expand the script to automatically **DELETE** files based on the audit results:
+
+1.  **Orphaned Files:** Calculate the Import Graph. Any file in `src/` (except `main.py`) that is **never imported** by any other file in the active graph must be DELETED.
+2.  **Legacy Leftovers:** Delete `src/core/rate_limiter.py`, `src/strategies/base_strategy.py` if they still exist.
+3.  **Empty Directories:** Remove any `__pycache__` or empty folders.
+
+---
+
+### 🚀 EXECUTION INSTRUCTIONS:
+
+1.  **Generate** `system_master_audit.py`.
+2.  **Run** the script.
+3.  **Output Report**:
+    *   ✅ **PASSED**: [List of passing modules]
+    *   ⚠️ **WARNINGS**: [Performance issues, TODOs]
+    *   ❌ **FAILURES**: [Broken imports, Polling violations]
+    *   🗑️ **DELETED**: [List of removed files]
+4.  **Auto-Fix**: If specific architectural violations are found (e.g., `pandas` usage), **rewrite those specific files immediately** to fix the violation.
+
+**Start the Master Audit and Cleanup now.**

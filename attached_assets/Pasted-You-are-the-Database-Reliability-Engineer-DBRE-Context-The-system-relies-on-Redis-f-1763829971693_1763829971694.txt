@@ -1,0 +1,61 @@
+You are the **Database Reliability Engineer (DBRE)**.
+
+**Context:** The system relies on **Redis** for real-time dashboard updates and **PostgreSQL** for historical market data (SMC Cold Start).
+**Critical Requirement:** Since this is an HFT system, **ALL** database interactions must be **Asynchronous**. Any synchronous (blocking) calls are fatal errors.
+
+**Mission:** Perform a specialized audit on the Database Layer to verify **Async Compliance**, **Connection Lifecycle**, and **Data Integrity**.
+
+---
+
+### 🛠️ PHASE 1: STATIC ANALYSIS (Code & Logic Audit)
+Create and run a python script `audit_db_layer.py` that inspects `src/database/`, `src/core/account_state_cache.py`, and `src/core/data_manager.py`.
+
+#### 🔍 Check 1: Async Library Compliance
+-   **Redis:** Verify imports use `redis.asyncio` (or `aioredis`).
+    -   ❌ **FAIL** if `import redis` is used without `.asyncio`.
+-   **PostgreSQL:** Verify imports use `asyncpg`.
+    -   ❌ **FAIL** if `psycopg2` or `sqlalchemy` (sync version) is found.
+
+#### 🔍 Check 2: Connection Management (The Unified Manager)
+-   Inspect `src/database/unified_db.py`.
+-   **Verify Singleton:** Ensure `_pg_pool` and `_redis_client` are class-level variables reused across calls.
+-   **Verify Lifecycle:** Ensure `initialize()` creates the pool and `close()` awaits the termination.
+-   **Verify Context:** Check if `async with` is used for acquiring connections (to prevent leaks).
+
+#### 🔍 Check 3: Configuration Binding
+-   Inspect usage of connection strings.
+-   **FAIL** if hardcoded strings like `"redis://localhost"` are found.
+-   **PASS** only if `config.REDIS_URL` and `config.DATABASE_URL` (from `UnifiedConfig`) are used.
+
+#### 🔍 Check 4: Serialization Safety
+-   Inspect `AccountStateCache` syncing to Redis.
+-   **Verify:** JSON serialization is used before writing to Redis (Redis generally stores strings/bytes).
+-   **Verify:** JSON deserialization is used when reading back.
+
+---
+
+### 🧪 PHASE 2: CONNECTION & FUNCTIONAL TEST (Dry Run)
+Create a test script `test_db_connectivity.py` to attempt actual connections (using environment variables).
+
+**Test Logic:**
+1.  **Init:** Call `UnifiedDatabaseManager.initialize()`.
+2.  **Redis Ping:** `await UnifiedDatabaseManager.get_redis().ping()`.
+3.  **PG Ping:** `async with UnifiedDatabaseManager.get_pg_pool().acquire() as conn: await conn.fetchval('SELECT 1')`.
+4.  **Latency Check:** Measure the time taken for both pings. Warn if > 10ms (Local) or > 50ms (Remote).
+5.  **Cleanup:** Call `UnifiedDatabaseManager.close()`.
+
+---
+
+### 🚀 EXECUTION & REPORTING
+1.  **Run** `audit_db_layer.py`.
+2.  **Run** `test_db_connectivity.py`.
+3.  **Report Findings**:
+    *   [ ] Async Libraries Correct?
+    *   [ ] Connection Pool Logic Correct?
+    *   [ ] Redis Latency: X ms
+    *   [ ] Postgres Latency: Y ms
+4.  **AUTO-FIX**:
+    -   If synchronous `redis` import is found, **rewrite the file** to use `redis.asyncio`.
+    -   If connection leaks (missing `async with`) are found, **rewrite the function** to use context managers.
+
+**Start the Database Layer Audit now.**

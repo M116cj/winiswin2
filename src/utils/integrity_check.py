@@ -111,40 +111,40 @@ class IntegrityChecker:
 
 def run_integrity_check():
     """Run complete integrity check"""
-    print("\n" + "="*80)
-    print("🔍 DATA INTEGRITY CHECK")
-    print("="*80 + "\n")
+    logger.info("\n" + "="*80)
+    logger.info("🔍 DATA INTEGRITY CHECK")
+    logger.info("="*80 + "\n")
     
     checker = IntegrityChecker()
     
     # Check folder
     folder_ok, folder_errors = checker.check_data_folder()
     if folder_ok:
-        print("✅ Data folder: OK\n")
+        logger.info("✅ Data folder: OK\n")
     else:
-        print("❌ Data folder issues:")
+        logger.info("❌ Data folder issues:")
         for error in folder_errors:
-            print(f"   - {error}")
-        print()
+            logger.info(f"   - {error}")
+        logger.info("")
     
     # Check parquet files
     total, valid, errors = checker.check_all_parquets()
     
-    print(f"📊 Parquet files: {valid}/{total} valid")
+    logger.info(f"📊 Parquet files: {valid}/{total} valid")
     
     if errors:
-        print("\n⚠️ Issues found:")
+        logger.info("\n⚠️ Issues found:")
         for error in errors:
-            print(f"   - {error}")
+            logger.info(f"   - {error}")
     else:
-        print("✅ All parquet files valid\n")
+        logger.info("✅ All parquet files valid\n")
     
-    print("="*80)
+    logger.info("="*80)
     if folder_ok and len(errors) == 0:
-        print("✅ INTEGRITY CHECK PASSED")
+        logger.info("✅ INTEGRITY CHECK PASSED")
     else:
-        print("❌ INTEGRITY CHECK FAILED")
-    print("="*80 + "\n")
+        logger.info("❌ INTEGRITY CHECK FAILED")
+    logger.info("="*80 + "\n")
     
     return folder_ok and len(errors) == 0
 
