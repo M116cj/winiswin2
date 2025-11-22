@@ -1,51 +1,48 @@
-"""Circuit breaker stubs"""
+"""🔌 Circuit Breaker Pattern - Prevent cascading failures"""
 import logging
-from enum import Enum
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
-
-class Priority(Enum):
-    """Priority levels"""
-    LOW = 1
-    MEDIUM = 2
-    HIGH = 3
-
-
 class CircuitBreaker:
-    """Simple circuit breaker"""
-    def __init__(self, failure_threshold: int = 5, timeout: int = 60):
+    """Simple circuit breaker for API resilience"""
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 300):
+        self.failure_count = 0
         self.failure_threshold = failure_threshold
-        self.timeout = timeout
-        self.failures = 0
-        self.open = False
+        self.recovery_timeout = recovery_timeout
+        self.last_failure_time = None
+        self.state = 'CLOSED'  # CLOSED, OPEN, HALF_OPEN
     
-    async def call(self, func, *args, **kwargs):
-        """Execute function with circuit breaker"""
-        if self.open:
-            raise Exception("Circuit breaker is open")
-        
-        try:
-            result = await func(*args, **kwargs)
-            self.failures = 0
-            return result
-        except Exception as e:
-            self.failures += 1
-            if self.failures >= self.failure_threshold:
-                self.open = True
-            raise
-
+    def record_success(self):
+        """Record successful call"""
+        self.failure_count = 0
+        self.state = 'CLOSED'
+    
+    def record_failure(self):
+        """Record failed call"""
+        self.failure_count += 1
+        self.last_failure_time = datetime.now()
+        if self.failure_count >= self.failure_threshold:
+            self.state = 'OPEN'
+    
+    def is_open(self) -> bool:
+        """Check if circuit is open"""
+        if self.state == 'OPEN':
+            if datetime.now() - self.last_failure_time > timedelta(seconds=self.recovery_timeout):
+                self.state = 'HALF_OPEN'
+                return False
+            return True
+        return False
 
 class GradedCircuitBreaker(CircuitBreaker):
-    """Graded circuit breaker with throttling"""
-    def __init__(self, warning_threshold: int = 3, throttled_threshold: int = 5,
-                 blocked_threshold: int = 10, timeout: int = 60, throttle_delay: float = 1,
-                 bypass_whitelist: list = None):
-        super().__init__(blocked_threshold, timeout)
-        self.warning_threshold = warning_threshold
-        self.throttled_threshold = throttled_threshold
-        self.bypass_whitelist = bypass_whitelist or []
-    
-    async def call(self, func, *args, priority=Priority.MEDIUM, **kwargs):
-        """Execute with graded failure handling"""
-        return await super().call(func, *args, **kwargs)
+    """Advanced circuit breaker with priority levels"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.priority_overrides = {}
+
+class Priority:
+    """Priority levels"""
+    CRITICAL = 10
+    HIGH = 8
+    MEDIUM = 5
+    LOW = 2

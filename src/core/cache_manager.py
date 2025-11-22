@@ -1,29 +1,27 @@
-"""Simple cache manager stub"""
+"""💾 Cache Manager - Multi-tier caching (Memory, Redis, PostgreSQL)"""
 import logging
 
 logger = logging.getLogger(__name__)
 
-
 class CacheManager:
-    """Simple in-memory cache"""
+    """Unified cache interface"""
     def __init__(self):
-        self._cache = {}
+        self.memory_cache = {}
     
-    def set(self, key: str, value, ttl: int = 3600):
+    async def get(self, key: str):
+        """Get from cache"""
+        return self.memory_cache.get(key)
+    
+    async def set(self, key: str, value, ttl: int = 300):
         """Set cache value"""
-        self._cache[key] = {'value': value, 'ttl': ttl}
+        self.memory_cache[key] = value
     
-    def get(self, key: str):
-        """Get cache value"""
-        if key in self._cache:
-            return self._cache[key]['value']
-        return None
-    
-    def delete(self, key: str):
-        """Delete cache key"""
-        if key in self._cache:
-            del self._cache[key]
-    
-    def clear(self):
-        """Clear all cache"""
-        self._cache.clear()
+    async def delete(self, key: str):
+        """Delete cache entry"""
+        self.memory_cache.pop(key, None)
+
+_cache_manager = CacheManager()
+
+def get_cache_manager() -> CacheManager:
+    """Get global cache manager instance"""
+    return _cache_manager

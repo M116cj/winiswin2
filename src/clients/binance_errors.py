@@ -1,10 +1,13 @@
-"""Binance API error handling"""
-
+"""🔥 Binance API Error Handling"""
 
 class BinanceRequestError(Exception):
-    """Binance API request error"""
-    def __init__(self, code: int = None, message: str = None, http_status: int = None):
-        self.code = code
-        self.message = message
-        self.http_status = http_status
-        super().__init__(message or "Binance API error")
+    """Base exception for Binance API errors"""
+    pass
+
+class BinanceAPIError(BinanceRequestError):
+    """Binance API error"""
+    pass
+
+class BinanceOrderException(BinanceRequestError):
+    """Binance order error"""
+    pass
