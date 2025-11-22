@@ -1,0 +1,84 @@
+You are the **Chief System Auditor** with execution authority.
+
+**Objective:** Perform a **Total System Purge & Verification**.
+The user requires a clean slate. We must remove ALL legacy code, old logic (Polling, Simple RSI strategies), and stale data.
+We must then verify that ONLY the new **Sharded SMC-Quant Architecture** remains and functions correctly.
+
+**Scope:** `src/` directory, `data/` directory, `models/` directory.
+
+---
+
+### 🧨 PHASE 1: THE PURGE (Delete Legacy Code)
+**Action:** Create and run a script `purge_legacy.py` to DELETE the following:
+
+1.  **Old Feed Logic:**
+    -   `src/core/websocket/base_feed.py` (Replaced by UnifiedFeed)
+    -   `src/core/websocket/optimized_base_feed.py` (Replaced by UnifiedFeed)
+    -   `src/core/websocket/price_feed.py` (Replaced by ShardFeed)
+    -   `src/core/websocket/kline_feed.py` (Replaced by ShardFeed)
+    -   *Keep:* `unified_feed.py`, `shard_feed.py`, `account_feed.py`.
+
+2.  **Old Strategy/Monitors:**
+    -   `src/core/position_monitor_24x7.py` (Merged into RiskManager)
+    -   `src/strategies/self_learning_trader.py` (Replaced by ICTScalper)
+    -   `src/strategies/base_strategy.py` (Obsolete)
+
+3.  **Old Data & Models:**
+    -   `data/*.csv` (We now use Parquet/Polars)
+    -   `models/*.json` (Old XGBoost models are incompatible with new LightGBM SMC models)
+    -   `src/ml/model_wrapper.py` (Replaced by Predictor/Trainer)
+
+4.  **Old Utilities:**
+    -   Any file containing `pandas` imports in `src/core/` (We are now Polars-exclusive in core).
+
+**Script Logic:** Use `os.remove` and `shutil.rmtree`. Print every deleted file.
+
+---
+
+### 🏗️ PHASE 2: STRUCTURAL VERIFICATION
+**Action:** Create and run `verify_new_architecture.py`.
+
+**Checks:**
+1.  **File Existence Check:**
+    -   `src/core/smc_engine.py` (MUST EXIST)
+    -   `src/core/cluster_manager.py` (MUST EXIST)
+    -   `src/core/websocket/shard_feed.py` (MUST EXIST)
+    -   `src/ml/feature_engineer.py` (MUST EXIST)
+    -   `src/strategies/ict_scalper.py` (MUST EXIST)
+
+2.  **Dependency Check:**
+    -   Try `import polars`, `import lightgbm`, `import ray`.
+    -   Fail if not installed.
+
+3.  **Config Integrity:**
+    -   Load `UnifiedConfig`. Assert `RATE_LIMIT_REQUESTS` exists.
+    -   Assert `BinanceUniverse` class exists.
+
+---
+
+### 🧪 PHASE 3: FUNCTIONAL DRY-RUN
+**Action:** Create and run `test_smc_logic.py`.
+
+**Test Logic:**
+1.  **SMC Engine Test:**
+    -   Generate synthetic OHLCV data (using Numpy).
+    -   Initialize `SMCEngine`.
+    -   Call `detect_fvg()` and `detect_liquidity_sweep()`.
+    -   **Assert** it returns a result (not crashing).
+2.  **Risk Manager Test:**
+    -   Initialize `RiskManager`.
+    -   Call `calculate_size(confidence=0.9, balance=1000)`.
+    -   **Assert** it returns the correct position size (e.g., 2% risk).
+3.  **Cluster Logic Test:**
+    -   Initialize `ClusterManager` (Mocked).
+    -   Call `split_into_chunks(['BTC', 'ETH', ...], size=2)`.
+    -   **Assert** it creates correct chunks.
+
+---
+
+### 🚀 EXECUTION ORDER:
+1.  Run `purge_legacy.py`. **(Report deleted files)**.
+2.  Run `verify_new_architecture.py`. **(Report structure status)**.
+3.  Run `test_smc_logic.py`. **(Report functional health)**.
+
+**Proceed with the Purge and Verification immediately.**
