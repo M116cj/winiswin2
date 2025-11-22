@@ -4,7 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["abseil-cpp", "c-ares", "cacert", "cargo", "freetype", "glibcLocales", "grpc", "gtest", "hdf5", "lcms2", "libffi", "libiconv", "libimagequant", "libjpeg", "libtiff", "libuv", "libwebp", "libxcrypt", "oneDNN", "openjpeg", "openssh", "openssl", "pkg-config", "postgresql", "re2", "rustc", "tcl", "tk", "util-linux", "xsimd", "zlib"]
+packages = ["abseil-cpp", "c-ares", "cacert", "cargo", "freetype", "glibcLocales", "grpc", "gtest", "hdf5", "lcms2", "libcxx", "libffi", "libiconv", "libimagequant", "libjpeg", "libtiff", "libuv", "libwebp", "libxcrypt", "oneDNN", "openjpeg", "openssh", "openssl", "pkg-config", "postgresql", "re2", "rustc", "tcl", "tk", "util-linux", "xsimd", "zlib"]
 
 [workflows]
 runButton = "Project"

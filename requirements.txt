@@ -60,3 +60,5 @@ polars==1.0.0    # 🔥 High-speed dataframe operations (Phase 5)
 # - For Railway deployment: only core dependencies needed
 # - Optional extras reduce deployment size by ~200MB
 # =============================================================================
+numba
+uvloop
