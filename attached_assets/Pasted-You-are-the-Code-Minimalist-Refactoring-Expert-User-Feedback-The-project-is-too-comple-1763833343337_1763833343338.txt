@@ -1,0 +1,62 @@
+You are the **Code Minimalist & Refactoring Expert**.
+
+**User Feedback:** "The project is too complex with too many files and redundancies."
+**Current State:** A mix of "Sharded", "Event-Driven", and "Legacy" structures. Too many folders.
+**Goal:** **Flatten and Merge**. Reduce the file count by 70%. Create a "Monolith-Lite" structure that is easy to read.
+
+---
+
+### 📉 PHASE 1: ANALYZE & DETECT REDUNDANCY
+**Action:** Create and run `complexity_audit.py`.
+**Logic:**
+1.  **Find Overlap:** Identify files that perform similar tasks (e.g., `smc_engine.py` and `feature_engineer.py` both process K-lines).
+2.  **Find Fragmentation:** Identify "Wrapper Classes" that do nothing but call another class (e.g., `ClusterManager` might just be wrapping `ShardFeed`).
+3.  **Find Configuration Scatter:** Check if constants are split between `constants.py`, `unified_config.py`, and local variables.
+
+---
+
+### 🏗️ PHASE 2: THE "GREAT MERGE" (Refactor)
+**Action:** Rewrite the system into **4 Core Modules** in `src/`.
+
+#### 1. `src/config.py` (The Only Config)
+-   **Merge:** `src/core/unified_config.py` + `src/core/constants.py`.
+-   **Content:** All Env Vars (`RATE_LIMIT`), Trading Params (`RISK_PER_TRADE`), and Enums.
+
+#### 2. `src/data.py` (The Feed & Math)
+-   **Merge:** `shard_feed.py` + `smc_engine.py` + `feature_engineer.py`.
+-   **Logic:**
+    -   Connects to Binance Combined Streams.
+    -   Uses `orjson` and `polars`.
+    -   Calculates SMC features (FVG, OB) *immediately* upon receiving data.
+    -   **Output:** Pushes a `ProcessedCandle` (with features attached) to the main loop.
+
+#### 3. `src/brain.py` (The Strategy)
+-   **Merge:** `ict_scalper.py` + `hybrid_learner.py` + `predictor.py`.
+-   **Logic:**
+    -   Input: `ProcessedCandle`.
+    -   Logic: `if count < 50: return SMC_Rule() else: return LightGBM_Predict()`.
+    -   **Output:** `Signal` (Buy/Sell + Confidence).
+
+#### 4. `src/trade.py` (The Execution)
+-   **Merge:** `account_state_cache.py` + `risk_manager.py` + `binance_client.py` + `account_feed.py`.
+-   **Logic:**
+    -   Maintains `_balance` and `_positions` in memory (Zero-Polling).
+    -   Validates Signals against Risk.
+    -   Executes HTTP orders.
+
+---
+
+### 🧹 PHASE 3: DELETE EVERYTHING ELSE
+**Action:** Create `cleanup_final.py`.
+1.  **Move** the newly created 4 files to `src/`.
+2.  **Move** `main.py` to `src/` (update it to run the simple loop: `Data -> Brain -> Trade`).
+3.  **DELETE** all subdirectories: `src/core/`, `src/websocket/`, `src/strategies/`, `src/ml/`, `src/database/`, `src/components/`.
+4.  **DELETE** unused utils. Keep `smart_logger.py` but move to `src/logger.py`.
+
+---
+
+### 🚀 EXECUTION OUTPUT
+1.  Show the new file structure (Should be < 10 files total).
+2.  Verify that `src/main.py` runs the full loop without `ImportError`.
+
+**Execute this Radical Simplification now.**

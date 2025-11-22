@@ -1,16 +1,15 @@
 """
-🚀 Main - Quantum Event-Driven Orchestration
+🚀 Main - Quantum Event-Driven Trading Engine
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Pure orchestration. Components auto-subscribe on init. Start feed, keep alive.
-Everything talks through EventBus. ZERO direct coupling.
+Orchestration: Initialize all modules and start the trading loop.
+Flow: Data (ticks) → Brain (signals) → Trade (execution) → State (updates)
 """
 
 import asyncio
 import logging
 
-from src.bus import bus
-from src.components import feed, brain, gatekeeper, hand, memory
+from src import data, trade
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,26 +17,24 @@ logger = logging.getLogger(__name__)
 
 async def main():
     """
-    Start quantum event-driven engine
+    Start quantum event-driven trading engine
     
     Flow:
-    1. Initialize components (they auto-subscribe to EventBus)
-    2. Start feed (heartbeat)
+    1. Initialize modules (they auto-subscribe to EventBus)
+    2. Start data feed (heartbeat)
     3. Keep alive
     """
     try:
         logger.info("🚀 Starting Quantum Event-Driven Engine")
         
-        # Initialize components in order (they subscribe to EventBus)
-        await memory.init()
-        await hand.init()
-        await gatekeeper.init()
-        await brain.init()
+        # Initialize modules in order
+        await trade.init()
+        await data.init()
         
-        logger.info("✅ All components initialized")
+        logger.info("✅ All modules initialized")
         
-        # Start feed (the heartbeat that triggers everything)
-        await feed.start()
+        # Start data feed (the heartbeat that triggers everything)
+        await data.start()
         
         # Keep running
         while True:
@@ -48,7 +45,7 @@ async def main():
     except Exception as e:
         logger.error(f"❌ Fatal error: {e}")
     finally:
-        await feed.stop()
+        await data.stop()
         logger.info("🛑 Shutdown complete")
 
 

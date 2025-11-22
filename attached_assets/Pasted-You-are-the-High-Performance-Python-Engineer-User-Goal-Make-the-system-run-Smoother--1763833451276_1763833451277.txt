@@ -1,0 +1,58 @@
+You are the **High-Performance Python Engineer**.
+
+**User Goal:** Make the system run "Smoother".
+**Context:** We have a flattened structure (`src/data.py`, `src/brain.py`, `src/trade.py`).
+**Current Bottlenecks:** Potential GC pauses, Event Loop blocking during high volatility, and micro-stutters.
+
+**Mission:** Apply **Low-Latency Optimizations** to the existing 4 files.
+
+---
+
+### 🏎️ PHASE 1: THE ENGINE UPGRADE (uvloop & GC)
+**File:** `src/main.py`
+**Action:**
+1.  **Install & Use `uvloop`**:
+    ```python
+    import uvloop
+    import asyncio
+    import gc
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    ```
+2.  **GC Tuning**:
+    -   Add a function `optimize_gc()` called at startup.
+    -   Logic: `gc.set_threshold(700, 10, 10)` -> Tune generic thresholds.
+    -   Logic: `gc.freeze()` -> Freeze startup objects to reduce scan overhead.
+
+### 🌊 PHASE 2: THE FLOW CONTROL (Conflation)
+**File:** `src/data.py`
+**Action:**
+Implement a **"Time-Based Conflation"** mechanism for WebSocket data.
+1.  **Buffer**: Instead of processing every tick immediately, store it in a dict: `self._latest_tick[symbol] = data`.
+2.  **Rhythm Loop**: Create a background loop running every **0.1s (100ms)**.
+3.  **Flush**:
+    -   Every 0.1s, take the *latest* snapshot from `self._latest_tick`.
+    -   Send ONLY this snapshot to `brain.py`.
+    -   *Result:* System handles 10,000 ticks/sec exactly as smoothly as 10 ticks/sec.
+
+### ⚡ PHASE 3: THE MATH ACCELERATOR (Numba)
+**File:** `src/data.py` (or wherever SMC math is)
+**Action:**
+1.  Import `from numba import jit`.
+2.  Identify the heavy calculation functions (e.g., `calculate_atr`, `detect_fvg`).
+3.  **Decorate** them with `@jit(nopython=True, cache=True)`.
+4.  **Constraint:** Ensure input types are numpy arrays (Polars can export to numpy easily). This converts Python loops into Machine Code.
+
+### 🛡️ PHASE 4: ERROR SMOOTHING (Resilience)
+**File:** `src/trade.py` & `src/main.py`
+**Action:**
+1.  **Suppress Noise**: Wrap the main loop in a broad `try...except Exception` that logs the error but **DOES NOT CRASH** the system.
+2.  **Auto-Reconnect**: If `data.connect()` fails, wait 1s and retry loop. Ensure no "hard crash" stops the bot.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  Confirm `uvloop` is active.
+2.  Confirm Numba JIT compilation is successful.
+3.  Verify that the 0.1s Conflation Loop is running.
+
+**Execute this "Smoothness Upgrade" now.**
