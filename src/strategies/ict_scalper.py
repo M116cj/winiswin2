@@ -12,7 +12,7 @@ import logging
 # 🔥 SMC-Quant Pipeline Imports (Full Integration)
 from src.core.smc_engine import SMCEngine
 from src.ml.feature_engineer import get_feature_engineer
-from src.ml.predictor import get_predictor
+from src.ml.hybrid_learner import get_predictor
 from src.core.risk_manager import get_risk_manager
 
 logger = logging.getLogger(__name__)
