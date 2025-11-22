@@ -1,0 +1,64 @@
+You are the **Lead Static Analysis Engineer**.
+
+**Context:** The system has just been refactored into a flat "Quantum Event-Driven Architecture" (`src/components/`).
+**Risk:** Files were moved, and logic was decoupled via `EventBus`. There is a high risk of `ImportError`, `AttributeError`, `NameError`, and `TypeError` (missing arguments).
+
+**Mission:** Perform a **"Deep Reference & Topology Scan"**.
+You must verify that every function call points to a valid definition, and every Event Bus signal has a valid listener.
+
+---
+
+### 🔍 PHASE 1: STATIC IMPORT & ATTRIBUTE CHECK
+**Action:** Create and run `audit_references.py`.
+**Logic (using `ast` module):**
+1.  **Scan Imports:**
+    -   Verify that every `from src.components import X` resolves to a real file.
+    -   Verify that imported object `X` actually exists inside that file.
+2.  **Scan Attributes:**
+    -   Look for `module.function()` calls.
+    -   **Verify** that `function` is defined in `module`.
+    -   **Catch:** Typos like `feed.start_feed()` when it should be `feed.start()`.
+
+### 📡 PHASE 2: EVENT BUS TOPOLOGY MAPPING
+**Action:** Create and run `audit_event_topology.py`.
+**Logic:**
+1.  **Scan for Publishers:** Find all `bus.publish(Topic.X, data)`.
+2.  **Scan for Subscribers:** Find all `bus.subscribe(Topic.X, callback)`.
+3.  **Topology Validation:**
+    -   **Orphaned Events:** Report ERROR if a Topic is published but NO ONE subscribes to it. (Logic gap).
+    -   **Dead Listeners:** Report WARNING if a Subscriber listens to a Topic that is never published.
+    -   **Signature Check:** If `publish` sends `data`, does the `callback` function accept an argument?
+
+### 🛡️ PHASE 3: NULL SAFETY & CONFIG CHECK
+**Action:** Create and run `audit_null_safety.py`.
+**Logic:**
+1.  **Config Validation:**
+    -   Load `src/config.py`. Check if critical keys (API_KEY, REDIS_URL) return `None` or empty strings.
+2.  **Object Initialization:**
+    -   Scan `src/main.py`.
+    -   Ensure `await component.init()` is called for EVERY component imported.
+    -   **Fail** if a component is used before being initialized.
+
+### 🧪 PHASE 4: DRY RUN INTEGRATION TEST
+**Action:** Create and run `test_system_wiring.py`.
+**Logic:**
+1.  Mock the `EventBus`.
+2.  Import all components from `src/components/`.
+3.  **Simulate a Tick:** Manually trigger `bus.publish(TICK_UPDATE, mock_candle)`.
+4.  **Trace:**
+    -   Does `brain` receive it?
+    -   Does `brain` generate a mock signal?
+    -   Does `gatekeeper` receive the signal?
+    -   Does `hand` receive the order?
+5.  **Crash Check:** If any exception occurs during this chain, report the stack trace immediately.
+
+---
+
+### 🚀 OUTPUT REQUIREMENT
+Generate a **"System Integrity Report"**:
+-   [ ] Import Resolution: PASS/FAIL
+-   [ ] Event Topology: PASS/FAIL (List orphaned events)
+-   [ ] Init Sequence: PASS/FAIL
+-   [ ] Dry Run: PASS/FAIL
+
+**If any check fails, generate the FIX code immediately.**
