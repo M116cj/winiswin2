@@ -7,6 +7,7 @@ Pure state management. NO execution logic.
 """
 
 import logging
+import asyncio
 from typing import Dict
 
 from src.bus import bus, Topic
@@ -20,10 +21,13 @@ _account_state = {
     'trades': []
 }
 
+# Lock for async-safe state mutations
+_state_lock = asyncio.Lock()
+
 
 async def update_state(filled_order: Dict) -> None:
     """
-    Update account state when order fills
+    Update account state when order fills (thread-safe)
     
     Logic:
     1. Update balance
@@ -33,23 +37,25 @@ async def update_state(filled_order: Dict) -> None:
     if not filled_order:
         return
     
-    symbol = filled_order.get('symbol', '')
-    quantity = filled_order.get('quantity', 0)
-    price = filled_order.get('price', 0)
-    
-    # Update state
-    _account_state['positions'][symbol] = quantity
-    _account_state['trades'].append(filled_order)
-    
-    # Simple balance update (in production: calculate properly)
-    _account_state['balance'] -= quantity * price * 0.001  # Assume 0.1% commission
-    
-    logger.info(f"💾 State updated: {symbol} | Balance: {_account_state['balance']:.0f}")
+    async with _state_lock:
+        symbol = filled_order.get('symbol', '')
+        quantity = filled_order.get('quantity', 0)
+        price = filled_order.get('price', 0)
+        
+        # Update state
+        _account_state['positions'][symbol] = quantity
+        _account_state['trades'].append(filled_order)
+        
+        # Simple balance update (in production: calculate properly)
+        _account_state['balance'] -= quantity * price * 0.001  # Assume 0.1% commission
+        
+        logger.info(f"💾 State updated: {symbol} | Balance: {_account_state['balance']:.0f}")
 
 
 async def get_balance() -> float:
-    """Get current balance"""
-    return _account_state['balance']
+    """Get current balance (thread-safe)"""
+    async with _state_lock:
+        return _account_state['balance']
 
 
 async def init() -> None:

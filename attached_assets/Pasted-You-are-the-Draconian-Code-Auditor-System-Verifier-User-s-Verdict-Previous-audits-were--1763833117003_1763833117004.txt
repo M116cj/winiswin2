@@ -1,0 +1,77 @@
+You are the **Draconian Code Auditor & System Verifier**.
+
+**User's Verdict:** Previous audits were "not detailed enough."
+**Current State:** The system is refactored into a flat `src/components/` structure using an Event Bus.
+**Risk:** While files exist, we risk **Signature Mismatches** (e.g., sending 3 args to a function expecting 2), **Payload Errors** (Event Bus sending Dict but receiver expects Object), and **Async/Sync Confusion**.
+
+**Mission:** Perform a **"Molecular Level" Deep Scan**. 
+Do not just check if things connect. Check if they connect *correctly* with the right data types and logic.
+
+---
+
+### 🔬 PHASE 1: STRICT SIGNATURE & ASYNC ANALYSIS (AST)
+**Action:** Create and run `audit_signatures.py`.
+**Logic:**
+1.  **Function Call Matching:**
+    -   Scan every function call `foo(a, b)`.
+    -   Find the definition `def foo(x, y, z=1)`.
+    -   **CRITICAL:** Verify argument count matches (accounting for defaults).
+    -   **CRITICAL:** Verify `await` is present if the target function is `async def`.
+    -   *Target:* Catch errors like `await bus.publish` (correct) vs `bus.publish` (fire-and-forget error).
+2.  **Variable Scope Check:**
+    -   Scan for variables used inside functions but not defined (Global variable leaks).
+    -   **Fail** if any global state is mutated outside of `__init__`.
+
+### 🧬 PHASE 2: EVENT DATA CONTRACT VERIFICATION
+**Action:** Create and run `audit_event_contracts.py`.
+**Logic:**
+1.  **Define Contracts:** Create a mapping of expected payloads for each Topic.
+    -   `TICK_UPDATE`: Expects `models.Candle` (Not dict, not None).
+    -   `SIGNAL_GENERATED`: Expects `models.Signal`.
+    -   `ORDER_REQUEST`: Expects `models.Order`.
+2.  **Publisher Scan:**
+    -   Find `bus.publish(Topic.X, data)`.
+    -   Trace `data` back to its origin. Is it instantiated from the correct Class?
+3.  **Subscriber Scan:**
+    -   Find `bus.subscribe(Topic.X, handler)`.
+    -   Inspect `handler(event)`. Does it assume `event` is a dict (`event['price']`) or an object (`event.price`)?
+    -   **FAIL** if Publisher sends Object but Subscriber accesses it like a Dict (or vice versa).
+
+### 🧪 PHASE 3: COMPONENT ISOLATION TESTS (Unit Testing)
+**Action:** Create and run `test_components_logic.py`.
+**Logic:**
+1.  **Test `brain.py` (SMC + ML):**
+    -   Feed it a sequence of 50 dummy Candles (using `polars` DF).
+    -   **Assert:** Does it calculate the 12 Features without crashing (Division by Zero check)?
+    -   **Assert:** Does it produce a `Signal` when conditions are met?
+2.  **Test `gatekeeper.py` (Risk):**
+    -   Mock `AccountState` with $1000 balance.
+    -   Send a Signal with confidence 0.95.
+    -   **Assert:** Does it publish an `ORDER_REQUEST`?
+    -   **Assert:** Is the position size correct (e.g., $20 risk)?
+3.  **Test `hand.py` (Execution):**
+    -   Mock `BinanceClient`.
+    -   Send an `ORDER_REQUEST`.
+    -   **Assert:** Is `client.create_order` called with the exact params from the request?
+
+### 🛡️ PHASE 4: RESILIENCE & ERROR HANDLING SCAN
+**Action:** Create and run `audit_resilience.py`.
+**Logic:**
+1.  **Try/Except Coverage:**
+    -   Scan all `async def` functions in `components/`.
+    -   **FAIL** if a function handling external data (WebSocket/HTTP) does NOT have a `try...except` block. Uncaught exceptions in async tasks will silently kill the loop.
+2.  **Reconnect Logic:**
+    -   Verify `feed.py` has a `while True` loop with `try...except` for connection persistence.
+
+---
+
+### 🚀 EXECUTION OUTPUT: THE MATRIX
+Generate a detailed table for every file:
+-   **File**: `src/components/brain.py`
+    -   [ ] Syntax & Imports: OK
+    -   [ ] Async/Await Correctness: OK
+    -   [ ] Event Payload Contract: **FAIL** (Publisher sends Candle, expects Dict) <- *Example*
+    -   [ ] Error Handling Coverage: 100%
+    -   [ ] Logic Unit Test: PASS
+
+**If ANY check fails, generate the patch code immediately to fix the logic gap.**

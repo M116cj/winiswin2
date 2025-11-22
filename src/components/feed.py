@@ -27,25 +27,30 @@ async def start(symbols: Optional[List[str]] = None) -> None:
     
     logger.info(f"🔌 Feed starting ({len(symbols)} symbols)")
     
-    # Simulated: In production, this would be WebSocket connection
-    # For now, just publish sample ticks
-    while True:
-        await asyncio.sleep(60)
-        
-        # Example tick data
-        tick = {
-            'symbol': 'BTCUSDT',
-            'open': 42000,
-            'high': 42500,
-            'low': 41500,
-            'close': 42200,
-            'volume': 1000,
-            'time': 0
-        }
-        
-        await bus.publish(Topic.TICK_UPDATE, tick)
+    try:
+        # Simulated: In production, this would be WebSocket connection
+        # For now, just publish sample ticks
+        while True:
+            await asyncio.sleep(60)
+            
+            # Example tick data
+            tick = {
+                'symbol': 'BTCUSDT',
+                'open': 42000,
+                'high': 42500,
+                'low': 41500,
+                'close': 42200,
+                'volume': 1000,
+                'time': 0
+            }
+            
+            await bus.publish(Topic.TICK_UPDATE, tick)
+    except asyncio.CancelledError:
+        logger.info("🔌 Feed cancelled")
+    except Exception as e:
+        logger.error(f"❌ Feed error: {e}")
 
 
 async def stop() -> None:
-    """Stop feed"""
+    """Stop feed - async for consistency"""
     logger.info("🔌 Feed stopping")
