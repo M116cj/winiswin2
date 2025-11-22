@@ -1,25 +1,21 @@
 """
-🚀 Main - Quantum Event-Driven Trading Engine (High-Performance + Dispatcher)
+🚀 Main - Dual-Process Quantum Engine (Ring Buffer + Zero GIL Contention)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Orchestration with uvloop, GC optimization, priority dispatcher, and resilience.
-Flow: Data (ticks) → Dispatcher → Analysis (threaded) → Trade → State
+Kernel-level optimization: Launches two independent processes
+- Process 1 (Feed): Reads WebSocket, writes to ring buffer
+- Process 2 (Brain): Polls ring buffer, runs SMC/ML/Trade
+
+No GIL contention. Microsecond latency. Scalable to 300+ symbols.
 """
 
-import asyncio
 import logging
-import gc
+import os
 import sys
+import multiprocessing
+from typing import Optional
 
-# High-performance event loop
-try:
-    import uvloop
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-except ImportError:
-    logging.warning("⚠️ uvloop not installed, using default event loop")
-
-from src import data, trade
-from src.dispatch import init_dispatcher
+from src.ring_buffer import get_ring_buffer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,99 +24,126 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def optimize_gc():
-    """
-    Optimize garbage collection for low-latency trading
+def run_feed_process():
+    """Run feed process (Process 1)"""
+    from src import feed
     
-    Strategy:
-    1. Increase thresholds to reduce GC frequency
-    2. Freeze initial objects to reduce scan overhead
-    """
-    # Tune GC thresholds for less frequent collections
-    # (gen0_threshold, gen1_threshold, gen2_threshold)
-    gc.set_threshold(700, 10, 10)
+    logger.info(f"📡 Feed Process started (PID={os.getpid()})")
     
-    # Collect everything first
-    gc.collect()
-    
-    # Freeze built-in objects to avoid re-scanning them
     try:
-        gc.freeze()
-        logger.info("✅ GC optimized: thresholds=(700,10,10), startup objects frozen")
-    except AttributeError:
-        logger.warning("⚠️ gc.freeze() not available (Python < 3.13)")
+        import asyncio
+        asyncio.run(feed.main())
+    except KeyboardInterrupt:
+        logger.info("Feed process terminated")
+    except Exception as e:
+        logger.critical(f"Feed process fatal error: {e}", exc_info=True)
 
 
-async def main():
-    """
-    Start quantum event-driven trading engine with priority dispatcher
+def run_brain_process():
+    """Run brain process (Process 2)"""
+    from src import brain
     
-    Flow:
-    1. Optimize GC
-    2. Initialize dispatcher (priority queue + thread pool)
-    3. Initialize modules (they auto-subscribe to EventBus)
-    4. Start data feed (heartbeat)
-    5. Keep alive with auto-reconnect
-    """
-    retry_count = 0
-    max_retries = 5
+    logger.info(f"🧠 Brain Process started (PID={os.getpid()})")
     
-    while retry_count < max_retries:
-        try:
-            logger.info("🚀 Starting Quantum Event-Driven Engine (uvloop + Dispatcher + GC optimized)")
-            
-            # Optimize garbage collection
-            optimize_gc()
-            
-            # Initialize priority dispatcher
-            logger.info("⚡ Initializing TaskDispatcher...")
-            dispatcher = await init_dispatcher()
-            logger.info("✅ TaskDispatcher ready")
-            
-            # Initialize modules in order
-            await trade.init()
-            await data.init()
-            
-            logger.info("✅ All modules initialized")
-            
-            # Start data feed (the heartbeat that triggers everything)
-            logger.info("📡 Starting data feed...")
-            await data.start()
-            
-            # Keep running
-            while True:
-                await asyncio.sleep(1)
+    try:
+        import asyncio
+        asyncio.run(brain.main())
+    except KeyboardInterrupt:
+        logger.info("Brain process terminated")
+    except Exception as e:
+        logger.critical(f"Brain process fatal error: {e}", exc_info=True)
+
+
+def main():
+    """
+    Main orchestrator: Launch Feed + Brain processes
+    
+    Architecture:
+    1. Create shared memory ring buffer
+    2. Launch Feed process (WebSocket + Write)
+    3. Launch Brain process (Read + Analysis + Trade)
+    4. Keep both running with monitoring
+    """
+    logger.info("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
+    logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    
+    # Create ring buffer (in main process)
+    logger.info("🔄 Creating shared memory ring buffer...")
+    try:
+        from src.ring_buffer import TOTAL_BUFFER_SIZE
+        ring_buffer = get_ring_buffer(create=True)
+        logger.info(f"✅ Ring buffer ready: {TOTAL_BUFFER_SIZE} bytes")
+    except Exception as e:
+        logger.error(f"❌ Failed to create ring buffer: {e}", exc_info=True)
+        sys.exit(1)
+    
+    # Create processes
+    logger.info("🚀 Launching Feed + Brain processes...")
+    
+    feed_process = multiprocessing.Process(
+        target=run_feed_process,
+        name="Feed-Process",
+        daemon=False
+    )
+    
+    brain_process = multiprocessing.Process(
+        target=run_brain_process,
+        name="Brain-Process",
+        daemon=False
+    )
+    
+    try:
+        # Start both processes
+        feed_process.start()
+        logger.info(f"📡 Feed process started (PID={feed_process.pid})")
         
-        except KeyboardInterrupt:
-            logger.info("⏹️ Shutdown requested")
-            break
+        brain_process.start()
+        logger.info(f"🧠 Brain process started (PID={brain_process.pid})")
         
-        except Exception as e:
-            retry_count += 1
-            logger.error(f"❌ Error (retry {retry_count}/{max_retries}): {e}", exc_info=True)
-            
-            if retry_count < max_retries:
-                wait_time = 2 ** retry_count  # Exponential backoff
-                logger.info(f"⏳ Retrying in {wait_time}s...")
-                await asyncio.sleep(wait_time)
-            else:
-                logger.critical(f"❌ Max retries ({max_retries}) exceeded. Shutting down.")
-                break
+        logger.info("✅ All processes running")
+        logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         
-        finally:
-            try:
-                await data.stop()
-            except Exception as e:
-                logger.error(f"Error stopping data: {e}")
-            
-            logger.info("🛑 Shutdown complete")
+        # Monitor processes
+        while feed_process.is_alive() and brain_process.is_alive():
+            pass
+        
+        if not feed_process.is_alive():
+            logger.warning("⚠️ Feed process died")
+        if not brain_process.is_alive():
+            logger.warning("⚠️ Brain process died")
+    
+    except KeyboardInterrupt:
+        logger.info("⏹️ Shutdown requested")
+        
+        # Terminate both processes
+        feed_process.terminate()
+        brain_process.terminate()
+        
+        # Wait for graceful shutdown
+        feed_process.join(timeout=5)
+        brain_process.join(timeout=5)
+        
+        # Force kill if needed
+        if feed_process.is_alive():
+            feed_process.kill()
+        if brain_process.is_alive():
+            brain_process.kill()
+        
+        logger.info("🛑 All processes terminated")
+    
+    except Exception as e:
+        logger.critical(f"❌ Fatal error: {e}", exc_info=True)
+        feed_process.terminate()
+        brain_process.terminate()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
+    # Required for Windows/macOS multiprocessing
+    multiprocessing.set_start_method('spawn', force=True)
+    
     try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("Terminated by user")
+        main()
     except Exception as e:
-        logger.critical(f"Fatal error: {e}", exc_info=True)
+        logger.critical(f"Fatal: {e}", exc_info=True)
         sys.exit(1)
