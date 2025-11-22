@@ -20,7 +20,7 @@ import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = logging.getLogger(__name__)
 
@@ -205,7 +205,7 @@ def _analyze_single_symbol_worker(symbol: str, market_data: dict, config_dict: d
                 reconstructed_data[tf_key] = None
         
         # 🔥 步驟2：在線程內重建 Config 對象
-        from src.config import Config
+        from src.core.unified_config_manager import config_manager as config
         config = Config()
         # 應用傳入的配置參數
         for key, value in config_dict.items():
@@ -240,11 +240,11 @@ class ParallelAnalyzer:
         初始化並行分析器
         
         Args:
-            max_workers: 線程池工作線程數（預設使用 Config.MAX_WORKERS）
+            max_workers: 線程池工作線程數（預設使用 config.MAX_WORKERS）
             perf_monitor: 性能監控器
         """
         self.config = Config()
-        self.max_workers = max_workers or Config.MAX_WORKERS
+        self.max_workers = max_workers or config.MAX_WORKERS
         self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
         
         # ✨ 性能監控
@@ -376,7 +376,7 @@ class ParallelAnalyzer:
             symbols: 交易對列表
             batch_data: 批量數據字典 {symbol: multi_tf_data}
             analyzer: 分析器實例（需要有analyze方法）
-            concurrency_limit: 並發限制（默認使用Config.CONCURRENT_SCAN_LIMIT）
+            concurrency_limit: 並發限制（默認使用config.CONCURRENT_SCAN_LIMIT）
         
         Returns:
             List[Dict]: 有效信號列表

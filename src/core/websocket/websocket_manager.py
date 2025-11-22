@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Any
 from src.core.websocket.shard_feed import ShardFeed
 from src.core.websocket.account_feed import AccountFeed
 from src.core.symbol_selector import SymbolSelector
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = get_logger(__name__)
 
@@ -129,7 +129,7 @@ class WebSocketManager:
         try:
             # 🔥 v3.17.2+ 優化：使用流動性×波動率綜合分數
             symbols = await self.symbol_selector.get_top_liquidity_volatility_symbols(
-                limit=Config.WEBSOCKET_SYMBOL_LIMIT  # 默認200
+                limit=config.WEBSOCKET_SYMBOL_LIMIT  # 默認200
             )
             
             if symbols:
@@ -221,13 +221,13 @@ class WebSocketManager:
             logger.debug("   所有Feed已啟動")
         
         # 🔥 v4.2：可選的K線預熱（默認禁用以避免Binance速率限制）
-        from src.config import Config
+        from src.core.unified_config_manager import config_manager as config
         logger.debug("檢查K線預熱配置...")
-        if Config.ENABLE_KLINE_WARMUP and self.enable_kline_feed and self.shard_feed:
+        if config.ENABLE_KLINE_WARMUP and self.enable_kline_feed and self.shard_feed:
             logger.info("   ✅ K線預熱已啟用（可能觸發速率限制風險）")
-            logger.info(f"      Symbol限制: {Config.WARMUP_SYMBOL_LIMIT}")
-            logger.info(f"      Batch大小: {Config.WARMUP_BATCH_SIZE}")
-            logger.info(f"      Batch延遲: {Config.WARMUP_BATCH_DELAY}s")
+            logger.info(f"      Symbol限制: {config.WARMUP_SYMBOL_LIMIT}")
+            logger.info(f"      Batch大小: {config.WARMUP_BATCH_SIZE}")
+            logger.info(f"      Batch延遲: {config.WARMUP_BATCH_DELAY}s")
             await self._warmup_cache()
         else:
             logger.info("   ⚠️ K線預熱已禁用（ENABLE_KLINE_WARMUP=false）")
@@ -263,15 +263,15 @@ class WebSocketManager:
         Args:
             timeout: 預熱超時時間（秒），默認120秒
         """
-        from src.config import Config
+        from src.core.unified_config_manager import config_manager as config
         
         if not self.shard_feed or not self.shard_feed.kline_shards:
             logger.warning("   ⚠️ 無K線分片，跳過預熱")
             return
         
         # 🔥 v4.2：限制預熱的交易對數量（避免速率限制）
-        warmup_symbols = self.symbols[:Config.WARMUP_SYMBOL_LIMIT]
-        warmup_timeframe = Config.WARMUP_TIMEFRAME
+        warmup_symbols = self.symbols[:config.WARMUP_SYMBOL_LIMIT]
+        warmup_timeframe = config.WARMUP_TIMEFRAME
         
         logger.info(f"   預熱目標: {len(warmup_symbols)}個主流交易對")
         logger.info(f"   預熱時間框架: {warmup_timeframe}（單一框架）")
@@ -279,8 +279,8 @@ class WebSocketManager:
         start_time = asyncio.get_event_loop().time()
         
         # 🔥 v4.2：大幅降低batch_size並增加延遲（避免速率限制）
-        batch_size = Config.WARMUP_BATCH_SIZE  # 默認5
-        batch_delay = Config.WARMUP_BATCH_DELAY  # 默認2秒
+        batch_size = config.WARMUP_BATCH_SIZE  # 默認5
+        batch_delay = config.WARMUP_BATCH_DELAY  # 默認2秒
         warmed_count = 0
         failed_count = 0
         

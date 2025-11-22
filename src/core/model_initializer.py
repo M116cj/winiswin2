@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 import json
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.ml.feature_schema import (
     CANONICAL_FEATURE_NAMES,
     extract_canonical_features,

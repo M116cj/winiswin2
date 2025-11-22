@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 from src.utils.logger_factory import get_logger
 from src.core.elite import EliteTechnicalEngine
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = get_logger(__name__)
 

@@ -1,0 +1,65 @@
+You are a **Lead Python Refactoring Specialist**. 
+The user demands a **TOTAL MIGRATION** of the Configuration and Database layers. 
+We are NOT just deprecating old files; we are eliminating them and updating ALL references across the codebase in one go.
+
+**Mission:** Refactor the system to use `UnifiedConfig` and `UnifiedDatabaseManager`, then DELETE the old modules.
+
+### 🚨 STRICT EXECUTION PROTOCOL:
+
+#### STEP 1: Construct the "Unified Core"
+1.  **Analyze**: Read `src/config.py` and `src/core/config_profile.py` to list EVERY single configuration key used (e.g., `BINANCE_API_KEY`, `DB_POOL_SIZE`, etc.).
+2.  **Create**: `src/core/unified_config.py`.
+    -   Define `class UnifiedConfig` (dataclass).
+    -   Include ALL keys found in the analysis phase.
+    -   Implement `.load()` to read from `os.environ`.
+    -   Create global instance: `config = UnifiedConfig.load()`.
+3.  **Create**: `src/database/unified_db.py`.
+    -   Implement `UnifiedDatabaseManager` with `initialize()`, `close()`, `get_pg_pool()`, `get_redis()`.
+    -   Ensure it uses `src.core.unified_config.config` for credentials.
+
+#### STEP 2: The "Global Replacement" (The Hard Part)
+**Iterate through EVERY python file in `src/` and perform these specific updates:**
+
+1.  **Replace Config Imports**:
+    -   **Find**: `from src.config import Config` OR `import src.config`
+    -   **Replace with**: `from src.core.unified_config import config`
+    
+2.  **Replace Config Usage**:
+    -   **Find**: `Config.SOME_VARIABLE` or `src.config.Config.SOME_VARIABLE`
+    -   **Replace with**: `config.SOME_VARIABLE`
+    -   *Note:* Ensure case sensitivity matches (attributes in UnifiedConfig should match old usages).
+
+3.  **Replace ConfigProfile Usage**:
+    -   **Find**: Imports of `ConfigProfile` or `config_profile`.
+    -   **Replace with**: `from src.core.unified_config import config`
+    -   **Logic Update**: Replace `ConfigProfile.some_attr` with `config.some_attr`.
+
+4.  **Replace Scattered `os.getenv`**:
+    -   **Find**: Any direct usage of `os.getenv(...)` inside business logic files.
+    -   **Replace with**: `config.VARIABLE_NAME` (Add the variable to `UnifiedConfig` if missing).
+
+5.  **Replace Database Manager**:
+    -   **Find**: References to `src.database.async_manager` or `AsyncDatabaseManager`.
+    -   **Replace with**: `from src.database.unified_db import UnifiedDatabaseManager`
+    -   **Update Calls**:
+        -   `manager.pool` -> `UnifiedDatabaseManager.get_pg_pool()`
+        -   `redis_client` -> `UnifiedDatabaseManager.get_redis()`
+
+#### STEP 3: Update System Entry Point
+1.  **Locate**: `main.py` (or `run.py` / `app.py` - whichever is the entry point).
+2.  **Inject**:
+    -   Import: `from src.database.unified_db import UnifiedDatabaseManager`
+    -   Before loop: `await UnifiedDatabaseManager.initialize()`
+    -   After loop/Finally: `await UnifiedDatabaseManager.close()`
+
+#### STEP 4: The Clean Up (Destruction)
+Once all references are updated, **DELETE** the following files to prevent "Zombie Code":
+1.  `src/config.py`
+2.  `src/core/config_profile.py`
+3.  `src/database/async_manager.py`
+4.  `src/database/redis_manager.py` (if it existed separately)
+
+### 🧪 Verification Requirement
+After code generation, verify that `src/config.py` does NOT exist and that checking `grep -r "src.config" .` yields no results.
+
+**Start with Step 1 (Analysis & Construction) immediately, then proceed to global replacements.**

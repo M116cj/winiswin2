@@ -42,7 +42,7 @@ import sys
 from datetime import datetime
 from typing import Optional
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
 from src.core.unified_scheduler import UnifiedScheduler
@@ -55,12 +55,12 @@ from src.utils.config_validator import validate_config
 from src.utils.smart_logger import create_smart_logger
 
 # 🔥 v4.0+ PostgreSQL数据库支持（Phase 3: AsyncDatabaseManager迁移）
-from src.database.async_manager import AsyncDatabaseManager
+from src.database.unified_database_manager import UnifiedDatabaseManager
 from src.database.service import TradingDataService
 from src.database.initializer import initialize_database
 
 # 🔥 Performance Upgrade: Redis caching layer
-from src.database.redis_manager import RedisManager
+
 
 # 🛡️ v1.0+: Lifecycle management (graceful shutdown, watchdog, smart startup)
 from src.core.lifecycle_manager import get_lifecycle_manager
@@ -112,7 +112,7 @@ class SelfLearningTradingSystem:
     def __init__(self):
         """初始化系統"""
         self.running = False
-        self.config = Config  # Config類本身（類級別配置）
+        self.config = config  # 统一配置管理器
         
         # 核心組件
         self.binance_client: Optional[BinanceClient] = None
@@ -122,12 +122,9 @@ class SelfLearningTradingSystem:
         self.model_initializer: Optional[ModelInitializer] = None
         self.scheduler: Optional[UnifiedScheduler] = None
         
-        # 🔥 v4.0+ PostgreSQL数据库组件（Phase 3: AsyncDatabaseManager）
-        self.db_manager: Optional[AsyncDatabaseManager] = None
+        # 🔥 v4.0+ PostgreSQL数据库组件（统一数据库管理器）
+        self.db_manager: Optional[UnifiedDatabaseManager] = None
         self.db_service: Optional[TradingDataService] = None
-        
-        # 🔥 Performance Upgrade: Redis caching layer
-        self.redis_manager: Optional[RedisManager] = None
         
         # 🛡️ v1.0+: Lifecycle management
         self.lifecycle_manager = None
@@ -149,7 +146,7 @@ class SelfLearningTradingSystem:
                 logger.warning("⚠️  uvloop未安装，使用标准asyncio事件循环")
             
             # 🔥 v3.26+ 全面配置驗證（使用新的ConfigValidator）
-            is_valid, errors, warnings = validate_config(self.config)
+            is_valid, errors, warnings = validate_config(config)
             
             if not is_valid:
                 logger.error("❌ 配置驗證失敗:")
@@ -196,13 +193,13 @@ class SelfLearningTradingSystem:
             logger.debug("✅ 數據服務初始化完成")
             
             # 🔥 v4.0+ PostgreSQL数据库初始化（必需）
-            if not Config.get_database_url():
+            if not config.get_database_url():
                 logger.error("❌ DATABASE_URL未配置！无法启动系统")
                 logger.error("💡 请在Railway环境变量中设置DATABASE_URL")
                 return False  # Fail fast - 数据库不可用时立即终止
             
             try:
-                self.db_manager = AsyncDatabaseManager(
+                self.db_manager = UnifiedDatabaseManager(
                     min_connections=2,
                     max_connections=10,
                     connection_timeout=30
@@ -221,12 +218,8 @@ class SelfLearningTradingSystem:
             
             logger.debug("✅ 数据库表结构初始化完成")
             
-            # 🔥 Performance Upgrade: Initialize Redis caching layer
-            self.redis_manager = RedisManager()
-            await self.redis_manager.connect()
-            
-            # 创建数据服务（带Redis缓存）
-            self.db_service = TradingDataService(self.db_manager, redis_manager=self.redis_manager)
+            # 创建数据服务（统一数据库管理器已包含Redis缓存层）
+            self.db_service = TradingDataService(self.db_manager)
             logger.debug("✅ PostgreSQL数据服务已创建（带Redis缓存）")
             
             # 🔥 v3.17.10+：模型評估器（用於特徵重要性分析）
@@ -309,7 +302,6 @@ class SelfLearningTradingSystem:
             
             # 🛡️ v1.0+: Register components for graceful shutdown
             self.lifecycle_manager.register_component("WebSocket", self.scheduler.websocket_manager.stop, priority=10)
-            self.lifecycle_manager.register_component("Redis", self._close_redis, priority=20)
             self.lifecycle_manager.register_component("Database", self.db_manager.close, priority=30)
             self.lifecycle_manager.register_component("HealthMonitor", self.health_monitor.stop, priority=5)
             logger.debug("✅ 组件已注册到生命周期管理器")
@@ -325,14 +317,6 @@ class SelfLearningTradingSystem:
             logger.error(f"❌ 初始化失敗: {e}", exc_info=True)
             return False
     
-    async def _close_redis(self):
-        """Close Redis connection (for lifecycle manager)"""
-        if self.redis_manager:
-            try:
-                await self.redis_manager.close()
-                logger.info("✅ Redis连接已关闭")
-            except Exception as e:
-                logger.error(f"❌ Redis关闭失败: {e}")
     
     async def _test_connection_with_retry(
         self, 

@@ -11,7 +11,7 @@ import time
 from typing import Optional, Any
 import logging
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.core.rate_limiter import RateLimiter
 from src.core.circuit_breaker import CircuitBreaker, GradedCircuitBreaker, Priority
 from src.core.cache_manager import CacheManager
@@ -33,33 +33,33 @@ class BinanceClient:
     def __init__(self):
         # 🔥 v4.1+：優先使用TRADING API密鑰（如已設置），否則回退到普通密鑰
         # 最佳實踐：讀取操作用普通密鑰，交易操作用獨立密鑰
-        self.api_key = Config.BINANCE_TRADING_API_KEY or Config.BINANCE_API_KEY
-        self.api_secret = Config.BINANCE_TRADING_API_SECRET or Config.BINANCE_API_SECRET
+        self.api_key = config.BINANCE_TRADING_API_KEY or config.BINANCE_API_KEY
+        self.api_secret = config.BINANCE_TRADING_API_SECRET or config.BINANCE_API_SECRET
         
-        if Config.BINANCE_TESTNET:
+        if config.BINANCE_TESTNET:
             self.base_url = "https://testnet.binancefuture.com"
         else:
             self.base_url = "https://fapi.binance.com"
         
         self.rate_limiter = RateLimiter(
-            max_requests=Config.RATE_LIMIT_REQUESTS,
-            time_window=Config.RATE_LIMIT_PERIOD
+            max_requests=config.RATE_LIMIT_REQUESTS,
+            time_window=config.RATE_LIMIT_PERIOD
         )
         
-        if Config.GRADED_CIRCUIT_BREAKER_ENABLED:
+        if config.GRADED_CIRCUIT_BREAKER_ENABLED:
             self.circuit_breaker = GradedCircuitBreaker(
-                warning_threshold=Config.CIRCUIT_BREAKER_WARNING_THRESHOLD,
-                throttled_threshold=Config.CIRCUIT_BREAKER_THROTTLED_THRESHOLD,
-                blocked_threshold=Config.CIRCUIT_BREAKER_BLOCKED_THRESHOLD,
-                timeout=Config.CIRCUIT_BREAKER_TIMEOUT,
-                throttle_delay=Config.CIRCUIT_BREAKER_THROTTLE_DELAY,
-                bypass_whitelist=Config.CIRCUIT_BREAKER_BYPASS_OPERATIONS
+                warning_threshold=config.CIRCUIT_BREAKER_WARNING_THRESHOLD,
+                throttled_threshold=config.CIRCUIT_BREAKER_THROTTLED_THRESHOLD,
+                blocked_threshold=config.CIRCUIT_BREAKER_BLOCKED_THRESHOLD,
+                timeout=config.CIRCUIT_BREAKER_TIMEOUT,
+                throttle_delay=config.CIRCUIT_BREAKER_THROTTLE_DELAY,
+                bypass_whitelist=config.CIRCUIT_BREAKER_BYPASS_OPERATIONS
             )
             logger.info("✅ 使用分級熔斷器 (GradedCircuitBreaker)")
         else:
             self.circuit_breaker = CircuitBreaker(
-                failure_threshold=Config.CIRCUIT_BREAKER_THRESHOLD,
-                timeout=Config.CIRCUIT_BREAKER_TIMEOUT
+                failure_threshold=config.CIRCUIT_BREAKER_THRESHOLD,
+                timeout=config.CIRCUIT_BREAKER_TIMEOUT
             )
             logger.info("✅ 使用傳統熔斷器 (CircuitBreaker)")
         
@@ -496,7 +496,7 @@ class BinanceClient:
             return cached
         
         result = await self._request("GET", "/fapi/v1/ticker/price", params=params)
-        self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_TICKER)
+        self.cache.set(cache_key, result, ttl=config.CACHE_TTL_TICKER)
         
         # 单个symbol直接返回价格（float）
         if symbol and isinstance(result, dict):
@@ -547,7 +547,7 @@ class BinanceClient:
             return cached
         
         result = await self._request("GET", "/fapi/v2/account", signed=True)
-        self.cache.set(cache_key, result, ttl=Config.CACHE_TTL_ACCOUNT)
+        self.cache.set(cache_key, result, ttl=config.CACHE_TTL_ACCOUNT)
         return result
     
     async def get_positions(self) -> list:

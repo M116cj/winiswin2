@@ -11,7 +11,7 @@ import time
 import threading
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
-from .async_manager import AsyncDatabaseManager
+from .async_manager import UnifiedDatabaseManager
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class DatabaseMonitor:
     
     def __init__(
         self,
-        db_manager: AsyncDatabaseManager,
+        db_manager: UnifiedDatabaseManager,
         refresh_interval: int = 60,
         auto_start: bool = False,
         enable_alerts: bool = True

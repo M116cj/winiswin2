@@ -124,6 +124,12 @@ class UnifiedConfigManager:
         # ===== 时间框架 =====
         self.TIMEFRAMES: List[str] = ["1h", "15m", "5m"]
         
+        # ===== 报告和模型配置 =====
+        self.REPORTS_DIR: str = os.getenv("REPORTS_DIR", "reports/daily")
+        self.ENABLE_DAILY_REPORT: bool = os.getenv("ENABLE_DAILY_REPORT", "true").lower() == "true"
+        self.MODEL_RATING_ENABLED: bool = os.getenv("MODEL_RATING_ENABLED", "true").lower() == "true"
+        self.RATING_LOSS_PENALTY: float = float(os.getenv("RATING_LOSS_PENALTY", "15.0"))
+        
         UnifiedConfigManager._initialized = True
         logger.info("✅ UnifiedConfigManager 初始化完成")
     

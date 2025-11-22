@@ -16,7 +16,7 @@ from src.strategies.rule_based_signal_generator import RuleBasedSignalGenerator
 from src.core.leverage_engine import LeverageEngine
 from src.core.position_sizer import PositionSizer
 from src.core.sltp_adjuster import SLTPAdjuster
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.utils.signal_details_logger import get_signal_details_logger
 
 logger = get_logger(__name__)
@@ -794,20 +794,20 @@ class SelfLearningTrader:
                 logger.warning(f"⚠️ 設置槓桿失敗 ({signal['symbol']} {safe_leverage}x): {e}")
             
             # 🔥 v3.31+ 滑點保護：使用限價單替代市價單
-            from src.config import Config
+            from src.core.unified_config_manager import config_manager as config
             side = 'BUY' if signal['direction'] == 'LONG' else 'SELL'
             
-            if Config.USE_LIMIT_ORDER_FOR_ENTRY:
+            if config.USE_LIMIT_ORDER_FOR_ENTRY:
                 # 獲取最新價格
                 current_price = await self.binance_client.get_ticker_price(signal['symbol'])
                 
                 # 計算帶滑點保護的限價
                 if signal['direction'] == 'LONG':
                     # 做多：允許以高於當前價的價格買入（最多滑點容忍度）
-                    limit_price = current_price * (1 + Config.SLIPPAGE_TOLERANCE)
+                    limit_price = current_price * (1 + config.SLIPPAGE_TOLERANCE)
                 else:
                     # 做空：允許以低於當前價的價格賣出（最多滑點容忍度）
-                    limit_price = current_price * (1 - Config.SLIPPAGE_TOLERANCE)
+                    limit_price = current_price * (1 - config.SLIPPAGE_TOLERANCE)
                 
                 # 🔥 v3.33+ 精度格式化：避免 "Precision is over the maximum" 錯誤
                 formatted_price = await self.binance_client.format_price(signal['symbol'], limit_price)
@@ -816,7 +816,7 @@ class SelfLearningTrader:
                 logger.info(
                     f"📊 滑點保護: {signal['symbol']} {signal['direction']} | "
                     f"當前價={current_price:.6f}, 限價={limit_price:.6f}→{formatted_price}, "
-                    f"數量={size:.2f}→{formatted_size}, 容忍度={Config.SLIPPAGE_TOLERANCE:.2%}"
+                    f"數量={size:.2f}→{formatted_size}, 容忍度={config.SLIPPAGE_TOLERANCE:.2%}"
                 )
                 
                 order_result = await self.binance_client.place_order(
@@ -1052,7 +1052,7 @@ class SelfLearningTrader:
         
         Args:
             signals: 交易信號列表（dict格式）
-            max_positions: 最大同時開倉數（可選，默認使用Config.MAX_CONCURRENT_ORDERS）
+            max_positions: 最大同時開倉數（可選，默認使用config.MAX_CONCURRENT_ORDERS）
         
         Returns:
             成功執行的倉位列表

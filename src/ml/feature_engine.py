@@ -46,8 +46,8 @@ class FeatureEngine:
         self._feature_dict_pool = None
         if use_resource_pool:
             try:
-                from src.config import Config
-                if Config.RESOURCE_POOL_ENABLED:
+                from src.core.unified_config_manager import config_manager as config
+                if config.RESOURCE_POOL_ENABLED:
                     from src.utils.resource_pool import get_global_pools
                     pools = get_global_pools()
                     self._feature_dict_pool = pools.feature_dict_pool

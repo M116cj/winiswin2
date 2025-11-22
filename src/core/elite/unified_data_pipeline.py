@@ -127,13 +127,13 @@ class UnifiedDataPipeline:
         Returns:
             时间框架 → DataFrame 映射
         """
-        from src.config import Config
+        from src.core.unified_config_manager import config_manager as config
         
         self._total_requests += 1
         data = {}
         
         # 🔥 v4.3.2+：WebSocket-only严格模式
-        if Config.WEBSOCKET_ONLY_KLINES:
+        if config.WEBSOCKET_ONLY_KLINES:
             logger.debug(f"🔒 {symbol} WebSocket-only模式：跳过历史API和REST备援")
             
             # 唯一数据源：WebSocket
@@ -166,7 +166,7 @@ class UnifiedDataPipeline:
             data.update(ws_data)
         
         # Layer 3: REST API备援
-        if not Config.DISABLE_REST_FALLBACK:
+        if not config.DISABLE_REST_FALLBACK:
             still_missing = [
                 tf for tf in timeframes 
                 if tf not in data or data[tf] is None or len(data[tf]) < limit * 0.8

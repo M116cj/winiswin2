@@ -9,7 +9,7 @@ import time
 from typing import Dict, List
 from datetime import datetime
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.simulation.mock_binance_client import MockBinanceClient
 from src.strategies.self_learning_trader import SelfLearningTrader
 from src.managers.unified_trade_recorder import UnifiedTradeRecorder

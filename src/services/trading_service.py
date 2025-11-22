@@ -11,7 +11,7 @@ import inspect
 
 from src.clients.binance_client import BinanceClient
 from src.managers.risk_manager import RiskManager
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.core.circuit_breaker import Priority
 
 logger = logging.getLogger(__name__)

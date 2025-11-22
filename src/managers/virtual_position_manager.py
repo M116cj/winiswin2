@@ -13,7 +13,7 @@ import asyncio
 import aiofiles
 import threading
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.core.data_models import VirtualPosition
 from src.managers.virtual_position_lifecycle import VirtualPositionLifecycleMonitor
 from src.managers.virtual_position_events import VirtualPositionEvent
@@ -71,22 +71,22 @@ class VirtualPositionManager:
         
         # 性能优化模块（可选）
         if OPTIMIZATION_MODULES_AVAILABLE:
-            if hasattr(Config, 'ENABLE_MEMORY_MAPPED_STORAGE') and Config.ENABLE_MEMORY_MAPPED_STORAGE:
+            if hasattr(Config, 'ENABLE_MEMORY_MAPPED_STORAGE') and config.ENABLE_MEMORY_MAPPED_STORAGE:
                 self.feature_store = MemoryMappedFeatureStore(
-                    max_positions=Config.MAX_MEMORY_MAPPED_POSITIONS,
-                    feature_dim=Config.FEATURE_DIMENSION
+                    max_positions=config.MAX_MEMORY_MAPPED_POSITIONS,
+                    feature_dim=config.FEATURE_DIMENSION
                 )
                 logger.info("✅ 记忆体映射特征存储已启用")
             else:
                 self.feature_store = None
             
-            if hasattr(Config, 'ENABLE_INCREMENTAL_CACHE') and Config.ENABLE_INCREMENTAL_CACHE:
+            if hasattr(Config, 'ENABLE_INCREMENTAL_CACHE') and config.ENABLE_INCREMENTAL_CACHE:
                 self.feature_cache = IncrementalFeatureCache()
                 logger.info("✅ 增量特征缓存已启用")
             else:
                 self.feature_cache = None
             
-            if hasattr(Config, 'ENABLE_SMART_MONITORING') and Config.ENABLE_SMART_MONITORING:
+            if hasattr(Config, 'ENABLE_SMART_MONITORING') and config.ENABLE_SMART_MONITORING:
                 self.smart_scheduler = SmartMonitoringScheduler()
                 logger.info("✅ 智能监控频率调度器已启用")
             else:

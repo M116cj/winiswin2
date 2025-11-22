@@ -12,7 +12,7 @@ import time
 
 from src.clients.binance_client import BinanceClient
 from src.core.cache_manager import CacheManager
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +189,7 @@ class DataService:
         data = {}
         
         # 🔥 v4.3.2+：WebSocket-only模式檢查（強制跳過歷史API）
-        if Config.WEBSOCKET_ONLY_KLINES:
+        if config.WEBSOCKET_ONLY_KLINES:
             logger.debug(f"🔒 {symbol} WebSocket-only模式啟用，跳過歷史API")
             use_historical = False
         
@@ -225,7 +225,7 @@ class DataService:
         # 🔥 v4.3.2+：WebSocket-only模式禁用REST備援
         missing_tfs = [tf for tf in timeframes if tf not in data or data[tf].empty]
         
-        if missing_tfs and not Config.WEBSOCKET_ONLY_KLINES and not Config.DISABLE_REST_FALLBACK:
+        if missing_tfs and not config.WEBSOCKET_ONLY_KLINES and not config.DISABLE_REST_FALLBACK:
             logger.debug(f"📡 {symbol} 使用REST API補充 {missing_tfs}")
             tasks = [
                 self.get_klines_incremental(symbol, tf, limit=100)
@@ -371,11 +371,11 @@ class DataService:
         try:
             # 基础TTL
             ttl_map = {
-                '1h': Config.CACHE_TTL_KLINES_1H,
-                '15m': Config.CACHE_TTL_KLINES_15M,
-                '5m': Config.CACHE_TTL_KLINES_5M
+                '1h': config.CACHE_TTL_KLINES_1H,
+                '15m': config.CACHE_TTL_KLINES_15M,
+                '5m': config.CACHE_TTL_KLINES_5M
             }
-            base_ttl = ttl_map.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+            base_ttl = ttl_map.get(interval, config.CACHE_TTL_KLINES_DEFAULT)
             
             # 计算波动率（20周期标准差 / 均值）
             if len(df) >= 20:
@@ -396,10 +396,10 @@ class DataService:
             logger.debug(f"动态TTL计算失败，使用基础TTL: {e}")
             # 🔥 v3.18.5+: 确保ttl_map在except块中可用
             return {
-                '1h': Config.CACHE_TTL_KLINES_1H,
-                '15m': Config.CACHE_TTL_KLINES_15M,
-                '5m': Config.CACHE_TTL_KLINES_5M
-            }.get(interval, Config.CACHE_TTL_KLINES_DEFAULT)
+                '1h': config.CACHE_TTL_KLINES_1H,
+                '15m': config.CACHE_TTL_KLINES_15M,
+                '5m': config.CACHE_TTL_KLINES_5M
+            }.get(interval, config.CACHE_TTL_KLINES_DEFAULT)
     
     async def _fetch_full_klines(
         self,
@@ -639,7 +639,7 @@ class DataService:
                 if ticker['symbol'] in symbols
             }
             
-            self.cache.set(cache_key, ticker_dict, ttl=Config.CACHE_TTL_TICKER)
+            self.cache.set(cache_key, ticker_dict, ttl=config.CACHE_TTL_TICKER)
             
             return ticker_dict
             
@@ -664,7 +664,7 @@ class DataService:
         Returns:
             Dict[str, pd.DataFrame]: 交易對到數據框的映射
         """
-        batch_size = Config.BATCH_SIZE
+        batch_size = config.BATCH_SIZE
         results = {}
         
         for i in range(0, len(symbols), batch_size):
@@ -813,7 +813,7 @@ class DataService:
         
         try:
             account = await self.client.get_account_info()
-            self.cache.set(cache_key, account, ttl=Config.CACHE_TTL_ACCOUNT)
+            self.cache.set(cache_key, account, ttl=config.CACHE_TTL_ACCOUNT)
             return account
         except Exception as e:
             logger.error(f"獲取賬戶信息失敗: {e}")

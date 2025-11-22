@@ -16,7 +16,7 @@ from src.core.daily_reporter import DailyReporter
 from src.core.websocket import WebSocketManager  # 🔥 v3.17.2+
 from src.clients.binance_client import BinanceClient
 from src.services.data_service import DataService
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.utils.smart_logger import create_smart_logger
 
 # ✨ v3.26+ 性能优化：启用SmartLogger（减少重复日志）
@@ -673,7 +673,7 @@ class UnifiedScheduler:
                 # 🔥 v3.18+: 使用CapitalAllocator進行動態分配
                 executed_positions = await self.self_learning_trader.execute_best_trades(
                     signals=signals,
-                    max_positions=None  # 使用Config.MAX_CONCURRENT_ORDERS
+                    max_positions=None  # 使用config.MAX_CONCURRENT_ORDERS
                 )
                 
                 executed_count = len(executed_positions)

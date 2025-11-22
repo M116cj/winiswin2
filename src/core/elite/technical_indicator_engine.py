@@ -30,7 +30,7 @@ v4.6.0 新特性：
 """
 
 from src.utils.logger_factory import get_logger
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 import hashlib
 import pandas as pd
 import numpy as np
@@ -96,7 +96,7 @@ class EliteTechnicalEngine:
             "✅ EliteTechnicalEngine v4.6.0 初始化完成\n"
             "   🎯 统一指标计算引擎（消除3处重复）\n"
             "   💾 智能缓存已启用\n"
-            f"   🚀 增量计算: {'启用' if Config.INCREMENTAL_CALCULATION_ENABLED else '禁用'}"
+            f"   🚀 增量计算: {'启用' if config.INCREMENTAL_CALCULATION_ENABLED else '禁用'}"
         )
     
     def calculate(
@@ -147,7 +147,7 @@ class EliteTechnicalEngine:
         result = None
         incremental_used = False
         
-        if Config.INCREMENTAL_CALCULATION_ENABLED and indicator == 'ema':
+        if config.INCREMENTAL_CALCULATION_ENABLED and indicator == 'ema':
             incremental_info = self._detect_incremental_opportunity(
                 data, cache_key_base, data_length
             )
@@ -213,7 +213,7 @@ class EliteTechnicalEngine:
             'period_used': result.period_used,
             'data_points': result.data_points
         }
-        self.cache.set(cache_key, cache_data, ttl=Config.INDICATOR_CACHE_TTL)
+        self.cache.set(cache_key, cache_data, ttl=config.INDICATOR_CACHE_TTL)
         
         return result
     
@@ -473,8 +473,8 @@ class EliteTechnicalEngine:
               }
         """
         # 尝试获取上一次计算的结果（基于长度-1, -2, -3...）
-        lookback_range = Config.INCREMENTAL_LOOKBACK_RANGE
-        max_new_bars = Config.INCREMENTAL_MAX_NEW_BARS
+        lookback_range = config.INCREMENTAL_LOOKBACK_RANGE
+        max_new_bars = config.INCREMENTAL_MAX_NEW_BARS
         
         for prev_length in range(current_length - 1, max(0, current_length - lookback_range), -1):
             prev_cache_key = f"{cache_key_base}_len{prev_length}"

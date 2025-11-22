@@ -13,7 +13,7 @@ from src.utils.logger_factory import get_logger
 from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.core.safety_validator import SafetyValidator, ValidationError
 from src.core.margin_safety_controller import MarginSafetyController
 from src.core.exception_handler import ExceptionHandler

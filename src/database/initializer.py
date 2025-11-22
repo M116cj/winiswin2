@@ -7,12 +7,12 @@ Phase 3: 迁移到AsyncDatabaseManager (asyncpg)
 
 import logging
 from typing import Optional
-from .async_manager import AsyncDatabaseManager
+from .async_manager import UnifiedDatabaseManager
 
 logger = logging.getLogger(__name__)
 
 
-async def initialize_database(db_manager: AsyncDatabaseManager) -> bool:
+async def initialize_database(db_manager: UnifiedDatabaseManager) -> bool:
     """
     初始化所有数据表
     
@@ -46,7 +46,7 @@ async def initialize_database(db_manager: AsyncDatabaseManager) -> bool:
         return False
 
 
-async def _create_trades_table(db_manager: AsyncDatabaseManager) -> bool:
+async def _create_trades_table(db_manager: UnifiedDatabaseManager) -> bool:
     """创建交易记录表"""
     try:
         logger.debug("创建 trades 表...")
@@ -171,7 +171,7 @@ async def _create_trades_table(db_manager: AsyncDatabaseManager) -> bool:
         return False
 
 
-async def _create_ml_models_table(db_manager: AsyncDatabaseManager) -> bool:
+async def _create_ml_models_table(db_manager: UnifiedDatabaseManager) -> bool:
     """创建ML模型存储表"""
     try:
         logger.info("📝 创建 ml_models 表...")
@@ -235,7 +235,7 @@ async def _create_ml_models_table(db_manager: AsyncDatabaseManager) -> bool:
         return False
 
 
-async def _create_market_data_table(db_manager: AsyncDatabaseManager) -> bool:
+async def _create_market_data_table(db_manager: UnifiedDatabaseManager) -> bool:
     """创建市场数据表"""
     try:
         logger.info("📝 创建 market_data 表...")
@@ -298,7 +298,7 @@ async def _create_market_data_table(db_manager: AsyncDatabaseManager) -> bool:
         return False
 
 
-async def _create_trading_signals_table(db_manager: AsyncDatabaseManager) -> bool:
+async def _create_trading_signals_table(db_manager: UnifiedDatabaseManager) -> bool:
     """创建交易信号表"""
     try:
         logger.info("📝 创建 trading_signals 表...")
@@ -367,7 +367,7 @@ async def _create_trading_signals_table(db_manager: AsyncDatabaseManager) -> boo
         return False
 
 
-async def _create_position_entry_times_table(db_manager: AsyncDatabaseManager) -> bool:
+async def _create_position_entry_times_table(db_manager: UnifiedDatabaseManager) -> bool:
     """
     创建持仓开仓时间表
     用于持久化持仓进入时间，防止系统重启后时间基础止损计时重置

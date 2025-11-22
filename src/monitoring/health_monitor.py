@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import psutil
 import logging
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = logging.getLogger(__name__)
 

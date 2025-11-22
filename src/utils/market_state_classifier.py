@@ -22,7 +22,7 @@ import logging
 from typing import Dict, Optional
 import pandas as pd
 
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class MarketStateClassifier:
     """
     配置驱动的市场状态分类器（v3.13.0）
     
-    基于 Config.MARKET_STATE_RULES 动态分类市场状态
+    基于 config.MARKET_STATE_RULES 动态分类市场状态
     """
     
     def __init__(self, rules: Optional[Dict] = None):
@@ -39,9 +39,9 @@ class MarketStateClassifier:
         初始化分类器
         
         Args:
-            rules: 市场状态规则（None=使用Config.MARKET_STATE_RULES）
+            rules: 市场状态规则（None=使用config.MARKET_STATE_RULES）
         """
-        self.rules = rules or Config.MARKET_STATE_RULES
+        self.rules = rules or config.MARKET_STATE_RULES
         
         logger.info(f"✅ 市场状态分类器初始化（{len(self.rules)} 种状态）")
     

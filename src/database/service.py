@@ -19,7 +19,7 @@ except ImportError:
     json_dumps = json.dumps
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-from .async_manager import AsyncDatabaseManager
+from .async_manager import UnifiedDatabaseManager
 
 # Phase 3: asyncpg自动处理dict→JSON转换，无需psycopg2.extras.Json
 # 直接传递dict即可，asyncpg会自动转换为JSONB
@@ -43,7 +43,7 @@ class TradingDataService:
     注意：Phase 3迁移 - 现在使用AsyncDatabaseManager（向后兼容execute_query方法）
     """
     
-    def __init__(self, db_manager: AsyncDatabaseManager, redis_manager=None):
+    def __init__(self, db_manager: UnifiedDatabaseManager, redis_manager=None):
         """
         初始化交易数据服务
         

@@ -8,7 +8,7 @@ import numpy as np
 from typing import Dict, Optional, Any
 from src.utils.logger_factory import get_logger
 from src.core.elite import EliteTechnicalEngine
-from src.config import Config
+from src.core.unified_config_manager import config_manager as config
 from src.utils.signal_details_logger import get_signal_details_logger
 
 logger = get_logger(__name__)
