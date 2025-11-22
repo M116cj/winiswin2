@@ -11,6 +11,8 @@ import numpy as np
 from typing import Dict, List, Optional
 import logging
 
+from src.core.indicators import Indicators
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,42 +42,16 @@ class FeatureEngineer:
     
     @staticmethod
     def compute_atr(ohlcv: List[Dict], period: int = 14) -> float:
-        """Compute ATR from OHLCV"""
-        if len(ohlcv) < period:
-            closes = [float(k['close']) for k in ohlcv]
-            return closes[-1] * 0.01 if closes else 0.01
-        
+        """Compute ATR from OHLCV (delegates to centralized Indicators)"""
         highs = np.array([float(k['high']) for k in ohlcv])
         lows = np.array([float(k['low']) for k in ohlcv])
         closes = np.array([float(k['close']) for k in ohlcv])
-        
-        tr = np.zeros(len(highs))
-        tr[0] = highs[0] - lows[0]
-        
-        for i in range(1, len(highs)):
-            tr[i] = max(
-                highs[i] - lows[i],
-                abs(highs[i] - closes[i-1]),
-                abs(lows[i] - closes[i-1])
-            )
-        
-        return float(np.mean(tr[-period:]))
+        return Indicators.calculate_atr(highs, lows, closes, period)
     
     @staticmethod
     def compute_rsi(closes: np.ndarray, period: int = 14) -> float:
-        """Compute RSI"""
-        if len(closes) < period + 1:
-            return 50.0
-        
-        deltas = np.diff(closes[-period-1:])
-        seed = deltas[:period]
-        up = seed[seed >= 0].sum() / period
-        down = -seed[seed < 0].sum() / period
-        
-        rs = up / down if down != 0 else 1.0
-        rsi = 100.0 - (100.0 / (1.0 + rs))
-        
-        return float(rsi)
+        """Compute RSI (delegates to centralized Indicators)"""
+        return Indicators.calculate_rsi(closes, period)
     
     @staticmethod
     def process_data(df: pl.DataFrame) -> pl.DataFrame:

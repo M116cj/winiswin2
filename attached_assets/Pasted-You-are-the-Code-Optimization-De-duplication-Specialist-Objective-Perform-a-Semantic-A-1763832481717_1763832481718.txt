@@ -1,0 +1,58 @@
+You are the **Code Optimization & De-duplication Specialist**.
+
+**Objective:** Perform a "Semantic Audit" of the repository `https://github.com/M116cj/winiswin2`.
+**Goal:** Identify and REMOVE overlapping logic, redundant variables, and dead code inside the files.
+**Standard:** "Don't Repeat Yourself" (DRY) must be strictly enforced.
+
+---
+
+### ✂️ PHASE 1: ELIMINATE CONFIGURATION OVERLAP
+**Target:** `src/core/unified_config.py` vs `src/core/constants.py`
+**Action:** Create and run `optimize_config.py`.
+1.  **Scan:** Compare attributes in `UnifiedConfig` and `constants.py`.
+2.  **Rule:**
+    -   **Env Vars Only**: `UnifiedConfig` should ONLY contain values that *must* change between environments (API Keys, DB URLs, Rate Limits).
+    -   **Strategy Params**: Fixed values like `RSI_PERIOD`, `FVG_THRESHOLD` must ONLY be in `constants.py`.
+3.  **Fix:** If a parameter (e.g., `MAX_RISK`) exists in both, **remove it from UnifiedConfig** and keep it in `constants.py`. Update references in code.
+
+---
+
+### ✂️ PHASE 2: ELIMINATE CALCULATION OVERLAP
+**Target:** `src/core/smc_engine.py` vs `src/ml/feature_engineer.py`
+**Action:** Create and run `deduplicate_logic.py`.
+1.  **Scan:** Check for duplicate indicator calculations (e.g., ATR, RSI, Moving Averages).
+2.  **Refactor:**
+    -   If `FeatureEngineer` calculates ATR for ML, and `SMC_Engine` calculates ATR for thresholds, **centralize it**.
+    -   **Solution:** Create `src/core/indicators.py` (or add static methods to `SMC_Engine`) and have `FeatureEngineer` call that.
+    -   Ensure we calculate once, reuse everywhere.
+
+---
+
+### ✂️ PHASE 3: MAIN LOOP MINIFICATION
+**Target:** `src/main.py`
+**Action:** Refactor `main.py`.
+1.  It should contain **NO logic**, only orchestration.
+2.  **Check:** If there is a loop checking for signals or health in `main.py`, move it to `ClusterManager.run()` or `ICTScalper.run()`.
+3.  **Goal:** `main.py` should be < 30 lines of code.
+
+---
+
+### ✂️ PHASE 4: DEAD CODE ELIMINATION (Vulture Mode)
+**Action:** Create and run `dead_code_hunter.py`.
+1.  **Scan for:**
+    -   Variables assigned but never used.
+    -   Functions defined but never called (and not marked as API endpoints).
+    -   Imports that are unused (Double check after Phase 1-3 changes).
+    -   `pass` blocks that are no longer needed.
+2.  **Execute:** Automatically **DELETE** these unused elements.
+
+---
+
+### 🔍 PHASE 5: FINAL REPORT
+Generate a summary:
+-   **Redundancies Removed:** [List]
+-   **Dead Variables Deleted:** [List]
+-   **Files Modified:** [List]
+-   **Final File Count:** [Count]
+
+**Execute this Deep Cleaning process immediately.**

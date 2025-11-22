@@ -10,6 +10,8 @@ import numpy as np
 from typing import Dict, List, Optional, Tuple
 import logging
 
+from src.core.indicators import Indicators
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,36 +27,6 @@ class SMCEngine:
     - ATR-normalized distances
     """
     
-    @staticmethod
-    def calculate_atr(highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, period: int = 14) -> float:
-        """
-        Calculate Average True Range
-        
-        Args:
-            highs: Array of high prices
-            lows: Array of low prices
-            closes: Array of close prices
-            period: ATR period (default 14)
-        
-        Returns: ATR value
-        """
-        if len(highs) < period:
-            return closes[-1] * 0.01  # Default to 1% if not enough data
-        
-        # Calculate True Range
-        tr = np.zeros(len(highs))
-        tr[0] = highs[0] - lows[0]
-        
-        for i in range(1, len(highs)):
-            tr[i] = max(
-                highs[i] - lows[i],
-                abs(highs[i] - closes[i-1]),
-                abs(lows[i] - closes[i-1])
-            )
-        
-        # ATR is EMA of TR
-        atr = float(np.mean(tr[-period:]))
-        return max(atr, 0.001)  # Avoid zero division
     
     @staticmethod
     def detect_fvg(kline_window: List[Dict]) -> Dict:
@@ -86,7 +58,7 @@ class SMCEngine:
             return result
         
         closes = np.array([float(k['close']) for k in kline_window])
-        atr = SMCEngine.calculate_atr(
+        atr = Indicators.calculate_atr(
             np.array([float(k['high']) for k in kline_window]),
             np.array([float(k['low']) for k in kline_window]),
             closes
@@ -148,7 +120,7 @@ class SMCEngine:
         highs = np.array([float(k['high']) for k in recent])
         lows = np.array([float(k['low']) for k in recent])
         
-        atr = SMCEngine.calculate_atr(highs, lows, closes)
+        atr = Indicators.calculate_atr(highs, lows, closes)
         
         # Check last candle for strength
         last_candle = recent[-1]
@@ -197,7 +169,7 @@ class SMCEngine:
         
         recent = kline_window[-lookback:]
         all_closes = np.array([float(k['close']) for k in kline_window])
-        atr = SMCEngine.calculate_atr(
+        atr = Indicators.calculate_atr(
             np.array([float(k['high']) for k in kline_window]),
             np.array([float(k['low']) for k in kline_window]),
             all_closes
