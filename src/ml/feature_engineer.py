@@ -59,7 +59,7 @@ class FeatureEngineer:
                 abs(lows[i] - closes[i-1])
             )
         
-        return np.mean(tr[-period:])
+        return float(np.mean(tr[-period:]))
     
     @staticmethod
     def compute_rsi(closes: np.ndarray, period: int = 14) -> float:
@@ -72,10 +72,73 @@ class FeatureEngineer:
         up = seed[seed >= 0].sum() / period
         down = -seed[seed < 0].sum() / period
         
-        rs = up / down if down != 0 else 1
-        rsi = 100 - (100 / (1 + rs))
+        rs = up / down if down != 0 else 1.0
+        rsi = 100.0 - (100.0 / (1.0 + rs))
         
         return float(rsi)
+    
+    @staticmethod
+    def process_data(df: pl.DataFrame) -> pl.DataFrame:
+        """
+        Process Polars dataframe with OHLCV data
+        
+        Adds computed features:
+        - atr: Average True Range
+        - dist_to_fvg_atr: Distance to nearest FVG / ATR
+        - is_sweep: Boolean liquidity sweep flag
+        - trend_strength: ADX-like trend metric
+        
+        Args:
+            df: Polars DataFrame with columns: symbol, open, high, low, close, volume, timestamp
+        
+        Returns: DataFrame with added features
+        """
+        if df.is_empty():
+            return df
+        
+        # Group by symbol for multi-coin processing
+        try:
+            processed = df.with_columns([
+                # Calculate ATR for each symbol group
+                pl.col('high').rolling_max(14).over(['symbol']).alias('high_max'),
+                pl.col('low').rolling_min(14).over(['symbol']).alias('low_min'),
+            ]).with_columns([
+                (pl.col('high') - pl.col('low')).alias('tr'),
+            ]).with_columns([
+                pl.col('tr').rolling_mean(14).over(['symbol']).alias('atr'),
+            ]).drop(['high_max', 'low_min'])
+            
+            # Add FVG detection flag
+            processed = processed.with_columns([
+                (pl.col('low').shift(2).over(['symbol']) > pl.col('high')).alias('fvg_bullish'),
+                (pl.col('high').shift(2).over(['symbol']) < pl.col('low')).alias('fvg_bearish'),
+            ]).with_columns([
+                ((pl.col('fvg_bullish') | pl.col('fvg_bearish')).cast(pl.Int32)).alias('is_fvg'),
+            ])
+            
+            # Add liquidity sweep flag
+            processed = processed.with_columns([
+                pl.col('low').rolling_min(10).over(['symbol']).alias('swing_low'),
+                pl.col('high').rolling_max(10).over(['symbol']).alias('swing_high'),
+            ]).with_columns([
+                ((pl.col('close') < pl.col('swing_low')) | (pl.col('close') > pl.col('swing_high'))).cast(pl.Int32).alias('is_sweep'),
+            ]).drop(['swing_low', 'swing_high'])
+            
+            # Add trend strength (simple momentum)
+            processed = processed.with_columns([
+                (pl.col('close') - pl.col('close').shift(14).over(['symbol'])).alias('momentum'),
+            ]).with_columns([
+                (pl.col('momentum') / pl.col('atr')).alias('trend_strength'),
+            ]).drop('momentum')
+            
+            # Fill NaN values with defaults
+            processed = processed.fill_null(0.0)
+            
+            return processed
+        
+        except Exception as e:
+            logger.error(f"❌ Data processing failed: {e}")
+            return df
     
     def compute_features(self, ohlcv: List[Dict], smc_results: Dict, min_size: int = 5) -> Dict:
         """

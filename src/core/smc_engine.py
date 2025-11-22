@@ -53,7 +53,7 @@ class SMCEngine:
             )
         
         # ATR is EMA of TR
-        atr = np.mean(tr[-period:])
+        atr = float(np.mean(tr[-period:]))
         return max(atr, 0.001)  # Avoid zero division
     
     @staticmethod
