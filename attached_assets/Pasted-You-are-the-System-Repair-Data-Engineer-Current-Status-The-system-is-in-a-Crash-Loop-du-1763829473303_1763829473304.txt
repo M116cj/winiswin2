@@ -1,0 +1,66 @@
+You are the **System Repair & Data Engineer**.
+
+**Current Status:** The system is in a Crash Loop due to refactoring leftovers (missing config, broken imports).
+**User Goal:** 
+1. Fix the crashes immediately.
+2. Implement a **"Cold Start" mechanism**: On startup, the system must auto-fetch historical K-lines for all pairs to initialize the SMC Engine correctly.
+
+---
+
+### 🩹 PHASE 1: FIX THE CRASHES (High Priority)
+
+#### 1.1 Fix Configuration
+**File:** `src/core/unified_config.py`
+**Action:**
+-   Add missing attribute: `GRADED_CIRCUIT_BREAKER_ENABLED: bool = True` to the dataclass.
+-   Add missing attribute: `RATE_LIMIT_REQUESTS: int = 2400`.
+
+#### 1.2 Fix Broken Imports
+**File:** `src/clients/binance_client.py`
+**Action:**
+-   **Remove** `from src.core.rate_limiter import RateLimiter`.
+-   **Remove** usage of `RateLimiter`. Use `config.RATE_LIMIT_REQUESTS` directly or a simple counter if needed.
+
+**File:** `src/core/unified_scheduler.py`
+**Action:**
+-   **Remove** `from src.strategies.self_learning_trader import SelfLearningTrader`.
+-   **Update**: Import `ICTScalper` from `src.strategies.ict_scalper` instead (if the scheduler needs to trigger strategy, though normally ClusterManager handles this).
+-   *Better:* If `UnifiedScheduler` was only for the old strategy, comment out its logic for now to stop the crash.
+
+---
+
+### 🧊 PHASE 2: IMPLEMENT COLD START (Auto-Data Fetching)
+
+**Concept:** The SMC Engine needs previous candles (e.g., 1000) to detect "Swing Points" and "FVGs" before processing live WebSocket data.
+
+#### 2.1 Create `HistoricalDataManager`
+**File:** `src/core/data_manager.py`
+**Action:**
+1.  Initialize with `UnifiedDatabaseManager` and `BinanceClient`.
+2.  Method `ensure_history(symbols: list, interval='1m', limit=1000)`:
+    -   Check if `data/{symbol}_{interval}.parquet` exists and is fresh (< 1 min old).
+    -   **IF NOT**: 
+        -   Log: "❄️ Cold Start: Fetching history for {symbol}..."
+        -   Call `client.get_klines(...)` (REST API).
+        -   Convert to `Polars.DataFrame`.
+        -   Save to `data/{symbol}_{interval}.parquet` (Persistence).
+    -   **Return**: The Polars DataFrame.
+
+#### 2.2 Integrate with `ClusterManager`
+**File:** `src/core/cluster_manager.py`
+**Action:**
+-   Before spawning `ShardFeed`, call `HistoricalDataManager.ensure_history(chunk_symbols)`.
+-   Pass the loaded historical DataFrames to the `ShardFeed` (or `SMCEngine`).
+-   *Logic:* `SMCEngine` initializes its internal state (Swings/Structure) using this history.
+
+---
+
+### 💾 PHASE 3: DATA INTEGRITY CHECK
+**File:** `src/utils/integrity_check.py`
+**Action:**
+Create a script to verify:
+1.  `data/` folder is created.
+2.  Parquet files are readable by Polars.
+3.  Schema matches: `[timestamp, open, high, low, close, volume]`.
+
+**Execute Phase 1, 2, and 3 now.**
