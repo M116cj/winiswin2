@@ -22,11 +22,11 @@ try:
 except ImportError:
     websockets = None  # type: ignore
 
-from src.utils.logger_factory import get_logger
+import logging
 from .unified_feed import UnifiedWebSocketFeed
 from src.core.account_state_cache import account_state_cache
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class AccountFeed(UnifiedWebSocketFeed):

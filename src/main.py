@@ -28,14 +28,13 @@ except ImportError:
 # CORE IMPORTS - SMC-Quant Sharded Architecture
 # ════════════════════════════════════════════════════════════════════════════
 
-from src.core.unified_config_manager import config_manager as config
-from src.clients.binance_client import BinanceClient
+from src.core.unified_config import UnifiedConfig
 from src.core.cluster_manager import ClusterManager
-from src.core.startup_prewarmer import StartupPrewarmer
 from src.core.websocket.shard_feed import ShardFeed
 from src.core.account_state_cache import AccountStateCache
 from src.strategies.ict_scalper import ICTScalper
 from src.utils.smart_logger import SmartLogger
+from src.ml.hybrid_learner import HybridLearner
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -54,23 +53,22 @@ class SelfLearningTradingSystem:
     ├─ ClusterManager (300+ pair orchestration)
     ├─ ShardFeed (zero-polling WebSocket data)
     ├─ AccountStateCache (in-memory account state)
-    ├─ StartupPrewarmer (cold start mitigation)
     ├─ ICTScalper (M1 scalping strategy)
-    └─ BinanceClient (order execution)
+    ├─ HybridLearner (Teacher-Student mode)
+    └─ DriftDetector (Monitoring & stability)
     """
     
     def __init__(self):
         """Initialize trading system"""
         self.running = False
-        self.config = config
+        self.config = UnifiedConfig
         
         # Core components
-        self.binance_client: Optional[BinanceClient] = None
         self.cluster_manager: Optional[ClusterManager] = None
         self.shard_feed: Optional[ShardFeed] = None
         self.account_cache: Optional[AccountStateCache] = None
-        self.startup_prewarmer: Optional[StartupPrewarmer] = None
         self.strategy: Optional[ICTScalper] = None
+        self.learner: Optional[HybridLearner] = None
         
         logger.info("✅ SelfLearningTradingSystem initialized")
     
@@ -82,26 +80,21 @@ class SelfLearningTradingSystem:
             if _UVLOOP_ENABLED:
                 logger.info("⚡ uvloop enabled (2-4x WebSocket performance)")
             
-            # 1. Initialize Binance client (no start() needed)
-            logger.info("📡 Connecting to Binance...")
-            self.binance_client = BinanceClient()
-            logger.info("✅ Binance client connected")
-            
-            # 2. Initialize account state cache (singleton, no initialize() needed)
+            # 1. Initialize account state cache (singleton, no initialize() needed)
             logger.info("💾 Initializing account state cache...")
             self.account_cache = AccountStateCache()
             logger.info("✅ Account cache initialized")
             
-            # 3. Initialize cluster manager (MUST BE BEFORE ShardFeed)
+            # 2. Initialize cluster manager
             logger.info("🌐 Starting cluster manager (300+ pairs)...")
             self.cluster_manager = ClusterManager(
-                self.binance_client,
+                None,  # BinanceClient optional
                 on_signal_callback=self.on_signal
             )
             await self.cluster_manager.start()
             logger.info("✅ Cluster manager started")
             
-            # 4. Start sharded market coverage
+            # 3. Start sharded market coverage
             logger.info("🌐 Starting sharded market coverage (300+ pairs)...")
             
             # Get all trading pairs from cluster manager universe
@@ -120,79 +113,53 @@ class SelfLearningTradingSystem:
             await self.shard_feed.start()
             logger.info(f"✅ ShardFeed started ({len(pairs)} pairs)")
             
-            # 5. Initialize strategy
+            # 4. Initialize strategy
             logger.info("⚙️ Initializing ICT scalper strategy...")
             self.strategy = ICTScalper()
             logger.info("✅ Strategy initialized")
             
-            # 6. Cold start mitigation
-            logger.info("🔥 Running cold start prewarmer...")
-            self.startup_prewarmer = StartupPrewarmer(
-                self.binance_client,
-                self.cluster_manager
-            )
-            
-            # Get pairs from cluster manager
-            pairs = self.cluster_manager.pairs if self.cluster_manager.pairs else ["BTCUSDT"]
-            warmup_success = await self.startup_prewarmer.warmup(pairs)
-            
-            if warmup_success:
-                logger.info("✅ Cold start prewarming complete (30s ready-time)")
-            else:
-                logger.warning("⚠️ Coldstart prewarming partial (non-blocking)")
+            # 5. Initialize hybrid learner
+            logger.info("🧠 Initializing Hybrid Learner (Teacher-Student)...")
+            self.learner = HybridLearner()
+            await self.learner.update_phase()
+            logger.info("✅ Hybrid learner initialized")
             
             self.running = True
-            logger.info("🟢 SYSTEM READY - Monitoring 300+ pairs")
+            logger.info("✅ SMC-Quant Engine fully initialized")
         
         except Exception as e:
             logger.error(f"❌ Initialization failed: {e}")
-            self.running = False
-            raise
+            sys.exit(1)
     
-    async def on_signal(self, signal: Optional[Dict[str, Any]]) -> None:
-        """
-        Process trading signal from ClusterManager
-        
-        Args:
-            signal: Signal dict with confidence, position_size, symbol (or None)
-        """
-        if not signal:
-            return
-        
+    async def on_signal(self, signal: Dict[str, Any]):
+        """Handle trading signal from cluster manager"""
         try:
-            # Pass to strategy
-            if self.strategy:
-                order = self.strategy.on_signal(signal)
-                
-                if order and self.binance_client:
-                    # Execute order
-                    logger.info(f"📋 Executing order: {order['symbol']} {order['side']} {order['quantity']}")
-                    # Order execution would happen here
+            if not self.strategy or not self.learner:
+                return
+            
+            # Apply strategy logic
+            symbol = signal.get('symbol', '')
+            confidence = signal.get('confidence', 0)
+            
+            # Get max leverage from current learning phase
+            max_leverage = self.learner.get_max_leverage()
+            
+            logger.info(f"📊 Signal: {symbol} confidence={confidence:.2%} leverage_max={max_leverage:.1f}x")
         
         except Exception as e:
-            logger.error(f"❌ Signal processing error: {e}")
+            logger.error(f"❌ Signal handler error: {e}")
     
     async def run(self):
         """Main trading loop"""
+        await self.initialize()
+        
         try:
-            await self.initialize()
-            
-            # Keep system running
+            logger.info("🎯 Trading system running...")
             while self.running:
                 await asyncio.sleep(1)
-                
-                # Periodic health checks
-                if self.cluster_manager:
-                    stats = self.cluster_manager.get_stats()
-                    if stats['signals_generated'] % 10 == 0:
-                        logger.info(
-                            f"📊 Stats: {stats['pairs']} pairs, "
-                            f"{stats['signals_generated']} signals, "
-                            f"{stats['trades_executed']} trades"
-                        )
         
         except KeyboardInterrupt:
-            logger.info("⚠️ Received interrupt signal")
+            logger.info("⏹️ Keyboard interrupt received")
         except Exception as e:
             logger.error(f"❌ Runtime error: {e}")
         finally:
@@ -200,24 +167,16 @@ class SelfLearningTradingSystem:
     
     async def shutdown(self):
         """Graceful shutdown"""
-        try:
-            logger.info("🛑 Initiating graceful shutdown...")
-            self.running = False
-            
-            # Stop components
-            if self.shard_feed:
-                try:
-                    await self.shard_feed.stop()
-                except Exception:
-                    pass
-            
-            if self.cluster_manager:
-                await self.cluster_manager.stop()
-            
-            logger.info("✅ Shutdown complete")
+        logger.info("🛑 Shutting down...")
+        self.running = False
         
-        except Exception as e:
-            logger.error(f"❌ Shutdown error: {e}")
+        if self.shard_feed:
+            await self.shard_feed.stop()
+        
+        if self.cluster_manager:
+            await self.cluster_manager.stop()
+        
+        logger.info("✅ Shutdown complete")
 
 
 async def main():
@@ -229,8 +188,6 @@ async def main():
 if __name__ == "__main__":
     try:
         asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("✅ System stopped")
     except Exception as e:
         logger.error(f"❌ Fatal error: {e}")
         sys.exit(1)

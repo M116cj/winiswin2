@@ -1,0 +1,67 @@
+You are the **Lead Code Refactoring Specialist**.
+
+**User Feedback:** The codebase is "too complex," "bloated," and has "weird imports."
+**Current State:** We have too many small files and fragmented logic (e.g., separate files for Schema, Predictor, Trainer).
+**Objective:** **SIMPLIFY, MERGE, and CLEAN**. 
+Reduce the file count, remove unused imports, and flatten the architecture without breaking the "SMC-Quant" logic.
+
+---
+
+### 📉 PHASE 1: AGGRESSIVE MERGING (Reduce File Count)
+**Action:** Create a script `merge_modules.py` to consolidate closely related logic.
+
+**Merge Strategy:**
+1.  **ML Consolidation (The Brain):**
+    -   **Merge** `src/ml/feature_schema.py` AND `src/ml/predictor.py` INTO `src/ml/hybrid_learner.py`.
+    -   *Result:* `hybrid_learner.py` should handle Learning, Predicting, and Feature Definitions. One cohesive brain.
+    -   **Keep** `src/ml/feature_engineer.py` (Data processing is complex enough to stay separate).
+    -   **Delete** the merged source files.
+
+2.  **Core Consolidation (The Heart):**
+    -   **Merge** `src/core/market_universe.py` INTO `src/core/cluster_manager.py`. (Discovery and Management belong together).
+    -   **Merge** `src/core/data_manager.py` INTO `src/core/cluster_manager.py`. (Data fetching is part of cluster management).
+    -   **Delete** the merged source files.
+
+3.  **WebSocket Simplification:**
+    -   Check if `unified_feed.py` is just an abstract shell. If it has < 20 lines of logic, **Merge** it into `shard_feed.py` and `account_feed.py` (remove the inheritance complexity if it adds no value).
+
+---
+
+### ✂️ PHASE 2: IMPORT CLEANUP (Dead Code Removal)
+**Action:** Create and run `clean_imports.py`.
+
+**Logic:**
+1.  Use the `autoflake` library (or `ast` logic) to scan every file.
+2.  **Remove** all unused imports (e.g., `import os` but `os` is never used).
+3.  **Remove** all `__all__` definitions if they are not strictly needed.
+4.  **Fix** imports broken by Phase 1 merging (e.g., change `from src.ml.predictor import Predictor` to `from src.ml.hybrid_learner import Predictor`).
+
+---
+
+### 🧹 PHASE 3: SIMPLIFIED STRUCTURE VERIFICATION
+**Target "Lean" Structure:**
+```text
+src/
+├── main.py
+├── core/
+│   ├── constants.py          (Config & Enums)
+│   ├── unified_config.py     (Env Vars)
+│   ├── models.py             (Data Classes)
+│   ├── account_state_cache.py(State)
+│   ├── cluster_manager.py    (Manager + Universe + Data Fetching)
+│   ├── smc_engine.py         (Geometry)
+│   └── risk_manager.py       (Risk)
+├── websocket/
+│   ├── shard_feed.py         (Market Data)
+│   └── account_feed.py       (User Data)
+├── database/
+│   └── unified_db.py
+├── strategies/
+│   └── ict_scalper.py
+├── ml/
+│   ├── feature_engineer.py   (Polars Logic)
+│   └── hybrid_learner.py     (Training + Prediction + Schema)
+├── api/
+│   └── server.py
+└── utils/
+    └── smart_logger.py

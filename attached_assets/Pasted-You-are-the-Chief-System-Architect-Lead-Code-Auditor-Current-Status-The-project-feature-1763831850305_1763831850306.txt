@@ -1,0 +1,84 @@
+You are the **Chief System Architect & Lead Code Auditor**.
+
+**Current Status:** The project features a sophisticated "Sharded, Zero-Polling, SMC-Quant Architecture".
+**User Goal:** perform a **TOTAL REFACTOR & DEEP AUDIT**. 
+You must examine every single file, ensure it strictly adheres to the architecture, remove ALL legacy/unused code, and guarantee system stability.
+
+**Architectural Pillars (Strict Enforcement):**
+1.  **Zero-Polling:** No HTTP calls in loops. Use `AccountStateCache`.
+2.  **Efficiency:** Use `orjson`, `__slots__`, `uvloop`, `polars`.
+3.  **Intelligence:** `HybridLearner` (Teacher-Student), 12 specific ATR-normalized features.
+4.  **Stability:** `Combined Streams`, `Gap Filling`, `Reconnect Logic`.
+
+---
+
+### 🧨 PHASE 1: THE GRAND PURGE (File Structure Enforcement)
+**Action:** Execute a script to **DELETE** any file NOT in this strict allowlist. 
+**Target Structure:**
+```text
+src/
+├── main.py
+├── core/
+│   ├── __init__.py
+│   ├── constants.py          (Centralized Config/Enums)
+│   ├── unified_config.py     (Env Vars)
+│   ├── models.py             (__slots__ optimized data classes)
+│   ├── account_state_cache.py(Redis-synced Memory DB)
+│   ├── cluster_manager.py    (Sharding Orchestrator)
+│   ├── market_universe.py    (Dynamic Discovery)
+│   ├── smc_engine.py         (Geometry Logic)
+│   ├── risk_manager.py       (Position Sizing & Time Exit)
+│   ├── data_manager.py       (Gap Filling & History)
+│   └── websocket/
+│       ├── __init__.py
+│       ├── unified_feed.py   (Base)
+│       ├── shard_feed.py     (Orjson + Micro-batching)
+│       └── account_feed.py   (State Writer)
+├── database/
+│   ├── __init__.py
+│   └── unified_db.py         (AsyncPG + Redis)
+├── strategies/
+│   ├── __init__.py
+│   └── ict_scalper.py        (Main Strategy Logic)
+├── ml/
+│   ├── __init__.py
+│   ├── feature_engineer.py   (Polars + ATR Norm)
+│   ├── feature_schema.py     (The 12 Features Def)
+│   ├── hybrid_learner.py     (Online Trainer + Teacher-Student)
+│   ├── predictor.py          (Inference)
+│   └── drift_detector.py     (Monitoring)
+├── api/
+│   ├── __init__.py
+│   └── server.py             (FastAPI Dashboard Backend)
+└── utils/
+    ├── __init__.py
+    └── smart_logger.py       (Filtered Logging)
+🛠️ PHASE 2: DEEP REFACTORING (File by File)
+Refactor src/core/models.py:
+Ensure Candle, Signal, Position use __slots__.
+Refactor src/core/websocket/shard_feed.py:
+Ensure usage of orjson.loads.
+Ensure Micro-Batching (0.1s buffer) is implemented to prevent CPU spikes.
+Refactor src/ml/feature_engineer.py:
+Strictly implement the 12 Features: market_structure, order_blocks_count, institutional_candle, liquidity_grab, fvg_size_atr, fvg_proximity, ob_proximity, atr_normalized_volume, rsi_14, momentum_atr, time_to_next_level, confidence_ensemble.
+Ensure ATR Normalization is applied to all distance features.
+Refactor src/ml/hybrid_learner.py:
+Implement Teacher-Student Mode:
+Trade Count < 50: Max Leverage 3x (Rule-based).
+Trade Count >= 50: Uncapped Leverage (AI-based).
+Implement Experience Replay: Save/Load from Redis/DB.
+Refactor src/strategies/ict_scalper.py:
+Implement Signal Decay: On every candle, re-check conditions. If logic invalid -> Close immediately.
+Ensure NO client.get_account() calls. Read from AccountStateCache.
+Refactor src/core/data_manager.py:
+Implement Gap Filling: If timestamp gap > 1m, fetch from REST API.
+🧪 PHASE 3: INTEGRITY VERIFICATION
+Create and run system_final_check.py.
+Dependency Check: Confirm orjson, polars, uvloop, lightgbm installed.
+Config Check: Confirm RATE_LIMIT_REQUESTS exists in UnifiedConfig.
+Logic Check:
+Instantiate ICTScalper.
+Mock a Candle.
+Verify it calls SMCEngine -> FeatureEngineer -> HybridLearner.
+Async Check: Inspect code for blocking calls (time.sleep, requests).
+Execute this Master Refactor Plan. Fix every issue found.

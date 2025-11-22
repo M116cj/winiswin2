@@ -107,7 +107,7 @@ class HistoricalDataManager:
                     df = self._load_cache(symbol, interval)
                     
                     # PART 4: Check for gaps
-                    if df and len(df) > 1:
+                    if df is not None and len(df) > 1:
                         df = await self._fill_gaps(symbol, df, interval)
                     
                     results[symbol] = df

@@ -5,10 +5,10 @@
 """
 
 import asyncio
+import logging
 from typing import Dict, Optional, List
-from src.utils.logger_factory import get_logger
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class AccountStateCache:

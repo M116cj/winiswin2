@@ -26,8 +26,6 @@ except ImportError:
     ConnectionClosed = Exception  # type: ignore
     ConnectionClosedError = Exception  # type: ignore
 
-from src.utils.logger_factory import get_logger
-
 
 class UnifiedWebSocketFeed(ABC):
     """
@@ -60,7 +58,7 @@ class UnifiedWebSocketFeed(ABC):
         """
         self.url = url
         self.name = feed_name
-        self.logger = get_logger(f"WS.{feed_name}")
+        self.logger = logging.getLogger(f"WS.{feed_name}")
         
         # 连接状态
         self.running = False

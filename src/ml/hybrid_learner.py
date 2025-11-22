@@ -166,6 +166,8 @@ class HybridLearner:
         # Implementation depends on your DB schema
         # This is a placeholder
         try:
+            if not self.db:
+                return self.total_trades
             # Assuming DB has a way to count trades
             query = "SELECT COUNT(*) as count FROM trades WHERE status = 'CLOSED'"
             result = await self.db.execute_query(query)

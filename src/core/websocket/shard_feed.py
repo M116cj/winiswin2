@@ -13,10 +13,7 @@ from typing import List, Optional, Callable, Dict
 from collections import defaultdict
 import time
 
-try:
-    import websockets
-except ImportError:
-    websockets = None
+import websockets
 
 try:
     import orjson
@@ -132,7 +129,7 @@ class ShardFeed:
             logger.error(f"❌ Shard {self.shard_id} connection error: {e}")
             self.stats['errors'] += 1
     
-    async def _process_message(self, message: str):
+    async def _process_message(self, message):
         """
         Parse combined stream message and add to micro-batch buffer
         
