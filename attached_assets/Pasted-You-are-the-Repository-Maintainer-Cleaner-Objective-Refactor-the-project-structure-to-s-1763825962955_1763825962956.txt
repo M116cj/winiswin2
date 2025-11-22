@@ -1,0 +1,93 @@
+You are the **Repository Maintainer & Cleaner**.
+
+**Objective:** Refactor the project structure to strictly match the "SMC-Quant Sharded Architecture" and delete ALL legacy files.
+
+**Target Structure:**
+```text
+src/
+├── main.py                (Entry Point)
+├── core/
+│   ├── unified_config.py  (Config Manager)
+│   ├── cluster_manager.py (Sharding Orchestrator)
+│   ├── market_universe.py (Pair Discovery)
+│   ├── smc_engine.py      (Geometry Logic)
+│   ├── risk_manager.py    (Position Sizing)
+│   ├── account_state_cache.py (In-Memory DB)
+│   └── websocket/
+│       ├── unified_feed.py (Base Class)
+│       ├── shard_feed.py   (Combined Stream Worker)
+│       └── account_feed.py (User Data Stream)
+├── database/
+│   └── unified_db.py      (Redis/PG Manager)
+├── strategies/
+│   └── ict_scalper.py     (Main Logic)
+├── ml/
+│   ├── feature_engineer.py(Polars Logic)
+│   ├── predictor.py       (Inference)
+│   └── trainer.py         (Offline Training)
+└── utils/
+    └── smart_logger.py
+🧨 ACTION 1: DELETE LEGACY FILES
+Write and execute a python script cleanup_project.py to DELETE the following patterns if they exist:
+Old WebSocket Logic: base_feed.py, price_feed.py, kline_feed.py (old version), optimized_base_feed.py.
+Old Strategies: self_learning_trader.py, base_strategy.py, position_monitor_24x7.py.
+Old ML: model_wrapper.py (unless updated), any .csv files in data/.
+Misc: Any file calling pandas (we use Polars now).
+📦 ACTION 2: REORGANIZE FILES
+Ensure all remaining files are moved into the Target Structure folders listed above.
+Create missing __init__.py files in every subdirectory to ensure they are Python packages.
+Update import statements in main.py and ict_scalper.py if files were moved.
+Execute the Cleanup & Reorganization now. Report every deleted file.
+code
+Code
+---
+
+## 🔍 第二步：嚴格代碼地毯式檢查 (Strict Deep Audit)
+
+在大掃除之後，我們需要確保剩下的代碼是「乾淨且正確」的。這份 Prompt 會使用 AST (抽象語法樹) 來檢查邏輯，而不僅僅是語法。
+
+**請複製以下內容給 Replit AI：**
+
+```markdown
+You are the **Chief Code Auditor**.
+
+**Objective:** Perform a **"Carpet-Bombing" Deep Scan** of the codebase to identify architectural violations, logic bugs, and missing components.
+
+**Audit Standards:**
+1.  **Zero-Polling Rule:** No `async def` function should call `client.get_account()` or `requests.get()` inside a loop.
+2.  **SMC Integrity:** The Strategy MUST import and use `SMCEngine`.
+3.  **Data Safety:** `AccountStateCache` MUST be the only place `_balance` is modified.
+4.  **ML Stack:** `src/ml` files MUST use `polars`, not `pandas`.
+
+### 🛠️ ACTION: EXECUTE AUDIT SCRIPT
+Create and run `deep_audit.py` that scans every `.py` file in `src/` and checks:
+
+1.  **Check 1: The "While True" Polling Trap**
+    -   Scan loops in `src/strategies/` and `src/core/`.
+    -   **Report ERROR** if HTTP calls are found inside loops (Zero-Polling Violation).
+
+2.  **Check 2: Import Consistency**
+    -   Verify that `src/main.py` imports `ClusterManager`.
+    -   Verify that `ClusterManager` imports `ShardFeed`.
+    -   **Report ERROR** on broken imports or circular dependencies.
+
+3.  **Check 3: Configuration Safety**
+    -   Inspect `src/core/unified_config.py`.
+    -   **Report ERROR** if `RATE_LIMIT_REQUESTS` attribute is missing (The bug that caused previous crashes).
+
+4.  **Check 4: Empty Logic Detection**
+    -   Scan `src/core/smc_engine.py`.
+    -   **Report WARNING** if functions like `detect_fvg` contain only `pass` or `return None` (Unimplemented logic).
+
+5.  **Check 5: Logging Noise**
+    -   Scan `src/utils/smart_logger.py`.
+    -   **Report WARNING** if the default log level is `INFO` or `DEBUG` (Should be `WARNING` for production).
+
+**Output Format:**
+Generate a markdown report:
+-   🔴 **CRITICAL BUGS** (Must fix immediately)
+-   🟠 **ARCHITECTURAL VIOLATIONS** (Polling detected)
+-   🟡 **CODE SMELLS** (Empty functions, bad logging)
+-   🟢 **PASSED CHECKS**
+
+**Run the audit now and give me the full report.**
