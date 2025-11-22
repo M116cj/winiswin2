@@ -62,3 +62,5 @@ polars==1.0.0    # 🔥 High-speed dataframe operations (Phase 5)
 # =============================================================================
 numba
 uvloop
+aiohttp
+websockets
