@@ -28,3 +28,15 @@ def get_redis_url() -> str:
     
     # Fallback to localhost for development
     return "redis://localhost:6379"
+
+
+def get_database_url() -> str:
+    """
+    Get Postgres connection URL
+    Uses DATABASE_URL environment variable (from Replit Postgres setup)
+    """
+    if database_url := os.getenv('DATABASE_URL'):
+        return database_url
+    
+    # Fallback to local Postgres for development
+    return "postgresql://localhost/aegis"

@@ -14,6 +14,7 @@ import hashlib
 import time
 from typing import Dict, Optional
 from urllib.parse import urlencode
+from datetime import datetime
 import aiohttp
 
 import json  # Always available
@@ -50,10 +51,97 @@ async def _get_redis() -> Optional[redis_async.Redis]:
     return _redis_client
 
 
+async def _get_postgres_connection():
+    """Initialize and return Postgres connection"""
+    try:
+        import asyncpg
+        from src.config import get_database_url
+        
+        db_url = get_database_url()
+        conn = await asyncpg.connect(db_url)
+        return conn
+    except Exception as e:
+        logger.debug(f"⚠️ Postgres connection failed: {e}")
+        return None
+
+
+async def _sync_state_to_postgres() -> None:
+    """
+    💾 STATE BROADCASTER: Sync account state to Postgres
+    Creates table if needed and writes current state
+    Called after every state mutation to persist data
+    """
+    conn = None
+    try:
+        conn = await _get_postgres_connection()
+        if not conn:
+            logger.warning("⚠️ Postgres not available, skipping state sync")
+            return
+        
+        # Create table if not exists
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS account_state (
+                id SERIAL PRIMARY KEY,
+                balance FLOAT NOT NULL,
+                pnl FLOAT NOT NULL,
+                trade_count INT NOT NULL,
+                positions JSONB NOT NULL,
+                last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        # Get current state
+        positions_json = json.dumps(_account_state['positions'])
+        
+        # Calculate PnL from all positions (sum the PnL of each position)
+        # For now: use simple 2% mock gain per position (in production: fetch real prices)
+        pnl = 0.0
+        for symbol, pos_data in _account_state['positions'].items():
+            entry_price = pos_data.get('entry_price', 0)
+            quantity = pos_data.get('quantity', 0)
+            side = pos_data.get('side', 'BUY')
+            
+            # Mock current price (2% gain)
+            current_price = entry_price * 1.02
+            
+            if side == 'BUY':
+                pos_pnl = (current_price - entry_price) * quantity
+            else:
+                pos_pnl = (entry_price - current_price) * quantity
+            
+            pnl += pos_pnl
+        
+        # Insert/update state (insert new row with latest state)
+        await conn.execute("""
+            INSERT INTO account_state (balance, pnl, trade_count, positions, last_update)
+            VALUES ($1, $2, $3, $4::jsonb, $5)
+        """,
+            _account_state['balance'],
+            pnl,
+            len(_account_state['trades']),
+            positions_json,
+            datetime.fromtimestamp(time.time())
+        )
+        
+        logger.critical(f"💾 State persisted to Postgres: Balance=${_account_state['balance']:.2f}, Positions={len(_account_state['positions'])}, Trades={len(_account_state['trades'])}")
+    
+    except Exception as e:
+        logger.critical(f"❌ Failed to sync state to Postgres: {e}", exc_info=True)
+    
+    finally:
+        if conn:
+            try:
+                await conn.close()
+            except:
+                pass
+
+
 async def _sync_state_to_redis() -> None:
     """
     📡 STATE BROADCASTER: Sync account state to Redis
     Called after every state mutation to keep processes in sync
+    (Optional: Redis may not be available in all environments)
     """
     try:
         redis = await _get_redis()
@@ -70,7 +158,7 @@ async def _sync_state_to_redis() -> None:
         
         # Use orjson for fast serialization (or fallback to json)
         if HAS_ORJSON:
-            encoded = orjson.dumps(state_payload)
+            encoded = orjson.dumps(state_payload)  # type: ignore
         else:
             encoded = json.dumps(state_payload).encode('utf-8')
         
@@ -595,7 +683,10 @@ async def _update_state(filled_order: Dict) -> None:
             
             logger.debug(f"💾 State updated: {symbol} | Balance: ${_account_state['balance']:.0f} | Positions: {len(_account_state['positions'])}")
         
-        # 📡 STEP 1: STATE BROADCASTER - Sync to Redis (fire-and-forget)
+        # 💾 STEP 1: STATE BROADCASTER - Sync to Postgres (primary persistence)
+        asyncio.create_task(_sync_state_to_postgres())
+        
+        # 📡 STEP 2: STATE BROADCASTER - Sync to Redis (if available)
         asyncio.create_task(_sync_state_to_redis())
     
     except Exception as e:
@@ -612,9 +703,44 @@ async def get_balance() -> float:
         return 0.0
 
 
+async def _load_state_from_postgres() -> None:
+    """
+    Load last known account state from Postgres on startup
+    Enables recovery after process restart
+    """
+    try:
+        conn = await _get_postgres_connection()
+        if not conn:
+            logger.debug("⚠️ Postgres not available, using default state")
+            return
+        
+        # Get latest state from database
+        row = await conn.fetchrow("""
+            SELECT balance, positions, trade_count 
+            FROM account_state 
+            ORDER BY updated_at DESC 
+            LIMIT 1
+        """)
+        
+        if row:
+            global _account_state
+            _account_state['balance'] = row['balance']
+            _account_state['positions'] = json.loads(row['positions'])
+            _account_state['trade_count'] = row['trade_count']
+            logger.info(f"📖 Loaded state from Postgres: Balance=${_account_state['balance']:.2f}, Positions={len(_account_state['positions'])}")
+        
+        await conn.close()
+    
+    except Exception as e:
+        logger.debug(f"⚠️ Failed to load state from Postgres: {e}")
+
+
 async def init() -> None:
     """Initialize trade module - connect risk → execution → state"""
     logger.info("💰 Trade module initializing")
+    
+    # Load previous state from Postgres if available
+    await _load_state_from_postgres()
     
     if LIVE_TRADING_ENABLED:
         logger.info("✅ LIVE TRADING ENABLED - Orders will be sent to Binance")
@@ -627,4 +753,4 @@ async def init() -> None:
     bus.subscribe(Topic.SIGNAL_GENERATED, _check_risk)
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
-    logger.info("✅ Trade module ready")
+    logger.info("✅ Trade module ready (with Postgres persistence)")

@@ -1,0 +1,51 @@
+You are the **Database Reliability Engineer**.
+
+**Critical Issue:** The user reports **ZERO data** in Railway Redis and Postgres. 
+**Diagnosis:** 
+1.  The `UnifiedDatabaseManager` might not be initializing correctly in the Subprocesses (Brain/Trade).
+2.  The `AccountState` might be operating purely in-memory without calling `_sync_to_redis`.
+3.  Postgres interactions (Cold Start) might be failing silently.
+
+**Mission:** Verify connections and FORCE writes.
+
+---
+
+### 🧪 STEP 1: IMMEDIATE CONNECTIVITY TEST
+**Action:** Create and run `test_db_connection.py`.
+**Content:**
+1.  Load `UnifiedConfig`. Print `REDIS_URL` and `DATABASE_URL` (masked) to ensure env vars are read.
+2.  **Redis Test:**
+    -   Connect using `redis.asyncio`.
+    -   Write Key: `test:connection` -> "OK".
+    -   Read Key.
+    -   **Assert:** Value is "OK".
+3.  **Postgres Test:**
+    -   Connect using `asyncpg`.
+    -   Create Table `test_table (id serial, val text)`.
+    -   Insert row.
+    -   **Assert:** Select count(*) returns 1.
+4.  **Output:** "✅ Databases are REACHABLE" or "❌ Connection FAILED".
+
+### 🛠️ STEP 2: FIX REDIS SYNC LOGIC (src/trade.py)
+**Action:** Inspect `src/trade.py`.
+1.  **Locate:** `_update_state`, `_on_order_fill`, and `add_position`.
+2.  **Force Sync:** Ensure `await self._sync_to_redis()` is called **IMMEDIATELY** after any dictionary update.
+3.  **Add Debug Log:** Inside `_sync_to_redis`, add:
+    ```python
+    logger.info(f"💾 Syncing state to Redis... PnL: {self._total_pnl}")
+    ```
+    *(This proves the code is trying to write)*.
+
+### 🛠️ STEP 3: FIX POSTGRES COLD START (src/core/data_manager.py)
+**Action:**
+1.  **Check:** Does `save_to_db` actually call `execute`?
+2.  **Force Write:** In `ensure_history`, ensure `df.write_database` (if using Polars) or `copy_records_to_table` (asyncpg) is actually executed.
+3.  **Log:** "💾 Saved {len(df)} candles to Postgres for {symbol}".
+
+### 🚀 STEP 4: VERIFY INITIALIZATION IN PROCESSES
+**File:** `src/main.py`
+**Action:**
+-   In `run_brain()` and `run_feed()`, ensure `await UnifiedDatabaseManager.initialize()` is the **FIRST** thing that happens inside the process wrapper.
+-   *Reason:* Multiprocessing does NOT share DB connections. Each process must connect separately.
+
+**Execute this DB Fix & Verification Plan.**

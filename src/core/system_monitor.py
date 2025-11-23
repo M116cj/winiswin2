@@ -74,14 +74,47 @@ class SystemMonitor:
     
     async def get_account_state(self) -> Dict[str, Any]:
         """
-        🔭 STATE RECEIVER: Get current account state from Redis
+        🔭 STATE RECEIVER: Get current account state from Postgres
         (Reads from shared state written by Trade/Brain process)
         
         Returns:
             Dict with PnL, position_count, balance, trades
         """
         try:
-            # 📡 STEP 2: STATE RECEIVER - Read from Redis (cross-process sync)
+            # 💾 STEP 1: Try to read from Postgres (primary persistence layer)
+            try:
+                import asyncpg
+                from src.config import get_database_url
+                
+                db_url = get_database_url()
+                conn = await asyncpg.connect(db_url)
+                
+                # Get latest account state
+                row = await conn.fetchrow("""
+                    SELECT balance, pnl, trade_count, positions 
+                    FROM account_state 
+                    ORDER BY updated_at DESC 
+                    LIMIT 1
+                """)
+                
+                if row:
+                    logger.debug(f"✅ Account state read from Postgres: Balance=${row['balance']:.2f}, Positions={len(json.loads(row['positions']))}")
+                    
+                    positions = json.loads(row['positions']) if row['positions'] else {}
+                    await conn.close()
+                    
+                    return {
+                        'pnl': row['pnl'],
+                        'position_count': len(positions),
+                        'balance': row['balance'],
+                        'trades': row['trade_count']
+                    }
+                
+                await conn.close()
+            except Exception as pg_error:
+                logger.debug(f"⚠️ Postgres read failed: {pg_error}")
+            
+            # 📡 STEP 2: Fallback to Redis (if Postgres unavailable)
             redis = await _get_redis()
             
             if redis:
@@ -89,7 +122,7 @@ class SystemMonitor:
                 if raw_data:
                     # Deserialize from Redis
                     if HAS_ORJSON:
-                        state = orjson.loads(raw_data)
+                        state = orjson.loads(raw_data)  # type: ignore
                     else:
                         state = json.loads(raw_data.decode('utf-8') if isinstance(raw_data, bytes) else raw_data)
                     
@@ -101,13 +134,9 @@ class SystemMonitor:
                         'balance': state.get('balance', 0),
                         'trades': state.get('trade_count', 0)
                     }
-                else:
-                    logger.debug("⚠️ No state data in Redis yet (Trade/Brain process may not have started)")
-                    # Return defaults if no state yet
-                    return {'pnl': 0, 'position_count': 0, 'balance': 10000.0, 'trades': 0}
             
-            # Fallback: Try to read from Trade module (if Redis unavailable)
-            logger.debug("⚠️ Redis unavailable, falling back to local memory")
+            # STEP 3: Fallback to local memory (if both Postgres and Redis unavailable)
+            logger.debug("⚠️ Postgres and Redis unavailable, falling back to local memory")
             from src import trade
             state = trade._account_state
             pnl = state.get('balance', 0) - 10000.0
