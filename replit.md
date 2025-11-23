@@ -43,9 +43,28 @@ The system employs a **HARDENED KERNEL-LEVEL MULTIPROCESS ARCHITECTURE** with an
 - **Risk Management**: Integrated risk validation, order execution, and thread-safe state management. Includes an "Elite 3-Position Portfolio Rotation" feature that intelligently rotates positions based on new signal confidence and profitability of existing positions.
 - **Production-Grade Logging**: Implemented with a `WARNING` level root logger to reduce noise, contextual error wrappers, and a 15-minute system heartbeat.
 
-## Recent Changes (v8.0 - API-First Startup + Strict Data Firewall)
+## Recent Changes (v8.0 - Trading Mode Separation + API-First Startup + Strict Data Firewall)
 
-**Date: 2025-11-23**
+**Date: 2025-11-23 (Latest: Virtual/Live Mode Separation)**
+
+### 🔧 Critical Bug Fix: Virtual vs Live Trading Mode Separation
+- **Problem**: Virtual trading state was being overwritten by real Binance account data
+  - Virtual account state: $1,597.90 balance, $168,042 PnL, 3 positions
+  - Was being replaced with: $9.38 balance (real Binance account) with 0 positions
+  - Root cause: `initial_account_sync()` was called unconditionally in virtual mode
+- **Solution Implemented**:
+  - Added `TRADING_MODE` configuration to `src/config.py` (default: 'virtual')
+  - Modified `src/trade.py` `init()` function to respect trading mode:
+    - **Virtual mode**: Only load PostgreSQL state, skip Binance API sync
+    - **Live mode**: Sync with real Binance account (when `TRADING_MODE=live`)
+- **Result**:
+  - ✅ Virtual trading now preserves simulated account state
+  - ✅ PostgreSQL data ($1,597.90) remains intact and loads correctly
+  - ✅ System can switch modes without code changes (env var only)
+  - ✅ Backward compatible (defaults to virtual mode)
+- **Usage**:
+  - Virtual (default): `TRADING_MODE=virtual` (or not set)
+  - Live: Set `TRADING_MODE=live` + `BINANCE_API_KEY` + `BINANCE_API_SECRET`
 
 ### Critical Deployment Fix: API-First Startup Strategy
 - **Problem Fixed**: Railway SIGTERM 15 timeout during container startup

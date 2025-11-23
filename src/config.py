@@ -14,6 +14,7 @@ class Config:
     
     # Trading
     MAX_OPEN_POSITIONS = 3  # Elite rotation: max 3 concurrent positions
+    TRADING_MODE = os.getenv('TRADING_MODE', 'virtual')  # 'virtual' (default) or 'live'
 
 
 def get_redis_url() -> str:

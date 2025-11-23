@@ -865,15 +865,24 @@ async def initial_account_sync() -> None:
 
 async def init() -> None:
     """Initialize trade module - connect risk → execution → state"""
+    from src.config import Config
+    
     logger.info("💰 Trade module initializing")
     
     # Load previous state from Postgres if available
     await _load_state_from_postgres()
     
-    # 💧 COLD START HYDRATION: ALWAYS fetch real account state from Binance API if credentials available
-    # This ensures all account info comes from Binance API, replacing hardcoded $10k defaults
-    # Works with or without live trading enabled
-    await initial_account_sync()
+    # 💧 TRADING MODE DETECTION - Separate virtual and live trading
+    trading_mode = Config.TRADING_MODE.lower()
+    
+    if trading_mode == 'live':
+        # LIVE MODE: Fetch real account state from Binance API
+        logger.critical("🔴 LIVE TRADING MODE - Will sync with real Binance account")
+        await initial_account_sync()
+    else:
+        # VIRTUAL MODE (default): Use Postgres state without overwriting with Binance data
+        logger.critical("🟢 VIRTUAL TRADING MODE - Using simulated account from Postgres")
+        logger.info("   To switch to LIVE mode, set: TRADING_MODE=live")
     
     if LIVE_TRADING_ENABLED:
         logger.info("✅ LIVE TRADING ENABLED - Orders will be sent to Binance")
@@ -886,4 +895,4 @@ async def init() -> None:
     bus.subscribe(Topic.SIGNAL_GENERATED, _check_risk)
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
-    logger.info("✅ Trade module ready (with Postgres persistence + Cold Start Hydration)")
+    logger.info(f"✅ Trade module ready (Mode: {trading_mode.upper()}, Postgres persistence enabled)")
