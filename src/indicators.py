@@ -1,44 +1,40 @@
 """
-📊 Technical Indicators - SMC Pattern Recognition + Numba JIT Compilation
-High-performance indicator calculations for microsecond latency
+📊 Technical Indicators with Numba JIT Acceleration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ultra-fast technical analysis using Numba JIT (50-200x speedup).
+Falls back to pure Python if Numba unavailable.
 """
 
 import numpy as np
 import logging
 
-try:
-    from numba import jit, float64, float32, int64
-    HAS_NUMBA = True
-except ImportError:
-    HAS_NUMBA = False
-    # Dummy decorator if Numba not available
-    def jit(*args, **kwargs):
-        def decorator(func):
-            return func
-        return decorator
-
 logger = logging.getLogger(__name__)
 
+# Try to import Numba for JIT compilation
+HAS_NUMBA = False
+try:
+    from numba import jit
+    HAS_NUMBA = True
+    logger.debug("✅ Numba available - JIT compilation enabled")
+except ImportError:
+    logger.debug("⚠️ Numba not available - using Python fallback")
+    # Provide dummy decorator if Numba not available
+    def jit(func=None, **kwargs):
+        if func is None:
+            return lambda f: f
+        return func
+
 
 # ============================================================================
-# 🚀 NUMBA JIT COMPILED FUNCTIONS - 50-200x Faster
+# Numba JIT Compiled Functions (50-200x faster)
 # ============================================================================
 
-@jit(float64(float64[:], int64), nopython=True, cache=True)
-def rsi_jit(prices: np.ndarray, period: int = 14) -> float:
+@jit(cache=True, nogil=True)
+def rsi_jit(prices, period=14):
     """
     🚀 JIT-compiled RSI (Relative Strength Index)
-    
-    Performance:
-    - Python: ~1000 calls/sec
-    - JIT:    ~100,000 calls/sec (100x faster)
-    
-    Args:
-        prices: Array of closing prices
-        period: RSI period (default 14)
-    
-    Returns:
-        RSI value (0-100)
+    ~100-200x faster than Python
     """
     if len(prices) < period:
         return 50.0
@@ -46,52 +42,35 @@ def rsi_jit(prices: np.ndarray, period: int = 14) -> float:
     gains = 0.0
     losses = 0.0
     
-    # Calculate gains and losses
-    for i in range(len(prices) - period, len(prices)):
-        change = prices[i] - prices[i - 1]
-        if change > 0:
-            gains += change
+    for i in range(-period, 0):
+        diff = prices[i] - prices[i-1]
+        if diff > 0:
+            gains += diff
         else:
-            losses -= change
+            losses -= diff
     
-    # Calculate RS
     avg_gain = gains / period
     avg_loss = losses / period
     
     if avg_loss == 0:
-        return 100.0
+        return 100.0 if avg_gain > 0 else 50.0
     
     rs = avg_gain / avg_loss
-    rsi = 100.0 - (100.0 / (1.0 + rs))
-    
-    return rsi
+    return 100.0 - (100.0 / (1.0 + rs))
 
 
-@jit(float64(float64[:], float64[:], float64[:], int64), nopython=True, cache=True)
-def atr_jit(highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, period: int = 14) -> float:
+@jit(cache=True, nogil=True)
+def atr_jit(highs, lows, closes, period=14):
     """
     🚀 JIT-compiled ATR (Average True Range)
-    
-    Performance:
-    - Python: ~500 calls/sec
-    - JIT:    ~50,000 calls/sec (100x faster)
-    
-    Args:
-        highs: Array of high prices
-        lows: Array of low prices
-        closes: Array of closing prices
-        period: ATR period (default 14)
-    
-    Returns:
-        ATR value
+    ~100x faster than Python
     """
-    if len(highs) < period:
+    if len(closes) < period:
         return 0.0
     
-    trs = np.zeros(len(highs) - 1)
+    trs = np.zeros(len(closes))
     
-    # Calculate True Range for each bar
-    for i in range(1, len(highs)):
+    for i in range(1, len(closes)):
         tr = max(
             highs[i] - lows[i],
             abs(highs[i] - closes[i - 1]),
@@ -103,17 +82,11 @@ def atr_jit(highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, period: int
     return np.mean(trs[-period:]) if len(trs) > 0 else 0.0
 
 
-@jit(float64(float64[:], int64), nopython=True, cache=True)
-def sma_jit(prices: np.ndarray, period: int) -> float:
+@jit(cache=True, nogil=True)
+def sma_jit(prices, period=20):
     """
     🚀 JIT-compiled SMA (Simple Moving Average)
-    
-    Args:
-        prices: Array of prices
-        period: SMA period
-    
-    Returns:
-        SMA value
+    ~50-100x faster than Python
     """
     if len(prices) < period:
         return 0.0
@@ -121,18 +94,11 @@ def sma_jit(prices: np.ndarray, period: int) -> float:
     return np.mean(prices[-period:])
 
 
-@jit(float64(float64[:], float64[:], int64), nopython=True, cache=True)
-def macd_jit(prices: np.ndarray, fast: int = 12, slow: int = 26) -> float:
+@jit(cache=True, nogil=True)
+def macd_jit(prices, fast=12, slow=26):
     """
     🚀 JIT-compiled MACD (Moving Average Convergence Divergence)
-    
-    Args:
-        prices: Array of prices
-        fast: Fast EMA period (default 12)
-        slow: Slow EMA period (default 26)
-    
-    Returns:
-        MACD value
+    ~50x faster than Python
     """
     if len(prices) < slow:
         return 0.0
@@ -144,18 +110,11 @@ def macd_jit(prices: np.ndarray, fast: int = 12, slow: int = 26) -> float:
     return fast_ema - slow_ema
 
 
-@jit(float64(float64[:], float64[:], int64), nopython=True, cache=True)
-def bollinger_width_jit(prices: np.ndarray, period: int = 20, std_dev: float = 2.0) -> float:
+@jit(cache=True, nogil=True)
+def bollinger_width_jit(prices, period=20, std_dev=2.0):
     """
     🚀 JIT-compiled Bollinger Bands Width
-    
-    Args:
-        prices: Array of prices
-        period: Bollinger period (default 20)
-        std_dev: Standard deviation multiplier (default 2)
-    
-    Returns:
-        Bollinger Bands width
+    ~50x faster than Python
     """
     if len(prices) < period:
         return 0.0
@@ -219,11 +178,11 @@ class Indicators:
             logger.debug(f"Numba ATR failed, using Python fallback: {e}")
         
         # Python fallback
-        if len(highs) < period:
+        if len(closes) < period:
             return 0.0
         
         trs = []
-        for i in range(1, len(highs)):
+        for i in range(1, len(closes)):
             tr = max(
                 highs[i] - lows[i],
                 abs(highs[i] - closes[i-1]),
@@ -235,62 +194,74 @@ class Indicators:
     
     @staticmethod
     def sma(prices, period=20):
-        """Simple Moving Average"""
+        """
+        Simple Moving Average
+        
+        Uses Numba JIT if available, falls back to Python
+        """
         try:
             if HAS_NUMBA:
                 prices_array = np.array(prices, dtype=np.float64)
                 result = sma_jit(prices_array, int(period))
                 return float(result)
-        except:
-            pass
+        except Exception as e:
+            logger.debug(f"Numba SMA failed, using Python fallback: {e}")
         
+        # Python fallback
         if len(prices) < period:
             return 0.0
+        
         return sum(prices[-period:]) / period
     
     @staticmethod
     def macd(prices, fast=12, slow=26):
-        """MACD"""
+        """
+        MACD
+        
+        Uses Numba JIT if available, falls back to Python
+        """
         try:
             if HAS_NUMBA:
                 prices_array = np.array(prices, dtype=np.float64)
                 result = macd_jit(prices_array, int(fast), int(slow))
                 return float(result)
-        except:
-            pass
+        except Exception as e:
+            logger.debug(f"Numba MACD failed, using Python fallback: {e}")
         
+        # Python fallback
         if len(prices) < slow:
             return 0.0
         
         fast_ema = sum(prices[-fast:]) / fast
         slow_ema = sum(prices[-slow:]) / slow
+        
         return fast_ema - slow_ema
     
     @staticmethod
-    def bollinger_width(prices, period=20, std_dev=2.0):
-        """Bollinger Bands Width"""
+    def bollinger_bands(prices, period=20, std_dev=2.0):
+        """
+        Bollinger Bands Width
+        
+        Uses Numba JIT if available, falls back to Python
+        """
         try:
             if HAS_NUMBA:
                 prices_array = np.array(prices, dtype=np.float64)
                 result = bollinger_width_jit(prices_array, int(period), float(std_dev))
                 return float(result)
-        except:
-            pass
+        except Exception as e:
+            logger.debug(f"Numba Bollinger failed, using Python fallback: {e}")
         
+        # Python fallback
         if len(prices) < period:
             return 0.0
         
         recent = prices[-period:]
-        mean = sum(recent) / len(recent)
-        variance = sum((x - mean) ** 2 for x in recent) / len(recent)
+        mean = sum(recent) / period
+        variance = sum((x - mean) ** 2 for x in recent) / period
         std = variance ** 0.5
         
         upper = mean + (std * std_dev)
         lower = mean - (std * std_dev)
+        
         return upper - lower
-
-
-if HAS_NUMBA:
-    logger.info("✅ Numba JIT compilation ENABLED (50-200x faster indicators)")
-else:
-    logger.warning("⚠️ Numba not available, using Python fallback (slower)")
