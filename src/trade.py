@@ -16,10 +16,70 @@ from typing import Dict, Optional
 from urllib.parse import urlencode
 import aiohttp
 
+import json  # Always available
+import redis.asyncio as redis_async
+
+try:
+    import orjson
+    HAS_ORJSON = True
+except ImportError:
+    HAS_ORJSON = False
+
 from src.bus import bus, Topic
 from src.config import Config
 
 logger = logging.getLogger(__name__)
+
+# Redis client (initialized in each process)
+_redis_client: Optional[redis_async.Redis] = None
+
+
+async def _get_redis() -> Optional[redis_async.Redis]:
+    """Get or initialize Redis client"""
+    global _redis_client
+    if _redis_client is None:
+        try:
+            from src.config import get_redis_url
+            redis_url = get_redis_url()
+            if redis_url:
+                _redis_client = await redis_async.from_url(redis_url, decode_responses=False)
+                logger.debug("✅ Redis client initialized for trade module")
+        except Exception as e:
+            logger.debug(f"⚠️ Redis not available: {e}")
+            return None
+    return _redis_client
+
+
+async def _sync_state_to_redis() -> None:
+    """
+    📡 STATE BROADCASTER: Sync account state to Redis
+    Called after every state mutation to keep processes in sync
+    """
+    try:
+        redis = await _get_redis()
+        if not redis:
+            return
+        
+        state_payload = {
+            "balance": _account_state['balance'],
+            "pnl": sum(_account_state['positions'].values()) if _account_state['positions'] else 0.0,
+            "trade_count": len(_account_state['trades']),
+            "positions": _account_state['positions'].copy(),
+            "last_update": time.time()
+        }
+        
+        # Use orjson for fast serialization (or fallback to json)
+        if HAS_ORJSON:
+            encoded = orjson.dumps(state_payload)
+        else:
+            encoded = json.dumps(state_payload).encode('utf-8')
+        
+        # Set with 60-second TTL (refreshed on each update)
+        await redis.setex("system:account_state", 60, encoded)
+        logger.debug(f"✅ State synced to Redis: Balance=${_account_state['balance']:.2f}, Positions={len(_account_state['positions'])}")
+    
+    except Exception as e:
+        logger.debug(f"⚠️ Failed to sync state to Redis: {e}")
 
 # Binance API configuration
 BINANCE_API_KEY = os.getenv('BINANCE_API_KEY', '')
@@ -499,6 +559,7 @@ async def _update_state(filled_order: Dict) -> None:
     1. Update balance
     2. Record position with metadata (entry_confidence, entry_price, entry_time)
     3. Track trade
+    4. 📡 Sync to Redis (for cross-process visibility)
     """
     try:
         if not filled_order:
@@ -533,6 +594,10 @@ async def _update_state(filled_order: Dict) -> None:
             _account_state['balance'] -= quantity * price * 0.001  # Assume 0.1% commission
             
             logger.debug(f"💾 State updated: {symbol} | Balance: ${_account_state['balance']:.0f} | Positions: {len(_account_state['positions'])}")
+        
+        # 📡 STEP 1: STATE BROADCASTER - Sync to Redis (fire-and-forget)
+        asyncio.create_task(_sync_state_to_redis())
+    
     except Exception as e:
         logger.error(f"❌ Error in _update_state(): {e}", exc_info=True)
 

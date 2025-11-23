@@ -17,7 +17,35 @@ import asyncio
 import time
 from typing import Optional, Dict, Any
 
+import json  # Always available
+import redis.asyncio as redis_async
+
+try:
+    import orjson
+    HAS_ORJSON = True
+except ImportError:
+    HAS_ORJSON = False
+
 logger = logging.getLogger(__name__)
+
+# Redis client (initialized in this process)
+_redis_client: Optional[redis_async.Redis] = None
+
+
+async def _get_redis() -> Optional[redis_async.Redis]:
+    """Get or initialize Redis client"""
+    global _redis_client
+    if _redis_client is None:
+        try:
+            from src.config import get_redis_url
+            redis_url = get_redis_url()
+            if redis_url:
+                _redis_client = await redis_async.from_url(redis_url, decode_responses=False)
+                logger.debug("✅ Redis client initialized for system monitor")
+        except Exception as e:
+            logger.debug(f"⚠️ Redis not available: {e}")
+            return None
+    return _redis_client
 
 # Heartbeat interval in seconds (15 minutes = 900 seconds)
 HEARTBEAT_INTERVAL = 900  # 15 minutes
@@ -46,19 +74,43 @@ class SystemMonitor:
     
     async def get_account_state(self) -> Dict[str, Any]:
         """
-        Get current account state (PnL, positions, balance)
+        🔭 STATE RECEIVER: Get current account state from Redis
+        (Reads from shared state written by Trade/Brain process)
         
         Returns:
-            Dict with PnL, position_count, balance
+            Dict with PnL, position_count, balance, trades
         """
         try:
-            # Import locally to avoid circular imports
+            # 📡 STEP 2: STATE RECEIVER - Read from Redis (cross-process sync)
+            redis = await _get_redis()
+            
+            if redis:
+                raw_data = await redis.get("system:account_state")
+                if raw_data:
+                    # Deserialize from Redis
+                    if HAS_ORJSON:
+                        state = orjson.loads(raw_data)
+                    else:
+                        state = json.loads(raw_data.decode('utf-8') if isinstance(raw_data, bytes) else raw_data)
+                    
+                    logger.debug(f"✅ Account state read from Redis: Balance=${state['balance']:.2f}, Positions={len(state['positions'])}")
+                    
+                    return {
+                        'pnl': state.get('pnl', 0),
+                        'position_count': len(state.get('positions', {})),
+                        'balance': state.get('balance', 0),
+                        'trades': state.get('trade_count', 0)
+                    }
+                else:
+                    logger.debug("⚠️ No state data in Redis yet (Trade/Brain process may not have started)")
+                    # Return defaults if no state yet
+                    return {'pnl': 0, 'position_count': 0, 'balance': 10000.0, 'trades': 0}
+            
+            # Fallback: Try to read from Trade module (if Redis unavailable)
+            logger.debug("⚠️ Redis unavailable, falling back to local memory")
             from src import trade
-            
             state = trade._account_state
-            
-            # Calculate PnL (simplified: assume balance change = PnL)
-            pnl = state.get('balance', 0) - 10000.0  # 10000 = initial balance
+            pnl = state.get('balance', 0) - 10000.0
             positions = state.get('positions', {})
             
             return {
@@ -69,7 +121,7 @@ class SystemMonitor:
             }
         except Exception as e:
             logger.debug(f"Could not get account state: {e}")
-            return {'pnl': 0, 'position_count': 0, 'balance': 0, 'trades': 0}
+            return {'pnl': 0, 'position_count': 0, 'balance': 10000.0, 'trades': 0}
     
     async def get_ml_data_count(self) -> int:
         """

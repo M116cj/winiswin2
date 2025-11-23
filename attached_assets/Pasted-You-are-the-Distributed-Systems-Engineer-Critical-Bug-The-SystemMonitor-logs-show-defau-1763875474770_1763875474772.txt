@@ -1,0 +1,50 @@
+You are the **Distributed Systems Engineer**.
+
+**Critical Bug:** The `SystemMonitor` logs show default values (Balance $10k, 0 Trades) while the `Brain/Trade` process is actually trading.
+**Root Cause:** **Process Isolation**. The Monitor is running in a separate process from the Trade engine and accessing its own empty local memory instance of `AccountState`.
+
+**Mission:** Implement **Redis-Based State Synchronization** to bridge the processes.
+
+---
+
+### 📡 STEP 1: IMPLEMENT STATE BROADCASTER (The Writer)
+**File:** `src/trade.py` (or where `AccountState` class is defined)
+**Action:**
+1.  Import `src.database.unified_db` and `orjson`.
+2.  Modify the `AccountState` class methods (`update_balance`, `add_position`, `close_position`).
+3.  **Logic:** After updating local memory, **immediately** write the full state to Redis.
+    ```python
+    async def _sync_to_redis(self):
+        state_payload = {
+            "balance": self._balance,
+            "pnl": self._total_pnl,
+            "trade_count": self._trade_count,
+            "positions": [p.to_dict() for p in self._positions.values()],
+            "last_update": time.time()
+        }
+        # Use fire-and-forget or await based on critical path
+        redis = UnifiedDatabaseManager.get_redis()
+        await redis.set("system:account_state", orjson.dumps(state_payload))
+    ```
+
+### 🔭 STEP 2: IMPLEMENT STATE RECEIVER (The Reader)
+**File:** `src/core/system_monitor.py` (or wherever the logging loop is)
+**Action:**
+1.  Modify the `run` or `log_status` loop.
+2.  **Logic:** Instead of reading `self.account_state` (local), read from Redis.
+    ```python
+    redis = UnifiedDatabaseManager.get_redis()
+    raw_data = await redis.get("system:account_state")
+    if raw_data:
+        data = orjson.loads(raw_data)
+        # Use 'data' to generate the log message
+        logger.critical(f"📊 [SYSTEM REPORT] PnL: ${data['pnl']} | Pos: {len(data['positions'])} ...")
+    else:
+        logger.warning("⚠️ No state data found in Redis yet.")
+    ```
+
+### 🔌 STEP 3: VERIFY REDIS CONNECTION
+**File:** `src/main.py`
+**Action:** Ensure `UnifiedDatabaseManager.initialize()` is called in **ALL** processes (Feed, Brain, Orchestrator) at startup. If the Monitor process didn't connect to Redis, it can't read the data.
+
+**Execute this State Synchronization fix immediately.**
