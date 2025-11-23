@@ -27,7 +27,8 @@ except ImportError:
     HAS_ORJSON = False
 
 from src.bus import bus, Topic
-from src.config import Config
+from src.config import Config, get_database_url
+from src.experience_buffer import get_experience_buffer
 
 logger = logging.getLogger(__name__)
 
@@ -652,6 +653,15 @@ async def _update_state(filled_order: Dict) -> None:
     try:
         if not filled_order:
             return
+        
+        # 💾 Record trade outcome in experience buffer for ML training
+        signal_id = filled_order.get('signal_id', '')
+        if signal_id:
+            try:
+                experience_buffer = get_experience_buffer()
+                await experience_buffer.record_trade_outcome(signal_id, filled_order)
+            except Exception as e:
+                logger.debug(f"⚠️ Error recording experience: {e}")
         
         async with _state_lock:
             symbol = filled_order.get('symbol', '')

@@ -26,6 +26,11 @@ from src import trade
 from src.indicators import Indicators
 from src.market_universe import BinanceUniverse
 import numpy as np
+import uuid
+
+# ML & Experience Buffer
+from src.ml_model import get_ml_model
+from src.experience_buffer import get_experience_buffer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -59,7 +64,7 @@ def detect_pattern(candle: tuple) -> dict:
 
 
 async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
-    """Process candle: detect patterns, publish signal"""
+    """Process candle: detect patterns, publish signal (with ML enhancement)"""
     timestamp, open_, high, low, close, volume = candle
     
     # Detect SMC patterns
@@ -67,14 +72,28 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     confidence = patterns['strength']
     
     if confidence > 0.60:
+        # 🤖 Get ML model to adjust confidence
+        ml_model = get_ml_model()
+        
         signal = {
+            'signal_id': str(uuid.uuid4()),
             'symbol': symbol,
             'confidence': confidence,
             'patterns': patterns,
-            'position_size': 100.0
+            'position_size': 100.0,
+            'timestamp': timestamp / 1000.0
         }
         
-        logger.debug(f"🧠 Signal: {symbol} @ {confidence:.1%}")
+        # 🤖 Use ML model to refine confidence
+        if ml_model.is_trained:
+            signal = await ml_model.adjust_confidence(signal)
+        
+        # 💾 Record signal in experience buffer
+        experience_buffer = get_experience_buffer()
+        await experience_buffer.record_signal(signal['signal_id'], signal)
+        
+        adjusted_confidence = signal.get('confidence', confidence)
+        logger.debug(f"🧠 Signal: {symbol} @ {adjusted_confidence:.1%} (ML-enhanced)")
         
         # Publish to EventBus (triggers trade risk check)
         await bus.publish(Topic.SIGNAL_GENERATED, signal)
@@ -117,6 +136,14 @@ async def run_brain() -> None:
     # Initialize modules
     await trade.init()
     logger.info("✅ Trade module initialized")
+    
+    # Initialize ML model
+    ml_model = get_ml_model()
+    logger.info("✅ ML model initialized")
+    
+    # Initialize experience buffer
+    experience_buffer = get_experience_buffer()
+    logger.info("✅ Experience buffer initialized")
     
     # Get ring buffer (attach to existing)
     ring_buffer = get_ring_buffer(create=False)
