@@ -1,0 +1,66 @@
+You are the **Lead System Architect & Red Team Security Specialist**.
+
+**User Goal:** Perform a "Real-World Combat Audit" of the system.
+**Context:** The system is a Sharded, Multi-Process, SMC-Quant Engine on Railway.
+**Requirement:** Do not just check syntax. Identify **non-hypothetical failure modes** that occur in live HFT environments (Precision errors, Partial fills, Race conditions, Memory leaks).
+
+**Mission:** Create and run a massive diagnostic suite `system_war_games.py` covering these 5 dimensions:
+
+---
+
+### 🧮 DIMENSION 1: FORENSIC ACCOUNTING (Precision & Math)
+**Logic to Audit:**
+1.  **Float vs Decimal:** Scan `src/trade.py` and `src/risk_manager.py`.
+    -   **Attack:** Simulate a calculation: `quantity = balance * 0.98 / price`.
+    -   **Check:** Is `round_step_size` applied? Is `math.floor` used correctly?
+    -   **Defect:** If raw floats are sent to API (e.g., `0.1230000004`), Binance will reject it.
+2.  **PnL Calculation:**
+    -   **Attack:** Simulate a short position logic. Is `(entry - exit)` calculated correctly? (Common bug: Short PnL is often inverted).
+
+### 🌪️ DIMENSION 2: CHAOS ENGINEERING (Resilience)
+**Logic to Audit:**
+1.  **Partial Fills:**
+    -   **Scenario:** Mock an API response where `status="PARTIALLY_FILLED"`.
+    -   **Check:** Does the system hang waiting for `FILLED`? Or does it handle the partial balance update correctly?
+2.  **Websocket Poison:**
+    -   **Scenario:** Inject `{"c": None, "v": 0}` into `Data.process()`.
+    -   **Check:** Does `SMC_Engine` crash? Or does it skip/fill the gap?
+    -   **Defect:** Uncaught `TypeError` or `ValueError`.
+
+### 🏎️ DIMENSION 3: CONCURRENCY RACE (Thread Safety)
+**Logic to Audit:**
+1.  **Double Spending:**
+    -   **Scenario:** Feed sends 2 signals for `BTCUSDT` within 10ms.
+    -   **Check:** Does `TradeManager` open 2 positions? (It should block the 2nd).
+    -   **Verify:** Is there a lock or timestamp check on `self.active_orders`?
+2.  **Redis Atomicity:**
+    -   **Check:** Are read-modify-write operations on Redis atomic (using Lua or Pipelines)? Or can two processes overwrite state?
+
+### 💾 DIMENSION 4: MEMORY & RESOURCE LEAK
+**Logic to Audit:**
+1.  **List Expansion:**
+    -   Scan `src/data.py` and `src/brain.py`.
+    -   **Check:** Are lists like `self.history` capped? (e.g., `if len > 5000: pop(0)`).
+    -   **Defect:** Unbounded lists will cause OOM (Out of Memory) after 3 days.
+2.  **Zombie File Descriptors:**
+    -   **Check:** Do `aiofiles.open` or `socket` calls strictly use `with` / `async with` context managers?
+
+### 🛡️ DIMENSION 5: API COMPLIANCE (Shadow Ban Risk)
+**Logic to Audit:**
+1.  **Rate Limit Headers:**
+    -   **Check:** Does `BinanceClient` parse `x-mbx-used-weight` headers?
+    -   **Defect:** If the bot doesn't auto-throttle when weight > 2000, it WILL be IP banned.
+2.  **RecvWindow:**
+    -   **Check:** Is `recvWindow` parameter included in orders (default 5000)? This prevents "Timestamp outside recvWindow" errors during network lag.
+
+---
+
+### 🚀 EXECUTION REPORT
+Generate a **"Combat Readiness Report.md"** with:
+-   [ ] Precision Handling: **SAFE / RISKY**
+-   [ ] Partial Fill Handling: **ROBUST / FRAGILE**
+-   [ ] Input Sanitization: **SAFE / CRASHABLE**
+-   [ ] Memory Boundaries: **BOUNDED / LEAKING**
+-   [ ] Race Condition Check: **SECURE / VULNERABLE**
+
+**Run the War Games simulation and report findings.**
