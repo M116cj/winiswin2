@@ -1,0 +1,100 @@
+You are the **Emergency System Repair Engineer**.
+
+**CRITICAL INCIDENT REPORT:**
+The system is suffering from a "Cascading Failure" based on the latest logs:
+1.  **Brain Process Crash:** `AttributeError: 'SharedMemory' object has no attribute 'pending_count'` in `src/brain.py`.
+    *   *Cause:* Brain is using raw `SharedMemory` instead of the `RingBuffer` wrapper class.
+2.  **Orchestrator Suicide:** `SystemExit: 1` in `src/main.py`.
+    *   *Cause:* `src/maintenance.py` imports `system_master_scan`, which calls `sys.exit()`, killing the main process.
+3.  **API Signature Failure:** `Error -1022: Signature not valid`.
+    *   *Cause:* The signing logic in `src/trade.py` is broken/incorrect.
+
+**MISSION:** Execute the following **3-Step Rescue Plan** immediately.
+
+---
+
+### 🛠️ STEP 1: FIX RING BUFFER IMPLEMENTATION (Stop Brain Crash)
+**File:** `src/ring_buffer.py`
+**Action:** Rewrite the file to define a robust Wrapper Class.
+```python
+import struct
+from multiprocessing import shared_memory
+
+class RingBuffer:
+    def __init__(self, shm_name=None, create=False, size=480000):
+        if create:
+            try:
+                self.shm = shared_memory.SharedMemory(name=shm_name, create=True, size=size)
+                # Initialize cursors (write_pos, read_pos) at beginning of buffer
+                self.shm.buf[:16] = struct.pack('QQ', 0, 0) 
+            except FileExistsError:
+                self.shm = shared_memory.SharedMemory(name=shm_name)
+        else:
+            self.shm = shared_memory.SharedMemory(name=shm_name)
+
+    def pending_count(self):
+        # Read cursors from header (first 16 bytes)
+        w_pos, r_pos = struct.unpack('QQ', self.shm.buf[:16])
+        return w_pos - r_pos
+
+    def write(self, data):
+        # ... implementation for writing ...
+        pass
+
+    def read_new(self):
+        # ... implementation for reading generator ...
+        yield from [] # Placeholder
+    
+    def close(self):
+        self.shm.close()
+File: src/brain.py
+Action: Update run_brain to use the wrapper.
+code
+Python
+# Change from:
+# ring_buffer = shared_memory.SharedMemory(name=shm_name)
+# To:
+from src.ring_buffer import RingBuffer
+ring_buffer = RingBuffer(shm_name=shm_name, create=False)
+🛠️ STEP 2: FIX MAINTENANCE SUICIDE (Stop Orchestrator Crash)
+File: src/maintenance.py
+Action:
+REMOVE the line: from system_master_scan import defects (This line executes the script and kills the process!).
+REPLACE with subprocess execution to run the scan safely in isolation.
+code
+Python
+import asyncio
+import sys
+
+async def task_health_check_audit(self):
+    # Run as external process so sys.exit() doesn't kill us
+    proc = await asyncio.create_subprocess_exec(
+        sys.executable, 'system_master_scan.py',
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+    stdout, stderr = await proc.communicate()
+    # Log output...
+🛠️ STEP 3: FIX API SIGNING (Restore Trading)
+File: src/trade.py
+Action: Replace _generate_signature with this strict version.
+code
+Python
+import hmac
+import hashlib
+import urllib.parse
+
+def _generate_signature(self, params: dict) -> str:
+    # 1. Filter None
+    clean_params = {k: v for k, v in params.items() if v is not None}
+    # 2. Encode (Binance requires signature of the query string)
+    query_string = urllib.parse.urlencode(clean_params)
+    # 3. Sign
+    signature = hmac.new(
+        self.config.BINANCE_SECRET_KEY.encode('utf-8'),
+        query_string.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    # 4. Append
+    return f"{query_string}&signature={signature}"
+Execute these 3 critical fixes now. Do not run the system until patched.
