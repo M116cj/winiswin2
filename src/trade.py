@@ -29,6 +29,7 @@ except ImportError:
 from src.bus import bus, Topic
 from src.config import Config, get_database_url
 from src.experience_buffer import get_experience_buffer
+from src.utils.math_utils import round_step_size, round_to_precision, validate_quantity, get_step_size
 
 logger = logging.getLogger(__name__)
 
@@ -294,8 +295,18 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
             logger.error(f"❌ Invalid quantity: {quantity} (must be numeric and > 0)")
             return None
         
+        # ✅ FIX 1: APPLY PRECISION ROUNDING (StepSize Filter)
+        # Round quantity DOWN to safe precision before sending to Binance
+        step_size = get_step_size(symbol)
+        quantity_safe = round_step_size(quantity, step_size)
+        
+        # Additional validation after rounding
+        if not validate_quantity(quantity_safe, symbol):
+            logger.error(f"❌ Quantity invalid after rounding: {quantity_safe}")
+            return None
+        
         # Convert quantity to string (Binance API expects string)
-        quantity_str = str(float(quantity))
+        quantity_str = str(quantity_safe)
         
         # Prepare order parameters (all as base types, will be converted to strings)
         params = {
@@ -717,6 +728,9 @@ async def _load_state_from_postgres() -> None:
     """
     Load last known account state from Postgres on startup
     Enables recovery after process restart
+    
+    ✅ FIX 2: ATOMIC STATE MUTATION (with lock)
+    All state modifications are protected with the lock
     """
     try:
         conn = await _get_postgres_connection()
@@ -733,11 +747,13 @@ async def _load_state_from_postgres() -> None:
         """)
         
         if row:
-            global _account_state
-            _account_state['balance'] = row['balance']
-            _account_state['positions'] = json.loads(row['positions'])
-            _account_state['trade_count'] = row['trade_count']
-            logger.info(f"📖 Loaded state from Postgres: Balance=${_account_state['balance']:.2f}, Positions={len(_account_state['positions'])}")
+            # ✅ FIX 2: Protect state mutation with lock (prevent race conditions)
+            async with _state_lock:
+                global _account_state
+                _account_state['balance'] = row['balance']
+                _account_state['positions'] = json.loads(row['positions'])
+                _account_state['trade_count'] = row['trade_count']
+                logger.info(f"📖 Loaded state from Postgres: Balance=${_account_state['balance']:.2f}, Positions={len(_account_state['positions'])}")
         
         await conn.close()
     

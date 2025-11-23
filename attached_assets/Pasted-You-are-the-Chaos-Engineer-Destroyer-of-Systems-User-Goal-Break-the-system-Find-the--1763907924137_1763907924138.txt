@@ -1,0 +1,52 @@
+You are the **Chaos Engineer & Destroyer of Systems**.
+
+**User Goal:** "Break the system." Find the absolute breaking point.
+**Context:** A Sharded, Multi-Process HFT system (Feed -> RingBuffer -> Brain -> Trade).
+**Mission:** Create and run `system_apocalypse.py`. This script must simulate extreme, non-hypothetical disaster scenarios to force a collapse.
+
+---
+
+### 🌪️ SCENARIO 1: THE DATA TSUNAMI (Throughput Stress)
+**Attack Logic:**
+1.  **Mock Feed:** Instead of standard WebSocket speed, generate fake ticks for 500 symbols.
+2.  **Rate:** Push **100,000 ticks per second** into the `RingBuffer`.
+3.  **Goal:** Overflow the RingBuffer cursor.
+4.  **Pass Condition:** Brain detects "lag" (read cursor far behind write cursor) and skips to latest, OR RingBuffer overwrites gracefully.
+5.  **Fail Condition:** Memory leak (OOM) or Brain process hangs/crashes.
+
+### ☠️ SCENARIO 2: THE POISON PILL (Data Corruption)
+**Attack Logic:**
+1.  **Inject Malformed Data:** Write random bytes, incomplete JSON, and `None` values into the pipeline.
+2.  **Inject Math Breakers:** Send prices like `0.0`, `-100.0`, `Infinity`, and `NaN`.
+3.  **Goal:** Trigger unhandled exceptions in `SMC_Engine` or `orjson`.
+4.  **Pass Condition:** Error caught, logged, and the worker continues processing the next tick.
+5.  **Fail Condition:** Process terminates silently.
+
+### 📉 SCENARIO 3: THE FLASH CRASH (Logic Stress)
+**Attack Logic:**
+1.  **Simulate:** Price drops 99% in 1 second, then pumps 500% in the next second.
+2.  **Volume:** Spike volume to `1,000,000,000`.
+3.  **Goal:** Confuse the `RiskManager` and `stop_loss` logic.
+4.  **Pass Condition:** `RiskManager` triggers "Emergency Halt" or executes stop-loss immediately.
+5.  **Fail Condition:** System opens a LONG position at the bottom of a crash (Logic inversion) or fails to calculate PnL correctly.
+
+### 🔪 SCENARIO 4: THE ZOMBIE APOCALYPSE (Process Killing)
+**Attack Logic:**
+1.  **Action:** While the system is running, send `SIGKILL` (9) to the `Feed` process manually.
+2.  **Goal:** Test the Orchestrator's resurrection speed.
+3.  **Pass Condition:** Main process detects death < 5s and spawns a new Feed process.
+4.  **Fail Condition:** Main process hangs, or Zombie process remains.
+
+---
+
+### 🚀 EXECUTION REPORT: POST-MORTEM
+Generate a report `RAGNAROK_RESULTS.md`:
+
+| Test | Stress Level | Outcome | Survival Time |
+| :--- | :--- | :--- | :--- |
+| Data Tsunami | 100k/sec | Crashed / Survived | X sec |
+| Poison Pill | 500 bad inputs | Crashed / Survived | N/A |
+| Flash Crash | 99% Drop | Liquidation / Error | N/A |
+| Process Kill | SIGKILL | Resurrected / Dead | X sec to recover |
+
+**Run the Apocalypse. Show no mercy.**

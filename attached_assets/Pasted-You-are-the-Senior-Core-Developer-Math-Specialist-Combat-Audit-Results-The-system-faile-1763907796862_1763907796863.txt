@@ -1,0 +1,62 @@
+You are the **Senior Core Developer & Math Specialist**.
+
+**Combat Audit Results:** The system failed 2 critical tests.
+1.  **Precision Error:** Raw floats (e.g., `0.14977...`) are sent to Binance, causing API rejection.
+2.  **Race Condition:** `AccountState` mutations are not atomic, leading to balance calculation errors under concurrency.
+
+**Mission:** Implement thread-safe, precision-aware logic to fix these critical defects.
+
+---
+
+### 🧮 FIX 1: PRECISION & ROUNDING (The StepSize Filter)
+**File:** `src/utils/math_utils.py` (Create/Update)
+**Action:**
+1.  Import `Decimal`, `ROUND_DOWN` from `decimal`.
+2.  Implement `round_step_size(quantity: float, step_size: float) -> float`.
+    -   **Logic:** Convert to Decimal to avoid IEEE 754 errors.
+    -   **Critical:** Always round **DOWN** (floor) for quantities to avoid "Insufficient Balance" caused by rounding up.
+    ```python
+    def round_step_size(quantity, step_size):
+        q = Decimal(str(quantity))
+        s = Decimal(str(step_size))
+        target = q.quantize(s, rounding=ROUND_DOWN)
+        return float(target)
+    ```
+
+**File:** `src/trade.py`
+**Action:**
+-   Locate `_execute_order` (or `create_order`).
+-   **Apply:** Before sending `quantity` or `price` to the API, pass them through `round_step_size`.
+-   *Note:* You might need to fetch `lotSize` from `exchangeInfo` or default to `0.001` (BTC) / `1.0` (Alts) if dynamic info isn't available yet. For now, apply a strict **8-decimal limit** as a safety net: `round(qty, 8)`.
+
+---
+
+### 🔒 FIX 2: ATOMIC STATE MUTATION (The Lock)
+**File:** `src/trade.py` (AccountStateCache class)
+**Action:**
+1.  Import `asyncio`.
+2.  Add `self._lock = asyncio.Lock()` to `__init__`.
+3.  **Protect Mutations:** Wrap EVERY state modification (`update_balance`, `add_position`, `close_position`) in `async with self._lock:`.
+    ```python
+    async def update_balance(self, new_balance):
+        async with self._lock:
+            self._balance = new_balance
+            # ... sync logic ...
+    ```
+4.  *Reason:* This ensures that even if multiple signals arrive in the same millisecond, balance updates are processed sequentially, preventing "Double Spending".
+
+---
+
+### 🧪 VERIFICATION SCRIPT
+**File:** `verify_fixes.py`
+**Action:** Create a script to verify the fixes.
+1.  **Test Precision:**
+    -   `qty = 0.123456789`
+    -   `clean = round_step_size(qty, 0.001)`
+    -   **Assert:** `clean == 0.123` (Not 0.1234...)
+2.  **Test Concurrency:**
+    -   Create `AccountState` with $1000.
+    -   Launch 50 concurrent `async` tasks trying to deduct $10 each.
+    -   **Assert:** Final Balance == $500. (Without lock, it would be random).
+
+**Execute these Critical Fixes and Verification.**
