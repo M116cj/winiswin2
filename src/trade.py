@@ -168,7 +168,7 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
             'Content-Type': 'application/x-www-form-urlencoded'
         }
         
-        logger.info(f"📤 Sending order to Binance: {symbol} {side} {quantity_str} units")
+        logger.debug(f"📤 Sending order to Binance: {symbol} {side} {quantity_str} units")
         logger.debug(f"URL: {url[:100]}...")  # Log partial URL for debug
         
         async with aiohttp.ClientSession() as session:
@@ -198,7 +198,7 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
                         'commission': float(result.get('commission', 0))
                     }
                     
-                    logger.info(
+                    logger.debug(
                         f"✅ Order executed: {symbol} {side} {quantity_str} @ ${avg_price:.2f} USDT "
                         f"(Total: ${filled_order['cost']:.2f})"
                     )
@@ -218,7 +218,7 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
                     
                     # FIX 2: Record cooldown for this symbol to prevent infinite retry loops
                     _failed_order_cooldown[symbol] = time.time()
-                    logger.info(f"❄️ COOLDOWN ACTIVATED: {symbol} - Skipping new signals for 60 seconds")
+                    logger.debug(f"❄️ COOLDOWN ACTIVATED: {symbol} - Skipping new signals for 60 seconds")
                     
                     return None
     
@@ -227,7 +227,7 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
         
         # FIX 2: Record cooldown for exception cases too
         _failed_order_cooldown[symbol] = time.time()
-        logger.info(f"❄️ COOLDOWN ACTIVATED: {symbol} - Exception during order execution")
+        logger.debug(f"❄️ COOLDOWN ACTIVATED: {symbol} - Exception during order execution")
         
         return None
 
@@ -252,7 +252,7 @@ async def _execute_order_simulated(order: Dict) -> Dict:
         'status': 'FILLED'
     }
     
-    logger.info(f"✅ Order filled (SIMULATED): {symbol} {side} {quantity}")
+    logger.debug(f"✅ Order filled (SIMULATED): {symbol} {side} {quantity}")
     return filled_order
 
 
@@ -294,7 +294,7 @@ async def _close_position(symbol: str, quantity: float) -> bool:
     Returns:
         True if successful, False otherwise
     """
-    logger.info(f"🚪 Closing position: {symbol} {quantity:.0f}")
+    logger.debug(f"🚪 Closing position: {symbol} {quantity:.0f}")
     
     # Create SELL order
     order = {
@@ -318,7 +318,7 @@ async def _close_position(symbol: str, quantity: float) -> bool:
     async with _state_lock:
         if symbol in _account_state['positions']:
             del _account_state['positions'][symbol]
-            logger.info(f"✅ Position closed: {symbol}")
+            logger.debug(f"✅ Position closed: {symbol}")
             return True
     
     return False
@@ -354,12 +354,12 @@ async def _check_risk(signal: Dict) -> None:
         time_since_failure = current_time - _failed_order_cooldown[symbol]
         if time_since_failure < COOLDOWN_DURATION:
             remaining = COOLDOWN_DURATION - time_since_failure
-            logger.info(f"⏸️ COOLDOWN: {symbol} - Failed order 🔄 in progress, skipping signal (remaining: {remaining:.0f}s)")
+            logger.debug(f"⏸️ COOLDOWN: {symbol} - Failed order 🔄 in progress, skipping signal (remaining: {remaining:.0f}s)")
             return  # Ignore this signal
         else:
             # Cooldown expired, remove from dict
             del _failed_order_cooldown[symbol]
-            logger.info(f"✅ Cooldown expired: {symbol} - Ready for new signals")
+            logger.debug(f"✅ Cooldown expired: {symbol} - Ready for new signals")
     
     # Get current state (thread-safe)
     async with _state_lock:
@@ -391,12 +391,12 @@ async def _check_risk(signal: Dict) -> None:
             'confidence': confidence
         }
         
-        logger.info(f"✅ Order approved (Slot {num_positions + 1}/{max_positions}): {symbol} {order['side']} {position_size:.0f}")
+        logger.debug(f"✅ Order approved (Slot {num_positions + 1}/{max_positions}): {symbol} {order['side']} {position_size:.0f}")
         await bus.publish(Topic.ORDER_REQUEST, order)
         return
     
     # CASE 2: Slots full - Check for rotation
-    logger.info(f"⚠️ Positions full ({num_positions}/{max_positions}). Checking rotation opportunity...")
+    logger.debug(f"⚠️ Positions full ({num_positions}/{max_positions}). Checking rotation opportunity...")
     
     # Find weakest position (lowest confidence)
     weakest_pos = None
@@ -416,14 +416,14 @@ async def _check_risk(signal: Dict) -> None:
     
     # Compare confidences
     if confidence <= weakest_confidence:
-        logger.info(f"❌ Signal Rejected: New confidence {confidence:.2f} not higher than weakest ({weakest_key} {weakest_confidence:.2f})")
+        logger.debug(f"❌ Signal Rejected: New confidence {confidence:.2f} not higher than weakest ({weakest_key} {weakest_confidence:.2f})")
         return
     
     # Check if weakest position is profitable
     pnl = await _get_position_pnl(weakest_pos)
     
     if pnl <= 0:
-        logger.info(f"❌ Rotation Rejected: Weakest position {weakest_key} is losing money (PnL: ${pnl:.2f}). Holding position.")
+        logger.debug(f"❌ Rotation Rejected: Weakest position {weakest_key} is losing money (PnL: ${pnl:.2f}). Holding position.")
         return
     
     # ROTATION APPROVED: Close weakest, open new
@@ -432,7 +432,7 @@ async def _check_risk(signal: Dict) -> None:
         return
     
     weakest_quantity = weakest_pos.get('quantity', 0)
-    logger.info(f"♻️ ROTATION: Swapping {weakest_key} (Conf: {weakest_confidence:.2f}, PnL: +${pnl:.2f}) for {symbol} (Conf: {confidence:.2f})")
+    logger.debug(f"♻️ ROTATION: Swapping {weakest_key} (Conf: {weakest_confidence:.2f}, PnL: +${pnl:.2f}) for {symbol} (Conf: {confidence:.2f})")
     
     # Close weakest position
     if await _close_position(weakest_key, weakest_quantity):
@@ -445,7 +445,7 @@ async def _check_risk(signal: Dict) -> None:
             'confidence': confidence
         }
         
-        logger.info(f"✅ New position approved: {symbol} {order['side']} {position_size:.0f}")
+        logger.debug(f"✅ New position approved: {symbol} {order['side']} {position_size:.0f}")
         await bus.publish(Topic.ORDER_REQUEST, order)
     else:
         logger.error(f"❌ Rotation failed: Could not close {weakest_key}")
@@ -466,7 +466,7 @@ async def _execute_order(order: Dict) -> None:
     symbol = order.get('symbol', '')
     quantity = order.get('quantity', 0)
     
-    logger.info(f"✋ Executing: {symbol} {quantity:.0f}")
+    logger.debug(f"✋ Executing: {symbol} {quantity:.0f}")
     
     # Execute order (live or simulated)
     if LIVE_TRADING_ENABLED:
@@ -503,7 +503,7 @@ async def _update_state(filled_order: Dict) -> None:
         # Check if this is a SELL (closing position)
         if side == 'SELL' and symbol in _account_state['positions']:
             del _account_state['positions'][symbol]
-            logger.info(f"💾 Position closed: {symbol}")
+            logger.debug(f"💾 Position closed: {symbol}")
         else:
             # Store position with enhanced metadata
             _account_state['positions'][symbol] = {
@@ -513,7 +513,7 @@ async def _update_state(filled_order: Dict) -> None:
                 'entry_time': int(time.time() * 1000),
                 'side': side
             }
-            logger.info(f"💾 Position opened: {symbol} {quantity:.0f} @ ${price:.2f} (Conf: {confidence:.2f})")
+            logger.debug(f"💾 Position opened: {symbol} {quantity:.0f} @ ${price:.2f} (Conf: {confidence:.2f})")
         
         # Track trade
         _account_state['trades'].append(filled_order)
@@ -521,7 +521,7 @@ async def _update_state(filled_order: Dict) -> None:
         # Simple balance update (in production: calculate properly)
         _account_state['balance'] -= quantity * price * 0.001  # Assume 0.1% commission
         
-        logger.info(f"💾 State updated: {symbol} | Balance: ${_account_state['balance']:.0f} | Positions: {len(_account_state['positions'])}")
+        logger.debug(f"💾 State updated: {symbol} | Balance: ${_account_state['balance']:.0f} | Positions: {len(_account_state['positions'])}")
 
 
 async def get_balance() -> float:

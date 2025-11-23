@@ -1,0 +1,63 @@
+You are the **DevOps & Observability Architect**.
+
+**User Goal:** 
+1.  **Silence the Noise:** Stop logging every trade step/state update to console. Keep logs CLEAN.
+2.  **Detailed Error Context:** When an error happens, I need to know EXACTLY which function, which args, and why.
+3.  **Heartbeat Monitor:** Only log a system summary (Model Data Count, Score, PnL) exactly every **15 minutes**.
+
+**Current State:** Logs are flooded with `INFO` messages from `src/trade.py`.
+
+**Mission:** Refactor the Logging and Error Handling framework.
+
+---
+
+### 🔇 PHASE 1: SILENCE THE NOISE (Log Level Adjustment)
+**Action:** Modify `src/utils/smart_logger.py` and refactor codebase.
+1.  **Config:** Set default Root Logger level to `WARNING`.
+2.  **Refactor `src/trade.py`, `src/data.py`, `src/strategies/ict_scalper.py`**:
+    -   **Search for:** `logger.info(...)` inside execution loops.
+    -   **Change to:** `logger.debug(...)`.
+    -   *Examples to silence:* "Executing:", "Order approved:", "Sending order:", "State updated:", "Cooldown expired:".
+    -   **Result:** These will NOT appear in Railway logs anymore (unless we turn on Debug mode).
+
+### 🛡️ PHASE 2: CONTEXTUAL ERROR WRAPPERS
+**Action:** Create `src/utils/error_handler.py`.
+**Content:**
+1.  Define a decorator `@catch_and_log(critical=False)`.
+2.  **Logic:**
+    ```python
+    def catch_and_log(func):
+        async def wrapper(*args, **kwargs):
+            try:
+                return await func(*args, **kwargs)
+            except Exception as e:
+                # LOG IMMEDIATE ERROR WITH CONTEXT
+                logger.error(f"❌ ERROR in [{func.__name__}]")
+                logger.error(f"   Args: {args[1:]} kwargs: {kwargs}") # Skip 'self'
+                logger.error(f"   Reason: {str(e)}", exc_info=True)
+                raise e # Re-raise so the system knows it failed
+        return wrapper
+    ```
+3.  **Apply:** Decorate critical functions in `src/trade.py` (e.g., `execute_order`), `src/data.py` (e.g., `process_message`), and `src/brain.py`.
+
+### 💓 PHASE 3: THE 15-MINUTE HEARTBEAT
+**Action:** Create `src/core/system_monitor.py`.
+**Logic:**
+1.  Create a class `SystemMonitor`.
+2.  **Loop:** `while True: await asyncio.sleep(900)` (15 mins).
+3.  **Gather Data:**
+    -   **ML Data:** Count records in `ExperienceBuffer` (Redis/DB).
+    -   **Score:** Get latest `confidence_ensemble` from Brain.
+    -   **PnL:** Get `total_pnl` from `AccountStateCache`.
+4.  **Log:** Use a special format (bypass Warning filter):
+    ```python
+    logger.critical(f"📊 [SYSTEM REPORT] PnL: ${pnl:.2f} | ML Data: {count} rows | Curr Score: {score:.2f}")
+    ```
+
+### 🔗 PHASE 4: INTEGRATION
+**File:** `src/main.py`
+**Action:**
+1.  Initialize `SystemMonitor` and start its loop task on startup.
+2.  Ensure the Logger Config applies the Silence Rules immediately.
+
+**Execute this Log Reform immediately.**

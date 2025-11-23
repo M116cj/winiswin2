@@ -237,3 +237,103 @@ New Signal: BTC (Conf: 0.90)
   - 1 updated function: _update_state()
   - ~170 lines added
 
+---
+
+## 🔇 LOGGING REFACTOR: Clean Logs + 15-Minute Heartbeat (2025-11-23)
+
+### Goal: Silence the Noise While Preserving Error Context
+
+**Problem:** Trade execution flooded logs with INFO messages (every order, state update, etc.)  
+**Solution:** Implemented 4-phase logging refactor for production-grade observability
+
+### PHASE 1: Silent the Noise ✅
+- **Changed:** Root logger level `INFO` → `WARNING`
+- **Effect:** Execution loop noise completely silenced
+- **Files:** `src/main.py` (line 24), `src/trade.py` (13 logger.info → logger.debug)
+
+**Silenced Messages:**
+- "Sending order to Binance: ..."
+- "Order executed: ..."
+- "Position opened/closed: ..."
+- "State updated: ..."
+- "Cooldown activated/expired: ..."
+- "Rotation swap: ..."
+
+### PHASE 2: Contextual Error Wrappers ✅
+**Created:** `src/utils/error_handler.py` (120 lines)
+
+```python
+@catch_and_log(critical=False)
+async def critical_function(arg1, arg2):
+    """
+    Auto-logs detailed error context:
+    - Function name
+    - Arguments (filtered 'self')
+    - Full exception traceback
+    """
+```
+
+**Supports:**
+- ✅ Async and sync functions
+- ✅ Detailed arg/kwarg logging
+- ✅ Optional `@log_function_entry` for tracing
+- ✅ Graceful exception re-raising
+
+### PHASE 3: 15-Minute Heartbeat ✅
+**Created:** `src/core/system_monitor.py` (160 lines)
+
+```python
+class SystemMonitor:
+    """
+    Logs every 15 minutes (bypasses WARNING filter):
+    
+    📊 [SYSTEM REPORT] PnL: $250.50 | Positions: 2 | Balance: $10,250 | 
+       Trades: 5 | ML Data: 1000 rows | Score: 0.78
+    """
+```
+
+**Features:**
+- ✅ Background async task
+- ✅ Configurable interval (default: 900s)
+- ✅ Uses `logger.critical()` to bypass WARNING filter
+- ✅ Non-blocking (no latency impact)
+
+### PHASE 4: Full Integration ✅
+**Updated:** `src/main.py`
+
+```python
+# Orchestrator Process now runs:
+async def orchestrator_main():
+    reconciliation_task = asyncio.create_task(...)  # PATCH_3: Cache sync
+    monitor_task = asyncio.create_task(...)         # NEW: Heartbeat
+    await asyncio.gather(reconciliation_task, monitor_task)
+```
+
+**Startup Output:**
+```
+🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine
+🔇 Log Level: WARNING (Noise silenced)
+💓 System Monitor: Enabled (15-min heartbeat)
+📡 Feed process started (PID=1715)
+🧠 Brain process started (PID=1716)
+🔄 Orchestrator process started (PID=1717)
+   └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)
+```
+
+### Files Created:
+- `src/utils/error_handler.py`: @catch_and_log decorator
+- `src/core/system_monitor.py`: SystemMonitor class + heartbeat
+
+### Files Modified:
+- `src/main.py`: Set WARNING level, integrated system monitor
+- `src/trade.py`: Changed 13 logger.info calls to logger.debug
+
+### Verification:
+✅ All tests passing - 3 processes running  
+✅ No execution loop noise in logs  
+✅ Errors still fully visible  
+✅ System monitor task created successfully  
+✅ Production-ready
+
+**Details:** See `LOGGING_REFACTOR_SUMMARY.md`
+

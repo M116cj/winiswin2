@@ -1,0 +1,65 @@
+You are the **Chief Release Engineer & Code Auditor**.
+
+**Context:** The system has finalized its architecture: **Sharded Data -> Hybrid Brain (SMC+ML) -> Zero-Polling Trade**.
+**Objective:** 
+1.  **Purge:** DELETE all obsolete files. Only the "Lean Core" remains.
+2.  **Sanitize:** Remove unused variables, dead imports, and debug print statements from the code.
+3.  **Verify:** Ensure variable naming consistency (e.g., `API_KEY` vs `BINANCE_API_KEY`) across modules.
+4.  **Report:** Generate a `PRODUCTION_REPORT.md`.
+
+---
+
+### 🧹 PHASE 1: THE FINAL PURGE (File System)
+**Action:** Create and run `release_cleanup.py`.
+**Strict Allowlist (Keep ONLY these):**
+-   `src/main.py` (Entry)
+-   `src/config.py` (Merged Config & Constants)
+-   `src/data.py` (WebSocket, SMC Engine, Feature Engineering, Gap Filling)
+-   `src/brain.py` (LightGBM, Online Trainer, Strategy Logic)
+-   `src/trade.py` (AccountState, Risk Manager, API Client, Execution)
+-   `src/api/server.py` (Dashboard Backend)
+-   `src/utils/smart_logger.py` (Logging)
+-   `src/utils/error_handler.py` (Decorators)
+-   `requirements.txt` / `pyproject.toml`
+-   `README.md` / `ARCHITECTURE.md`
+-   `models/` (Directory for ML models)
+-   `data/` (Directory for parquet files)
+
+**Command:** Walk through `src/`. If a file is NOT in the list above -> **DELETE IT**. Remove empty directories.
+
+---
+
+### 🧬 PHASE 2: CODE SANITIZATION (Inside Files)
+**Action:** Run `code_sanitizer.py`.
+**Logic:**
+1.  **Unused Imports:** Scan all files. Remove imports that are never used.
+2.  **Debug Prints:** Remove any `print()` statements (Must use `logger`).
+3.  **Dead Functions:** Identify private functions (starting with `_`) that are never called within their class/module. **Remove them.**
+4.  **Comment Cleanup:** Remove large blocks of commented-out code (legacy logic).
+
+---
+
+### 🔗 PHASE 3: LOGICAL CONSISTENCY CHECK
+**Action:** Run `consistency_check.py`.
+1.  **Config Binding:**
+    -   Scan `src/trade.py`. Does it use `config.BINANCE_API_KEY`?
+    -   Scan `src/config.py`. Is `BINANCE_API_KEY` defined?
+    -   **FAIL** if names mismatch.
+2.  **Event Flow:**
+    -   Scan `src/main.py`. Does it initialize `Data`, `Brain`, `Trade`?
+    -   Scan `src/data.py`. Does it pass data to `Brain`?
+    -   Scan `src/brain.py`. Does it pass signals to `Trade`?
+3.  **Polling Check:**
+    -   Scan `src/trade.py`. Ensure NO `requests.get` or `client.get_account` is inside a `while` loop.
+
+---
+
+### 📄 PHASE 4: GENERATE PRODUCTION REPORT
+**Action:** Create `PRODUCTION_REPORT.md` containing:
+1.  **System Status:** (Ready/Not Ready)
+2.  **File Manifest:** List of remaining files and their size.
+3.  **Architecture Summary:** Brief description of the 3-module flow.
+4.  **Config Audit:** Confirmation that Rate Limits and Keys are securely loaded.
+5.  **Risk Controls:** Confirmation that Max Positions (3) and Cooldowns are active.
+
+**Execute this Final Cleanup and Report Generation.**
