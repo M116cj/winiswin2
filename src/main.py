@@ -88,17 +88,32 @@ def main():
     Main orchestrator: Launch Feed + Brain + Orchestrator processes
     
     Architecture:
-    1. Create shared memory ring buffer
-    2. Launch Feed process (WebSocket + Write)
-    3. Launch Brain process (Read + Analysis + Trade)
-    4. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
-    5. Monitor all processes and handle restarts
+    1. Initialize database schema
+    2. Create shared memory ring buffer
+    3. Launch Feed process (WebSocket + Write)
+    4. Launch Brain process (Read + Analysis + Trade)
+    5. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
+    6. Monitor all processes and handle restarts
     """
     logger.critical("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
     logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     logger.critical("🔇 Log Level: WARNING (Noise silenced)")
     logger.critical("💓 System Monitor: Enabled (15-min heartbeat)")
     logger.critical("🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)")
+    
+    # Initialize database schema (auto-migration on startup)
+    logger.critical("🗄️ Initializing database schema...")
+    try:
+        import asyncio
+        from src.database import UnifiedDatabaseManager
+        
+        schema_result = asyncio.run(UnifiedDatabaseManager.init_schema())
+        if schema_result:
+            logger.critical("✅ Database schema initialized successfully")
+        else:
+            logger.warning("⚠️ Database schema initialization failed - system may not persist data")
+    except Exception as e:
+        logger.error(f"❌ Error initializing database: {e}", exc_info=True)
     
     # Create ring buffer (in main process)
     logger.critical("🔄 Creating shared memory ring buffer...")

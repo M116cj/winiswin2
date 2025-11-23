@@ -1,0 +1,48 @@
+You are the **Database Administrator & Backend Engineer**.
+
+**Critical Error:** `psycopg2.errors.UndefinedTable: relation "account_state" does not exist`.
+**Impact:** The System Monitor cannot read account history from PostgreSQL, resulting in empty reports ($0 PnL).
+**Root Cause:** The application attempts to `SELECT` from a table that was never created.
+
+**Mission:** Implement Auto-Migration to ensure the database schema exists on startup.
+
+---
+
+### 🛠️ STEP 1: DEFINE SCHEMA & MIGRATION
+**File:** `src/database/unified_db.py`
+**Action:**
+1.  Add a method `init_schema(self)` to `UnifiedDatabaseManager`.
+2.  **SQL Logic:**
+    ```sql
+    CREATE TABLE IF NOT EXISTS account_state (
+        id SERIAL PRIMARY KEY,
+        balance DOUBLE PRECISION NOT NULL,
+        pnl DOUBLE PRECISION NOT NULL,
+        trade_count INTEGER NOT NULL,
+        positions JSONB,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    -- Create index for fast retrieval of latest state
+    CREATE INDEX IF NOT EXISTS idx_account_state_time ON account_state(updated_at DESC);
+    ```
+3.  **Execution:** Call `await conn.execute(sql)` inside `init_schema`.
+
+### 🔗 STEP 2: ACTIVATE MIGRATION ON STARTUP
+**File:** `src/main.py`
+**Action:**
+-   Inside `orchestrator_main` (or wherever DB is initialized), call `await UnifiedDatabaseManager.init_schema()` immediately after connection.
+
+### 📝 STEP 3: ENSURE DATA PERSISTENCE (The Writer)
+**File:** `src/trade.py`
+**Action:**
+-   In `_sync_to_redis` (or create `_persist_to_db`), add logic to INSERT the state into PostgreSQL periodically (e.g., every 1 minute or on trade close), NOT just Redis.
+-   **SQL:** `INSERT INTO account_state (balance, pnl, trade_count, positions, updated_at) VALUES (...)`
+
+### 🛡️ STEP 4: FIX MONITOR FALLBACK
+**File:** `src/core/system_monitor.py`
+**Action:**
+-   Wrap the DB query in a `try...except` block specific to `UndefinedTable`.
+-   If table missing (should be fixed by Step 1, but for safety), log warning and return default state instead of crashing or showing misleading zeros without context.
+
+**Execute this Database Repair Plan immediately.**

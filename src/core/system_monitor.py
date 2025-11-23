@@ -112,7 +112,12 @@ class SystemMonitor:
                 
                 await conn.close()
             except Exception as pg_error:
-                logger.debug(f"⚠️ Postgres read failed: {pg_error}")
+                # Handle UndefinedTable error gracefully
+                error_msg = str(pg_error)
+                if "does not exist" in error_msg or "relation" in error_msg:
+                    logger.warning("⚠️ account_state table does not exist - schema will be initialized on next startup")
+                else:
+                    logger.debug(f"⚠️ Postgres read failed: {pg_error}")
             
             # 📡 STEP 2: Fallback to Redis (if Postgres unavailable)
             redis = await _get_redis()
