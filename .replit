@@ -16,15 +16,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Trading Bot (Dual-Process)"
+args = "Trading Bot (Supervisord)"
 
 [[workflows.workflow]]
-name = "Trading Bot (Dual-Process)"
+name = "Trading Bot (Supervisord)"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m src.main"
+args = "bash start.sh"
 
 [workflows.workflow.metadata]
 outputType = "console"

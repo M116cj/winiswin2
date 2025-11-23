@@ -32,6 +32,9 @@ scikit-learn==1.7.2
 lightgbm==4.1.0  # 🔥 LightGBM for SMC confidence scoring (Phase 5)
 polars==1.0.0    # 🔥 High-speed dataframe operations (Phase 5)
 
+# 🔧 Process Management (2025-11-23)
+supervisor==4.2.4  # Robust process manager for Feed/Brain/Orchestrator
+
 # =============================================================================
 # Optional Dependencies (Install with: pip install -e .[extras])
 # =============================================================================
@@ -64,3 +67,4 @@ numba
 uvloop
 aiohttp
 websockets
+supervisor

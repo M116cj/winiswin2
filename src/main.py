@@ -66,6 +66,12 @@ def run_orchestrator():
     logger.info(f"🔄 Orchestrator Process started (PID={os.getpid()})")
     
     try:
+        # Initialize system on startup (database + ring buffer)
+        # This ensures one-time initialization in supervisord mode
+        logger.critical("🔄 Orchestrator: Initializing system on startup...")
+        initialize_system()
+        logger.critical("✅ Orchestrator: System initialization complete")
+        
         # Run orchestrator with system monitoring and auto-maintenance
         async def orchestrator_main():
             # Start all tasks in parallel
@@ -83,24 +89,11 @@ def run_orchestrator():
         logger.critical(f"Orchestrator process fatal error: {e}", exc_info=True)
 
 
-def main():
+def initialize_system():
     """
-    Main orchestrator: Launch Feed + Brain + Orchestrator processes
-    
-    Architecture:
-    1. Initialize database schema
-    2. Create shared memory ring buffer
-    3. Launch Feed process (WebSocket + Write)
-    4. Launch Brain process (Read + Analysis + Trade)
-    5. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
-    6. Monitor all processes and handle restarts
+    Initialize database schema and shared memory ring buffer
+    Called once at startup (by supervisord or orchestrator)
     """
-    logger.critical("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
-    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    logger.critical("🔇 Log Level: WARNING (Noise silenced)")
-    logger.critical("💓 System Monitor: Enabled (15-min heartbeat)")
-    logger.critical("🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)")
-    
     # Initialize database schema (auto-migration on startup)
     logger.critical("🗄️ Initializing database schema...")
     try:
@@ -124,6 +117,45 @@ def main():
     except Exception as e:
         logger.error(f"❌ Failed to create ring buffer: {e}", exc_info=True)
         sys.exit(1)
+
+
+def main_supervisord():
+    """
+    Supervisord mode: Initialize system once, then just monitor
+    This is called when running under supervisord
+    """
+    logger.critical("🚀 A.E.G.I.S. v8.0 - Supervisord Mode")
+    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    
+    initialize_system()
+    
+    logger.critical("✅ System initialized successfully")
+    logger.critical("🔄 Supervisord will manage individual processes")
+    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    
+    # Exit gracefully - supervisord manages the processes
+    sys.exit(0)
+
+
+def main():
+    """
+    Main orchestrator: Launch Feed + Brain + Orchestrator processes
+    
+    Architecture:
+    1. Initialize database schema
+    2. Create shared memory ring buffer
+    3. Launch Feed process (WebSocket + Write)
+    4. Launch Brain process (Read + Analysis + Trade)
+    5. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
+    6. Monitor all processes and handle restarts
+    """
+    logger.critical("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
+    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    logger.critical("🔇 Log Level: WARNING (Noise silenced)")
+    logger.critical("💓 System Monitor: Enabled (15-min heartbeat)")
+    logger.critical("🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)")
+    
+    initialize_system()
     
     # Create processes
     logger.critical("🚀 Launching Feed + Brain + Orchestrator processes...")
@@ -230,8 +262,52 @@ if __name__ == "__main__":
     # Required for Windows/macOS multiprocessing
     multiprocessing.set_start_method('spawn', force=True)
     
-    try:
-        main()
-    except Exception as e:
-        logger.critical(f"Fatal: {e}", exc_info=True)
-        sys.exit(1)
+    # Check for command-line arguments (supervisord mode)
+    if len(sys.argv) > 1:
+        component = sys.argv[1].lower()
+        
+        if component == "feed":
+            logger.critical("🚀 Starting FEED process (standalone)")
+            try:
+                run_feed_process()
+            except Exception as e:
+                logger.critical(f"Feed process fatal error: {e}", exc_info=True)
+                sys.exit(1)
+        
+        elif component == "brain":
+            logger.critical("🚀 Starting BRAIN process (standalone)")
+            try:
+                run_brain_process()
+            except Exception as e:
+                logger.critical(f"Brain process fatal error: {e}", exc_info=True)
+                sys.exit(1)
+        
+        elif component == "orchestrator":
+            logger.critical("🚀 Starting ORCHESTRATOR process (standalone)")
+            try:
+                run_orchestrator()
+            except Exception as e:
+                logger.critical(f"Orchestrator process fatal error: {e}", exc_info=True)
+                sys.exit(1)
+        
+        elif component == "init":
+            logger.critical("🚀 Initializing system (database + ring buffer)")
+            try:
+                initialize_system()
+                logger.critical("✅ System initialization complete")
+            except Exception as e:
+                logger.critical(f"Initialization fatal error: {e}", exc_info=True)
+                sys.exit(1)
+        
+        else:
+            print(f"Usage: python -m src.main [feed|brain|orchestrator|init]")
+            print(f"Invalid component: {component}")
+            sys.exit(1)
+    
+    else:
+        # No arguments - run full orchestrator mode (for local development)
+        try:
+            main()
+        except Exception as e:
+            logger.critical(f"Fatal: {e}", exc_info=True)
+            sys.exit(1)

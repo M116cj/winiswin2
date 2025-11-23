@@ -1,0 +1,92 @@
+You are the **DevOps Architect**.
+
+**User Goal:** Replace the fragile Python `while True` loop with a robust **Process Manager**.
+**Solution:** Implement **Supervisord** to manage the 3 critical processes (Feed, Brain, Orchestrator) independently.
+
+**Benefits:** 
+-   Auto-restart individual processes if they crash.
+-   Redirect logs to stdout (for Railway).
+-   Handle PID management properly.
+
+**Mission:** Configure Supervisord for the A.E.G.I.S. system.
+
+---
+
+### 🛠️ STEP 1: PREPARE ENTRY POINTS
+**File:** `src/main.py`
+**Action:** 
+Refactor `main.py` to accept a command-line argument to start *specific* processes.
+**Logic:**
+```python
+import sys
+import asyncio
+# Import your run functions: run_feed, run_brain, run_orchestrator, initialize_db
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python src/main.py [feed|brain|orchestrator]")
+        sys.exit(1)
+    
+    component = sys.argv[1]
+    
+    # Clean shared memory only if running a setup script (or handle in orchestrator)
+    # setup_shm() 
+
+    if component == "feed":
+        run_feed()
+    elif component == "brain":
+        run_brain()
+    elif component == "orchestrator":
+        run_orchestrator()
+    else:
+        print(f"Unknown component: {component}")
+🛠️ STEP 2: INSTALL SUPERVISOR
+File: requirements.txt (or pyproject.toml)
+Action: Add supervisor.
+🛠️ STEP 3: CREATE CONFIGURATION
+File: supervisord.conf (Root Directory)
+Content:
+code
+Ini
+[supervisord]
+nodaemon=true
+logfile=/dev/null
+pidfile=/tmp/supervisord.pid
+
+# 1. The Feed Process
+[program:feed]
+command=python -m src.main feed
+autostart=true
+autorestart=true
+startretries=10
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+
+# 2. The Brain Process
+[program:brain]
+command=python -m src.main brain
+autostart=true
+autorestart=true
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+
+# 3. The Orchestrator (API + Monitor)
+[program:orchestrator]
+command=python -m src.main orchestrator
+autostart=true
+autorestart=true
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+🛠️ STEP 4: STARTUP SCRIPT (Railway Entrypoint)
+File: start.sh
+Action:
+Create a shell script.
+Clean SHM: rm -rf /dev/shm/* (Reset shared memory on container start).
+Start Supervisor: exec supervisord -c supervisord.conf.
+Execute this Infrastructure Migration.

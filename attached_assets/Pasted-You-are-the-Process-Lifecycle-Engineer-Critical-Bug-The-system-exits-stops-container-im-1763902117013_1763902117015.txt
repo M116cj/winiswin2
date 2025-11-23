@@ -1,0 +1,80 @@
+You are the **Process Lifecycle Engineer**.
+
+**Critical Bug:** The system exits (stops container) immediately after starting all processes.
+**Reason:** The `src/main.py` script reaches the end of the file and terminates, causing Docker to kill the container. It lacks a blocking "Keep-Alive" loop.
+
+**Mission:** Make the `src/main.py` run FOREVER (24/7) until manually stopped.
+
+---
+
+### 🛠️ ACTION: REWRITE `src/main.py`
+
+**Logic Requirements:**
+1.  Start all processes (`Feed`, `Brain`, `Orchestrator`).
+2.  **CRITICAL:** Enter a `while True` loop that never breaks.
+3.  **Monitoring:** Inside the loop, check `process.is_alive()`.
+4.  **Resurrection:** If a process is dead, log a CRITICAL error and restart it (or exit with error code 1 to let Docker restart the whole container).
+5.  **Signal Handling:** Handle `Ctrl+C` (SIGINT) or `SIGTERM` to gracefully shutdown.
+
+**Code Structure (Use this pattern):**
+```python
+import multiprocessing
+import time
+import sys
+import signal
+from src.utils.smart_logger import logger
+# ... imports ...
+
+# Define processes globally so signal handler can access them
+feed_p = None
+brain_p = None
+orch_p = None
+shutdown_flag = False
+
+def handle_exit(signum, frame):
+    global shutdown_flag
+    logger.critical(f"🛑 Received Signal {signum}. Shutting down...")
+    shutdown_flag = True
+
+def main():
+    global feed_p, brain_p, orch_p
+    
+    # ... Init Logic ...
+
+    # 1. Start Processes
+    feed_p = multiprocessing.Process(target=run_feed, daemon=True)
+    brain_p = multiprocessing.Process(target=run_brain, daemon=True)
+    orch_p = multiprocessing.Process(target=run_orchestrator, daemon=True)
+
+    feed_p.start()
+    brain_p.start()
+    orch_p.start()
+    
+    logger.critical("✅ All processes running. Entering 24/7 Monitor Loop.")
+
+    # 2. Register Signal Handlers
+    signal.signal(signal.SIGTERM, handle_exit)
+    signal.signal(signal.SIGINT, handle_exit)
+
+    # 3. THE INFINITE LOOP (The Fix)
+    while not shutdown_flag:
+        # Check health every 5 seconds
+        if not feed_p.is_alive():
+            logger.critical("🚨 Feed died! Restarting System...")
+            sys.exit(1) # Let Docker restart us
+        if not brain_p.is_alive():
+            logger.critical("🚨 Brain died! Restarting System...")
+            sys.exit(1)
+        if not orch_p.is_alive():
+            logger.critical("🚨 Orchestrator died! Restarting System...")
+            sys.exit(1)
+            
+        time.sleep(5)
+
+    # 4. Graceful Cleanup
+    feed_p.terminate()
+    brain_p.terminate()
+    orch_p.terminate()
+
+if __name__ == "__main__":
+    main()
