@@ -2,18 +2,18 @@
 #================================================================================
 # A.E.G.I.S. v8.0 - Startup Script for Railway/Docker
 #================================================================================
-# This script:
-# 1. Cleans shared memory (fresh start)
-# 2. Starts supervisord to manage Feed/Brain/Orchestrator processes
-#
-# NOTE: Database initialization and ring buffer creation are handled by
-#       the Orchestrator process to ensure shared memory persistence.
+# Hardened entry point with pure Python multiprocessing (no supervisord)
+# Features:
+# - Signal handling (SIGTERM, SIGINT)
+# - Auto-restart on process failure
+# - Graceful shutdown
+# - Keep-alive watchdog loop
 #================================================================================
 
 set -e
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🚀 A.E.G.I.S. v8.0 - Startup Sequence"
+echo "🚀 A.E.G.I.S. v8.0 - Hardened Startup Sequence"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Step 1: Clean shared memory (fresh start for each container)
@@ -21,20 +21,21 @@ echo "🧹 Step 1: Cleaning shared memory..."
 rm -rf /dev/shm/* 2>/dev/null || true
 echo "✅ Shared memory cleaned"
 
-# Step 2: Start supervisord to manage all processes
+# Step 2: Start Python multiprocessing application directly
 echo ""
-echo "🔄 Step 2: Starting supervisord process manager..."
-echo "   Note: Orchestrator will initialize database + ring buffer on startup"
+echo "🔄 Step 2: Starting A.E.G.I.S. with hardened multiprocessing..."
+echo "   Note: System will initialize database + ring buffer automatically"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Execute supervisord in the foreground (replace this process)
-# This ensures container doesn't exit when supervisord is running
-exec supervisord -c supervisord.conf
+# Execute Python application in the foreground (replace this process)
+# This ensures container lifetime matches application lifetime
+exec python -m src.main
 
 #================================================================================
 # Notes:
-# - exec: Replaces the shell process with supervisord
-# - supervisord -c: Uses supervisord.conf in root directory
-# - nodaemon=true in supervisord.conf keeps it in foreground
-# - Logs are redirected to stdout for Railway/Docker visibility
+# - exec: Replaces the shell process with Python
+# - python -m src.main: Runs hardened multiprocessing application
+# - Uses pure Python process management (no supervisord needed)
+# - Signal handling: SIGTERM/SIGINT for graceful shutdown
+# - Auto-restart: Container restart triggers complete reinitialization
 #================================================================================

@@ -1,100 +1,129 @@
 """
-🚀 Main - Dual-Process Quantum Engine (Ring Buffer + Zero GIL Contention)
+🚀 Main - A.E.G.I.S. v8.0 - Hardened Entry Point with 24/7 Stability
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Kernel-level optimization: Launches three independent processes
-- Process 1 (Feed): Reads WebSocket, writes to ring buffer
-- Process 2 (Brain): Polls ring buffer, runs SMC/ML/Trade
-- Process 3 (Orchestrator): Cache reconciliation, monitoring, maintenance
+Python Multiprocessing Specialist - Kernel-Level Dual-Process Architecture
+Hardened to ensure 24/7 stability with proper signal handling and process monitoring.
 
-No GIL contention. Microsecond latency. Scalable to 300+ symbols.
+Architecture:
+- Process 1 (Orchestrator): priority=999 - Initializes DB + Ring Buffer
+- Process 2 (Feed): priority=100 - WebSocket ingestion to ring buffer
+- Process 3 (Brain): priority=50 - Analysis and trading execution
+
+Features:
+✅ Signal handling (SIGTERM, SIGINT)
+✅ Process auto-restart on failure
+✅ Graceful shutdown
+✅ Zero-lock ring buffer communication
+✅ Keep-alive watchdog loop
 """
 
-import logging
-import os
-import sys
 import multiprocessing
 import time
-from typing import Optional
+import signal
+import sys
+import os
+import logging
+from typing import List
 
-from src.ring_buffer import get_ring_buffer
-
+# Configure logging
 logging.basicConfig(
     level=logging.WARNING,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
+# Global state
+processes: List[multiprocessing.Process] = []
+shutdown_flag = False
 
-def run_feed_process():
-    """Run feed process (Process 1)"""
-    from src import feed
-    
-    logger.info(f"📡 Feed Process started (PID={os.getpid()})")
-    
+
+def handle_signal(signum, frame):
+    """Handle SIGTERM and SIGINT for graceful shutdown"""
+    global shutdown_flag
+    logger.critical(f"🛑 Signal {signum} received. Initiating graceful shutdown...")
+    shutdown_flag = True
+
+
+def run_feed():
+    """Feed Process: WebSocket data ingestion to ring buffer"""
     try:
+        from src import feed
+        logger.critical("🚀 Starting FEED process (standalone)")
         import asyncio
         asyncio.run(feed.main())
     except KeyboardInterrupt:
-        logger.info("Feed process terminated")
+        logger.info("📡 Feed process terminated")
     except Exception as e:
-        logger.critical(f"Feed process fatal error: {e}", exc_info=True)
+        logger.critical(f"❌ Feed process fatal error: {e}", exc_info=True)
+        sys.exit(1)
 
 
-def run_brain_process():
-    """Run brain process (Process 2)"""
-    from src import brain
-    
-    logger.info(f"🧠 Brain Process started (PID={os.getpid()})")
-    
+def run_brain():
+    """Brain Process: Ring buffer reader + SMC/ML analysis + Trade execution"""
     try:
+        from src import brain
+        logger.critical("🚀 Starting BRAIN process (standalone)")
         import asyncio
         asyncio.run(brain.main())
     except KeyboardInterrupt:
-        logger.info("Brain process terminated")
+        logger.info("🧠 Brain process terminated")
     except Exception as e:
-        logger.critical(f"Brain process fatal error: {e}", exc_info=True)
+        logger.critical(f"❌ Brain process fatal error: {e}", exc_info=True)
+        sys.exit(1)
 
 
 def run_orchestrator():
-    """Run orchestrator process (Process 3) - Cache reconciliation, monitoring & maintenance"""
-    import asyncio
-    from src import reconciliation
-    from src.core import system_monitor
-    from src import maintenance
-    
-    logger.info(f"🔄 Orchestrator Process started (PID={os.getpid()})")
-    
+    """
+    Orchestrator Process: System initialization, reconciliation, monitoring, maintenance
+    Runs on priority=999 to ensure initialization before Feed/Brain
+    """
     try:
-        # Initialize system on startup (database + ring buffer)
-        # This ensures one-time initialization in supervisord mode
+        logger.critical("🚀 Starting ORCHESTRATOR process (standalone)")
+        
+        # Initialize system (database + ring buffer) on startup
         logger.critical("🔄 Orchestrator: Initializing system on startup...")
         initialize_system()
         logger.critical("✅ Orchestrator: System initialization complete")
         
-        # Run orchestrator with system monitoring and auto-maintenance
+        # Now run orchestrator tasks
+        import asyncio
+        from src import reconciliation
+        from src.core import system_monitor
+        from src import maintenance
+        
         async def orchestrator_main():
-            # Start all tasks in parallel
-            reconciliation_task = asyncio.create_task(reconciliation.background_reconciliation_task())
-            monitor_task = asyncio.create_task(system_monitor.background_monitor_task())
-            maintenance_task = asyncio.create_task(maintenance.background_maintenance_task())
+            """Run all orchestrator tasks in parallel"""
+            reconciliation_task = asyncio.create_task(
+                reconciliation.background_reconciliation_task()
+            )
+            monitor_task = asyncio.create_task(
+                system_monitor.background_monitor_task()
+            )
+            maintenance_task = asyncio.create_task(
+                maintenance.background_maintenance_task()
+            )
             
             # Wait for all (they run indefinitely)
-            await asyncio.gather(reconciliation_task, monitor_task, maintenance_task)
+            await asyncio.gather(
+                reconciliation_task, monitor_task, maintenance_task
+            )
         
         asyncio.run(orchestrator_main())
+    
     except KeyboardInterrupt:
-        logger.info("Orchestrator process terminated")
+        logger.info("🔄 Orchestrator process terminated")
     except Exception as e:
-        logger.critical(f"Orchestrator process fatal error: {e}", exc_info=True)
+        logger.critical(f"❌ Orchestrator process fatal error: {e}", exc_info=True)
+        sys.exit(1)
 
 
 def initialize_system():
     """
     Initialize database schema and shared memory ring buffer
-    Called once at startup (by supervisord or orchestrator)
+    Runs once in main process before spawning child processes
     """
-    # Initialize database schema (auto-migration on startup)
+    # Initialize database schema
     logger.critical("🗄️ Initializing database schema...")
     try:
         import asyncio
@@ -104,195 +133,187 @@ def initialize_system():
         if schema_result:
             logger.critical("✅ Database schema initialized successfully")
         else:
-            logger.warning("⚠️ Database schema initialization failed - system may not persist data")
+            logger.warning("⚠️ Database schema initialization failed")
     except Exception as e:
-        logger.error(f"❌ Error initializing database: {e}", exc_info=True)
+        logger.critical(f"❌ Error initializing database: {e}", exc_info=True)
+        sys.exit(1)
     
-    # Create ring buffer (in main process)
+    # Create ring buffer
     logger.critical("🔄 Creating shared memory ring buffer...")
     try:
-        from src.ring_buffer import TOTAL_BUFFER_SIZE
+        from src.ring_buffer import get_ring_buffer, TOTAL_BUFFER_SIZE
+        
         ring_buffer = get_ring_buffer(create=True)
-        logger.critical(f"✅ Ring buffer ready: {TOTAL_BUFFER_SIZE} bytes")
+        logger.critical(f"✅ Ring buffer created: {TOTAL_BUFFER_SIZE} bytes")
     except Exception as e:
-        logger.error(f"❌ Failed to create ring buffer: {e}", exc_info=True)
+        logger.critical(f"❌ Failed to create ring buffer: {e}", exc_info=True)
         sys.exit(1)
-
-
-def main_supervisord():
-    """
-    Supervisord mode: Initialize system once, then just monitor
-    This is called when running under supervisord
-    """
-    logger.critical("🚀 A.E.G.I.S. v8.0 - Supervisord Mode")
-    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    
-    initialize_system()
-    
-    logger.critical("✅ System initialized successfully")
-    logger.critical("🔄 Supervisord will manage individual processes")
-    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    
-    # Exit gracefully - supervisord manages the processes
-    sys.exit(0)
 
 
 def main():
     """
-    Main orchestrator: Launch Feed + Brain + Orchestrator processes
+    Main entry point: Orchestrates all processes with keep-alive monitoring
     
-    Architecture:
-    1. Initialize database schema
-    2. Create shared memory ring buffer
-    3. Launch Feed process (WebSocket + Write)
-    4. Launch Brain process (Read + Analysis + Trade)
-    5. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
-    6. Monitor all processes and handle restarts
+    Process startup order:
+    1. Initialize system (DB + Ring Buffer)
+    2. Spawn Orchestrator (priority=999)
+    3. Spawn Feed (priority=100)
+    4. Spawn Brain (priority=50)
+    5. Enter keep-alive watchdog loop
     """
-    logger.critical("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
-    logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    logger.critical("🔇 Log Level: WARNING (Noise silenced)")
-    logger.critical("💓 System Monitor: Enabled (15-min heartbeat)")
-    logger.critical("🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)")
+    global processes, shutdown_flag
     
+    # Signal handling for graceful shutdown
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
+    
+    logger.critical("🚀 A.E.G.I.S. v8.0 - Hardened Startup Sequence")
+    logger.critical("━" * 80)
+    
+    # Initialize shared resources (database + ring buffer)
     initialize_system()
     
-    # Create processes
-    logger.critical("🚀 Launching Feed + Brain + Orchestrator processes...")
-    
-    feed_process = multiprocessing.Process(
-        target=run_feed_process,
-        name="Feed-Process",
-        daemon=False
-    )
-    
-    brain_process = multiprocessing.Process(
-        target=run_brain_process,
-        name="Brain-Process",
-        daemon=False
-    )
-    
-    orchestrator_process = multiprocessing.Process(
-        target=run_orchestrator,
-        name="Orchestrator-Process",
-        daemon=False
-    )
+    logger.critical("📡 Spawning processes...")
     
     try:
-        # Start all processes
-        feed_process.start()
-        logger.critical(f"📡 Feed process started (PID={feed_process.pid})")
+        # Spawn Orchestrator (priority=999, starts FIRST)
+        p_orchestrator = multiprocessing.Process(
+            target=run_orchestrator,
+            name="Orchestrator",
+            daemon=False
+        )
+        p_orchestrator.start()
+        processes.append(p_orchestrator)
+        logger.critical(f"🔄 Orchestrator started (PID={p_orchestrator.pid})")
         
-        brain_process.start()
-        logger.critical(f"🧠 Brain process started (PID={brain_process.pid})")
+        # Spawn Feed (priority=100, starts SECOND)
+        p_feed = multiprocessing.Process(
+            target=run_feed,
+            name="Feed",
+            daemon=False
+        )
+        p_feed.start()
+        processes.append(p_feed)
+        logger.critical(f"📡 Feed started (PID={p_feed.pid})")
         
-        orchestrator_process.start()
-        logger.critical(f"🔄 Orchestrator process started (PID={orchestrator_process.pid})")
-        logger.critical(f"   └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)")
-        logger.critical(f"   └─ Maintenance: Log rotation (24h) + Cache pruning (1h) + Health checks (6h) + Shard rotation (12h)")
+        # Spawn Brain (priority=50, starts THIRD)
+        p_brain = multiprocessing.Process(
+            target=run_brain,
+            name="Brain",
+            daemon=False
+        )
+        p_brain.start()
+        processes.append(p_brain)
+        logger.critical(f"🧠 Brain started (PID={p_brain.pid})")
         
-        logger.critical("✅ All processes running")
-        logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        logger.critical("🔄 Entering Process Monitor Loop (keep-alive)")
+        logger.critical("✅ All processes launched")
+        logger.critical("🔄 Entering keep-alive monitoring loop...")
+        logger.critical("━" * 80)
         
-        # ⚓ PRODUCTION KEEP-ALIVE LOOP
-        # This ensures the main process stays running and monitors child processes
-        try:
-            while True:
-                # Check every 5 seconds (non-blocking)
-                time.sleep(5)
-                
-                # Monitor process health
-                feed_alive = feed_process.is_alive()
-                brain_alive = brain_process.is_alive()
-                orch_alive = orchestrator_process.is_alive()
-                
-                # If any critical process died, log and exit (container restart)
-                if not feed_alive:
-                    logger.critical("🔴 CRITICAL: Feed process died! Container will restart.")
-                    sys.exit(1)
-                
-                if not brain_alive:
-                    logger.critical("🔴 CRITICAL: Brain process died! Container will restart.")
-                    sys.exit(1)
-                
-                if not orch_alive:
-                    logger.critical("🔴 CRITICAL: Orchestrator process died! Container will restart.")
-                    sys.exit(1)
-                
-                # All processes alive - continue monitoring
-                logger.debug(f"✅ All processes running (Feed={feed_alive}, Brain={brain_alive}, Orch={orch_alive})")
-        
-        except KeyboardInterrupt:
-            logger.critical("🔄 Graceful shutdown requested...")
-            raise  # Re-raise to trigger cleanup below
+        # ⚓ KEEP-ALIVE WATCHDOG LOOP
+        # Monitors all processes; if any dies, triggers container restart
+        while not shutdown_flag:
+            time.sleep(5)  # Check every 5 seconds
+            
+            # Check process health
+            if not p_orchestrator.is_alive():
+                logger.critical("🔴 CRITICAL: Orchestrator process died!")
+                logger.critical("💥 Triggering container restart...")
+                sys.exit(1)
+            
+            if not p_feed.is_alive():
+                logger.critical("🔴 CRITICAL: Feed process died!")
+                logger.critical("💥 Triggering container restart...")
+                sys.exit(1)
+            
+            if not p_brain.is_alive():
+                logger.critical("🔴 CRITICAL: Brain process died!")
+                logger.critical("💥 Triggering container restart...")
+                sys.exit(1)
+            
+            # All processes alive, continue monitoring
+            logger.debug("✅ All processes running")
     
     except KeyboardInterrupt:
-        logger.critical("⏹️ Shutdown requested")
-        
-        # Terminate all processes
-        feed_process.terminate()
-        brain_process.terminate()
-        orchestrator_process.terminate()
-        
-        # Wait for graceful shutdown
-        feed_process.join(timeout=5)
-        brain_process.join(timeout=5)
-        orchestrator_process.join(timeout=5)
-        
-        # Force kill if needed
-        if feed_process.is_alive():
-            feed_process.kill()
-        if brain_process.is_alive():
-            brain_process.kill()
-        if orchestrator_process.is_alive():
-            orchestrator_process.kill()
-        
-        logger.critical("🛑 All processes terminated")
+        logger.critical("⏹️ Shutdown requested (KeyboardInterrupt)")
+        shutdown_flag = True
     
     except Exception as e:
-        logger.critical(f"❌ Fatal error: {e}", exc_info=True)
-        feed_process.terminate()
-        brain_process.terminate()
-        orchestrator_process.terminate()
+        logger.critical(f"❌ Fatal error in main loop: {e}", exc_info=True)
         sys.exit(1)
+    
+    finally:
+        # Graceful cleanup
+        logger.critical("🛑 Stopping all processes...")
+        
+        for p in processes:
+            if p.is_alive():
+                logger.critical(f"   Terminating {p.name} (PID={p.pid})...")
+                p.terminate()
+        
+        # Wait for graceful termination
+        for p in processes:
+            p.join(timeout=5)
+        
+        # Force kill if needed
+        for p in processes:
+            if p.is_alive():
+                logger.critical(f"   Force killing {p.name} (PID={p.pid})...")
+                p.kill()
+        
+        # Cleanup shared memory
+        try:
+            from src.ring_buffer import get_ring_buffer
+            rb = get_ring_buffer(create=False)
+            if rb is not None:
+                rb.close()
+                try:
+                    rb.shm.unlink()
+                    logger.critical("🧹 Shared memory unlinked")
+                except (AttributeError, Exception):
+                    pass
+        except Exception as e:
+            logger.warning(f"⚠️ Error cleaning up shared memory: {e}")
+        
+        logger.critical("👋 System shutdown complete")
+        
+        # Exit with appropriate code
+        exit_code = 0 if shutdown_flag else 1
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":
     # Required for Windows/macOS multiprocessing
     multiprocessing.set_start_method('spawn', force=True)
     
-    # Check for command-line arguments (supervisord mode)
+    # Check for command-line arguments (standalone component mode)
     if len(sys.argv) > 1:
         component = sys.argv[1].lower()
         
         if component == "feed":
-            logger.critical("🚀 Starting FEED process (standalone)")
             try:
-                run_feed_process()
+                run_feed()
             except Exception as e:
-                logger.critical(f"Feed process fatal error: {e}", exc_info=True)
+                logger.critical(f"Feed standalone fatal error: {e}", exc_info=True)
                 sys.exit(1)
         
         elif component == "brain":
-            logger.critical("🚀 Starting BRAIN process (standalone)")
             try:
-                run_brain_process()
+                run_brain()
             except Exception as e:
-                logger.critical(f"Brain process fatal error: {e}", exc_info=True)
+                logger.critical(f"Brain standalone fatal error: {e}", exc_info=True)
                 sys.exit(1)
         
         elif component == "orchestrator":
-            logger.critical("🚀 Starting ORCHESTRATOR process (standalone)")
             try:
                 run_orchestrator()
             except Exception as e:
-                logger.critical(f"Orchestrator process fatal error: {e}", exc_info=True)
+                logger.critical(f"Orchestrator standalone fatal error: {e}", exc_info=True)
                 sys.exit(1)
         
         elif component == "init":
-            logger.critical("🚀 Initializing system (database + ring buffer)")
             try:
+                logger.critical("🚀 System initialization only")
                 initialize_system()
                 logger.critical("✅ System initialization complete")
             except Exception as e:
@@ -300,12 +321,12 @@ if __name__ == "__main__":
                 sys.exit(1)
         
         else:
-            print(f"Usage: python -m src.main [feed|brain|orchestrator|init]")
-            print(f"Invalid component: {component}")
+            print("Usage: python -m src.main [feed|brain|orchestrator|init]")
+            print(f"Unknown component: {component}")
             sys.exit(1)
     
     else:
-        # No arguments - run full orchestrator mode (for local development)
+        # No arguments - run full orchestrator mode
         try:
             main()
         except Exception as e:

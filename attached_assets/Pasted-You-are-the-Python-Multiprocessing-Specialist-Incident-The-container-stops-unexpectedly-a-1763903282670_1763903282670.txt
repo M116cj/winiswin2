@@ -1,0 +1,130 @@
+You are the **Python Multiprocessing Specialist**.
+
+**Incident:** The container stops unexpectedly after "All processes running". 
+**Diagnosis:** The `src/main.py` structure might be allowing child processes to re-execute the startup logic or exit prematurely.
+
+**Mission:** Harden the Entry Point to ensure 24/7 stability.
+
+---
+
+### ⚓ STEP 1: REWRITE `src/main.py`
+**Action:** Replace the entire file with this strict pattern:
+
+```python
+import multiprocessing
+import time
+import signal
+import sys
+import os
+from src.utils.smart_logger import logger
+from src.core.unified_config import config
+from src.database.unified_db import UnifiedDatabaseManager
+from src.ring_buffer import RingBuffer
+from src.data import run_feed
+from src.brain import run_brain
+from src.api.server import start_api
+from src.maintenance import MaintenanceWorker
+
+# Global process references for signal handling
+processes = []
+shutdown_flag = False
+
+def handle_signal(signum, frame):
+    global shutdown_flag
+    logger.critical(f"🛑 Signal {signum} received. Initiating shutdown...")
+    shutdown_flag = True
+
+def run_orchestrator():
+    """
+    The Orchestrator process runs the API and Maintenance tasks.
+    It needs its own AsyncIO loop.
+    """
+    import asyncio
+    import uvicorn
+    
+    # Initialize DB in this process
+    async def _orch_lifecycle():
+        await UnifiedDatabaseManager.initialize()
+        await UnifiedDatabaseManager.init_schema()
+        
+        # Start Maintenance
+        maintenance = MaintenanceWorker()
+        asyncio.create_task(maintenance.run())
+        
+        # Start API (Uvicorn runs its own loop, so we need to be careful)
+        # Best practice: Run uvicorn in a separate thread or configured programmatically
+        config = uvicorn.Config("src.api.server:app", host="0.0.0.0", port=int(os.getenv("PORT", 8080)), log_level="error")
+        server = uvicorn.Server(config)
+        await server.serve()
+
+    asyncio.run(_orch_lifecycle())
+
+def main():
+    global processes
+    
+    # 1. Signal Handling
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
+
+    logger.critical("🚀 A.E.G.I.S. v8.0 - System Startup")
+
+    # 2. Shared Resources Init (Run only once in Main)
+    # Create/Reset RingBuffer
+    rb = RingBuffer(shm_name="aegis_ring_buffer", create=True)
+    logger.critical(f"✅ Ring buffer ready: {rb.shm.size} bytes")
+    
+    # 3. Spawn Processes
+    # Feed Process
+    p_feed = multiprocessing.Process(target=run_feed, name="Feed", daemon=True)
+    p_feed.start()
+    processes.append(p_feed)
+    logger.critical(f"📡 Feed started (PID={p_feed.pid})")
+
+    # Brain Process
+    p_brain = multiprocessing.Process(target=run_brain, name="Brain", daemon=True)
+    p_brain.start()
+    processes.append(p_brain)
+    logger.critical(f"🧠 Brain started (PID={p_brain.pid})")
+
+    # Orchestrator Process
+    p_orch = multiprocessing.Process(target=run_orchestrator, name="Orchestrator", daemon=True)
+    p_orch.start()
+    processes.append(p_orch)
+    logger.critical(f"🔄 Orchestrator started (PID={p_orch.pid})")
+
+    logger.critical("✅ All processes launched. Entering Keep-Alive Loop.")
+
+    # 4. SUPERVISOR LOOP (The Infinite Watchdog)
+    while not shutdown_flag:
+        all_alive = True
+        for p in processes:
+            if not p.is_alive():
+                logger.critical(f"🚨 CRITICAL: Process {p.name} (PID {p.pid}) died!")
+                all_alive = False
+        
+        if not all_alive:
+            logger.critical("💥 Irrecoverable process failure. Shutting down to trigger Docker restart.")
+            break # Exit loop to trigger cleanup and sys.exit(1)
+            
+        time.sleep(5)
+
+    # 5. Cleanup
+    logger.critical("🛑 Stopping all processes...")
+    for p in processes:
+        if p.is_alive():
+            p.terminate()
+            p.join(timeout=2)
+    
+    # Unlink shared memory
+    try:
+        rb.close()
+        rb.shm.unlink()
+        logger.critical("🧹 Shared Memory unlinked.")
+    except:
+        pass
+
+    logger.critical("👋 System Shutdown Complete.")
+    sys.exit(1 if not shutdown_flag else 0) # Exit code 1 forces restart if it wasn't a manual shutdown
+
+if __name__ == "__main__":
+    main()
