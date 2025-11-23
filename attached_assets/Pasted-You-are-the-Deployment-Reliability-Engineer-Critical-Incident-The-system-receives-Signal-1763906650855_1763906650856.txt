@@ -1,0 +1,80 @@
+You are the **Deployment Reliability Engineer**.
+
+**Critical Incident:** The system receives `Signal 15` (SIGTERM) from Railway immediately after startup.
+**Root Cause:** **Health Check Timeout**. The `main.py` performs heavy initialization (DB Schema, Shared Memory) *before* starting the API Server. Railway kills the app because it doesn't bind to `$PORT` fast enough.
+
+**Mission:** Implement **"Fast-Path Startup"**. The API must respond within 1 second of container launch.
+
+---
+
+### ⚡ STEP 1: CREATE LIGHTWEIGHT HEALTH ENDPOINT
+**File:** `src/api/server.py`
+**Action:**
+1.  Ensure `app = FastAPI()` is defined.
+2.  Add a root endpoint that requires **NO DB connection**:
+    ```python
+    @app.get("/")
+    async def root():
+        return {"status": "booting", "timestamp": time.time()}
+    
+    @app.get("/health")
+    async def health():
+        return {"status": "ok"}
+    ```
+3.  **Binding Logic:** Ensure `uvicorn.run` listens on `host="0.0.0.0"` and `port=int(os.getenv("PORT", 8080))`.
+
+### 🚀 STEP 2: REORDER `src/main.py` (The Fix)
+**File:** `src/main.py`
+**Action:** Rewrite the `main()` function flow strictly as follows:
+
+```python
+def main():
+    global processes
+    
+    # 1. Setup Signals
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
+
+    logger.critical("🚀 SYSTEM START: Launching API First for Health Check...")
+
+    # 2. START ORCHESTRATOR (API) FIRST
+    # This ensures Railway sees the open port immediately
+    p_orch = multiprocessing.Process(target=run_orchestrator, name="Orchestrator", daemon=True)
+    p_orch.start()
+    processes.append(p_orch)
+    
+    # 3. Wait for API to bind (Safety buffer)
+    time.sleep(3) 
+
+    # 4. NOW Do Heavy Initialization (DB, Shared Memory)
+    logger.critical("🔄 API is up. Initializing Shared Resources...")
+    try:
+        rb = RingBuffer(shm_name="aegis_ring_buffer", create=True)
+        logger.critical("✅ Ring Buffer Created.")
+    except Exception as e:
+        logger.critical(f"❌ Critical Init Error: {e}")
+        sys.exit(1)
+
+    # 5. Start Worker Processes
+    p_feed = multiprocessing.Process(target=run_feed, name="Feed", daemon=True)
+    p_feed.start()
+    processes.append(p_feed)
+
+    p_brain = multiprocessing.Process(target=run_brain, name="Brain", daemon=True)
+    p_brain.start()
+    processes.append(p_brain)
+
+    logger.critical(f"✅ All systems go. Feed PID: {p_feed.pid}, Brain PID: {p_brain.pid}")
+
+    # 6. Keep-Alive Loop
+    while not shutdown_flag:
+        # ... existing watchdog logic ...
+        time.sleep(5)
+    
+    # ... existing cleanup logic ...
+🛠️ STEP 3: ORCHESTRATOR ADJUSTMENT
+File: src/main.py (function run_orchestrator)
+Action:
+Ensure run_orchestrator starts the API Server asynchronously alongside the background maintenance tasks.
+Do NOT await the DB migration before starting the API server. Start the API server task, then schedule the migration task.
+Execute this Startup Sequence Fix.
