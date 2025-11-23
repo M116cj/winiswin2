@@ -1,0 +1,70 @@
+You are the **Chief System Auditor & QA Architect**.
+
+**Context:** We have built a "Sharded, Zero-Polling, SMC-Quant High-Frequency Trading System" structured in a flat `src/` directory (`data.py`, `brain.py`, `trade.py`, `config.py`, `main.py`).
+**User Goal:** Perform an **Autonomous Deep-Dive Audit**. Find defects, logic gaps, architectural violations, and potential instability sources that standard linters miss.
+
+**Mission:** Create and run a massive diagnostic suite `system_master_scan.py` to uncover the following 5 categories of defects:
+
+---
+
+### 🔬 CATEGORY 1: ARCHITECTURAL VIOLATIONS (Static Analysis)
+**Logic:** Use Python's `ast` module to parse the code structure.
+1.  **Zero-Polling Enforcement:**
+    -   Scan `src/trade.py` and `src/brain.py`.
+    -   **Defect:** If any `while` or `for` loop contains `requests.get` or `client.get_...` (HTTP calls).
+    -   **Requirement:** Loops must only read from `AccountStateCache` (Memory).
+2.  **Efficiency Standards:**
+    -   Scan all data classes in `src/models.py`.
+    -   **Defect:** If any class lacks `__slots__`.
+    -   Scan `src/data.py`.
+    -   **Defect:** If `json.loads` is used instead of `orjson.loads`.
+    -   **Defect:** If `pandas` is imported (Must use `polars`).
+
+### 🧬 CATEGORY 2: LOGICAL DISCONNECTS (Topology Check)
+**Logic:** Trace function calls across files.
+1.  **The "Brain-Trade" Handshake:**
+    -   Does `brain.py` output a `Signal` object?
+    -   Does `trade.py`'s `execute_order` accept exactly that `Signal` object?
+    -   **Defect:** Argument mismatch (e.g., Brain sends 3 args, Trade expects 2).
+2.  **The "Data-Brain" Pipeline:**
+    -   Does `data.py`'s Conflation Loop actually call `brain.process()`?
+    -   **Defect:** If the data stream ends nowhere (Orphaned producer).
+
+### 🛡️ CATEGORY 3: CONFIGURATION & SECURITY GAP
+**Logic:** dynamic check of `src/config.py`.
+1.  **Variable Integrity:**
+    -   Compare `src/config.py` definitions vs. usages in `src/*.py`.
+    -   **Defect:** "Ghost Variables" (Defined but never used) or "Missing Variables" (Used but not defined).
+2.  **Secret Safety:**
+    -   **Defect:** If `BINANCE_SECRET_KEY` has a default value other than `None` or empty string (Hardcoded credentials risk).
+3.  **Type Safety:**
+    -   **Defect:** If numeric configs (e.g., `MAX_POSITIONS`) are parsed as Strings.
+
+### 🧪 CATEGORY 4: RUNTIME SIMULATION (The Mock Test)
+**Logic:** Mock external libs (`ccxt`/`binance`, `redis`) and run the pipeline.
+1.  **Signature Validity:**
+    -   Call `trade._generate_signature` with dummy params.
+    -   **Defect:** If it crashes or returns an invalid string format.
+2.  **SMC Math Stability:**
+    -   Feed `SMC_Engine` a list of `0` prices or `None` values.
+    -   **Defect:** If it raises `ZeroDivisionError` or `ValueError` (Lack of input sanitization).
+3.  **Gap Filling Logic:**
+    -   Simulate a timestamp gap > 1 minute.
+    -   **Defect:** If `fetch_missing_data` is NOT triggered.
+
+### ⚠️ CATEGORY 5: ERROR HANDLING COVERAGE
+**Logic:** Scan `async def` functions.
+1.  **Defect:** Any `async def` that interacts with I/O (Network/DB) but lacks a `try...except` block.
+2.  **Defect:** Bare `except:` clauses that swallow errors without logging `traceback`.
+
+---
+
+### 🚀 EXECUTION OUTPUT: THE DEFECT MATRIX
+Run the scan and generate a report `AUDIT_REPORT.md`:
+
+| Severity | Category | File | Defect Description | Suggested Fix |
+| :--- | :--- | :--- | :--- | :--- |
+| 🔴 HIGH | Arch | trade.py | HTTP call found in loop | Replace with Cache read |
+| 🟡 MED | Logic | brain.py | Missing __slots__ | Add __slots__ definition |
+
+**Finally, ask me for permission to apply the fixes automatically.**
