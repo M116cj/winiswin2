@@ -130,11 +130,25 @@ class UnifiedDatabaseManager:
             """)
             logger.debug("✅ trades table ready")
             
-            # Create indexes on trades
-            await conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_trades_signal_id 
-                ON trades(signal_id)
-            """)
+            # SCHEMA MIGRATION: Add signal_id column if it doesn't exist (fixes old versions)
+            try:
+                await conn.execute("""
+                    ALTER TABLE trades ADD COLUMN IF NOT EXISTS signal_id UUID;
+                """)
+                logger.debug("✅ trades: signal_id column migration completed")
+            except Exception as e:
+                # Ignore if column already exists (IF NOT EXISTS usually handles it)
+                logger.debug(f"⚠️ trades: signal_id migration notice: {e}")
+            
+            # Create indexes on trades (only after signal_id exists)
+            try:
+                await conn.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_trades_signal_id 
+                    ON trades(signal_id)
+                """)
+            except Exception as e:
+                logger.debug(f"⚠️ trades: signal_id index notice: {e}")
+            
             await conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_trades_symbol 
                 ON trades(symbol)

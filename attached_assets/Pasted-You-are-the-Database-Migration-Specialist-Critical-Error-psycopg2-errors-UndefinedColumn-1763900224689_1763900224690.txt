@@ -1,0 +1,52 @@
+You are the **Database Migration Specialist**.
+
+**Critical Error:** `psycopg2.errors.UndefinedColumn: column "signal_id" does not exist`.
+**Context:** The system fails to start because it tries to create an index on `trades.signal_id`, but the existing `trades` table (created by an older version) is missing this column.
+
+**Mission:** Fix `src/database/unified_db.py` to handle Schema Migration automatically.
+
+---
+
+### 🛠️ ACTION: UPDATE SCHEMA INITIALIZATION
+**File:** `src/database/unified_db.py`
+**Method:** `init_schema`
+
+**Logic Update:**
+1.  **Define Tables:** Ensure the `CREATE TABLE IF NOT EXISTS trades` SQL statement **includes** `signal_id TEXT` (or VARCHAR).
+2.  **Auto-Migration (The Fix):** Add a specific SQL block to inject the column if it's missing from an existing table.
+
+**Code to Inject (inside init_schema):**
+```python
+        # 1. Create Tables (Ensure baseline definition is correct)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS trades (
+                id SERIAL PRIMARY KEY,
+                symbol TEXT NOT NULL,
+                side TEXT NOT NULL,
+                price DOUBLE PRECISION NOT NULL,
+                quantity DOUBLE PRECISION NOT NULL,
+                pnl DOUBLE PRECISION,
+                commission DOUBLE PRECISION,
+                strategy_score DOUBLE PRECISION,
+                signal_id TEXT,  -- Ensure this is in the base definition
+                timestamp DOUBLE PRECISION,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+
+        # 2. MIGRATION: Add signal_id if it doesn't exist (Fixes the crash)
+        # This handles the case where the table exists but is from an old version
+        try:
+            await conn.execute("""
+                ALTER TABLE trades ADD COLUMN IF NOT EXISTS signal_id TEXT;
+            """)
+        except Exception as e:
+            # Ignore if column already exists error (though IF NOT EXISTS usually handles it)
+            logger.warning(f"Migration warning (signal_id): {e}")
+
+        # 3. Create Indexes
+        await conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_trades_symbol ON trades(symbol);
+            CREATE INDEX IF NOT EXISTS idx_trades_time ON trades(created_at DESC);
+            CREATE INDEX IF NOT EXISTS idx_trades_signal_id ON trades(signal_id);
+        """)
