@@ -3,7 +3,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Validates signals, executes orders on Binance, tracks account state.
-Supports both simulated (paper) and live trading modes.
+🔴 LIVE TRADING MODE ONLY - Real Binance Futures trading
 """
 
 import logging
@@ -395,30 +395,6 @@ async def _execute_order_live(order: Dict) -> Optional[Dict]:
         return None
 
 
-async def _execute_order_simulated(order: Dict) -> Dict:
-    """
-    Simulate order execution (paper trading)
-    Used when live trading is disabled or for testing
-    """
-    symbol = order.get('symbol', '')
-    side = order.get('side', '')
-    quantity = order.get('quantity', 0)
-    
-    # Simulate some latency
-    await asyncio.sleep(0.1)
-    
-    filled_order = {
-        'symbol': symbol,
-        'side': side,
-        'quantity': quantity,
-        'price': 42000.0,  # Mock price
-        'status': 'FILLED'
-    }
-    
-    logger.debug(f"✅ Order filled (SIMULATED): {symbol} {side} {quantity}")
-    return filled_order
-
-
 async def _get_position_pnl(position_data: Dict) -> float:
     """
     Calculate PnL for a position
@@ -469,14 +445,11 @@ async def _close_position(symbol: str, quantity: float) -> bool:
             'confidence': 0.0  # Forced close (not a signal trade)
         }
         
-        # Execute close order
-        if LIVE_TRADING_ENABLED:
-            filled_order = await _execute_order_live(order)
-            if filled_order is None:
-                logger.error(f"❌ Failed to close {symbol}")
-                return False
-        else:
-            filled_order = await _execute_order_simulated(order)
+        # Execute close order (LIVE MODE ONLY)
+        filled_order = await _execute_order_live(order)
+        if filled_order is None:
+            logger.error(f"❌ Failed to close {symbol}")
+            return False
         
         # Remove from positions
         async with _state_lock:
@@ -623,11 +596,11 @@ async def _check_risk(signal: Dict) -> None:
 
 async def _execute_order(order: Dict) -> None:
     """
-    Execute order (live or simulated)
+    Execute order on Binance (LIVE MODE ONLY)
     
     Logic:
     1. Validate order
-    2. Send to Binance API or simulate
+    2. Send to Binance API
     3. Publish ORDER_FILLED event
     """
     if not order:
@@ -638,14 +611,11 @@ async def _execute_order(order: Dict) -> None:
     
     logger.debug(f"✋ Executing: {symbol} {quantity:.0f}")
     
-    # Execute order (live or simulated)
-    if LIVE_TRADING_ENABLED:
-        filled_order = await _execute_order_live(order)
-        if filled_order is None:
-            logger.error(f"❌ Order failed for {symbol}")
-            return
-    else:
-        filled_order = await _execute_order_simulated(order)
+    # Execute order (LIVE MODE ONLY)
+    filled_order = await _execute_order_live(order)
+    if filled_order is None:
+        logger.error(f"❌ Order failed for {symbol}")
+        return
     
     # Notify that order filled
     await bus.publish(Topic.ORDER_FILLED, filled_order)
@@ -864,35 +834,22 @@ async def initial_account_sync() -> None:
 
 
 async def init() -> None:
-    """Initialize trade module - connect risk → execution → state"""
-    from src.config import Config
-    
-    logger.info("💰 Trade module initializing")
+    """Initialize trade module - connect risk → execution → state (LIVE MODE ONLY)"""
+    logger.info("💰 Trade module initializing - LIVE TRADING MODE")
     
     # Load previous state from Postgres if available
     await _load_state_from_postgres()
     
-    # 💧 TRADING MODE DETECTION - Separate virtual and live trading
-    trading_mode = Config.TRADING_MODE.lower()
-    
-    if trading_mode == 'live':
-        # LIVE MODE: Fetch real account state from Binance API
-        logger.critical("🔴 LIVE TRADING MODE - Will sync with real Binance account")
-        await initial_account_sync()
-    else:
-        # VIRTUAL MODE (default): Use Postgres state without overwriting with Binance data
-        logger.critical("🟢 VIRTUAL TRADING MODE - Using simulated account from Postgres")
-        logger.info("   To switch to LIVE mode, set: TRADING_MODE=live")
+    # 🔴 LIVE MODE: Fetch real account state from Binance API
+    logger.critical("🔴 LIVE TRADING MODE - Syncing with real Binance account")
+    await initial_account_sync()
     
     if LIVE_TRADING_ENABLED:
-        logger.info("✅ LIVE TRADING ENABLED - Orders will be sent to Binance")
+        logger.critical("✅ LIVE TRADING ENABLED - Orders will be executed on Binance")
     else:
-        logger.warning("⚠️ LIVE TRADING DISABLED - Using simulated orders")
-        logger.warning("   To enable live trading, set environment variables:")
-        logger.warning("   BINANCE_API_KEY=your_key")
-        logger.warning("   BINANCE_API_SECRET=your_secret")
+        logger.critical("⚠️ WARNING: LIVE TRADING DISABLED - Set BINANCE_API_KEY and BINANCE_API_SECRET")
     
     bus.subscribe(Topic.SIGNAL_GENERATED, _check_risk)
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
-    logger.info(f"✅ Trade module ready (Mode: {trading_mode.upper()}, Postgres persistence enabled)")
+    logger.critical("✅ Trade module ready (LIVE MODE - Real Binance trading)")
