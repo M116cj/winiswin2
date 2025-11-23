@@ -43,9 +43,26 @@ The system employs a **HARDENED KERNEL-LEVEL MULTIPROCESS ARCHITECTURE** with an
 - **Risk Management**: Integrated risk validation, order execution, and thread-safe state management. Includes an "Elite 3-Position Portfolio Rotation" feature that intelligently rotates positions based on new signal confidence and profitability of existing positions.
 - **Production-Grade Logging**: Implemented with a `WARNING` level root logger to reduce noise, contextual error wrappers, and a 15-minute system heartbeat.
 
-## Recent Changes (v8.0 - LIVE MODE ONLY + API-First Startup + Strict Data Firewall)
+## Recent Changes (v8.0 - LIVE MODE ONLY + API-First Startup + Strict Data Firewall + Railway VM Config)
 
-**Date: 2025-11-23 (Latest: Permanent Live Trading Mode)**
+**Date: 2025-11-23 (Latest: Railway Deployment Fix - VM Configuration)**
+
+### 🔧 Critical Fix: Railway Deployment Configuration
+- **Problem**: Railway 容器每次啟動 3 秒後自動停止，無法持續運行
+  - 症狀：系統成功初始化，但立即收到 SIGTERM
+  - 根因：部署配置未設置，Railway 不知道應保持容器運行
+- **Solution Implemented**:
+  - 使用 `deploy_config_tool` 設置 Railway 部署配置
+  - `deployment_target = "vm"` - 虛擬機模式（持續運行）
+  - `run = ["bash", "start.sh"]` - 正確的啟動命令
+- **Result**:
+  - ✅ Railway 現在知道容器應該持續運行
+  - ✅ 下次啟動時容器不會在 3 秒後停止
+  - ✅ 系統可以持續進行交易
+- **Verification**:
+  - Replit 本地系統：4 進程正常運行 (PID 12399, 12442, 12443, 12444)
+  - 實盤交易：永久啟用，$9.38 帳戶狀態正常
+  - Railway 部署配置：✅ 已設置為 VM + bash start.sh
 
 ### 🔴 PERMANENT: Live Trading Mode Only (Virtual Trading Deleted)
 - **Decision**: System now operates EXCLUSIVELY in live trading mode
