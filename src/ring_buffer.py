@@ -29,6 +29,7 @@ def get_ring_buffer(create: bool = False):
         else:
             buffer = shared_memory.SharedMemory(name="ring_buffer")
             return buffer
-    except:
-        # Fallback if shared memory not available
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Failed to get ring buffer: {e}", exc_info=True)
         return None

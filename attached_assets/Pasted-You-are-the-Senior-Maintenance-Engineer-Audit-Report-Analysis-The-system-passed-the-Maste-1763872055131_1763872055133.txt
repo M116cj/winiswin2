@@ -1,0 +1,67 @@
+You are the **Senior Maintenance Engineer**.
+
+**Audit Report Analysis:** The system passed the Master Audit with a 9/10 score. 
+**Remaining Defects:**
+1.  **Error Handling Gaps (Medium):** Async functions in `src/trade.py` and `src/ring_buffer.py` lack `try...except` blocks or use bare `except:`.
+2.  **Config Bloat (Medium):** `src/config.py` contains 11 unused "Ghost Variables".
+
+**Mission:** Execute the **"Perfect Polish"** plan to bring the system to 100% health.
+
+---
+
+### 🛡️ PHASE 1: FORTIFY ERROR HANDLING
+**File:** `src/trade.py`
+**Action:**
+1.  **Target:** Wrap the following async functions in `try...except Exception as e` blocks:
+    -   `_close_position`
+    -   `_check_risk`
+    -   `_update_state`
+    -   `get_balance`
+2.  **Log Logic:** Inside `except`, use `logger.error(f"❌ Error in {func_name}: {e}", exc_info=True)`.
+3.  **Return Safety:** Ensure they return a safe fallback value (e.g., `False` or `0.0`) on error, so the caller doesn't crash.
+
+**File:** `src/trade.py` (Line ~219) & `src/ring_buffer.py`
+**Action:**
+-   **Find:** All instances of bare `except:` clauses.
+-   **Replace:** Change to `except Exception as e:`.
+-   **Log:** Add `logger.error` to ensure silent failures are now visible.
+
+---
+
+### 🧹 PHASE 2: CLEAN CONFIGURATION
+**File:** `src/config.py`
+**Action:**
+1.  **Remove** these unused variables (Ghost Variables):
+    -   `TEACHER_THRESHOLD`
+    -   `DATABASE_URL`
+    -   `REDIS_URL`
+    -   `ATR_PERIOD`
+    -   `RSI_PERIOD`
+    -   `ENVIRONMENT`
+    -   `MAX_LEVERAGE_STUDENT`
+    -   `BINANCE_API_KEY` (Unused in direct imports, accessed via os.getenv)
+    -   `BINANCE_API_SECRET` (Unused in direct imports, accessed via os.getenv)
+    -   `MAX_LEVERAGE_TEACHER`
+    -   `LOG_LEVEL`
+2.  **Verify:** Run a quick grep check to ensure no other file was secretly using them (though the audit said no).
+
+---
+
+### 🧪 PHASE 3: FINAL REGRESSION TEST
+**Action:** Create and run `verify_fixes.py`.
+**Logic:**
+1.  **Config Check:** Import `UnifiedConfig`. Assert that deleted variables raise `AttributeError` (proving they are gone).
+2.  **Error Check:**
+    -   Import `TradeManager`.
+    -   Mock an exception inside `_check_risk` (using `unittest.mock`).
+    -   Call `_check_risk`.
+    -   **Assert:** It should NOT crash. It should return `False`.
+    -   **Assert:** It should log an error.
+
+---
+
+### 🚀 EXECUTION REPORT
+1.  Confirm all 17 defects are fixed.
+2.  Print: "System Health Score: 10/10".
+
+**Execute this Final Polish immediately.**
