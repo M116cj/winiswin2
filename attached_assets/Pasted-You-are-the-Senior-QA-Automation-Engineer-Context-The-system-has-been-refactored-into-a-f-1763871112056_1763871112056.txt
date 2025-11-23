@@ -1,0 +1,57 @@
+You are the **Senior QA Automation Engineer**.
+
+**Context:** The system has been refactored into a flat structure: `src/data.py`, `src/brain.py`, `src/trade.py`, `src/config.py`.
+**User Goal:** Perform a "Deep State Inspection" to ensure:
+1.  **No Broken References:** All variable names and function calls match their definitions across files.
+2.  **No Ghost Imports:** All imported modules exist and are used.
+3.  **Logic Flow:** The pipeline `Data -> Brain -> Trade` works without crashing.
+4.  **Config Binding:** Code uses exactly the variable names defined in `src/config.py`.
+
+**Mission:** Create and run `system_deep_diagnosis.py`.
+
+---
+
+### 🔬 TEST 1: STATIC REFERENCE CHECK (AST)
+**Logic:**
+1.  **Scan `src/config.py`:** Extract all class attributes (e.g., `BINANCE_API_KEY`, `RATE_LIMIT`).
+2.  **Scan `src/*.py`:** Find all usages of `config.X`.
+3.  **Assertion:** If `trade.py` calls `config.API_KEY` but `config.py` defines `BINANCE_API_KEY`, report a **CRITICAL ERROR**.
+4.  **Variable Scope:** Detect usage of variables that are not defined in local scope or imports (Potential `NameError`).
+
+### 🧬 TEST 2: CLASS & METHOD INTEGRITY
+**Logic:**
+1.  **Instantiate Classes:** Try to import and instantiate `DataManager`, `Brain`, `TradeManager` (mocking `asyncio` loops).
+2.  **Signature Check:**
+    -   Does `brain.process(candle)` match the arguments passed by `data.py`?
+    -   Does `trade.execute(signal)` match the arguments passed by `brain.py`?
+3.  **Attribute Check:**
+    -   Verify `AccountState` has attributes `_balance`, `_positions`.
+    -   Verify `Candle` has `__slots__` defined and accessed correctly.
+
+### 🧪 TEST 3: MOCK SIMULATION (The "Dry Run")
+**Logic:**
+1.  **Setup:** Mock `UnifiedConfig` with dummy keys ("test_key", "test_secret").
+2.  **Inject Data:** Create a dummy `Candle` object manually.
+3.  **Step 1 (Brain):** Call `brain.analyze(candle)`.
+    -   *Check:* Does it return a `Signal`?
+    -   *Check:* Does it calculate features (ATR, FVG) without `ZeroDivisionError`?
+4.  **Step 2 (Trade):** Pass the `Signal` to `trade.validate_entry(signal)`.
+    -   *Check:* Does it verify against `RiskManager` logic?
+    -   *Check:* **Crucial:** Call `trade._generate_signature(params)` with dummy params. Does it return a valid-looking signature string without crashing?
+
+### 🛡️ TEST 4: IMPORT SAFETY
+**Logic:**
+-   Walk through `src/`.
+-   Attempt `importlib.import_module` on every file.
+-   This catches syntax errors, missing libraries (`ModuleNotFoundError`), and circular imports immediately.
+
+---
+
+### 🚀 EXECUTION REPORT
+Generate a **Markdown Diagnostic Report**:
+-   [ ] **Syntax & Imports:** PASS/FAIL
+-   [ ] **Config Variable Match:** PASS/FAIL (List mismatches if any)
+-   [ ] **Method Signatures:** PASS/FAIL
+-   [ ] **Simulation Run:** PASS/FAIL
+
+**If ANY error is found, generate the specific code fix immediately.**
