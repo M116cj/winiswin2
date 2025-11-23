@@ -1,35 +1,234 @@
 """
 📡 Feed Process - WebSocket Data Ingestion & Ring Buffer Writing
 Minimal version for process communication
+
+🛡️ STRICT FIREWALL: Comprehensive data validation to prevent poison pills
 """
 
 import logging
 import asyncio
+import math
+import time as time_module
 
 logger = logging.getLogger(__name__)
+
+# Rate limiter for poison pill warnings (avoid spam)
+_last_poison_warning = 0.0
+_poison_warning_cooldown = 60.0  # Warn max once per minute
+
+
+def _is_valid_price(price: float, context: str = "Price") -> bool:
+    """Check if price is valid (positive, finite, not NaN)"""
+    if price is None:
+        return False
+    try:
+        price_f = float(price)
+        # Check: must be positive
+        if price_f <= 0:
+            return False
+        # Check: must be finite (not inf, not nan)
+        if not math.isfinite(price_f):
+            return False
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
+def _is_valid_volume(volume: float) -> bool:
+    """Check if volume is valid (non-negative, finite, not NaN)"""
+    if volume is None:
+        return False
+    try:
+        vol_f = float(volume)
+        # Check: must be non-negative
+        if vol_f < 0:
+            return False
+        # Check: must be finite
+        if not math.isfinite(vol_f):
+            return False
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
+def _is_valid_timestamp(timestamp: float, max_age_days: int = 365) -> bool:
+    """
+    Check if timestamp is valid (reasonable bounds)
+    
+    Valid range: Last N days to next day (allow some clock skew)
+    """
+    if timestamp is None:
+        return False
+    try:
+        ts_f = float(timestamp)
+        current_time = time_module.time() * 1000  # Convert to milliseconds
+        
+        # Check: not too old (older than max_age_days)
+        if ts_f < (current_time - max_age_days * 86400 * 1000):
+            return False
+        
+        # Check: not in future (allow 1 hour skew for clock drift)
+        if ts_f > (current_time + 3600 * 1000):
+            return False
+        
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
+def _is_valid_candle_logic(open_p: float, high: float, low: float, close: float) -> bool:
+    """
+    Check if candle respects basic physics:
+    - high >= low (required)
+    - high >= open (usually)
+    - high >= close (usually)
+    - low <= open (usually)
+    - low <= close (usually)
+    """
+    try:
+        o, h, l, c = float(open_p), float(high), float(low), float(close)
+        
+        # CRITICAL: High must be >= Low
+        if h < l:
+            return False
+        
+        # CRITICAL: High must be >= both open and close
+        if h < o or h < c:
+            return False
+        
+        # CRITICAL: Low must be <= both open and close
+        if l > o or l > c:
+            return False
+        
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
+def _is_valid_tick(candle_dict: dict) -> bool:
+    """
+    🛡️ STRICT FIREWALL: Comprehensive validation before ring buffer
+    
+    Returns True only if candle is safe to process.
+    """
+    try:
+        # Check structure: must have required keys
+        required_keys = {'t', 'o', 'h', 'l', 'c', 'v'}  # timestamp, open, high, low, close, volume
+        # Allow both 't' and 'T', 'o' and 'open', etc.
+        available_keys = set(candle_dict.keys())
+        
+        # Map common variations
+        key_map = {
+            't': ['t', 'T', 'time', 'timestamp'],
+            'o': ['o', 'O', 'open', 'open_price'],
+            'h': ['h', 'H', 'high'],
+            'l': ['l', 'L', 'low'],
+            'c': ['c', 'C', 'close'],
+            'v': ['v', 'V', 'volume'],
+        }
+        
+        # Extract values with flexible key names
+        values = {}
+        for standard_key, variations in key_map.items():
+            found = False
+            for var_key in variations:
+                if var_key in candle_dict:
+                    values[standard_key] = candle_dict[var_key]
+                    found = True
+                    break
+            if not found:
+                # Missing required key
+                return False
+        
+        # Extract values
+        timestamp = values.get('t')
+        open_p = values.get('o')
+        high = values.get('h')
+        low = values.get('l')
+        close = values.get('c')
+        volume = values.get('v')
+        
+        # 1. Validate timestamp
+        if not _is_valid_timestamp(timestamp):
+            return False
+        
+        # 2. Validate all prices (open, high, low, close)
+        if not all(_is_valid_price(p) for p in [open_p, high, low, close]):
+            return False
+        
+        # 3. Validate volume
+        if not _is_valid_volume(volume):
+            return False
+        
+        # 4. Validate candle logic (high >= low, etc.)
+        if not _is_valid_candle_logic(open_p, high, low, close):
+            return False
+        
+        # All checks passed!
+        return True
+    
+    except Exception as e:
+        logger.error(f"⚠️ Validation error: {e}")
+        return False
+
+
+def _log_poison_pill(candle_dict: dict, reason: str) -> None:
+    """Rate-limited logging for dropped poison pills"""
+    global _last_poison_warning
+    
+    current_time = time_module.time()
+    if current_time - _last_poison_warning >= _poison_warning_cooldown:
+        logger.warning(f"🛡️ Dropped Poison Pill: {reason} - Sample: {candle_dict}")
+        _last_poison_warning = current_time
 
 
 def _sanitize_candle(timestamp, open_price, high, low, close, volume):
     """
-    ✅ DATA SANITIZATION: Ensure all candle data is clean float before writing to ring buffer
+    🛡️ STRICT DATA SANITIZATION: Ensure all candle data is clean AND valid
     
     Protects against:
-    - None values
-    - String values
-    - Mixed types
-    - Invalid data from Binance API errors
+    - None values ✅
+    - String values ✅
+    - Zero/negative prices ✅
+    - Infinity/NaN values ✅
+    - Logical impossibilities (high < low) ✅
+    - Out-of-range timestamps ✅
+    - Invalid volumes ✅
+    - Mixed types ✅
+    
+    Returns: tuple(timestamp, open, high, low, close, volume) or None
     """
     try:
-        # Convert all values to float, use 0 for None values
+        # Create candle dict for validation
+        candle_dict = {
+            't': timestamp,
+            'o': open_price,
+            'h': high,
+            'l': low,
+            'c': close,
+            'v': volume
+        }
+        
+        # STRICT FIREWALL: Validate everything
+        if not _is_valid_tick(candle_dict):
+            _log_poison_pill(
+                candle_dict,
+                f"Failed validation: ts={timestamp}, o={open_price}, h={high}, l={low}, c={close}, v={volume}"
+            )
+            return None
+        
+        # Convert all values to float (now guaranteed to be valid)
         safe_candle = (
             float(timestamp),
             float(open_price),
             float(high),
             float(low),
             float(close),
-            float(volume or 0)
+            float(volume)
         )
+        
         return safe_candle
+    
     except (ValueError, TypeError) as e:
         logger.error(
             f"❌ Data sanitization failed: "

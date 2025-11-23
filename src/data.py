@@ -5,6 +5,8 @@
 Merged: Feed (ingestion) + Brain (SMC analysis & signal generation)
 Includes time-based conflation to smooth high-frequency data streams.
 CPU-heavy analysis offloaded to thread pool via dispatcher.
+
+🛡️ STRICT FIREWALL: All ticks validated before processing
 """
 
 import logging
@@ -16,6 +18,7 @@ from time import time
 from src.bus import bus, Topic
 from src.indicators import Indicators
 from src.dispatch import get_dispatcher, Priority
+from src.feed import _is_valid_tick, _log_poison_pill
 
 logger = logging.getLogger(__name__)
 
@@ -47,12 +50,20 @@ async def _process_candle(tick: Dict) -> None:
     """
     Process candle when TICK_UPDATE received
     
+    🛡️ FIREWALL: Validate tick before processing
+    
     Logic:
-    1. Detect SMC patterns
-    2. Calculate ML features
-    3. If opportunity -> publish SIGNAL_GENERATED
+    1. Validate tick (catch poison pills)
+    2. Detect SMC patterns
+    3. Calculate ML features
+    4. If opportunity -> publish SIGNAL_GENERATED
     """
     if not tick:
+        return
+    
+    # 🛡️ STRICT FIREWALL: Reject invalid ticks before processing
+    if not _is_valid_tick(tick):
+        _log_poison_pill(tick, f"Invalid tick rejected before SMC processing")
         return
     
     symbol = tick.get('symbol', '')
