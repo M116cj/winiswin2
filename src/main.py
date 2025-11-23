@@ -54,6 +54,21 @@ def run_brain_process():
         logger.critical(f"Brain process fatal error: {e}", exc_info=True)
 
 
+def run_orchestrator():
+    """Run orchestrator process (Process 3) - Cache reconciliation & monitoring"""
+    import asyncio
+    from src import reconciliation
+    
+    logger.info(f"🔄 Orchestrator Process started (PID={os.getpid()})")
+    
+    try:
+        asyncio.run(reconciliation.background_reconciliation_task())
+    except KeyboardInterrupt:
+        logger.info("Orchestrator process terminated")
+    except Exception as e:
+        logger.critical(f"Orchestrator process fatal error: {e}", exc_info=True)
+
+
 def main():
     """
     Main orchestrator: Launch Feed + Brain processes
@@ -78,7 +93,7 @@ def main():
         sys.exit(1)
     
     # Create processes
-    logger.info("🚀 Launching Feed + Brain processes...")
+    logger.info("🚀 Launching Feed + Brain + Orchestrator processes...")
     
     feed_process = multiprocessing.Process(
         target=run_feed_process,
@@ -92,42 +107,57 @@ def main():
         daemon=False
     )
     
+    orchestrator_process = multiprocessing.Process(
+        target=run_orchestrator,
+        name="Orchestrator-Process",
+        daemon=False
+    )
+    
     try:
-        # Start both processes
+        # Start all processes
         feed_process.start()
         logger.info(f"📡 Feed process started (PID={feed_process.pid})")
         
         brain_process.start()
         logger.info(f"🧠 Brain process started (PID={brain_process.pid})")
         
+        orchestrator_process.start()
+        logger.info(f"🔄 Orchestrator process started (PID={orchestrator_process.pid})")
+        
         logger.info("✅ All processes running")
         logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         
         # Monitor processes
-        while feed_process.is_alive() and brain_process.is_alive():
+        while feed_process.is_alive() and brain_process.is_alive() and orchestrator_process.is_alive():
             pass
         
         if not feed_process.is_alive():
             logger.warning("⚠️ Feed process died")
         if not brain_process.is_alive():
             logger.warning("⚠️ Brain process died")
+        if not orchestrator_process.is_alive():
+            logger.warning("⚠️ Orchestrator process died")
     
     except KeyboardInterrupt:
         logger.info("⏹️ Shutdown requested")
         
-        # Terminate both processes
+        # Terminate all processes
         feed_process.terminate()
         brain_process.terminate()
+        orchestrator_process.terminate()
         
         # Wait for graceful shutdown
         feed_process.join(timeout=5)
         brain_process.join(timeout=5)
+        orchestrator_process.join(timeout=5)
         
         # Force kill if needed
         if feed_process.is_alive():
             feed_process.kill()
         if brain_process.is_alive():
             brain_process.kill()
+        if orchestrator_process.is_alive():
+            orchestrator_process.kill()
         
         logger.info("🛑 All processes terminated")
     
@@ -135,6 +165,7 @@ def main():
         logger.critical(f"❌ Fatal error: {e}", exc_info=True)
         feed_process.terminate()
         brain_process.terminate()
+        orchestrator_process.terminate()
         sys.exit(1)
 
 
