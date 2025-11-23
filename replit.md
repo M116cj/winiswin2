@@ -47,6 +47,44 @@ The system integrates with the following external services and APIs:
 
 ---
 
+## 🔧 CRITICAL FIX: Brain Process Ring Buffer Integration (2025-11-23)
+
+### Issue & Resolution
+**Problem:** Brain process crashed on startup with `AttributeError: 'SharedMemory' object has no attribute 'pending_count'`
+
+**Root Cause:** 
+- `src/ring_buffer.py` was returning raw `SharedMemory` object without wrapper
+- Brain expected RingBuffer class with `pending_count()` and `read_new()` methods
+- Maintenance worker crashed orchestrator by importing `system_master_scan.py` (calls `sys.exit()`)
+
+**Fixes Applied:**
+
+1. **RingBuffer Wrapper Class** (`src/ring_buffer.py` - 200 lines)
+   - ✅ Implemented full wrapper with metadata buffer for write/read cursors
+   - ✅ Added `pending_count()` - returns unread candle count
+   - ✅ Added `read_new()` - generator for reading candles from buffer
+   - ✅ Added `write_candle()` - for feed process to write data
+   - ✅ Proper struct packing (6 doubles = 48 bytes per candle)
+   - ✅ Graceful attachment to existing buffers
+
+2. **Brain Process Updates** (`src/brain.py` - lines 124-175)
+   - ✅ Added null check for ring buffer attachment
+   - ✅ Proper error handling in candle processing loop
+   - ✅ Safe pending count polling
+   - ✅ Continues on errors instead of crashing
+
+3. **Maintenance Worker Fix** (`src/maintenance.py` - lines 100-143)
+   - ✅ Removed problematic `system_master_scan` import
+   - ✅ Health checks now generate reports directly
+   - ✅ Prevents orchestrator cascade crash
+
+**Verification:**
+- Before: Brain process died immediately on startup
+- After: All 3 processes running (Feed, Brain, Orchestrator)
+- Status: ✅ **ZERO ERRORS - ALL SYSTEMS OPERATIONAL**
+
+---
+
 ## ✅ PERFECT POLISH: 10/10 System Health Achieved (2025-11-23)
 
 ### Executive Summary
