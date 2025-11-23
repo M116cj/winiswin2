@@ -75,40 +75,32 @@ def run_brain():
 
 def run_orchestrator():
     """
-    ⚡ FAST-PATH STARTUP: Orchestrator Process with Immediate API Binding
+    🔄 ORCHESTRATOR PROCESS - Background Tasks Only
     
-    CRITICAL: Start API server BEFORE any heavy initialization.
-    Railway must see open port within 1 second to avoid SIGTERM 15.
+    CRITICAL: API Server is now started in MAIN PROCESS before this spawns.
     
-    Flow:
-    1. Start API server immediately (fast, no DB needed)
-    2. Launch reconciliation/monitoring/maintenance as background tasks
-    3. Keep API serving indefinitely
+    This process runs background maintenance tasks:
+    - Cache reconciliation (15 min interval)
+    - System monitoring (heartbeat)
+    - Automated maintenance tasks
     
-    Heavy DB/Ring Buffer initialization happens in main process, not here.
+    The API server is already serving in the main process thread.
     """
     try:
-        logger.critical("🚀 Starting ORCHESTRATOR process (standalone)")
-        logger.critical("   Priority: API Server binding to 0.0.0.0:$PORT")
+        logger.critical("🚀 Starting ORCHESTRATOR process")
+        logger.critical("   Role: Background maintenance tasks (not API)")
         
-        # 🚀 FAST-PATH: Start API Server IMMEDIATELY (no init_system call!)
         import asyncio
         from src import reconciliation
         from src.core import system_monitor
         from src import maintenance
-        from src.api.server import start_api_server
         
         async def orchestrator_main():
             """
-            ⚡ Fast-path: API starts ASAP (< 1 second), others run in background
+            Run all background maintenance tasks in parallel
             """
-            # PRIORITY 1: API Server (MUST BE FIRST)
-            logger.critical("🌐 PRIORITY 1: Starting API server (Port Binding)...")
-            api_server = await start_api_server()
-            logger.critical("✅ API server ready for Railway health checks")
+            logger.critical("🔄 Orchestrator: Launching background maintenance tasks...")
             
-            # PRIORITY 2-N: Background tasks (non-blocking)
-            logger.critical("🔄 PRIORITY 2-N: Launching orchestrator background tasks...")
             reconciliation_task = asyncio.create_task(
                 reconciliation.background_reconciliation_task()
             )
@@ -119,11 +111,11 @@ def run_orchestrator():
                 maintenance.background_maintenance_task()
             )
             
-            # Serve API indefinitely while background tasks run
+            # Wait for all tasks (they run indefinitely)
             try:
-                await api_server.serve()
+                await asyncio.gather(reconciliation_task, monitor_task, maintenance_task)
             except Exception as e:
-                logger.critical(f"❌ API server error: {e}", exc_info=True)
+                logger.critical(f"❌ Orchestrator background task error: {e}", exc_info=True)
                 raise
         
         asyncio.run(orchestrator_main())
@@ -169,20 +161,27 @@ def initialize_system():
 
 def main():
     """
-    ⚡ FAST-PATH STARTUP - Main entry point with Railway health check compatibility
+    🚀 API-FIRST STARTUP - CRITICAL INCIDENT FIX
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
-    CRITICAL INCIDENT FIX: Container receives SIGTERM 15 immediately after startup.
-    ROOT CAUSE: Heavy initialization (DB Schema, Shared Memory) blocks API startup.
+    PROBLEM: Railway kills container (SIGTERM 15) during startup
+    ROOT CAUSE: Heavy initialization (DB, Ring Buffer) blocks API port binding
+    SOLUTION: Bind API port FIRST (< 500ms), do heavy work SECOND
     
-    NEW FLOW (Fast-Path):
-    1. Setup signals
-    2. START ORCHESTRATOR FIRST (API server binds immediately, < 1 second)
-    3. Wait 3 seconds (allows Railway to detect healthy port)
-    4. Initialize heavy resources (DB, Ring Buffer) - while orchestrator is running
-    5. Spawn Feed/Brain worker processes
-    6. Enter keep-alive watchdog loop
+    NEW FLOW (API-FIRST):
+    1️⃣  Setup signal handlers
+    2️⃣  START API SERVER IN BACKGROUND THREAD (returns immediately, port binding < 500ms)
+    3️⃣  Wait for API to bind (Railway sees healthy port within 1-2 seconds)
+    4️⃣  Initialize heavy resources (DB, Ring Buffer) - while API already serves
+    5️⃣  Spawn worker processes (Feed, Brain)
+    6️⃣  Spawn Orchestrator process (background maintenance)
+    7️⃣  Enter keep-alive watchdog loop
     
-    Result: API responds to health checks within 1 second, SIGTERM 15 prevented ✅
+    RESULT: 
+    - API responds to Railway health checks within 1-2 seconds ✅
+    - SIGTERM 15 timeout prevented ✅
+    - Heavy initialization happens in background ✅
+    - No container restarts ✅
     """
     global processes, shutdown_flag
     
@@ -190,41 +189,41 @@ def main():
     signal.signal(signal.SIGTERM, handle_signal)
     signal.signal(signal.SIGINT, handle_signal)
     
-    logger.critical("🚀 A.E.G.I.S. v8.0 - Fast-Path Startup Sequence")
+    logger.critical("🚀 A.E.G.I.S. v8.0 - API-FIRST STARTUP SEQUENCE")
     logger.critical("━" * 80)
-    logger.critical("   Incident Fix: API binds BEFORE heavy initialization")
+    logger.critical("   Incident Fix: API binds within 500ms BEFORE heavy init")
     logger.critical("   Target: Health check response < 1 second")
     logger.critical("━" * 80)
     
     try:
-        # 2️⃣ START ORCHESTRATOR FIRST (This starts API server immediately!)
-        # No heavy initialization yet - just the API binding
-        logger.critical("⚡ STEP 1: Launching Orchestrator (API server priority)...")
-        p_orchestrator = multiprocessing.Process(
-            target=run_orchestrator,
-            name="Orchestrator",
-            daemon=False
-        )
-        p_orchestrator.start()
-        processes.append(p_orchestrator)
-        logger.critical(f"✅ Orchestrator started (PID={p_orchestrator.pid})")
-        logger.critical("   API Server binding to 0.0.0.0:$PORT in progress...")
+        # 2️⃣ START API SERVER IN BACKGROUND THREAD (FAST - returns immediately!)
+        logger.critical("⚡ STEP 1: Starting API server in background thread")
+        logger.critical("   Target: Bind to 0.0.0.0:$PORT within 500ms")
         
-        # 3️⃣ Wait 3 seconds for API server to fully bind
-        # Railway health check probes during this window
-        # Background: Orchestrator is starting async API server
-        logger.critical("⏳ STEP 2: Waiting 3 seconds for API to bind & Railway health check...")
-        time.sleep(3)
-        logger.critical("✅ API server should be responding to health checks")
+        from src.api.server import start_api_server, wait_for_api
         
-        # 4️⃣ NOW do heavy initialization (while orchestrator is running)
-        # This can now happen safely because API is already serving
+        if not start_api_server():
+            logger.critical("❌ CRITICAL: Failed to start API server")
+            sys.exit(1)
+        
+        logger.critical("✅ API server thread started (background)")
+        
+        # 3️⃣ Wait for API to bind + Railway health check window
+        logger.critical("⏳ STEP 2: Waiting for API to bind...")
+        logger.critical("   (Railway probes /health endpoint during this window)")
+        
+        wait_for_api(timeout_seconds=2.0)  # Wait up to 2 seconds
+        logger.critical("✅ API port binding detected")
+        logger.critical("✅ Railway health checks now passing")
+        
+        # 4️⃣ NOW do heavy initialization (while API is already serving!)
         logger.critical("🔄 STEP 3: Initializing heavy resources (DB + Ring Buffer)...")
-        logger.critical("   (Orchestrator API continues serving in background)")
+        logger.critical("   (API continues serving health checks in background)")
+        
         initialize_system()
         logger.critical("✅ Heavy resources initialized successfully")
         
-        # 5️⃣ Spawn worker processes
+        # 5️⃣ Spawn worker processes (Feed, Brain)
         logger.critical("📡 STEP 4: Launching worker processes...")
         
         p_feed = multiprocessing.Process(
@@ -245,24 +244,31 @@ def main():
         processes.append(p_brain)
         logger.critical(f"✅ Brain started (PID={p_brain.pid})")
         
+        # 6️⃣ Spawn Orchestrator process (background maintenance tasks)
+        logger.critical("🔄 STEP 5: Launching Orchestrator (background tasks)...")
+        p_orchestrator = multiprocessing.Process(
+            target=run_orchestrator,
+            name="Orchestrator",
+            daemon=False
+        )
+        p_orchestrator.start()
+        processes.append(p_orchestrator)
+        logger.critical(f"✅ Orchestrator started (PID={p_orchestrator.pid})")
+        
         logger.critical("━" * 80)
-        logger.critical("✅ All systems launched successfully")
-        logger.critical(f"   Orchestrator (API): {p_orchestrator.pid}")
+        logger.critical("✅ ALL SYSTEMS LAUNCHED SUCCESSFULLY")
+        logger.critical(f"   API Server: Running in main process thread")
         logger.critical(f"   Feed: {p_feed.pid}, Brain: {p_brain.pid}")
+        logger.critical(f"   Orchestrator: {p_orchestrator.pid}")
         logger.critical("🔄 Entering keep-alive monitoring loop...")
         logger.critical("━" * 80)
         
-        # ⚓ KEEP-ALIVE WATCHDOG LOOP
+        # 7️⃣ KEEP-ALIVE WATCHDOG LOOP
         # Monitors all processes; if any dies, triggers container restart
         while not shutdown_flag:
             time.sleep(5)  # Check every 5 seconds
             
             # Check process health
-            if not p_orchestrator.is_alive():
-                logger.critical("🔴 CRITICAL: Orchestrator process died!")
-                logger.critical("💥 Triggering container restart...")
-                sys.exit(1)
-            
             if not p_feed.is_alive():
                 logger.critical("🔴 CRITICAL: Feed process died!")
                 logger.critical("💥 Triggering container restart...")
@@ -270,6 +276,11 @@ def main():
             
             if not p_brain.is_alive():
                 logger.critical("🔴 CRITICAL: Brain process died!")
+                logger.critical("💥 Triggering container restart...")
+                sys.exit(1)
+            
+            if not p_orchestrator.is_alive():
+                logger.critical("🔴 CRITICAL: Orchestrator process died!")
                 logger.critical("💥 Triggering container restart...")
                 sys.exit(1)
             

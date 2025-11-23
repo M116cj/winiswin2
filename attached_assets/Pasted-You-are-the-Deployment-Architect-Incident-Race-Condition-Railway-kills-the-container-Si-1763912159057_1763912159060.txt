@@ -1,0 +1,62 @@
+You are the **Deployment Architect**.
+
+**Incident:** Race Condition. Railway kills the container (Signal 15) because the API server starts *after* heavy initialization (DB, SharedMem), exceeding the health check timeout.
+
+**Mission:** Implement **"API-First Startup Strategy"**. 
+The API Port MUST bind within 500ms of container start.
+
+---
+
+### ⚓ STEP 1: REWRITE `src/main.py`
+**Action:** Replace `main()` with this exact flow:
+
+```python
+def main():
+    # 1. Signal Handlers
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
+
+    logger.critical("🚀 A.E.G.I.S. STARTUP: API PRIORITY MODE")
+
+    # 2. START ORCHESTRATOR (API) INSTANTLY
+    # Do NOT wait for DB or SharedMemory here.
+    # The Orchestrator process will start the API immediately, 
+    # and THEN run DB migrations in the background.
+    p_orch = multiprocessing.Process(target=run_orchestrator, name="Orchestrator", daemon=True)
+    p_orch.start()
+    processes.append(p_orch)
+    
+    logger.critical(f"✅ Orchestrator started (PID={p_orch.pid}). API should be up.")
+
+    # 3. SAFETY WAIT (Give API 2s to bind)
+    time.sleep(2)
+
+    # 4. NOW DO HEAVY LIFTING
+    try:
+        # Shared Memory creation is fast, but DB checks are slow
+        cleanup_segments() 
+        rb = RingBuffer(shm_name="aegis_ring_buffer", create=True)
+        logger.critical("✅ Ring Buffer Ready.")
+        
+        # Start Workers
+        p_feed = multiprocessing.Process(target=run_feed, name="Feed", daemon=True)
+        p_feed.start()
+        processes.append(p_feed)
+
+        p_brain = multiprocessing.Process(target=run_brain, name="Brain", daemon=True)
+        p_brain.start()
+        processes.append(p_brain)
+        
+    except Exception as e:
+        logger.critical(f"❌ Init Failed: {e}")
+        sys.exit(1)
+
+    logger.critical("✅ Core Systems Launched. Entering Monitor Loop.")
+
+    # 5. Keep-Alive
+    while not shutdown_flag:
+        time.sleep(5)
+        # ... checks ...
+🌐 STEP 2: API LAUNCHER UPDATE (src/api/server.py)
+Action: Ensure start_api() runs uvicorn directly and synchronously in a separate thread or task before doing any await database.init().
+Execute this Priority Reordering.
