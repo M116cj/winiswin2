@@ -68,3 +68,5 @@ uvloop
 aiohttp
 websockets
 supervisor
+fastapi
+uvicorn

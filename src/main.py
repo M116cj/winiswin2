@@ -77,6 +77,11 @@ def run_orchestrator():
     """
     Orchestrator Process: System initialization, reconciliation, monitoring, maintenance
     Runs on priority=999 to ensure initialization before Feed/Brain
+    
+    ⚡ CRITICAL DEPLOYMENT FIX:
+    - Starts API server IMMEDIATELY (not after init tasks)
+    - Launches maintenance/reconciliation/monitor as background tasks
+    - Railway detects health endpoint within timeout window
     """
     try:
         logger.critical("🚀 Starting ORCHESTRATOR process (standalone)")
@@ -86,14 +91,24 @@ def run_orchestrator():
         initialize_system()
         logger.critical("✅ Orchestrator: System initialization complete")
         
-        # Now run orchestrator tasks
+        # Now run orchestrator tasks with API server prioritized
         import asyncio
         from src import reconciliation
         from src.core import system_monitor
         from src import maintenance
+        from src.api.server import start_api_server
         
         async def orchestrator_main():
-            """Run all orchestrator tasks in parallel"""
+            """
+            ⚡ API server starts ASAP, other tasks run as background jobs
+            This ensures Railway health checks succeed within timeout window.
+            """
+            # 🚀 PRIORITY 1: Start API server immediately
+            logger.critical("🌐 Starting API server (Port Binding)...")
+            api_server = await start_api_server()
+            
+            # ⏲️ PRIORITY 2-N: Launch other tasks as background (non-blocking)
+            logger.critical("🔄 Launching background orchestrator tasks...")
             reconciliation_task = asyncio.create_task(
                 reconciliation.background_reconciliation_task()
             )
@@ -104,10 +119,12 @@ def run_orchestrator():
                 maintenance.background_maintenance_task()
             )
             
-            # Wait for all (they run indefinitely)
-            await asyncio.gather(
-                reconciliation_task, monitor_task, maintenance_task
-            )
+            # Serve API indefinitely while others run in background
+            try:
+                await api_server.serve()
+            except Exception as e:
+                logger.critical(f"❌ API server error: {e}", exc_info=True)
+                raise
         
         asyncio.run(orchestrator_main())
     
@@ -185,6 +202,13 @@ def main():
         p_orchestrator.start()
         processes.append(p_orchestrator)
         logger.critical(f"🔄 Orchestrator started (PID={p_orchestrator.pid})")
+        logger.critical("   Note: API server binding to 0.0.0.0:$PORT...")
+        
+        # ⏲️ DEPLOYMENT FIX: Wait 2 seconds for API server to bind
+        # This ensures Railway's health check finds the service before Feed/Brain start
+        logger.critical("⏳ Waiting 2 seconds for API server to bind...")
+        time.sleep(2)
+        logger.critical("✅ API server should be ready, starting Feed/Brain...")
         
         # Spawn Feed (priority=100, starts SECOND)
         p_feed = multiprocessing.Process(
