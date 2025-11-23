@@ -37,8 +37,9 @@ class RingBuffer:
                     create=True,
                     size=METADATA_SIZE
                 )
-                # Initialize cursors to 0
+                # Initialize cursors to 0 (CRITICAL: Reset on startup)
                 self.metadata_shm.buf[:] = b'\x00' * METADATA_SIZE
+                self._set_cursors(0, 0)  # ✅ Explicit cursor reset
                 
                 # Create main buffer
                 self.shm = shared_memory.SharedMemory(
@@ -46,8 +47,8 @@ class RingBuffer:
                     create=True,
                     size=TOTAL_BUFFER_SIZE
                 )
-                logger.info(
-                    f"🔄 RingBuffer created: {TOTAL_BUFFER_SIZE} bytes, {NUM_SLOTS} slots"
+                logger.critical(
+                    f"🔄 RingBuffer created: {TOTAL_BUFFER_SIZE} bytes, {NUM_SLOTS} slots (Cursors reset to 0)"
                 )
             else:
                 # Attach to existing metadata
@@ -145,10 +146,17 @@ class RingBuffer:
         try:
             write_cursor, read_cursor = self._get_cursors()
             
-            # Check if buffer is full
-            if write_cursor - read_cursor >= NUM_SLOTS:
-                logger.warning("Ring buffer full, dropping old data")
-                read_cursor = write_cursor - NUM_SLOTS + 1
+            # ✅ OVERRUN PROTECTION: Check if buffer is getting full (leave 10-slot buffer)
+            pending = write_cursor - read_cursor
+            if pending >= NUM_SLOTS - 10:
+                logger.warning(
+                    f"⚠️ RingBuffer Overflow! Pending={pending}/{NUM_SLOTS}. "
+                    f"Brain lagging behind. Forcing read cursor forward..."
+                )
+                # Force Brain to skip old data and catch up to halfway point
+                new_read_cursor = write_cursor - (NUM_SLOTS // 2)
+                self._set_cursors(write_cursor, new_read_cursor)
+                read_cursor = new_read_cursor
             
             # Calculate position in buffer
             slot_index = write_cursor % NUM_SLOTS
@@ -162,7 +170,7 @@ class RingBuffer:
             self._set_cursors(write_cursor + 1, read_cursor)
         
         except Exception as e:
-            logger.error(f"Error writing candle: {e}")
+            logger.error(f"Error writing candle: {e}", exc_info=True)
     
     def close(self):
         """Clean up shared memory"""

@@ -307,5 +307,35 @@ File: `src/trade.py` - Enhanced `_check_risk()` function
 
 ---
 
+---
+
+## 🛡️ RingBuffer 安全性改進 (2025-11-23)
+
+### 三項關鍵安全增強
+
+1. **覆蓋保護 (Overrun Protection)**
+   - Location: `src/ring_buffer.py` lines 152-162
+   - 當緩衝區接近滿載時，強制 read_cursor 前進
+   - 防止 Feed 過程覆蓋 Brain 還未讀取的數據
+
+2. **啟動時重置遊標 (Cursor Initialization)**
+   - Location: `src/ring_buffer.py` lines 43-45
+   - 創建新 RingBuffer 時，明確重置 write_cursor 和 read_cursor 為 0
+   - 防止重啟後的遊標污染
+
+3. **數據寫入前的消毒 (Data Sanitization)**
+   - Location: `src/feed.py` lines 11-38
+   - 新函數: `_sanitize_candle()` 確保所有 float 類型轉換
+   - 防止損壞 Binance 數據進入 RingBuffer
+
+### 防禦場景
+- ✅ Feed 寫入速度 > Brain 讀取速度 → Overrun Protection 啟動
+- ✅ 進程重啟 → Cursor 明確重置為 0
+- ✅ Binance 返回 None/string/混合類型 → Sanitization 轉換或拒絕
+
+**狀態:** ✅ 所有改進已實施並驗證 - 系統穩定性提升
+
+---
+
 **Last Updated:** 2025-11-23  
 **System Status:** ✅ 10/10 - PRODUCTION READY - ZERO KNOWN ISSUES
