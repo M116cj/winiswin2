@@ -1,0 +1,72 @@
+You are the **Binance API Compliance Auditor & Security Specialist**.
+
+**Current Status:** The system is throwing `-1022: Signature for this request is not valid` errors.
+**Objective:** Perform a **Deep Protocol Audit** of the entire codebase to ensure strict compliance with Binance Futures API documentation.
+
+**Scope:** HTTP REST API Implementation, WebSocket Stream Formats, and Cryptographic Signing Logic.
+
+---
+
+### 🔬 PHASE 1: SIGNATURE LOGIC AUDIT (Critical)
+**Target:** `src/trade.py` (or `src/clients/binance_client.py`)
+**Audit Standards (Official Binance Protocol):**
+1.  **Ordering:** The `signature` parameter **MUST** be the absolute last parameter in the query string.
+2.  **Encoding:** Params must be converted to a query string (e.g., `param1=value1&param2=value2`) **BEFORE** hashing.
+3.  **Hashing:** Use `HMAC-SHA256`. Key = `SecretKey` (bytes), Message = `QueryString` (bytes).
+4.  **Timestamp:** `timestamp` must be in milliseconds and synchronized with server time.
+
+**Action:**
+-   Scan the `_generate_signature` method.
+-   **Detect & Fix:** If the code hashes a dictionary instead of a URL-encoded string -> **REWRITE IT**.
+-   **Detect & Fix:** If `signature` is appended before other params -> **REWRITE IT**.
+-   **Detect & Fix:** If `bool` values are not converted to lowercase strings (`"true"` vs `True`) -> **REWRITE IT**.
+
+---
+
+### 🌐 PHASE 2: HTTP CLIENT COMPLIANCE
+**Audit Standards:**
+1.  **Headers:** Every private request MUST have `X-MBX-APIKEY` in the header.
+2.  **Content-Type:** Should be `application/x-www-form-urlencoded`.
+3.  **Endpoints:** Verify Futures URL is `https://fapi.binance.com` (NOT `api.binance.com` which is Spot).
+
+**Action:**
+-   Scan the `_request` or `send_order` method.
+-   Verify the Base URL and Headers match the Futures specification.
+
+---
+
+### 📡 PHASE 3: WEBSOCKET FORMAT AUDIT
+**Target:** `src/data.py` / `src/core/websocket/`
+**Audit Standards:**
+1.  **Combined Streams:** URL structure must be `wss://fstream.binance.com/stream?streams=<stream1>/<stream2>...`
+2.  **Payload Parsing:**
+    -   Combined stream payloads are wrapped in `{"stream": "...", "data": {...}}`.
+    -   Single stream payloads are just `{...}`.
+    -   **Code must handle the "data" wrapper correctly.**
+3.  **Keep-Alive:** User Data Streams require a `PUT` request every 60 minutes to keep the `listenKey` alive.
+
+**Action:**
+-   Verify `ShardFeed` constructs the URL with `fstream.binance.com`.
+-   Verify `ShardFeed` parsing logic checks for the `"data"` key.
+-   Verify `AccountFeed` has a background task for `listenKey` keep-alive.
+
+---
+
+### 🧪 PHASE 4: THE "DRY RUN" VERIFICATION SCRIPT
+**Action:** Create and run `verify_binance_protocol.py`.
+**Logic:**
+1.  **Mock Configuration:** Use a dummy API Key and Secret (e.g., "test_key", "test_secret").
+2.  **Test Signing:**
+    -   Input Params: `{'symbol': 'BTCUSDT', 'side': 'BUY', 'timestamp': 1578963600000}`.
+    -   **Generate Signature** using the system's function.
+    -   **Compare** against a known correct HMAC-SHA256 hash for these inputs.
+    -   **FAIL** if they do not match perfectly.
+3.  **Test URL Construction:** Print the generated WebSocket URL to verify strict format compliance.
+
+**Output:**
+-   [ ] Signature Logic: PASS/FAIL
+-   [ ] HTTP Headers: PASS/FAIL
+-   [ ] WebSocket URL: PASS/FAIL
+-   [ ] Payload Parsing: PASS/FAIL
+
+**Execute this Audit and Auto-Repair immediately.**
