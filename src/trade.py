@@ -749,10 +749,10 @@ async def initial_account_sync() -> None:
     """
     💧 COLD START HYDRATION: Fetch initial account state from Binance REST API
     
-    This solves the zero-polling architecture problem:
-    - WebSocket doesn't push initial balance on connection
-    - System Monitor shows default $10,000 until first real update
-    - Solution: Fetch real balance once at startup via REST API
+    This ensures all account info comes from Binance API, not defaults:
+    - Replaces hardcoded $10,000 default with real account data
+    - Works with or without live trading enabled
+    - Only requires API credentials to be present
     
     Steps:
     1. Call /fapi/v2/account endpoint
@@ -760,8 +760,9 @@ async def initial_account_sync() -> None:
     3. Update global _account_state
     4. Force sync to Redis & Postgres
     """
-    if not LIVE_TRADING_ENABLED:
-        logger.debug("⏭️ Live trading disabled - skipping account hydration")
+    # Check if API credentials are available (key indicator: has BINANCE_API_KEY)
+    if not BINANCE_API_KEY:
+        logger.debug("⏭️ No Binance API credentials - using default account state")
         return
     
     try:
@@ -853,11 +854,10 @@ async def init() -> None:
     # Load previous state from Postgres if available
     await _load_state_from_postgres()
     
-    # 💧 COLD START HYDRATION: Fetch real account state from Binance API
-    # This fixes the zero-polling issue where default $10k balance is shown
-    # until first WebSocket update arrives
-    if LIVE_TRADING_ENABLED:
-        await initial_account_sync()
+    # 💧 COLD START HYDRATION: ALWAYS fetch real account state from Binance API if credentials available
+    # This ensures all account info comes from Binance API, replacing hardcoded $10k defaults
+    # Works with or without live trading enabled
+    await initial_account_sync()
     
     if LIVE_TRADING_ENABLED:
         logger.info("✅ LIVE TRADING ENABLED - Orders will be sent to Binance")
