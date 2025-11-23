@@ -55,22 +55,24 @@ def run_brain_process():
 
 
 def run_orchestrator():
-    """Run orchestrator process (Process 3) - Cache reconciliation & monitoring"""
+    """Run orchestrator process (Process 3) - Cache reconciliation, monitoring & maintenance"""
     import asyncio
     from src import reconciliation
     from src.core import system_monitor
+    from src import maintenance
     
     logger.info(f"🔄 Orchestrator Process started (PID={os.getpid()})")
     
     try:
-        # Run orchestrator with system monitoring
+        # Run orchestrator with system monitoring and auto-maintenance
         async def orchestrator_main():
-            # Start both tasks in parallel
+            # Start all tasks in parallel
             reconciliation_task = asyncio.create_task(reconciliation.background_reconciliation_task())
             monitor_task = asyncio.create_task(system_monitor.background_monitor_task())
+            maintenance_task = asyncio.create_task(maintenance.background_maintenance_task())
             
-            # Wait for both (they run indefinitely)
-            await asyncio.gather(reconciliation_task, monitor_task)
+            # Wait for all (they run indefinitely)
+            await asyncio.gather(reconciliation_task, monitor_task, maintenance_task)
         
         asyncio.run(orchestrator_main())
     except KeyboardInterrupt:
@@ -93,6 +95,7 @@ def main():
     logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     logger.critical("🔇 Log Level: WARNING (Noise silenced)")
     logger.critical("💓 System Monitor: Enabled (15-min heartbeat)")
+    logger.critical("🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)")
     
     # Create ring buffer (in main process)
     logger.critical("🔄 Creating shared memory ring buffer...")
@@ -136,6 +139,7 @@ def main():
         orchestrator_process.start()
         logger.critical(f"🔄 Orchestrator process started (PID={orchestrator_process.pid})")
         logger.critical(f"   └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)")
+        logger.critical(f"   └─ Maintenance: Log rotation (24h) + Cache pruning (1h) + Health checks (6h) + Shard rotation (12h)")
         
         logger.critical("✅ All processes running")
         logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
