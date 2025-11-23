@@ -1,0 +1,71 @@
+2025-11-23T15:44:43.000000000Z [inf]  Starting Container
+2025-11-23T15:44:44.502264943Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.502265179Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.502267928Z [inf]  
+2025-11-23T15:44:44.502280743Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL -    Incident Fix: API binds within 500ms BEFORE heavy init
+2025-11-23T15:44:44.502280848Z [inf]  🔄 Step 2: Starting A.E.G.I.S. with hardened multiprocessing...
+2025-11-23T15:44:44.502283094Z [inf]  🚀 A.E.G.I.S. v8.0 - Hardened Startup Sequence
+2025-11-23T15:44:44.502291231Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL -    Target: Health check response < 1 second
+2025-11-23T15:44:44.502299677Z [inf]  🧹 Step 1: Cleaning shared memory...
+2025-11-23T15:44:44.502299779Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.502309173Z [inf]  ✅ Shared memory cleaned
+2025-11-23T15:44:44.502313010Z [inf]     Note: System will initialize database + ring buffer automatically
+2025-11-23T15:44:44.502324465Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.502331577Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - API-FIRST STARTUP SEQUENCE
+2025-11-23T15:44:44.505300097Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.505304221Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL - ⚡ STEP 1: Starting API server in background thread
+2025-11-23T15:44:44.505308335Z [err]  2025-11-23 15:44:43,773 - __main__ - CRITICAL -    Target: Bind to 0.0.0.0:$PORT within 500ms
+2025-11-23T15:44:44.505314239Z [err]  2025-11-23 15:44:44,248 - src.api.server - CRITICAL - 🌐 PRIORITY 1: Starting API server in background thread
+2025-11-23T15:44:44.505319566Z [err]  2025-11-23 15:44:44,248 - src.api.server - CRITICAL -    Target: Bind to 0.0.0.0:8080 within 500ms
+2025-11-23T15:44:44.505325560Z [err]  2025-11-23 15:44:44,249 - src.api.server - CRITICAL - 🚀 [API Thread] Binding to 0.0.0.0:8080
+2025-11-23T15:44:44.505329864Z [err]  2025-11-23 15:44:44,249 - src.api.server - CRITICAL - 🌐 [API Thread] Starting to serve on 0.0.0.0:8080
+2025-11-23T15:44:44.505334180Z [err]  2025-11-23 15:44:44,250 - src.api.server - CRITICAL - ✅ API server thread started
+2025-11-23T15:44:44.505343019Z [err]  2025-11-23 15:44:44,250 - src.api.server - CRITICAL -    (API binding to port in background...)
+2025-11-23T15:44:44.505347156Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - ✅ API server thread started (background)
+2025-11-23T15:44:44.505351561Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - ⏳ STEP 2: Waiting for API to bind...
+2025-11-23T15:44:44.505358883Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL -    (Railway probes /health endpoint during this window)
+2025-11-23T15:44:44.505364048Z [err]  2025-11-23 15:44:44,250 - src.api.server - CRITICAL - ⏳ Waiting up to 2.0s for API to bind...
+2025-11-23T15:44:44.505368223Z [err]  2025-11-23 15:44:44,250 - src.api.server - CRITICAL - ✅ API is bound and ready for Railway health checks
+2025-11-23T15:44:44.505501431Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - ✅ API port binding detected
+2025-11-23T15:44:44.505505738Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - ✅ Railway health checks now passing
+2025-11-23T15:44:44.505510803Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - 🔄 STEP 3: Initializing heavy resources (DB + Ring Buffer)...
+2025-11-23T15:44:44.505515468Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL -    (API continues serving health checks in background)
+2025-11-23T15:44:44.505725647Z [err]  2025-11-23 15:44:44,250 - __main__ - CRITICAL - 🗄️ Initializing database schema...
+2025-11-23T15:44:44.544253278Z [err]  2025-11-23 15:44:44,541 - src.database.unified_db - CRITICAL - ✅ Database schema initialized successfully
+2025-11-23T15:44:44.544258447Z [err]  2025-11-23 15:44:44,542 - __main__ - CRITICAL - ✅ Database schema initialized successfully
+2025-11-23T15:44:44.544262155Z [err]  2025-11-23 15:44:44,542 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-23T15:44:44.548351539Z [err]  2025-11-23 15:44:44,547 - src.ring_buffer - CRITICAL - 🔄 RingBuffer created: 480000 bytes, 10000 slots (Cursors reset to 0)
+2025-11-23T15:44:44.548358466Z [err]  2025-11-23 15:44:44,547 - __main__ - CRITICAL - ✅ Ring buffer created: 480000 bytes
+2025-11-23T15:44:44.548366895Z [err]  2025-11-23 15:44:44,547 - __main__ - CRITICAL - ✅ Heavy resources initialized successfully
+2025-11-23T15:44:44.548374270Z [err]  2025-11-23 15:44:44,547 - __main__ - CRITICAL - 📡 STEP 4: Launching worker processes...
+2025-11-23T15:44:44.551816835Z [err]  2025-11-23 15:44:44,550 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.551835865Z [err]  2025-11-23 15:44:44,548 - __main__ - CRITICAL - ✅ Feed started (PID=13)
+2025-11-23T15:44:44.551844978Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL - ✅ Brain started (PID=14)
+2025-11-23T15:44:44.551851819Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL - 🔄 STEP 5: Launching Orchestrator (background tasks)...
+2025-11-23T15:44:44.551859644Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL - ✅ Orchestrator started (PID=15)
+2025-11-23T15:44:44.551866413Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T15:44:44.551875083Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL - ✅ ALL SYSTEMS LAUNCHED SUCCESSFULLY
+2025-11-23T15:44:44.551881821Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL -    API Server: Running in main process thread
+2025-11-23T15:44:44.551888090Z [err]  2025-11-23 15:44:44,549 - __main__ - CRITICAL -    Feed: 13, Brain: 14
+2025-11-23T15:44:44.551894021Z [err]  2025-11-23 15:44:44,550 - __main__ - CRITICAL -    Orchestrator: 15
+2025-11-23T15:44:44.551901060Z [err]  2025-11-23 15:44:44,550 - __main__ - CRITICAL - 🔄 Entering keep-alive monitoring loop...
+2025-11-23T15:44:44.613381609Z [err]  2025-11-23 15:44:44,604 - __mp_main__ - CRITICAL - 🚀 Starting ORCHESTRATOR process
+2025-11-23T15:44:44.613445659Z [err]  2025-11-23 15:44:44,605 - __mp_main__ - CRITICAL -    Role: Background maintenance tasks (not API)
+2025-11-23T15:44:44.637238559Z [err]  2025-11-23 15:44:44,635 - __mp_main__ - CRITICAL - 🚀 Starting FEED process (standalone)
+2025-11-23T15:44:44.742775769Z [err]  2025-11-23 15:44:44,733 - __mp_main__ - CRITICAL - 🔄 Orchestrator: Launching background maintenance tasks...
+2025-11-23T15:44:46.407862107Z [err]  2025-11-23 15:44:46,317 - src.trade - CRITICAL - ✅ Account Hydrated: Balance=$9.38, PnL=$0.00, Active Positions=0
+2025-11-23T15:44:46.407886186Z [err]  2025-11-23 15:44:46,100 - __mp_main__ - CRITICAL - 🚀 Starting BRAIN process (standalone)
+2025-11-23T15:44:46.407890705Z [err]  2025-11-23 15:44:46,206 - src.trade - CRITICAL - 💧 Hydrating Account State from Binance API...
+2025-11-23T15:44:46.535242395Z [err]  2025-11-23 15:44:46,533 - src.trade - CRITICAL - 💾 State persisted to Postgres: Balance=$9.38, Positions=0, Trades=0
+2025-11-23T15:44:46.539215358Z [err]  2025-11-23 15:44:46,534 - src.trade - CRITICAL - ✅ Account state synced to Redis & Postgres
+2025-11-23T15:44:51.000000000Z [inf]  Stopping Container
+2025-11-23T15:44:56.399420461Z [err]  2025-11-23 15:44:48,358 - __main__ - CRITICAL - 🛑 Signal 15 received. Initiating graceful shutdown...
+2025-11-23T15:44:56.399425030Z [err]  2025-11-23 15:44:51,249 - __main__ - CRITICAL - 🛑 Stopping all processes...
+2025-11-23T15:44:56.399429286Z [err]  2025-11-23 15:44:51,249 - __main__ - CRITICAL -    Terminating Orchestrator (PID=6)...
+2025-11-23T15:44:56.399433380Z [err]  2025-11-23 15:44:51,249 - __main__ - CRITICAL -    Terminating Feed (PID=9)...
+2025-11-23T15:44:56.399437894Z [err]  2025-11-23 15:44:51,249 - __main__ - CRITICAL -    Terminating Brain (PID=10)...
+2025-11-23T15:44:56.413389690Z [inf]  1:M 23 Nov 2025 15:44:46.587 * 1 changes in 60 seconds. Saving...
+2025-11-23T15:44:56.413395913Z [inf]  1:M 23 Nov 2025 15:44:46.588 * Background saving started by pid 54
+2025-11-23T15:44:56.413400782Z [inf]  54:C 23 Nov 2025 15:44:46.596 * DB saved on disk
+2025-11-23T15:44:56.413408433Z [inf]  54:C 23 Nov 2025 15:44:46.596 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-23T15:44:56.413414575Z [inf]  1:M 23 Nov 2025 15:44:46.688 * Background saving terminated with success
