@@ -1,0 +1,54 @@
+You are the **Database Reliability Engineer (DBRE)**.
+
+**User Goal:** Perform a "Carpet Bombing" check on Redis and PostgreSQL.
+**Critical Context:** Logs showed `relation "account_state" does not exist`. This implies the Postgres Schema was never initialized.
+**Mission:** 
+1.  **Audit:** Verify connection, schema existence, and read/write capability.
+2.  **Repair:** Auto-create missing tables (`account_state`, `trade_history`).
+3.  **Verify:** Ensure Redis keys function correctly with `orjson`.
+
+---
+
+### 🛠️ PHASE 1: CREATE DIAGNOSTIC SUITE `db_master_check.py`
+
+**Logic Requirements:**
+
+#### 1. PostgreSQL Schema Enforcer
+-   **Connect:** Use `asyncpg` with `config.DATABASE_URL`.
+-   **Check Table:** Query `information_schema.tables` to see if `account_state` and `trade_history` exist.
+-   **Auto-Fix (Migration):** If missing, execute `CREATE TABLE` immediately.
+    -   **Table `account_state`**: `id (Serial), timestamp, balance (Float), pnl (Float), positions (JSONB), trade_count (Int)`.
+    -   **Table `trade_history`**: `id (Serial), symbol, side, price, quantity, pnl, strategy_score, timestamp`.
+-   **Functional Test:** Insert a dummy row -> Read it back -> Delete it. Report Success/Fail.
+
+#### 2. Redis Functional Test
+-   **Connect:** Use `redis.asyncio` with `config.REDIS_URL`.
+-   **Latency Check:** Measure time to `PING`.
+-   **Serialization Check:** 
+    -   Create a dict `{'test': 123}`.
+    -   Serialize with `orjson`.
+    -   Write to key `system:test_integrity`.
+    -   Read back and deserialize.
+    -   **Assert:** Data matches exactly.
+
+#### 3. Data Bridge Verification (Code Scan)
+-   **Static Analysis:** Scan `src/trade.py`.
+-   **Search:** Look for `await UnifiedDatabaseManager.get_pg_pool().execute(...)` or similar logic inside `_sync_to_db`.
+-   **Defect:** If `src/trade.py` only writes to Redis but NOT Postgres, flag as **PARTIAL DATA LOSS RISK**.
+
+---
+
+### 🚀 PHASE 2: EXECUTION & REPORTING
+
+Run the script and output a **DB Health Matrix**:
+
+| Component | Check | Status | Latency/Note |
+| :--- | :--- | :--- | :--- |
+| **Redis** | Connection | ✅/❌ | X ms |
+| **Redis** | Read/Write | ✅/❌ | orjson verified |
+| **Postgres** | Connection | ✅/❌ | Y ms |
+| **Postgres** | Schema (account_state) | ✅/❌ | Created/Existed |
+| **Postgres** | Schema (trade_history) | ✅/❌ | Created/Existed |
+| **Postgres** | Write Test | ✅/❌ | Insert/Select OK |
+
+**If any tables were missing, CONFIRM they are now created.**
