@@ -1,0 +1,179 @@
+2025-11-23T04:33:07.000000000Z [inf]  Starting Container
+2025-11-23T04:33:08.292319689Z [err]  2025-11-23 04:33:08,128 - __main__ - CRITICAL - 🔇 Log Level: WARNING (Noise silenced)
+2025-11-23T04:33:08.292327882Z [err]  2025-11-23 04:33:08,128 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine
+2025-11-23T04:33:08.292340037Z [err]  2025-11-23 04:33:08,128 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:33:08.292340534Z [err]  2025-11-23 04:33:08,128 - __main__ - CRITICAL - 💓 System Monitor: Enabled (15-min heartbeat)
+2025-11-23T04:33:08.292351162Z [err]  2025-11-23 04:33:08,128 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-23T04:33:08.292360017Z [err]  2025-11-23 04:33:08,129 - __main__ - CRITICAL - ✅ Ring buffer ready: 480000 bytes
+2025-11-23T04:33:08.292366301Z [err]  2025-11-23 04:33:08,129 - __main__ - CRITICAL - 🚀 Launching Feed + Brain + Orchestrator processes...
+2025-11-23T04:33:08.292378782Z [err]  2025-11-23 04:33:08,130 - __main__ - CRITICAL - 📡 Feed process started (PID=52)
+2025-11-23T04:33:08.292387014Z [err]  2025-11-23 04:33:08,130 - __main__ - CRITICAL - 🧠 Brain process started (PID=53)
+2025-11-23T04:33:08.292394694Z [err]  2025-11-23 04:33:08,131 - __main__ - CRITICAL - 🔄 Orchestrator process started (PID=54)
+2025-11-23T04:33:08.292403697Z [err]  2025-11-23 04:33:08,131 - __main__ - CRITICAL -    └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)
+2025-11-23T04:33:08.292410411Z [err]  2025-11-23 04:33:08,131 - __main__ - CRITICAL - ✅ All processes running
+2025-11-23T04:33:08.292416890Z [err]  2025-11-23 04:33:08,131 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:33:08.500015848Z [err]  2025-11-23 04:33:08,495 - src.brain - ERROR - ❌ Brain error: 'SharedMemory' object has no attribute 'pending_count'
+2025-11-23T04:33:08.500023564Z [err]  Traceback (most recent call last):
+2025-11-23T04:33:08.500030418Z [err]    File "/app/src/brain.py", line 132, in run_brain
+2025-11-23T04:33:08.500037475Z [err]      pending = ring_buffer.pending_count()
+2025-11-23T04:33:08.500044159Z [err]                ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-23T04:33:08.500051019Z [err]  AttributeError: 'SharedMemory' object has no attribute 'pending_count'
+2025-11-23T04:33:08.517823593Z [err]  2025-11-23 04:33:08,514 - __main__ - CRITICAL - 🔴 Brain process died
+2025-11-23T04:33:13.000000000Z [inf]  Stopping Container
+2025-11-23T04:35:53.000000000Z [inf]  Starting Container
+2025-11-23T04:35:54.396507829Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine
+2025-11-23T04:35:54.396531652Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:35:54.396542699Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - 🔇 Log Level: WARNING (Noise silenced)
+2025-11-23T04:35:54.396553602Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - 💓 System Monitor: Enabled (15-min heartbeat)
+2025-11-23T04:35:54.396563539Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - 🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)
+2025-11-23T04:35:54.396570794Z [err]  2025-11-23 04:35:53,862 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-23T04:35:54.396577419Z [err]  2025-11-23 04:35:53,863 - __main__ - CRITICAL - ✅ Ring buffer ready: 480000 bytes
+2025-11-23T04:35:54.396584087Z [err]  2025-11-23 04:35:53,863 - __main__ - CRITICAL - 🚀 Launching Feed + Brain + Orchestrator processes...
+2025-11-23T04:35:54.396591992Z [err]  2025-11-23 04:35:53,864 - __main__ - CRITICAL - 📡 Feed process started (PID=52)
+2025-11-23T04:35:54.396600085Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL - 🧠 Brain process started (PID=53)
+2025-11-23T04:35:54.396606114Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL - 🔄 Orchestrator process started (PID=54)
+2025-11-23T04:35:54.396613053Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL -    └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)
+2025-11-23T04:35:54.396619521Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL -    └─ Maintenance: Log rotation (24h) + Cache pruning (1h) + Health checks (6h) + Shard rotation (12h)
+2025-11-23T04:35:54.396625906Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL - ✅ All processes running
+2025-11-23T04:35:54.403980783Z [err]  2025-11-23 04:35:53,865 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:35:54.422414245Z [inf]  
+2025-11-23T04:35:54.422422334Z [inf]  [95m================================================================================
+2025-11-23T04:35:54.422430545Z [inf]  🔬 SYSTEM MASTER SCAN - AUTONOMOUS DEEP-DIVE AUDIT
+2025-11-23T04:35:54.422438353Z [inf]  ================================================================================[0m
+2025-11-23T04:35:54.422446028Z [inf]  
+2025-11-23T04:35:54.422455391Z [inf]  [94mCATEGORY 1: ARCHITECTURAL VIOLATIONS[0m
+2025-11-23T04:35:54.422462723Z [inf]  --------------------------------------------------------------------------------
+2025-11-23T04:35:54.446107805Z [inf]  [92m✓ No polling violations found[0m
+2025-11-23T04:35:54.446117692Z [inf]  [92m✓ No efficiency violations found[0m
+2025-11-23T04:35:54.446125375Z [inf]  
+2025-11-23T04:35:54.446132381Z [inf]  [94mCATEGORY 2: LOGICAL DISCONNECTS[0m
+2025-11-23T04:35:54.446147204Z [inf]  --------------------------------------------------------------------------------
+2025-11-23T04:35:54.446154460Z [inf]  [92m✓ Brain generates Signal with symbol, confidence[0m
+2025-11-23T04:35:54.446160692Z [inf]  [92m✓ Trade module subscribes to signals[0m
+2025-11-23T04:35:54.446167243Z [inf]  [92m✓ Data module publishes signals to EventBus[0m
+2025-11-23T04:35:54.446174228Z [inf]  
+2025-11-23T04:35:54.446184233Z [inf]  [94mCATEGORY 3: CONFIGURATION & SECURITY GAPS[0m
+2025-11-23T04:35:54.446190626Z [inf]  --------------------------------------------------------------------------------
+2025-11-23T04:35:54.446197241Z [inf]  [92m✓ No ghost variables found[0m
+2025-11-23T04:35:54.446203568Z [inf]  [92m✓ Defined: 1 vars, Used: 1 vars[0m
+2025-11-23T04:35:54.446212359Z [inf]  [91m✗ HIGH: Potential hardcoded credentials[0m
+2025-11-23T04:35:54.446220881Z [inf]  [92m✓ Type-checked 1 numeric configs[0m
+2025-11-23T04:35:54.446227132Z [inf]  
+2025-11-23T04:35:54.446233738Z [inf]  [94mCATEGORY 4: RUNTIME SIMULATION[0m
+2025-11-23T04:35:54.446240039Z [inf]  --------------------------------------------------------------------------------
+2025-11-23T04:35:54.699387893Z [inf]  [92m✓ Signature generation works (valid format)[0m
+2025-11-23T04:35:54.699396316Z [inf]  [92m✓ RSI calculation stable (result: 50.0)[0m
+2025-11-23T04:35:54.699410427Z [inf]  [92m✓ ATR calculation stable (result: 0.00)[0m
+2025-11-23T04:35:54.699415365Z [inf]  
+2025-11-23T04:35:54.699419906Z [inf]  [94mCATEGORY 5: ERROR HANDLING COVERAGE[0m
+2025-11-23T04:35:54.699433311Z [inf]  --------------------------------------------------------------------------------
+2025-11-23T04:35:54.715971167Z [inf]  [92m✓ Good error handling coverage overall[0m
+2025-11-23T04:35:54.716639769Z [inf]  
+2025-11-23T04:35:54.716648161Z [inf]  [95m================================================================================
+2025-11-23T04:35:54.716658439Z [inf]  AUDIT SUMMARY
+2025-11-23T04:35:54.716662758Z [inf]  ================================================================================[0m
+2025-11-23T04:35:54.716666954Z [inf]  
+2025-11-23T04:35:54.716671207Z [inf]  Total defects found: 1
+2025-11-23T04:35:54.716677460Z [inf]  
+2025-11-23T04:35:54.716683856Z [inf]  🔴 HIGH: 1 defect(s)
+2025-11-23T04:35:54.716688495Z [inf]     - src/config.py: BINANCE_API_SECRET may have hardcoded value
+2025-11-23T04:35:54.716693308Z [inf]  🟡 MEDIUM: 0 defect(s)
+2025-11-23T04:35:54.716697824Z [inf]  🟢 LOW: 0 defect(s)
+2025-11-23T04:35:54.716703698Z [inf]  
+2025-11-23T04:35:54.716713286Z [inf]  ================================================================================
+2025-11-23T04:35:54.716721876Z [inf]  AUDIT STATUS: FAIL
+2025-11-23T04:35:54.716729120Z [inf]  ================================================================================
+2025-11-23T04:35:54.716735863Z [inf]  
+2025-11-23T04:35:54.755245574Z [err]  2025-11-23 04:35:54,248 - asyncio - ERROR - Task exception was never retrieved
+2025-11-23T04:35:54.755254966Z [err]  future: <Task finished name='Task-1' coro=<run_orchestrator.<locals>.orchestrator_main() done, defined at /app/src/main.py:68> exception=SystemExit(1)>
+2025-11-23T04:35:54.755261549Z [err]  Traceback (most recent call last):
+2025-11-23T04:35:54.755267409Z [err]    File "/root/.nix-profile/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+2025-11-23T04:35:54.755273410Z [err]      self.run()
+2025-11-23T04:35:54.755287951Z [err]    File "/root/.nix-profile/lib/python3.11/multiprocessing/process.py", line 108, in run
+2025-11-23T04:35:54.755293513Z [err]      self._target(*self._args, **self._kwargs)
+2025-11-23T04:35:54.755526908Z [err]      loop.run_until_complete(tasks.gather(*to_cancel, return_exceptions=True))
+2025-11-23T04:35:54.755535781Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 641, in run_until_complete
+2025-11-23T04:35:54.755544209Z [err]      self.run_forever()
+2025-11-23T04:35:54.755557077Z [err]    File "/app/src/main.py", line 77, in run_orchestrator
+2025-11-23T04:35:54.755570225Z [err]      asyncio.run(orchestrator_main())
+2025-11-23T04:35:54.755577359Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 189, in run
+2025-11-23T04:35:54.755585646Z [err]      with Runner(debug=debug) as runner:
+2025-11-23T04:35:54.755592033Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 63, in __exit__
+2025-11-23T04:35:54.755600146Z [err]      self.close()
+2025-11-23T04:35:54.755620601Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 71, in close
+2025-11-23T04:35:54.755627436Z [err]      _cancel_all_tasks(loop)
+2025-11-23T04:35:54.755632997Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 201, in _cancel_all_tasks
+2025-11-23T04:35:54.764205221Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 608, in run_forever
+2025-11-23T04:35:54.764212371Z [err]      self._run_once()
+2025-11-23T04:35:54.764217768Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 1936, in _run_once
+2025-11-23T04:35:54.764223107Z [err]      handle._run()
+2025-11-23T04:35:54.764229531Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/events.py", line 84, in _run
+2025-11-23T04:35:54.764234516Z [err]      self._context.run(self._callback, *self._args)
+2025-11-23T04:35:54.764239762Z [err]    File "/app/src/main.py", line 75, in orchestrator_main
+2025-11-23T04:35:54.764245723Z [err]      await asyncio.gather(reconciliation_task, monitor_task, maintenance_task)
+2025-11-23T04:35:54.764252898Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 190, in run
+2025-11-23T04:35:54.764258501Z [err]      return runner.run(main)
+2025-11-23T04:35:54.764263964Z [err]             ^^^^^^^^^^^^^^^^
+2025-11-23T04:35:54.764270229Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/runners.py", line 118, in run
+2025-11-23T04:35:54.764276903Z [err]      return self._loop.run_until_complete(task)
+2025-11-23T04:35:54.764282265Z [err]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-23T04:35:54.764287432Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 641, in run_until_complete
+2025-11-23T04:35:54.764296158Z [err]      self.run_forever()
+2025-11-23T04:35:54.764302910Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 608, in run_forever
+2025-11-23T04:35:54.764309775Z [err]      self._run_once()
+2025-11-23T04:35:54.764317003Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/base_events.py", line 1936, in _run_once
+2025-11-23T04:35:54.764325796Z [err]      handle._run()
+2025-11-23T04:35:54.764330364Z [err]    File "/root/.nix-profile/lib/python3.11/asyncio/events.py", line 84, in _run
+2025-11-23T04:35:54.773949364Z [err]      self._context.run(self._callback, *self._args)
+2025-11-23T04:35:54.773958836Z [err]    File "/app/src/maintenance.py", line 199, in background_maintenance_task
+2025-11-23T04:35:54.773967473Z [err]      await worker.run()
+2025-11-23T04:35:54.773980822Z [err]    File "/app/src/maintenance.py", line 179, in run
+2025-11-23T04:35:54.774115033Z [err]      await self.task_health_check_audit()
+2025-11-23T04:35:54.774121882Z [err]    File "/app/src/maintenance.py", line 103, in task_health_check_audit
+2025-11-23T04:35:54.774126979Z [err]      from system_master_scan import defects
+2025-11-23T04:35:54.774131688Z [err]    File "/app/system_master_scan.py", line 430, in <module>
+2025-11-23T04:35:54.774138549Z [err]      sys.exit(0 if defects['HIGH'] == [] else 1)
+2025-11-23T04:35:54.774144479Z [err]  SystemExit: 1
+2025-11-23T04:35:54.774149331Z [err]  2025-11-23 04:35:54,259 - src.brain - ERROR - ❌ Brain error: 'SharedMemory' object has no attribute 'pending_count'
+2025-11-23T04:35:54.774154558Z [err]  Traceback (most recent call last):
+2025-11-23T04:35:54.774160126Z [err]    File "/app/src/brain.py", line 132, in run_brain
+2025-11-23T04:35:54.774166867Z [err]      pending = ring_buffer.pending_count()
+2025-11-23T04:35:54.774171328Z [err]                ^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-23T04:35:54.774175739Z [err]  AttributeError: 'SharedMemory' object has no attribute 'pending_count'
+2025-11-23T04:35:54.822319955Z [err]  2025-11-23 04:35:54,287 - __main__ - CRITICAL - 🔴 Brain process died
+2025-11-23T04:35:59.000000000Z [inf]  Stopping Container
+2025-11-23T04:37:53.000000000Z [inf]  Starting Container
+2025-11-23T04:37:54.974417566Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL - 🧠 Brain process started (PID=6)
+2025-11-23T04:37:54.974432500Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL - 🔄 Orchestrator process started (PID=7)
+2025-11-23T04:37:54.974446763Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL -    └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)
+2025-11-23T04:37:54.974457876Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL -    └─ Maintenance: Log rotation (24h) + Cache pruning (1h) + Health checks (6h) + Shard rotation (12h)
+2025-11-23T04:37:54.974467929Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL - ✅ All processes running
+2025-11-23T04:37:54.974736715Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine
+2025-11-23T04:37:54.974745794Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:37:54.974755320Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - 🔇 Log Level: WARNING (Noise silenced)
+2025-11-23T04:37:54.974765557Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - 💓 System Monitor: Enabled (15-min heartbeat)
+2025-11-23T04:37:54.974774148Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - 🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)
+2025-11-23T04:37:54.974783098Z [err]  2025-11-23 04:37:53,574 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-23T04:37:54.974790565Z [err]  2025-11-23 04:37:53,575 - __main__ - CRITICAL - ✅ Ring buffer ready: 480000 bytes
+2025-11-23T04:37:54.974798004Z [err]  2025-11-23 04:37:53,575 - __main__ - CRITICAL - 🚀 Launching Feed + Brain + Orchestrator processes...
+2025-11-23T04:37:54.974806281Z [err]  2025-11-23 04:37:53,576 - __main__ - CRITICAL - 📡 Feed process started (PID=5)
+2025-11-23T04:37:54.983884925Z [err]  2025-11-23 04:37:53,577 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:37:59.000000000Z [inf]  Stopping Container
+2025-11-23T04:43:32.000000000Z [inf]  Starting Container
+2025-11-23T04:43:32.524205207Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - 🔇 Log Level: WARNING (Noise silenced)
+2025-11-23T04:43:32.524206027Z [err]  2025-11-23 04:43:32,195 - __main__ - CRITICAL -    └─ Maintenance: Log rotation (24h) + Cache pruning (1h) + Health checks (6h) + Shard rotation (12h)
+2025-11-23T04:43:32.524217366Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - 💓 System Monitor: Enabled (15-min heartbeat)
+2025-11-23T04:43:32.524224381Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - 🧹 Auto-Maintenance: Enabled (log rotation, cache pruning, health checks)
+2025-11-23T04:43:32.524242685Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - ✅ Ring buffer ready: 480000 bytes
+2025-11-23T04:43:32.524247190Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-23T04:43:32.524253902Z [err]  2025-11-23 04:43:32,192 - src.ring_buffer - CRITICAL - 🔄 RingBuffer created: 480000 bytes, 10000 slots (Cursors reset to 0)
+2025-11-23T04:43:32.524255837Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - 🚀 Launching Feed + Brain + Orchestrator processes...
+2025-11-23T04:43:32.524264041Z [err]  2025-11-23 04:43:32,194 - __main__ - CRITICAL - 📡 Feed process started (PID=5)
+2025-11-23T04:43:32.524276718Z [err]  2025-11-23 04:43:32,194 - __main__ - CRITICAL - 🧠 Brain process started (PID=6)
+2025-11-23T04:43:32.524284003Z [err]  2025-11-23 04:43:32,194 - __main__ - CRITICAL - 🔄 Orchestrator process started (PID=7)
+2025-11-23T04:43:32.524292243Z [err]  2025-11-23 04:43:32,194 - __main__ - CRITICAL -    └─ Includes: Cache reconciliation (15 min) + System monitor (heartbeat)
+2025-11-23T04:43:32.524298763Z [err]  2025-11-23 04:43:32,191 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine
+2025-11-23T04:43:32.524303912Z [err]  2025-11-23 04:43:32,192 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:43:32.525088888Z [err]  2025-11-23 04:43:32,195 - __main__ - CRITICAL - ✅ All processes running
+2025-11-23T04:43:32.525096096Z [err]  2025-11-23 04:43:32,195 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-23T04:43:37.000000000Z [inf]  Stopping Container

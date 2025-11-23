@@ -143,17 +143,40 @@ def main():
         
         logger.critical("✅ All processes running")
         logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        logger.critical("🔄 Entering Process Monitor Loop (keep-alive)")
         
-        # Monitor processes
-        while feed_process.is_alive() and brain_process.is_alive() and orchestrator_process.is_alive():
-            pass
+        # ⚓ PRODUCTION KEEP-ALIVE LOOP
+        # This ensures the main process stays running and monitors child processes
+        import time
+        try:
+            while True:
+                # Check every 5 seconds (non-blocking)
+                time.sleep(5)
+                
+                # Monitor process health
+                feed_alive = feed_process.is_alive()
+                brain_alive = brain_process.is_alive()
+                orch_alive = orchestrator_process.is_alive()
+                
+                # If any critical process died, log and exit (container restart)
+                if not feed_alive:
+                    logger.critical("🔴 CRITICAL: Feed process died! Container will restart.")
+                    sys.exit(1)
+                
+                if not brain_alive:
+                    logger.critical("🔴 CRITICAL: Brain process died! Container will restart.")
+                    sys.exit(1)
+                
+                if not orch_alive:
+                    logger.critical("🔴 CRITICAL: Orchestrator process died! Container will restart.")
+                    sys.exit(1)
+                
+                # All processes alive - continue monitoring
+                logger.debug(f"✅ All processes running (Feed={feed_alive}, Brain={brain_alive}, Orch={orch_alive})")
         
-        if not feed_process.is_alive():
-            logger.critical("🔴 Feed process died")
-        if not brain_process.is_alive():
-            logger.critical("🔴 Brain process died")
-        if not orchestrator_process.is_alive():
-            logger.critical("🔴 Orchestrator process died")
+        except KeyboardInterrupt:
+            logger.critical("🔄 Graceful shutdown requested...")
+            raise  # Re-raise to trigger cleanup below
     
     except KeyboardInterrupt:
         logger.critical("⏹️ Shutdown requested")

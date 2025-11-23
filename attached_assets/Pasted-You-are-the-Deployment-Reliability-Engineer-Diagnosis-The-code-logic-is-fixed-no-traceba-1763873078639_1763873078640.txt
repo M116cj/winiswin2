@@ -1,0 +1,75 @@
+You are the **Deployment Reliability Engineer**.
+
+**Diagnosis:** The code logic is fixed (no tracebacks), but the container keeps stopping immediately after "All processes running".
+**Root Cause:** 
+1.  **Main Process Exit:** `src/main.py` likely finishes its execution block without `joining` the child processes, causing the container to exit.
+2.  **Port Binding:** Railway requires the app to bind to `0.0.0.0:$PORT`. If the API isn't running or blocking, Railway kills the app.
+
+**Mission:** Fix the Lifecycle Management in `src/main.py` and `src/api/server.py`.
+
+---
+
+### ⚓ STEP 1: FIX MAIN PROCESS KEEP-ALIVE
+**File:** `src/main.py`
+**Action:**
+Rewrite the `if __name__ == "__main__":` block to implement a **Process Monitor Loop**.
+
+**Logic:**
+```python
+import time
+import os
+import sys
+
+# ... imports ...
+
+if __name__ == "__main__":
+    # ... setup config, logging ...
+    
+    # 1. Start Processes
+    feed_p = Process(target=run_feed, args=(...))
+    brain_p = Process(target=run_brain, args=(...))
+    orch_p = Process(target=run_orchestrator, args=(...))
+    
+    feed_p.start()
+    brain_p.start()
+    orch_p.start()
+    
+    logger.critical("✅ All processes running. Entering Monitor Loop.")
+
+    # 2. THE KEEP-ALIVE LOOP (Fixes the exit issue)
+    try:
+        while True:
+            time.sleep(5)
+            
+            # Check if any critical process died
+            if not feed_p.is_alive():
+                logger.critical("🚨 Feed process died! Restarting container...")
+                sys.exit(1) # Force Docker restart
+            if not brain_p.is_alive():
+                logger.critical("🚨 Brain process died! Restarting container...")
+                sys.exit(1)
+            if not orch_p.is_alive():
+                logger.critical("🚨 Orchestrator died! Restarting container...")
+                sys.exit(1)
+                
+    except KeyboardInterrupt:
+        logger.critical("🛑 Shutting down...")
+        feed_p.terminate()
+        brain_p.terminate()
+        orch_p.terminate()
+🌐 STEP 2: ENSURE WEB SERVER BINDING
+File: src/api/server.py
+Action:
+Ensure uvicorn is started correctly inside the Orchestrator process.
+code
+Python
+import os
+import uvicorn
+
+def start_api():
+    port = int(os.getenv("PORT", 8080)) # Railway provides PORT env var
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="error")
+File: src/main.py (Orchestrator section)
+Action:
+Ensure the Orchestrator process actually calls start_api() or runs it as an async task.
+Execute these Lifecycle Fixes immediately.
