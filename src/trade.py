@@ -745,12 +745,119 @@ async def _load_state_from_postgres() -> None:
         logger.debug(f"⚠️ Failed to load state from Postgres: {e}")
 
 
+async def initial_account_sync() -> None:
+    """
+    💧 COLD START HYDRATION: Fetch initial account state from Binance REST API
+    
+    This solves the zero-polling architecture problem:
+    - WebSocket doesn't push initial balance on connection
+    - System Monitor shows default $10,000 until first real update
+    - Solution: Fetch real balance once at startup via REST API
+    
+    Steps:
+    1. Call /fapi/v2/account endpoint
+    2. Extract: totalWalletBalance, totalUnrealizedProfit, positions
+    3. Update global _account_state
+    4. Force sync to Redis & Postgres
+    """
+    if not LIVE_TRADING_ENABLED:
+        logger.debug("⏭️ Live trading disabled - skipping account hydration")
+        return
+    
+    try:
+        logger.critical("💧 Hydrating Account State from Binance API...")
+        
+        # Prepare request params for GET /fapi/v2/account
+        params = {
+            'timestamp': int(time.time() * 1000),
+            'recvWindow': 5000
+        }
+        
+        # Build properly signed request
+        signed_query = _build_signed_request(params)
+        if not signed_query:
+            logger.error("❌ Failed to build signed request for account sync")
+            return
+        
+        # Build complete URL for account info endpoint
+        url = f"{BINANCE_BASE_URL}/fapi/v2/account?{signed_query}"
+        headers = {
+            'X-MBX-APIKEY': BINANCE_API_KEY,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        
+        logger.debug(f"📤 Fetching account information from Binance...")
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                response_text = await resp.text()
+                
+                if resp.status == 200:
+                    account_data = await resp.json()
+                    
+                    # Extract real balance from API response
+                    balance = float(account_data.get('totalWalletBalance', 10000.0))
+                    pnl = float(account_data.get('totalUnrealizedProfit', 0.0))
+                    
+                    # Extract active positions (positionAmt != 0)
+                    active_positions = {}
+                    for position in account_data.get('positions', []):
+                        symbol = position.get('symbol', '')
+                        position_amt = float(position.get('positionAmt', 0))
+                        
+                        # Only keep positions with non-zero amount
+                        if position_amt != 0:
+                            entry_price = float(position.get('entryPrice', 0))
+                            active_positions[symbol] = {
+                                'quantity': position_amt,
+                                'entry_price': entry_price,
+                                'entry_confidence': 0.5,  # Default confidence
+                                'entry_time': int(time.time() * 1000),
+                                'side': 'BUY' if position_amt > 0 else 'SELL'
+                            }
+                    
+                    # Update global state UNDER LOCK
+                    global _account_state
+                    async with _state_lock:
+                        _account_state['balance'] = balance
+                        _account_state['positions'] = active_positions
+                    
+                    logger.critical(
+                        f"✅ Account Hydrated: Balance=${balance:.2f}, "
+                        f"PnL=${pnl:.2f}, Active Positions={len(active_positions)}"
+                    )
+                    
+                    # Force immediate sync to Redis and Postgres
+                    await _sync_state_to_redis()
+                    await _sync_state_to_postgres()
+                    
+                    logger.critical("✅ Account state synced to Redis & Postgres")
+                    
+                else:
+                    logger.error(f"❌ Failed to fetch account info: HTTP {resp.status}")
+                    logger.error(f"Response: {response_text}")
+                    try:
+                        error_json = json.loads(response_text)
+                        logger.error(f"Error: {error_json.get('msg', 'Unknown')}")
+                    except:
+                        pass
+    
+    except Exception as e:
+        logger.error(f"❌ Account hydration failed: {e}", exc_info=True)
+
+
 async def init() -> None:
     """Initialize trade module - connect risk → execution → state"""
     logger.info("💰 Trade module initializing")
     
     # Load previous state from Postgres if available
     await _load_state_from_postgres()
+    
+    # 💧 COLD START HYDRATION: Fetch real account state from Binance API
+    # This fixes the zero-polling issue where default $10k balance is shown
+    # until first WebSocket update arrives
+    if LIVE_TRADING_ENABLED:
+        await initial_account_sync()
     
     if LIVE_TRADING_ENABLED:
         logger.info("✅ LIVE TRADING ENABLED - Orders will be sent to Binance")
@@ -763,4 +870,4 @@ async def init() -> None:
     bus.subscribe(Topic.SIGNAL_GENERATED, _check_risk)
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
-    logger.info("✅ Trade module ready (with Postgres persistence)")
+    logger.info("✅ Trade module ready (with Postgres persistence + Cold Start Hydration)")
