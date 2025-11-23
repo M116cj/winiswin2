@@ -52,16 +52,19 @@ def _generate_signature(query_string: str) -> str:
     3. Query string MUST be encoded as bytes (UTF-8)
     4. Use hexdigest() to get hex string output
     """
-    if not BINANCE_API_SECRET:
+    # Get secret from environment or module variable
+    secret = os.getenv('BINANCE_API_SECRET', '') or BINANCE_API_SECRET
+    
+    if not secret:
         logger.error("❌ BINANCE_API_SECRET not set - cannot sign requests")
         return ""
     
     # FIX 3: Debugging - Log masked API key for verification
-    key_preview = f"{BINANCE_API_SECRET[:3]}***{BINANCE_API_SECRET[-3:]}" if len(BINANCE_API_SECRET) >= 6 else "***"
-    logger.debug(f"🔐 Signing request with API key: {key_preview} (length: {len(BINANCE_API_SECRET)})")
+    key_preview = f"{secret[:3]}***{secret[-3:]}" if len(secret) >= 6 else "***"
+    logger.debug(f"🔐 Signing request with API key: {key_preview} (length: {len(secret)})")
     
     signature = hmac.new(
-        BINANCE_API_SECRET.encode('utf-8'),
+        secret.encode('utf-8'),
         query_string.encode('utf-8'),
         hashlib.sha256
     ).hexdigest()
