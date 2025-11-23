@@ -186,7 +186,10 @@ async def main():
 
 
 if __name__ == "__main__":
+    """Entry point for supervisord"""
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Brain terminated")
+        logger.info("🧠 Brain process stopped")
+    except Exception as e:
+        logger.critical(f"Fatal error in Brain: {e}", exc_info=True)

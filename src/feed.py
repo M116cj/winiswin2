@@ -83,3 +83,13 @@ async def main():
         logger.info("📡 Feed process terminated")
     except Exception as e:
         logger.critical(f"Feed process error: {e}", exc_info=True)
+
+
+if __name__ == "__main__":
+    """Entry point for supervisord"""
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("📡 Feed process stopped")
+    except Exception as e:
+        logger.critical(f"Fatal error in Feed: {e}", exc_info=True)

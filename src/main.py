@@ -2,9 +2,10 @@
 🚀 Main - Dual-Process Quantum Engine (Ring Buffer + Zero GIL Contention)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Kernel-level optimization: Launches two independent processes
+Kernel-level optimization: Launches three independent processes
 - Process 1 (Feed): Reads WebSocket, writes to ring buffer
 - Process 2 (Brain): Polls ring buffer, runs SMC/ML/Trade
+- Process 3 (Orchestrator): Cache reconciliation, monitoring, maintenance
 
 No GIL contention. Microsecond latency. Scalable to 300+ symbols.
 """
@@ -13,6 +14,7 @@ import logging
 import os
 import sys
 import multiprocessing
+import time
 from typing import Optional
 
 from src.ring_buffer import get_ring_buffer
@@ -83,13 +85,14 @@ def run_orchestrator():
 
 def main():
     """
-    Main orchestrator: Launch Feed + Brain processes
+    Main orchestrator: Launch Feed + Brain + Orchestrator processes
     
     Architecture:
     1. Create shared memory ring buffer
     2. Launch Feed process (WebSocket + Write)
     3. Launch Brain process (Read + Analysis + Trade)
-    4. Keep both running with monitoring
+    4. Launch Orchestrator process (Reconciliation + Monitoring + Maintenance)
+    5. Monitor all processes and handle restarts
     """
     logger.critical("🚀 A.E.G.I.S. v8.0 - Dual-Process Quantum Engine")
     logger.critical("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
@@ -147,7 +150,6 @@ def main():
         
         # ⚓ PRODUCTION KEEP-ALIVE LOOP
         # This ensures the main process stays running and monitors child processes
-        import time
         try:
             while True:
                 # Check every 5 seconds (non-blocking)
