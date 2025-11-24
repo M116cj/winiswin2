@@ -1,0 +1,57 @@
+為了防止未來再發生這種事（例如你下次加了 vwap 欄位又報錯），請修改你的資料庫初始化函數（通常在 storage.py 或 database.py）。
+將原本單純的 CREATE TABLE 邏輯，升級為 「檢查並補全（Check and Patch）」 邏輯。
+請將你的資料庫初始化程式碼替換為以下邏輯（假設使用 asyncpg）：
+code
+Python
+import asyncpg
+import logging
+
+logger = logging.getLogger(__name__)
+
+async def init_db_schema(pool):
+    """
+    初始化資料庫結構，並自動修復缺失的欄位 (Self-Healing Schema)。
+    """
+    async with pool.acquire() as conn:
+        # 1. 確保表格存在 (基礎結構)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS market_data (
+                symbol TEXT NOT NULL,
+                timestamp BIGINT NOT NULL,
+                timeframe TEXT NOT NULL,
+                PRIMARY KEY (symbol, timestamp, timeframe)
+            );
+        """)
+
+        # 2. 定義所有需要的欄位及其類型
+        required_columns = {
+            "open_price": "NUMERIC",
+            "high_price": "NUMERIC",
+            "low_price":  "NUMERIC",
+            "close_price": "NUMERIC",
+            "volume":      "NUMERIC"
+        }
+
+        # 3. 動態檢查並添加缺失欄位 (Schema Migration Lite)
+        # 查詢目前資料庫中 market_data 有哪些欄位
+        current_columns_rows = await conn.fetch("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'market_data';
+        """)
+        existing_columns = {row['column_name'] for row in current_columns_rows}
+
+        # 4. 比對並執行 ALTER TABLE
+        for col_name, col_type in required_columns.items():
+            if col_name not in existing_columns:
+                logger.warning(f"⚠️ Detected missing column '{col_name}'. Auto-patching schema...")
+                try:
+                    await conn.execute(f"ALTER TABLE market_data ADD COLUMN {col_name} {col_type};")
+                    logger.info(f"✅ Successfully added column '{col_name}'.")
+                except Exception as e:
+                    logger.error(f"❌ Failed to add column '{col_name}': {e}")
+
+        # 5. 建立索引 (如果需要)
+        await conn.execute("CREATE INDEX IF NOT EXISTS idx_market_data_time ON market_data (timestamp DESC);")
+
+        logger.info("✅ Database schema verified and synchronized.")

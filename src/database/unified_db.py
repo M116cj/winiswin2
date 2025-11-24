@@ -204,6 +204,37 @@ class UnifiedDatabaseManager:
             """)
             logger.debug("✅ market_data table ready")
             
+            # 🛡️ SELF-HEALING SCHEMA: Auto-patch missing columns in market_data
+            # This prevents "column does not exist" errors on Railway restarts
+            required_market_data_columns = {
+                "open_price": "NUMERIC(20, 8)",
+                "high_price": "NUMERIC(20, 8)",
+                "low_price": "NUMERIC(20, 8)",
+                "close_price": "NUMERIC(20, 8)",
+                "volume": "NUMERIC(20, 8)",
+                "timeframe": "VARCHAR(10)"
+            }
+            
+            # Query existing columns in market_data
+            existing_cols_rows = await conn.fetch("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name = 'market_data'
+            """)
+            existing_cols = {row['column_name'] for row in existing_cols_rows}
+            
+            # Auto-patch missing columns
+            for col_name, col_type in required_market_data_columns.items():
+                if col_name not in existing_cols:
+                    logger.warning(f"🔧 Detected missing column '{col_name}' in market_data. Auto-patching...")
+                    try:
+                        await conn.execute(f"ALTER TABLE market_data ADD COLUMN {col_name} {col_type}")
+                        logger.info(f"✅ Successfully added column '{col_name}' to market_data")
+                    except Exception as e:
+                        logger.error(f"❌ Failed to add column '{col_name}': {e}")
+            
+            logger.debug("✅ market_data schema verification complete")
+            
             # Create index on market_data for fast symbol+time queries
             await conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_market_data_symbol_time 
