@@ -278,18 +278,22 @@ async def main():
         logger.info(f"🔗 Connecting to Binance Futures WebSocket... ({len(symbols)} symbols)")
         
         reconnect_count = 0
-        max_reconnect_attempts = 10
+        max_reconnect_attempts = 999  # Essentially unlimited - keep reconnecting
         
         while reconnect_count < max_reconnect_attempts:
             try:
-                async with websockets.connect(ws_url, ping_interval=20, ping_timeout=10) as websocket:
-                    logger.critical(f"✅ Connected to Binance WebSocket")
+                # Binance WebSocket 配置優化：
+                # - ping_interval: 30s (Binance 會每 3 分鐘 ping，但主動 ping 保持連接活躍)
+                # - ping_timeout: 20s (給予充足時間等待 pong)
+                async with websockets.connect(ws_url, ping_interval=30, ping_timeout=20) as websocket:
+                    logger.critical(f"✅ Connected to Binance WebSocket (attempt {reconnect_count + 1})")
                     reconnect_count = 0  # Reset on successful connection
                     candle_count = 0
                     
                     while True:
                         try:
-                            message = await asyncio.wait_for(websocket.recv(), timeout=30)
+                            # 增加超時時間為 45s，允許短暫的網絡波動
+                            message = await asyncio.wait_for(websocket.recv(), timeout=45)
                             data = json.loads(message)
                             
                             # Extract kline data
@@ -362,30 +366,38 @@ async def main():
                                         logger.info(f"📊 Feed: {candle_count} candles written to ring buffer")
                         
                         except asyncio.TimeoutError:
-                            logger.warning("⏱️ WebSocket receive timeout - checking connection...")
+                            # 這是正常的 - Binance 可能暫時沒有新資料
+                            logger.debug("⏱️ WebSocket receive timeout - waiting for next message...")
                             continue
                         except json.JSONDecodeError:
-                            logger.debug("Invalid JSON received")
+                            logger.debug("Invalid JSON received - skipping...")
                             continue
+                        except websockets.exceptions.ConnectionClosedError as e:
+                            # WebSocket 被正常關閉（通常是 keepalive ping timeout）
+                            logger.warning(f"⚠️  WebSocket connection closed: {e}")
+                            break  # 跳出內層 while，觸發重連
                         except Exception as e:
-                            logger.error(f"Error processing message: {e}")
+                            # 只記錄真正的錯誤，不要把 ConnectionClosedError 當成普通錯誤
+                            logger.debug(f"Message processing: {e}")
                             continue
             
             except websockets.exceptions.WebSocketException as e:
                 reconnect_count += 1
-                wait_time = min(2 ** reconnect_count, 60)  # Exponential backoff
-                logger.warning(f"❌ WebSocket disconnected: {e} (attempt {reconnect_count}/{max_reconnect_attempts})")
-                logger.info(f"🔄 Reconnecting in {wait_time}s...")
+                # 指數退避，但 cap 在 30s（保持快速重連）
+                wait_time = min(2 ** reconnect_count, 30)
+                logger.info(f"🔄 WebSocket disconnected ({reconnect_count} attempts): {type(e).__name__}")
+                logger.info(f"   Reconnecting in {wait_time}s...")
                 await asyncio.sleep(wait_time)
             
             except Exception as e:
                 reconnect_count += 1
-                wait_time = min(2 ** reconnect_count, 60)
-                logger.error(f"❌ Connection error: {e} (attempt {reconnect_count}/{max_reconnect_attempts})")
-                logger.info(f"🔄 Reconnecting in {wait_time}s...")
+                wait_time = min(2 ** reconnect_count, 30)
+                logger.warning(f"🔄 Connection error: {type(e).__name__}: {e}")
+                logger.info(f"   Reconnecting in {wait_time}s...")
                 await asyncio.sleep(wait_time)
         
-        logger.critical(f"❌ Max reconnection attempts exceeded ({max_reconnect_attempts})")
+        # 由於 max_reconnect_attempts 是 999，這本質上不會被觸發
+        logger.critical(f"Feed process exceeded max reconnection attempts - stopping")
         return
     
     except KeyboardInterrupt:

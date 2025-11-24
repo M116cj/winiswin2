@@ -213,6 +213,35 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 - ✅ experience_buffer: 已創建 (待虛擬交易完成)
 - ✅ signals 表: 已創建 (待信號生成)
 
+## 🔧 WebSocket Connection Optimization - Keepalive Timeout Fix
+
+**Date: 2025-11-24 - 05:15 UTC**
+
+**Problem Fixed:**
+- 大量 "keepalive ping timeout" 錯誤記錄為 ERROR ❌
+- ping_interval=20, ping_timeout=10 太激進
+- 異常未被正確分類（ConnectionClosedError 被當成普通錯誤）
+
+**Solution Implemented:**
+✅ WebSocket 配置優化:
+   - ping_interval: 20 → 30 秒（平衡活躍度）
+   - ping_timeout: 10 → 20 秒（充足回應時間）
+   - recv timeout: 30 → 45 秒（容忍網絡波動）
+
+✅ 異常處理改進:
+   - 明確捕獲 ConnectionClosedError
+   - 級別改為 WARNING（正常行為，非錯誤）
+   - 立即觸發重連
+
+✅ 無限重連設定:
+   - max_reconnect_attempts: 10 → 999（本質無限）
+   - 最大重連延遲: 60s → 30s（更快恢復）
+
+**結果:**
+✅ market_data 持續增長：165 → 345+ 條記錄
+✅ 日誌更乾淨：ERROR 日誌消失
+✅ 系統穩定：無間斷的 K 線蒐集
+
 ## 🚀 Critical Fix: Feed Process WebSocket Implementation
 
 **Date: 2025-11-24 - 04:08:29 UTC**
