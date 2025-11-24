@@ -193,7 +193,7 @@ async def check_virtual_tp_sl() -> None:
 
 
 async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
-    """Save completed virtual trades to database"""
+    """Save completed virtual trades to database and ML integrator"""
     try:
         import asyncpg
         from src.config import get_database_url
@@ -238,6 +238,12 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
         
         await conn.close()
         logger.debug(f"💾 Saved {len(closed_positions)} virtual trades to database")
+        
+        # 🤖 Add to ML integrator for bias-checked training
+        from src.ml_virtual_integrator import get_ml_virtual_integrator
+        integrator = get_ml_virtual_integrator()
+        for trade in closed_positions:
+            await integrator.add_virtual_trade(trade)
     
     except Exception as e:
         logger.warning(f"⚠️ Failed to save virtual trades: {e}")

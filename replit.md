@@ -45,9 +45,47 @@ The system employs a **HARDENED KERNEL-LEVEL MULTIPROCESS ARCHITECTURE** with an
 
 ## Recent Changes (v8.0 - LIVE MODE ONLY + API-First Startup + Strict Data Firewall + Railway VM Config + Virtual Learning)
 
-**Date: 2025-11-24 (Latest: Virtual Incremental Learning Module)**
+**Date: 2025-11-24 (Latest: 🤖 ML Bias-Free Incremental Learning Integration)**
 
-### 🎓 NEW FEATURE: Virtual Incremental Learning System
+### 🤖 NEW: ML Model Training with Virtual Data (Bias-Checked)
+- **Purpose**: Train ML model on virtual trading data without introducing bias
+- **Data Validation**:
+  - `VirtualDataValidator`: Comprehensive validation of every virtual trade
+  - Checks: Price realism, PnL calculations, volume validation, timestamps
+  - Rejects invalid trades automatically before training
+- **Bias Detection** (5 comprehensive checks):
+  1. **Win Rate Validation**: Detects unrealistic win rates (>85% or <25%)
+  2. **PnL Distribution**: Checks for normal distribution and outliers (3-sigma)
+  3. **Symbol Diversity**: Ensures trading across multiple symbols (not biased to one)
+  4. **BUY/SELL Balance**: Detects imbalanced trading sides (>95% one direction)
+  5. **Close Reason Distribution**: Validates mix of TP_HIT/SL_HIT (not >90% TP)
+- **Architecture**:
+  - `src/ml_virtual_integrator.py`: NEW - Bias detection + validation engine
+  - `VirtualDataValidator`: Validates each trade independently
+  - `MLVirtualIntegrator`: Aggregates trades and detects collective bias
+  - `train_ml_with_virtual_data()`: Entry point for safe training
+- **Integration Points**:
+  - Virtual trades automatically added to integrator after DB save
+  - ML model training triggered every 10 minutes (background)
+  - Training only proceeds with bias-checked data
+  - All bias warnings logged for transparency
+- **Output Example**:
+  ```
+  🤖 Training ML model with virtual data (bias-checked)...
+  📊 Virtual training data: 15 trades | Win Rate: 66.7% | Symbols: 5 | Mean PnL: $12.34
+  ✅ ML model trained successfully with 15 virtual samples
+  ```
+- **Key Metrics Logged**:
+  - `win_rate`: Percentage of profitable trades
+  - `mean_pnl`: Average profit/loss per trade
+  - `stdev_pnl`: Standard deviation (volatility of returns)
+  - `unique_symbols`: Number of different trading pairs
+  - `buy_sell_ratio`: Ratio of BUY to SELL orders
+  - `close_reasons`: Breakdown of TP_HIT/SL_HIT/MANUAL
+
+**Date: 2025-11-24 (Previous: Virtual Incremental Learning Module)**
+
+### 🎓 FEATURE: Virtual Incremental Learning System
 - **Purpose**: Parallel virtual trading account for strategy testing without live restrictions
 - **Core Features**:
   - Same signal logic as live trading but NO position limit restrictions
