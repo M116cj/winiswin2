@@ -1,7 +1,13 @@
-# SelfLearningTrader - A.E.G.I.S. v8.0
+# SelfLearningTrader - A.E.G.I.S. v8.0 - Percentage Return Architecture
 
 ## Overview
-SelfLearningTrader A.E.G.I.S. v8.0 is a **kernel-level high-frequency trading engine** designed for extreme performance, scalability, and microsecond latency in tick-to-trade execution. It features a dual-process architecture for true parallelism, capable of handling hundreds of trades per second across 300+ symbols at 100,000+ ticks/sec. The project aims to minimize latency and maximize throughput by eliminating common performance bottlenecks, focusing on a production-ready system for live trading.
+SelfLearningTrader A.E.G.I.S. v8.0 is a **kernel-level high-frequency trading engine** with **Percentage-Based Return Prediction Architecture**. 
+
+**新架構特性:**
+- ML Model 輸出: 預測 % 收益率 (e.g., +5%), 無資本感知
+- Position Sizing Layer: 獨立計算下單金額（版本 A: 固定風險，版本 B: 凱利公式+ATR)
+- Capital Awareness: 追蹤帳戶總權益，自動調整部位大小
+- Percentage-Based SL/TP: 所有停損停利改為百分比（相對於進場價格）
 
 ## User Preferences
 I prefer detailed explanations.
@@ -212,6 +218,71 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 - ✅ ml_models 表: 已創建 (待 ML 訓練)
 - ✅ experience_buffer: 已創建 (待虛擬交易完成)
 - ✅ signals 表: 已創建 (待信號生成)
+
+## 🎯 ARCHITECTURE CHANGE: Percentage Return + Position Sizing
+
+**Date: 2025-11-24 - 05:30 UTC**
+
+**核心改變:**
+
+### 1️⃣ ML 模型輸出改為百分比收益率
+```python
+# 舊: Model 預測贏的概率
+prediction = {
+    'win_probability': 0.75,
+    'confidence': 0.80
+}
+
+# 新: Model 預測 % 收益率
+prediction = {
+    'predicted_return_pct': 0.05,  # +5% 預測
+    'confidence': 0.80,
+    'direction': 'UP'
+}
+```
+
+### 2️⃣ 新增部位規模計算層 (Position Sizing)
+
+**版本 A (基礎版 - 固定風險%):**
+```
+下單金額 = (總資金 × 風險%) / 停損%
+例: ($10,000 × 2%) / 2% = $10,000 下單金額
+```
+
+**版本 B (進階版 - 凱利+ATR+信心度):**
+```
+Risk Amount = Capital × Kelly% × ATR Weight × Confidence Factor
+例: $10,000 × 6.4% × 1.33 × 1.5 = $1,270.4 下單金額
+```
+
+### 3️⃣ 資本追蹤系統
+```python
+# 追蹤總權益，而不僅現金
+Total Equity = Available Balance + Open Positions Value + Unrealized PnL
+自動調整下單金額隨著帳戶增長
+```
+
+### 4️⃣ 百分比停損停利
+```
+舊: SL = $420 (絕對金額)
+新: SL = 2% (相對於進場價格)
+
+進場 $42,000 → SL = $41,160 (42,000 × 0.98)
+```
+
+**新增檔案:**
+- `src/position_sizing.py` - V1 & V2 實現
+- `src/capital_tracker.py` - 帳戶權益追蹤
+- `src/percentage_return_model.py` - 百分比預測轉換
+- `src/POSITION_SIZING_IMPLEMENTATION.md` - 完整使用指南
+
+**優勢:**
+✅ ML 模型無資本感知 → 無偏差訓練
+✅ 靈活風險管理 → 可在 A/B 間切換
+✅ 自動部位調整 → 隨帳戶增長擴大規模
+✅ 百分比邏輯統一 → 易於管理所有交易對
+
+---
 
 ## 🔧 WebSocket Connection Optimization - Keepalive Timeout Fix
 
