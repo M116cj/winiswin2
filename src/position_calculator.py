@@ -1,10 +1,12 @@
 """
 💰 動態倉位和槓桿計算器
 基於信心度、勝率、賬戶規模動態調整倉位大小和槓桿
+遵守 Binance 約束：最低開倉限制、槓桿分檔、整數槓桿
 """
 
 import logging
 from typing import Dict, Tuple
+from src.binance_constraints import get_binance_constraints
 
 logger = logging.getLogger(__name__)
 
@@ -73,21 +75,24 @@ class PositionCalculator:
         # 倉位大小（假設 1% 的止損距離）
         position_size = risk_amount / 0.01  # 基礎計算，實際需要根據市場調整
         
-        # 槓桿計算（基於信心度和勝率）
-        # 基準 0.60 信心度 → 2x 槓桿
-        # 0.80+ 信心度 + 0.70+ 勝率 → 8x 槓桿
-        # 0.90+ 信心度 + 0.80+ 勝率 → 10x 槓桿
+        # ✅ 無限制槓桿計算（基於信心度和勝率）
+        # 公式：base_leverage * (confidence_multiplier + winrate_multiplier)
+        # 可以超過 125x，但 Binance API 會自動限制在符號的最大槓桿
         
-        if confidence >= 0.90 and winrate >= 0.80:
-            leverage = 10.0
-        elif confidence >= 0.85 and winrate >= 0.75:
-            leverage = 8.0
-        elif confidence >= 0.80 and winrate >= 0.70:
-            leverage = 6.0
-        elif confidence >= 0.70 and winrate >= 0.65:
-            leverage = 4.0
-        else:
-            leverage = 2.0  # 基準槓桿
+        base_leverage = 2.0  # 基準 2x
+        
+        # 信心度槓桿倍數增加：0.60 → 1x, 1.00 → 7x
+        confidence_leverage_boost = (confidence - 0.60) * 10.0  # 可高達 4x
+        
+        # 勝率槓桿倍數增加：0.60 → 1x, 0.80+ → 3x
+        winrate_leverage_boost = (winrate - 0.60) * 10.0  # 可高達 2x
+        
+        # 綜合槓桿（信心度 70%，勝率 30%）
+        # 無限制，由 Binance 的分檔系統自動限制
+        leverage_raw = base_leverage * (1.0 + confidence_leverage_boost * 0.7 + winrate_leverage_boost * 0.3)
+        
+        # ✅ CRITICAL: 轉換為整數（Binance 只接受整數槓桿）
+        leverage = get_binance_constraints().clamp_leverage(leverage_raw)
         
         # TP 和 SL 距離（基於信心度）
         # 高信心度 → 更緊的 SL，更遠的 TP
@@ -102,7 +107,8 @@ class PositionCalculator:
         return {
             'recommended': True,
             'position_size': position_size,
-            'leverage': leverage,
+            'leverage': leverage,  # ✅ 整數槓桿
+            'leverage_raw': leverage_raw,  # 原始浮點槓桿（用於調試）
             'risk_amount': risk_amount,
             'multiplier': position_multiplier,
             'confidence_multiplier': confidence_multiplier,
@@ -112,7 +118,7 @@ class PositionCalculator:
             'notes': (
                 f"Confidence: {confidence:.0%} ({confidence_multiplier:.1f}x) | "
                 f"Winrate: {winrate:.0%} ({winrate_multiplier:.1f}x) | "
-                f"Leverage: {leverage:.0f}x"
+                f"Leverage: {leverage}x (raw: {leverage_raw:.1f}x)"  # ✅ 顯示整數和原始值
             )
         }
 

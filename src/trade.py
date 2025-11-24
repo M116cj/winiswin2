@@ -925,3 +925,57 @@ async def calculate_dynamic_position(
         )
     
     return position
+
+
+# ✅ Binance 約束驗證集成
+from src.binance_constraints import get_binance_constraints
+
+
+async def validate_order_with_binance_constraints(
+    symbol: str,
+    quantity: float,
+    current_price: float
+) -> tuple[bool, str]:
+    """
+    驗證訂單是否符合 Binance 最低開倉限制
+    
+    檢查：
+    1. 最低名義價值（BTCUSDT: 50 USDT, ETHUSDT: 20 USDT, 其他: 5 USDT）
+    2. 最低數量限制
+    
+    Returns:
+        (is_valid, error_message_or_empty_string)
+    """
+    constraints = get_binance_constraints()
+    
+    # 驗證訂單大小
+    is_valid, error_msg = constraints.validate_order_size(
+        symbol=symbol,
+        quantity=quantity,
+        current_price=current_price
+    )
+    
+    if not is_valid:
+        logger.warning(f"🛡️ Binance constraint violation for {symbol}: {error_msg}")
+    
+    return is_valid, error_msg
+
+
+def get_max_leverage_for_position(
+    symbol: str,
+    notional_value: float
+) -> int:
+    """
+    根據持倉名義價值獲得該符號的最大允許槓桿
+    
+    Binance 使用分檔制：持倉越大，最大槓桿越低
+    
+    Returns:
+        最大槓桿倍數（整數）
+    """
+    constraints = get_binance_constraints()
+    max_leverage = constraints.get_max_leverage(symbol, notional_value)
+    logger.debug(
+        f"📊 Max leverage for {symbol} at ${notional_value:.2f} notional: {max_leverage}x"
+    )
+    return max_leverage

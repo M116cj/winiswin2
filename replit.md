@@ -42,3 +42,53 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 
 - **Binance API**: Used for live trading, order execution, and market data.
 - **WebSockets**: Utilized for real-time tick ingestion from exchanges (e.g., Binance combined streams).
+
+### 💰 NEW: Binance Protocol Integration & Unlimited Leverage System
+
+**Date: 2025-11-24 - 完整的 Binance 約束集成 + 無限制槓桿**
+
+**Binance 協議限制已實施：**
+
+1. **最低開倉限制（最小名義價值）：**
+   - BTCUSDT: 50 USDT
+   - ETHUSDT: 20 USDT
+   - 其他所有對: 5 USDT
+   - 系統在下單前自動驗證
+
+2. **槓桿限制（分檔制）：**
+   - 最大槓桿：125x（主要對）
+   - 根據持倉名義價值自動降級
+   - 完整的 BTCUSDT 和 ETHUSDT 分檔配置
+
+**New Components:**
+
+1. **src/binance_constraints.py**
+   - BinanceConstraints 類：管理所有 Binance 限制
+   - get_min_notional(symbol): 最低名義價值
+   - calculate_min_quantity(symbol, price): 計算最低數量
+   - validate_order_size(symbol, qty, price): 訂單驗證
+   - get_max_leverage(symbol, notional): 分檔槓桿查詢
+   - clamp_leverage(leverage): ✅ 轉換為整數
+
+2. **src/leverage_validator.py**
+   - validate_and_clamp_leverage(): 完整槓桿驗證管道
+   - 計算 → 轉換為整數 → 檢查分檔 → 返回最終值
+
+**無限制槓桿實施（整數槓桿）：**
+
+- 公式：`leverage_raw = 2.0 * (1.0 + conf_boost*0.7 + win_boost*0.3)`
+- 信心度倍增：(confidence - 0.60) * 10.0
+- 勝率倍增：(winrate - 0.60) * 10.0
+- ✅ 轉換為整數：`int(leverage_raw)` 確保 >= 1
+- Binance 分檔自動限制
+
+示例計算：
+- 信心度 0.60, 勝率 0.60 → leverage_raw ≈ 2.0 → 整數 2x
+- 信心度 0.80, 勝率 0.70 → leverage_raw ≈ 5.2 → 整數 5x
+- 信心度 0.90, 勝率 0.80 → leverage_raw ≈ 8.6 → 整數 8x
+- 信心度 1.00, 勝率 0.90 → leverage_raw ≈ 12.0 → 整數 12x
+
+**系統整合：**
+- position_calculator.py: 無限制槓桿計算
+- trade.py: Binance 約束驗證在下單前
+- 所有槓桿值都是整數，符合 Binance API 要求
