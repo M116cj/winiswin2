@@ -1,0 +1,1001 @@
+2025-11-24T11:39:39.983864949Z [err]  2025-11-24 11:39:39,968 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5213, Timestamp=1763984380.0
+2025-11-24T11:39:39.983871029Z [err]  2025-11-24 11:39:39,970 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5213, Timestamp=1763984380.0
+2025-11-24T11:39:39.983876502Z [err]  2025-11-24 11:39:39,971 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4500
+2025-11-24T11:39:40.011991661Z [err]  2025-11-24 11:39:40,007 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x386.24951718810354 @ $129.45 (TP: $122.98 | SL: $132.04) - Confidence: 65.0%
+2025-11-24T11:39:40.011995813Z [err]  2025-11-24 11:39:40,007 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=386 > max=0)
+2025-11-24T11:39:40.014807972Z [err]  2025-11-24 11:39:40,007 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5214, Timestamp=1763984380.0
+2025-11-24T11:39:40.014812822Z [err]  2025-11-24 11:39:40,011 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XRPUSDT']... Prices: {'XRPUSDT': 2.0576}
+2025-11-24T11:39:40.014817928Z [err]  2025-11-24 11:39:40,012 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5214, Timestamp=1763984380.0
+2025-11-24T11:39:40.014822400Z [err]  2025-11-24 11:39:40,012 - src.brain - CRITICAL - 🎯 FIL/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0576
+2025-11-24T11:39:40.051036310Z [err]  2025-11-24 11:39:40,049 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['DOGEUSDT']... Prices: {'DOGEUSDT': 0.14548}
+2025-11-24T11:39:40.057036637Z [err]  2025-11-24 11:39:40,054 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: FIL/USDT x24300.155520995337 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:40.057043952Z [err]  2025-11-24 11:39:40,054 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=24300 > max=0)
+2025-11-24T11:39:40.057048708Z [err]  2025-11-24 11:39:40,055 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5215, Timestamp=1763984380.1
+2025-11-24T11:39:40.927043249Z [err]  2025-11-24 11:39:40,084 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BTCUSDT']... Prices: {'BTCUSDT': 86253.2}
+2025-11-24T11:39:40.927049478Z [err]  2025-11-24 11:39:40,084 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5215, Timestamp=1763984380.1
+2025-11-24T11:39:40.927054900Z [err]  2025-11-24 11:39:40,085 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86253.2000
+2025-11-24T11:39:40.927060773Z [err]  2025-11-24 11:39:40,121 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x0.5796886376389514 @ $86253.20 (TP: $81940.54 | SL: $87978.26) - Confidence: 65.0%
+2025-11-24T11:39:40.927067894Z [err]  2025-11-24 11:39:40,122 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=1 > max=0)
+2025-11-24T11:39:40.927073899Z [err]  2025-11-24 11:39:40,122 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5216, Timestamp=1763984380.1
+2025-11-24T11:39:40.927080549Z [err]  2025-11-24 11:39:40,127 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['OPUSDT']... Prices: {'OPUSDT': 0.3051}
+2025-11-24T11:39:40.927088448Z [err]  2025-11-24 11:39:40,127 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 480, Pending=1, Cursor: 5211→5212
+2025-11-24T11:39:40.927094275Z [err]  2025-11-24 11:39:40,127 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5216, Timestamp=1763984380.1
+2025-11-24T11:39:40.927099881Z [err]  2025-11-24 11:39:40,128 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.3051
+2025-11-24T11:39:40.927105917Z [err]  2025-11-24 11:39:40,193 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x163880.6948541462 @ $0.31 (TP: $0.29 | SL: $0.31) - Confidence: 65.0%
+2025-11-24T11:39:40.927117338Z [err]  2025-11-24 11:39:40,193 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=163881 > max=0)
+2025-11-24T11:39:41.185535502Z [err]  2025-11-24 11:39:40,193 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5217, Timestamp=1763984380.2
+2025-11-24T11:39:41.185542762Z [err]  2025-11-24 11:39:40,249 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['SOLUSDT']... Prices: {'SOLUSDT': 129.45}
+2025-11-24T11:39:41.185548776Z [err]  2025-11-24 11:39:40,250 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5217, Timestamp=1763984380.3
+2025-11-24T11:39:41.185556090Z [err]  2025-11-24 11:39:40,251 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4500
+2025-11-24T11:39:41.185563131Z [err]  2025-11-24 11:39:40,286 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XRPUSDT']... Prices: {'XRPUSDT': 2.0575}
+2025-11-24T11:39:41.185570851Z [err]  2025-11-24 11:39:40,288 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x386.24951718810354 @ $129.45 (TP: $122.98 | SL: $132.04) - Confidence: 65.0%
+2025-11-24T11:39:41.185578415Z [err]  2025-11-24 11:39:40,791 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XRPUSDT']... Prices: {'XRPUSDT': 2.0573}
+2025-11-24T11:39:41.185581781Z [err]  2025-11-24 11:39:40,288 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=386 > max=0)
+2025-11-24T11:39:41.185590812Z [err]  2025-11-24 11:39:40,289 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5218, Timestamp=1763984380.3
+2025-11-24T11:39:41.185599895Z [err]  2025-11-24 11:39:40,356 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['ETHUSDT']... Prices: {'ETHUSDT': 2800.91}
+2025-11-24T11:39:41.185607257Z [err]  2025-11-24 11:39:40,356 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5218, Timestamp=1763984380.4
+2025-11-24T11:39:41.185613993Z [err]  2025-11-24 11:39:40,357 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.9100
+2025-11-24T11:39:41.185620897Z [err]  2025-11-24 11:39:40,395 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x17.8513411712622 @ $2800.91 (TP: $2660.86 | SL: $2856.93) - Confidence: 65.0%
+2025-11-24T11:39:41.185662088Z [err]  2025-11-24 11:39:40,792 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5227, Timestamp=1763984380.8
+2025-11-24T11:39:41.185673770Z [err]  2025-11-24 11:39:40,792 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0573
+2025-11-24T11:39:41.185680601Z [err]  2025-11-24 11:39:40,395 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=18 > max=0)
+2025-11-24T11:39:41.185688009Z [err]  2025-11-24 11:39:40,830 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['DOGEUSDT']... Prices: {'DOGEUSDT': 0.14549}
+2025-11-24T11:39:41.185688640Z [err]  2025-11-24 11:39:40,395 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5219, Timestamp=1763984380.4
+2025-11-24T11:39:41.185692179Z [err]  2025-11-24 11:39:40,839 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5228, Timestamp=1763984380.8
+2025-11-24T11:39:41.185697813Z [err]  2025-11-24 11:39:40,396 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XLMUSDT']... Prices: {'XLMUSDT': 0.24472}
+2025-11-24T11:39:41.185705557Z [err]  2025-11-24 11:39:40,396 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5219, Timestamp=1763984380.4
+2025-11-24T11:39:41.185708757Z [err]  2025-11-24 11:39:40,838 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x24303.6990229913 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:41.185714187Z [err]  2025-11-24 11:39:40,397 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:41.185715078Z [err]  2025-11-24 11:39:40,868 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5228, Timestamp=1763984380.9
+2025-11-24T11:39:41.185715490Z [err]  2025-11-24 11:39:40,909 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x59.25504556713005 @ $843.81 (TP: $801.62 | SL: $860.69) - Confidence: 65.0%
+2025-11-24T11:39:41.185719102Z [err]  2025-11-24 11:39:40,868 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BNBUSDT']... Prices: {'BNBUSDT': 843.81}
+2025-11-24T11:39:41.185724639Z [err]  2025-11-24 11:39:40,839 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=24304 > max=0)
+2025-11-24T11:39:41.185724675Z [err]  2025-11-24 11:39:40,432 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x204315.1356652501 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:41.185727157Z [err]  2025-11-24 11:39:40,868 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.8100
+2025-11-24T11:39:41.185733529Z [err]  2025-11-24 11:39:40,432 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=204315 > max=0)
+2025-11-24T11:39:41.185734914Z [err]  2025-11-24 11:39:40,910 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5229, Timestamp=1763984380.9
+2025-11-24T11:39:41.185736286Z [err]  2025-11-24 11:39:40,909 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=59 > max=0)
+2025-11-24T11:39:41.185741384Z [err]  2025-11-24 11:39:40,913 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.5800
+2025-11-24T11:39:41.185742560Z [err]  2025-11-24 11:39:40,432 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5220, Timestamp=1763984380.4
+2025-11-24T11:39:41.185745421Z [err]  2025-11-24 11:39:40,912 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['ETHUSDT']... Prices: {'ETHUSDT': 2800.58}
+2025-11-24T11:39:41.185750408Z [err]  2025-11-24 11:39:40,438 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BCHUSDT']... Prices: {'BCHUSDT': 541.81}
+2025-11-24T11:39:41.185756129Z [err]  2025-11-24 11:39:40,913 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5229, Timestamp=1763984380.9
+2025-11-24T11:39:41.185758695Z [err]  2025-11-24 11:39:40,438 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5220, Timestamp=1763984380.4
+2025-11-24T11:39:41.185765722Z [err]  2025-11-24 11:39:40,439 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:41.185772535Z [err]  2025-11-24 11:39:40,472 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:41.185780977Z [err]  2025-11-24 11:39:40,962 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x17.85344464360954 @ $2800.58 (TP: $2660.55 | SL: $2856.59) - Confidence: 65.0%
+2025-11-24T11:39:41.185789682Z [err]  2025-11-24 11:39:40,962 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=18 > max=0)
+2025-11-24T11:39:41.185794977Z [err]  2025-11-24 11:39:40,963 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5230, Timestamp=1763984381.0
+2025-11-24T11:39:41.185804822Z [err]  2025-11-24 11:39:40,473 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=92 > max=0)
+2025-11-24T11:39:41.185812349Z [err]  2025-11-24 11:39:40,967 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5230, Timestamp=1763984381.0
+2025-11-24T11:39:41.185813184Z [err]  2025-11-24 11:39:40,473 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5221, Timestamp=1763984380.5
+2025-11-24T11:39:41.185816257Z [err]  2025-11-24 11:39:40,967 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BTCUSDT']... Prices: {'BTCUSDT': 86246.4}
+2025-11-24T11:39:41.185820213Z [err]  2025-11-24 11:39:40,968 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86246.4000
+2025-11-24T11:39:41.185821907Z [err]  2025-11-24 11:39:40,476 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BNBUSDT']... Prices: {'BNBUSDT': 843.81}
+2025-11-24T11:39:41.185822805Z [err]  2025-11-24 11:39:41,012 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5231, Timestamp=1763984381.0
+2025-11-24T11:39:41.185828328Z [err]  2025-11-24 11:39:41,012 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:41.185829869Z [err]  2025-11-24 11:39:41,012 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x0.5797343425348769 @ $86246.40 (TP: $81934.08 | SL: $87971.33) - Confidence: 65.0%
+2025-11-24T11:39:41.185831181Z [err]  2025-11-24 11:39:40,476 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5221, Timestamp=1763984380.5
+2025-11-24T11:39:41.185837825Z [err]  2025-11-24 11:39:40,477 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.8100
+2025-11-24T11:39:41.185843608Z [err]  2025-11-24 11:39:40,511 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x59.25504556713005 @ $843.81 (TP: $801.62 | SL: $860.69) - Confidence: 65.0%
+2025-11-24T11:39:41.185849853Z [err]  2025-11-24 11:39:40,511 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=59 > max=0)
+2025-11-24T11:39:41.185867450Z [err]  2025-11-24 11:39:40,511 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5222, Timestamp=1763984380.5
+2025-11-24T11:39:41.185874671Z [err]  2025-11-24 11:39:40,514 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['ADAUSDT']... Prices: {'ADAUSDT': 0.4079}
+2025-11-24T11:39:41.185881069Z [err]  2025-11-24 11:39:40,514 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5222, Timestamp=1763984380.5
+2025-11-24T11:39:41.185888278Z [err]  2025-11-24 11:39:40,515 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4079
+2025-11-24T11:39:41.185894321Z [err]  2025-11-24 11:39:40,549 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x122579.06349595489 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:41.185997347Z [err]  2025-11-24 11:39:40,549 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=122579 > max=0)
+2025-11-24T11:39:41.186004229Z [err]  2025-11-24 11:39:40,549 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5223, Timestamp=1763984380.5
+2025-11-24T11:39:41.186010973Z [err]  2025-11-24 11:39:40,564 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BTCUSDT']... Prices: {'BTCUSDT': 86253.1}
+2025-11-24T11:39:41.186025261Z [err]  2025-11-24 11:39:40,564 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5223, Timestamp=1763984380.6
+2025-11-24T11:39:41.186032843Z [err]  2025-11-24 11:39:40,564 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86253.1000
+2025-11-24T11:39:41.186039735Z [err]  2025-11-24 11:39:40,602 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['SOLUSDT']... Prices: {'SOLUSDT': 129.44}
+2025-11-24T11:39:41.186045886Z [err]  2025-11-24 11:39:40,603 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x0.5796893097175637 @ $86253.10 (TP: $81940.45 | SL: $87978.16) - Confidence: 65.0%
+2025-11-24T11:39:41.186056084Z [err]  2025-11-24 11:39:40,603 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=1 > max=0)
+2025-11-24T11:39:41.186063253Z [err]  2025-11-24 11:39:40,603 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5224, Timestamp=1763984380.6
+2025-11-24T11:39:41.186070373Z [err]  2025-11-24 11:39:40,637 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['UNIUSDT']... Prices: {'UNIUSDT': 6.135}
+2025-11-24T11:39:41.186076931Z [err]  2025-11-24 11:39:40,637 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 490, Pending=1, Cursor: 5219→5220
+2025-11-24T11:39:41.186083416Z [err]  2025-11-24 11:39:40,638 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5224, Timestamp=1763984380.6
+2025-11-24T11:39:41.186143074Z [err]  2025-11-24 11:39:40,639 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1350
+2025-11-24T11:39:41.186148540Z [err]  2025-11-24 11:39:41,050 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 500, Pending=1, Cursor: 5226→5227
+2025-11-24T11:39:41.186150947Z [err]  2025-11-24 11:39:40,674 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x8149.959250203749 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:41.186157703Z [err]  2025-11-24 11:39:41,051 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5231, Timestamp=1763984381.1
+2025-11-24T11:39:41.186159910Z [err]  2025-11-24 11:39:40,675 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=8150 > max=0)
+2025-11-24T11:39:41.186162212Z [err]  2025-11-24 11:39:41,051 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6230
+2025-11-24T11:39:41.186166595Z [err]  2025-11-24 11:39:40,675 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5225, Timestamp=1763984380.7
+2025-11-24T11:39:41.186172169Z [err]  2025-11-24 11:39:40,677 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['LINKUSDT']... Prices: {'LINKUSDT': 12.462}
+2025-11-24T11:39:41.186177927Z [err]  2025-11-24 11:39:40,677 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5225, Timestamp=1763984380.7
+2025-11-24T11:39:41.186184202Z [err]  2025-11-24 11:39:40,677 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $12.4620
+2025-11-24T11:39:41.186190295Z [err]  2025-11-24 11:39:40,712 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x4012.1970791205263 @ $12.46 (TP: $11.84 | SL: $12.71) - Confidence: 65.0%
+2025-11-24T11:39:41.186197610Z [err]  2025-11-24 11:39:40,712 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=4012 > max=0)
+2025-11-24T11:39:41.186203859Z [err]  2025-11-24 11:39:40,712 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5226, Timestamp=1763984380.7
+2025-11-24T11:39:41.186211360Z [err]  2025-11-24 11:39:40,716 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['LTCUSDT']... Prices: {'LTCUSDT': 83.05}
+2025-11-24T11:39:41.186217992Z [err]  2025-11-24 11:39:40,716 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5226, Timestamp=1763984380.7
+2025-11-24T11:39:41.186264185Z [err]  2025-11-24 11:39:40,716 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $83.0500
+2025-11-24T11:39:41.186270624Z [err]  2025-11-24 11:39:40,756 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XLMUSDT']... Prices: {'XLMUSDT': 0.2447}
+2025-11-24T11:39:41.186276810Z [err]  2025-11-24 11:39:40,758 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x602.0469596628537 @ $83.05 (TP: $78.90 | SL: $84.71) - Confidence: 65.0%
+2025-11-24T11:39:41.186283020Z [err]  2025-11-24 11:39:40,758 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=602 > max=0)
+2025-11-24T11:39:41.186289875Z [err]  2025-11-24 11:39:40,758 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5227, Timestamp=1763984380.8
+2025-11-24T11:39:42.049407768Z [err]  2025-11-24 11:39:41,598 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5236, Timestamp=1763984381.6
+2025-11-24T11:39:42.049419383Z [err]  2025-11-24 11:39:41,764 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5236, Timestamp=1763984381.8
+2025-11-24T11:39:42.049433744Z [err]  2025-11-24 11:39:41,319 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=204357 > max=0)
+2025-11-24T11:39:42.049442894Z [err]  2025-11-24 11:39:41,319 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5235, Timestamp=1763984381.3
+2025-11-24T11:39:42.049443747Z [err]  2025-11-24 11:39:41,227 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5234, Timestamp=1763984381.2
+2025-11-24T11:39:42.049450766Z [err]  2025-11-24 11:39:41,268 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5234, Timestamp=1763984381.3
+2025-11-24T11:39:42.049455143Z [err]  2025-11-24 11:39:41,381 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5235, Timestamp=1763984381.4
+2025-11-24T11:39:42.049459012Z [err]  2025-11-24 11:39:41,268 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:42.049464561Z [err]  2025-11-24 11:39:41,318 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x204356.88887072384 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:42.049467108Z [err]  2025-11-24 11:39:41,381 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.3900
+2025-11-24T11:39:42.049571718Z [err]  2025-11-24 11:39:41,597 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x17.854655958634336 @ $2800.39 (TP: $2660.37 | SL: $2856.40) - Confidence: 65.0%
+2025-11-24T11:39:42.049579795Z [err]  2025-11-24 11:39:41,598 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=18 > max=0)
+2025-11-24T11:39:42.050091772Z [err]  2025-11-24 11:39:41,096 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x3670.2635249210894 @ $13.62 (TP: $12.94 | SL: $13.90) - Confidence: 65.0%
+2025-11-24T11:39:42.050099203Z [err]  2025-11-24 11:39:41,096 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=3670 > max=0)
+2025-11-24T11:39:42.050105847Z [err]  2025-11-24 11:39:41,096 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5232, Timestamp=1763984381.1
+2025-11-24T11:39:42.050114043Z [err]  2025-11-24 11:39:41,135 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5232, Timestamp=1763984381.1
+2025-11-24T11:39:42.050121588Z [err]  2025-11-24 11:39:41,135 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:42.050128731Z [err]  2025-11-24 11:39:41,176 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x204348.53686447605 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:42.050135228Z [err]  2025-11-24 11:39:41,176 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=204349 > max=0)
+2025-11-24T11:39:42.050142581Z [err]  2025-11-24 11:39:41,177 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5233, Timestamp=1763984381.2
+2025-11-24T11:39:42.050149769Z [err]  2025-11-24 11:39:41,182 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5233, Timestamp=1763984381.2
+2025-11-24T11:39:42.050158430Z [err]  2025-11-24 11:39:41,183 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4300
+2025-11-24T11:39:42.050164472Z [err]  2025-11-24 11:39:41,226 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x386.3092018851889 @ $129.43 (TP: $122.96 | SL: $132.02) - Confidence: 65.0%
+2025-11-24T11:39:42.050172505Z [err]  2025-11-24 11:39:41,226 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=386 > max=0)
+2025-11-24T11:39:42.051385765Z [err]  2025-11-24 11:39:41,765 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4300
+2025-11-24T11:39:42.051389807Z [err]  2025-11-24 11:39:41,801 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x386.3092018851889 @ $129.43 (TP: $122.96 | SL: $132.02) - Confidence: 65.0%
+2025-11-24T11:39:42.051393944Z [err]  2025-11-24 11:39:41,801 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=386 > max=0)
+2025-11-24T11:39:42.051398055Z [err]  2025-11-24 11:39:41,801 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5237, Timestamp=1763984381.8
+2025-11-24T11:39:42.051403030Z [err]  2025-11-24 11:39:41,803 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5237, Timestamp=1763984381.8
+2025-11-24T11:39:42.051407494Z [err]  2025-11-24 11:39:41,804 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1455
+2025-11-24T11:39:42.051411581Z [err]  2025-11-24 11:39:41,839 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x343689.8542755018 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:42.051599866Z [err]  2025-11-24 11:39:41,839 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=343690 > max=0)
+2025-11-24T11:39:42.051604969Z [err]  2025-11-24 11:39:41,839 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5238, Timestamp=1763984381.8
+2025-11-24T11:39:42.051609867Z [err]  2025-11-24 11:39:41,840 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 510, Pending=1, Cursor: 5233→5234
+2025-11-24T11:39:42.051614817Z [err]  2025-11-24 11:39:41,840 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5238, Timestamp=1763984381.8
+2025-11-24T11:39:42.051621268Z [err]  2025-11-24 11:39:41,840 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.7500
+2025-11-24T11:39:42.055697442Z [err]  2025-11-24 11:39:41,912 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=246670 > max=0)
+2025-11-24T11:39:42.055709014Z [err]  2025-11-24 11:39:41,912 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5240, Timestamp=1763984381.9
+2025-11-24T11:39:42.055720055Z [err]  2025-11-24 11:39:41,914 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5240, Timestamp=1763984381.9
+2025-11-24T11:39:42.055727360Z [err]  2025-11-24 11:39:41,915 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86245.0000
+2025-11-24T11:39:42.055734290Z [err]  2025-11-24 11:39:41,948 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x0.5797437532610586 @ $86245.00 (TP: $81932.75 | SL: $87969.90) - Confidence: 65.0%
+2025-11-24T11:39:42.055740174Z [err]  2025-11-24 11:39:41,948 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:42.055879137Z [err]  2025-11-24 11:39:41,876 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x59.25925925925926 @ $843.75 (TP: $801.56 | SL: $860.62) - Confidence: 65.0%
+2025-11-24T11:39:42.055886035Z [err]  2025-11-24 11:39:41,876 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=59 > max=0)
+2025-11-24T11:39:42.055899259Z [err]  2025-11-24 11:39:41,876 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5239, Timestamp=1763984381.9
+2025-11-24T11:39:42.055913253Z [err]  2025-11-24 11:39:41,878 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5239, Timestamp=1763984381.9
+2025-11-24T11:39:42.055920035Z [err]  2025-11-24 11:39:41,878 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2027
+2025-11-24T11:39:42.055927298Z [err]  2025-11-24 11:39:41,912 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x246669.95559940801 @ $0.20 (TP: $0.19 | SL: $0.21) - Confidence: 65.0%
+2025-11-24T11:39:42.059299510Z [err]  2025-11-24 11:39:41,948 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5241, Timestamp=1763984381.9
+2025-11-24T11:39:42.059305859Z [err]  2025-11-24 11:39:41,953 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5241, Timestamp=1763984382.0
+2025-11-24T11:39:42.059311695Z [err]  2025-11-24 11:39:41,953 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8200
+2025-11-24T11:39:42.059321142Z [err]  2025-11-24 11:39:41,987 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x92.28156952493447 @ $541.82 (TP: $514.73 | SL: $552.66) - Confidence: 65.0%
+2025-11-24T11:39:42.059330136Z [err]  2025-11-24 11:39:41,987 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=92 > max=0)
+2025-11-24T11:39:42.059336470Z [err]  2025-11-24 11:39:41,988 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5242, Timestamp=1763984382.0
+2025-11-24T11:39:42.059346214Z [err]  2025-11-24 11:39:41,995 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5242, Timestamp=1763984382.0
+2025-11-24T11:39:42.059352641Z [err]  2025-11-24 11:39:41,995 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:42.059359167Z [err]  2025-11-24 11:39:42,035 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x204365.24155971553 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:42.059365675Z [err]  2025-11-24 11:39:42,035 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=204365 > max=0)
+2025-11-24T11:39:42.059371657Z [err]  2025-11-24 11:39:42,036 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5243, Timestamp=1763984382.0
+2025-11-24T11:39:42.059378014Z [err]  2025-11-24 11:39:42,041 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5243, Timestamp=1763984382.0
+2025-11-24T11:39:42.062509233Z [err]  2025-11-24 11:39:42,041 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4200
+2025-11-24T11:39:42.081300137Z [err]  2025-11-24 11:39:42,079 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x386.3390511512904 @ $129.42 (TP: $122.95 | SL: $132.01) - Confidence: 65.0%
+2025-11-24T11:39:42.081305874Z [err]  2025-11-24 11:39:42,079 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=386 > max=0)
+2025-11-24T11:39:42.081315035Z [err]  2025-11-24 11:39:42,080 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5244, Timestamp=1763984382.1
+2025-11-24T11:39:43.001887345Z [err]  2025-11-24 11:39:42,091 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5244, Timestamp=1763984382.1
+2025-11-24T11:39:43.001895040Z [err]  2025-11-24 11:39:42,091 - src.brain - CRITICAL - 🎯 SOL/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0572
+2025-11-24T11:39:43.001900206Z [err]  2025-11-24 11:39:42,129 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: SOL/USDT x24304.880419988334 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:43.001906205Z [err]  2025-11-24 11:39:42,129 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=24305 > max=0)
+2025-11-24T11:39:43.001910845Z [err]  2025-11-24 11:39:42,129 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5245, Timestamp=1763984382.1
+2025-11-24T11:39:43.001915603Z [err]  2025-11-24 11:39:42,135 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5245, Timestamp=1763984382.1
+2025-11-24T11:39:43.001921900Z [err]  2025-11-24 11:39:42,135 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $83.0400
+2025-11-24T11:39:43.001928152Z [err]  2025-11-24 11:39:42,174 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x602.1194605009633 @ $83.04 (TP: $78.89 | SL: $84.70) - Confidence: 65.0%
+2025-11-24T11:39:43.001934420Z [err]  2025-11-24 11:39:42,174 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=602 > max=0)
+2025-11-24T11:39:43.001939875Z [err]  2025-11-24 11:39:42,174 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5246, Timestamp=1763984382.2
+2025-11-24T11:39:43.001945407Z [err]  2025-11-24 11:39:42,178 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5246, Timestamp=1763984382.2
+2025-11-24T11:39:43.001965071Z [err]  2025-11-24 11:39:42,178 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1800
+2025-11-24T11:39:43.005912086Z [err]  2025-11-24 11:39:42,250 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x17.855994971751816 @ $2800.18 (TP: $2660.17 | SL: $2856.18) - Confidence: 65.0%
+2025-11-24T11:39:43.005917480Z [err]  2025-11-24 11:39:42,250 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.005922308Z [err]  2025-11-24 11:39:42,251 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5247, Timestamp=1763984382.3
+2025-11-24T11:39:43.005930287Z [err]  2025-11-24 11:39:42,283 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 520, Pending=1, Cursor: 5242→5243
+2025-11-24T11:39:43.005935864Z [err]  2025-11-24 11:39:42,283 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5247, Timestamp=1763984382.3
+2025-11-24T11:39:43.005940064Z [err]  2025-11-24 11:39:42,284 - src.brain - CRITICAL - 🎯 AVAX/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86244.9000
+2025-11-24T11:39:43.005945433Z [err]  2025-11-24 11:39:42,315 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: AVAX/USDT x0.579744425467477 @ $86244.90 (TP: $81932.65 | SL: $87969.80) - Confidence: 65.0%
+2025-11-24T11:39:43.005950292Z [err]  2025-11-24 11:39:42,315 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=1 > max=0)
+2025-11-24T11:39:43.005957352Z [err]  2025-11-24 11:39:42,315 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5248, Timestamp=1763984382.3
+2025-11-24T11:39:43.005961778Z [err]  2025-11-24 11:39:42,318 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5248, Timestamp=1763984382.3
+2025-11-24T11:39:43.005967961Z [err]  2025-11-24 11:39:42,318 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1800
+2025-11-24T11:39:43.005972336Z [err]  2025-11-24 11:39:42,350 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x17.855994971751816 @ $2800.18 (TP: $2660.17 | SL: $2856.18) - Confidence: 65.0%
+2025-11-24T11:39:43.009270432Z [err]  2025-11-24 11:39:42,351 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.009283926Z [err]  2025-11-24 11:39:42,351 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5249, Timestamp=1763984382.4
+2025-11-24T11:39:43.009289958Z [err]  2025-11-24 11:39:42,353 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5249, Timestamp=1763984382.4
+2025-11-24T11:39:43.009297628Z [err]  2025-11-24 11:39:42,353 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:43.009302316Z [err]  2025-11-24 11:39:42,390 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:43.009307314Z [err]  2025-11-24 11:39:42,391 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=386 > max=0)
+2025-11-24T11:39:43.009312852Z [err]  2025-11-24 11:39:42,391 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5250, Timestamp=1763984382.4
+2025-11-24T11:39:43.009320766Z [err]  2025-11-24 11:39:42,396 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5250, Timestamp=1763984382.4
+2025-11-24T11:39:43.009326725Z [err]  2025-11-24 11:39:42,396 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6220
+2025-11-24T11:39:43.009334780Z [err]  2025-11-24 11:39:42,429 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x3670.532961385993 @ $13.62 (TP: $12.94 | SL: $13.89) - Confidence: 65.0%
+2025-11-24T11:39:43.009339981Z [err]  2025-11-24 11:39:42,430 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=3671 > max=0)
+2025-11-24T11:39:43.009344293Z [err]  2025-11-24 11:39:42,430 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5251, Timestamp=1763984382.4
+2025-11-24T11:39:43.013226377Z [err]  2025-11-24 11:39:42,453 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5251, Timestamp=1763984382.5
+2025-11-24T11:39:43.013231959Z [err]  2025-11-24 11:39:42,454 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86244.9000
+2025-11-24T11:39:43.013237482Z [err]  2025-11-24 11:39:42,492 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x0.579744425467477 @ $86244.90 (TP: $81932.65 | SL: $87969.80) - Confidence: 65.0%
+2025-11-24T11:39:43.013243304Z [err]  2025-11-24 11:39:42,492 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=1 > max=0)
+2025-11-24T11:39:43.013250043Z [err]  2025-11-24 11:39:42,492 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5252, Timestamp=1763984382.5
+2025-11-24T11:39:43.013255209Z [err]  2025-11-24 11:39:42,501 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5252, Timestamp=1763984382.5
+2025-11-24T11:39:43.013260895Z [err]  2025-11-24 11:39:42,502 - src.brain - CRITICAL - 🎯 UNI/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0571
+2025-11-24T11:39:43.013267364Z [err]  2025-11-24 11:39:42,538 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: UNI/USDT x24306.0619318458 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:43.013272643Z [err]  2025-11-24 11:39:42,538 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=24306 > max=0)
+2025-11-24T11:39:43.013277503Z [err]  2025-11-24 11:39:42,538 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5253, Timestamp=1763984382.5
+2025-11-24T11:39:43.013283398Z [err]  2025-11-24 11:39:42,543 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5253, Timestamp=1763984382.5
+2025-11-24T11:39:43.013298863Z [err]  2025-11-24 11:39:42,543 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1340
+2025-11-24T11:39:43.015257243Z [err]  2025-11-24 11:39:42,583 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x8151.287903488751 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:43.015268045Z [err]  2025-11-24 11:39:42,583 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=8151 > max=0)
+2025-11-24T11:39:43.015276684Z [err]  2025-11-24 11:39:42,583 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5254, Timestamp=1763984382.6
+2025-11-24T11:39:43.015284886Z [err]  2025-11-24 11:39:42,615 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5254, Timestamp=1763984382.6
+2025-11-24T11:39:43.015293030Z [err]  2025-11-24 11:39:42,615 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1100
+2025-11-24T11:39:43.015300648Z [err]  2025-11-24 11:39:42,655 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x17.85644135408966 @ $2800.11 (TP: $2660.10 | SL: $2856.11) - Confidence: 65.0%
+2025-11-24T11:39:43.015308623Z [err]  2025-11-24 11:39:42,656 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.015318713Z [err]  2025-11-24 11:39:42,656 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5255, Timestamp=1763984382.7
+2025-11-24T11:39:43.015325276Z [err]  2025-11-24 11:39:42,660 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5255, Timestamp=1763984382.7
+2025-11-24T11:39:43.015331610Z [err]  2025-11-24 11:39:42,660 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.3051
+2025-11-24T11:39:43.015338427Z [err]  2025-11-24 11:39:42,697 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x163880.6948541462 @ $0.31 (TP: $0.29 | SL: $0.31) - Confidence: 65.0%
+2025-11-24T11:39:43.015346216Z [err]  2025-11-24 11:39:42,697 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=163881 > max=0)
+2025-11-24T11:39:43.018446513Z [err]  2025-11-24 11:39:42,697 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5256, Timestamp=1763984382.7
+2025-11-24T11:39:43.018453300Z [err]  2025-11-24 11:39:42,699 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 530, Pending=1, Cursor: 5251→5252
+2025-11-24T11:39:43.018459374Z [err]  2025-11-24 11:39:42,700 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5256, Timestamp=1763984382.7
+2025-11-24T11:39:43.018465948Z [err]  2025-11-24 11:39:42,700 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4078
+2025-11-24T11:39:43.018474108Z [err]  2025-11-24 11:39:42,741 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x122609.12211868563 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:43.018479277Z [err]  2025-11-24 11:39:42,741 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=122609 > max=0)
+2025-11-24T11:39:43.018486693Z [err]  2025-11-24 11:39:42,742 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5257, Timestamp=1763984382.7
+2025-11-24T11:39:43.018492147Z [err]  2025-11-24 11:39:42,744 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5257, Timestamp=1763984382.7
+2025-11-24T11:39:43.018496893Z [err]  2025-11-24 11:39:42,744 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.6600
+2025-11-24T11:39:43.018502541Z [err]  2025-11-24 11:39:42,789 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x59.26558092122419 @ $843.66 (TP: $801.48 | SL: $860.53) - Confidence: 65.0%
+2025-11-24T11:39:43.018508263Z [err]  2025-11-24 11:39:42,789 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=59 > max=0)
+2025-11-24T11:39:43.018513342Z [err]  2025-11-24 11:39:42,789 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5258, Timestamp=1763984382.8
+2025-11-24T11:39:43.022465270Z [err]  2025-11-24 11:39:42,861 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x343760.74252320384 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:43.022484652Z [err]  2025-11-24 11:39:42,861 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=343761 > max=0)
+2025-11-24T11:39:43.022550213Z [err]  2025-11-24 11:39:42,825 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5258, Timestamp=1763984382.8
+2025-11-24T11:39:43.022555270Z [err]  2025-11-24 11:39:42,825 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:43.022622995Z [err]  2025-11-24 11:39:42,862 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5259, Timestamp=1763984382.9
+2025-11-24T11:39:43.022640349Z [err]  2025-11-24 11:39:42,864 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5259, Timestamp=1763984382.9
+2025-11-24T11:39:43.022648663Z [err]  2025-11-24 11:39:42,864 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:43.022656162Z [err]  2025-11-24 11:39:42,907 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x204365.24155971553 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:43.022663654Z [err]  2025-11-24 11:39:42,907 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=204365 > max=0)
+2025-11-24T11:39:43.022680133Z [err]  2025-11-24 11:39:42,907 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5260, Timestamp=1763984382.9
+2025-11-24T11:39:43.022689120Z [err]  2025-11-24 11:39:42,941 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5260, Timestamp=1763984382.9
+2025-11-24T11:39:43.022697079Z [err]  2025-11-24 11:39:42,941 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:43.027201921Z [err]  2025-11-24 11:39:42,981 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:43.027211207Z [err]  2025-11-24 11:39:42,981 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.027217545Z [err]  2025-11-24 11:39:42,981 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5261, Timestamp=1763984383.0
+2025-11-24T11:39:43.027225562Z [err]  2025-11-24 11:39:42,988 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5261, Timestamp=1763984383.0
+2025-11-24T11:39:43.027233168Z [err]  2025-11-24 11:39:42,989 - src.brain - CRITICAL - 🎯 ETH/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:43.031037076Z [err]  2025-11-24 11:39:43,026 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: ETH/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:43.031044496Z [err]  2025-11-24 11:39:43,026 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=24312 > max=0)
+2025-11-24T11:39:43.031053093Z [err]  2025-11-24 11:39:43,027 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5262, Timestamp=1763984383.0
+2025-11-24T11:39:43.082490925Z [err]  2025-11-24 11:39:43,078 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5262, Timestamp=1763984383.1
+2025-11-24T11:39:43.082517344Z [err]  2025-11-24 11:39:43,078 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:43.932342150Z [err]  2025-11-24 11:39:43,118 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:43.932350282Z [err]  2025-11-24 11:39:43,118 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=1 > max=0)
+2025-11-24T11:39:43.932359042Z [err]  2025-11-24 11:39:43,118 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5263, Timestamp=1763984383.1
+2025-11-24T11:39:43.932366570Z [err]  2025-11-24 11:39:43,121 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5263, Timestamp=1763984383.1
+2025-11-24T11:39:43.932374702Z [err]  2025-11-24 11:39:43,121 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:43.932383113Z [err]  2025-11-24 11:39:43,159 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:43.932393105Z [err]  2025-11-24 11:39:43,159 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.932429003Z [err]  2025-11-24 11:39:43,159 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5264, Timestamp=1763984383.2
+2025-11-24T11:39:43.932437488Z [err]  2025-11-24 11:39:43,200 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 540, Pending=1, Cursor: 5259→5260
+2025-11-24T11:39:43.932444046Z [err]  2025-11-24 11:39:43,201 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5264, Timestamp=1763984383.2
+2025-11-24T11:39:43.932455794Z [err]  2025-11-24 11:39:43,201 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2766
+2025-11-24T11:39:43.932482269Z [err]  2025-11-24 11:39:43,238 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x180740.31231925968 @ $0.28 (TP: $0.26 | SL: $0.28) - Confidence: 65.0%
+2025-11-24T11:39:43.935850068Z [err]  2025-11-24 11:39:43,238 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=180740 > max=0)
+2025-11-24T11:39:43.935857031Z [err]  2025-11-24 11:39:43,238 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5265, Timestamp=1763984383.2
+2025-11-24T11:39:43.935863975Z [err]  2025-11-24 11:39:43,340 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5265, Timestamp=1763984383.3
+2025-11-24T11:39:43.935870583Z [err]  2025-11-24 11:39:43,340 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:43.935877111Z [err]  2025-11-24 11:39:43,384 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:43.935883842Z [err]  2025-11-24 11:39:43,384 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=18 > max=0)
+2025-11-24T11:39:43.935890716Z [err]  2025-11-24 11:39:43,384 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5266, Timestamp=1763984383.4
+2025-11-24T11:39:43.935897668Z [err]  2025-11-24 11:39:43,386 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5266, Timestamp=1763984383.4
+2025-11-24T11:39:43.935905069Z [err]  2025-11-24 11:39:43,386 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $83.0300
+2025-11-24T11:39:43.935911068Z [err]  2025-11-24 11:39:43,433 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x602.1919788028423 @ $83.03 (TP: $78.88 | SL: $84.69) - Confidence: 65.0%
+2025-11-24T11:39:43.935918591Z [err]  2025-11-24 11:39:43,433 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=602 > max=0)
+2025-11-24T11:39:43.935925489Z [err]  2025-11-24 11:39:43,433 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5267, Timestamp=1763984383.4
+2025-11-24T11:39:43.935954122Z [err]  2025-11-24 11:39:43,700 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5267, Timestamp=1763984383.7
+2025-11-24T11:39:43.935960446Z [err]  2025-11-24 11:39:43,701 - src.brain - CRITICAL - 🎯 AVAX/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:43.936459118Z [err]  2025-11-24 11:39:43,921 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: AVAX/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:43.936467153Z [err]  2025-11-24 11:39:43,921 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=386 > max=0)
+2025-11-24T11:39:43.936472592Z [err]  2025-11-24 11:39:43,921 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5268, Timestamp=1763984383.9
+2025-11-24T11:39:44.087719852Z [err]  2025-11-24 11:39:44,083 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5268, Timestamp=1763984384.1
+2025-11-24T11:39:44.087727999Z [err]  2025-11-24 11:39:44,084 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:45.170224126Z [err]  2025-11-24 11:39:44,130 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=18 > max=0)
+2025-11-24T11:39:45.170232754Z [err]  2025-11-24 11:39:44,130 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5269, Timestamp=1763984384.1
+2025-11-24T11:39:45.170238159Z [err]  2025-11-24 11:39:44,167 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5269, Timestamp=1763984384.2
+2025-11-24T11:39:45.170243330Z [err]  2025-11-24 11:39:44,167 - src.brain - CRITICAL - 🎯 MATIC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2447
+2025-11-24T11:39:45.170248207Z [err]  2025-11-24 11:39:44,203 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: MATIC/USDT x204373.59493153484 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:45.170253649Z [err]  2025-11-24 11:39:44,203 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=204374 > max=0)
+2025-11-24T11:39:45.170258583Z [err]  2025-11-24 11:39:44,204 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5270, Timestamp=1763984384.2
+2025-11-24T11:39:45.170263496Z [err]  2025-11-24 11:39:44,215 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5270, Timestamp=1763984384.2
+2025-11-24T11:39:45.170269330Z [err]  2025-11-24 11:39:44,215 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4100
+2025-11-24T11:39:45.170273554Z [err]  2025-11-24 11:39:44,250 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x386.36890503052314 @ $129.41 (TP: $122.94 | SL: $132.00) - Confidence: 65.0%
+2025-11-24T11:39:45.170278035Z [err]  2025-11-24 11:39:44,250 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=386 > max=0)
+2025-11-24T11:39:45.170364261Z [err]  2025-11-24 11:39:44,129 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:45.971091153Z [err]  2025-11-24 11:39:44,261 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5271, Timestamp=1763984384.3
+2025-11-24T11:39:45.971097090Z [err]  2025-11-24 11:39:44,262 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:45.971102732Z [err]  2025-11-24 11:39:44,329 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:45.971108470Z [err]  2025-11-24 11:39:44,329 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=18 > max=0)
+2025-11-24T11:39:45.971114354Z [err]  2025-11-24 11:39:44,329 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5272, Timestamp=1763984384.3
+2025-11-24T11:39:45.971120294Z [err]  2025-11-24 11:39:44,409 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 550, Pending=1, Cursor: 5267→5268
+2025-11-24T11:39:45.971141310Z [err]  2025-11-24 11:39:44,409 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5272, Timestamp=1763984384.4
+2025-11-24T11:39:45.971148243Z [err]  2025-11-24 11:39:44,410 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4100
+2025-11-24T11:39:45.971155237Z [err]  2025-11-24 11:39:44,453 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x386.36890503052314 @ $129.41 (TP: $122.94 | SL: $132.00) - Confidence: 65.0%
+2025-11-24T11:39:45.971157599Z [err]  2025-11-24 11:39:44,250 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5271, Timestamp=1763984384.3
+2025-11-24T11:39:45.971162818Z [err]  2025-11-24 11:39:44,453 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=386 > max=0)
+2025-11-24T11:39:45.971169002Z [err]  2025-11-24 11:39:44,454 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5273, Timestamp=1763984384.5
+2025-11-24T11:39:45.974879836Z [err]  2025-11-24 11:39:45,041 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=122579 > max=0)
+2025-11-24T11:39:45.974888947Z [err]  2025-11-24 11:39:45,041 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5276, Timestamp=1763984385.0
+2025-11-24T11:39:45.974896920Z [err]  2025-11-24 11:39:45,045 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5276, Timestamp=1763984385.0
+2025-11-24T11:39:45.974904140Z [err]  2025-11-24 11:39:45,045 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:45.974911126Z [err]  2025-11-24 11:39:45,086 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:45.974918437Z [err]  2025-11-24 11:39:45,086 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=18 > max=0)
+2025-11-24T11:39:45.974926623Z [err]  2025-11-24 11:39:45,087 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5277, Timestamp=1763984385.1
+2025-11-24T11:39:45.974933368Z [err]  2025-11-24 11:39:45,092 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5277, Timestamp=1763984385.1
+2025-11-24T11:39:45.974939943Z [err]  2025-11-24 11:39:45,093 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:45.974947256Z [err]  2025-11-24 11:39:45,139 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:45.974957508Z [err]  2025-11-24 11:39:45,139 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=1 > max=0)
+2025-11-24T11:39:45.975137458Z [err]  2025-11-24 11:39:44,670 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5273, Timestamp=1763984384.7
+2025-11-24T11:39:45.975143682Z [err]  2025-11-24 11:39:44,670 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:45.975150386Z [err]  2025-11-24 11:39:44,703 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:45.975158149Z [err]  2025-11-24 11:39:44,703 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=18 > max=0)
+2025-11-24T11:39:45.975165206Z [err]  2025-11-24 11:39:44,703 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5274, Timestamp=1763984384.7
+2025-11-24T11:39:45.975170685Z [err]  2025-11-24 11:39:44,777 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5274, Timestamp=1763984384.8
+2025-11-24T11:39:45.975175534Z [err]  2025-11-24 11:39:44,777 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6200
+2025-11-24T11:39:45.975180598Z [err]  2025-11-24 11:39:44,811 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x3671.0719530102792 @ $13.62 (TP: $12.94 | SL: $13.89) - Confidence: 65.0%
+2025-11-24T11:39:45.975187714Z [err]  2025-11-24 11:39:44,811 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=3671 > max=0)
+2025-11-24T11:39:45.975192883Z [err]  2025-11-24 11:39:44,811 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5275, Timestamp=1763984384.8
+2025-11-24T11:39:45.975199129Z [err]  2025-11-24 11:39:45,003 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5275, Timestamp=1763984385.0
+2025-11-24T11:39:45.975205672Z [err]  2025-11-24 11:39:45,003 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4079
+2025-11-24T11:39:45.975500748Z [err]  2025-11-24 11:39:45,041 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x122579.06349595489 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:45.976236375Z [err]  2025-11-24 11:39:45,140 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5278, Timestamp=1763984385.1
+2025-11-24T11:39:45.976240279Z [err]  2025-11-24 11:39:45,263 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5278, Timestamp=1763984385.3
+2025-11-24T11:39:45.976244284Z [err]  2025-11-24 11:39:45,264 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:45.976248021Z [err]  2025-11-24 11:39:45,300 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x343784.37843784376 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:45.976251930Z [err]  2025-11-24 11:39:45,300 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=343784 > max=0)
+2025-11-24T11:39:45.976256337Z [err]  2025-11-24 11:39:45,300 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5279, Timestamp=1763984385.3
+2025-11-24T11:39:45.976260921Z [err]  2025-11-24 11:39:45,303 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5279, Timestamp=1763984385.3
+2025-11-24T11:39:45.976265758Z [err]  2025-11-24 11:39:45,303 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $12.4600
+2025-11-24T11:39:45.976269657Z [err]  2025-11-24 11:39:45,341 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x4012.8410914927767 @ $12.46 (TP: $11.84 | SL: $12.71) - Confidence: 65.0%
+2025-11-24T11:39:45.976273307Z [err]  2025-11-24 11:39:45,341 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=4013 > max=0)
+2025-11-24T11:39:45.976277604Z [err]  2025-11-24 11:39:45,342 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5280, Timestamp=1763984385.3
+2025-11-24T11:39:45.976281860Z [err]  2025-11-24 11:39:45,346 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5280, Timestamp=1763984385.3
+2025-11-24T11:39:45.977295165Z [err]  2025-11-24 11:39:45,347 - src.brain - CRITICAL - 🎯 BTC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:45.977299278Z [err]  2025-11-24 11:39:45,386 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: BTC/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:45.977302818Z [err]  2025-11-24 11:39:45,386 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=24312 > max=0)
+2025-11-24T11:39:45.977307282Z [err]  2025-11-24 11:39:45,386 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5281, Timestamp=1763984385.4
+2025-11-24T11:39:45.977311616Z [err]  2025-11-24 11:39:45,391 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 560, Pending=1, Cursor: 5276→5277
+2025-11-24T11:39:45.977315895Z [err]  2025-11-24 11:39:45,391 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5281, Timestamp=1763984385.4
+2025-11-24T11:39:45.977321418Z [err]  2025-11-24 11:39:45,392 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4078
+2025-11-24T11:39:45.977327308Z [err]  2025-11-24 11:39:45,429 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x122609.12211868563 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:45.977332189Z [err]  2025-11-24 11:39:45,430 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=122609 > max=0)
+2025-11-24T11:39:45.977336731Z [err]  2025-11-24 11:39:45,430 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5282, Timestamp=1763984385.4
+2025-11-24T11:39:45.977344788Z [err]  2025-11-24 11:39:45,434 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5282, Timestamp=1763984385.4
+2025-11-24T11:39:45.977350235Z [err]  2025-11-24 11:39:45,435 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.5000
+2025-11-24T11:39:45.978554495Z [err]  2025-11-24 11:39:45,474 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x0.5798008963721858 @ $86236.50 (TP: $81924.68 | SL: $87961.23) - Confidence: 65.0%
+2025-11-24T11:39:45.978558745Z [err]  2025-11-24 11:39:45,475 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=1 > max=0)
+2025-11-24T11:39:45.978563035Z [err]  2025-11-24 11:39:45,475 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5283, Timestamp=1763984385.5
+2025-11-24T11:39:45.978568395Z [err]  2025-11-24 11:39:45,482 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5283, Timestamp=1763984385.5
+2025-11-24T11:39:45.978572451Z [err]  2025-11-24 11:39:45,482 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.6200
+2025-11-24T11:39:45.978576531Z [err]  2025-11-24 11:39:45,519 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x59.26839098172163 @ $843.62 (TP: $801.44 | SL: $860.49) - Confidence: 65.0%
+2025-11-24T11:39:45.978580375Z [err]  2025-11-24 11:39:45,519 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=59 > max=0)
+2025-11-24T11:39:45.978584659Z [err]  2025-11-24 11:39:45,520 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5284, Timestamp=1763984385.5
+2025-11-24T11:39:45.978590316Z [err]  2025-11-24 11:39:45,523 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5284, Timestamp=1763984385.5
+2025-11-24T11:39:45.978594532Z [err]  2025-11-24 11:39:45,523 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.3850
+2025-11-24T11:39:45.978599900Z [err]  2025-11-24 11:39:45,559 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x3735.5248412401943 @ $13.38 (TP: $12.72 | SL: $13.65) - Confidence: 65.0%
+2025-11-24T11:39:45.978605668Z [err]  2025-11-24 11:39:45,559 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=3736 > max=0)
+2025-11-24T11:39:45.980193035Z [err]  2025-11-24 11:39:45,559 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5285, Timestamp=1763984385.6
+2025-11-24T11:39:45.980201983Z [err]  2025-11-24 11:39:45,560 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5285, Timestamp=1763984385.6
+2025-11-24T11:39:45.980208758Z [err]  2025-11-24 11:39:45,560 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:45.980214734Z [err]  2025-11-24 11:39:45,594 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:45.980224203Z [err]  2025-11-24 11:39:45,594 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=92 > max=0)
+2025-11-24T11:39:45.980230835Z [err]  2025-11-24 11:39:45,595 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5286, Timestamp=1763984385.6
+2025-11-24T11:39:45.980238849Z [err]  2025-11-24 11:39:45,598 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5286, Timestamp=1763984385.6
+2025-11-24T11:39:45.980244798Z [err]  2025-11-24 11:39:45,598 - src.brain - CRITICAL - 🎯 DOGE/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:45.980250612Z [err]  2025-11-24 11:39:45,632 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: DOGE/USDT x204398.659144796 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:45.980257177Z [err]  2025-11-24 11:39:45,632 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=204399 > max=0)
+2025-11-24T11:39:45.980264020Z [err]  2025-11-24 11:39:45,633 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5287, Timestamp=1763984385.6
+2025-11-24T11:39:45.980270553Z [err]  2025-11-24 11:39:45,635 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5287, Timestamp=1763984385.6
+2025-11-24T11:39:45.982862575Z [err]  2025-11-24 11:39:45,635 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0564
+2025-11-24T11:39:45.982872767Z [err]  2025-11-24 11:39:45,670 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x24314.335732347794 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:45.982874471Z [err]  2025-11-24 11:39:45,745 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x0.5798136710786621 @ $86234.60 (TP: $81922.87 | SL: $87959.29) - Confidence: 65.0%
+2025-11-24T11:39:45.982885250Z [err]  2025-11-24 11:39:45,670 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=24314 > max=0)
+2025-11-24T11:39:45.982892391Z [err]  2025-11-24 11:39:45,745 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=1 > max=0)
+2025-11-24T11:39:45.982894320Z [err]  2025-11-24 11:39:45,671 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5288, Timestamp=1763984385.7
+2025-11-24T11:39:45.982905153Z [err]  2025-11-24 11:39:45,746 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5289, Timestamp=1763984385.7
+2025-11-24T11:39:45.982905426Z [err]  2025-11-24 11:39:45,707 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5288, Timestamp=1763984385.7
+2025-11-24T11:39:45.982913712Z [err]  2025-11-24 11:39:45,708 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86234.6000
+2025-11-24T11:39:45.982918224Z [err]  2025-11-24 11:39:45,752 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5289, Timestamp=1763984385.8
+2025-11-24T11:39:45.982927251Z [err]  2025-11-24 11:39:45,752 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:45.982936268Z [err]  2025-11-24 11:39:45,786 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:45.985698580Z [err]  2025-11-24 11:39:45,787 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=386 > max=0)
+2025-11-24T11:39:45.985707546Z [err]  2025-11-24 11:39:45,787 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5290, Timestamp=1763984385.8
+2025-11-24T11:39:45.985715259Z [err]  2025-11-24 11:39:45,796 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 570, Pending=1, Cursor: 5285→5286
+2025-11-24T11:39:45.985721424Z [err]  2025-11-24 11:39:45,797 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5290, Timestamp=1763984385.8
+2025-11-24T11:39:45.985732488Z [err]  2025-11-24 11:39:45,797 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:45.985741293Z [err]  2025-11-24 11:39:45,831 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x343808.0176029705 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:45.985750284Z [err]  2025-11-24 11:39:45,832 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=343808 > max=0)
+2025-11-24T11:39:45.985758958Z [err]  2025-11-24 11:39:45,832 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5291, Timestamp=1763984385.8
+2025-11-24T11:39:45.985764935Z [err]  2025-11-24 11:39:45,878 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5291, Timestamp=1763984385.9
+2025-11-24T11:39:45.985770613Z [err]  2025-11-24 11:39:45,879 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4078
+2025-11-24T11:39:46.119302472Z [err]  2025-11-24 11:39:46,112 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x122609.12211868563 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:46.119390443Z [err]  2025-11-24 11:39:46,112 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=122609 > max=0)
+2025-11-24T11:39:46.119397431Z [err]  2025-11-24 11:39:46,113 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5292, Timestamp=1763984386.1
+2025-11-24T11:39:47.069588805Z [err]  2025-11-24 11:39:46,340 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=4013 > max=0)
+2025-11-24T11:39:47.069599963Z [err]  2025-11-24 11:39:46,341 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5293, Timestamp=1763984386.3
+2025-11-24T11:39:47.069724715Z [err]  2025-11-24 11:39:46,268 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5292, Timestamp=1763984386.3
+2025-11-24T11:39:47.069731465Z [err]  2025-11-24 11:39:46,268 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $12.4590
+2025-11-24T11:39:47.069737550Z [err]  2025-11-24 11:39:46,340 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x4013.1631752147046 @ $12.46 (TP: $11.84 | SL: $12.71) - Confidence: 65.0%
+2025-11-24T11:39:47.069764622Z [err]  2025-11-24 11:39:46,342 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5293, Timestamp=1763984386.3
+2025-11-24T11:39:47.069770970Z [err]  2025-11-24 11:39:46,343 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6190
+2025-11-24T11:39:47.069776801Z [err]  2025-11-24 11:39:46,389 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x3671.3415081870917 @ $13.62 (TP: $12.94 | SL: $13.89) - Confidence: 65.0%
+2025-11-24T11:39:47.069782459Z [err]  2025-11-24 11:39:46,390 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=3671 > max=0)
+2025-11-24T11:39:47.069788422Z [err]  2025-11-24 11:39:46,390 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5294, Timestamp=1763984386.4
+2025-11-24T11:39:47.069797224Z [err]  2025-11-24 11:39:46,438 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5294, Timestamp=1763984386.4
+2025-11-24T11:39:47.069804111Z [err]  2025-11-24 11:39:46,439 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:47.081293506Z [err]  2025-11-24 11:39:46,741 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5299, Timestamp=1763984386.7
+2025-11-24T11:39:47.081335069Z [err]  2025-11-24 11:39:46,862 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5300, Timestamp=1763984386.9
+2025-11-24T11:39:47.081341446Z [err]  2025-11-24 11:39:46,862 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86234.6000
+2025-11-24T11:39:47.081347315Z [err]  2025-11-24 11:39:46,904 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x0.5798136710786621 @ $86234.60 (TP: $81922.87 | SL: $87959.29) - Confidence: 65.0%
+2025-11-24T11:39:47.081357418Z [err]  2025-11-24 11:39:46,843 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x602.1919788028423 @ $83.03 (TP: $78.88 | SL: $84.69) - Confidence: 65.0%
+2025-11-24T11:39:47.081362448Z [err]  2025-11-24 11:39:46,843 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=602 > max=0)
+2025-11-24T11:39:47.081368313Z [err]  2025-11-24 11:39:46,843 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5300, Timestamp=1763984386.8
+2025-11-24T11:39:47.081370219Z [err]  2025-11-24 11:39:46,776 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5299, Timestamp=1763984386.8
+2025-11-24T11:39:47.081378034Z [err]  2025-11-24 11:39:46,904 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:47.081380169Z [err]  2025-11-24 11:39:46,776 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $83.0300
+2025-11-24T11:39:47.081386463Z [err]  2025-11-24 11:39:46,904 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5301, Timestamp=1763984386.9
+2025-11-24T11:39:47.081395685Z [err]  2025-11-24 11:39:46,939 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5301, Timestamp=1763984386.9
+2025-11-24T11:39:47.081401971Z [err]  2025-11-24 11:39:46,939 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $12.4590
+2025-11-24T11:39:47.081436410Z [err]  2025-11-24 11:39:47,062 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5303, Timestamp=1763984387.1
+2025-11-24T11:39:47.081439591Z [err]  2025-11-24 11:39:46,980 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5302, Timestamp=1763984387.0
+2025-11-24T11:39:47.081446298Z [err]  2025-11-24 11:39:47,020 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5302, Timestamp=1763984387.0
+2025-11-24T11:39:47.081447377Z [err]  2025-11-24 11:39:47,061 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 590, Pending=2, Cursor: 5298→5299
+2025-11-24T11:39:47.081453677Z [err]  2025-11-24 11:39:47,021 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1340
+2025-11-24T11:39:47.081456562Z [err]  2025-11-24 11:39:47,061 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x8151.287903488751 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:47.081458880Z [err]  2025-11-24 11:39:46,980 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x4013.1631752147046 @ $12.46 (TP: $11.84 | SL: $12.71) - Confidence: 65.0%
+2025-11-24T11:39:47.081465123Z [err]  2025-11-24 11:39:47,061 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=8151 > max=0)
+2025-11-24T11:39:47.081467157Z [err]  2025-11-24 11:39:46,980 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=4013 > max=0)
+2025-11-24T11:39:47.081731921Z [err]  2025-11-24 11:39:46,481 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x343808.0176029705 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:47.081737030Z [err]  2025-11-24 11:39:46,481 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=343808 > max=0)
+2025-11-24T11:39:47.081765105Z [err]  2025-11-24 11:39:46,482 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5295, Timestamp=1763984386.5
+2025-11-24T11:39:47.081771405Z [err]  2025-11-24 11:39:46,515 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5295, Timestamp=1763984386.5
+2025-11-24T11:39:47.081777105Z [err]  2025-11-24 11:39:46,515 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2766
+2025-11-24T11:39:47.081781316Z [err]  2025-11-24 11:39:46,553 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x180746.84596753787 @ $0.28 (TP: $0.26 | SL: $0.28) - Confidence: 65.0%
+2025-11-24T11:39:47.081790862Z [err]  2025-11-24 11:39:46,553 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=180747 > max=0)
+2025-11-24T11:39:47.081795710Z [err]  2025-11-24 11:39:46,553 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5296, Timestamp=1763984386.6
+2025-11-24T11:39:47.081801456Z [err]  2025-11-24 11:39:46,569 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5296, Timestamp=1763984386.6
+2025-11-24T11:39:47.081806633Z [err]  2025-11-24 11:39:46,569 - src.brain - CRITICAL - 🎯 OP/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:47.081811798Z [err]  2025-11-24 11:39:46,612 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: OP/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:47.081816141Z [err]  2025-11-24 11:39:46,612 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=204407 > max=0)
+2025-11-24T11:39:47.081968769Z [err]  2025-11-24 11:39:46,613 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5297, Timestamp=1763984386.6
+2025-11-24T11:39:47.081973612Z [err]  2025-11-24 11:39:46,657 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 580, Pending=1, Cursor: 5292→5293
+2025-11-24T11:39:47.081979039Z [err]  2025-11-24 11:39:46,658 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5297, Timestamp=1763984386.7
+2025-11-24T11:39:47.081985620Z [err]  2025-11-24 11:39:46,658 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1330
+2025-11-24T11:39:47.081990308Z [err]  2025-11-24 11:39:46,700 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x8152.616990053807 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:47.081995168Z [err]  2025-11-24 11:39:46,700 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=8153 > max=0)
+2025-11-24T11:39:47.082000117Z [err]  2025-11-24 11:39:46,700 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5298, Timestamp=1763984386.7
+2025-11-24T11:39:47.082004959Z [err]  2025-11-24 11:39:46,704 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5298, Timestamp=1763984386.7
+2025-11-24T11:39:47.082010449Z [err]  2025-11-24 11:39:46,704 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:47.082019000Z [err]  2025-11-24 11:39:46,740 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:47.082023976Z [err]  2025-11-24 11:39:46,741 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=92 > max=0)
+2025-11-24T11:39:47.928970251Z [err]  2025-11-24 11:39:47,256 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x122609.12211868563 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:47.928983258Z [err]  2025-11-24 11:39:47,256 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=122609 > max=0)
+2025-11-24T11:39:47.928990718Z [err]  2025-11-24 11:39:47,256 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5305, Timestamp=1763984387.3
+2025-11-24T11:39:47.928997011Z [err]  2025-11-24 11:39:47,290 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5305, Timestamp=1763984387.3
+2025-11-24T11:39:47.929003059Z [err]  2025-11-24 11:39:47,291 - src.brain - CRITICAL - 🎯 ADA/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:47.929126839Z [err]  2025-11-24 11:39:47,172 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5303, Timestamp=1763984387.2
+2025-11-24T11:39:47.929130753Z [err]  2025-11-24 11:39:47,172 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:47.929134774Z [err]  2025-11-24 11:39:47,215 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:47.929138798Z [err]  2025-11-24 11:39:47,215 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=92 > max=0)
+2025-11-24T11:39:47.929142867Z [err]  2025-11-24 11:39:47,215 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5304, Timestamp=1763984387.2
+2025-11-24T11:39:47.929147435Z [err]  2025-11-24 11:39:47,216 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5304, Timestamp=1763984387.2
+2025-11-24T11:39:47.929153108Z [err]  2025-11-24 11:39:47,217 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4078
+2025-11-24T11:39:47.934044801Z [err]  2025-11-24 11:39:47,334 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: ADA/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:47.934049586Z [err]  2025-11-24 11:39:47,334 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=204407 > max=0)
+2025-11-24T11:39:47.934054542Z [err]  2025-11-24 11:39:47,334 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5306, Timestamp=1763984387.3
+2025-11-24T11:39:47.934060527Z [err]  2025-11-24 11:39:47,369 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5306, Timestamp=1763984387.4
+2025-11-24T11:39:47.934065113Z [err]  2025-11-24 11:39:47,369 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:47.934070775Z [err]  2025-11-24 11:39:47,413 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x343808.0176029705 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:47.934075544Z [err]  2025-11-24 11:39:47,413 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=343808 > max=0)
+2025-11-24T11:39:47.934079607Z [err]  2025-11-24 11:39:47,413 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5307, Timestamp=1763984387.4
+2025-11-24T11:39:47.934084640Z [err]  2025-11-24 11:39:47,458 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5307, Timestamp=1763984387.5
+2025-11-24T11:39:47.934089967Z [err]  2025-11-24 11:39:47,459 - src.brain - CRITICAL - 🎯 AVAX/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86234.6000
+2025-11-24T11:39:47.934094555Z [err]  2025-11-24 11:39:47,496 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: AVAX/USDT x0.5798136710786621 @ $86234.60 (TP: $81922.87 | SL: $87959.29) - Confidence: 65.0%
+2025-11-24T11:39:47.934099180Z [err]  2025-11-24 11:39:47,496 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=1 > max=0)
+2025-11-24T11:39:47.934806674Z [err]  2025-11-24 11:39:47,496 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5308, Timestamp=1763984387.5
+2025-11-24T11:39:47.934815635Z [err]  2025-11-24 11:39:47,529 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5308, Timestamp=1763984387.5
+2025-11-24T11:39:47.934822810Z [err]  2025-11-24 11:39:47,530 - src.brain - CRITICAL - 🎯 LINK/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0564
+2025-11-24T11:39:47.934829504Z [err]  2025-11-24 11:39:47,574 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: LINK/USDT x24314.335732347794 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:47.934836725Z [err]  2025-11-24 11:39:47,574 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=24314 > max=0)
+2025-11-24T11:39:47.934843318Z [err]  2025-11-24 11:39:47,574 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5309, Timestamp=1763984387.6
+2025-11-24T11:39:47.934849541Z [err]  2025-11-24 11:39:47,870 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 600, Pending=1, Cursor: 5304→5305
+2025-11-24T11:39:47.934855770Z [err]  2025-11-24 11:39:47,870 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5309, Timestamp=1763984387.9
+2025-11-24T11:39:47.934861623Z [err]  2025-11-24 11:39:47,870 - src.brain - CRITICAL - 🎯 MATIC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0564
+2025-11-24T11:39:47.934867651Z [err]  2025-11-24 11:39:47,914 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: MATIC/USDT x24314.335732347794 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:47.934873189Z [err]  2025-11-24 11:39:47,914 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=24314 > max=0)
+2025-11-24T11:39:47.934878565Z [err]  2025-11-24 11:39:47,914 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5310, Timestamp=1763984387.9
+2025-11-24T11:39:47.953999166Z [err]  2025-11-24 11:39:47,951 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5310, Timestamp=1763984388.0
+2025-11-24T11:39:47.954007270Z [err]  2025-11-24 11:39:47,952 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:47.989131223Z [err]  2025-11-24 11:39:47,987 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:47.989142380Z [err]  2025-11-24 11:39:47,987 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=92 > max=0)
+2025-11-24T11:39:47.989150326Z [err]  2025-11-24 11:39:47,987 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5311, Timestamp=1763984388.0
+2025-11-24T11:39:47.996746320Z [err]  2025-11-24 11:39:47,991 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5311, Timestamp=1763984388.0
+2025-11-24T11:39:47.996754568Z [err]  2025-11-24 11:39:47,991 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:48.035444980Z [err]  2025-11-24 11:39:48,028 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:48.035450709Z [err]  2025-11-24 11:39:48,028 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=18 > max=0)
+2025-11-24T11:39:48.035455463Z [err]  2025-11-24 11:39:48,028 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5312, Timestamp=1763984388.0
+2025-11-24T11:39:48.039726115Z [err]  2025-11-24 11:39:48,034 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5312, Timestamp=1763984388.0
+2025-11-24T11:39:48.039739450Z [err]  2025-11-24 11:39:48,034 - src.brain - CRITICAL - 🎯 UNI/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:48.071531445Z [err]  2025-11-24 11:39:48,070 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: UNI/USDT x204398.659144796 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:48.071537771Z [err]  2025-11-24 11:39:48,070 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=204399 > max=0)
+2025-11-24T11:39:48.071542169Z [err]  2025-11-24 11:39:48,070 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5313, Timestamp=1763984388.1
+2025-11-24T11:39:48.128536866Z [err]  2025-11-24 11:39:48,127 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5313, Timestamp=1763984388.1
+2025-11-24T11:39:48.128542960Z [err]  2025-11-24 11:39:48,127 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86234.5000
+2025-11-24T11:39:48.932142365Z [err]  2025-11-24 11:39:48,336 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x0.5798143434472282 @ $86234.50 (TP: $81922.77 | SL: $87959.19) - Confidence: 65.0%
+2025-11-24T11:39:48.932146773Z [err]  2025-11-24 11:39:48,337 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=1 > max=0)
+2025-11-24T11:39:48.932152072Z [err]  2025-11-24 11:39:48,337 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5314, Timestamp=1763984388.3
+2025-11-24T11:39:48.932156205Z [err]  2025-11-24 11:39:48,514 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5314, Timestamp=1763984388.5
+2025-11-24T11:39:48.932160932Z [err]  2025-11-24 11:39:48,515 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.3900
+2025-11-24T11:39:48.932536658Z [err]  2025-11-24 11:39:48,557 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x386.428626632661 @ $129.39 (TP: $122.92 | SL: $131.98) - Confidence: 65.0%
+2025-11-24T11:39:48.932543319Z [err]  2025-11-24 11:39:48,558 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=386 > max=0)
+2025-11-24T11:39:48.932548882Z [err]  2025-11-24 11:39:48,558 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5315, Timestamp=1763984388.6
+2025-11-24T11:39:48.932553785Z [err]  2025-11-24 11:39:48,560 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5315, Timestamp=1763984388.6
+2025-11-24T11:39:48.932558585Z [err]  2025-11-24 11:39:48,560 - src.brain - CRITICAL - 🎯 ARB/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:48.932563257Z [err]  2025-11-24 11:39:48,597 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: ARB/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:48.932567287Z [err]  2025-11-24 11:39:48,598 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=204407 > max=0)
+2025-11-24T11:39:48.934419932Z [err]  2025-11-24 11:39:48,598 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5316, Timestamp=1763984388.6
+2025-11-24T11:39:48.934425133Z [err]  2025-11-24 11:39:48,636 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5316, Timestamp=1763984388.6
+2025-11-24T11:39:48.934429658Z [err]  2025-11-24 11:39:48,636 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86234.6000
+2025-11-24T11:39:48.934433711Z [err]  2025-11-24 11:39:48,679 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 610, Pending=2, Cursor: 5312→5313
+2025-11-24T11:39:48.934437917Z [err]  2025-11-24 11:39:48,681 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x0.5798136710786621 @ $86234.60 (TP: $81922.87 | SL: $87959.29) - Confidence: 65.0%
+2025-11-24T11:39:48.934442429Z [err]  2025-11-24 11:39:48,681 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=1 > max=0)
+2025-11-24T11:39:48.934446534Z [err]  2025-11-24 11:39:48,681 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5317, Timestamp=1763984388.7
+2025-11-24T11:39:48.934450955Z [err]  2025-11-24 11:39:48,730 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5317, Timestamp=1763984388.7
+2025-11-24T11:39:48.934455092Z [err]  2025-11-24 11:39:48,730 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:48.934459080Z [err]  2025-11-24 11:39:48,772 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x343808.0176029705 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:48.934463468Z [err]  2025-11-24 11:39:48,772 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=343808 > max=0)
+2025-11-24T11:39:48.934467678Z [err]  2025-11-24 11:39:48,772 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5318, Timestamp=1763984388.8
+2025-11-24T11:39:48.935008477Z [err]  2025-11-24 11:39:48,773 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5318, Timestamp=1763984388.8
+2025-11-24T11:39:48.935019734Z [err]  2025-11-24 11:39:48,774 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:48.935026294Z [err]  2025-11-24 11:39:48,813 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:48.935032077Z [err]  2025-11-24 11:39:48,813 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=18 > max=0)
+2025-11-24T11:39:48.935037867Z [err]  2025-11-24 11:39:48,813 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5319, Timestamp=1763984388.8
+2025-11-24T11:39:48.935044345Z [err]  2025-11-24 11:39:48,819 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5319, Timestamp=1763984388.8
+2025-11-24T11:39:48.935050696Z [err]  2025-11-24 11:39:48,819 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2766
+2025-11-24T11:39:48.935056418Z [err]  2025-11-24 11:39:48,855 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x180746.84596753787 @ $0.28 (TP: $0.26 | SL: $0.28) - Confidence: 65.0%
+2025-11-24T11:39:48.935062524Z [err]  2025-11-24 11:39:48,855 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=180747 > max=0)
+2025-11-24T11:39:48.935068510Z [err]  2025-11-24 11:39:48,856 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5320, Timestamp=1763984388.9
+2025-11-24T11:39:48.935074287Z [err]  2025-11-24 11:39:48,858 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5320, Timestamp=1763984388.9
+2025-11-24T11:39:48.935080103Z [err]  2025-11-24 11:39:48,858 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.3050
+2025-11-24T11:39:48.936536195Z [err]  2025-11-24 11:39:48,894 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x163934.4262295082 @ $0.30 (TP: $0.29 | SL: $0.31) - Confidence: 65.0%
+2025-11-24T11:39:48.936544545Z [err]  2025-11-24 11:39:48,894 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=163934 > max=0)
+2025-11-24T11:39:48.936550532Z [err]  2025-11-24 11:39:48,894 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5321, Timestamp=1763984388.9
+2025-11-24T11:39:48.936557527Z [err]  2025-11-24 11:39:48,897 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5321, Timestamp=1763984388.9
+2025-11-24T11:39:48.936562324Z [err]  2025-11-24 11:39:48,897 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.4490
+2025-11-24T11:39:48.936566713Z [err]  2025-11-24 11:39:48,934 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x20416.496529195592 @ $2.45 (TP: $2.33 | SL: $2.50) - Confidence: 65.0%
+2025-11-24T11:39:48.936571928Z [err]  2025-11-24 11:39:48,934 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=20416 > max=0)
+2025-11-24T11:39:48.936577068Z [err]  2025-11-24 11:39:48,934 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5322, Timestamp=1763984388.9
+2025-11-24T11:39:48.979929662Z [err]  2025-11-24 11:39:48,978 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5322, Timestamp=1763984389.0
+2025-11-24T11:39:48.979935020Z [err]  2025-11-24 11:39:48,978 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:49.023760014Z [err]  2025-11-24 11:39:49,021 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:49.023770186Z [err]  2025-11-24 11:39:49,021 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=18 > max=0)
+2025-11-24T11:39:49.023778593Z [err]  2025-11-24 11:39:49,021 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5323, Timestamp=1763984389.0
+2025-11-24T11:39:49.064318447Z [err]  2025-11-24 11:39:49,057 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5323, Timestamp=1763984389.1
+2025-11-24T11:39:49.064324533Z [err]  2025-11-24 11:39:49,058 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.3050
+2025-11-24T11:39:49.113442949Z [err]  2025-11-24 11:39:49,094 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 620, Pending=2, Cursor: 5319→5320
+2025-11-24T11:39:49.113448223Z [err]  2025-11-24 11:39:49,100 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x163934.4262295082 @ $0.30 (TP: $0.29 | SL: $0.31) - Confidence: 65.0%
+2025-11-24T11:39:49.113452908Z [err]  2025-11-24 11:39:49,100 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=163934 > max=0)
+2025-11-24T11:39:49.113458388Z [err]  2025-11-24 11:39:49,100 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5324, Timestamp=1763984389.1
+2025-11-24T11:39:49.142551568Z [err]  2025-11-24 11:39:49,138 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5324, Timestamp=1763984389.1
+2025-11-24T11:39:49.142561629Z [err]  2025-11-24 11:39:49,138 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:49.866633218Z [err]  2025-11-24 11:39:49,307 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5326, Timestamp=1763984389.3
+2025-11-24T11:39:49.866643168Z [err]  2025-11-24 11:39:49,307 - src.brain - CRITICAL - 🎯 DOGE/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:49.866651106Z [err]  2025-11-24 11:39:49,344 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: DOGE/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:49.866657533Z [err]  2025-11-24 11:39:49,344 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=204407 > max=0)
+2025-11-24T11:39:49.866702260Z [err]  2025-11-24 11:39:49,183 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:49.866709473Z [err]  2025-11-24 11:39:49,183 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=18 > max=0)
+2025-11-24T11:39:49.866715522Z [err]  2025-11-24 11:39:49,183 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5325, Timestamp=1763984389.2
+2025-11-24T11:39:49.866722435Z [err]  2025-11-24 11:39:49,267 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5325, Timestamp=1763984389.3
+2025-11-24T11:39:49.866730158Z [err]  2025-11-24 11:39:49,267 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:49.866737385Z [err]  2025-11-24 11:39:49,304 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:49.866743437Z [err]  2025-11-24 11:39:49,304 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=386 > max=0)
+2025-11-24T11:39:49.866751266Z [err]  2025-11-24 11:39:49,304 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5326, Timestamp=1763984389.3
+2025-11-24T11:39:49.870823429Z [err]  2025-11-24 11:39:49,345 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5327, Timestamp=1763984389.3
+2025-11-24T11:39:49.870829305Z [err]  2025-11-24 11:39:49,347 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5327, Timestamp=1763984389.3
+2025-11-24T11:39:49.870835230Z [err]  2025-11-24 11:39:49,347 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:49.870840998Z [err]  2025-11-24 11:39:49,382 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:49.870845182Z [err]  2025-11-24 11:39:49,382 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=24312 > max=0)
+2025-11-24T11:39:49.870850060Z [err]  2025-11-24 11:39:49,383 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5328, Timestamp=1763984389.4
+2025-11-24T11:39:49.870854915Z [err]  2025-11-24 11:39:49,390 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5328, Timestamp=1763984389.4
+2025-11-24T11:39:49.870859746Z [err]  2025-11-24 11:39:49,390 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.3830
+2025-11-24T11:39:49.870865494Z [err]  2025-11-24 11:39:49,428 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x3736.0830904879326 @ $13.38 (TP: $12.71 | SL: $13.65) - Confidence: 65.0%
+2025-11-24T11:39:49.870870263Z [err]  2025-11-24 11:39:49,428 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=3736 > max=0)
+2025-11-24T11:39:49.870875548Z [err]  2025-11-24 11:39:49,428 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5329, Timestamp=1763984389.4
+2025-11-24T11:39:49.870880669Z [err]  2025-11-24 11:39:49,460 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5329, Timestamp=1763984389.5
+2025-11-24T11:39:49.870946602Z [err]  2025-11-24 11:39:49,460 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0000
+2025-11-24T11:39:49.870951170Z [err]  2025-11-24 11:39:49,505 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x17.857142857142858 @ $2800.00 (TP: $2660.00 | SL: $2856.00) - Confidence: 65.0%
+2025-11-24T11:39:49.870955315Z [err]  2025-11-24 11:39:49,505 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=18 > max=0)
+2025-11-24T11:39:49.870960021Z [err]  2025-11-24 11:39:49,506 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5330, Timestamp=1763984389.5
+2025-11-24T11:39:49.870967262Z [err]  2025-11-24 11:39:49,547 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5330, Timestamp=1763984389.5
+2025-11-24T11:39:49.870973080Z [err]  2025-11-24 11:39:49,547 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.5000
+2025-11-24T11:39:49.870978617Z [err]  2025-11-24 11:39:49,591 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x0.5798008963721858 @ $86236.50 (TP: $81924.68 | SL: $87961.23) - Confidence: 65.0%
+2025-11-24T11:39:49.870982613Z [err]  2025-11-24 11:39:49,591 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:49.870988627Z [err]  2025-11-24 11:39:49,591 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5331, Timestamp=1763984389.6
+2025-11-24T11:39:49.870992330Z [err]  2025-11-24 11:39:49,667 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5331, Timestamp=1763984389.7
+2025-11-24T11:39:49.870996708Z [err]  2025-11-24 11:39:49,668 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.3051
+2025-11-24T11:39:49.871000832Z [err]  2025-11-24 11:39:49,708 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x163880.6948541462 @ $0.31 (TP: $0.29 | SL: $0.31) - Confidence: 65.0%
+2025-11-24T11:39:49.871596750Z [err]  2025-11-24 11:39:49,708 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=163881 > max=0)
+2025-11-24T11:39:49.871605339Z [err]  2025-11-24 11:39:49,708 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5332, Timestamp=1763984389.7
+2025-11-24T11:39:49.871611594Z [err]  2025-11-24 11:39:49,711 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 630, Pending=1, Cursor: 5327→5328
+2025-11-24T11:39:49.871618214Z [err]  2025-11-24 11:39:49,711 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5332, Timestamp=1763984389.7
+2025-11-24T11:39:49.871625538Z [err]  2025-11-24 11:39:49,711 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:49.871633766Z [err]  2025-11-24 11:39:49,750 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:49.871640066Z [err]  2025-11-24 11:39:49,750 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=386 > max=0)
+2025-11-24T11:39:49.871648002Z [err]  2025-11-24 11:39:49,750 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5333, Timestamp=1763984389.8
+2025-11-24T11:39:49.871654726Z [err]  2025-11-24 11:39:49,823 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5333, Timestamp=1763984389.8
+2025-11-24T11:39:49.871661741Z [err]  2025-11-24 11:39:49,823 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8100
+2025-11-24T11:39:49.874765659Z [err]  2025-11-24 11:39:49,872 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x92.28327273398425 @ $541.81 (TP: $514.72 | SL: $552.65) - Confidence: 65.0%
+2025-11-24T11:39:49.874780372Z [err]  2025-11-24 11:39:49,872 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=92 > max=0)
+2025-11-24T11:39:49.874792290Z [err]  2025-11-24 11:39:49,872 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5334, Timestamp=1763984389.9
+2025-11-24T11:39:49.934237707Z [err]  2025-11-24 11:39:49,926 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5334, Timestamp=1763984389.9
+2025-11-24T11:39:49.934245222Z [err]  2025-11-24 11:39:49,926 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.4490
+2025-11-24T11:39:49.965243160Z [err]  2025-11-24 11:39:49,962 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x20416.496529195592 @ $2.45 (TP: $2.33 | SL: $2.50) - Confidence: 65.0%
+2025-11-24T11:39:49.965250773Z [err]  2025-11-24 11:39:49,962 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=20416 > max=0)
+2025-11-24T11:39:49.965259489Z [err]  2025-11-24 11:39:49,962 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5335, Timestamp=1763984390.0
+2025-11-24T11:39:49.968888488Z [err]  2025-11-24 11:39:49,965 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5335, Timestamp=1763984390.0
+2025-11-24T11:39:49.968895749Z [err]  2025-11-24 11:39:49,965 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:50.020945675Z [err]  2025-11-24 11:39:50,010 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:50.020954339Z [err]  2025-11-24 11:39:50,010 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=1 > max=0)
+2025-11-24T11:39:50.020960087Z [err]  2025-11-24 11:39:50,010 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5336, Timestamp=1763984390.0
+2025-11-24T11:39:50.020972545Z [err]  2025-11-24 11:39:50,014 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BNBUSDT']... Prices: {'BNBUSDT': 843.6}
+2025-11-24T11:39:50.020978419Z [err]  2025-11-24 11:39:50,014 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5336, Timestamp=1763984390.0
+2025-11-24T11:39:50.020984849Z [err]  2025-11-24 11:39:50,015 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.6000
+2025-11-24T11:39:50.062628952Z [err]  2025-11-24 11:39:50,059 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x59.26979611190137 @ $843.60 (TP: $801.42 | SL: $860.47) - Confidence: 65.0%
+2025-11-24T11:39:50.062640137Z [err]  2025-11-24 11:39:50,059 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=59 > max=0)
+2025-11-24T11:39:50.062646606Z [err]  2025-11-24 11:39:50,060 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5337, Timestamp=1763984390.1
+2025-11-24T11:39:50.062651723Z [err]  2025-11-24 11:39:50,061 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5337, Timestamp=1763984390.1
+2025-11-24T11:39:50.062657202Z [err]  2025-11-24 11:39:50,061 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['ETHUSDT']... Prices: {'ETHUSDT': 2800.01}
+2025-11-24T11:39:50.062664287Z [err]  2025-11-24 11:39:50,061 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:50.101027159Z [err]  2025-11-24 11:39:50,098 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:50.101033869Z [err]  2025-11-24 11:39:50,099 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=18 > max=0)
+2025-11-24T11:39:50.101038466Z [err]  2025-11-24 11:39:50,099 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5338, Timestamp=1763984390.1
+2025-11-24T11:39:50.115249240Z [err]  2025-11-24 11:39:50,108 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XRPUSDT']... Prices: {'XRPUSDT': 2.0566}
+2025-11-24T11:39:50.115258525Z [err]  2025-11-24 11:39:50,109 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5338, Timestamp=1763984390.1
+2025-11-24T11:39:50.115265964Z [err]  2025-11-24 11:39:50,109 - src.brain - CRITICAL - 🎯 WLD/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:50.169411665Z [err]  2025-11-24 11:39:50,156 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:50.169412708Z [err]  2025-11-24 11:39:50,150 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: WLD/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:50.169422091Z [err]  2025-11-24 11:39:50,150 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=24312 > max=0)
+2025-11-24T11:39:50.169428205Z [err]  2025-11-24 11:39:50,150 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5339, Timestamp=1763984390.2
+2025-11-24T11:39:50.169432647Z [err]  2025-11-24 11:39:50,155 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['SOLUSDT']... Prices: {'SOLUSDT': 129.4}
+2025-11-24T11:39:50.169436912Z [err]  2025-11-24 11:39:50,156 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5339, Timestamp=1763984390.2
+2025-11-24T11:39:51.215170613Z [err]  2025-11-24 11:39:50,195 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:51.215177049Z [err]  2025-11-24 11:39:50,195 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=386 > max=0)
+2025-11-24T11:39:51.215183197Z [err]  2025-11-24 11:39:50,196 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5340, Timestamp=1763984390.2
+2025-11-24T11:39:51.215190010Z [err]  2025-11-24 11:39:50,212 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['XLMUSDT']... Prices: {'XLMUSDT': 0.24461}
+2025-11-24T11:39:51.215196509Z [err]  2025-11-24 11:39:50,213 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5340, Timestamp=1763984390.2
+2025-11-24T11:39:51.215205825Z [err]  2025-11-24 11:39:50,213 - src.brain - CRITICAL - 🎯 BTC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:51.215211968Z [err]  2025-11-24 11:39:50,250 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: BTC/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:51.215218707Z [err]  2025-11-24 11:39:50,250 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=204407 > max=0)
+2025-11-24T11:39:51.215225768Z [err]  2025-11-24 11:39:50,250 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5341, Timestamp=1763984390.3
+2025-11-24T11:39:51.215233021Z [err]  2025-11-24 11:39:50,385 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['SOLUSDT']... Prices: {'SOLUSDT': 129.39}
+2025-11-24T11:39:51.215239087Z [err]  2025-11-24 11:39:50,386 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 640, Pending=1, Cursor: 5336→5337
+2025-11-24T11:39:51.215245807Z [err]  2025-11-24 11:39:50,386 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5341, Timestamp=1763984390.4
+2025-11-24T11:39:52.126224708Z [err]  2025-11-24 11:39:50,386 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.3900
+2025-11-24T11:39:52.126231526Z [err]  2025-11-24 11:39:50,600 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x386.428626632661 @ $129.39 (TP: $122.92 | SL: $131.98) - Confidence: 65.0%
+2025-11-24T11:39:52.126237429Z [err]  2025-11-24 11:39:50,600 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=386 > max=0)
+2025-11-24T11:39:52.126242221Z [err]  2025-11-24 11:39:50,600 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5342, Timestamp=1763984390.6
+2025-11-24T11:39:52.126247282Z [err]  2025-11-24 11:39:50,773 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BTCUSDT']... Prices: {'BTCUSDT': 86236.6}
+2025-11-24T11:39:52.126252430Z [err]  2025-11-24 11:39:50,773 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5342, Timestamp=1763984390.8
+2025-11-24T11:39:52.126256871Z [err]  2025-11-24 11:39:50,773 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:52.126261109Z [err]  2025-11-24 11:39:50,818 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['LTCUSDT']... Prices: {'LTCUSDT': 83.03}
+2025-11-24T11:39:52.126265456Z [err]  2025-11-24 11:39:50,819 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:52.126270112Z [err]  2025-11-24 11:39:50,819 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=1 > max=0)
+2025-11-24T11:39:52.126275373Z [err]  2025-11-24 11:39:50,819 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5343, Timestamp=1763984390.8
+2025-11-24T11:39:52.126280100Z [err]  2025-11-24 11:39:50,864 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['SOLUSDT']... Prices: {'SOLUSDT': 129.4}
+2025-11-24T11:39:52.129686956Z [err]  2025-11-24 11:39:50,865 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5343, Timestamp=1763984390.9
+2025-11-24T11:39:52.129691658Z [err]  2025-11-24 11:39:50,865 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:52.129703777Z [err]  2025-11-24 11:39:50,906 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1340
+2025-11-24T11:39:52.129709059Z [err]  2025-11-24 11:39:50,940 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x8151.287903488751 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:52.129713533Z [err]  2025-11-24 11:39:50,941 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=8151 > max=0)
+2025-11-24T11:39:52.129718217Z [err]  2025-11-24 11:39:50,941 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5345, Timestamp=1763984390.9
+2025-11-24T11:39:52.129723248Z [err]  2025-11-24 11:39:50,946 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['ETHUSDT']... Prices: {'ETHUSDT': 2800.01}
+2025-11-24T11:39:52.129736400Z [err]  2025-11-24 11:39:50,904 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:52.129745816Z [err]  2025-11-24 11:39:50,904 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=386 > max=0)
+2025-11-24T11:39:52.129752601Z [err]  2025-11-24 11:39:50,904 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5344, Timestamp=1763984390.9
+2025-11-24T11:39:52.129757959Z [err]  2025-11-24 11:39:50,905 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['UNIUSDT']... Prices: {'UNIUSDT': 6.134}
+2025-11-24T11:39:52.129763359Z [err]  2025-11-24 11:39:50,905 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5344, Timestamp=1763984390.9
+2025-11-24T11:39:52.133038523Z [err]  2025-11-24 11:39:50,947 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5345, Timestamp=1763984390.9
+2025-11-24T11:39:52.133043168Z [err]  2025-11-24 11:39:50,947 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:52.133049013Z [err]  2025-11-24 11:39:50,985 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:52.133053639Z [err]  2025-11-24 11:39:50,985 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=18 > max=0)
+2025-11-24T11:39:52.133057839Z [err]  2025-11-24 11:39:50,985 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5346, Timestamp=1763984391.0
+2025-11-24T11:39:52.133062143Z [err]  2025-11-24 11:39:50,986 - src.virtual_learning - CRITICAL - 📈 [MARKET PRICES UPDATED] 1 symbols: ['BCHUSDT']... Prices: {'BCHUSDT': 541.8}
+2025-11-24T11:39:52.133067150Z [err]  2025-11-24 11:39:50,987 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5346, Timestamp=1763984391.0
+2025-11-24T11:39:52.133071488Z [err]  2025-11-24 11:39:50,987 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8000
+2025-11-24T11:39:52.133078746Z [err]  2025-11-24 11:39:51,028 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x92.28497600590624 @ $541.80 (TP: $514.71 | SL: $552.64) - Confidence: 65.0%
+2025-11-24T11:39:52.133082819Z [err]  2025-11-24 11:39:51,028 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=92 > max=0)
+2025-11-24T11:39:52.133086976Z [err]  2025-11-24 11:39:51,028 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5347, Timestamp=1763984391.0
+2025-11-24T11:39:52.133091010Z [err]  2025-11-24 11:39:51,029 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5347, Timestamp=1763984391.0
+2025-11-24T11:39:52.135256021Z [err]  2025-11-24 11:39:51,030 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:52.135259995Z [err]  2025-11-24 11:39:51,075 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:52.135264087Z [err]  2025-11-24 11:39:51,076 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=24312 > max=0)
+2025-11-24T11:39:52.135268838Z [err]  2025-11-24 11:39:51,076 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5348, Timestamp=1763984391.1
+2025-11-24T11:39:52.135273061Z [err]  2025-11-24 11:39:51,160 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5348, Timestamp=1763984391.2
+2025-11-24T11:39:52.135278310Z [err]  2025-11-24 11:39:51,160 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:52.135282669Z [err]  2025-11-24 11:39:51,220 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:52.135286596Z [err]  2025-11-24 11:39:51,220 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=18 > max=0)
+2025-11-24T11:39:52.135291916Z [err]  2025-11-24 11:39:51,220 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5349, Timestamp=1763984391.2
+2025-11-24T11:39:52.135296426Z [err]  2025-11-24 11:39:51,239 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5349, Timestamp=1763984391.2
+2025-11-24T11:39:52.135301820Z [err]  2025-11-24 11:39:51,239 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:52.135306663Z [err]  2025-11-24 11:39:51,279 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:52.141308668Z [err]  2025-11-24 11:39:51,280 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=1 > max=0)
+2025-11-24T11:39:52.141320295Z [err]  2025-11-24 11:39:51,280 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5350, Timestamp=1763984391.3
+2025-11-24T11:39:52.141330211Z [err]  2025-11-24 11:39:51,383 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 650, Pending=1, Cursor: 5345→5346
+2025-11-24T11:39:52.141337801Z [err]  2025-11-24 11:39:51,383 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5350, Timestamp=1763984391.4
+2025-11-24T11:39:52.141344810Z [err]  2025-11-24 11:39:51,384 - src.brain - CRITICAL - 🎯 LTC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:52.141357428Z [err]  2025-11-24 11:39:51,435 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: LTC/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:52.141364017Z [err]  2025-11-24 11:39:51,435 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=204407 > max=0)
+2025-11-24T11:39:52.141370426Z [err]  2025-11-24 11:39:51,435 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5351, Timestamp=1763984391.4
+2025-11-24T11:39:52.141376783Z [err]  2025-11-24 11:39:51,619 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5351, Timestamp=1763984391.6
+2025-11-24T11:39:52.141384679Z [err]  2025-11-24 11:39:51,620 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:52.141390777Z [err]  2025-11-24 11:39:51,663 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:52.141397023Z [err]  2025-11-24 11:39:51,663 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=18 > max=0)
+2025-11-24T11:39:52.144793277Z [err]  2025-11-24 11:39:51,663 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5352, Timestamp=1763984391.7
+2025-11-24T11:39:52.144802684Z [err]  2025-11-24 11:39:51,694 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5352, Timestamp=1763984391.7
+2025-11-24T11:39:52.144811011Z [err]  2025-11-24 11:39:51,695 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:52.144817379Z [err]  2025-11-24 11:39:51,737 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:52.144823394Z [err]  2025-11-24 11:39:51,737 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=386 > max=0)
+2025-11-24T11:39:52.144829195Z [err]  2025-11-24 11:39:51,737 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5353, Timestamp=1763984391.7
+2025-11-24T11:39:52.144836405Z [err]  2025-11-24 11:39:51,828 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5353, Timestamp=1763984391.8
+2025-11-24T11:39:52.144853293Z [err]  2025-11-24 11:39:51,828 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.4490
+2025-11-24T11:39:52.144866344Z [err]  2025-11-24 11:39:51,866 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x20416.496529195592 @ $2.45 (TP: $2.33 | SL: $2.50) - Confidence: 65.0%
+2025-11-24T11:39:52.144878571Z [err]  2025-11-24 11:39:51,867 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=20416 > max=0)
+2025-11-24T11:39:52.144884684Z [err]  2025-11-24 11:39:51,867 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5354, Timestamp=1763984391.9
+2025-11-24T11:39:52.144889420Z [err]  2025-11-24 11:39:51,869 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5354, Timestamp=1763984391.9
+2025-11-24T11:39:52.148520055Z [err]  2025-11-24 11:39:51,870 - src.brain - CRITICAL - 🎯 FIL/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0566
+2025-11-24T11:39:52.148522871Z [err]  2025-11-24 11:39:52,095 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5356, Timestamp=1763984392.1
+2025-11-24T11:39:52.148534051Z [err]  2025-11-24 11:39:52,097 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5356, Timestamp=1763984392.1
+2025-11-24T11:39:52.148546116Z [err]  2025-11-24 11:39:51,911 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: FIL/USDT x24311.971214626083 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:52.148552747Z [err]  2025-11-24 11:39:51,912 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=24312 > max=0)
+2025-11-24T11:39:52.148559277Z [err]  2025-11-24 11:39:51,912 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5355, Timestamp=1763984391.9
+2025-11-24T11:39:52.148565984Z [err]  2025-11-24 11:39:52,050 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5355, Timestamp=1763984392.1
+2025-11-24T11:39:52.148572224Z [err]  2025-11-24 11:39:52,051 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:52.148580427Z [err]  2025-11-24 11:39:52,095 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:52.148587006Z [err]  2025-11-24 11:39:52,095 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=1 > max=0)
+2025-11-24T11:39:52.148766710Z [err]  2025-11-24 11:39:52,098 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:52.148774541Z [err]  2025-11-24 11:39:52,138 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:52.151082244Z [err]  2025-11-24 11:39:52,138 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=18 > max=0)
+2025-11-24T11:39:52.151091978Z [err]  2025-11-24 11:39:52,138 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5357, Timestamp=1763984392.1
+2025-11-24T11:39:53.181629525Z [err]  2025-11-24 11:39:52,391 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5357, Timestamp=1763984392.4
+2025-11-24T11:39:53.181637197Z [err]  2025-11-24 11:39:52,391 - src.brain - CRITICAL - 🎯 JTO/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:53.181641202Z [err]  2025-11-24 11:39:52,431 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: JTO/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:53.181645321Z [err]  2025-11-24 11:39:52,431 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=204407 > max=0)
+2025-11-24T11:39:53.181650650Z [err]  2025-11-24 11:39:52,431 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5358, Timestamp=1763984392.4
+2025-11-24T11:39:53.181655473Z [err]  2025-11-24 11:39:52,434 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5358, Timestamp=1763984392.4
+2025-11-24T11:39:53.181660083Z [err]  2025-11-24 11:39:52,434 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:53.181664832Z [err]  2025-11-24 11:39:52,483 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:53.181669379Z [err]  2025-11-24 11:39:52,483 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=1 > max=0)
+2025-11-24T11:39:53.181673961Z [err]  2025-11-24 11:39:52,484 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5359, Timestamp=1763984392.5
+2025-11-24T11:39:53.181679244Z [err]  2025-11-24 11:39:52,505 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5359, Timestamp=1763984392.5
+2025-11-24T11:39:53.181683902Z [err]  2025-11-24 11:39:52,505 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $6.1340
+2025-11-24T11:39:53.183012082Z [err]  2025-11-24 11:39:52,552 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x8151.287903488751 @ $6.13 (TP: $5.83 | SL: $6.26) - Confidence: 65.0%
+2025-11-24T11:39:53.183016392Z [err]  2025-11-24 11:39:52,552 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=8151 > max=0)
+2025-11-24T11:39:53.183020520Z [err]  2025-11-24 11:39:52,553 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5360, Timestamp=1763984392.6
+2025-11-24T11:39:53.183024485Z [err]  2025-11-24 11:39:52,625 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 660, Pending=1, Cursor: 5355→5356
+2025-11-24T11:39:53.183028634Z [err]  2025-11-24 11:39:52,625 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5360, Timestamp=1763984392.6
+2025-11-24T11:39:53.183033081Z [err]  2025-11-24 11:39:52,626 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8000
+2025-11-24T11:39:53.183037759Z [err]  2025-11-24 11:39:52,843 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x92.28497600590624 @ $541.80 (TP: $514.71 | SL: $552.64) - Confidence: 65.0%
+2025-11-24T11:39:53.183041640Z [err]  2025-11-24 11:39:52,843 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=92 > max=0)
+2025-11-24T11:39:53.183045669Z [err]  2025-11-24 11:39:52,843 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5361, Timestamp=1763984392.8
+2025-11-24T11:39:53.183049590Z [err]  2025-11-24 11:39:53,014 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5361, Timestamp=1763984393.0
+2025-11-24T11:39:53.183053902Z [err]  2025-11-24 11:39:53,014 - src.brain - CRITICAL - 🎯 ETH/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0564
+2025-11-24T11:39:53.183060104Z [err]  2025-11-24 11:39:53,054 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: ETH/USDT x24314.335732347794 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:53.184686035Z [err]  2025-11-24 11:39:53,054 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=24314 > max=0)
+2025-11-24T11:39:53.184690756Z [err]  2025-11-24 11:39:53,055 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5362, Timestamp=1763984393.1
+2025-11-24T11:39:53.184694902Z [err]  2025-11-24 11:39:53,057 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5362, Timestamp=1763984393.1
+2025-11-24T11:39:53.184699244Z [err]  2025-11-24 11:39:53,057 - src.brain - CRITICAL - 🎯 BNB/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0563
+2025-11-24T11:39:53.184703722Z [err]  2025-11-24 11:39:53,092 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: BNB/USDT x24315.51816369207 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:53.184707902Z [err]  2025-11-24 11:39:53,092 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=24316 > max=0)
+2025-11-24T11:39:53.184711773Z [err]  2025-11-24 11:39:53,092 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5363, Timestamp=1763984393.1
+2025-11-24T11:39:53.184716022Z [err]  2025-11-24 11:39:53,106 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5363, Timestamp=1763984393.1
+2025-11-24T11:39:53.184719831Z [err]  2025-11-24 11:39:53,107 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:53.184723888Z [err]  2025-11-24 11:39:53,150 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:53.184728599Z [err]  2025-11-24 11:39:53,150 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=386 > max=0)
+2025-11-24T11:39:53.184732885Z [err]  2025-11-24 11:39:53,150 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5364, Timestamp=1763984393.2
+2025-11-24T11:39:53.187328698Z [err]  2025-11-24 11:39:53,184 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5364, Timestamp=1763984393.2
+2025-11-24T11:39:53.187333813Z [err]  2025-11-24 11:39:53,184 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $843.6100
+2025-11-24T11:39:54.068370034Z [err]  2025-11-24 11:39:53,221 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x59.269093538483425 @ $843.61 (TP: $801.43 | SL: $860.48) - Confidence: 65.0%
+2025-11-24T11:39:54.068375634Z [err]  2025-11-24 11:39:53,221 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=59 > max=0)
+2025-11-24T11:39:54.068380985Z [err]  2025-11-24 11:39:53,221 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5365, Timestamp=1763984393.2
+2025-11-24T11:39:54.068386385Z [err]  2025-11-24 11:39:53,225 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5365, Timestamp=1763984393.2
+2025-11-24T11:39:54.068392172Z [err]  2025-11-24 11:39:53,225 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2766
+2025-11-24T11:39:54.068437415Z [err]  2025-11-24 11:39:53,281 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x180740.31231925968 @ $0.28 (TP: $0.26 | SL: $0.28) - Confidence: 65.0%
+2025-11-24T11:39:54.068444506Z [err]  2025-11-24 11:39:53,281 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=180740 > max=0)
+2025-11-24T11:39:54.068450305Z [err]  2025-11-24 11:39:53,281 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5366, Timestamp=1763984393.3
+2025-11-24T11:39:54.068467958Z [err]  2025-11-24 11:39:53,338 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5366, Timestamp=1763984393.3
+2025-11-24T11:39:54.068473777Z [err]  2025-11-24 11:39:53,339 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0100
+2025-11-24T11:39:54.068478900Z [err]  2025-11-24 11:39:53,386 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x17.85707908186042 @ $2800.01 (TP: $2660.01 | SL: $2856.01) - Confidence: 65.0%
+2025-11-24T11:39:54.068484394Z [err]  2025-11-24 11:39:53,386 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=18 > max=0)
+2025-11-24T11:39:54.068764841Z [err]  2025-11-24 11:39:53,387 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5367, Timestamp=1763984393.4
+2025-11-24T11:39:54.068769725Z [err]  2025-11-24 11:39:53,442 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5367, Timestamp=1763984393.4
+2025-11-24T11:39:54.068774305Z [err]  2025-11-24 11:39:53,442 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:54.068779984Z [err]  2025-11-24 11:39:53,481 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:54.068785373Z [err]  2025-11-24 11:39:53,481 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=204407 > max=0)
+2025-11-24T11:39:54.068790678Z [err]  2025-11-24 11:39:53,481 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5368, Timestamp=1763984393.5
+2025-11-24T11:39:54.068795829Z [err]  2025-11-24 11:39:53,506 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 670, Pending=1, Cursor: 5363→5364
+2025-11-24T11:39:54.068801122Z [err]  2025-11-24 11:39:53,506 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5368, Timestamp=1763984393.5
+2025-11-24T11:39:54.068810567Z [err]  2025-11-24 11:39:53,507 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $12.4600
+2025-11-24T11:39:54.068816002Z [err]  2025-11-24 11:39:53,546 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x4012.8410914927767 @ $12.46 (TP: $11.84 | SL: $12.71) - Confidence: 65.0%
+2025-11-24T11:39:54.068822096Z [err]  2025-11-24 11:39:53,546 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=4013 > max=0)
+2025-11-24T11:39:54.068830263Z [err]  2025-11-24 11:39:53,546 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5369, Timestamp=1763984393.5
+2025-11-24T11:39:54.069981259Z [err]  2025-11-24 11:39:53,619 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5369, Timestamp=1763984393.6
+2025-11-24T11:39:54.069985858Z [err]  2025-11-24 11:39:53,620 - src.brain - CRITICAL - 🎯 MATIC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.0300
+2025-11-24T11:39:54.069990035Z [err]  2025-11-24 11:39:53,661 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MATIC/USDT x17.856951532662148 @ $2800.03 (TP: $2660.03 | SL: $2856.03) - Confidence: 65.0%
+2025-11-24T11:39:54.069994124Z [err]  2025-11-24 11:39:53,661 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=18 > max=0)
+2025-11-24T11:39:54.069998350Z [err]  2025-11-24 11:39:53,661 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5370, Timestamp=1763984393.7
+2025-11-24T11:39:54.070003782Z [err]  2025-11-24 11:39:53,718 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5370, Timestamp=1763984393.7
+2025-11-24T11:39:54.070009297Z [err]  2025-11-24 11:39:53,718 - src.brain - CRITICAL - 🎯 LTC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:54.070014341Z [err]  2025-11-24 11:39:53,755 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: LTC/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:54.070032619Z [err]  2025-11-24 11:39:53,755 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=204407 > max=0)
+2025-11-24T11:39:54.070038364Z [err]  2025-11-24 11:39:53,756 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5371, Timestamp=1763984393.8
+2025-11-24T11:39:54.070043219Z [err]  2025-11-24 11:39:53,898 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5371, Timestamp=1763984393.9
+2025-11-24T11:39:54.070048956Z [err]  2025-11-24 11:39:53,898 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $83.0200
+2025-11-24T11:39:54.072356130Z [err]  2025-11-24 11:39:53,935 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x602.2645145748013 @ $83.02 (TP: $78.87 | SL: $84.68) - Confidence: 65.0%
+2025-11-24T11:39:54.072364558Z [err]  2025-11-24 11:39:53,935 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=602 > max=0)
+2025-11-24T11:39:54.072369286Z [err]  2025-11-24 11:39:53,935 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5372, Timestamp=1763984393.9
+2025-11-24T11:39:54.075657483Z [err]  2025-11-24 11:39:54,072 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5372, Timestamp=1763984394.1
+2025-11-24T11:39:54.075667318Z [err]  2025-11-24 11:39:54,073 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:54.110996323Z [err]  2025-11-24 11:39:54,109 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:54.111004916Z [err]  2025-11-24 11:39:54,109 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=1 > max=0)
+2025-11-24T11:39:54.113443335Z [err]  2025-11-24 11:39:54,109 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5373, Timestamp=1763984394.1
+2025-11-24T11:39:54.139343650Z [err]  2025-11-24 11:39:54,133 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5373, Timestamp=1763984394.1
+2025-11-24T11:39:54.139354145Z [err]  2025-11-24 11:39:54,133 - src.brain - CRITICAL - 🎯 NEAR/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1400
+2025-11-24T11:39:54.176376154Z [err]  2025-11-24 11:39:54,174 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: NEAR/USDT x17.856250044640625 @ $2800.14 (TP: $2660.13 | SL: $2856.14) - Confidence: 65.0%
+2025-11-24T11:39:54.176387619Z [err]  2025-11-24 11:39:54,174 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=18 > max=0)
+2025-11-24T11:39:54.176425361Z [err]  2025-11-24 11:39:54,174 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5374, Timestamp=1763984394.2
+2025-11-24T11:39:55.201270043Z [err]  2025-11-24 11:39:54,269 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5374, Timestamp=1763984394.3
+2025-11-24T11:39:55.201274591Z [err]  2025-11-24 11:39:54,269 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.4078
+2025-11-24T11:39:55.201278923Z [err]  2025-11-24 11:39:54,307 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x122609.12211868563 @ $0.41 (TP: $0.39 | SL: $0.42) - Confidence: 65.0%
+2025-11-24T11:39:55.201284051Z [err]  2025-11-24 11:39:54,307 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=122609 > max=0)
+2025-11-24T11:39:55.201289581Z [err]  2025-11-24 11:39:54,307 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5375, Timestamp=1763984394.3
+2025-11-24T11:39:55.201294561Z [err]  2025-11-24 11:39:54,326 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5375, Timestamp=1763984394.3
+2025-11-24T11:39:55.201299070Z [err]  2025-11-24 11:39:54,326 - src.brain - CRITICAL - 🎯 ARB/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0562
+2025-11-24T11:39:55.201303049Z [err]  2025-11-24 11:39:54,369 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: ARB/USDT x24316.700710047662 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:55.201307224Z [err]  2025-11-24 11:39:54,369 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=24317 > max=0)
+2025-11-24T11:39:55.201312876Z [err]  2025-11-24 11:39:54,370 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5376, Timestamp=1763984394.4
+2025-11-24T11:39:55.201323548Z [err]  2025-11-24 11:39:54,439 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5376, Timestamp=1763984394.4
+2025-11-24T11:39:55.201328298Z [err]  2025-11-24 11:39:54,440 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8000
+2025-11-24T11:39:55.201594970Z [err]  2025-11-24 11:39:54,476 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 680, Pending=2, Cursor: 5372→5373
+2025-11-24T11:39:55.201598876Z [err]  2025-11-24 11:39:54,483 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x92.28497600590624 @ $541.80 (TP: $514.71 | SL: $552.64) - Confidence: 65.0%
+2025-11-24T11:39:55.201602548Z [err]  2025-11-24 11:39:54,483 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=92 > max=0)
+2025-11-24T11:39:55.201607269Z [err]  2025-11-24 11:39:54,483 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5377, Timestamp=1763984394.5
+2025-11-24T11:39:55.201611615Z [err]  2025-11-24 11:39:54,522 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5377, Timestamp=1763984394.5
+2025-11-24T11:39:55.201616240Z [err]  2025-11-24 11:39:54,522 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1500
+2025-11-24T11:39:55.201620796Z [err]  2025-11-24 11:39:54,562 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x17.85618627573523 @ $2800.15 (TP: $2660.14 | SL: $2856.15) - Confidence: 65.0%
+2025-11-24T11:39:55.201624994Z [err]  2025-11-24 11:39:54,563 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=18 > max=0)
+2025-11-24T11:39:55.201630633Z [err]  2025-11-24 11:39:54,563 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5378, Timestamp=1763984394.6
+2025-11-24T11:39:55.201635440Z [err]  2025-11-24 11:39:54,566 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5378, Timestamp=1763984394.6
+2025-11-24T11:39:55.201639687Z [err]  2025-11-24 11:39:54,567 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:55.201644142Z [err]  2025-11-24 11:39:54,613 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:55.201787029Z [err]  2025-11-24 11:39:54,613 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=386 > max=0)
+2025-11-24T11:39:55.201794208Z [err]  2025-11-24 11:39:54,613 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5379, Timestamp=1763984394.6
+2025-11-24T11:39:55.201798812Z [err]  2025-11-24 11:39:54,693 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5379, Timestamp=1763984394.7
+2025-11-24T11:39:55.201805067Z [err]  2025-11-24 11:39:54,693 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.1454
+2025-11-24T11:39:55.201809516Z [err]  2025-11-24 11:39:54,727 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x343808.0176029705 @ $0.15 (TP: $0.14 | SL: $0.15) - Confidence: 65.0%
+2025-11-24T11:39:55.201813794Z [err]  2025-11-24 11:39:54,727 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=343808 > max=0)
+2025-11-24T11:39:55.201822652Z [err]  2025-11-24 11:39:54,728 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5380, Timestamp=1763984394.7
+2025-11-24T11:39:55.201828810Z [err]  2025-11-24 11:39:54,756 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5380, Timestamp=1763984394.8
+2025-11-24T11:39:55.201833657Z [err]  2025-11-24 11:39:54,756 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.5000
+2025-11-24T11:39:55.201838921Z [err]  2025-11-24 11:39:54,793 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x0.5798008963721858 @ $86236.50 (TP: $81924.68 | SL: $87961.23) - Confidence: 65.0%
+2025-11-24T11:39:55.201845505Z [err]  2025-11-24 11:39:54,793 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:55.201850184Z [err]  2025-11-24 11:39:54,793 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5381, Timestamp=1763984394.8
+2025-11-24T11:39:55.203058675Z [err]  2025-11-24 11:39:54,852 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5381, Timestamp=1763984394.9
+2025-11-24T11:39:55.203066873Z [err]  2025-11-24 11:39:54,853 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1500
+2025-11-24T11:39:55.203073895Z [err]  2025-11-24 11:39:55,066 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ETH/USDT x17.85618627573523 @ $2800.15 (TP: $2660.14 | SL: $2856.15) - Confidence: 65.0%
+2025-11-24T11:39:55.203081536Z [err]  2025-11-24 11:39:55,066 - src.trade - WARNING - 🛡️ Risk check failed: ETH/USDT (risk=18 > max=0)
+2025-11-24T11:39:55.203089530Z [err]  2025-11-24 11:39:55,066 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5382, Timestamp=1763984395.1
+2025-11-24T11:39:55.964534615Z [err]  2025-11-24 11:39:55,508 - src.trade - WARNING - 🛡️ Risk check failed: DOGE/USDT (risk=3671 > max=0)
+2025-11-24T11:39:55.964538959Z [err]  2025-11-24 11:39:55,509 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5387, Timestamp=1763984395.5
+2025-11-24T11:39:55.964544090Z [err]  2025-11-24 11:39:55,519 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5387, Timestamp=1763984395.5
+2025-11-24T11:39:55.964549114Z [err]  2025-11-24 11:39:55,519 - src.brain - CRITICAL - 🎯 AVAX/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2446
+2025-11-24T11:39:55.964553842Z [err]  2025-11-24 11:39:55,557 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: AVAX/USDT x204407.01524876335 @ $0.24 (TP: $0.23 | SL: $0.25) - Confidence: 65.0%
+2025-11-24T11:39:55.964558183Z [err]  2025-11-24 11:39:55,557 - src.trade - WARNING - 🛡️ Risk check failed: AVAX/USDT (risk=204407 > max=0)
+2025-11-24T11:39:55.964562967Z [err]  2025-11-24 11:39:55,557 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5388, Timestamp=1763984395.6
+2025-11-24T11:39:55.964567883Z [err]  2025-11-24 11:39:55,682 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5388, Timestamp=1763984395.7
+2025-11-24T11:39:55.964572389Z [err]  2025-11-24 11:39:55,683 - src.brain - CRITICAL - 🎯 LINK/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1500
+2025-11-24T11:39:55.964576921Z [err]  2025-11-24 11:39:55,723 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LINK/USDT x17.85618627573523 @ $2800.15 (TP: $2660.14 | SL: $2856.15) - Confidence: 65.0%
+2025-11-24T11:39:55.964582596Z [err]  2025-11-24 11:39:55,723 - src.trade - WARNING - 🛡️ Risk check failed: LINK/USDT (risk=18 > max=0)
+2025-11-24T11:39:55.964586643Z [err]  2025-11-24 11:39:55,724 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5389, Timestamp=1763984395.7
+2025-11-24T11:39:55.964943679Z [err]  2025-11-24 11:39:55,237 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5382, Timestamp=1763984395.2
+2025-11-24T11:39:55.964956248Z [err]  2025-11-24 11:39:55,238 - src.brain - CRITICAL - 🎯 BNB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.3900
+2025-11-24T11:39:55.964967966Z [err]  2025-11-24 11:39:55,284 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BNB/USDT x386.428626632661 @ $129.39 (TP: $122.92 | SL: $131.98) - Confidence: 65.0%
+2025-11-24T11:39:55.964975517Z [err]  2025-11-24 11:39:55,284 - src.trade - WARNING - 🛡️ Risk check failed: BNB/USDT (risk=386 > max=0)
+2025-11-24T11:39:55.964981582Z [err]  2025-11-24 11:39:55,284 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5383, Timestamp=1763984395.3
+2025-11-24T11:39:55.964988731Z [err]  2025-11-24 11:39:55,326 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 690, Pending=1, Cursor: 5378→5379
+2025-11-24T11:39:55.964995834Z [err]  2025-11-24 11:39:55,327 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5383, Timestamp=1763984395.3
+2025-11-24T11:39:55.965001532Z [err]  2025-11-24 11:39:55,327 - src.brain - CRITICAL - 🎯 XRP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1500
+2025-11-24T11:39:55.965007632Z [err]  2025-11-24 11:39:55,365 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: XRP/USDT x17.85618627573523 @ $2800.15 (TP: $2660.14 | SL: $2856.15) - Confidence: 65.0%
+2025-11-24T11:39:55.965016531Z [err]  2025-11-24 11:39:55,365 - src.trade - WARNING - 🛡️ Risk check failed: XRP/USDT (risk=18 > max=0)
+2025-11-24T11:39:55.965023111Z [err]  2025-11-24 11:39:55,365 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5384, Timestamp=1763984395.4
+2025-11-24T11:39:55.965029850Z [err]  2025-11-24 11:39:55,373 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5384, Timestamp=1763984395.4
+2025-11-24T11:39:55.965205579Z [err]  2025-11-24 11:39:55,373 - src.brain - CRITICAL - 🎯 SOL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.5000
+2025-11-24T11:39:55.965212943Z [err]  2025-11-24 11:39:55,413 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: SOL/USDT x0.5798008963721858 @ $86236.50 (TP: $81924.68 | SL: $87961.23) - Confidence: 65.0%
+2025-11-24T11:39:55.965225104Z [err]  2025-11-24 11:39:55,413 - src.trade - WARNING - 🛡️ Risk check failed: SOL/USDT (risk=1 > max=0)
+2025-11-24T11:39:55.965235136Z [err]  2025-11-24 11:39:55,414 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5385, Timestamp=1763984395.4
+2025-11-24T11:39:55.965242150Z [err]  2025-11-24 11:39:55,428 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5385, Timestamp=1763984395.4
+2025-11-24T11:39:55.965248633Z [err]  2025-11-24 11:39:55,429 - src.brain - CRITICAL - 🎯 ADA/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $541.8000
+2025-11-24T11:39:55.965255136Z [err]  2025-11-24 11:39:55,469 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ADA/USDT x92.28497600590624 @ $541.80 (TP: $514.71 | SL: $552.64) - Confidence: 65.0%
+2025-11-24T11:39:55.965261942Z [err]  2025-11-24 11:39:55,469 - src.trade - WARNING - 🛡️ Risk check failed: ADA/USDT (risk=92 > max=0)
+2025-11-24T11:39:55.965269221Z [err]  2025-11-24 11:39:55,469 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5386, Timestamp=1763984395.5
+2025-11-24T11:39:55.965276758Z [err]  2025-11-24 11:39:55,475 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5386, Timestamp=1763984395.5
+2025-11-24T11:39:55.965282954Z [err]  2025-11-24 11:39:55,475 - src.brain - CRITICAL - 🎯 DOGE/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6190
+2025-11-24T11:39:55.965291079Z [err]  2025-11-24 11:39:55,508 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: DOGE/USDT x3671.3415081870917 @ $13.62 (TP: $12.94 | SL: $13.89) - Confidence: 65.0%
+2025-11-24T11:39:55.971811220Z [err]  2025-11-24 11:39:55,767 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5389, Timestamp=1763984395.8
+2025-11-24T11:39:55.971816563Z [err]  2025-11-24 11:39:55,767 - src.brain - CRITICAL - 🎯 MATIC/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0562
+2025-11-24T11:39:55.971823099Z [err]  2025-11-24 11:39:55,802 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: MATIC/USDT x24316.700710047662 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:55.971828474Z [err]  2025-11-24 11:39:55,802 - src.trade - WARNING - 🛡️ Risk check failed: MATIC/USDT (risk=24317 > max=0)
+2025-11-24T11:39:55.971834037Z [err]  2025-11-24 11:39:55,803 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5390, Timestamp=1763984395.8
+2025-11-24T11:39:55.971839738Z [err]  2025-11-24 11:39:55,941 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5390, Timestamp=1763984395.9
+2025-11-24T11:39:55.971845446Z [err]  2025-11-24 11:39:55,942 - src.brain - CRITICAL - 🎯 LTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.6000
+2025-11-24T11:39:55.983383969Z [err]  2025-11-24 11:39:55,977 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: LTC/USDT x0.5798002240348066 @ $86236.60 (TP: $81924.77 | SL: $87961.33) - Confidence: 65.0%
+2025-11-24T11:39:55.983396092Z [err]  2025-11-24 11:39:55,978 - src.trade - WARNING - 🛡️ Risk check failed: LTC/USDT (risk=1 > max=0)
+2025-11-24T11:39:55.983405297Z [err]  2025-11-24 11:39:55,978 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5391, Timestamp=1763984396.0
+2025-11-24T11:39:56.066887444Z [err]  2025-11-24 11:39:56,065 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5391, Timestamp=1763984396.1
+2025-11-24T11:39:56.066893913Z [err]  2025-11-24 11:39:56,065 - src.brain - CRITICAL - 🎯 ATOM/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.4000
+2025-11-24T11:39:56.102866821Z [err]  2025-11-24 11:39:56,099 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ATOM/USDT x386.3987635239567 @ $129.40 (TP: $122.93 | SL: $131.99) - Confidence: 65.0%
+2025-11-24T11:39:56.102874281Z [err]  2025-11-24 11:39:56,100 - src.trade - WARNING - 🛡️ Risk check failed: ATOM/USDT (risk=386 > max=0)
+2025-11-24T11:39:56.102879913Z [err]  2025-11-24 11:39:56,100 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5392, Timestamp=1763984396.1
+2025-11-24T11:39:57.077815528Z [err]  2025-11-24 11:39:56,223 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 700, Pending=1, Cursor: 5387→5388
+2025-11-24T11:39:57.077823278Z [err]  2025-11-24 11:39:56,223 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5392, Timestamp=1763984396.2
+2025-11-24T11:39:57.077831628Z [err]  2025-11-24 11:39:56,224 - src.brain - CRITICAL - 🎯 UNI/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1400
+2025-11-24T11:39:57.077839528Z [err]  2025-11-24 11:39:56,262 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: UNI/USDT x17.856250044640625 @ $2800.14 (TP: $2660.13 | SL: $2856.14) - Confidence: 65.0%
+2025-11-24T11:39:57.077855351Z [err]  2025-11-24 11:39:56,262 - src.trade - WARNING - 🛡️ Risk check failed: UNI/USDT (risk=18 > max=0)
+2025-11-24T11:39:57.077862939Z [err]  2025-11-24 11:39:56,262 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5393, Timestamp=1763984396.3
+2025-11-24T11:39:57.077869185Z [err]  2025-11-24 11:39:56,380 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5393, Timestamp=1763984396.4
+2025-11-24T11:39:57.077875654Z [err]  2025-11-24 11:39:56,381 - src.brain - CRITICAL - 🎯 NEAR/USDT SHORT Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.0562
+2025-11-24T11:39:57.077882826Z [err]  2025-11-24 11:39:56,431 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened SHORT position: NEAR/USDT x24316.700710047662 @ $2.06 (TP: $1.95 | SL: $2.10) - Confidence: 65.0%
+2025-11-24T11:39:57.077889713Z [err]  2025-11-24 11:39:56,431 - src.trade - WARNING - 🛡️ Risk check failed: NEAR/USDT (risk=24317 > max=0)
+2025-11-24T11:39:57.077896640Z [err]  2025-11-24 11:39:56,431 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5394, Timestamp=1763984396.4
+2025-11-24T11:39:57.077904435Z [err]  2025-11-24 11:39:56,434 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5394, Timestamp=1763984396.4
+2025-11-24T11:39:57.078054928Z [err]  2025-11-24 11:39:56,606 - src.trade - WARNING - 🛡️ Risk check failed: OP/USDT (risk=1 > max=0)
+2025-11-24T11:39:57.078059482Z [err]  2025-11-24 11:39:56,606 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5397, Timestamp=1763984396.6
+2025-11-24T11:39:57.078064435Z [err]  2025-11-24 11:39:56,625 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5397, Timestamp=1763984396.6
+2025-11-24T11:39:57.078069307Z [err]  2025-11-24 11:39:56,625 - src.brain - CRITICAL - 🎯 JTO/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1400
+2025-11-24T11:39:57.078076005Z [err]  2025-11-24 11:39:56,669 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: JTO/USDT x17.856250044640625 @ $2800.14 (TP: $2660.13 | SL: $2856.14) - Confidence: 65.0%
+2025-11-24T11:39:57.078080710Z [err]  2025-11-24 11:39:56,669 - src.trade - WARNING - 🛡️ Risk check failed: JTO/USDT (risk=18 > max=0)
+2025-11-24T11:39:57.078085225Z [err]  2025-11-24 11:39:56,670 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5398, Timestamp=1763984396.7
+2025-11-24T11:39:57.078089900Z [err]  2025-11-24 11:39:56,707 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5398, Timestamp=1763984396.7
+2025-11-24T11:39:57.078094421Z [err]  2025-11-24 11:39:56,708 - src.brain - CRITICAL - 🎯 WLD/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $13.6190
+2025-11-24T11:39:57.078098531Z [err]  2025-11-24 11:39:56,747 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: WLD/USDT x3671.3415081870917 @ $13.62 (TP: $12.94 | SL: $13.89) - Confidence: 65.0%
+2025-11-24T11:39:57.078102569Z [err]  2025-11-24 11:39:56,747 - src.trade - WARNING - 🛡️ Risk check failed: WLD/USDT (risk=3671 > max=0)
+2025-11-24T11:39:57.078106933Z [err]  2025-11-24 11:39:56,747 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5399, Timestamp=1763984396.7
+2025-11-24T11:39:57.078112623Z [err]  2025-11-24 11:39:56,434 - src.brain - CRITICAL - 🎯 FIL/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $0.2766
+2025-11-24T11:39:57.078117788Z [err]  2025-11-24 11:39:56,472 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: FIL/USDT x180740.31231925968 @ $0.28 (TP: $0.26 | SL: $0.28) - Confidence: 65.0%
+2025-11-24T11:39:57.078124221Z [err]  2025-11-24 11:39:56,472 - src.trade - WARNING - 🛡️ Risk check failed: FIL/USDT (risk=180740 > max=0)
+2025-11-24T11:39:57.078131155Z [err]  2025-11-24 11:39:56,472 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5395, Timestamp=1763984396.5
+2025-11-24T11:39:57.078136785Z [err]  2025-11-24 11:39:56,485 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5395, Timestamp=1763984396.5
+2025-11-24T11:39:57.078141333Z [err]  2025-11-24 11:39:56,486 - src.brain - CRITICAL - 🎯 ARB/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2.4500
+2025-11-24T11:39:57.078145874Z [err]  2025-11-24 11:39:56,535 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: ARB/USDT x20408.16326530612 @ $2.45 (TP: $2.33 | SL: $2.50) - Confidence: 65.0%
+2025-11-24T11:39:57.078151640Z [err]  2025-11-24 11:39:56,535 - src.trade - WARNING - 🛡️ Risk check failed: ARB/USDT (risk=20408 > max=0)
+2025-11-24T11:39:57.078156877Z [err]  2025-11-24 11:39:56,535 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5396, Timestamp=1763984396.5
+2025-11-24T11:39:57.078162489Z [err]  2025-11-24 11:39:56,568 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5396, Timestamp=1763984396.6
+2025-11-24T11:39:57.078169203Z [err]  2025-11-24 11:39:56,568 - src.brain - CRITICAL - 🎯 OP/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $86236.5000
+2025-11-24T11:39:57.078175333Z [err]  2025-11-24 11:39:56,606 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: OP/USDT x0.5798008963721858 @ $86236.50 (TP: $81924.68 | SL: $87961.23) - Confidence: 65.0%
+2025-11-24T11:39:57.082137016Z [err]  2025-11-24 11:39:56,851 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5399, Timestamp=1763984396.9
+2025-11-24T11:39:57.082146132Z [err]  2025-11-24 11:39:56,851 - src.brain - CRITICAL - 🎯 MEW/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.3900
+2025-11-24T11:39:57.082152762Z [err]  2025-11-24 11:39:56,886 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: MEW/USDT x386.428626632661 @ $129.39 (TP: $122.92 | SL: $131.98) - Confidence: 65.0%
+2025-11-24T11:39:57.082158162Z [err]  2025-11-24 11:39:56,886 - src.trade - WARNING - 🛡️ Risk check failed: MEW/USDT (risk=386 > max=0)
+2025-11-24T11:39:57.082164205Z [err]  2025-11-24 11:39:56,887 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5400, Timestamp=1763984396.9
+2025-11-24T11:39:57.082169908Z [err]  2025-11-24 11:39:56,919 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 710, Pending=1, Cursor: 5395→5396
+2025-11-24T11:39:57.082178856Z [err]  2025-11-24 11:39:56,920 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5400, Timestamp=1763984396.9
+2025-11-24T11:39:57.082184789Z [err]  2025-11-24 11:39:56,920 - src.brain - CRITICAL - 🎯 BTC/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $2800.1500
+2025-11-24T11:39:57.082194868Z [err]  2025-11-24 11:39:56,961 - src.virtual_learning - CRITICAL - 🎓 [VIRTUAL] Opened LONG position: BTC/USDT x17.85618627573523 @ $2800.15 (TP: $2660.14 | SL: $2856.15) - Confidence: 65.0%
+2025-11-24T11:39:57.082202482Z [err]  2025-11-24 11:39:56,961 - src.trade - WARNING - 🛡️ Risk check failed: BTC/USDT (risk=18 > max=0)
+2025-11-24T11:39:57.082208309Z [err]  2025-11-24 11:39:56,961 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=5401, Timestamp=1763984397.0
+2025-11-24T11:39:57.141184879Z [err]  2025-11-24 11:39:57,139 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=5401, Timestamp=1763984397.1
+2025-11-24T11:39:57.141197787Z [err]  2025-11-24 11:39:57,139 - src.brain - CRITICAL - 🎯 ETH/USDT LONG Signal | Confidence: 65.00% | 1H:0% 15m:0% | Entry: $129.3900

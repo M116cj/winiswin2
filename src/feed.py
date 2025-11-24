@@ -337,10 +337,6 @@ async def main():
                                     except Exception as e:
                                         logger.debug(f"Virtual price update: {e}")
                                     
-                                    # Log every 10 writes (more frequent for diagnostics)
-                                    if candle_count % 10 == 0:
-                                        pending = ring_buffer.pending_count()
-                                        logger.critical(f"🔍 Feed Ring Buffer: Written {candle_count}, Pending={pending}, Cursor: {write_cursor_before}→{write_cursor_after}")
                                     
                                     # 💾 Persist market data to PostgreSQL & Redis
                                     try:

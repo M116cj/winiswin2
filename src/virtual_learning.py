@@ -39,10 +39,6 @@ async def update_market_prices(prices: Dict[str, float]) -> None:
     global _market_prices
     if prices:
         _market_prices.update(prices)
-        # 診斷日誌：記錄市場價格更新
-        if int(time.time()) % 10 == 0:  # 每 10 秒記錄一次
-            symbols = list(prices.keys())[:3]  # 前 3 個符號
-            logger.critical(f"📈 [MARKET PRICES UPDATED] {len(prices)} symbols: {symbols}... Prices: {prices}")
 
 
 async def get_current_price(symbol: str) -> Optional[float]:
@@ -113,11 +109,6 @@ async def open_virtual_position(signal: Dict) -> bool:
                 'status': 'OPEN'
             }
             
-            logger.critical(
-                f"🎓 [VIRTUAL] Opened {side} position: {symbol} x{quantity} @ ${entry_price:.2f} "
-                f"(TP: ${tp_level:.2f} | SL: ${sl_level:.2f}) - Confidence: {confidence:.1%}"
-            )
-            
             return True
         
         except Exception as e:
@@ -135,10 +126,6 @@ async def check_virtual_tp_sl() -> None:
         try:
             closed_positions = []
             open_count = len([p for p in _virtual_account['positions'].values() if p['status'] == 'OPEN'])
-            
-            # Log open positions periodically
-            if open_count > 0 and int(time.time()) % 30 == 0:
-                logger.critical(f"🎓 TP/SL Monitor: {open_count} open virtual positions being checked")
             
             for position_id, pos in list(_virtual_account['positions'].items()):
                 if pos['status'] != 'OPEN':
@@ -163,18 +150,6 @@ async def check_virtual_tp_sl() -> None:
                 
                 quantity = pos['quantity']
                 side = pos['side']
-                
-                # 診斷日誌：記錄 TP/SL 監視進度
-                # 每 5 秒記錄一次日誌以便於追蹤
-                checkpoint = (int(time.time()) % 5 == 0)
-                if checkpoint and open_count > 0:
-                    first_pos_id = list(_virtual_account['positions'].keys())[0] if _virtual_account['positions'] else None
-                    if position_id == first_pos_id:
-                        logger.critical(
-                            f"🎓 [TP/SL MONITOR] {symbol} {side} | "
-                            f"Entry: ${entry_price:.2f} | Current: ${current_price:.2f} ({price_source}) | "
-                            f"TP: ${pos['tp_level']:.2f} | SL: ${pos['sl_level']:.2f}"
-                        )
                 
                 # Check TP
                 tp_reached = False

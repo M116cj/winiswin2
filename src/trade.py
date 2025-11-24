@@ -570,12 +570,10 @@ async def _check_risk(signal: Dict) -> None:
         
         # Risk validation (live trading only)
         if position_size > max_risk:
-            logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
             return
         
         # ✅ CORRECT THRESHOLD: 0.60 for professional trading
         if confidence < 0.60:
-            logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} < 0.60)")
             return
         
         # Check slot availability

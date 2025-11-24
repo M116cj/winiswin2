@@ -210,13 +210,6 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     tf_1h_conf = tf_analysis.get('1h', {}).get('confidence', 0)
     tf_15m_conf = tf_analysis.get('15m', {}).get('confidence', 0)
     
-    logger.critical(
-        f"🎯 {symbol} {signal['direction']} Signal | "
-        f"Confidence: {signal['confidence']:.2%} | "
-        f"1H:{tf_1h_conf:.0%} 15m:{tf_15m_conf:.0%} | "
-        f"Entry: ${current_price:.4f}"
-    )
-    
     # Publish to EventBus
     await bus.publish(Topic.SIGNAL_GENERATED, signal)
 
@@ -292,11 +285,6 @@ async def run_brain() -> None:
                 continue
             
             pending = ring_buffer.pending_count()
-            
-            # 🔍 Log pending status every 5 seconds (if changed)
-            current_time = time()
-            if pending != last_pending_log or (candle_count % 5000 == 0 and candle_count > 0):
-                logger.critical(f"🔍 Brain Ring Buffer Check: Pending={pending}, Read={candle_count}, Timestamp={current_time:.1f}")
             
             if pending > 0:
                 last_pending_log = pending  # Update tracking
