@@ -551,7 +551,24 @@ async def _check_risk(signal: Dict) -> None:
         
         max_risk = balance * 0.02  # 2% risk per trade
         
-        # Risk validation
+        # 🎓 VIRTUAL LEARNING: ALWAYS run virtual trading (independent of risk checks)
+        # This allows ML model to learn from unrestricted virtual trades
+        try:
+            virtual_order = {
+                'symbol': symbol,
+                'side': direction.upper(),
+                'confidence': confidence,
+                'quantity': position_size,
+                'entry_price': entry_price,
+                'tp_pct': tp_pct,
+                'sl_pct': sl_pct
+            }
+            await open_virtual_position(virtual_order)
+            logger.debug(f"🎓 Virtual position opened: {symbol} {direction.upper()}")
+        except Exception as e:
+            logger.debug(f"Virtual learning: {e}")
+        
+        # Risk validation (live trading only)
         if position_size > max_risk:
             logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
             return

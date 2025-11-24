@@ -18,6 +18,9 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+# Global price cache from Ring Buffer
+_market_prices = {}  # {symbol: current_price}
+
 # Virtual account state (in-memory)
 _virtual_account = {
     'balance': 10000.0,  # Starting capital
@@ -29,6 +32,17 @@ _virtual_account = {
 }
 
 _virtual_lock = asyncio.Lock()
+
+
+async def update_market_prices(prices: Dict[str, float]) -> None:
+    """Update market prices from Ring Buffer / Feed process"""
+    global _market_prices
+    _market_prices.update(prices)
+
+
+async def get_current_price(symbol: str) -> Optional[float]:
+    """Get current market price for symbol"""
+    return _market_prices.get(symbol)
 
 
 async def init_virtual_learning() -> None:
@@ -110,6 +124,7 @@ async def check_virtual_tp_sl() -> None:
     """
     Automatically detect and close positions at TP/SL levels
     This runs continuously to monitor all virtual positions
+    Uses REAL market prices from Ring Buffer / Feed process
     """
     async with _virtual_lock:
         try:
@@ -121,7 +136,14 @@ async def check_virtual_tp_sl() -> None:
                 
                 symbol = pos['symbol']
                 entry_price = pos['entry_price']
-                current_price = entry_price * (1 + (0.01 * (time.time() % 10)))  # Mock price movement
+                
+                # 🔥 FIX: Use REAL market price from Feed, fallback to time-based simulation
+                current_price = _market_prices.get(symbol)
+                if current_price is None:
+                    # Fallback: Use time-based simulation (for testing)
+                    # This ensures virtual trades close even without real market data
+                    current_price = entry_price * (1 + (0.01 * (time.time() % 10)))
+                
                 quantity = pos['quantity']
                 side = pos['side']
                 

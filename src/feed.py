@@ -327,6 +327,16 @@ async def main():
                                     write_cursor_after = ring_buffer._get_cursors()[0]
                                     candle_count += 1
                                     
+                                    # 🤖 Update virtual trading market prices with REAL data
+                                    try:
+                                        from src.virtual_learning import update_market_prices
+                                        ts, o, h, l, c, v = safe_candle
+                                        symbol = kline.get('s', '')
+                                        if symbol and c:  # c = close price
+                                            await update_market_prices({symbol: float(c)})
+                                    except Exception as e:
+                                        logger.debug(f"Virtual price update: {e}")
+                                    
                                     # Log every 10 writes (more frequent for diagnostics)
                                     if candle_count % 10 == 0:
                                         pending = ring_buffer.pending_count()
