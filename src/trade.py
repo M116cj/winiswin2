@@ -30,6 +30,10 @@ from src.bus import bus, Topic
 from src.config import Config, get_database_url
 from src.experience_buffer import get_experience_buffer
 from src.utils.math_utils import round_step_size, round_to_precision, validate_quantity, get_step_size
+from src.virtual_learning import (
+    init_virtual_learning, open_virtual_position, check_virtual_tp_sl, 
+    get_virtual_state, reset_virtual_account
+)
 
 logger = logging.getLogger(__name__)
 
@@ -534,6 +538,16 @@ async def _check_risk(signal: Dict) -> None:
             
             logger.debug(f"✅ Order approved (Slot {num_positions + 1}/{max_positions}): {symbol} {order['side']} {position_size:.0f}")
             await bus.publish(Topic.ORDER_REQUEST, order)
+            
+            # 🎓 VIRTUAL LEARNING: Open virtual position (no restrictions)
+            virtual_order = {
+                'symbol': symbol,
+                'side': 'BUY',
+                'confidence': confidence,
+                'quantity': position_size,
+                'entry_price': position_size * 100  # Mock entry price
+            }
+            await open_virtual_position(virtual_order)
             return
         
         # CASE 2: Slots full - Check for rotation
@@ -588,6 +602,16 @@ async def _check_risk(signal: Dict) -> None:
             
             logger.debug(f"✅ New position approved: {symbol} {order['side']} {position_size:.0f}")
             await bus.publish(Topic.ORDER_REQUEST, order)
+            
+            # 🎓 VIRTUAL LEARNING: Open virtual position for rotation
+            virtual_order = {
+                'symbol': symbol,
+                'side': 'BUY',
+                'confidence': confidence,
+                'quantity': position_size,
+                'entry_price': position_size * 100
+            }
+            await open_virtual_position(virtual_order)
         else:
             logger.error(f"❌ Rotation failed: Could not close {weakest_key}")
     except Exception as e:
@@ -844,6 +868,9 @@ async def init() -> None:
     logger.critical("🔴 LIVE TRADING MODE - Syncing with real Binance account")
     await initial_account_sync()
     
+    # 🎓 Initialize virtual learning account
+    await init_virtual_learning()
+    
     if LIVE_TRADING_ENABLED:
         logger.critical("✅ LIVE TRADING ENABLED - Orders will be executed on Binance")
     else:
@@ -852,4 +879,4 @@ async def init() -> None:
     bus.subscribe(Topic.SIGNAL_GENERATED, _check_risk)
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
-    logger.critical("✅ Trade module ready (LIVE MODE - Real Binance trading)")
+    logger.critical("✅ Trade module ready (LIVE MODE - Real Binance trading + Virtual Learning)")

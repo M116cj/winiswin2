@@ -43,7 +43,38 @@ The system employs a **HARDENED KERNEL-LEVEL MULTIPROCESS ARCHITECTURE** with an
 - **Risk Management**: Integrated risk validation, order execution, and thread-safe state management. Includes an "Elite 3-Position Portfolio Rotation" feature that intelligently rotates positions based on new signal confidence and profitability of existing positions.
 - **Production-Grade Logging**: Implemented with a `WARNING` level root logger to reduce noise, contextual error wrappers, and a 15-minute system heartbeat.
 
-## Recent Changes (v8.0 - LIVE MODE ONLY + API-First Startup + Strict Data Firewall + Railway VM Config)
+## Recent Changes (v8.0 - LIVE MODE ONLY + API-First Startup + Strict Data Firewall + Railway VM Config + Virtual Learning)
+
+**Date: 2025-11-24 (Latest: Virtual Incremental Learning Module)**
+
+### 🎓 NEW FEATURE: Virtual Incremental Learning System
+- **Purpose**: Parallel virtual trading account for strategy testing without live restrictions
+- **Core Features**:
+  - Same signal logic as live trading but NO position limit restrictions
+  - Automatic TP/SL detection and position closure
+  - Continuous performance monitoring (Win Rate, PnL, etc.)
+  - Full trade history persistence to PostgreSQL
+  - Real-time state reporting via API endpoint `/virtual-learning`
+- **Architecture**:
+  - `src/virtual_learning.py`: Virtual account state management
+  - `src/virtual_monitor.py`: Background TP/SL checking task
+  - `src/trade.py`: Integration with live signal processing
+  - API endpoint: `GET /virtual-learning` - Returns virtual account state
+- **Key Metrics Tracked**:
+  - Balance: Starting $10,000
+  - Total PnL: Cumulative profit/loss
+  - Win Rate: Percentage of profitable trades
+  - Open/Closed Positions: Current and historical positions
+  - TP/SL State: Automatic detection and closure at profit targets or stop losses
+- **Usage**: 
+  - System automatically opens virtual positions when live positions are opened
+  - Background monitor checks TP/SL every 5 seconds
+  - Performance reports every 5 minutes to logs
+  - No configuration needed - runs automatically alongside live trading
+- **Database Integration**:
+  - `virtual_trades` table stores all completed trades with:
+    - Position ID, symbol, side, quantity, entry/exit prices
+    - PnL, close reason (TP_HIT, SL_HIT), timestamps
 
 **Date: 2025-11-23 (Latest: Railway Deployment Fix - VM Configuration)**
 

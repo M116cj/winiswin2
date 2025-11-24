@@ -59,6 +59,24 @@ def root():
     }
 
 
+@app.get("/virtual-learning")
+async def get_virtual_learning_state():
+    """🎓 Get virtual learning account state"""
+    try:
+        from src.virtual_learning import get_virtual_state
+        state = await get_virtual_state()
+        return {
+            "status": "ok",
+            "virtual_learning": state
+        }
+    except Exception as e:
+        logger.error(f"❌ Failed to get virtual state: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+
 def _run_api_server_sync(port: int):
     """
     🚀 SYNCHRONOUS API Server Runner (runs in background thread)

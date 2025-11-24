@@ -111,9 +111,13 @@ def run_orchestrator():
                 maintenance.background_maintenance_task()
             )
             
+            # 🎓 Virtual Learning Monitor - Background TP/SL checking
+            from src.virtual_monitor import run_virtual_monitor
+            virtual_monitor_task = asyncio.create_task(run_virtual_monitor())
+            
             # Wait for all tasks (they run indefinitely)
             try:
-                await asyncio.gather(reconciliation_task, monitor_task, maintenance_task)
+                await asyncio.gather(reconciliation_task, monitor_task, maintenance_task, virtual_monitor_task)
             except Exception as e:
                 logger.critical(f"❌ Orchestrator background task error: {e}", exc_info=True)
                 raise
