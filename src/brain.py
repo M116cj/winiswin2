@@ -204,12 +204,17 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     experience_buffer = get_experience_buffer()
     await experience_buffer.record_signal(signal['signal_id'], signal)
     
+    # 🔍 Build timeframe_analysis structure with safe access
+    tf_analysis = signal.get('features', {}).get('timeframe_analysis', {})
+    tf_1d_conf = tf_analysis.get('1d', {}).get('confidence', 0)
+    tf_1h_conf = tf_analysis.get('1h', {}).get('confidence', 0)
+    tf_15m_conf = tf_analysis.get('15m', {}).get('confidence', 0)
+    
     logger.critical(
         f"🎯 {symbol} {signal['direction']} Signal | "
         f"Confidence: {signal['confidence']:.2%} | "
-        f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
-        f"1H:{signal['timeframe_analysis']['1h']['confidence']:.0%} "
-        f"15m:{signal['timeframe_analysis']['15m']['confidence']:.0%}"
+        f"1H:{tf_1h_conf:.0%} 15m:{tf_15m_conf:.0%} | "
+        f"Entry: ${current_price:.4f}"
     )
     
     # Publish to EventBus
