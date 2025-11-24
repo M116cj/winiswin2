@@ -12,6 +12,7 @@ import os
 import hmac
 import hashlib
 import time
+import uuid
 from typing import Dict, Optional
 from urllib.parse import urlencode
 from datetime import datetime
@@ -490,6 +491,35 @@ async def _check_risk(signal: Dict) -> None:
         symbol = signal.get('symbol', '')
         confidence = signal.get('confidence', 0)
         position_size = signal.get('position_size', 0)
+        
+        # 💾 PERSIST SIGNAL TO POSTGRES
+        try:
+            conn = await _get_postgres_connection()
+            if conn:
+                signal_id = signal.get('signal_id', str(uuid.uuid4()))
+                direction = signal.get('direction', 'UP')
+                timestamp = int(signal.get('timestamp', time.time()) * 1000)  # Convert to milliseconds
+                
+                # Store all signal details in patterns (JSONB)
+                patterns_data = {
+                    'direction': direction,
+                    'strength': signal.get('strength', 0.5),
+                    'entry_price': signal.get('entry_price', 0.0),
+                    'timeframe_analysis': signal.get('timeframe_analysis', {}),
+                    'signal_id': signal_id
+                }
+                
+                await conn.execute("""
+                    INSERT INTO signals (id, symbol, confidence, patterns, position_size, timestamp)
+                    VALUES ($1, $2, $3, $4::jsonb, $5, $6)
+                    ON CONFLICT DO NOTHING
+                """,
+                    signal_id, symbol, confidence, json.dumps(patterns_data), position_size, timestamp
+                )
+                logger.debug(f"💾 Signal saved: {symbol} {direction} (conf: {confidence:.2%})")
+                await conn.close()
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to save signal to DB: {e}")
         
         # FIX 2: Check if this symbol is in cooldown (failed order recently)
         current_time = time.time()
