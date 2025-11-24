@@ -1,4 +1,5 @@
 """
+from typing import Optional
 📊 多時間框架分析 - 正確的高頻交易架構
 分層分析：1D 趨勢 → 1H 確認 → 15m 機會 → 5m/1m 進場
 """
@@ -10,7 +11,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-class TimeframeAnalyzer:
+class TimeframeAnalyzer:  # type: ignore[name-defined]
     """多時間框架市場分析"""
     
     def __init__(self):
@@ -151,9 +152,15 @@ class TimeframeAnalyzer:
             return None
 
 
-def get_timeframe_analyzer():
+_analyzer: Optional[TimeframeAnalyzer] = None
+
+
+def get_timeframe_analyzer() -> TimeframeAnalyzer:
     """全局時間框架分析器"""
     global _analyzer
-    if '_analyzer' not in globals():
+    if _analyzer is None:
         _analyzer = TimeframeAnalyzer()
     return _analyzer
+
+# Fix imports at top
+from typing import Optional

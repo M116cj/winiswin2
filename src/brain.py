@@ -58,13 +58,25 @@ def detect_pattern(candle: tuple) -> dict:
     return {'strength': 0.5}
 
 
-async def process_candle(candle: tuple, symbol: str = "BTC/USDT", candles_by_tf: Optional[dict] = None) -> None:
+async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     """
     Process multi-timeframe signal (1D → 1H → 15m → 5m/1m)
     Only generates signals when all timeframes align
     """
-    if candles_by_tf is None:
-        candles_by_tf: dict = {}
+    # Get real multi-timeframe data from buffer
+    from src.timeframe_buffer import get_timeframe_buffer
+    
+    buffer = get_timeframe_buffer()
+    
+    # Add this candle to the buffer (it will be aggregated to all timeframes)
+    buffer.add_tick(symbol, candle)
+    
+    # Check if we have enough data for analysis
+    if not buffer.has_sufficient_data(symbol, min_candles_per_tf=3):
+        return
+    
+    # Get complete multi-timeframe candles
+    candles_by_tf = buffer.get_candles_by_tf(symbol)
     
     # Use timeframe analyzer for proper multi-timeframe validation
     analyzer = get_timeframe_analyzer()
@@ -192,7 +204,7 @@ async def run_brain() -> None:
                         current_symbol = _symbols[symbol_index % len(_symbols)]
                         symbol_index += 1
                         
-                        # Process candle
+                        # Process candle (no need to pass candles_by_tf - it's fetched from buffer)
                         await process_candle(candle, current_symbol)
                         
                         candle_count += 1

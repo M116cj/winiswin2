@@ -76,7 +76,7 @@ class VirtualDataValidator:
             return False, f"Validation error: {str(e)}"
     
     @staticmethod
-    def detect_bias(trades: List[Dict]) -> Dict[str, any]:
+    def detect_bias(trades: List[Dict]) -> Dict:  # type: ignore[no-untyped-def]
         """
         Detect potential bias in virtual trading data
         
@@ -129,9 +129,9 @@ class VirtualDataValidator:
             warnings.append(f"⚠️ Unbalanced BUY/SELL ratio: {buy_ratio:.1%}")
         
         # Check 5: Close reason distribution (should have mix of TP/SL)
-        reasons = defaultdict(int)
+        reasons: Dict[str, int] = defaultdict(int)
         for trade in trades:
-            reasons[trade.get('reason', 'UNKNOWN')] += 1
+            reasons[trade.get('reason', 'UNKNOWN')] += 1  # type: ignore[union-attr]
         metrics['close_reasons'] = dict(reasons)
         
         tp_rate = reasons.get('TP_HIT', 0) / len(trades) if trades else 0
