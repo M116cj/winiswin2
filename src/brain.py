@@ -25,6 +25,7 @@ from src.bus import bus, Topic
 from src import trade
 from src.indicators import Indicators
 from src.market_universe import BinanceUniverse
+from src.timeframe_analyzer import get_timeframe_analyzer
 import numpy as np
 import uuid
 
@@ -53,71 +54,58 @@ def optimize_gc():
 
 
 def detect_pattern(candle: tuple) -> dict:
-    """SMC pattern detection (non-blocking)"""
-    timestamp, open_, high, low, close, volume = candle
+    """Legacy function - replaced by timeframe analyzer"""
+    return {'strength': 0.5}
+
+
+async def process_candle(candle: tuple, symbol: str = "BTC/USDT", candles_by_tf: Optional[dict] = None) -> None:
+    """
+    Process multi-timeframe signal (1D → 1H → 15m → 5m/1m)
+    Only generates signals when all timeframes align
+    """
+    if candles_by_tf is None:
+        candles_by_tf: dict = {}
     
-    # Real SMC/ICT analysis based on K-line data
-    fvg_gap = high - low
-    price_range = abs(close - open_)
+    # Use timeframe analyzer for proper multi-timeframe validation
+    analyzer = get_timeframe_analyzer()
+    signal_data = analyzer.validate_setup(symbol, candles_by_tf)
     
-    # FVG detection: Price gap larger than noise threshold
-    has_fvg = fvg_gap > 100
+    if signal_data is None:
+        # Setup failed - not a valid signal
+        return
     
-    # Liquidity detection: Volume-based + volatility check
-    has_liquidity = volume > 1000 if volume else True
-    
-    # Strength scoring: Based on actual price action
-    # Higher close = BUY signal strength
-    # Lower close = SELL signal strength
-    close_position = (close - low) / (high - low + 1) if (high - low) > 0 else 0.5
-    
-    # Add small random variation to simulate market randomness but anchor to data
-    strength = min(1.0, max(0.0, close_position + np.random.uniform(-0.1, 0.1)))
-    
-    return {
-        'fvg': has_fvg,
-        'liquidity': has_liquidity,
-        'strength': strength
+    # ✅ Multi-timeframe validation passed
+    # Create complete signal object
+    signal = {
+        'signal_id': str(uuid.uuid4()),
+        'symbol': symbol,
+        'confidence': signal_data['confidence'],
+        'direction': signal_data['direction'],
+        'strength': signal_data['strength'],
+        'timeframe_analysis': signal_data['timeframe_analysis'],
+        'position_size': 100.0,
+        'timestamp': candle[0] / 1000.0
     }
-
-
-async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
-    """Process candle: detect patterns, publish signal (with ML enhancement)"""
-    timestamp, open_, high, low, close, volume = candle
     
-    # Detect SMC patterns
-    patterns = detect_pattern(candle)
-    confidence = patterns['strength']
+    # 🤖 ML model enhancement (optional)
+    ml_model = get_ml_model()
+    if ml_model.is_trained:
+        signal = await ml_model.adjust_confidence(signal)
     
-    # ✅ LOWERED THRESHOLD: 0.30 instead of 0.60 for better signal triggering
-    # 70% of candles will now generate signals (much better than 40%)
-    if confidence > 0.30:
-        # 🤖 Get ML model to adjust confidence
-        ml_model = get_ml_model()
-        
-        signal = {
-            'signal_id': str(uuid.uuid4()),
-            'symbol': symbol,
-            'confidence': confidence,
-            'patterns': patterns,
-            'position_size': 100.0,
-            'timestamp': timestamp / 1000.0
-        }
-        
-        # 🤖 Use ML model to refine confidence
-        if ml_model.is_trained:
-            signal = await ml_model.adjust_confidence(signal)
-        
-        # 💾 Record signal in experience buffer
-        experience_buffer = get_experience_buffer()
-        await experience_buffer.record_signal(signal['signal_id'], signal)
-        
-        adjusted_confidence = signal.get('confidence', confidence)
-        # ✅ CHANGED TO WARNING: Make signals visible in logs for debugging
-        logger.warning(f"🧠 Signal: {symbol} @ {adjusted_confidence:.1%} (ML-enhanced)")
-        
-        # Publish to EventBus (triggers trade risk check)
-        await bus.publish(Topic.SIGNAL_GENERATED, signal)
+    # 💾 Record in experience buffer
+    experience_buffer = get_experience_buffer()
+    await experience_buffer.record_signal(signal['signal_id'], signal)
+    
+    logger.critical(
+        f"🎯 {symbol} {signal['direction']} Signal | "
+        f"Confidence: {signal['confidence']:.2%} | "
+        f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+        f"1H:{signal['timeframe_analysis']['1h']['confidence']:.0%} "
+        f"15m:{signal['timeframe_analysis']['15m']['confidence']:.0%}"
+    )
+    
+    # Publish to EventBus
+    await bus.publish(Topic.SIGNAL_GENERATED, signal)
 
 
 async def run_brain() -> None:

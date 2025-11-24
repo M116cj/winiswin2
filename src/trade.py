@@ -518,9 +518,9 @@ async def _check_risk(signal: Dict) -> None:
             logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
             return
         
-        # ✅ LOWERED THRESHOLD: 0.30 to match Brain process (consistency)
-        if confidence <= 0.30:
-            logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} <= 0.30)")
+        # ✅ CORRECT THRESHOLD: 0.60 for professional trading
+        if confidence < 0.60:
+            logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} < 0.60)")
             return
         
         # Check slot availability
@@ -881,3 +881,47 @@ async def init() -> None:
     bus.subscribe(Topic.ORDER_REQUEST, _execute_order)
     bus.subscribe(Topic.ORDER_FILLED, _update_state)
     logger.critical("✅ Trade module ready (LIVE MODE - Real Binance trading + Virtual Learning)")
+
+
+# ✅ Dynamic position calculation (add at end of trade.py before if __name__ == "__main__")
+from src.position_calculator import get_position_calculator
+
+
+async def calculate_dynamic_position(
+    signal: Dict,
+    account_balance: float,
+    model_winrate: float = 0.60
+) -> Dict:
+    """
+    計算基於信心度和勝率的動態倉位
+    
+    Returns:
+        {
+            'position_size': 倉位大小,
+            'leverage': 槓桿,
+            'risk_amount': 風險金額,
+            'recommended': 是否推薦開倉
+        }
+    """
+    calculator = get_position_calculator()
+    
+    confidence = signal.get('confidence', 0.60)
+    direction = signal.get('direction', 'UP')
+    
+    position = calculator.calculate_position(
+        balance=account_balance,
+        confidence=confidence,
+        winrate=model_winrate,
+        signal_direction=direction
+    )
+    
+    if position.get('recommended'):
+        logger.critical(
+            f"📊 Position Calculation: {signal['symbol']} | "
+            f"Size: ${position['position_size']:.2f} | "
+            f"Leverage: {position['leverage']:.0f}x | "
+            f"Risk: ${position['risk_amount']:.2f} | "
+            f"{position['notes']}"
+        )
+    
+    return position
