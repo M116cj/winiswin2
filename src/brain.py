@@ -90,17 +90,31 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     # Extract current market price from latest candle (close price)
     current_price = candle[4] if len(candle) > 4 else 1.0
     
-    # Create complete signal object
+    # Create complete signal object (統一格式 - 使用毫秒時間戳)
+    from src.data_formats import CANDLE_IDX_TIMESTAMP, CANDLE_IDX_CLOSE
+    
     signal = {
         'signal_id': str(uuid.uuid4()),
         'symbol': symbol,
+        'timestamp': int(candle[CANDLE_IDX_TIMESTAMP]),  # ✓ 毫秒時間戳 (統一格式)
         'confidence': signal_data['confidence'],
         'direction': signal_data['direction'],
         'strength': signal_data['strength'],
-        'timeframe_analysis': signal_data['timeframe_analysis'],
-        'position_size': 100.0,
+        'features': {
+            'confidence': signal_data['confidence'],
+            'direction': signal_data['direction'],
+            'strength': signal_data['strength'],
+            'fvg': signal_data.get('fvg', 0.5),
+            'liquidity': signal_data.get('liquidity', 0.5),
+            'rsi': signal_data.get('rsi', 50),
+            'atr': signal_data.get('atr', 0),
+            'macd': signal_data.get('macd', 0),
+            'bb_width': signal_data.get('bb_width', 0),
+            'position_size': 100.0,
+            'position_size_pct': 0.01,
+            'timeframe_analysis': signal_data.get('timeframe_analysis', {})
+        },
         'entry_price': current_price,  # 🎯 Real market price for virtual trading
-        'timestamp': candle[0] / 1000.0
     }
     
     # 🤖 ML model enhancement (optional)

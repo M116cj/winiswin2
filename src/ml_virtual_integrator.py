@@ -203,23 +203,39 @@ class MLVirtualIntegrator:
         return self.virtual_trades.copy(), bias_report
     
     def convert_to_ml_format(self, trade: Dict) -> Dict:
-        """Convert virtual trade to ML training format"""
-        return {
+        """Convert virtual trade to ML training format (統一格式)"""
+        from src.data_formats import extract_ml_features
+        
+        # 構建完整的信號格式
+        signal_data = {
             'confidence': 0.65,  # Default confidence from virtual signals
-            'patterns': {
+            'features': {
+                'confidence': 0.65,
                 'fvg': 1.0,
-                'liquidity': 0.8
+                'liquidity': 0.8,
+                'rsi': 50,
+                'atr': 0,
+                'macd': 0,
+                'bb_width': 0,
+                'position_size': trade.get('quantity', 0),
+                'position_size_pct': 0.0065,  # 0.65% of 10k
             },
             'position_size': trade.get('quantity', 0),
-            'rsi': 50,  # Neutral default
-            'atr': 0,
-            'macd': 0,
-            'bb_width': 0,
-            'outcome': {
-                'win': trade.get('pnl', 0) > 0,
-                'pnl': trade.get('pnl', 0)
-            },
-            'source': 'virtual'
+        }
+        
+        # 使用統一的特徵提取
+        feature_vector = extract_ml_features(signal_data)
+        
+        pnl = trade.get('pnl', 0)
+        return {
+            'features': feature_vector,
+            'label': 1 if pnl > 0 else 0,
+            'metadata': {
+                'symbol': trade.get('symbol', ''),
+                'timestamp': int(trade.get('timestamp', 0)),
+                'pnl': pnl,
+                'source': 'virtual'
+            }
         }
 
 

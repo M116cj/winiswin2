@@ -37,11 +37,11 @@ class ExperienceBuffer:
     
     async def record_signal(self, signal_id: str, signal_data: Dict) -> None:
         """
-        Record a new trading signal
+        Record a new trading signal (統一格式)
         
         Args:
             signal_id: Unique signal identifier
-            signal_data: {symbol, confidence, patterns, position_size, timestamp}
+            signal_data: {symbol, confidence, features, position_size, timestamp (milliseconds)}
         """
         try:
             async with self.lock:
@@ -49,11 +49,10 @@ class ExperienceBuffer:
                     'signal_id': signal_id,
                     'type': 'signal',
                     'symbol': signal_data.get('symbol', ''),
-                    'confidence': signal_data.get('confidence', 0.5),
-                    'patterns': signal_data.get('patterns', {}),
-                    'position_size': signal_data.get('position_size', 0),
-                    'timestamp': signal_data.get('timestamp', datetime.now().isoformat()),
-                    'recorded_at': datetime.now().isoformat()
+                    'timestamp': int(signal_data.get('timestamp', int(datetime.now().timestamp() * 1000))),  # ✓ 毫秒
+                    'features': signal_data.get('features', {}),
+                    'outcome': None,
+                    'recorded_at': int(datetime.now().timestamp() * 1000)  # ✓ 毫秒
                 }
                 
                 self.experiences.append(experience)
@@ -62,34 +61,38 @@ class ExperienceBuffer:
                 if len(self.experiences) > self.max_size:
                     self.experiences.pop(0)
                 
-                logger.debug(f"📝 Signal recorded: {signal_data['symbol']} @ {signal_data['confidence']:.2f}")
+                logger.debug(f"📝 Signal recorded: {signal_data['symbol']} @ {signal_data.get('confidence', 0.5):.2f}")
         
         except Exception as e:
             logger.error(f"❌ Error recording signal: {e}", exc_info=True)
     
     async def record_trade_outcome(self, signal_id: str, trade_data: Dict) -> None:
         """
-        Record the outcome of a trade (win/loss/PnL)
+        Record the outcome of a trade (統一格式)
         
         Args:
             signal_id: Unique signal identifier
-            trade_data: {price, quantity, side, pnl, status}
+            trade_data: {price, quantity, side, pnl, status, close_reason}
         """
         try:
             async with self.lock:
                 # Find corresponding signal
                 for exp in self.experiences:
                     if exp.get('signal_id') == signal_id:
+                        pnl = trade_data.get('pnl', 0)
                         exp['outcome'] = {
-                            'price': trade_data.get('price', 0),
+                            'entry_price': trade_data.get('entry_price', trade_data.get('price', 0)),
+                            'exit_price': trade_data.get('exit_price', trade_data.get('price', 0)),
                             'quantity': trade_data.get('quantity', 0),
                             'side': trade_data.get('side', 'BUY'),
-                            'pnl': trade_data.get('pnl', 0),
+                            'pnl': pnl,
+                            'pnl_percent': trade_data.get('pnl_percent', 0),
                             'status': trade_data.get('status', 'FILLED'),
-                            'win': trade_data.get('pnl', 0) > 0
+                            'close_reason': trade_data.get('close_reason', 'UNKNOWN'),
+                            'win': pnl > 0
                         }
                         exp['type'] = 'complete_trade'
-                        logger.debug(f"✅ Trade outcome recorded: PnL ${trade_data.get('pnl', 0):.2f}")
+                        logger.debug(f"✅ Trade outcome recorded: PnL ${pnl:.2f}")
                         break
         
         except Exception as e:

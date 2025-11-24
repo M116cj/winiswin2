@@ -141,6 +141,50 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 ✓ 整數槓桿要求
 ✓ 浮點誤差容許
 
+## 📊 Data Format Unification - PostgreSQL/Redis/WebSocket
+
+**Date: 2025-11-24 - 完整數據格式統一系統**
+
+**統一完成：**
+
+✅ **時間戳格式統一：**
+   - 所有層統一使用 BIGINT milliseconds (Binance 標準)
+   - Feed、Brain、Experience Buffer、PostgreSQL、Redis 完全一致
+
+✅ **信號結構統一：**
+   - 標準信號格式包含完整 features 集合
+   - features: {confidence, direction, strength, fvg, liquidity, rsi, atr, macd, bb_width, position_size, timeframe_analysis}
+
+✅ **ML 特徵向量統一：**
+   - 8 個標準特徵索引
+   - extract_ml_features() 統一提取方法
+   - 所有 ML 層都使用相同的特徵提取
+
+✅ **Experience Buffer 統一：**
+   - 記錄包含完整 signal + features + outcome
+   - timestamp 統一為毫秒
+   - 支持持久化到 PostgreSQL
+
+✅ **PostgreSQL 表結構統一：**
+   - 時間戳列統一為 BIGINT (毫秒)
+   - OHLCV 數據統一為 NUMERIC(20,8)
+   - JSON 結構使用 JSONB
+
+✅ **Redis 格式統一：**
+   - 鍵空間設計: market:{symbol}
+   - 值: {symbol, timestamp, o, h, l, c, v}
+   - JSON 序列化統一
+
+**新增文件：**
+   - src/data_formats.py - 格式定義、常量、工具函數
+   - src/DATA_FORMATS_REFERENCE.md - 完整參考文檔
+
+**修改文件：**
+   - src/brain.py - 使用 CANDLE_IDX_* 常量、完整 features
+   - src/experience_buffer.py - 時間戳統一、outcome 結構完整
+   - src/ml_model.py - 使用 extract_ml_features()
+   - src/ml_virtual_integrator.py - 統一訓練數據格式
+
 ## 💾 Complete Data Persistence System Implementation
 
 **Date: 2025-11-24 - 完整數據蒐集、存儲和持久化系統**

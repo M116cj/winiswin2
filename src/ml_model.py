@@ -81,25 +81,13 @@ class MLModel:
     
     def _extract_features(self, signal_data: Dict) -> Optional[List[float]]:
         """
-        Extract features from signal for ML prediction
+        Extract features from signal for ML prediction (統一格式)
         
-        Args:
-            signal_data: {confidence, patterns, position_size, rsi, atr, macd, bb_width}
-        
-        Returns:
-            Feature vector
+        使用 data_formats.py 中的統一特徵提取方法
         """
         try:
-            features = [
-                signal_data.get('confidence', 0.5),
-                float(signal_data.get('patterns', {}).get('fvg', 0)),
-                signal_data.get('patterns', {}).get('liquidity', 0.5),
-                signal_data.get('position_size', 100) / 10000,  # Normalize to %
-                signal_data.get('rsi', 50) / 100,  # Normalize 0-100 to 0-1
-                signal_data.get('atr', 0) / 1000,  # Rough normalize
-                signal_data.get('macd', 0) / 100,  # Normalize
-                signal_data.get('bb_width', 0) / 1000  # Normalize
-            ]
+            from src.data_formats import extract_ml_features
+            features = extract_ml_features(signal_data)
             return features
         except Exception as e:
             logger.debug(f"Error extracting features: {e}")
