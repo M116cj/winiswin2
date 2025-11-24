@@ -33,6 +33,11 @@ import uuid
 from src.ml_model import get_ml_model
 from src.experience_buffer import get_experience_buffer
 
+# ✅ NEW: Percentage Return + Position Sizing
+from src.percentage_return_model import PercentageReturnModel
+from src.position_sizing import PositionSizingFactory
+from src.capital_tracker import init_capital_tracker, get_capital_tracker, get_total_equity
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - [Brain] - %(levelname)s - %(message)s'
@@ -122,6 +127,56 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     if ml_model.is_trained:
         signal = await ml_model.adjust_confidence(signal)
     
+    # ✅ NEW: Percentage Return Prediction + Position Sizing Integration
+    try:
+        # 1️⃣ Predict percentage return using ML confidence
+        ml_return_model = PercentageReturnModel()
+        prediction = ml_return_model.predict_signal(
+            signal_data=signal,
+            historical_stats={
+                'win_rate': 0.65,  # Default historical win rate
+                'atr': signal_data.get('atr', 0.02),
+                'market_volatility': 1.0
+            }
+        )
+        
+        # Add prediction to signal
+        signal['predicted_return_pct'] = prediction['predicted_return_pct']
+        signal['prediction_details'] = prediction
+        
+        # 2️⃣ Calculate position sizing (Version B: Kelly + ATR)
+        total_capital = get_total_equity()
+        
+        sizing = PositionSizingFactory.calculate(
+            version='B',  # Dynamic Kelly + ATR sizing
+            total_capital=total_capital,
+            predicted_return_pct=prediction['predicted_return_pct'],
+            confidence=signal['confidence'],
+            win_rate=0.65,  # Will be updated as virtual trades accumulate
+            atr_pct=signal_data.get('atr', 0.02),
+            current_price=current_price,
+            symbol=symbol,
+            use_kelly=True
+        )
+        
+        # Add position sizing to signal
+        signal['position_sizing'] = sizing
+        signal['order_amount'] = sizing['order_amount']
+        signal['tp_pct'] = sizing['tp_pct']
+        signal['sl_pct'] = sizing['sl_pct']
+        
+        logger.info(
+            f"💡 {symbol} Position Sizing: "
+            f"Order ${sizing['order_amount']:.2f} | "
+            f"Return +{prediction['predicted_return_pct']:.2%} | "
+            f"Kelly {sizing['kelly_pct']:.2%} | "
+            f"SL {sizing['sl_pct']:.2%}"
+        )
+    
+    except Exception as e:
+        logger.warning(f"⚠️ Position sizing error for {symbol}: {e}")
+        signal['position_sizing'] = {'recommended': False, 'error': str(e)}
+    
     # 💾 Record in experience buffer
     experience_buffer = get_experience_buffer()
     await experience_buffer.record_signal(signal['signal_id'], signal)
@@ -183,6 +238,10 @@ async def run_brain() -> None:
     # Initialize experience buffer
     experience_buffer = get_experience_buffer()
     logger.info("✅ Experience buffer initialized")
+    
+    # ✅ Initialize Capital Tracker (for virtual learning account: $10,000)
+    tracker = init_capital_tracker(initial_balance=10000)
+    logger.info("✅ Capital Tracker initialized with $10,000 virtual account")
     
     # Get ring buffer (attach to existing)
     ring_buffer = get_ring_buffer(create=False)

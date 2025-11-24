@@ -490,7 +490,15 @@ async def _check_risk(signal: Dict) -> None:
         
         symbol = signal.get('symbol', '')
         confidence = signal.get('confidence', 0)
-        position_size = signal.get('position_size', 0)
+        
+        # ✅ NEW: Use order_amount calculated by position sizing (from Brain)
+        order_amount = signal.get('order_amount', signal.get('position_size', 0))
+        entry_price = signal.get('entry_price', 1.0)
+        tp_pct = signal.get('tp_pct', 0.05)  # Take profit %
+        sl_pct = signal.get('sl_pct', 0.02)  # Stop loss %
+        
+        # Calculate position size (quantity) from order amount
+        position_size = (order_amount / entry_price) if entry_price > 0 else 0
         
         # 💾 PERSIST SIGNAL TO POSTGRES
         try:
@@ -571,12 +579,15 @@ async def _check_risk(signal: Dict) -> None:
             await bus.publish(Topic.ORDER_REQUEST, order)
             
             # 🎓 VIRTUAL LEARNING: Open virtual position (no restrictions)
+            # ✅ Include percentage stop-loss and take-profit
             virtual_order = {
                 'symbol': symbol,
                 'side': 'BUY',
                 'confidence': confidence,
                 'quantity': position_size,
-                'entry_price': signal.get('entry_price', 1.0)  # 🎯 Real market price
+                'entry_price': entry_price,  # 🎯 Real market price
+                'tp_pct': tp_pct,  # Take profit %
+                'sl_pct': sl_pct   # Stop loss %
             }
             await open_virtual_position(virtual_order)
             return
@@ -635,12 +646,15 @@ async def _check_risk(signal: Dict) -> None:
             await bus.publish(Topic.ORDER_REQUEST, order)
             
             # 🎓 VIRTUAL LEARNING: Open virtual position for rotation
+            # ✅ Include percentage stop-loss and take-profit
             virtual_order = {
                 'symbol': symbol,
                 'side': 'BUY',
                 'confidence': confidence,
                 'quantity': position_size,
-                'entry_price': signal.get('entry_price', 1.0)  # 🎯 Real market price
+                'entry_price': entry_price,  # 🎯 Real market price
+                'tp_pct': tp_pct,  # Take profit %
+                'sl_pct': sl_pct   # Stop loss %
             }
             await open_virtual_position(virtual_order)
         else:

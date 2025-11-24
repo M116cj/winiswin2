@@ -37,11 +37,11 @@ class ExperienceBuffer:
     
     async def record_signal(self, signal_id: str, signal_data: Dict) -> None:
         """
-        Record a new trading signal (統一格式)
+        Record a new trading signal (統一格式 + 百分比收益率)
         
         Args:
             signal_id: Unique signal identifier
-            signal_data: {symbol, confidence, features, position_size, timestamp (milliseconds)}
+            signal_data: {symbol, confidence, features, position_size, predicted_return_pct, position_sizing, timestamp (milliseconds)}
         """
         try:
             async with self.lock:
@@ -51,6 +51,12 @@ class ExperienceBuffer:
                     'symbol': signal_data.get('symbol', ''),
                     'timestamp': int(signal_data.get('timestamp', int(datetime.now().timestamp() * 1000))),  # ✓ 毫秒
                     'features': signal_data.get('features', {}),
+                    # ✅ NEW: Percentage return data
+                    'predicted_return_pct': signal_data.get('predicted_return_pct', 0.0),
+                    'position_sizing': signal_data.get('position_sizing', {}),
+                    'order_amount': signal_data.get('order_amount', 0.0),
+                    'tp_pct': signal_data.get('tp_pct', 0.0),
+                    'sl_pct': signal_data.get('sl_pct', 0.0),
                     'outcome': None,
                     'recorded_at': int(datetime.now().timestamp() * 1000)  # ✓ 毫秒
                 }
@@ -61,18 +67,18 @@ class ExperienceBuffer:
                 if len(self.experiences) > self.max_size:
                     self.experiences.pop(0)
                 
-                logger.debug(f"📝 Signal recorded: {signal_data['symbol']} @ {signal_data.get('confidence', 0.5):.2f}")
+                logger.debug(f"📝 Signal recorded: {signal_data['symbol']} @ {signal_data.get('confidence', 0.5):.2f} | Return +{signal_data.get('predicted_return_pct', 0):.2%}")
         
         except Exception as e:
             logger.error(f"❌ Error recording signal: {e}", exc_info=True)
     
     async def record_trade_outcome(self, signal_id: str, trade_data: Dict) -> None:
         """
-        Record the outcome of a trade (統一格式)
+        Record the outcome of a trade (統一格式 + 百分比收益率結果)
         
         Args:
             signal_id: Unique signal identifier
-            trade_data: {price, quantity, side, pnl, status, close_reason}
+            trade_data: {price, quantity, side, pnl, return_pct, status, close_reason}
         """
         try:
             async with self.lock:
