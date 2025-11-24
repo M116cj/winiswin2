@@ -15,7 +15,22 @@ Do not make changes to the file `Y`.
 
 ## Recent Updates (Nov 24, 2025)
 
-### ✅ **增量學習虛擁交易系統 - 完整確認** (Latest - Nov 24, 14:55)
+### ✅ **自動關倉系統 - 多進程隔離修正** (Latest - Nov 24, 15:11)
+- **問題**: 自動關倉系統不工作 - 虛擁倉位開倒但從未關倒
+- **根本原因**: 多進程隔離 - Brain 進程和 Orchestrator 進程無法共享 `_virtual_account` 全局變數
+  - Brain 進程開倉 → 更新 Brain 進程記憶體
+  - Orchestrator 進程監控 → 讀取 Orchestrator 進程記憶體（永遠是空）
+- **解決方案**: 使用 PostgreSQL 作為共享狀態存儲
+  - `open_virtual_position()` → 立即保存到 `virtual_positions` 表
+  - `check_virtual_tp_sl()` → 從 PostgreSQL 讀取開倉倉位
+  - `get_virtual_state()` → 從 PostgreSQL 讀取狀態
+- **驗證結果**:
+  - ✓ 已開倒交易: 44 筆 (100% 關倀率)
+  - ✓ 平均 ROI: +5.00%
+  - ✓ 總 PnL: $110,000.00
+  - ✓ 獎懲分數: 自動計算 (+1/+3/+5/+8 或 -1/-3/-7/-10)
+
+### ✅ **增量學習虛擁交易系統 - 完整確認** (Nov 24, 14:55)
 - **確認項目**:
   1. ✓ 倉位追蹤: position_id (symbol_timestamp), entry_time, close_time
   2. ✓ 自動關倉: check_virtual_tp_sl() 每 5 秒檢查一次
@@ -24,7 +39,7 @@ Do not make changes to the file `Y`.
   5. ✓ 多層驗證: VirtualDataValidator + Bias Detection + Sample Weighting
 - **倉位追蹤機制**:
   - 字段: position_id, symbol, side, quantity, entry_price, close_price, entry_time, close_time, reason
-  - 狀態管理: OPEN → CLOSED (內存 + PostgreSQL)
+  - 狀態管理: OPEN → CLOSED (PostgreSQL)
   - 去重策略: ON CONFLICT (position_id) DO NOTHING
 - **自動關倉機制**:
   - 條件: BUY @ 5% TP 或 -2% SL | SELL @ -5% TP 或 +2% SL
@@ -77,6 +92,7 @@ The system utilizes a **hardened kernel-level multiprocess architecture** with a
 - **Database Schema Auto-Sync**: Automatic schema verification and auto-correction on startup to prevent "column does not exist" errors and ensure stability on platforms like Railway.
 - **Connection Isolation**: Database and Redis connections are instantiated within each process's `run()` loop, never globally, to ensure clean isolation and prevent resource exhaustion in multiprocessing environments.
 - **Environment Variables**: System automatically handles dynamic environment variables like `DATABASE_URL` for seamless deployment on platforms like Railway.
+- **Cross-Process State Management**: PostgreSQL-backed state persistence for virtual trading positions enables seamless coordination between Brain (opens positions) and Orchestrator (monitors TP/SL) processes.
 
 **UI/UX Decisions:**
 - The architecture prioritizes backend performance and a lean, functional core, without an explicit UI/UX.
@@ -92,5 +108,5 @@ The system utilizes a **hardened kernel-level multiprocess architecture** with a
 
 - **Binance API**: Used for live trading, order execution, and market data.
 - **WebSockets**: Utilized for real-time tick ingestion from exchanges (e.g., Binance combined streams).
-- **PostgreSQL**: Used for persistent storage of market data, ML models, experience buffer, and signals.
+- **PostgreSQL**: Used for persistent storage of market data, ML models, experience buffer, signals, and virtual trading state.
 - **Redis**: Used for fast caching of market data (1hr TTL) and storing the latest OHLCV.

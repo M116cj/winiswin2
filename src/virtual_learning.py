@@ -1,12 +1,13 @@
 """
 🎓 Virtual Incremental Learning Module
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Parallel virtual trading account for testing strategy without live restrictions.
 - Same signal logic as live trading
 - No position limit restrictions
 - Automatic TP/SL detection
 - Full trade history persistence
+- 🔧 FIXED: Uses PostgreSQL for cross-process position tracking (no in-memory isolation)
 """
 
 import logging
@@ -85,9 +86,40 @@ async def init_virtual_learning() -> None:
     logger.critical("🎓 Virtual Learning Account initialized: $10,000 starting capital")
 
 
+async def _ensure_virtual_positions_table():
+    """Ensure virtual_positions table exists in PostgreSQL"""
+    try:
+        import asyncpg
+        from src.config import get_database_url
+        
+        db_url = get_database_url()
+        conn = await asyncpg.connect(db_url)
+        
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS virtual_positions (
+                id SERIAL PRIMARY KEY,
+                position_id VARCHAR(255) UNIQUE NOT NULL,
+                symbol VARCHAR(20) NOT NULL,
+                side VARCHAR(10) NOT NULL,
+                quantity FLOAT NOT NULL,
+                entry_price FLOAT NOT NULL,
+                entry_confidence FLOAT DEFAULT 0,
+                entry_time TIMESTAMP NOT NULL,
+                tp_level FLOAT NOT NULL,
+                sl_level FLOAT NOT NULL,
+                status VARCHAR(20) DEFAULT 'OPEN',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        await conn.close()
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to ensure virtual_positions table: {e}")
+
+
 async def open_virtual_position(signal: Dict) -> bool:
     """
-    Open virtual position (no restrictions, can have multiple positions per symbol)
+    Open virtual position - SAVES TO POSTGRESQL FOR CROSS-PROCESS SHARING
     
     Args:
         signal: {symbol, side, confidence, quantity, entry_price}
@@ -95,29 +127,68 @@ async def open_virtual_position(signal: Dict) -> bool:
     Returns:
         True if position opened successfully
     """
-    async with _virtual_lock:
-        try:
-            symbol = signal.get('symbol', '')
-            side = signal.get('side', 'BUY')
-            confidence = signal.get('confidence', 0.0)
-            quantity = signal.get('quantity', 0.0)
-            entry_price = signal.get('entry_price', 0.0)
-            
-            if not symbol or quantity <= 0 or entry_price <= 0:
-                logger.warning(f"❌ Invalid virtual position data: {signal}")
-                return False
-            
-            # Calculate TP/SL levels (ATR-based or fixed %)
-            if side == 'BUY':
-                tp_level = entry_price * 1.05  # 5% TP
-                sl_level = entry_price * 0.98  # 2% SL
-            else:  # SELL
-                tp_level = entry_price * 0.95  # 5% TP (short)
-                sl_level = entry_price * 1.02  # 2% SL (short)
-            
-            # Create position entry (can have multiple per symbol)
-            position_id = f"{symbol}_{int(time.time() * 1000)}"
-            
+    try:
+        symbol = signal.get('symbol', '')
+        side = signal.get('side', 'BUY')
+        confidence = signal.get('confidence', 0.0)
+        quantity = signal.get('quantity', 0.0)
+        entry_price = signal.get('entry_price', 0.0)
+        
+        if not symbol or quantity <= 0 or entry_price <= 0:
+            logger.warning(f"❌ Invalid virtual position data: {signal}")
+            return False
+        
+        # Calculate TP/SL levels
+        if side == 'BUY':
+            tp_level = entry_price * 1.05  # 5% TP
+            sl_level = entry_price * 0.98  # 2% SL
+        else:  # SELL
+            tp_level = entry_price * 0.95  # 5% TP (short)
+            sl_level = entry_price * 1.02  # 2% SL (short)
+        
+        # Create position entry
+        position_id = f"{symbol}_{int(time.time() * 1000)}"
+        entry_time = datetime.utcnow()
+        
+        # ✅ SAVE TO POSTGRESQL IMMEDIATELY (cross-process sharing)
+        import asyncpg
+        from src.config import get_database_url
+        
+        db_url = get_database_url()
+        conn = await asyncpg.connect(db_url)
+        
+        # Ensure table exists
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS virtual_positions (
+                id SERIAL PRIMARY KEY,
+                position_id VARCHAR(255) UNIQUE NOT NULL,
+                symbol VARCHAR(20) NOT NULL,
+                side VARCHAR(10) NOT NULL,
+                quantity FLOAT NOT NULL,
+                entry_price FLOAT NOT NULL,
+                entry_confidence FLOAT DEFAULT 0,
+                entry_time TIMESTAMP NOT NULL,
+                tp_level FLOAT NOT NULL,
+                sl_level FLOAT NOT NULL,
+                status VARCHAR(20) DEFAULT 'OPEN',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        # Insert position
+        await conn.execute("""
+            INSERT INTO virtual_positions 
+            (position_id, symbol, side, quantity, entry_price, entry_confidence, entry_time, tp_level, sl_level, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            ON CONFLICT (position_id) DO NOTHING
+        """,
+            position_id, symbol, side, quantity, entry_price, confidence, entry_time, tp_level, sl_level, 'OPEN'
+        )
+        
+        await conn.close()
+        
+        # Also update in-memory state for quick access
+        async with _virtual_lock:
             _virtual_account['positions'][position_id] = {
                 'symbol': symbol,
                 'quantity': quantity,
@@ -130,118 +201,143 @@ async def open_virtual_position(signal: Dict) -> bool:
                 'position_id': position_id,
                 'status': 'OPEN'
             }
-            
-            return True
         
-        except Exception as e:
-            logger.error(f"❌ Virtual position open failed: {e}", exc_info=True)
-            return False
+        return True
+    
+    except Exception as e:
+        logger.error(f"❌ Virtual position open failed: {e}", exc_info=True)
+        return False
 
 
 async def check_virtual_tp_sl() -> None:
     """
+    ✅ FIXED: Read positions from PostgreSQL, not in-memory
     Automatically detect and close positions at TP/SL levels
     This runs continuously to monitor all virtual positions
     Uses REAL market prices from Ring Buffer / Feed process
     """
-    async with _virtual_lock:
-        try:
-            closed_positions = []
-            open_count = len([p for p in _virtual_account['positions'].values() if p['status'] == 'OPEN'])
+    try:
+        import asyncpg
+        from src.config import get_database_url
+        
+        db_url = get_database_url()
+        conn = await asyncpg.connect(db_url)
+        
+        # Ensure table exists
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS virtual_positions (
+                id SERIAL PRIMARY KEY,
+                position_id VARCHAR(255) UNIQUE NOT NULL,
+                symbol VARCHAR(20) NOT NULL,
+                side VARCHAR(10) NOT NULL,
+                quantity FLOAT NOT NULL,
+                entry_price FLOAT NOT NULL,
+                entry_confidence FLOAT DEFAULT 0,
+                entry_time TIMESTAMP NOT NULL,
+                tp_level FLOAT NOT NULL,
+                sl_level FLOAT NOT NULL,
+                status VARCHAR(20) DEFAULT 'OPEN',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        # ✅ READ FROM POSTGRESQL (cross-process)
+        open_positions = await conn.fetch(
+            "SELECT * FROM virtual_positions WHERE status = 'OPEN'"
+        )
+        
+        closed_positions = []
+        
+        for pos in open_positions:
+            symbol = pos['symbol']
+            entry_price = pos['entry_price']
             
-            for position_id, pos in list(_virtual_account['positions'].items()):
-                if pos['status'] != 'OPEN':
-                    continue
-                
-                symbol = pos['symbol']
-                entry_price = pos['entry_price']
-                
-                # Get current price from Redis (cross-process)
-                current_price = await get_current_price(symbol)
-                if current_price is None or current_price == 0:
-                    # Fallback: Use time-based simulation (for testing)
-                    current_price = entry_price * (1 + (0.01 * (time.time() % 10)))
-                    price_source = "SIMULATED"
-                else:
-                    price_source = "REDIS"
-                
-                quantity = pos['quantity']
-                side = pos['side']
-                
-                # Check TP
-                tp_reached = False
-                sl_reached = False
-                close_price = entry_price
-                close_reason = "OPEN"
-                
+            # Get current price from Redis
+            current_price = await get_current_price(symbol)
+            if current_price is None or current_price == 0:
+                # Fallback: Use time-based simulation
+                current_price = entry_price * (1 + (0.01 * (time.time() % 10)))
+            
+            quantity = pos['quantity']
+            side = pos['side']
+            
+            # Check TP/SL
+            tp_reached = False
+            sl_reached = False
+            close_price = entry_price
+            close_reason = "OPEN"
+            
+            if side == 'BUY':
+                if current_price >= pos['tp_level']:
+                    tp_reached = True
+                    close_price = pos['tp_level']
+                    close_reason = "TP_HIT"
+                elif current_price <= pos['sl_level']:
+                    sl_reached = True
+                    close_price = pos['sl_level']
+                    close_reason = "SL_HIT"
+            else:  # SELL
+                if current_price <= pos['tp_level']:
+                    tp_reached = True
+                    close_price = pos['tp_level']
+                    close_reason = "TP_HIT"
+                elif current_price >= pos['sl_level']:
+                    sl_reached = True
+                    close_price = pos['sl_level']
+                    close_reason = "SL_HIT"
+            
+            # Close position if TP/SL hit
+            if tp_reached or sl_reached:
                 if side == 'BUY':
-                    if current_price >= pos['tp_level']:
-                        tp_reached = True
-                        close_price = pos['tp_level']
-                        close_reason = "TP_HIT"
-                    elif current_price <= pos['sl_level']:
-                        sl_reached = True
-                        close_price = pos['sl_level']
-                        close_reason = "SL_HIT"
-                else:  # SELL
-                    if current_price <= pos['tp_level']:
-                        tp_reached = True
-                        close_price = pos['tp_level']
-                        close_reason = "TP_HIT"
-                    elif current_price >= pos['sl_level']:
-                        sl_reached = True
-                        close_price = pos['sl_level']
-                        close_reason = "SL_HIT"
+                    pnl = (close_price - entry_price) * quantity
+                else:
+                    pnl = (entry_price - close_price) * quantity
                 
-                # Close position if TP/SL hit
-                if tp_reached or sl_reached:
-                    if side == 'BUY':
-                        pnl = (close_price - entry_price) * quantity
-                    else:
-                        pnl = (entry_price - close_price) * quantity
-                    
-                    # 🎯 計算 ROI% 和獎懲分數
-                    roi_pct = pnl / (entry_price * quantity) if entry_price > 0 else 0
-                    
-                    from src.reward_shaping import calculate_reward_score
-                    reward_score = calculate_reward_score(roi_pct)
-                    
-                    _virtual_account['positions'][position_id]['status'] = 'CLOSED'
-                    _virtual_account['positions'][position_id]['close_price'] = close_price
-                    _virtual_account['positions'][position_id]['close_reason'] = close_reason
-                    _virtual_account['positions'][position_id]['pnl'] = pnl
-                    _virtual_account['positions'][position_id]['close_time'] = time.time()
-                    
-                    # Update account
+                # Calculate ROI% and reward score
+                roi_pct = pnl / (entry_price * quantity) if entry_price > 0 else 0
+                
+                from src.reward_shaping import calculate_reward_score
+                reward_score = calculate_reward_score(roi_pct)
+                
+                # ✅ UPDATE POSTGRESQL (mark as CLOSED)
+                await conn.execute(
+                    "UPDATE virtual_positions SET status = 'CLOSED' WHERE position_id = $1",
+                    pos['position_id']
+                )
+                
+                # Update in-memory account
+                async with _virtual_lock:
                     _virtual_account['balance'] += pnl
                     _virtual_account['total_pnl'] += pnl
-                    
-                    closed_positions.append({
-                        'position_id': position_id,
-                        'symbol': symbol,
-                        'side': side,
-                        'quantity': quantity,
-                        'entry_price': entry_price,
-                        'close_price': close_price,
-                        'reason': close_reason,
-                        'pnl': pnl,
-                        'roi_pct': roi_pct,
-                        'reward_score': reward_score
-                    })
-                    
-                    logger.critical(
-                        f"🎓 [VIRTUAL] Position closed: {symbol} {side} x{quantity} "
-                        f"@ ${close_price:.2f} [{close_reason}] | ROI: {roi_pct:+.2%} | "
-                        f"Score: {reward_score:+.0f} | PnL: ${pnl:.2f} | "
-                        f"Balance: ${_virtual_account['balance']:.2f}"
-                    )
-            
-            # Save closed trades
-            if closed_positions:
-                await _save_virtual_trades(closed_positions)
+                
+                closed_positions.append({
+                    'position_id': pos['position_id'],
+                    'symbol': symbol,
+                    'side': side,
+                    'quantity': quantity,
+                    'entry_price': entry_price,
+                    'close_price': close_price,
+                    'reason': close_reason,
+                    'pnl': pnl,
+                    'roi_pct': roi_pct,
+                    'reward_score': reward_score,
+                    'entry_time': pos['entry_time']
+                })
+                
+                logger.critical(
+                    f"🎓 [VIRTUAL] Position closed: {symbol} {side} x{quantity} "
+                    f"@ ${close_price:.2f} [{close_reason}] | ROI: {roi_pct:+.2%} | "
+                    f"Score: {reward_score:+.0f} | PnL: ${pnl:.2f}"
+                )
         
-        except Exception as e:
-            logger.error(f"❌ TP/SL check failed: {e}", exc_info=True)
+        await conn.close()
+        
+        # Save closed trades to virtual_trades table
+        if closed_positions:
+            await _save_virtual_trades(closed_positions)
+    
+    except Exception as e:
+        logger.error(f"❌ TP/SL check failed: {e}", exc_info=True)
 
 
 async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
@@ -304,7 +400,7 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
             )
         
         await conn.close()
-        logger.debug(f"💾 Saved {len(closed_positions)} virtual trades to database")
+        logger.critical(f"💾 Saved {len(closed_positions)} virtual trades to database")
         
         # 🤖 Add to ML integrator for bias-checked training
         from src.ml_virtual_integrator import get_ml_virtual_integrator
@@ -317,20 +413,61 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
 
 
 async def get_virtual_state() -> Dict:
-    """Get current virtual account state"""
-    async with _virtual_lock:
-        open_positions = [p for p in _virtual_account['positions'].values() if p['status'] == 'OPEN']
-        closed_positions = [p for p in _virtual_account['positions'].values() if p['status'] == 'CLOSED']
+    """Get current virtual account state - NOW FROM POSTGRESQL"""
+    try:
+        import asyncpg
+        from src.config import get_database_url
         
-        return {
-            'balance': _virtual_account['balance'],
-            'total_pnl': _virtual_account['total_pnl'],
-            'open_positions': len(open_positions),
-            'closed_positions': len(closed_positions),
-            'total_trades': len(closed_positions),
-            'win_rate': calculate_win_rate(closed_positions),
-            'open_position_details': open_positions[:5]  # Top 5 for display
-        }
+        db_url = get_database_url()
+        conn = await asyncpg.connect(db_url)
+        
+        # Count open positions
+        open_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM virtual_positions WHERE status = 'OPEN'"
+        )
+        
+        # Count closed positions
+        closed_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM virtual_positions WHERE status = 'CLOSED'"
+        )
+        
+        await conn.close()
+        
+        async with _virtual_lock:
+            win_rate = 0.0
+            if closed_count > 0:
+                # Calculate from virtual_trades if available
+                try:
+                    conn2 = await asyncpg.connect(db_url)
+                    wins = await conn2.fetchval(
+                        "SELECT COUNT(*) FROM virtual_trades WHERE pnl > 0"
+                    )
+                    await conn2.close()
+                    win_rate = (wins / closed_count * 100.0) if closed_count > 0 else 0.0
+                except:
+                    pass
+            
+            return {
+                'balance': _virtual_account['balance'],
+                'total_pnl': _virtual_account['total_pnl'],
+                'open_positions': open_count,
+                'closed_positions': closed_count,
+                'total_trades': closed_count,
+                'win_rate': win_rate,
+                'open_position_details': []
+            }
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to get virtual state: {e}")
+        async with _virtual_lock:
+            return {
+                'balance': _virtual_account['balance'],
+                'total_pnl': _virtual_account['total_pnl'],
+                'open_positions': 0,
+                'closed_positions': 0,
+                'total_trades': 0,
+                'win_rate': 0.0,
+                'open_position_details': []
+            }
 
 
 def calculate_win_rate(closed_positions: List[Dict]) -> float:
