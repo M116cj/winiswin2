@@ -126,18 +126,23 @@ class TimeframeBuffer:
         """
         檢查符號是否有足夠的多時間框架數據用於分析
         
+        🔍 OPTIMIZED: Only check recent timeframes (5m, 15m, 1h)
+           Skip 1d because WebSocket takes too long to accumulate daily data
+        
         Args:
             symbol: 交易對
             min_candles_per_tf: 每個時間框架最少需要的 K 線數
             
         Returns:
-            True 如果所有時間框架都有足夠的數據
+            True 如果所有檢查的時間框架都有足夠的數據
         """
         if symbol not in self.data:
             return False
         
-        for tf_name in self.TIMEFRAMES.keys():
-            if len(self.data[symbol][tf_name]) < min_candles_per_tf:
+        # 🔍 Check only recent timeframes for faster signal generation
+        required_tfs = ['5m', '15m', '1h']  # Skip '1d' and '1m' for efficiency
+        for tf_name in required_tfs:
+            if len(self.data[symbol].get(tf_name, [])) < min_candles_per_tf:
                 return False
         
         return True

@@ -68,56 +68,47 @@ class TimeframeAnalyzer:  # type: ignore[name-defined]
         """
         驗證多時間框架設置
         
-        規則：
-        1. 1D 確認主趨勢
-        2. 1H 確認中期趨勢（與 1D 一致）
-        3. 15m 確認機會（與 1D/1H 一致）
-        4. 5m/1m 確認進場點
+        🔍 OPTIMIZED: Skip 1D (WebSocket doesn't have historical daily data)
+           Check only: 1H ↔ 15m ↔ 5m alignment (short-term consistency)
         
         Returns:
             信號對象或 None（不符合條件）
         """
         try:
-            # 第 1 層：1D 趨勢確認
-            d1_analysis = self.analyze_trend('1d', candles_by_tf.get('1d', []))
-            if d1_analysis['confidence'] < self.MIN_CONFIDENCE:
-                logger.debug(f"❌ {symbol} 1D 信心不足: {d1_analysis['confidence']:.2f}")
-                return None
-            
-            # 第 2 層：1H 與 1D 一致
+            # 🔍 SHORT-TERM ANALYSIS: Skip 1D, focus on recent timeframes
             h1_analysis = self.analyze_trend('1h', candles_by_tf.get('1h', []))
-            if h1_analysis['trend'] != d1_analysis['trend']:
-                logger.debug(f"❌ {symbol} 1H 與 1D 不一致")
-                return None
-            
-            # 第 3 層：15m 機會確認
             m15_analysis = self.analyze_trend('15m', candles_by_tf.get('15m', []))
-            if m15_analysis['trend'] != d1_analysis['trend']:
-                logger.debug(f"❌ {symbol} 15m 與 1D 不一致")
-                return None
-            
-            # 第 4 層：5m/1m 進場確認
             m5_analysis = self.analyze_trend('5m', candles_by_tf.get('5m', []))
             m1_analysis = self.analyze_trend('1m', candles_by_tf.get('1m', []))
             
+            # 檢查 1H ↔ 15m ↔ 5m 的一致性
+            primary_trend = h1_analysis['trend']
+            
+            if m15_analysis['trend'] != primary_trend:
+                logger.debug(f"❌ {symbol} 15m 與 1H 不一致")
+                return None
+            
+            if m5_analysis['trend'] != primary_trend:
+                logger.debug(f"❌ {symbol} 5m 與 1H 不一致")
+                return None
+            
             # 進場方向必須與主趨勢一致
             entry_trend = m1_analysis['trend']
-            if entry_trend != d1_analysis['trend']:
+            if entry_trend != primary_trend:
                 logger.debug(f"❌ {symbol} 進場方向與主趨勢不一致")
                 return None
             
-            # 綜合信心度計算
-            # 1D: 40% 權重 (主趨勢)
-            # 1H: 30% 權重 (確認)
-            # 15m: 20% 權重 (機會)
-            # 5m+1m: 10% 權重 (進場)
+            # 綜合信心度（不依賴 1D）
+            # 1H: 40% 權重 (主趨勢)
+            # 15m: 30% 權重 (確認)
+            # 5m: 20% 權重 (機會)
+            # 1m: 10% 權重 (進場)
             
             composite_confidence = (
-                d1_analysis['confidence'] * 0.40 +
-                h1_analysis['confidence'] * 0.30 +
-                m15_analysis['confidence'] * 0.20 +
-                m5_analysis['confidence'] * 0.05 +
-                m1_analysis['confidence'] * 0.05
+                h1_analysis['confidence'] * 0.40 +
+                m15_analysis['confidence'] * 0.30 +
+                m5_analysis['confidence'] * 0.20 +
+                m1_analysis['confidence'] * 0.10
             )
             
             if composite_confidence < self.MIN_CONFIDENCE:
