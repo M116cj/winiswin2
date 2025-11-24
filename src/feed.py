@@ -241,11 +241,14 @@ def _sanitize_candle(timestamp, open_price, high, low, close, volume):
 async def main():
     """
     Feed process main loop
-    - Connect to WebSocket
-    - Read ticks/candles
+    - Connect to Binance Futures WebSocket
+    - Read 1m klines for multiple symbols
     - Sanitize data
     - Write to ring buffer
     """
+    import json
+    import websockets
+    
     logger.info("📡 Feed Process started")
     
     try:
@@ -259,24 +262,91 @@ async def main():
         
         logger.info("✅ Feed attached to ring buffer")
         
-        # Placeholder: In production, connect to Binance WebSocket
-        # Example of how to write sanitized data:
-        # while True:
-        #     candle_data = await websocket.recv()  # Get data from Binance
-        #     safe_candle = _sanitize_candle(
-        #         candle_data['t'],
-        #         candle_data['o'],
-        #         candle_data['h'],
-        #         candle_data['l'],
-        #         candle_data['c'],
-        #         candle_data['v']
-        #     )
-        #     if safe_candle:
-        #         ring_buffer.write_candle(safe_candle)
+        # Top 20 symbols for trading
+        symbols = [
+            "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT",
+            "ADAUSDT", "DOGEUSDT", "AVAXUSDT", "LINKUSDT", "MATICUSDT",
+            "FTTUSDT", "TRXUSDT", "ARBUSDT", "OPUSDT", "LTCUSDT",
+            "BCHUSDT", "ETCUSDT", "XLMUSDT", "ATOMUSDT", "UNIUSDT"
+        ]
         
-        while True:
-            await asyncio.sleep(10)
-            # logger.debug("Fetching data from WebSocket...")
+        # Build WebSocket subscription
+        streams = [f"{symbol.lower()}@kline_1m" for symbol in symbols]
+        stream_str = "/".join(streams)
+        ws_url = f"wss://fstream.binance.com/stream?streams={stream_str}"
+        
+        logger.info(f"🔗 Connecting to Binance Futures WebSocket... ({len(symbols)} symbols)")
+        
+        reconnect_count = 0
+        max_reconnect_attempts = 10
+        
+        while reconnect_count < max_reconnect_attempts:
+            try:
+                async with websockets.connect(ws_url, ping_interval=20, ping_timeout=10) as websocket:
+                    logger.critical(f"✅ Connected to Binance WebSocket")
+                    reconnect_count = 0  # Reset on successful connection
+                    candle_count = 0
+                    
+                    while True:
+                        try:
+                            message = await asyncio.wait_for(websocket.recv(), timeout=30)
+                            data = json.loads(message)
+                            
+                            # Extract kline data
+                            if 'data' in data and 'k' in data['data']:
+                                kline = data['data']['k']
+                                
+                                # Only process closed candles or latest data
+                                timestamp = kline.get('t')  # Time
+                                open_price = kline.get('o')  # Open
+                                high = kline.get('h')  # High
+                                low = kline.get('l')  # Low
+                                close = kline.get('c')  # Close
+                                volume = kline.get('v')  # Volume
+                                
+                                # Sanitize and validate
+                                safe_candle = _sanitize_candle(
+                                    timestamp,
+                                    open_price,
+                                    high,
+                                    low,
+                                    close,
+                                    volume
+                                )
+                                
+                                if safe_candle:
+                                    ring_buffer.write_candle(safe_candle)
+                                    candle_count += 1
+                                    
+                                    if candle_count % 100 == 0:
+                                        logger.info(f"📊 Feed: {candle_count} candles written to ring buffer")
+                        
+                        except asyncio.TimeoutError:
+                            logger.warning("⏱️ WebSocket receive timeout - checking connection...")
+                            continue
+                        except json.JSONDecodeError:
+                            logger.debug("Invalid JSON received")
+                            continue
+                        except Exception as e:
+                            logger.error(f"Error processing message: {e}")
+                            continue
+            
+            except websockets.exceptions.WebSocketException as e:
+                reconnect_count += 1
+                wait_time = min(2 ** reconnect_count, 60)  # Exponential backoff
+                logger.warning(f"❌ WebSocket disconnected: {e} (attempt {reconnect_count}/{max_reconnect_attempts})")
+                logger.info(f"🔄 Reconnecting in {wait_time}s...")
+                await asyncio.sleep(wait_time)
+            
+            except Exception as e:
+                reconnect_count += 1
+                wait_time = min(2 ** reconnect_count, 60)
+                logger.error(f"❌ Connection error: {e} (attempt {reconnect_count}/{max_reconnect_attempts})")
+                logger.info(f"🔄 Reconnecting in {wait_time}s...")
+                await asyncio.sleep(wait_time)
+        
+        logger.critical(f"❌ Max reconnection attempts exceeded ({max_reconnect_attempts})")
+        return
     
     except KeyboardInterrupt:
         logger.info("📡 Feed process terminated")
