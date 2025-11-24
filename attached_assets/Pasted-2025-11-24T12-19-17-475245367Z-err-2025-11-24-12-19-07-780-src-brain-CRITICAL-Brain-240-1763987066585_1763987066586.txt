@@ -1,0 +1,41 @@
+2025-11-24T12:19:17.475245367Z [err]  2025-11-24 12:19:07,780 - src.brain - CRITICAL - 📊 Brain: 24000 candles | 20 symbols | Latency: 31656499.8µs | Remaining Pending: 1
+2025-11-24T12:19:25.524073071Z [err]  2025-11-24 12:19:25,522 - src.core.system_monitor - CRITICAL - 📊 [SYSTEM REPORT] PnL: $0.00 | Positions: 0 | Balance: $11.15 | Trades: 0 | ML Data: 0 rows | Score: 0.00
+2025-11-24T12:19:27.767298979Z [err]  2025-11-24 12:19:27,758 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0% | Market Prices Cached: 0
+2025-11-24T12:19:27.814207023Z [err]  2025-11-24 12:19:27,795 - src.experience_buffer - CRITICAL - 💾 Saved 0 experiences to database
+2025-11-24T12:19:27.814214307Z [err]  2025-11-24 12:19:27,796 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T12:19:27.814221766Z [err]  2025-11-24 12:19:27,796 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T12:20:11.864704918Z [inf]  1:M 24 Nov 2025 12:20:09.093 * 1 changes in 60 seconds. Saving...
+2025-11-24T12:20:11.864711202Z [inf]  1:M 24 Nov 2025 12:20:09.094 * Background saving started by pid 367
+2025-11-24T12:20:11.864717841Z [inf]  367:C 24 Nov 2025 12:20:09.096 * BGSAVE done, 19 keys saved, 0 keys skipped, 2496 bytes written.
+2025-11-24T12:20:11.864722174Z [inf]  367:C 24 Nov 2025 12:20:09.102 * DB saved on disk
+2025-11-24T12:20:11.864726108Z [inf]  367:C 24 Nov 2025 12:20:09.103 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T12:20:11.864730529Z [inf]  1:M 24 Nov 2025 12:20:09.196 * Background saving terminated with success
+2025-11-24T12:20:37.834114581Z [err]  2025-11-24 12:20:28,652 - src.brain - CRITICAL - 📊 Brain: 25000 candles | 20 symbols | Latency: 27650585.5µs | Remaining Pending: 1
+2025-11-24T12:21:11.014129653Z [inf]  1:M 24 Nov 2025 12:21:10.040 * 1 changes in 60 seconds. Saving...
+2025-11-24T12:21:11.014142880Z [inf]  1:M 24 Nov 2025 12:21:10.040 * Background saving started by pid 368
+2025-11-24T12:21:11.014153013Z [inf]  368:C 24 Nov 2025 12:21:10.042 * BGSAVE done, 19 keys saved, 0 keys skipped, 2527 bytes written.
+2025-11-24T12:21:11.014165627Z [inf]  368:C 24 Nov 2025 12:21:10.051 * DB saved on disk
+2025-11-24T12:21:11.014173078Z [inf]  368:C 24 Nov 2025 12:21:10.052 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T12:21:11.014196056Z [inf]  1:M 24 Nov 2025 12:21:10.142 * Background saving terminated with success
+2025-11-24T12:21:47.978904539Z [err]  2025-11-24 12:21:47,458 - src.brain - CRITICAL - 📊 Brain: 26000 candles | 20 symbols | Latency: 34118494.5µs | Remaining Pending: 2
+2025-11-24T12:22:04.981556411Z [err]  2025-11-24 12:21:59.612 UTC [27] LOG:  checkpoint starting: time
+2025-11-24T12:22:21.033040204Z [inf]  1:M 24 Nov 2025 12:22:11.080 * 1 changes in 60 seconds. Saving...
+2025-11-24T12:22:21.033047502Z [inf]  1:M 24 Nov 2025 12:22:11.081 * Background saving started by pid 369
+2025-11-24T12:22:21.033054334Z [inf]  369:C 24 Nov 2025 12:22:11.083 * BGSAVE done, 19 keys saved, 0 keys skipped, 2527 bytes written.
+2025-11-24T12:22:21.033063586Z [inf]  369:C 24 Nov 2025 12:22:11.093 * DB saved on disk
+2025-11-24T12:22:21.033070896Z [inf]  369:C 24 Nov 2025 12:22:11.094 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T12:22:21.033077482Z [inf]  1:M 24 Nov 2025 12:22:11.182 * Background saving terminated with success
+2025-11-24T12:23:08.100187911Z [err]  2025-11-24 12:23:01,880 - src.brain - CRITICAL - 📊 Brain: 27000 candles | 20 symbols | Latency: 38863589.1µs | Remaining Pending: 1
+2025-11-24T12:23:21.039313562Z [inf]  1:M 24 Nov 2025 12:23:12.037 * 1 changes in 60 seconds. Saving...
+2025-11-24T12:23:21.039321028Z [inf]  1:M 24 Nov 2025 12:23:12.038 * Background saving started by pid 370
+2025-11-24T12:23:21.039330093Z [inf]  370:C 24 Nov 2025 12:23:12.040 * BGSAVE done, 19 keys saved, 0 keys skipped, 2507 bytes written.
+2025-11-24T12:23:21.039339777Z [inf]  370:C 24 Nov 2025 12:23:12.046 * DB saved on disk
+2025-11-24T12:23:21.039349707Z [inf]  370:C 24 Nov 2025 12:23:12.046 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T12:23:21.039506814Z [inf]  1:M 24 Nov 2025 12:23:12.140 * Background saving terminated with success
+2025-11-24T12:24:05.783969953Z [err]  2025-11-24 12:24:02.761 UTC [27] LOG:  checkpoint complete: wrote 1234 buffers (7.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=123.130 s, sync=0.005 s, total=123.149 s; sync files=5, longest=0.005 s, average=0.001 s; distance=8588 kB, estimate=8753 kB; lsn=0/162EB268, redo lsn=0/15D0EC28
+2025-11-24T12:24:21.122765614Z [inf]  1:M 24 Nov 2025 12:24:13.063 * 1 changes in 60 seconds. Saving...
+2025-11-24T12:24:21.122772854Z [inf]  1:M 24 Nov 2025 12:24:13.064 * Background saving started by pid 371
+2025-11-24T12:24:21.122784875Z [inf]  371:C 24 Nov 2025 12:24:13.066 * BGSAVE done, 19 keys saved, 0 keys skipped, 2520 bytes written.
+2025-11-24T12:24:21.122792805Z [inf]  371:C 24 Nov 2025 12:24:13.072 * DB saved on disk
+2025-11-24T12:24:21.122800757Z [inf]  371:C 24 Nov 2025 12:24:13.073 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T12:24:21.122809200Z [inf]  1:M 24 Nov 2025 12:24:13.166 * Background saving terminated with success
