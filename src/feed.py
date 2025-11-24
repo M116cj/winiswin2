@@ -261,6 +261,7 @@ async def main():
             return
         
         logger.info("✅ Feed attached to ring buffer")
+        logger.critical(f"🔍 Ring Buffer Diagnostic: pending={ring_buffer.pending_count()}, ready for writes")
         
         # Top 20 symbols for trading
         symbols = [
@@ -283,9 +284,10 @@ async def main():
         while reconnect_count < max_reconnect_attempts:
             try:
                 # Binance WebSocket 配置優化：
-                # - ping_interval: 30s (Binance 會每 3 分鐘 ping，但主動 ping 保持連接活躍)
-                # - ping_timeout: 20s (給予充足時間等待 pong)
-                async with websockets.connect(ws_url, ping_interval=30, ping_timeout=20) as websocket:
+                # - ping_interval: 20s (更頻繁的心跳保持連接活躍)
+                # - ping_timeout: 30s (給予充足時間等待 pong)
+                # - close_timeout: 10s (快速關閉）
+                async with websockets.connect(ws_url, ping_interval=20, ping_timeout=30, close_timeout=10) as websocket:
                     logger.critical(f"✅ Connected to Binance WebSocket (attempt {reconnect_count + 1})")
                     reconnect_count = 0  # Reset on successful connection
                     candle_count = 0
@@ -319,8 +321,16 @@ async def main():
                                 )
                                 
                                 if safe_candle:
+                                    # 🔍 Diagnostic: Log Ring Buffer write
+                                    write_cursor_before = ring_buffer._get_cursors()[0]
                                     ring_buffer.write_candle(safe_candle)
+                                    write_cursor_after = ring_buffer._get_cursors()[0]
                                     candle_count += 1
+                                    
+                                    # Log every 10 writes (more frequent for diagnostics)
+                                    if candle_count % 10 == 0:
+                                        pending = ring_buffer.pending_count()
+                                        logger.critical(f"🔍 Feed Ring Buffer: Written {candle_count}, Pending={pending}, Cursor: {write_cursor_before}→{write_cursor_after}")
                                     
                                     # 💾 Persist market data to PostgreSQL & Redis
                                     try:

@@ -77,7 +77,14 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     buffer.add_tick(symbol, candle)
     
     # Check if we have enough data for analysis
-    if not buffer.has_sufficient_data(symbol, min_candles_per_tf=3):
+    # 🔍 Lowered from min_candles_per_tf=3 to 1 to enable signal generation earlier
+    has_data = buffer.has_sufficient_data(symbol, min_candles_per_tf=1)
+    if not has_data:
+        # 🔍 Diagnostic: Log every 50 candles to see data accumulation
+        static_candle_count = getattr(process_candle, 'call_count', 0) + 1
+        process_candle.call_count = static_candle_count
+        if static_candle_count % 50 == 0:
+            logger.critical(f"🔍 process_candle({symbol}): Insufficient data [{static_candle_count} calls], skipping")
         return
     
     # Get complete multi-timeframe candles
@@ -89,6 +96,7 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     
     if signal_data is None:
         # Setup failed - not a valid signal
+        logger.debug(f"🔍 {symbol}: Timeframe validation FAILED (signal_data is None)")
         return
     
     # ✅ Multi-timeframe validation passed
@@ -249,11 +257,13 @@ async def run_brain() -> None:
         logger.error("❌ Failed to attach to ring buffer")
         return
     logger.info("✅ Attached to ring buffer")
+    logger.critical(f"🔍 Ring Buffer Diagnostic: pending={ring_buffer.pending_count()}, ready to read")
     
     try:
         candle_count = 0
         latencies = []
         symbol_index = 0
+        last_pending_log = 0  # Track last pending count for diagnostic logging
         
         while True:
             # Poll for pending candles (non-blocking)
@@ -263,7 +273,13 @@ async def run_brain() -> None:
             
             pending = ring_buffer.pending_count()
             
+            # 🔍 Log pending status every 5 seconds (if changed)
+            current_time = time()
+            if pending != last_pending_log or (candle_count % 5000 == 0 and candle_count > 0):
+                logger.critical(f"🔍 Brain Ring Buffer Check: Pending={pending}, Read={candle_count}, Timestamp={current_time:.1f}")
+            
             if pending > 0:
+                last_pending_log = pending  # Update tracking
                 # Read generator
                 for candle in ring_buffer.read_new():
                     if candle is None:
@@ -288,12 +304,16 @@ async def run_brain() -> None:
                         
                         if candle_count % 1000 == 0:
                             avg_latency = np.mean(latencies[-1000:])
-                            logger.info(f"📊 Brain: {candle_count} candles | {len(_symbols)} symbols | Latency: {avg_latency:.1f}µs")
+                            remaining_pending = ring_buffer.pending_count()
+                            logger.critical(f"📊 Brain: {candle_count} candles | {len(_symbols)} symbols | Latency: {avg_latency:.1f}µs | Remaining Pending: {remaining_pending}")
                     except Exception as e:
                         logger.error(f"Error processing candle: {e}", exc_info=True)
                         continue
             else:
                 # No pending candles, yield to other tasks
+                if last_pending_log > 0:
+                    logger.debug(f"⏳ Brain waiting for data... (pending=0)")
+                    last_pending_log = 0
                 await asyncio.sleep(0.001)
     
     except KeyboardInterrupt:
