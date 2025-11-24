@@ -17,14 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 async def run_virtual_monitor() -> None:
-    """Run virtual TP/SL monitor + ML training continuously"""
+    """Run virtual TP/SL monitor + ML training + Data persistence continuously"""
     logger.info("🎓 Virtual Learning Monitor started")
     
     check_interval = 5  # Check every 5 seconds
     report_interval = 300  # Report every 5 minutes
     training_interval = 600  # Train ML every 10 minutes
+    persistence_interval = 600  # Persist experience buffer every 10 minutes
     last_report_time = 0
     last_training_time = 0
+    last_persistence_time = 0
     
     while True:
         try:
@@ -43,6 +45,20 @@ async def run_virtual_monitor() -> None:
                     f"Win Rate: {state['win_rate']:.1f}%"
                 )
                 last_report_time = current_time
+            
+            # 💾 Persist experience buffer to PostgreSQL
+            if current_time - last_persistence_time >= persistence_interval:
+                try:
+                    from src.experience_buffer import get_experience_buffer
+                    from src.config import get_database_url
+                    
+                    exp_buffer = get_experience_buffer()
+                    saved_count = await exp_buffer.save_to_database(get_database_url())
+                    if saved_count > 0:
+                        logger.critical(f"💾 Experience buffer persisted: {saved_count} records saved")
+                    last_persistence_time = current_time
+                except Exception as e:
+                    logger.warning(f"⚠️ Experience buffer persistence skipped: {e}")
             
             # 🤖 Train ML model with virtual data periodically
             if current_time - last_training_time >= training_interval:

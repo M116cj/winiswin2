@@ -187,6 +187,54 @@ class UnifiedDatabaseManager:
             """)
             logger.debug("✅ position_entry_times table ready")
             
+            # Create market_data table (if not exists)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS market_data (
+                    id SERIAL PRIMARY KEY,
+                    symbol VARCHAR(20) NOT NULL,
+                    timestamp BIGINT NOT NULL,
+                    open_price NUMERIC(20, 8) NOT NULL,
+                    high_price NUMERIC(20, 8) NOT NULL,
+                    low_price NUMERIC(20, 8) NOT NULL,
+                    close_price NUMERIC(20, 8) NOT NULL,
+                    volume NUMERIC(20, 8) NOT NULL,
+                    timeframe VARCHAR(10) NOT NULL DEFAULT '1m',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            logger.debug("✅ market_data table ready")
+            
+            # Create index on market_data for fast symbol+time queries
+            await conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_market_data_symbol_time 
+                ON market_data(symbol, timestamp DESC)
+            """)
+            logger.debug("✅ market_data index created")
+            
+            # Create ml_models table (if not exists)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS ml_models (
+                    id SERIAL PRIMARY KEY,
+                    model_name VARCHAR(100) NOT NULL,
+                    model_type VARCHAR(50) NOT NULL,
+                    model_data BYTEA NOT NULL,
+                    training_samples INTEGER NOT NULL DEFAULT 0,
+                    accuracy NUMERIC(5, 4),
+                    is_active BOOLEAN DEFAULT FALSE,
+                    trained_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            logger.debug("✅ ml_models table ready")
+            
+            # Create index on ml_models
+            await conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_ml_models_name 
+                ON ml_models(model_name)
+            """)
+            logger.debug("✅ ml_models index created")
+            
             await conn.close()
             
             logger.critical("✅ Database schema initialized successfully")

@@ -318,6 +318,46 @@ async def main():
                                     ring_buffer.write_candle(safe_candle)
                                     candle_count += 1
                                     
+                                    # 💾 Persist market data to PostgreSQL & Redis
+                                    try:
+                                        # Extract OHLCV data
+                                        ts, o, h, l, c, v = safe_candle
+                                        symbol = kline.get('s', '')
+                                        
+                                        # Store to PostgreSQL market_data table (async non-blocking)
+                                        if symbol:
+                                            try:
+                                                from src.database.unified_db import UnifiedDatabaseManager
+                                                conn = await UnifiedDatabaseManager.get_connection()
+                                                if conn:
+                                                    await conn.execute("""
+                                                        INSERT INTO market_data (symbol, timestamp, open_price, high_price, low_price, close_price, volume, timeframe)
+                                                        VALUES ($1, $2, $3, $4, $5, $6, $7, '1m')
+                                                    """, symbol, int(ts), float(o), float(h), float(l), float(c), float(v))
+                                                    await conn.close()
+                                            except Exception as e:
+                                                logger.debug(f"Market data persistence: {e}")
+                                        
+                                        # Store to Redis cache (fast access)
+                                        try:
+                                            import redis.asyncio as redis_async
+                                            from src.config import get_redis_url
+                                            redis_url = get_redis_url()
+                                            if redis_url:
+                                                redis_client = await redis_async.from_url(redis_url, decode_responses=True)
+                                                # Store latest OHLCV for each symbol
+                                                market_data = json.dumps({
+                                                    'symbol': symbol,
+                                                    'timestamp': ts,
+                                                    'o': o, 'h': h, 'l': l, 'c': c, 'v': v
+                                                })
+                                                await redis_client.set(f"market:{symbol}", market_data, ex=3600)  # 1hr TTL
+                                                await redis_client.close()
+                                        except Exception as e:
+                                            logger.debug(f"Redis market data: {e}")
+                                    except Exception as e:
+                                        logger.debug(f"Market data collection: {e}")
+                                    
                                     if candle_count % 100 == 0:
                                         logger.info(f"📊 Feed: {candle_count} candles written to ring buffer")
                         
