@@ -518,8 +518,9 @@ async def _check_risk(signal: Dict) -> None:
             logger.warning(f"🛡️ Risk check failed: {symbol} (risk={position_size:.0f} > max={max_risk:.0f})")
             return
         
-        if confidence <= 0.55:
-            logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} <= 0.55)")
+        # ✅ LOWERED THRESHOLD: 0.30 to match Brain process (consistency)
+        if confidence <= 0.30:
+            logger.warning(f"🛡️ Confidence too low: {symbol} ({confidence:.2f} <= 0.30)")
             return
         
         # Check slot availability
