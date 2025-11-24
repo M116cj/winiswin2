@@ -491,19 +491,11 @@ async def _check_risk(signal: Dict) -> None:
         symbol = signal.get('symbol', '')
         confidence = signal.get('confidence', 0)
         
-        # ✅ Extract from patterns JSONB (Brain stores data there)
-        patterns = signal.get('patterns', {})
-        if isinstance(patterns, str):
-            try:
-                patterns = json.loads(patterns)
-            except:
-                patterns = {}
+        # 🎯 Extract from signal top-level (Brain sends data here)
+        direction = signal.get('direction', 'LONG')  # LONG/SHORT
+        entry_price = signal.get('entry_price', 1.0)
         
-        # 🎯 Get direction and entry_price from patterns JSONB
-        direction = patterns.get('direction', 'LONG')  # LONG/SHORT
-        entry_price = patterns.get('entry_price', 1.0)
-        
-        # ✅ NEW: Use order_amount calculated by position sizing (from Brain)
+        # ✅ Use order_amount calculated by position sizing (from Brain)
         order_amount = signal.get('order_amount', signal.get('position_size', 0))
         tp_pct = signal.get('tp_pct', 0.05)  # Take profit %
         sl_pct = signal.get('sl_pct', 0.02)  # Stop loss %
@@ -515,11 +507,17 @@ async def _check_risk(signal: Dict) -> None:
         try:
             conn = await _get_postgres_connection()
             if conn:
-                signal_id = patterns.get('signal_id', str(uuid.uuid4()))
-                timestamp = int(signal.get('timestamp', time.time()) * 1000)  # Convert to milliseconds
+                signal_id = signal.get('signal_id', str(uuid.uuid4()))
+                timestamp = int(signal.get('timestamp', time.time()) * 1000)
                 
-                # Store all signal details in patterns (JSONB)
-                patterns_data = patterns.copy()  # Use existing patterns
+                # Store signal details in patterns JSONB
+                patterns_data = {
+                    'direction': direction,
+                    'strength': signal.get('strength', 0.5),
+                    'entry_price': entry_price,
+                    'timeframe_analysis': signal.get('timeframe_analysis', {}),
+                    'signal_id': signal_id
+                }
                 
                 await conn.execute("""
                     INSERT INTO signals (id, symbol, confidence, patterns, position_size, timestamp)
@@ -533,32 +531,30 @@ async def _check_risk(signal: Dict) -> None:
         except Exception as e:
             logger.warning(f"⚠️ Failed to save signal to DB: {e}")
         
-        # FIX 2: Check if this symbol is in cooldown (failed order recently)
+        # Check if this symbol is in cooldown
         current_time = time.time()
-        COOLDOWN_DURATION = 60  # 60 seconds cooldown after failed order
+        COOLDOWN_DURATION = 60
         
         if symbol in _failed_order_cooldown:
             time_since_failure = current_time - _failed_order_cooldown[symbol]
             if time_since_failure < COOLDOWN_DURATION:
                 remaining = COOLDOWN_DURATION - time_since_failure
-                logger.debug(f"⏸️ COOLDOWN: {symbol} - Failed order 🔄 in progress, skipping signal (remaining: {remaining:.0f}s)")
-                return  # Ignore this signal
+                logger.debug(f"⏸️ COOLDOWN: {symbol} (remaining: {remaining:.0f}s)")
+                return
             else:
-                # Cooldown expired, remove from dict
                 del _failed_order_cooldown[symbol]
-                logger.debug(f"✅ Cooldown expired: {symbol} - Ready for new signals")
+                logger.debug(f"✅ Cooldown expired: {symbol}")
         
-        # Get current state (thread-safe)
+        # Get current state
         async with _state_lock:
             balance = _account_state['balance']
             current_positions = list(_account_state['positions'].items())
         
-        max_risk = balance * 0.02  # 2% risk per trade
+        max_risk = balance * 0.02
         
         # 🎓 VIRTUAL LEARNING: ALWAYS run virtual trading (independent of risk checks)
-        # This allows ML model to learn from unrestricted virtual trades
         try:
-            # Convert LONG/SHORT to BUY/SELL for virtual trading
+            # Convert LONG/SHORT to BUY/SELL
             side = 'BUY' if direction.upper() in ('LONG', 'BUY') else 'SELL'
             
             virtual_order = {
