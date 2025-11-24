@@ -15,7 +15,19 @@ Do not make changes to the file `Y`.
 
 ## Recent Updates (Nov 24, 2025)
 
-### ✅ **Logging Cleanup Complete** (Latest)
+### ✅ **獎懲機制 (Reward Shaping) 已實施** (Latest - Nov 24, 13:10)
+- **新文件**: `src/reward_shaping.py` - 定義獎懲規則和計分邏輯
+- **盈利分數**: ≤30% (+1分), ≤50% (+3分), ≤80% (+5分), >80% (+8分)
+- **虧損分數**: ≥-30% (-1分), ≥-50% (-3分), ≥-80% (-7分), <-80% (-10分)
+- **修改文件**:
+  - `src/virtual_learning.py`: 虛擬交易結束時計算 ROI% 和獎懲分數
+  - `src/ml_virtual_integrator.py`: 轉換格式時使用分數作為樣本權重
+  - `src/ml_model.py`: 訓練時應用樣本權重
+  - 數據庫表: 添加 `roi_pct` 和 `reward_score` 列
+- **結果**: 模型現在專注於高勝率交易，虧損懲罰更重
+- **日誌**: 虛擬交易結束時顯示 `ROI: +X.XX% | Score: +Y.0`
+
+### ✅ **Logging Cleanup Complete**
 - 移除所有診斷和低優先級日誌
 - 修改文件: src/brain.py, src/feed.py, src/virtual_learning.py, src/trade.py
 - **移除的日誌**:

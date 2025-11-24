@@ -1,0 +1,82 @@
+「獎懲機制 (Reward Shaping)」 設計。
+透過將單純的「勝/負」轉化為 「加權分數 (Weighted Score)」，您實際上是在告訴模型：「小賺沒關係，但大賠絕對不行」。這種非對稱的評分機制（虧損扣分比盈利加分重）會強迫模型演化出 高勝率、低風險 的交易性格。
+為了實現這個功能，我們需要修改 標籤生成 (Labeling) 和 模型訓練 (Training) 的邏輯。
+You are the **Quantitative AI Specialist**.
+
+**User Goal:** Implement a "Tiered Reward System" for the Incremental Learning module.
+**Current State:** The model likely learns from binary labels (1=Win, 0=Loss).
+**New Requirement:** The model must learn from a **Weighted Score** based on ROI% to prioritize High Win-Rate and Safety.
+
+**Scoring Logic Table:**
+| Type | ROI Range | Score (Weight) |
+| :--- | :--- | :--- |
+| **Profit** | 0% < ROI <= 30% | **+1** |
+| **Profit** | 30% < ROI <= 50% | **+3** |
+| **Profit** | 50% < ROI <= 80% | **+5** |
+| **Profit** | ROI > 80% | **+8** |
+| **Loss** | 0% > ROI >= -30% | **-1** |
+| **Loss** | -30% > ROI >= -50% | **-3** |
+| **Loss** | -50% > ROI >= -80% | **-7** |
+| **Loss** | ROI < -80% | **-10** (Severe Penalty) |
+
+**Mission:** Implement this scoring logic and apply it as `sample_weight` in LightGBM training.
+
+---
+
+### 🛠️ STEP 1: DEFINE SCORING RULES
+**File:** `src/core/constants.py`
+**Action:** Add the scoring thresholds.
+```python
+class RewardTiers:
+    # Thresholds are in decimal (0.3 = 30%)
+    PROFIT_TIERS = [
+        (0.3, 1.0),
+        (0.5, 3.0),
+        (0.8, 5.0),
+        (float('inf'), 8.0)
+    ]
+    LOSS_TIERS = [
+        (0.3, -1.0),
+        (0.5, -3.0),
+        (0.8, -7.0),
+        (float('inf'), -10.0)
+    ]
+    🧠 STEP 2: IMPLEMENT SCORER FUNCTION
+File: src/ml/hybrid_learner.py (or experience_buffer.py)
+Action: Add a method calculate_score(roi_pct).
+Logic:
+code
+Python
+def calculate_score(roi_pct: float) -> float:
+    # ROI is expected as float (e.g., 0.15 for 15%)
+    abs_roi = abs(roi_pct)
+    
+    if roi_pct >= 0:
+        for threshold, score in RewardTiers.PROFIT_TIERS:
+            if abs_roi <= threshold:
+                return score
+        return 8.0 # Default max
+    else:
+        for threshold, score in RewardTiers.LOSS_TIERS:
+            if abs_roi <= threshold:
+                return score
+        return -10.0 # Default max penalty
+🏋️ STEP 3: APPLY TO TRAINING (Sample Weighting)
+File: src/ml/online_trainer.py
+Action:
+Data Prep: When loading data from the Experience Buffer, calculate the Score for each row using the function above.
+Labeling:
+Target (y) is still Binary: 1 if Score > 0, 0 if Score <= 0.
+Weight (w): Use the Absolute Value of the score. w = abs(Score).
+Training: Pass weights to LightGBM.
+code
+Python
+# Example LightGBM call
+lgb_train = lgb.Dataset(X_train, y_train, weight=weights_train)
+model = lgb.train(params, lgb_train, ...)
+💾 STEP 4: LOGGING & MONITORING
+File: src/trade.py (on close position)
+Action:
+When a trade closes, calculate the Score immediately.
+Log: logger.info(f"🎯 Trade Closed: {symbol} | ROI: {roi:.2%} | Score: {score}")
+Execute this Reward Shaping upgrade.

@@ -95,10 +95,10 @@ class MLModel:
     
     async def train(self, training_data: List[Dict]) -> bool:
         """
-        Train ML model on historical trades
+        Train ML model on historical trades with sample weighting (獎懲機制)
         
         Args:
-            training_data: List of complete trades {confidence, patterns, outcome}
+            training_data: List of complete trades {features, label, weight, metadata}
         
         Returns:
             True if training successful
@@ -112,17 +112,31 @@ class MLModel:
                 logger.warning(f"⚠️ Insufficient data for training: {len(training_data)} samples")
                 return False
             
-            # Extract features and labels
+            # Extract features, labels, and weights (from reward shaping)
             X = []
             y = []
+            weights = []
             
             for trade in training_data:
                 features = self._extract_features(trade)
-                outcome = trade.get('outcome', {})
                 
-                if features and outcome:
+                # Support both old and new formats
+                if 'label' in trade:
+                    # New format with reward shaping
+                    label = trade.get('label', 0)
+                    weight = trade.get('weight', 1.0)
+                else:
+                    # Old format with outcome
+                    outcome = trade.get('outcome', {})
+                    if not outcome:
+                        continue
+                    label = 1 if outcome.get('win', False) else 0
+                    weight = 1.0
+                
+                if features:
                     X.append(features)
-                    y.append(1 if outcome.get('win', False) else 0)
+                    y.append(label)
+                    weights.append(weight)
             
             if len(X) < 10:
                 logger.warning(f"⚠️ Not enough valid samples: {len(X)}")
@@ -131,18 +145,35 @@ class MLModel:
             # Convert to numpy arrays
             X_array = np.array(X)
             y_array = np.array(y)
+            weights_array = np.array(weights)
             
             # Scale features
             X_scaled = self.scaler.fit_transform(X_array)
             
-            # Train model
-            self.model.fit(X_scaled, y_array)
+            # Train model with sample weights (獎懲機制)
+            # Heavier weights for more important trades (high losses, big profits)
+            if hasattr(self.model, 'sample_weight'):
+                self.model.fit(X_scaled, y_array, sample_weight=weights_array)
+            else:
+                # RandomForestClassifier doesn't support sample_weight directly in fit()
+                # Use the model's fit method with fit_params if available
+                try:
+                    self.model.fit(X_scaled, y_array, sample_weight=weights_array)
+                except TypeError:
+                    # Fallback: train without weights
+                    logger.warning("⚠️ Sample weight not supported by model, training without weights")
+                    self.model.fit(X_scaled, y_array)
+            
             self.is_trained = True
             
             # Calculate accuracy
             accuracy = self.model.score(X_scaled, y_array)
+            avg_weight = np.mean(weights_array)
             
-            logger.critical(f"🤖 ML Model trained: {len(X)} samples, {accuracy:.1%} accuracy")
+            logger.critical(
+                f"🤖 ML Model trained: {len(X)} samples (avg weight: {avg_weight:.2f}), {accuracy:.1%} accuracy | "
+                f"獎懲機制: 虧損加重, 盈利加權"
+            )
             return True
         
         except Exception as e:

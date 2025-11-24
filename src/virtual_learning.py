@@ -200,6 +200,12 @@ async def check_virtual_tp_sl() -> None:
                     else:
                         pnl = (entry_price - close_price) * quantity
                     
+                    # 🎯 計算 ROI% 和獎懲分數
+                    roi_pct = pnl / (entry_price * quantity) if entry_price > 0 else 0
+                    
+                    from src.reward_shaping import calculate_reward_score
+                    reward_score = calculate_reward_score(roi_pct)
+                    
                     _virtual_account['positions'][position_id]['status'] = 'CLOSED'
                     _virtual_account['positions'][position_id]['close_price'] = close_price
                     _virtual_account['positions'][position_id]['close_reason'] = close_reason
@@ -218,12 +224,15 @@ async def check_virtual_tp_sl() -> None:
                         'entry_price': entry_price,
                         'close_price': close_price,
                         'reason': close_reason,
-                        'pnl': pnl
+                        'pnl': pnl,
+                        'roi_pct': roi_pct,
+                        'reward_score': reward_score
                     })
                     
                     logger.critical(
                         f"🎓 [VIRTUAL] Position closed: {symbol} {side} x{quantity} "
-                        f"@ ${close_price:.2f} [{close_reason}] | PnL: ${pnl:.2f} | "
+                        f"@ ${close_price:.2f} [{close_reason}] | ROI: {roi_pct:+.2%} | "
+                        f"Score: {reward_score:+.0f} | PnL: ${pnl:.2f} | "
                         f"Balance: ${_virtual_account['balance']:.2f}"
                     )
             
@@ -244,7 +253,7 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # Create table if not exists
+        # Create table if not exists (with reward shaping columns)
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_trades (
                 id SERIAL PRIMARY KEY,
@@ -255,6 +264,8 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
                 entry_price FLOAT NOT NULL,
                 close_price FLOAT NOT NULL,
                 pnl FLOAT NOT NULL,
+                roi_pct FLOAT DEFAULT 0,
+                reward_score FLOAT DEFAULT 0,
                 reason VARCHAR(50) NOT NULL,
                 entry_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 close_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -262,11 +273,22 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
             )
         """)
         
-        # Insert closed trades
+        # Add new columns if they don't exist (for existing tables)
+        try:
+            await conn.execute("ALTER TABLE virtual_trades ADD COLUMN roi_pct FLOAT DEFAULT 0")
+        except Exception:
+            pass  # Column already exists
+        
+        try:
+            await conn.execute("ALTER TABLE virtual_trades ADD COLUMN reward_score FLOAT DEFAULT 0")
+        except Exception:
+            pass  # Column already exists
+        
+        # Insert closed trades with reward shaping data
         for trade in closed_positions:
             await conn.execute("""
-                INSERT INTO virtual_trades (position_id, symbol, side, quantity, entry_price, close_price, pnl, reason)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                INSERT INTO virtual_trades (position_id, symbol, side, quantity, entry_price, close_price, pnl, roi_pct, reward_score, reason)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 ON CONFLICT (position_id) DO NOTHING
             """,
                 trade['position_id'],
@@ -276,6 +298,8 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
                 trade['entry_price'],
                 trade['close_price'],
                 trade['pnl'],
+                trade.get('roi_pct', 0),
+                trade.get('reward_score', 0),
                 trade['reason']
             )
         

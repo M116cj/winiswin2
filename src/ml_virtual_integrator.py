@@ -203,8 +203,9 @@ class MLVirtualIntegrator:
         return self.virtual_trades.copy(), bias_report
     
     def convert_to_ml_format(self, trade: Dict) -> Dict:
-        """Convert virtual trade to ML training format (統一格式)"""
+        """Convert virtual trade to ML training format with reward shaping (統一格式)"""
         from src.data_formats import extract_ml_features
+        from src.reward_shaping import get_sample_weight, get_label_from_score
         
         # 構建完整的信號格式
         signal_data = {
@@ -226,14 +227,25 @@ class MLVirtualIntegrator:
         # 使用統一的特徵提取
         feature_vector = extract_ml_features(signal_data)
         
+        # 🎯 獎懲機制：使用分數而非純 PnL
+        reward_score = trade.get('reward_score', 0)  # 來自 virtual_learning.py
+        sample_weight = get_sample_weight(reward_score)
+        label = get_label_from_score(reward_score)
+        
         pnl = trade.get('pnl', 0)
+        roi_pct = trade.get('roi_pct', 0)
+        
         return {
             'features': feature_vector,
-            'label': 1 if pnl > 0 else 0,
+            'label': label,  # Binary: 1 (profitable) or 0 (loss)
+            'weight': sample_weight,  # Sample weight from reward shaping
             'metadata': {
                 'symbol': trade.get('symbol', ''),
                 'timestamp': int(trade.get('timestamp', 0)),
                 'pnl': pnl,
+                'roi_pct': roi_pct,
+                'reward_score': reward_score,
+                'sample_weight': sample_weight,
                 'source': 'virtual'
             }
         }
