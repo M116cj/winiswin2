@@ -140,3 +140,39 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 ✓ 槓桿限制（分檔制）
 ✓ 整數槓桿要求
 ✓ 浮點誤差容許
+
+## 🚀 Critical Fix: Feed Process WebSocket Implementation
+
+**Date: 2025-11-24 - 04:08:29 UTC**
+
+**Problem Found & Fixed:**
+- Feed 進程原本只是空洞的 `asyncio.sleep(10)` 循環 ❌
+- 沒有實際連接到 Binance Futures WebSocket
+- Ring buffer 沒有接收任何市場數據
+- 系統無法生成交易信號
+
+**Solution Implemented:**
+✅ 完整重寫 `src/feed.py` 的 `main()` 函數
+✅ 實現真實 Binance Futures WebSocket 連接 (wss://fstream.binance.com)
+✅ 並行訂閱 20 個頂級交易對的 1 分鐘 K 線
+✅ 完整的重連邏輯（指數退避）
+✅ 數據驗證和 ring buffer 寫入流程
+
+**驗證結果:**
+- ✅ Feed 進程成功連接到 Binance WebSocket
+- ✅ 市場數據正在流動進 Ring Buffer
+- ✅ Brain 進程正在讀取並處理數據
+- ✅ TimeframeBuffer 已初始化並準備好分析
+- ✅ 系統完全運作中
+
+**Data Flow:**
+```
+Binance WebSocket → Feed → Ring Buffer → Brain → Timeframe Analyzer → Signals → Virtual Trades
+```
+
+**Current Status:**
+- 🎯 20 個交易對即時監控：BTCUSDT, ETHUSDT, BNBUSDT 等
+- 📊 每分鐘接收完整 K 線數據
+- 🎓 虛擬學習帳戶：$10,000 初始資本
+- ⚙️ 所有 Binance 協議約束已驗證
+- 🔄 系統在持續運行中
