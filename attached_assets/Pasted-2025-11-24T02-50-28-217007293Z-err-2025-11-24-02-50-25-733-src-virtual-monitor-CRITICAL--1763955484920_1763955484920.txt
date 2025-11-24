@@ -1,0 +1,182 @@
+2025-11-24T02:50:28.217007293Z [err]  2025-11-24 02:50:25,733 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T02:50:28.217014075Z [err]  2025-11-24 02:50:25,734 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T02:50:28.217021583Z [err]  2025-11-24 02:50:25,734 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T02:55:31.547611726Z [err]  2025-11-24 02:55:25,958 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T02:59:18.000000000Z [inf]  Starting Container
+2025-11-24T02:59:19.857074225Z [err]  2025-11-24 02:59:19,725 - __main__ - CRITICAL -    API Server: Running in main process thread
+2025-11-24T02:59:19.857083880Z [err]  2025-11-24 02:59:19,725 - __main__ - CRITICAL -    Feed: 13, Brain: 14
+2025-11-24T02:59:19.857091603Z [err]  2025-11-24 02:59:19,725 - __main__ - CRITICAL -    Orchestrator: 15
+2025-11-24T02:59:19.857096938Z [err]  2025-11-24 02:59:19,725 - __main__ - CRITICAL - 🔄 Entering keep-alive monitoring loop...
+2025-11-24T02:59:19.857101880Z [err]  2025-11-24 02:59:19,725 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857107259Z [err]  2025-11-24 02:59:19,782 - __mp_main__ - CRITICAL - 🚀 Starting ORCHESTRATOR process
+2025-11-24T02:59:19.857112312Z [err]  2025-11-24 02:59:19,782 - __mp_main__ - CRITICAL -    Role: Background maintenance tasks (not API)
+2025-11-24T02:59:19.857167570Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - ✅ Orchestrator started (PID=15)
+2025-11-24T02:59:19.857167670Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857169718Z [err]  2025-11-24 02:59:19,804 - __mp_main__ - CRITICAL - 🚀 Starting FEED process (standalone)
+2025-11-24T02:59:19.857175116Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857175181Z [inf]  🚀 A.E.G.I.S. v8.0 - Hardened Startup Sequence
+2025-11-24T02:59:19.857182662Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857183454Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - ✅ ALL SYSTEMS LAUNCHED SUCCESSFULLY
+2025-11-24T02:59:19.857190303Z [inf]  🧹 Step 1: Cleaning shared memory...
+2025-11-24T02:59:19.857195494Z [inf]  ✅ Shared memory cleaned
+2025-11-24T02:59:19.857200704Z [inf]  
+2025-11-24T02:59:19.857206528Z [inf]  🔄 Step 2: Starting A.E.G.I.S. with hardened multiprocessing...
+2025-11-24T02:59:19.857213457Z [inf]     Note: System will initialize database + ring buffer automatically
+2025-11-24T02:59:19.857220363Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857225933Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - API-FIRST STARTUP SEQUENCE
+2025-11-24T02:59:19.857231046Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857237605Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL -    Incident Fix: API binds within 500ms BEFORE heavy init
+2025-11-24T02:59:19.857242929Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL -    Target: Health check response < 1 second
+2025-11-24T02:59:19.857340910Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T02:59:19.857345941Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL - ⚡ STEP 1: Starting API server in background thread
+2025-11-24T02:59:19.857350840Z [err]  2025-11-24 02:59:19,043 - __main__ - CRITICAL -    Target: Bind to 0.0.0.0:$PORT within 500ms
+2025-11-24T02:59:19.857356341Z [err]  2025-11-24 02:59:19,419 - src.api.server - CRITICAL - 🌐 PRIORITY 1: Starting API server in background thread
+2025-11-24T02:59:19.857361249Z [err]  2025-11-24 02:59:19,419 - src.api.server - CRITICAL -    Target: Bind to 0.0.0.0:8080 within 500ms
+2025-11-24T02:59:19.857366169Z [err]  2025-11-24 02:59:19,420 - src.api.server - CRITICAL - 🚀 [API Thread] Binding to 0.0.0.0:8080
+2025-11-24T02:59:19.857370906Z [err]  2025-11-24 02:59:19,420 - src.api.server - CRITICAL - 🌐 [API Thread] Starting to serve on 0.0.0.0:8080
+2025-11-24T02:59:19.857376302Z [err]  2025-11-24 02:59:19,420 - src.api.server - CRITICAL - ✅ API server thread started
+2025-11-24T02:59:19.857381498Z [err]  2025-11-24 02:59:19,421 - src.api.server - CRITICAL -    (API binding to port in background...)
+2025-11-24T02:59:19.857385353Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - ✅ API server thread started (background)
+2025-11-24T02:59:19.857389960Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - ⏳ STEP 2: Waiting for API to bind...
+2025-11-24T02:59:19.857394355Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL -    (Railway probes /health endpoint during this window)
+2025-11-24T02:59:19.857399785Z [err]  2025-11-24 02:59:19,421 - src.api.server - CRITICAL - ⏳ Waiting up to 2.0s for API to bind...
+2025-11-24T02:59:19.857405081Z [err]  2025-11-24 02:59:19,421 - src.api.server - CRITICAL - ✅ API is bound and ready for Railway health checks
+2025-11-24T02:59:19.857506797Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - ✅ API port binding detected
+2025-11-24T02:59:19.857512236Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - ✅ Railway health checks now passing
+2025-11-24T02:59:19.857516725Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - 🔄 STEP 3: Initializing heavy resources (DB + Ring Buffer)...
+2025-11-24T02:59:19.857521832Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL -    (API continues serving health checks in background)
+2025-11-24T02:59:19.857525965Z [err]  2025-11-24 02:59:19,421 - __main__ - CRITICAL - 🗄️ Initializing database schema...
+2025-11-24T02:59:19.857531055Z [err]  2025-11-24 02:59:19,718 - src.database.unified_db - CRITICAL - ✅ Database schema initialized successfully
+2025-11-24T02:59:19.857535805Z [err]  2025-11-24 02:59:19,719 - __main__ - CRITICAL - ✅ Database schema initialized successfully
+2025-11-24T02:59:19.857554401Z [err]  2025-11-24 02:59:19,719 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-24T02:59:19.857559195Z [err]  2025-11-24 02:59:19,722 - src.ring_buffer - CRITICAL - 🔄 RingBuffer created: 480000 bytes, 10000 slots (Cursors reset to 0)
+2025-11-24T02:59:19.857568104Z [err]  2025-11-24 02:59:19,723 - __main__ - CRITICAL - ✅ Ring buffer created: 480000 bytes
+2025-11-24T02:59:19.857573967Z [err]  2025-11-24 02:59:19,723 - __main__ - CRITICAL - ✅ Heavy resources initialized successfully
+2025-11-24T02:59:19.857578615Z [err]  2025-11-24 02:59:19,723 - __main__ - CRITICAL - 📡 STEP 4: Launching worker processes...
+2025-11-24T02:59:19.857583577Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - ✅ Feed started (PID=13)
+2025-11-24T02:59:19.857588255Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - ✅ Brain started (PID=14)
+2025-11-24T02:59:19.857592982Z [err]  2025-11-24 02:59:19,724 - __main__ - CRITICAL - 🔄 STEP 5: Launching Orchestrator (background tasks)...
+2025-11-24T02:59:19.907640058Z [err]  2025-11-24 02:59:19,886 - __mp_main__ - CRITICAL - 🔄 Orchestrator: Launching background maintenance tasks...
+2025-11-24T02:59:19.911513270Z [err]  2025-11-24 02:59:19,908 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T02:59:21.034560036Z [err]  2025-11-24 02:59:21,031 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T02:59:21.034572304Z [err]  2025-11-24 02:59:21,031 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T02:59:21.684025136Z [err]  2025-11-24 02:59:21,484 - __mp_main__ - CRITICAL - 🚀 Starting BRAIN process (standalone)
+2025-11-24T02:59:21.684030566Z [err]  2025-11-24 02:59:21,589 - src.trade - CRITICAL - 🔴 LIVE TRADING MODE - Syncing with real Binance account
+2025-11-24T02:59:21.684036529Z [err]  2025-11-24 02:59:21,589 - src.trade - CRITICAL - 💧 Hydrating Account State from Binance API...
+2025-11-24T02:59:21.710703016Z [err]  2025-11-24 02:59:21,703 - src.trade - CRITICAL - ✅ Account Hydrated: Balance=$9.38, PnL=$0.00, Active Positions=0
+2025-11-24T02:59:22.093442060Z [err]  2025-11-24 02:59:22,088 - src.trade - CRITICAL - 💾 State persisted to Postgres: Balance=$9.38, Positions=0, Trades=0
+2025-11-24T02:59:22.093449851Z [err]  2025-11-24 02:59:22,088 - src.trade - CRITICAL - ✅ Account state synced to Redis & Postgres
+2025-11-24T02:59:22.093455892Z [err]  2025-11-24 02:59:22,090 - src.virtual_learning - CRITICAL - 🎓 Virtual Learning Account initialized: $10,000 starting capital
+2025-11-24T02:59:22.093463768Z [err]  2025-11-24 02:59:22,090 - src.trade - CRITICAL - ✅ LIVE TRADING ENABLED - Orders will be executed on Binance
+2025-11-24T02:59:22.093471050Z [err]  2025-11-24 02:59:22,090 - src.trade - CRITICAL - ✅ Trade module ready (LIVE MODE - Real Binance trading + Virtual Learning)
+2025-11-24T02:59:23.939504751Z [err]  2025-11-24 02:59:21,958 - __main__ - CRITICAL - 🛑 Signal 15 received. Initiating graceful shutdown...
+2025-11-24T02:59:24.929690745Z [err]  2025-11-24 02:59:24,399 - __main__ - CRITICAL - 🛑 Stopping all processes...
+2025-11-24T02:59:24.929697637Z [err]  2025-11-24 02:59:24,399 - __main__ - CRITICAL -    Terminating Feed (PID=13)...
+2025-11-24T02:59:24.929704483Z [err]  2025-11-24 02:59:24,400 - __main__ - CRITICAL -    Terminating Brain (PID=14)...
+2025-11-24T02:59:24.929711783Z [err]  2025-11-24 02:59:24,401 - __main__ - CRITICAL -    Terminating Orchestrator (PID=15)...
+2025-11-24T02:59:24.929719724Z [err]  2025-11-24 02:59:24,440 - __main__ - CRITICAL - 🧹 Shared memory unlinked
+2025-11-24T02:59:24.929727110Z [err]  2025-11-24 02:59:24,440 - __main__ - CRITICAL - 👋 System shutdown complete
+2025-11-24T02:59:25.000000000Z [inf]  Stopping Container
+2025-11-24T02:59:25.144706799Z [inf]  1:M 24 Nov 2025 02:59:21.903 * 1 changes in 60 seconds. Saving...
+2025-11-24T02:59:25.144724140Z [inf]  1:M 24 Nov 2025 02:59:21.904 * Background saving started by pid 60
+2025-11-24T02:59:25.144744935Z [inf]  60:C 24 Nov 2025 02:59:21.917 * DB saved on disk
+2025-11-24T02:59:25.144759806Z [inf]  60:C 24 Nov 2025 02:59:21.917 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T02:59:25.144772272Z [inf]  1:M 24 Nov 2025 02:59:22.005 * Background saving terminated with success
+2025-11-24T03:03:27.361551202Z [err]  2025-11-24 03:03:18.732 UTC [76] LOG:  checkpoint starting: time
+2025-11-24T03:03:27.361557298Z [err]  2025-11-24 03:03:19.154 UTC [76] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.404 s, sync=0.005 s, total=0.422 s; sync files=5, longest=0.004 s, average=0.001 s; distance=2 kB, estimate=60 kB; lsn=0/1A35098, redo lsn=0/1A35040
+2025-11-24T03:04:24.972657758Z [err]  2025-11-24 03:04:21,266 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:09:28.357042255Z [err]  2025-11-24 03:09:21,509 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:09:28.357048727Z [err]  2025-11-24 03:09:21,509 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T03:09:28.357055235Z [err]  2025-11-24 03:09:21,509 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T03:12:19.000000000Z [inf]  Starting Container
+2025-11-24T03:12:20.161302869Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL -    Incident Fix: API binds within 500ms BEFORE heavy init
+2025-11-24T03:12:20.161312792Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL -    Target: Health check response < 1 second
+2025-11-24T03:12:20.161326536Z [inf]  ✅ Shared memory cleaned
+2025-11-24T03:12:20.161330428Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.161333841Z [inf]  
+2025-11-24T03:12:20.161336140Z [inf]  🚀 A.E.G.I.S. v8.0 - Hardened Startup Sequence
+2025-11-24T03:12:20.161342755Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.161344316Z [inf]  🔄 Step 2: Starting A.E.G.I.S. with hardened multiprocessing...
+2025-11-24T03:12:20.161350538Z [inf]  🧹 Step 1: Cleaning shared memory...
+2025-11-24T03:12:20.161351428Z [inf]     Note: System will initialize database + ring buffer automatically
+2025-11-24T03:12:20.161357930Z [inf]  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.161364945Z [err]  2025-11-24 03:12:19,558 - __main__ - CRITICAL - 🚀 A.E.G.I.S. v8.0 - API-FIRST STARTUP SEQUENCE
+2025-11-24T03:12:20.161371334Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.167648888Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.167659856Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL - ⚡ STEP 1: Starting API server in background thread
+2025-11-24T03:12:20.167669980Z [err]  2025-11-24 03:12:19,559 - __main__ - CRITICAL -    Target: Bind to 0.0.0.0:$PORT within 500ms
+2025-11-24T03:12:20.167678110Z [err]  2025-11-24 03:12:20,028 - src.api.server - CRITICAL - 🌐 PRIORITY 1: Starting API server in background thread
+2025-11-24T03:12:20.167684439Z [err]  2025-11-24 03:12:20,028 - src.api.server - CRITICAL -    Target: Bind to 0.0.0.0:8080 within 500ms
+2025-11-24T03:12:20.167691388Z [err]  2025-11-24 03:12:20,028 - src.api.server - CRITICAL - 🚀 [API Thread] Binding to 0.0.0.0:8080
+2025-11-24T03:12:20.167697880Z [err]  2025-11-24 03:12:20,029 - src.api.server - CRITICAL - 🌐 [API Thread] Starting to serve on 0.0.0.0:8080
+2025-11-24T03:12:20.167704780Z [err]  2025-11-24 03:12:20,029 - src.api.server - CRITICAL - ✅ API server thread started
+2025-11-24T03:12:20.167710821Z [err]  2025-11-24 03:12:20,030 - src.api.server - CRITICAL -    (API binding to port in background...)
+2025-11-24T03:12:20.167717544Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - ✅ API server thread started (background)
+2025-11-24T03:12:20.167727773Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - ⏳ STEP 2: Waiting for API to bind...
+2025-11-24T03:12:20.167734914Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL -    (Railway probes /health endpoint during this window)
+2025-11-24T03:12:20.167741443Z [err]  2025-11-24 03:12:20,030 - src.api.server - CRITICAL - ⏳ Waiting up to 2.0s for API to bind...
+2025-11-24T03:12:20.167747751Z [err]  2025-11-24 03:12:20,030 - src.api.server - CRITICAL - ✅ API is bound and ready for Railway health checks
+2025-11-24T03:12:20.167755483Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - ✅ API port binding detected
+2025-11-24T03:12:20.167761937Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - ✅ Railway health checks now passing
+2025-11-24T03:12:20.167769042Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - 🔄 STEP 3: Initializing heavy resources (DB + Ring Buffer)...
+2025-11-24T03:12:20.167776365Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL -    (API continues serving health checks in background)
+2025-11-24T03:12:20.167782525Z [err]  2025-11-24 03:12:20,030 - __main__ - CRITICAL - 🗄️ Initializing database schema...
+2025-11-24T03:12:20.352090571Z [err]  2025-11-24 03:12:20,350 - src.database.unified_db - CRITICAL - ✅ Database schema initialized successfully
+2025-11-24T03:12:20.352100161Z [err]  2025-11-24 03:12:20,351 - __main__ - CRITICAL - ✅ Database schema initialized successfully
+2025-11-24T03:12:20.352106910Z [err]  2025-11-24 03:12:20,351 - __main__ - CRITICAL - 🔄 Creating shared memory ring buffer...
+2025-11-24T03:12:20.362260529Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL -    Orchestrator: 15
+2025-11-24T03:12:20.362266823Z [err]  2025-11-24 03:12:20,357 - src.ring_buffer - CRITICAL - 🔄 RingBuffer created: 480000 bytes, 10000 slots (Cursors reset to 0)
+2025-11-24T03:12:20.362273434Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL - 🔄 Entering keep-alive monitoring loop...
+2025-11-24T03:12:20.362277150Z [err]  2025-11-24 03:12:20,357 - __main__ - CRITICAL - ✅ Ring buffer created: 480000 bytes
+2025-11-24T03:12:20.362286201Z [err]  2025-11-24 03:12:20,357 - __main__ - CRITICAL - ✅ Heavy resources initialized successfully
+2025-11-24T03:12:20.362291363Z [err]  2025-11-24 03:12:20,357 - __main__ - CRITICAL - 📡 STEP 4: Launching worker processes...
+2025-11-24T03:12:20.362296970Z [err]  2025-11-24 03:12:20,358 - __main__ - CRITICAL - ✅ Feed started (PID=13)
+2025-11-24T03:12:20.362303363Z [err]  2025-11-24 03:12:20,360 - __main__ - CRITICAL - ✅ Brain started (PID=14)
+2025-11-24T03:12:20.362309483Z [err]  2025-11-24 03:12:20,360 - __main__ - CRITICAL - 🔄 STEP 5: Launching Orchestrator (background tasks)...
+2025-11-24T03:12:20.362315599Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL - ✅ Orchestrator started (PID=15)
+2025-11-24T03:12:20.362323334Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.362328986Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL - ✅ ALL SYSTEMS LAUNCHED SUCCESSFULLY
+2025-11-24T03:12:20.362335978Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL -    API Server: Running in main process thread
+2025-11-24T03:12:20.362342177Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL -    Feed: 13, Brain: 14
+2025-11-24T03:12:20.366139783Z [err]  2025-11-24 03:12:20,361 - __main__ - CRITICAL - ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2025-11-24T03:12:20.454875561Z [err]  2025-11-24 03:12:20,420 - __mp_main__ - CRITICAL - 🚀 Starting ORCHESTRATOR process
+2025-11-24T03:12:20.454880993Z [err]  2025-11-24 03:12:20,420 - __mp_main__ - CRITICAL -    Role: Background maintenance tasks (not API)
+2025-11-24T03:12:20.454887733Z [err]  2025-11-24 03:12:20,451 - __mp_main__ - CRITICAL - 🚀 Starting FEED process (standalone)
+2025-11-24T03:12:20.544136164Z [err]  2025-11-24 03:12:20,538 - __mp_main__ - CRITICAL - 🔄 Orchestrator: Launching background maintenance tasks...
+2025-11-24T03:12:20.547486087Z [err]  2025-11-24 03:12:20,544 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:12:22.207508741Z [err]  2025-11-24 03:12:21,807 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T03:12:22.207661152Z [err]  2025-11-24 03:12:21,807 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T03:12:22.228504191Z [err]  2025-11-24 03:12:22,221 - __mp_main__ - CRITICAL - 🚀 Starting BRAIN process (standalone)
+2025-11-24T03:12:22.532329921Z [err]  2025-11-24 03:12:22,520 - src.trade - CRITICAL - 🔴 LIVE TRADING MODE - Syncing with real Binance account
+2025-11-24T03:12:22.532337762Z [err]  2025-11-24 03:12:22,520 - src.trade - CRITICAL - 💧 Hydrating Account State from Binance API...
+2025-11-24T03:12:22.636128914Z [err]  2025-11-24 03:12:22,634 - src.trade - CRITICAL - ✅ Account Hydrated: Balance=$11.15, PnL=$0.00, Active Positions=0
+2025-11-24T03:12:23.188229870Z [err]  2025-11-24 03:12:22,843 - src.trade - CRITICAL - 💾 State persisted to Postgres: Balance=$11.15, Positions=0, Trades=0
+2025-11-24T03:12:23.188235079Z [err]  2025-11-24 03:12:22,844 - src.trade - CRITICAL - ✅ Account state synced to Redis & Postgres
+2025-11-24T03:12:23.188240006Z [err]  2025-11-24 03:12:22,846 - src.virtual_learning - CRITICAL - 🎓 Virtual Learning Account initialized: $10,000 starting capital
+2025-11-24T03:12:23.188245229Z [err]  2025-11-24 03:12:22,846 - src.trade - CRITICAL - ✅ LIVE TRADING ENABLED - Orders will be executed on Binance
+2025-11-24T03:12:23.188250494Z [err]  2025-11-24 03:12:22,846 - src.trade - CRITICAL - ✅ Trade module ready (LIVE MODE - Real Binance trading + Virtual Learning)
+2025-11-24T03:12:25.000000000Z [inf]  Stopping Container
+2025-11-24T03:12:29.257911906Z [err]  2025-11-24 03:12:22,272 - __main__ - CRITICAL - 🛑 Signal 15 received. Initiating graceful shutdown...
+2025-11-24T03:12:29.257920076Z [err]  2025-11-24 03:12:24,748 - __main__ - CRITICAL - 🛑 Stopping all processes...
+2025-11-24T03:12:29.257970887Z [err]  2025-11-24 03:12:24,748 - __main__ - CRITICAL -    Terminating Feed (PID=13)...
+2025-11-24T03:12:29.257980811Z [err]  2025-11-24 03:12:24,749 - __main__ - CRITICAL -    Terminating Brain (PID=14)...
+2025-11-24T03:12:29.257987785Z [err]  2025-11-24 03:12:24,749 - __main__ - CRITICAL -    Terminating Orchestrator (PID=15)...
+2025-11-24T03:12:29.257994855Z [err]  2025-11-24 03:12:24,782 - __main__ - CRITICAL - 🧹 Shared memory unlinked
+2025-11-24T03:12:29.258002252Z [err]  2025-11-24 03:12:24,782 - __main__ - CRITICAL - 👋 System shutdown complete
+2025-11-24T03:12:31.226711412Z [inf]  1:M 24 Nov 2025 03:12:22.837 * 1 changes in 60 seconds. Saving...
+2025-11-24T03:12:31.226781228Z [inf]  1:M 24 Nov 2025 03:12:22.839 * Background saving started by pid 61
+2025-11-24T03:12:31.226790021Z [inf]  61:C 24 Nov 2025 03:12:22.851 * DB saved on disk
+2025-11-24T03:12:31.226802210Z [inf]  61:C 24 Nov 2025 03:12:22.852 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+2025-11-24T03:12:31.226829712Z [inf]  1:M 24 Nov 2025 03:12:22.940 * Background saving terminated with success
+2025-11-24T03:13:24.604641427Z [err]  2025-11-24 03:13:18.353 UTC [76] LOG:  checkpoint starting: time
+2025-11-24T03:13:24.604648097Z [err]  2025-11-24 03:13:18.770 UTC [76] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.403 s, sync=0.005 s, total=0.418 s; sync files=5, longest=0.005 s, average=0.001 s; distance=2 kB, estimate=54 kB; lsn=0/1A35BC8, redo lsn=0/1A35B70
+2025-11-24T03:17:24.577267966Z [err]  2025-11-24 03:17:22,041 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:22:25.827452107Z [err]  2025-11-24 03:22:22,274 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:22:25.827457911Z [err]  2025-11-24 03:22:22,274 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T03:22:25.827463222Z [err]  2025-11-24 03:22:22,274 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T03:27:28.438739801Z [err]  2025-11-24 03:27:20,783 - src.core.system_monitor - CRITICAL - 📊 [SYSTEM REPORT] PnL: $0.00 | Positions: 0 | Balance: $11.15 | Trades: 0 | ML Data: 0 rows | Score: 0.00
+2025-11-24T03:27:28.438746782Z [err]  2025-11-24 03:27:22,478 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:32:29.567406409Z [err]  2025-11-24 03:32:22,704 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T03:32:29.567433028Z [err]  2025-11-24 03:32:22,704 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T03:32:29.567440864Z [err]  2025-11-24 03:32:22,704 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T03:37:32.131273250Z [err]  2025-11-24 03:37:22,937 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
