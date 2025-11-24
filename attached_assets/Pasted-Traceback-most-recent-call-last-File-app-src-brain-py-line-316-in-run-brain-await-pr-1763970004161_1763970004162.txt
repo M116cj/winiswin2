@@ -1,0 +1,85 @@
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:51,968 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.0
+2025-11-24 07:39:52,005 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.0
+2025-11-24 07:39:52,005 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,006 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.0
+2025-11-24 07:39:52,045 - src.feed - CRITICAL - 🔍 Feed Ring Buffer: Written 8360, Pending=1, Cursor: 8359→8360
+2025-11-24 07:39:52,046 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.0
+2025-11-24 07:39:52,046 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,047 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.0
+2025-11-24 07:39:52,084 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.1
+2025-11-24 07:39:52,084 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,084 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.1
+2025-11-24 07:39:52,137 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.1
+2025-11-24 07:39:52,138 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,138 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.1
+2025-11-24 07:39:52,179 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.2
+2025-11-24 07:39:52,179 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,179 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.2
+2025-11-24 07:39:52,226 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.2
+2025-11-24 07:39:52,227 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,227 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.2
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 210, in process_candle
+  File "/app/src/brain.py", line 316, in run_brain
+    f"1D:{signal['timeframe_analysis']['1d']['confidence']:.0%} "
+    await process_candle(candle, current_symbol)
+2025-11-24 07:39:52,273 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.3
+          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+2025-11-24 07:39:52,273 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+KeyError: 'timeframe_analysis'
+2025-11-24 07:39:52,274 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=0, Read=0, Timestamp=1763969992.3
+2025-11-24 07:39:52,320 - src.brain - CRITICAL - 🔍 Brain Ring Buffer Check: Pending=1, Read=0, Timestamp=1763969992.3
+2025-11-24 07:39:52,321 - src.brain - ERROR - Error processing candle: 'timeframe_analysis'
+Traceback (most recent call last):
+  File "/app/src/brain.py", line 316, in run_brain
+    await process_candle(candle, current_symbol)
+  File "/app/src/brain.py", line 210, in process_candle

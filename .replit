@@ -26,9 +26,6 @@ author = "agent"
 task = "shell.exec"
 args = "bash start.sh"
 
-[workflows.workflow.metadata]
-outputType = "console"
-
 [[ports]]
 localPort = 8080
 externalPort = 80
