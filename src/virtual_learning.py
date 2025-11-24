@@ -129,6 +129,11 @@ async def check_virtual_tp_sl() -> None:
     async with _virtual_lock:
         try:
             closed_positions = []
+            open_count = len([p for p in _virtual_account['positions'].values() if p['status'] == 'OPEN'])
+            
+            # Log open positions periodically
+            if open_count > 0 and int(time.time()) % 30 == 0:
+                logger.critical(f"🎓 TP/SL Monitor: {open_count} open virtual positions being checked")
             
             for position_id, pos in list(_virtual_account['positions'].items()):
                 if pos['status'] != 'OPEN':

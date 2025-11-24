@@ -11,6 +11,7 @@ Runs continuously in background to:
 
 import asyncio
 import logging
+import time
 from src.virtual_learning import check_virtual_tp_sl, get_virtual_state
 
 logger = logging.getLogger(__name__)
@@ -18,23 +19,26 @@ logger = logging.getLogger(__name__)
 
 async def run_virtual_monitor() -> None:
     """Run virtual TP/SL monitor + ML training + Data persistence continuously"""
-    logger.info("🎓 Virtual Learning Monitor started")
+    logger.critical("🎓 Virtual Learning Monitor started - Checking TP/SL every 5 seconds")
     
     check_interval = 5  # Check every 5 seconds
     report_interval = 300  # Report every 5 minutes
     training_interval = 600  # Train ML every 10 minutes
     persistence_interval = 600  # Persist experience buffer every 10 minutes
-    last_report_time = 0
-    last_training_time = 0
-    last_persistence_time = 0
+    check_count = 0
+    
+    last_report_time = time.time()
+    last_training_time = time.time()
+    last_persistence_time = time.time()
     
     while True:
         try:
             # Check virtual TP/SL
+            check_count += 1
             await check_virtual_tp_sl()
             
             # Log performance report periodically
-            current_time = asyncio.get_event_loop().time()
+            current_time = time.time()
             if current_time - last_report_time >= report_interval:
                 state = await get_virtual_state()
                 logger.critical(
