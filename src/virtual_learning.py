@@ -37,7 +37,12 @@ _virtual_lock = asyncio.Lock()
 async def update_market_prices(prices: Dict[str, float]) -> None:
     """Update market prices from Ring Buffer / Feed process"""
     global _market_prices
-    _market_prices.update(prices)
+    if prices:
+        _market_prices.update(prices)
+        # 診斷日誌：記錄市場價格更新
+        if int(time.time()) % 10 == 0:  # 每 10 秒記錄一次
+            symbols = list(prices.keys())[:3]  # 前 3 個符號
+            logger.critical(f"📈 [MARKET PRICES UPDATED] {len(prices)} symbols: {symbols}... Prices: {prices}")
 
 
 async def get_current_price(symbol: str) -> Optional[float]:
@@ -142,15 +147,34 @@ async def check_virtual_tp_sl() -> None:
                 symbol = pos['symbol']
                 entry_price = pos['entry_price']
                 
+                # 🔥 FIX: Normalize symbol format (remove slash for market price lookup)
+                # Market prices stored as "BTCUSDT", virtual trades use "BTC/USDT"
+                symbol_normalized = symbol.replace('/', '')
+                
                 # 🔥 FIX: Use REAL market price from Feed, fallback to time-based simulation
-                current_price = _market_prices.get(symbol)
+                current_price = _market_prices.get(symbol_normalized)
                 if current_price is None:
                     # Fallback: Use time-based simulation (for testing)
                     # This ensures virtual trades close even without real market data
                     current_price = entry_price * (1 + (0.01 * (time.time() % 10)))
+                    price_source = "SIMULATED"
+                else:
+                    price_source = "REAL_FEED"
                 
                 quantity = pos['quantity']
                 side = pos['side']
+                
+                # 診斷日誌：記錄 TP/SL 監視進度
+                # 每 5 秒記錄一次日誌以便於追蹤
+                checkpoint = (int(time.time()) % 5 == 0)
+                if checkpoint and open_count > 0:
+                    first_pos_id = list(_virtual_account['positions'].keys())[0] if _virtual_account['positions'] else None
+                    if position_id == first_pos_id:
+                        logger.critical(
+                            f"🎓 [TP/SL MONITOR] {symbol} {side} | "
+                            f"Entry: ${entry_price:.2f} | Current: ${current_price:.2f} ({price_source}) | "
+                            f"TP: ${pos['tp_level']:.2f} | SL: ${pos['sl_level']:.2f}"
+                        )
                 
                 # Check TP
                 tp_reached = False

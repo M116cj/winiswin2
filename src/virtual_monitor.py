@@ -41,12 +41,18 @@ async def run_virtual_monitor() -> None:
             current_time = time.time()
             if current_time - last_report_time >= report_interval:
                 state = await get_virtual_state()
+                
+                # 診斷：檢查市場價格字典狀態
+                from src.virtual_learning import _market_prices
+                market_price_count = len(_market_prices) if _market_prices else 0
+                
                 logger.critical(
                     f"🎓 [VIRTUAL REPORT] Balance: ${state['balance']:.2f} | "
                     f"PnL: ${state['total_pnl']:.2f} | "
                     f"Open: {state['open_positions']} | "
                     f"Closed: {state['closed_positions']} | "
-                    f"Win Rate: {state['win_rate']:.1f}%"
+                    f"Win Rate: {state['win_rate']:.1f}% | "
+                    f"Market Prices Cached: {market_price_count}"
                 )
                 last_report_time = current_time
             
