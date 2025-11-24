@@ -546,7 +546,7 @@ async def _check_risk(signal: Dict) -> None:
                 'side': 'BUY',
                 'confidence': confidence,
                 'quantity': position_size,
-                'entry_price': position_size * 100  # Mock entry price
+                'entry_price': signal.get('entry_price', 1.0)  # 🎯 Real market price
             }
             await open_virtual_position(virtual_order)
             return
@@ -610,7 +610,7 @@ async def _check_risk(signal: Dict) -> None:
                 'side': 'BUY',
                 'confidence': confidence,
                 'quantity': position_size,
-                'entry_price': position_size * 100
+                'entry_price': signal.get('entry_price', 1.0)  # 🎯 Real market price
             }
             await open_virtual_position(virtual_order)
         else:

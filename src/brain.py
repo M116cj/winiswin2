@@ -87,6 +87,9 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
         return
     
     # ✅ Multi-timeframe validation passed
+    # Extract current market price from latest candle (close price)
+    current_price = candle[4] if len(candle) > 4 else 1.0
+    
     # Create complete signal object
     signal = {
         'signal_id': str(uuid.uuid4()),
@@ -96,6 +99,7 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
         'strength': signal_data['strength'],
         'timeframe_analysis': signal_data['timeframe_analysis'],
         'position_size': 100.0,
+        'entry_price': current_price,  # 🎯 Real market price for virtual trading
         'timestamp': candle[0] / 1000.0
     }
     

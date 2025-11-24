@@ -1,5 +1,4 @@
 """
-from typing import Optional
 📊 多時間框架分析 - 正確的高頻交易架構
 分層分析：1D 趨勢 → 1H 確認 → 15m 機會 → 5m/1m 進場
 """
