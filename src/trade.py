@@ -491,9 +491,20 @@ async def _check_risk(signal: Dict) -> None:
         symbol = signal.get('symbol', '')
         confidence = signal.get('confidence', 0)
         
+        # ✅ Extract from patterns JSONB (Brain stores data there)
+        patterns = signal.get('patterns', {})
+        if isinstance(patterns, str):
+            try:
+                patterns = json.loads(patterns)
+            except:
+                patterns = {}
+        
+        # 🎯 Get direction and entry_price from patterns JSONB
+        direction = patterns.get('direction', 'LONG')  # LONG/SHORT
+        entry_price = patterns.get('entry_price', 1.0)
+        
         # ✅ NEW: Use order_amount calculated by position sizing (from Brain)
         order_amount = signal.get('order_amount', signal.get('position_size', 0))
-        entry_price = signal.get('entry_price', 1.0)
         tp_pct = signal.get('tp_pct', 0.05)  # Take profit %
         sl_pct = signal.get('sl_pct', 0.02)  # Stop loss %
         
@@ -504,18 +515,11 @@ async def _check_risk(signal: Dict) -> None:
         try:
             conn = await _get_postgres_connection()
             if conn:
-                signal_id = signal.get('signal_id', str(uuid.uuid4()))
-                direction = signal.get('direction', 'UP')
+                signal_id = patterns.get('signal_id', str(uuid.uuid4()))
                 timestamp = int(signal.get('timestamp', time.time()) * 1000)  # Convert to milliseconds
                 
                 # Store all signal details in patterns (JSONB)
-                patterns_data = {
-                    'direction': direction,
-                    'strength': signal.get('strength', 0.5),
-                    'entry_price': signal.get('entry_price', 0.0),
-                    'timeframe_analysis': signal.get('timeframe_analysis', {}),
-                    'signal_id': signal_id
-                }
+                patterns_data = patterns.copy()  # Use existing patterns
                 
                 await conn.execute("""
                     INSERT INTO signals (id, symbol, confidence, patterns, position_size, timestamp)
@@ -554,19 +558,26 @@ async def _check_risk(signal: Dict) -> None:
         # 🎓 VIRTUAL LEARNING: ALWAYS run virtual trading (independent of risk checks)
         # This allows ML model to learn from unrestricted virtual trades
         try:
+            # Convert LONG/SHORT to BUY/SELL for virtual trading
+            side = 'BUY' if direction.upper() in ('LONG', 'BUY') else 'SELL'
+            
             virtual_order = {
                 'symbol': symbol,
-                'side': direction.upper(),
+                'side': side,
                 'confidence': confidence,
                 'quantity': position_size,
                 'entry_price': entry_price,
                 'tp_pct': tp_pct,
                 'sl_pct': sl_pct
             }
-            await open_virtual_position(virtual_order)
-            logger.debug(f"🎓 Virtual position opened: {symbol} {direction.upper()}")
+            
+            success = await open_virtual_position(virtual_order)
+            if success:
+                logger.critical(f"🎓 Virtual position opened: {symbol} {side} x{position_size:.4f} @ ${entry_price:.2f}")
+            else:
+                logger.warning(f"❌ Virtual position failed: {symbol} - invalid data")
         except Exception as e:
-            logger.debug(f"Virtual learning: {e}")
+            logger.error(f"Virtual learning error: {e}", exc_info=True)
         
         # Risk validation (live trading only)
         if position_size > max_risk:
