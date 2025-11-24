@@ -95,11 +95,21 @@ class BinanceConstraints:
         symbol: str,
         quantity: float,
         current_price: float,
-        lot_size_step: float = 0.001
+        lot_size_step: float = 0.001,
+        tolerance_percent: float = 0.001  # 0.1% 容許誤差
     ) -> tuple[bool, str]:
         """
-        驗證訂單大小是否符合 Binance 限制
+        驗證訂單大小是否符合 Binance 限制（含容許誤差）
         
+        容許誤差用於處理浮點精度問題
+        
+        Args:
+            symbol: 交易對
+            quantity: 開倉數量
+            current_price: 當前價格
+            lot_size_step: LOT_SIZE stepSize
+            tolerance_percent: 容許誤差百分比（默認 0.1%）
+            
         Returns:
             (is_valid, error_message)
         """
@@ -112,11 +122,26 @@ class BinanceConstraints:
         notional_value = quantity * current_price
         min_notional = BinanceConstraints.get_min_notional(symbol)
         
-        if notional_value < min_notional:
-            return False, f"Order notional {notional_value:.2f} USDT < minimum {min_notional:.2f} USDT"
+        # 應用容許誤差
+        tolerance = min_notional * tolerance_percent
+        min_notional_with_tolerance = min_notional - tolerance
         
-        if quantity < min_qty:
-            return False, f"Order quantity {quantity} < minimum {min_qty}"
+        if notional_value < min_notional_with_tolerance:
+            return False, (
+                f"Order notional {notional_value:.2f} USDT < "
+                f"minimum {min_notional:.2f} USDT "
+                f"(tolerance: {tolerance:.2f} USDT)"
+            )
+        
+        # 數量容許誤差
+        quantity_tolerance = min_qty * tolerance_percent
+        min_qty_with_tolerance = min_qty - quantity_tolerance
+        
+        if quantity < min_qty_with_tolerance:
+            return False, (
+                f"Order quantity {quantity} < minimum {min_qty} "
+                f"(tolerance: {quantity_tolerance})"
+            )
         
         return True, ""
     

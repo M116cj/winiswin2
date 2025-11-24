@@ -92,3 +92,51 @@ The system employs a **hardened kernel-level multiprocess architecture** with an
 - position_calculator.py: 無限制槓桿計算
 - trade.py: Binance 約束驗證在下單前
 - 所有槓桿值都是整數，符合 Binance API 要求
+
+
+### ✅ COMPLETE: Binance Protocol Compliance Validation System
+
+**Date: 2025-11-24 - 完整開倉金額和倉位大小 Binance 協議符合性驗證系統**
+
+**系統要求：**
+- 確認開倉金額完整符合 Binance 協議
+- 確認倉位大小完整符合 Binance 協議  
+- 須有容許誤差
+
+**實施完成：**
+
+1. **src/order_validator.py** (NEW)
+   - validate_order_with_tolerance(): 6 層完整驗證
+   - normalize_for_binance(): 自動正規化
+   - 容許誤差支持（0.1% 名義價值 + 0.01% 數量）
+
+2. **src/binance_constraints.py** (UPDATED)
+   - validate_order_size() 升級為支持容許誤差
+   - 容許誤差參數可配置
+
+3. **src/position_calculator.py** (UPDATED)
+   - 添加 Binance 協議驗證
+   - 返回 binance_validation 驗證結果
+
+**驗證層次：**
+
+| 層級 | 檢查項 | 方法 |
+|------|--------|------|
+| 1 | 精度處理 | 四捨五入到 8 位小數 |
+| 2 | 最低名義價值 | 檢查 ≥ min_notional - tolerance |
+| 3 | 最低數量 | 檢查 ≥ min_qty - tolerance |
+| 4 | stepSize 對齐 | 調整到 stepSize 倍數 |
+| 5 | 浮點精度 | 重新計算並驗證 |
+| 6 | 最終檢查 | 綜合驗證所有條件 |
+
+**容許誤差設定：**
+- 名義價值：max(0.01 USD, 0.1% of min_notional)
+- 數量：0.01%（用於浮點精度）
+
+**符合性覆蓋：**
+✓ 最低開倉限制（BTCUSDT 50, ETHUSDT 20, 其他 5 USDT）
+✓ 精度要求（8 位小數）
+✓ stepSize 對齐
+✓ 槓桿限制（分檔制）
+✓ 整數槓桿要求
+✓ 浮點誤差容許

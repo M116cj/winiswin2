@@ -24,7 +24,9 @@ class PositionCalculator:
         balance: float,
         confidence: float,
         winrate: float,
-        signal_direction: str = "UP"
+        signal_direction: str = "UP",
+        current_price: float = 0,
+        symbol: str = ""
     ) -> Dict:
         """
         計算倉位大小和槓桿
@@ -104,6 +106,22 @@ class PositionCalculator:
         tp_distance = 0.03 * (confidence / 0.70) * (leverage / 2)  # 正比例
         tp_distance = min(0.15, max(0.02, tp_distance))  # 2% - 15%
         
+        # ✅ 如果提供了當前價格和符號，驗證 Binance 協議符合性
+        binance_validation = None
+        if current_price > 0 and symbol:
+            is_valid, error_msg = get_binance_constraints().validate_order_size(
+                symbol=symbol,
+                quantity=position_size / leverage,  # 實際開倉量
+                current_price=current_price,
+                tolerance_percent=0.001  # 0.1% 容許誤差
+            )
+            binance_validation = {
+                'valid': is_valid,
+                'error': error_msg if not is_valid else "",
+                'quantity': position_size / leverage,
+                'notional_value': (position_size / leverage) * current_price
+            }
+        
         return {
             'recommended': True,
             'position_size': position_size,
@@ -115,6 +133,7 @@ class PositionCalculator:
             'winrate_multiplier': winrate_multiplier,
             'tp_distance': tp_distance,
             'sl_distance': sl_distance,
+            'binance_validation': binance_validation,  # ✅ Binance 協議驗證
             'notes': (
                 f"Confidence: {confidence:.0%} ({confidence_multiplier:.1f}x) | "
                 f"Winrate: {winrate:.0%} ({winrate_multiplier:.1f}x) | "
