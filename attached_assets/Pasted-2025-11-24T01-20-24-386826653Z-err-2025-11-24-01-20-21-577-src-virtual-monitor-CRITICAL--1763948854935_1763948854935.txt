@@ -1,0 +1,14 @@
+2025-11-24T01:20:24.386826653Z [err]  2025-11-24 01:20:21,577 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T01:20:24.386832048Z [err]  2025-11-24 01:20:21,577 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T01:20:24.386837732Z [err]  2025-11-24 01:20:21,577 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T01:25:26.927939450Z [err]  2025-11-24 01:25:21,813 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T01:30:29.835867107Z [err]  2025-11-24 01:30:19,833 - src.core.system_monitor - CRITICAL - 📊 [SYSTEM REPORT] PnL: $0.00 | Positions: 0 | Balance: $9.38 | Trades: 0 | ML Data: 0 rows | Score: 0.00
+2025-11-24T01:30:29.835876691Z [err]  2025-11-24 01:30:22,015 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T01:30:29.835883076Z [err]  2025-11-24 01:30:22,015 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T01:30:29.835889684Z [err]  2025-11-24 01:30:22,015 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T01:35:23.417938937Z [err]  2025-11-24 01:35:22,242 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T01:40:27.257483381Z [err]  2025-11-24 01:40:22,473 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
+2025-11-24T01:40:27.257490998Z [err]  2025-11-24 01:40:22,473 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient virtual trades for training: 0/10
+2025-11-24T01:40:27.257495723Z [err]  2025-11-24 01:40:22,473 - src.ml_virtual_integrator - WARNING - ⚠️ Insufficient data for ML training
+2025-11-24T01:45:20.134346420Z [err]  2025-11-24 01:45:20,052 - src.core.system_monitor - CRITICAL - 📊 [SYSTEM REPORT] PnL: $0.00 | Positions: 0 | Balance: $9.38 | Trades: 0 | ML Data: 0 rows | Score: 0.00
+2025-11-24T01:45:23.098175614Z [err]  2025-11-24 01:45:22,714 - src.virtual_monitor - CRITICAL - 🎓 [VIRTUAL REPORT] Balance: $10000.00 | PnL: $0.00 | Open: 0 | Closed: 0 | Win Rate: 0.0%
