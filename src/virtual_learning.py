@@ -15,6 +15,7 @@ import json
 import time
 from typing import Dict, Optional, List
 from datetime import datetime
+import redis.asyncio as redis_async
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,29 @@ async def update_market_prices(prices: Dict[str, float]) -> None:
 
 
 async def get_current_price(symbol: str) -> Optional[float]:
-    """Get current market price for symbol"""
-    return _market_prices.get(symbol)
+    """Get current market price from Redis (cross-process)"""
+    try:
+        from src.config import get_redis_url
+        redis_url = get_redis_url()
+        if not redis_url:
+            return _market_prices.get(symbol)  # Fallback to in-memory
+        
+        redis_client = await redis_async.from_url(redis_url, decode_responses=True)
+        
+        # Try both formats: BTCUSDT and BTC/USDT
+        symbol_normalized = symbol.replace('/', '')
+        
+        market_data = await redis_client.get(f"market:{symbol_normalized}")
+        if market_data:
+            data = json.loads(market_data)
+            await redis_client.close()
+            return float(data.get('c', 0))  # 'c' = close price
+        
+        await redis_client.close()
+        return _market_prices.get(symbol)  # Fallback
+    except Exception as e:
+        logger.debug(f"Redis price fetch failed: {e}")
+        return _market_prices.get(symbol)  # Fallback to in-memory
 
 
 async def init_virtual_learning() -> None:
@@ -134,19 +156,14 @@ async def check_virtual_tp_sl() -> None:
                 symbol = pos['symbol']
                 entry_price = pos['entry_price']
                 
-                # 🔥 FIX: Normalize symbol format (remove slash for market price lookup)
-                # Market prices stored as "BTCUSDT", virtual trades use "BTC/USDT"
-                symbol_normalized = symbol.replace('/', '')
-                
-                # 🔥 FIX: Use REAL market price from Feed, fallback to time-based simulation
-                current_price = _market_prices.get(symbol_normalized)
-                if current_price is None:
+                # Get current price from Redis (cross-process)
+                current_price = await get_current_price(symbol)
+                if current_price is None or current_price == 0:
                     # Fallback: Use time-based simulation (for testing)
-                    # This ensures virtual trades close even without real market data
                     current_price = entry_price * (1 + (0.01 * (time.time() % 10)))
                     price_source = "SIMULATED"
                 else:
-                    price_source = "REAL_FEED"
+                    price_source = "REDIS"
                 
                 quantity = pos['quantity']
                 side = pos['side']

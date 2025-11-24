@@ -42,9 +42,21 @@ async def run_virtual_monitor() -> None:
             if current_time - last_report_time >= report_interval:
                 state = await get_virtual_state()
                 
-                # 診斷：檢查市場價格字典狀態
-                from src.virtual_learning import _market_prices
-                market_price_count = len(_market_prices) if _market_prices else 0
+                # Get market price count from Redis
+                try:
+                    import redis.asyncio as redis_async
+                    from src.config import get_redis_url
+                    redis_url = get_redis_url()
+                    if redis_url:
+                        redis_client = await redis_async.from_url(redis_url, decode_responses=True)
+                        market_keys = await redis_client.keys("market:*")
+                        market_price_count = len(market_keys)
+                        await redis_client.close()
+                    else:
+                        market_price_count = 0
+                except Exception as e:
+                    logger.debug(f"Redis market count fetch failed: {e}")
+                    market_price_count = 0
                 
                 logger.critical(
                     f"🎓 [VIRTUAL REPORT] Balance: ${state['balance']:.2f} | "
