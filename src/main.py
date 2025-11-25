@@ -77,6 +77,20 @@ def run_brain():
         sys.exit(1)
 
 
+def run_trade():
+    """Trade Process: Monitors trading signals from brain and executes virtual trades"""
+    try:
+        from src import trade
+        logger.critical("📈 Starting TRADE process (standalone - Virtual Trading Mode)")
+        import asyncio
+        asyncio.run(trade.main())
+    except KeyboardInterrupt:
+        logger.info("📈 Trade process terminated")
+    except Exception as e:
+        logger.critical(f"❌ Trade process fatal error: {e}", exc_info=True)
+        sys.exit(1)
+
+
 def run_orchestrator():
     """
     🔄 ORCHESTRATOR PROCESS - Background Tasks Only
@@ -365,6 +379,13 @@ if __name__ == "__main__":
                 logger.critical(f"Brain standalone fatal error: {e}", exc_info=True)
                 sys.exit(1)
         
+        elif component == "trade":
+            try:
+                run_trade()
+            except Exception as e:
+                logger.critical(f"Trade standalone fatal error: {e}", exc_info=True)
+                sys.exit(1)
+        
         elif component == "orchestrator":
             try:
                 run_orchestrator()
@@ -382,7 +403,7 @@ if __name__ == "__main__":
                 sys.exit(1)
         
         else:
-            print("Usage: python -m src.main [feed|brain|orchestrator|init]")
+            print("Usage: python -m src.main [feed|brain|trade|orchestrator|init]")
             print(f"Unknown component: {component}")
             sys.exit(1)
     

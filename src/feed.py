@@ -341,8 +341,6 @@ async def main():
                                     # 📊 Diagnostic: Log every 10 candles
                                     if candle_count % 10 == 0:
                                         logger.critical(f"📊 Feed: {candle_count} valid candles written to Ring buffer | {message_count} messages received | {invalid_candle_count} rejected")
-                                else:
-                                    invalid_candle_count += 1
                                     
                                     # 🤖 Update virtual trading market prices with REAL data
                                     try:
@@ -353,7 +351,6 @@ async def main():
                                             await update_market_prices({symbol: float(c)})
                                     except Exception as e:
                                         logger.debug(f"Virtual price update: {e}")
-                                    
                                     
                                     # 💾 Persist market data to PostgreSQL & Redis
                                     try:
@@ -399,6 +396,8 @@ async def main():
                                     
                                     if candle_count % 100 == 0:
                                         logger.info(f"📊 Feed: {candle_count} candles written to ring buffer")
+                                else:
+                                    invalid_candle_count += 1
                         
                         except asyncio.TimeoutError:
                             # 這是正常的 - Binance 可能暫時沒有新資料

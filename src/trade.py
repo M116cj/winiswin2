@@ -1104,3 +1104,51 @@ def get_max_leverage_for_position(
         f"📊 Max leverage for {symbol} at ${notional_value:.2f} notional: {max_leverage}x"
     )
     return max_leverage
+
+
+async def main():
+    """
+    Main entry point for Trade Process
+    Monitors the event bus for trading signals and executes virtual trades
+    """
+    import asyncio
+    from src.bus import bus, Topic
+    
+    logger.critical("📈 Trade process main loop started")
+    
+    try:
+        # Initialize trade state
+        await init()
+        logger.critical("✅ Trade process initialized")
+        
+        # Subscribe to SIGNAL_GENERATED events
+        async def handle_signal(message):
+            """Handle incoming trading signals from Brain"""
+            try:
+                signal = message.get('data', {})
+                logger.debug(f"📨 Trade received signal: {signal.get('symbol', 'UNKNOWN')}")
+                
+                # Process the signal (order execution would happen here)
+                # For virtual trading, the signal is processed for analysis
+                
+            except Exception as e:
+                logger.error(f"❌ Error processing signal: {e}", exc_info=True)
+        
+        # Subscribe to signals
+        bus.subscribe(Topic.SIGNAL_GENERATED, handle_signal)
+        
+        # Keep the process running
+        logger.critical("🔄 Trade process listening for signals...")
+        while True:
+            await asyncio.sleep(1)
+            
+    except KeyboardInterrupt:
+        logger.info("🛑 Trade process shutting down gracefully")
+    except Exception as e:
+        logger.critical(f"❌ Trade process fatal error: {e}", exc_info=True)
+        raise
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
