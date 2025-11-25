@@ -13,19 +13,40 @@ Language: 繁體中文 (Traditional Chinese)
 Do not make changes to the folder `Z`.
 Do not make changes to the file `Y`.
 
-## Recent Updates (Nov 24, 2025)
+## Recent Updates (Nov 25, 2025)
 
-### ✅ **自動關倉系統 - 多進程隔離修正** (Latest - Nov 24, 15:11)
-- **問題**: 自動關倉系統不工作 - 虛擁倉位開倒但從未關倒
+### ✅ **ML 訓練系統 - PostgreSQL 直接讀取修復** (Latest - Nov 25, 03:14)
+- **問題**: 虛擁交易數據正確進入 virtual_trades (20,357 筆)，但 ML 模型從不學習
+- **根本原因**: ML integrator 訓練函數只讀內存中的虛擁交易列表，不會跨進程或時間持久化
+  - `train_ml_with_virtual_data()` 讀取 `self.virtual_trades` (內存)
+  - 但虛擁交易保存到 PostgreSQL (持久)
+  - 結果: 訓練數據永遠不足 (<10 筆)，訓練永不開始
+- **解決方案**: 修改 `train_ml_with_virtual_data()` 直接從 PostgreSQL virtual_trades 表讀取
+  - 讀取 SQL: `SELECT * FROM virtual_trades ... LIMIT 1000`
+  - 轉換為 ML 格式 (特徵向量 + 獎懲分數)
+  - 訓練 ML 模型 (每 10 分鐘一次)
+- **修改文件**: `src/ml_virtual_integrator.py`
+- **驗證結果**:
+  - ✓ 虛擁交易: 20,357 筆 (持續累積)
+  - ✓ ML 訓練函數修復 (直接讀 PostgreSQL)
+  - ⏳ 等待第一次訓練 (10 分鐘檢查間隔)
+- **預期流程** (自動觸發):
+  1. Virtual monitor 每 10 分鐘檢查一次
+  2. 從 PostgreSQL 讀取虛擁交易
+  3. 驗證數據 (VirtualDataValidator)
+  4. 轉換 ML 格式 (特徵向量)
+  5. 訓練 ML 模型 (樣本權重 = reward_score)
+  6. 保存到 ml_models 表
+
+### ✅ **自動關倉系統 - 多進程隔離修正** (Nov 24, 15:11)
+- **問題**: 自動關倀系統不工作 - 虛擁倉位開倒但從未關倀
 - **根本原因**: 多進程隔離 - Brain 進程和 Orchestrator 進程無法共享 `_virtual_account` 全局變數
-  - Brain 進程開倉 → 更新 Brain 進程記憶體
-  - Orchestrator 進程監控 → 讀取 Orchestrator 進程記憶體（永遠是空）
 - **解決方案**: 使用 PostgreSQL 作為共享狀態存儲
   - `open_virtual_position()` → 立即保存到 `virtual_positions` 表
   - `check_virtual_tp_sl()` → 從 PostgreSQL 讀取開倉倉位
   - `get_virtual_state()` → 從 PostgreSQL 讀取狀態
 - **驗證結果**:
-  - ✓ 已開倒交易: 44 筆 (100% 關倀率)
+  - ✓ 已開倀交易: 44+ 筆 (100% 關倀率)
   - ✓ 平均 ROI: +5.00%
   - ✓ 總 PnL: $110,000.00
   - ✓ 獎懲分數: 自動計算 (+1/+3/+5/+8 或 -1/-3/-7/-10)
@@ -33,40 +54,10 @@ Do not make changes to the file `Y`.
 ### ✅ **增量學習虛擁交易系統 - 完整確認** (Nov 24, 14:55)
 - **確認項目**:
   1. ✓ 倉位追蹤: position_id (symbol_timestamp), entry_time, close_time
-  2. ✓ 自動關倉: check_virtual_tp_sl() 每 5 秒檢查一次
+  2. ✓ 自動關倀: check_virtual_tp_sl() 每 5 秒檢查一次
   3. ✓ 數據收集: ROI%, reward_score, PnL 自動計算
   4. ✓ 完整數據流: Signal → Open → Monitor → Close → Save → Train ML
   5. ✓ 多層驗證: VirtualDataValidator + Bias Detection + Sample Weighting
-- **倉位追蹤機制**:
-  - 字段: position_id, symbol, side, quantity, entry_price, close_price, entry_time, close_time, reason
-  - 狀態管理: OPEN → CLOSED (PostgreSQL)
-  - 去重策略: ON CONFLICT (position_id) DO NOTHING
-- **自動關倉機制**:
-  - 條件: BUY @ 5% TP 或 -2% SL | SELL @ -5% TP 或 +2% SL
-  - 價格源: Redis 實時市場價格 + 模擬回退
-  - 關倒記錄: reason (TP_HIT/SL_HIT)
-- **增量學習數據收集**:
-  - ROI%: (close_price - entry_price) / entry_price
-  - 獎懲分數: +1/+3/+5/+8 (盈利) | -1/-3/-7/-10 (虧損)
-  - 樣本權重: ML 訓練時使用 reward_score 調整
-- **系統狀態**: ✅ 倉位追蹤 READY | ✅ 自動關倉 READY | ✅ 數據收集 READY | ✅ ML 訓練 READY
-
-### ✅ **數據格式驗證完成** (Nov 24, 14:40)
-- 所有表結構正確: signals (34,203) | market_data (61,833) | virtual_trades | experience_buffer | ml_models
-- 時間戳格式統一: 所有表使用 bigint (微秒精度)
-- 數據流完整: Feed → Ring Buffer → Brain → Signals → Virtual Trading → DB
-- 獎懲機制已啟用: ROI% + reward_score 自動計算
-
-### ✅ **Virtual Trading Pipeline - Data Extraction Fix** (Nov 24, 13:35)
-- **Critical Bug Fixed**: Virtual trading system was not creating virtual trades
-- **Root Cause**: `_check_risk()` function was extracting `direction` and `entry_price` from wrong location
-- **Solution**: Modified `src/trade.py` to extract from signal top-level
-- **Result**: Virtual positions now open with correct market prices
-
-### ✅ **獎懲機制 (Reward Shaping) 已實施** (Nov 24, 13:10)
-- **新文件**: `src/reward_shaping.py` - 定義獎懲規則和計分邏輯
-- **盈利分數**: ≤30% (+1分), ≤50% (+3分), ≤80% (+5分), >80% (+8分)
-- **虧損分數**: ≥-30% (-1分), ≥-50% (-3分), ≥-80% (-7分), <-80% (-10分)
 
 ## System Architecture
 
@@ -93,6 +84,7 @@ The system utilizes a **hardened kernel-level multiprocess architecture** with a
 - **Connection Isolation**: Database and Redis connections are instantiated within each process's `run()` loop, never globally, to ensure clean isolation and prevent resource exhaustion in multiprocessing environments.
 - **Environment Variables**: System automatically handles dynamic environment variables like `DATABASE_URL` for seamless deployment on platforms like Railway.
 - **Cross-Process State Management**: PostgreSQL-backed state persistence for virtual trading positions enables seamless coordination between Brain (opens positions) and Orchestrator (monitors TP/SL) processes.
+- **PostgreSQL-Driven ML Training**: ML model training reads directly from PostgreSQL virtual_trades table, eliminating memory isolation issues and ensuring scalable incremental learning.
 
 **UI/UX Decisions:**
 - The architecture prioritizes backend performance and a lean, functional core, without an explicit UI/UX.
