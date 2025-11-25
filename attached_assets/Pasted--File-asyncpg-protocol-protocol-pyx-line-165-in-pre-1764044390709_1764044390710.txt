@@ -1,0 +1,32 @@
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedColumnError: column "confidence" of relation "virtual_positions" does not exist
+2025-11-25 04:19:42,832 - src.trade - WARNING - ❌ Virtual position failed: LINK/USDT - invalid data
+2025-11-25 04:19:42,952 - src.virtual_learning - ERROR - ❌ Virtual position open failed: column "confidence" of relation "virtual_positions" does not exist
+Traceback (most recent call last):
+  File "/app/src/virtual_learning.py", line 213, in open_virtual_position
+    await conn.execute("""
+  File "/opt/venv/lib/python3.11/site-packages/asyncpg/connection.py", line 352, in execute
+    _, status, _ = await self._execute(
+                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.11/site-packages/asyncpg/connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.11/site-packages/asyncpg/connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+2025-11-25 04:19:43.082 UTC [63756] ERROR:  column "confidence" of relation "virtual_positions" does not exist at character 180
+2025-11-25 04:19:43.082 UTC [63756] STATEMENT:  
+	            INSERT INTO virtual_positions 
+	            (position_id, symbol, side, quantity, entry_price, entry_confidence, entry_time, 
+	             tp_level, sl_level, status, confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct)
+	            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+	            ON CONFLICT (position_id) DO NOTHING
+	        
+2025-11-25 04:19:43.198 UTC [63760] ERROR:  column "confidence" of relation "virtual_positions" does not exist at character 180
+2025-11-25 04:19:43.198 UTC [63760] STATEMENT:  
+	            INSERT INTO virtual_positions 
+	            (position_id, symbol, side, quantity, entry_price, entry_confidence, entry_time, 
+	             tp_level, sl_level, status, confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct)
+	            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+	            ON CONFLICT (position_id) DO NOTHING

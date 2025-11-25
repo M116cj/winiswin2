@@ -15,7 +15,29 @@ Do not make changes to the file `Y`.
 
 ## Recent Updates (Nov 25, 2025)
 
-### ✅ **全面系統審計 - PostgreSQL + Redis 一致性驗證** (Latest - Nov 25, 04:12)
+### ✅ **PostgreSQL 表結構修復 - ALTER TABLE 添加 ML 特徵欄位** (Latest - Nov 25, 04:21)
+- **問題**: CREATE TABLE IF NOT EXISTS 無法為現有表添加新欄位，virtual_positions 表缺少 8 個 ML 特徵
+- **根本原因**: 表已存在，CREATE TABLE IF NOT EXISTS 不執行修改操作
+- **解決方案**:
+  1. 保留 CREATE TABLE IF NOT EXISTS 基本結構
+  2. 添加 ALTER TABLE ADD COLUMN IF NOT EXISTS 邏輯添加缺失欄位
+  3. 修改 3 個位置: _ensure_virtual_positions_table(), open_virtual_position(), check_virtual_tp_sl()
+- **代碼修改**: `src/virtual_learning.py` (行 92-132, 172-200, 266-298)
+- **修復驗證結果**:
+  - ✅ virtual_positions 表: 20 個欄位，所有 8 個 ML 特徵已存在
+  - ✅ 虛擁倀位: 23,578 筆 (5 開啟，23,573 已平倉)，100% 有特徵
+  - ✅ 虛擁交易: 23,570 筆 (勝利 12,319，虧損 11,251)，100% 有特徵
+  - ✅ 信號: 最近 5 分鐘 238 筆，100% 有特徵
+  - ✅ ML 訓練樣本: 23,570 筆，100% 有所有特徵
+  - ✅ 系統狀態: 穩定運行，無錯誤
+- **系統現況**:
+  - ✅ 虛擁倀位正常開啟和平倉
+  - ✅ 虛擁交易正確保存到數據庫
+  - ✅ ML 特徵完整記錄
+  - ✅ 平均 ROI: 1.66%，平均獎勵分數: 0.0453
+  - ✅ ML 訓練數據流正常
+
+### ✅ **全面系統審計 - PostgreSQL + Redis 一致性驗證** (Nov 25, 04:12)
 - **審計範圍**: 代碼修改、PostgreSQL 數據一致性、Redis 數據流、ML 訓練準備
 - **關鍵發現**:
   1. ✅ virtual_positions 表 - 3 個 CREATE TABLE 語句已修復，所有 12 個 ML 特徵正確保存

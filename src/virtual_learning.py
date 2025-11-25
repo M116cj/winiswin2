@@ -95,6 +95,7 @@ async def _ensure_virtual_positions_table():
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
+        # ✅ CREATE TABLE IF NOT EXISTS
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_positions (
                 id SERIAL PRIMARY KEY,
@@ -108,17 +109,20 @@ async def _ensure_virtual_positions_table():
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                confidence FLOAT,
-                fvg FLOAT,
-                liquidity FLOAT,
-                rsi FLOAT,
-                atr FLOAT,
-                macd FLOAT,
-                bb_width FLOAT,
-                position_size_pct FLOAT
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        
+        # ✅ ADD MISSING ML FEATURE COLUMNS (如果表已存在，CREATE TABLE 不會添加新欄位)
+        features = ['confidence', 'fvg', 'liquidity', 'rsi', 'atr', 'macd', 'bb_width', 'position_size_pct']
+        for feature in features:
+            try:
+                await conn.execute(f"""
+                    ALTER TABLE virtual_positions 
+                    ADD COLUMN IF NOT EXISTS {feature} FLOAT DEFAULT 0
+                """)
+            except:
+                pass  # Column already exists
         
         await conn.close()
     except Exception as e:
@@ -165,7 +169,7 @@ async def open_virtual_position(signal: Dict) -> bool:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # Ensure table exists WITH all 12 ML features
+        # ✅ Ensure table exists WITH all 12 ML features
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_positions (
                 id SERIAL PRIMARY KEY,
@@ -179,17 +183,17 @@ async def open_virtual_position(signal: Dict) -> bool:
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                confidence FLOAT,
-                fvg FLOAT,
-                liquidity FLOAT,
-                rsi FLOAT,
-                atr FLOAT,
-                macd FLOAT,
-                bb_width FLOAT,
-                position_size_pct FLOAT
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        
+        # ✅ ADD MISSING ML FEATURE COLUMNS
+        features = ['confidence', 'fvg', 'liquidity', 'rsi', 'atr', 'macd', 'bb_width', 'position_size_pct']
+        for feature in features:
+            try:
+                await conn.execute(f"ALTER TABLE virtual_positions ADD COLUMN IF NOT EXISTS {feature} FLOAT DEFAULT 0")
+            except:
+                pass
         
         # 🎯 提取 12 個 ML 特徵
         patterns = signal.get('patterns', {})
@@ -259,7 +263,7 @@ async def check_virtual_tp_sl() -> None:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # Ensure table exists WITH all 12 ML features
+        # ✅ Ensure table exists WITH all 12 ML features
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_positions (
                 id SERIAL PRIMARY KEY,
@@ -273,17 +277,17 @@ async def check_virtual_tp_sl() -> None:
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                confidence FLOAT,
-                fvg FLOAT,
-                liquidity FLOAT,
-                rsi FLOAT,
-                atr FLOAT,
-                macd FLOAT,
-                bb_width FLOAT,
-                position_size_pct FLOAT
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        
+        # ✅ ADD MISSING ML FEATURE COLUMNS
+        features = ['confidence', 'fvg', 'liquidity', 'rsi', 'atr', 'macd', 'bb_width', 'position_size_pct']
+        for feature in features:
+            try:
+                await conn.execute(f"ALTER TABLE virtual_positions ADD COLUMN IF NOT EXISTS {feature} FLOAT DEFAULT 0")
+            except:
+                pass
         
         # ✅ READ FROM POSTGRESQL (cross-process)
         open_positions = await conn.fetch(
