@@ -531,11 +531,23 @@ async def _check_risk(signal: Dict) -> None:
                 }
                 
                 await conn.execute("""
-                    INSERT INTO signals (id, symbol, confidence, patterns, position_size, timestamp)
-                    VALUES ($1, $2, $3, $4::jsonb, $5, $6)
+                    INSERT INTO signals (id, symbol, confidence, patterns, position_size, timestamp, rsi, macd, bb_width, atr, fvg, liquidity)
+                    VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8, $9, $10, $11, $12)
                     ON CONFLICT DO NOTHING
                 """,
-                    signal_id, symbol, confidence, json.dumps(patterns_data), position_size, timestamp
+                    signal_id, 
+                    symbol, 
+                    confidence, 
+                    json.dumps(patterns_data), 
+                    position_size, 
+                    timestamp,
+                    # ✅ 新增的特徵欄位
+                    patterns_data.get('rsi', 50),
+                    patterns_data.get('macd', 0),
+                    patterns_data.get('bb_width', 0),
+                    patterns_data.get('atr', 0.02),
+                    patterns_data.get('fvg', 0.5),
+                    patterns_data.get('liquidity', 0.5)
                 )
                 logger.debug(f"💾 Signal saved: {symbol} {direction} (conf: {confidence:.2%})")
                 await conn.close()

@@ -1,0 +1,52 @@
+A. 交易成本 (Fees/Commissions) 嚴重缺失
+在 virtual_trades 和 trades 表中，我沒看到 手續費 (Commission) 欄位。
+問題： 你的模型預測獲利 0.05%，但 Binance 手續費可能是 0.04% ~ 0.1%。如果沒扣掉手續費，模型會以為這是「獲利交易」，瘋狂學習這種微利策略，結果實盤上線後因為手續費賠光。
+修正建議：
+在 trades 和 virtual_trades 增加 commission (金額) 和 commission_asset (幣種, 如 USDT or BNB)。
+淨利潤 (Net PnL) 必須是 Gross PnL - Commission。
+B. 時間戳 (Timestamps) 不夠精確
+問題： 雖然有提到 Timestamp，但高頻交易需要兩個時間點：
+entry_time (進場時間)
+exit_time (出場時間)
+duration (持倉時間 - 用於分析資金佔用效率)
+現狀： virtual_trades 似乎混合了這些資訊。
+修正建議： 明確拆分 entry_at 和 exit_at (皆為 BIGINT 或 TIMESTAMP)，這對計算「資金費率 (Funding Rate)」影響很大。
+⚠️ 2. 架構優化建議 (Schema Optimization)
+A. experience_buffer 與 virtual_trades 的功能重疊
+現狀： virtual_trades 存了 24,000 筆，experience_buffer 存了 2 筆。兩者都存了「特徵」與「結果」。
+分析： 這造成了 數據冗餘 (Data Redundancy)。
+如果 virtual_trades 已經包含了 features (JSONB) 和 pnl，那它本身就是最好的 Experience Buffer。
+額外維護一個 experience_buffer 表會增加寫入負擔，且容易造成數據不一致。
+建議：
+刪除 experience_buffer 表。
+直接在 ML 訓練時從 virtual_trades 讀取數據。
+或者，將 experience_buffer 改為 Redis 中的 List 結構（因為它是暫存的訓練樣本，不需要永久儲存在 Postgres）。
+B. market_data 的爆炸性增長風險
+現狀： 13 萬筆。如果是 HFT，這個表會以每天數十萬筆的速度增長。
+風險： 在 Railway 的 Postgres 中，單表超過 500 萬筆後，查詢速度會變慢，索引會變得很重。
+建議：
+複合主鍵 (Composite Primary Key): 確保主鍵是 (symbol, timeframe, timestamp)，這樣查詢特定幣種特定時間的 K 線會飛快。
+自動分區 (Partitioning): 如果你打算長期跑，建議按「月份」對這個表進行分區。
+TTL 清理策略: 正如我們之前討論的，務必實作「只保留最近 X 天 Tick/1m 數據」的機制。
+C. signals 表的 JSONB 效能陷阱
+現狀： patterns 欄位是 JSONB。
+風險： 如果你的 ML 模型訓練時需要下 SQL 指令如 SELECT * FROM signals WHERE patterns->>'rsi' > 70，這會非常慢。
+建議：
+如果某些特徵（如 RSI, MACD, Confidence）是每次查詢必用的，建議 拉出來變成獨立欄位 (Column)，而不是塞在 JSONB 裡。
+JSONB 只用來存那些「不常用、結構會變」的額外特徵。
+🧹 3. 資料庫大掃除 (Housekeeping)
+既然追求極簡架構，請立即執行以下清理，減少干擾：
+DROP TABLE trading_signals; (已廢棄)
+DROP TABLE position_entry_times; (未使用)
+檢查 virtual_positions 的清理邏輯：
+當虛擬倉位平倉並寫入 virtual_trades 後，virtual_positions 裡的該筆記錄 應該被刪除。
+如果沒刪除，這個表會變成歷史記錄表，導致查詢「當前持倉」變慢。請確認程式碼中有 DELETE FROM virtual_positions WHERE id = ... 的邏輯。
+✅ 4. 修正後的理想架構圖 (文字版)
+我建議將表格精簡為 7 張核心表：
+market_data (行情): Symbol, Time, OHLCV (加上 TTL)
+signals (訊號): Symbol, Time, Predicted_Return, Features(獨立欄位)
+account_state (帳戶): Balance, Equity, History (Snapshot)
+live_trades (實盤): Entry, Exit, PnL, Commission, Signal_ID
+live_positions (實盤持倉): 當前未平倉的部位
+virtual_trades (虛擬訓練集): Entry, Exit, PnL, Features, Reward_Score
+ml_models (模型庫): Model_Blob, Metrics

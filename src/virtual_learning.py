@@ -347,6 +347,16 @@ async def check_virtual_tp_sl() -> None:
                 from src.reward_shaping import calculate_reward_score
                 reward_score = calculate_reward_score(roi_pct)
                 
+                # ✅ 計算手續費 (Binance maker fee: 0.1% per side, so 0.2% for buy+sell)
+                trade_value = entry_price * quantity
+                commission = trade_value * 0.002  # 0.2% total commission
+                net_pnl = pnl - commission
+                
+                # ✅ 記錄時間戳
+                exit_at = int(time.time() * 1000)
+                entry_at = int(pos['entry_time'].timestamp() * 1000) if hasattr(pos['entry_time'], 'timestamp') else int(pos['entry_time'] * 1000)
+                duration_seconds = (exit_at - entry_at) // 1000
+                
                 # ✅ UPDATE POSTGRESQL (mark as CLOSED)
                 await conn.execute(
                     "UPDATE virtual_positions SET status = 'CLOSED' WHERE position_id = $1",
@@ -355,8 +365,8 @@ async def check_virtual_tp_sl() -> None:
                 
                 # Update in-memory account
                 async with _virtual_lock:
-                    _virtual_account['balance'] += pnl
-                    _virtual_account['total_pnl'] += pnl
+                    _virtual_account['balance'] += net_pnl
+                    _virtual_account['total_pnl'] += net_pnl
                 
                 # 🎯 提取 12 個 ML 特徵 (從已保存的信號)
                 closed_positions.append({
@@ -371,6 +381,11 @@ async def check_virtual_tp_sl() -> None:
                     'roi_pct': roi_pct,
                     'reward_score': reward_score,
                     'entry_time': pos['entry_time'],
+                    'entry_at': entry_at,
+                    'exit_at': exit_at,
+                    'duration_seconds': duration_seconds,
+                    'commission': commission,
+                    'net_pnl': net_pnl,
                     # ✅ 新增: 12 個特徵
                     'confidence': pos.get('confidence', 0.65),
                     'fvg': pos.get('fvg', 0.5),
@@ -438,13 +453,14 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
         except Exception:
             pass  # Column already exists
         
-        # 🎯 Insert closed trades WITH all 12 ML features
+        # 🎯 Insert closed trades WITH all 12 ML features + commission tracking
         for trade in closed_positions:
             await conn.execute("""
                 INSERT INTO virtual_trades 
                 (position_id, symbol, side, quantity, entry_price, close_price, pnl, roi_pct, reward_score, reason,
+                 commission, commission_asset, net_pnl, entry_at, exit_at, duration_seconds,
                  confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
                 ON CONFLICT (position_id) DO NOTHING
             """,
                 trade['position_id'],
@@ -457,6 +473,14 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
                 trade.get('roi_pct', 0),
                 trade.get('reward_score', 0),
                 trade['reason'],
+                # ✅ 交易成本
+                trade.get('commission', 0),
+                'USDT',  # commission_asset
+                trade.get('net_pnl', trade['pnl']),
+                # ✅ 時間戳
+                trade.get('entry_at', int(time.time() * 1000)),
+                trade.get('exit_at', int(time.time() * 1000)),
+                trade.get('duration_seconds', 0),
                 # ✅ 12 個特徵
                 trade.get('confidence', 0.65),
                 trade.get('fvg', 0.5),
@@ -467,9 +491,15 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
                 trade.get('bb_width', 0),
                 trade.get('position_size_pct', 0)
             )
+            
+            # ✅ 刪除已平倀的虛擁倀位 (防止表爆炸)
+            await conn.execute(
+                "DELETE FROM virtual_positions WHERE position_id = $1",
+                trade['position_id']
+            )
         
         await conn.close()
-        logger.critical(f"💾 Saved {len(closed_positions)} virtual trades to database")
+        logger.critical(f"💾 Saved {len(closed_positions)} virtual trades to database | Cleaned {len(closed_positions)} closed positions")
         
         # 🤖 Add to ML integrator for bias-checked training
         from src.ml_virtual_integrator import get_ml_virtual_integrator
