@@ -94,23 +94,66 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     # Get complete multi-timeframe candles
     candles_by_tf = buffer.get_candles_by_tf(symbol)
     
-    # 🔍 QUICK FIX: Generate virtual signal directly (bypass multi-timeframe validation for testing)
-    # This ensures at least SOME virtual trades are generated to test the system
+    # ✅ P0 修復: 調用真實指標計算而不是硬編碼
+    # Extract historical data for technical analysis (last 50 candles for indicators)
+    if not candles_by_tf or '1m' not in candles_by_tf or len(candles_by_tf['1m']) < 50:
+        # Not enough data yet
+        return
+    
+    # Get closes, highs, lows from last 50 candles
+    recent_candles = candles_by_tf['1m'][-50:]
+    closes = np.array([c[4] for c in recent_candles], dtype=np.float64)  # Close price
+    highs = np.array([c[2] for c in recent_candles], dtype=np.float64)    # High price
+    lows = np.array([c[3] for c in recent_candles], dtype=np.float64)     # Low price
+    
+    # ✅ 計算真實指標（不是硬編碼！）
+    rsi_value = Indicators.rsi(closes, period=14)
+    
+    # ✅ 修復的 MACD（使用真正的 EMA）
+    macd_line, signal_line, histogram = Indicators.macd(closes, fast=12, slow=26, signal_period=9)
+    
+    atr_value = Indicators.atr(highs, lows, closes, period=14)
+    bb_width_value = Indicators.bollinger_bands(closes, period=20, std_dev=2.0)
+    
+    # ✅ P1 新增: FVG 檢測
+    fvg_value = Indicators.detect_fvg(closes, highs, lows)
+    
+    # ✅ P1 新增: 流動性計算（基於訂單簿深度的簡化版本）
+    # 在實際系統中應該使用 Binance 訂單簿數據
+    # 這裡使用成交量和波動性的組合作為近似值
+    volume = recent_candles[-1][5] if len(recent_candles[-1]) > 5 else 1000  # Volume
+    volume_ma = np.mean([c[5] if len(c) > 5 else 1000 for c in recent_candles[-20:]])
+    bid_price = candle[4] * 0.9995  # Approximate bid
+    ask_price = candle[4] * 1.0005  # Approximate ask
+    liquidity_value = Indicators.calculate_liquidity(bid_price, ask_price, volume, volume_ma)
+    
+    # ✅ 基於技術面計算 confidence（不是硬編碼 0.65！）
+    # 技術面信心度公式：
+    # - RSI 在 30-70 範圍: 高信心度
+    # - MACD 正向: 增加信心度
+    # - ATR 正常範圍: 正常信心度
+    rsi_score = (50 - abs(rsi_value - 50)) / 50  # 50=1.0, 30/70=0.6, 20/80=0.4
+    macd_score = 0.5 + (0.5 * min(max(macd_line / 100, -1), 1))  # Normalize MACD
+    atr_score = 0.5 + (0.5 * min(atr_value / 0.05, 1.0))  # 0.05 = normal ATR
+    
+    # 計算初始 confidence（基於技術指標）
+    technical_confidence = (rsi_score * 0.4) + (macd_score * 0.35) + (atr_score * 0.25)
+    
     signal_data = {
         'symbol': symbol,
-        'direction': 'LONG' if candle[4] > candle[1] else 'SHORT',
+        'direction': 'LONG' if closes[-1] > closes[-2] else 'SHORT',
         'percentage_return': 2.5,  # Expected 2.5% return
-        'confidence': 0.65,
-        'strength': 0.7,  # ✅ Added missing 'strength' key
+        'confidence': technical_confidence,  # ✅ 基於技術指標計算，不是硬編碼！
+        'strength': 0.7,
         'entry_price': candle[4],
         'timestamp': candle[0],
-        # Additional features required by signal processing
-        'fvg': 0.5,
-        'liquidity': 0.5,
-        'rsi': 50,
-        'atr': 0.02,
-        'macd': 0,
-        'bb_width': 0,
+        # ✅ 真實動態特徵計算（不是硬編碼！）
+        'fvg': fvg_value,            # ✅ 動態 FVG 檢測
+        'liquidity': liquidity_value, # ✅ 動態流動性計算
+        'rsi': rsi_value,            # ✅ 動態 RSI
+        'atr': atr_value,            # ✅ 動態 ATR
+        'macd': macd_line,           # ✅ 動態 MACD（正確的 EMA）
+        'bb_width': bb_width_value,  # ✅ 動態 BB 寬度
         'timeframe_analysis': {}
     }
     
