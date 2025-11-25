@@ -87,7 +87,7 @@ async def init_virtual_learning() -> None:
 
 
 async def _ensure_virtual_positions_table():
-    """Ensure virtual_positions table exists in PostgreSQL"""
+    """Ensure virtual_positions table exists in PostgreSQL with all 12 ML features"""
     try:
         import asyncpg
         from src.config import get_database_url
@@ -108,7 +108,15 @@ async def _ensure_virtual_positions_table():
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                confidence FLOAT,
+                fvg FLOAT,
+                liquidity FLOAT,
+                rsi FLOAT,
+                atr FLOAT,
+                macd FLOAT,
+                bb_width FLOAT,
+                position_size_pct FLOAT
             )
         """)
         
@@ -157,7 +165,7 @@ async def open_virtual_position(signal: Dict) -> bool:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # Ensure table exists
+        # Ensure table exists WITH all 12 ML features
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_positions (
                 id SERIAL PRIMARY KEY,
@@ -171,7 +179,15 @@ async def open_virtual_position(signal: Dict) -> bool:
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                confidence FLOAT,
+                fvg FLOAT,
+                liquidity FLOAT,
+                rsi FLOAT,
+                atr FLOAT,
+                macd FLOAT,
+                bb_width FLOAT,
+                position_size_pct FLOAT
             )
         """)
         
@@ -243,7 +259,7 @@ async def check_virtual_tp_sl() -> None:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # Ensure table exists
+        # Ensure table exists WITH all 12 ML features
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS virtual_positions (
                 id SERIAL PRIMARY KEY,
@@ -257,7 +273,15 @@ async def check_virtual_tp_sl() -> None:
                 tp_level FLOAT NOT NULL,
                 sl_level FLOAT NOT NULL,
                 status VARCHAR(20) DEFAULT 'OPEN',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                confidence FLOAT,
+                fvg FLOAT,
+                liquidity FLOAT,
+                rsi FLOAT,
+                atr FLOAT,
+                macd FLOAT,
+                bb_width FLOAT,
+                position_size_pct FLOAT
             )
         """)
         
