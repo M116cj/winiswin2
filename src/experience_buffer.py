@@ -9,6 +9,7 @@ import asyncio
 from typing import Dict, List, Optional
 from datetime import datetime
 import asyncpg
+import uuid as uuid_module
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +129,11 @@ class ExperienceBuffer:
     
     async def save_to_database(self, db_url: str) -> int:
         """
-        Save buffer to Postgres for persistent storage
+        Save buffer to Postgres for persistent storage (修復版本 - 與實際表結構匹配)
+        
+        ✅ 表結構: experience_buffer (id, signal_id, features, outcome, created_at)
+        ✅ 只在內存緩衝區中存儲完整交易（包含 outcome）
+        ✅ 將內存的完整 experience 對象序列化為 features JSONB 和 outcome JSONB
         
         Args:
             db_url: Database connection URL
@@ -136,51 +141,170 @@ class ExperienceBuffer:
         Returns:
             Number of experiences saved
         """
+        conn = None
         try:
             conn = await asyncpg.connect(db_url)
             
-            # Create table if not exists
-            await conn.execute("""
-                CREATE TABLE IF NOT EXISTS experience_buffer (
-                    id SERIAL PRIMARY KEY,
-                    signal_id VARCHAR NOT NULL,
-                    symbol VARCHAR NOT NULL,
-                    confidence FLOAT NOT NULL,
-                    patterns JSONB,
-                    position_size FLOAT,
-                    outcome JSONB,
-                    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-            
-            # Insert all experiences
+            # 插入所有完整的交易記錄
             count = 0
+            error_count = 0
             async with self.lock:
                 for exp in self.experiences:
-                    try:
-                        await conn.execute("""
-                            INSERT INTO experience_buffer 
-                            (signal_id, symbol, confidence, patterns, position_size, outcome)
-                            VALUES ($1, $2, $3, $4::jsonb, $5, $6::jsonb)
-                        """,
-                            exp.get('signal_id', ''),
-                            exp.get('symbol', ''),
-                            exp.get('confidence', 0),
-                            json.dumps(exp.get('patterns', {})),
-                            exp.get('position_size', 0),
-                            json.dumps(exp.get('outcome', {}))
-                        )
-                        count += 1
-                    except Exception as e:
-                        logger.debug(f"⚠️ Error saving experience: {e}")
+                    # 只儲存有 outcome 的完整交易
+                    if exp.get('type') == 'complete_trade' and exp.get('outcome') is not None:
+                        try:
+                            # 構建 features JSONB - 包含信號的所有特徵數據
+                            features_data = {
+                                'symbol': exp.get('symbol', ''),
+                                'timestamp': exp.get('timestamp', 0),
+                                'features': exp.get('features', {}),
+                                'predicted_return_pct': exp.get('predicted_return_pct', 0.0),
+                                'position_sizing': exp.get('position_sizing', {}),
+                                'order_amount': exp.get('order_amount', 0.0),
+                                'tp_pct': exp.get('tp_pct', 0.0),
+                                'sl_pct': exp.get('sl_pct', 0.0),
+                                'recorded_at': exp.get('recorded_at', 0),
+                                'type': exp.get('type', '')
+                            }
+                            
+                            # 轉換 signal_id 為 UUID（如果是字符串）
+                            signal_id_val = exp.get('signal_id', '')
+                            try:
+                                # 嘗試轉換為 UUID
+                                if signal_id_val and isinstance(signal_id_val, str):
+                                    signal_id_uuid = uuid_module.UUID(signal_id_val)
+                                else:
+                                    # 無效的 signal_id，跳過
+                                    logger.debug(f"⚠️ 跳過無效的 signal_id: {signal_id_val}")
+                                    error_count += 1
+                                    continue
+                            except (ValueError, AttributeError) as uuid_err:
+                                # 無效的 signal_id，跳過此記錄
+                                logger.debug(f"⚠️ 跳過無效的 signal_id 格式: {signal_id_val}, 原因: {uuid_err}")
+                                error_count += 1
+                                continue
+                            
+                            # INSERT INTO experience_buffer (signal_id, features, outcome)
+                            await conn.execute("""
+                                INSERT INTO experience_buffer (signal_id, features, outcome)
+                                VALUES ($1, $2::jsonb, $3::jsonb)
+                            """,
+                                signal_id_uuid,
+                                json.dumps(features_data),
+                                json.dumps(exp.get('outcome', {}))
+                            )
+                            count += 1
+                            logger.debug(f"✅ 保存成功: signal_id={signal_id_uuid}")
+                        
+                        except asyncpg.UniqueViolationError as dup_err:
+                            logger.debug(f"⚠️ 重複記錄 (signal_id 已存在): {dup_err}")
+                            error_count += 1
+                        
+                        except Exception as e:
+                            logger.debug(f"⚠️ 保存 experience 失敗: {type(e).__name__}: {e}")
+                            error_count += 1
             
-            await conn.close()
-            logger.critical(f"💾 Saved {count} experiences to database")
+            logger.critical(f"💾 成功保存 {count} 筆 experience 到 PostgreSQL (失敗 {error_count} 筆)")
             return count
         
         except Exception as e:
-            logger.error(f"❌ Error saving to database: {e}", exc_info=True)
+            logger.error(f"❌ 保存到數據庫失敗: {e}", exc_info=True)
             return 0
+        
+        finally:
+            if conn:
+                try:
+                    await conn.close()
+                except:
+                    pass
+    
+    async def read_from_database(self, db_url: str, limit: int = 100) -> List[Dict]:
+        """
+        從 PostgreSQL 讀取已保存的 experience 記錄
+        
+        Args:
+            db_url: Database connection URL
+            limit: 最多讀取記錄數
+        
+        Returns:
+            List of experiences from database
+        """
+        conn = None
+        try:
+            conn = await asyncpg.connect(db_url)
+            
+            # SELECT 從 experience_buffer 讀取最新的記錄
+            rows = await conn.fetch("""
+                SELECT id, signal_id, features, outcome, created_at
+                FROM experience_buffer
+                ORDER BY created_at DESC
+                LIMIT $1
+            """, limit)
+            
+            result = []
+            for row in rows:
+                try:
+                    experience = {
+                        'id': row['id'],
+                        'signal_id': str(row['signal_id']) if row['signal_id'] else None,
+                        'features': row['features'] if isinstance(row['features'], dict) else json.loads(row['features'] or '{}'),
+                        'outcome': row['outcome'] if isinstance(row['outcome'], dict) else json.loads(row['outcome'] or '{}'),
+                        'created_at': row['created_at']
+                    }
+                    result.append(experience)
+                except Exception as e:
+                    logger.debug(f"⚠️ 解析記錄失敗: {e}")
+            
+            logger.info(f"📖 從 PostgreSQL 讀取 {len(result)} 筆 experience")
+            return result
+        
+        except Exception as e:
+            logger.error(f"❌ 從數據庫讀取失敗: {e}", exc_info=True)
+            return []
+        
+        finally:
+            if conn:
+                try:
+                    await conn.close()
+                except:
+                    pass
+    
+    async def get_database_stats(self, db_url: str) -> Dict:
+        """
+        獲取 PostgreSQL experience_buffer 表的統計信息
+        
+        Args:
+            db_url: Database connection URL
+        
+        Returns:
+            Dictionary with statistics
+        """
+        conn = None
+        try:
+            conn = await asyncpg.connect(db_url)
+            
+            stats = await conn.fetchrow("""
+                SELECT
+                    COUNT(*) as total_records,
+                    COUNT(CASE WHEN outcome IS NOT NULL THEN 1 END) as records_with_outcome,
+                    COUNT(CASE WHEN features IS NOT NULL THEN 1 END) as records_with_features,
+                    MAX(created_at) as latest_record,
+                    MIN(created_at) as oldest_record
+                FROM experience_buffer
+            """)
+            
+            return dict(stats) if stats else {}
+        
+        except Exception as e:
+            logger.error(f"❌ 獲取統計信息失敗: {e}", exc_info=True)
+            return {}
+        
+        finally:
+            if conn:
+                try:
+                    await conn.close()
+                except:
+                    pass
     
     async def clear(self) -> None:
         """Clear all experiences from buffer"""
