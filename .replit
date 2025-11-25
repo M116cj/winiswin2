@@ -1,4 +1,4 @@
-modules = ["python-3.11", "postgresql-16"]
+modules = ["bash", "python-3.11"]
 [agent]
 expertMode = true
 
@@ -16,15 +16,18 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Trading Bot (Supervisord)"
+args = "Trading Bot"
 
 [[workflows.workflow]]
-name = "Trading Bot (Supervisord)"
+name = "Trading Bot"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "bash start.sh"
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [[ports]]
 localPort = 8080
