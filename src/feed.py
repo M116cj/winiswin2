@@ -299,11 +299,14 @@ async def main():
                     logger.critical(f"✅ Connected to Binance WebSocket (attempt {reconnect_count + 1})")
                     reconnect_count = 0  # Reset on successful connection
                     candle_count = 0
+                    invalid_candle_count = 0
+                    message_count = 0
                     
                     while True:
                         try:
                             # 增加超時時間為 45s，允許短暫的網絡波動
                             message = await asyncio.wait_for(websocket.recv(), timeout=45)
+                            message_count += 1
                             data = json.loads(message)
                             
                             # Extract kline data
@@ -334,6 +337,12 @@ async def main():
                                     ring_buffer.write_candle(safe_candle)
                                     write_cursor_after = ring_buffer._get_cursors()[0]
                                     candle_count += 1
+                                    
+                                    # 📊 Diagnostic: Log every 10 candles
+                                    if candle_count % 10 == 0:
+                                        logger.critical(f"📊 Feed: {candle_count} valid candles written to Ring buffer | {message_count} messages received | {invalid_candle_count} rejected")
+                                else:
+                                    invalid_candle_count += 1
                                     
                                     # 🤖 Update virtual trading market prices with REAL data
                                     try:

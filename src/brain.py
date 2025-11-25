@@ -337,44 +337,41 @@ async def run_brain() -> None:
                 await asyncio.sleep(0.001)
                 continue
             
-            pending = ring_buffer.pending_count()
-            
-            if pending > 0:
-                last_pending_log = pending  # Update tracking
-                # Read generator
-                for candle in ring_buffer.read_new():
-                    if candle is None:
-                        break
+            # ✅ FIXED: Don't check pending_count - always try to read!
+            # Ring buffer will return empty generator if no data
+            candle_read_count = 0
+            for candle in ring_buffer.read_new():
+                if candle is None:
+                    break
+                
+                try:
+                    # Measure latency
+                    write_time = candle[0] / 1000.0  # Convert ms to seconds
+                    read_time = time()
+                    latency_us = (read_time - write_time) * 1_000_000
                     
-                    try:
-                        # Measure latency
-                        write_time = candle[0] / 1000.0  # Convert ms to seconds
-                        read_time = time()
-                        latency_us = (read_time - write_time) * 1_000_000
-                        
-                        latencies.append(latency_us)
-                        
-                        # Track which symbol this candle belongs to (round-robin)
-                        current_symbol = _symbols[symbol_index % len(_symbols)]
-                        symbol_index += 1
-                        
-                        # Process candle (no need to pass candles_by_tf - it's fetched from buffer)
-                        await process_candle(candle, current_symbol)
-                        
-                        candle_count += 1
-                        
-                        if candle_count % 1000 == 0:
-                            avg_latency = np.mean(latencies[-1000:])
-                            remaining_pending = ring_buffer.pending_count()
-                            logger.critical(f"📊 Brain: {candle_count} candles | {len(_symbols)} symbols | Latency: {avg_latency:.1f}µs | Remaining Pending: {remaining_pending}")
-                    except Exception as e:
-                        logger.error(f"Error processing candle: {e}", exc_info=True)
-                        continue
-            else:
-                # No pending candles, yield to other tasks
-                if last_pending_log > 0:
-                    logger.critical(f"⏳ Brain waiting for data... (pending=0)")
-                    last_pending_log = 0
+                    latencies.append(latency_us)
+                    
+                    # Track which symbol this candle belongs to (round-robin)
+                    current_symbol = _symbols[symbol_index % len(_symbols)]
+                    symbol_index += 1
+                    
+                    # Process candle (no need to pass candles_by_tf - it's fetched from buffer)
+                    await process_candle(candle, current_symbol)
+                    
+                    candle_count += 1
+                    candle_read_count += 1
+                    
+                    if candle_count % 1000 == 0:
+                        avg_latency = np.mean(latencies[-1000:])
+                        remaining_pending = ring_buffer.pending_count()
+                        logger.critical(f"📊 Brain: {candle_count} candles | {len(_symbols)} symbols | Latency: {avg_latency:.1f}µs | Remaining Pending: {remaining_pending}")
+                except Exception as e:
+                    logger.error(f"Error processing candle: {e}", exc_info=True)
+                    continue
+            
+            # If no candles read, yield to other tasks
+            if candle_read_count == 0:
                 await asyncio.sleep(0.001)
     
     except KeyboardInterrupt:

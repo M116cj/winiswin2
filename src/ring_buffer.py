@@ -101,6 +101,10 @@ class RingBuffer:
             pending = write_cursor - read_cursor
             if pending < 0:
                 pending = 0
+            # 🔍 Diagnostic: Log cursor state
+            if pending > 0 and not hasattr(self, '_last_pending_log'):
+                logger.critical(f"🔍 RingBuffer pending_count: w={write_cursor}, r={read_cursor}, pending={pending}")
+                self._last_pending_log = pending
             return pending
         except Exception as e:
             logger.error(f"Error getting pending count: {e}")
@@ -109,11 +113,14 @@ class RingBuffer:
     def read_new(self):
         """Generator to read new candles from buffer"""
         try:
+            read_count = 0
             while True:
                 write_cursor, read_cursor = self._get_cursors()
                 
                 if read_cursor >= write_cursor:
                     # No new data
+                    if read_count > 0:
+                        logger.critical(f"✅ read_new() delivered {read_count} candles (w={write_cursor}, r={read_cursor})")
                     break
                 
                 # Calculate position in buffer
@@ -128,9 +135,11 @@ class RingBuffer:
                     try:
                         candle = struct.unpack('dddddd', candle_data)
                         yield candle
+                        read_count += 1
                         
-                        # Increment read cursor
-                        self._set_cursors(write_cursor, read_cursor + 1)
+                        # Increment read cursor - MUST refresh write_cursor!
+                        new_write_cursor, _ = self._get_cursors()
+                        self._set_cursors(new_write_cursor, read_cursor + 1)
                     except struct.error:
                         logger.error("Failed to unpack candle data")
                         break
