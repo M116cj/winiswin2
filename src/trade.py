@@ -510,13 +510,24 @@ async def _check_risk(signal: Dict) -> None:
                 signal_id = signal.get('signal_id', str(uuid.uuid4()))
                 timestamp = int(signal.get('timestamp', time.time()) * 1000)
                 
-                # Store signal details in patterns JSONB
+                # Store signal details in patterns JSONB + 12 ML FEATURES
+                # Extract features from signal.features or signal directly
+                features = signal.get('features', {})
                 patterns_data = {
                     'direction': direction,
                     'strength': signal.get('strength', 0.5),
                     'entry_price': entry_price,
                     'timeframe_analysis': signal.get('timeframe_analysis', {}),
-                    'signal_id': signal_id
+                    'signal_id': signal_id,
+                    # ✅ 12 個 ML 特徵
+                    'confidence': signal.get('confidence', features.get('confidence', 0.65)),
+                    'fvg': signal.get('fvg', features.get('fvg', 0.5)),
+                    'liquidity': signal.get('liquidity', features.get('liquidity', 0.5)),
+                    'rsi': signal.get('rsi', features.get('rsi', 50)),
+                    'atr': signal.get('atr', features.get('atr', 0.02)),
+                    'macd': signal.get('macd', features.get('macd', 0)),
+                    'bb_width': signal.get('bb_width', features.get('bb_width', 0)),
+                    'position_size_pct': signal.get('position_size_pct', features.get('position_size_pct', 0.01))
                 }
                 
                 await conn.execute("""
@@ -557,6 +568,8 @@ async def _check_risk(signal: Dict) -> None:
             # Convert LONG/SHORT to BUY/SELL
             side = 'BUY' if direction.upper() in ('LONG', 'BUY') else 'SELL'
             
+            # Extract all 12 ML features for virtual trading
+            features = signal.get('features', {})
             virtual_order = {
                 'symbol': symbol,
                 'side': side,
@@ -564,7 +577,15 @@ async def _check_risk(signal: Dict) -> None:
                 'quantity': position_size,
                 'entry_price': entry_price,
                 'tp_pct': tp_pct,
-                'sl_pct': sl_pct
+                'sl_pct': sl_pct,
+                # ✅ 12 個 ML 特徵
+                'fvg': signal.get('fvg', features.get('fvg', 0.5)),
+                'liquidity': signal.get('liquidity', features.get('liquidity', 0.5)),
+                'rsi': signal.get('rsi', features.get('rsi', 50)),
+                'atr': signal.get('atr', features.get('atr', 0.02)),
+                'macd': signal.get('macd', features.get('macd', 0)),
+                'bb_width': signal.get('bb_width', features.get('bb_width', 0)),
+                'position_size_pct': signal.get('position_size_pct', features.get('position_size_pct', 0.01))
             }
             
             success = await open_virtual_position(virtual_order)
@@ -601,7 +622,8 @@ async def _check_risk(signal: Dict) -> None:
             await bus.publish(Topic.ORDER_REQUEST, order)
             
             # 🎓 VIRTUAL LEARNING: Open virtual position (no restrictions)
-            # ✅ Include percentage stop-loss and take-profit
+            # ✅ Include percentage stop-loss and take-profit + 12 ML features
+            features = signal.get('features', {})
             virtual_order = {
                 'symbol': symbol,
                 'side': 'BUY',
@@ -609,7 +631,15 @@ async def _check_risk(signal: Dict) -> None:
                 'quantity': position_size,
                 'entry_price': entry_price,  # 🎯 Real market price
                 'tp_pct': tp_pct,  # Take profit %
-                'sl_pct': sl_pct   # Stop loss %
+                'sl_pct': sl_pct,  # Stop loss %
+                # ✅ 12 個 ML 特徵
+                'fvg': signal.get('fvg', features.get('fvg', 0.5)),
+                'liquidity': signal.get('liquidity', features.get('liquidity', 0.5)),
+                'rsi': signal.get('rsi', features.get('rsi', 50)),
+                'atr': signal.get('atr', features.get('atr', 0.02)),
+                'macd': signal.get('macd', features.get('macd', 0)),
+                'bb_width': signal.get('bb_width', features.get('bb_width', 0)),
+                'position_size_pct': signal.get('position_size_pct', features.get('position_size_pct', 0.01))
             }
             await open_virtual_position(virtual_order)
             return
