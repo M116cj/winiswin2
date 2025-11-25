@@ -87,6 +87,7 @@ class UnifiedDatabaseManager:
             logger.debug("✅ account_state index created")
             
             # Create signals table (if not exists)
+            # ✅ P0 修復: 新增特徵欄位用於動態特徵計算
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS signals (
                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -95,7 +96,14 @@ class UnifiedDatabaseManager:
                     patterns JSONB,
                     position_size DOUBLE PRECISION,
                     timestamp BIGINT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    -- ✅ P0 新增特徵欄位 (動態計算，不再硬編碼)
+                    rsi NUMERIC DEFAULT NULL,
+                    macd NUMERIC DEFAULT NULL,
+                    bb_width NUMERIC DEFAULT NULL,
+                    atr NUMERIC DEFAULT NULL,
+                    fvg NUMERIC DEFAULT NULL,
+                    liquidity NUMERIC DEFAULT NULL
                 )
             """)
             logger.debug("✅ signals table ready")
