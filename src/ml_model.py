@@ -103,7 +103,7 @@ class MLModel:
         Returns:
             True if training successful
         """
-        if not HAS_SKLEARN or not self.model:
+        if not HAS_SKLEARN or self.model is None:
             logger.warning("⚠️ Training skipped: scikit-learn not available")
             return False
         
@@ -190,7 +190,7 @@ class MLModel:
         Returns:
             Win probability (0.0 to 1.0)
         """
-        if not HAS_SKLEARN or not self.is_trained or not self.model:
+        if not HAS_SKLEARN or not self.is_trained or self.model is None:
             # Return signal's own confidence if model not trained
             return signal_data.get('confidence', 0.5)
         

@@ -1,0 +1,46 @@
+# Role
+你是資深的 Python 量化交易系統架構師與機器學習工程師。
+
+# Context
+我們正在運行一個基於 Reinforcement Learning 的加密貨幣交易系統。根據最新的系統健康檢查報告，我們發現了數個 P0 級別的阻斷性問題，導致 ML 模型無法訓練，且特徵數據（Features）嚴重損壞。
+
+# Critical Issues (P0)
+1. **ML 模型崩潰**: `src/ml_model.py` 中檢查模型狀態的邏輯錯誤，導致 `AttributeError: 'RandomForestClassifier' object has no attribute 'estimators_'`。
+2. **特徵計算無效 (RSI=50, MACD=0)**: 絕大多數信號的特徵值被硬編碼或使用了無效的預設值（RSI 恆定 50, MACD 恆定 0），導致數據無信息量。
+3. **數據覆蓋率低**: 只有 18.6% 的信號有特徵數據，原因是 `src/brain.py` 對歷史 K 線長度要求過高（需 50+），且系統啟動時缺乏預熱。
+
+# Task
+請執行以下修復計劃，優先解決 P0 問題，並清理損壞的數據。
+
+## Step 1: 修復 ML 模型檢查邏輯 (src/ml_model.py)
+- **問題定位**: 在 `train()` 或 `predict()` 方法中，代碼使用了 `if not self.model:` 來檢查模型是否存在。對於 scikit-learn 模型，這會觸發 `__len__` 並導致崩潰。
+- **修復動作**:
+  - 將所有 `if not self.model:` 或類似檢查改為 `if self.model is None:`。
+  - 確保在 `__init__` 中顯式將 `self.model` 初始化為 `None`。
+
+## Step 2: 修復特徵計算與指標邏輯 (src/brain.py & src/utils/indicators.py)
+- **問題定位**: 特徵值（RSI, MACD）在資料庫中呈現靜態值（50 和 0），且因 K 線不足導致大部分計算跳過。
+- **修復動作**:
+  - **降低門檻**: 在 `process_candle` 中，將計算特徵所需的最小 K 線數量從 50 降低到 `min_required = 20` (足以計算 RSI-14)。
+  - **修復計算**: 檢查 `calculate_features` 函數。確保在使用 `pandas_ta` 或 `talib` 計算失敗時，不要默默返回預設值（50/0），而是應該返回 `None` 或拋出警告，避免髒數據進入資料庫。
+  - **強制動態**: 確保 RSI 和 MACD 是基於傳入的 `candles` 動態計算的。
+
+## Step 3: 數據庫清理與重置 (SQL / Script)
+- **現狀**: `signals` 表中有 60,000+ 條無效數據，`experience_buffer` 幾乎為空。
+- **修復動作**:
+  - 提供一個 SQL 腳本或 Python 函數，執行以下操作（請小心操作，這會清除歷史數據）：
+    1. `DELETE FROM signals WHERE rsi = 50 AND macd = 0;` (清除無效特徵信號)
+    2. 或者，如果無法區分，建議 `TRUNCATE TABLE signals;` 和 `TRUNCATE TABLE experience_buffer;` 重置學習環境。
+    3. 清除 `ml_models` 表中的無效記錄。
+
+## Step 4: 增強日誌與驗證 (src/brain.py)
+- **修復動作**:
+  - 在 `calculate_features` 中添加 Debug Log，打印計算出的 RSI 和 MACD 值（例如：`logger.debug(f"Calculated RSI: {rsi}, MACD: {macd}")`）。
+  - 確保系統啟動時，如果有「數據預熱（Warmup）」機制，確保它在生成信號前先加載足夠的歷史 K 線。
+
+# Definition of Done
+1. 運行系統後，不再出現 `AttributeError`。
+2. 新生成的信號在 `signals` 表中，RSI 值應在 0-100 之間波動（不等於 50），MACD 不等於 0。
+3. `experience_buffer` 開始正常積累數據。
+
+請按順序提供修改後的代碼塊和 SQL 清理指令。

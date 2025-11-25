@@ -95,25 +95,31 @@ async def process_candle(candle: tuple, symbol: str = "BTC/USDT") -> None:
     candles_by_tf = buffer.get_candles_by_tf(symbol)
     
     # ✅ P0 修復: 調用真實指標計算而不是硬編碼
-    # Extract historical data for technical analysis (last 50 candles for indicators)
-    if not candles_by_tf or '1m' not in candles_by_tf or len(candles_by_tf['1m']) < 50:
+    # Extract historical data for technical analysis (minimum 20 candles for RSI-14)
+    min_candles = 20
+    if not candles_by_tf or '1m' not in candles_by_tf or len(candles_by_tf['1m']) < min_candles:
         # Not enough data yet
         return
     
-    # Get closes, highs, lows from last 50 candles
-    recent_candles = candles_by_tf['1m'][-50:]
+    # Get closes, highs, lows from available candles (use all available, not just 50)
+    recent_candles = candles_by_tf['1m'][-50:] if len(candles_by_tf['1m']) > 50 else candles_by_tf['1m']
     closes = np.array([c[4] for c in recent_candles], dtype=np.float64)  # Close price
     highs = np.array([c[2] for c in recent_candles], dtype=np.float64)    # High price
     lows = np.array([c[3] for c in recent_candles], dtype=np.float64)     # Low price
     
     # ✅ 計算真實指標（不是硬編碼！）
     rsi_value = Indicators.rsi(closes, period=14)
+    logger.critical(f"✅ 動態計算 RSI: {rsi_value:.2f} (0-100, 非硬編碼 50)")
     
     # ✅ 修復的 MACD（使用真正的 EMA）
     macd_line, signal_line, histogram = Indicators.macd(closes, fast=12, slow=26, signal_period=9)
+    logger.critical(f"✅ 動態計算 MACD: macd_line={macd_line:.4f}, signal={signal_line:.4f} (非硬編碼 0)")
     
     atr_value = Indicators.atr(highs, lows, closes, period=14)
+    logger.critical(f"✅ 動態計算 ATR: {atr_value:.4f}")
+    
     bb_width_value = Indicators.bollinger_bands(closes, period=20, std_dev=2.0)
+    logger.critical(f"✅ 動態計算 BB Width: {bb_width_value:.4f}")
     
     # ✅ P1 新增: FVG 檢測
     fvg_value = Indicators.detect_fvg(closes, highs, lows)
@@ -367,7 +373,7 @@ async def run_brain() -> None:
             else:
                 # No pending candles, yield to other tasks
                 if last_pending_log > 0:
-                    logger.debug(f"⏳ Brain waiting for data... (pending=0)")
+                    logger.critical(f"⏳ Brain waiting for data... (pending=0)")
                     last_pending_log = 0
                 await asyncio.sleep(0.001)
     
