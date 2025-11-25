@@ -33,6 +33,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ✅ Railway 日誌過濾
+from src.utils.railway_logger import setup_railway_logger
+setup_railway_logger(logger)
+
 # Global state
 processes: List[multiprocessing.Process] = []
 shutdown_flag = False

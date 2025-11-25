@@ -320,8 +320,13 @@ async def train_ml_with_virtual_data(ml_model) -> bool:
         success = await ml_model.train(training_data)
         
         if success:
+            # 📊 Railway 日誌: 模型累積分數 + 學習數量
+            total_reward = sum(t.get('reward_score', 0) for t in training_data)
+            learning_count = len(training_data)
+            
             logger.critical(
-                f"✅ ML 模型訓練成功: {len(training_data)} 筆虛擁樣本"
+                f"✅ ML 模型訓練成功 | Model learning count: {learning_count} samples | "
+                f"Model cumulative score: {total_reward:.1f}"
             )
         
         return success

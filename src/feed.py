@@ -10,7 +10,15 @@ import asyncio
 import math
 import time as time_module
 
+# ✅ Railway 日誌過濾
+from src.utils.railway_logger import setup_railway_logger
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - [Feed] - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
+setup_railway_logger(logger)
 
 # Rate limiter for poison pill warnings (avoid spam)
 _last_poison_warning = 0.0

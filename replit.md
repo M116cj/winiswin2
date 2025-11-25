@@ -15,7 +15,37 @@ Do not make changes to the file `Y`.
 
 ## Recent Updates (Nov 25, 2025)
 
-### ✅ **PostgreSQL 資料庫最適化 - 12 個 ML 特徵完整記錄** (Latest - Nov 25, 03:30)
+### ✅ **Railway 日誌過濾器配置 - 精簡日誌顯示** (Latest - Nov 25, 04:00)
+- **需求**: 只在 Railway 日誌中顯示關鍵信息，其餘日誌被抑制
+- **實現方案**:
+  1. 建立 `src/utils/railway_logger.py` - 日誌過濾器（RailwayLogFilter 類）
+  2. 修改 4 個主進程添加過濾器：main.py, brain.py, feed.py, orchestrator.py
+  3. 配置關鍵詞過濾系統
+- **過濾規則**:
+  - ✅ 始終允許：ERROR 和 CRITICAL 級別的所有日誌
+  - ✅ 條件允許：包含特定關鍵詞的日誌（見下表）
+  - ❌ 被過濾：無關的 DEBUG、INFO 級別日誌
+- **允許的關鍵詞**:
+  - 模型累積分數：model cumulative, model score, 累積分數
+  - 模型學習數量：learning count, learning samples, 虛擁樣本
+  - Binance 倉位：binance, position, 倉位, order, execution
+  - 虛擁交易：virtual, 虛擁, 開倉, 平倉
+  - 系統狀態：account, 帳户
+- **修改文件**: `src/utils/railway_logger.py` (新建), `src/main.py`, `src/brain.py`, `src/feed.py`, `src/orchestrator.py`, `src/ml_virtual_integrator.py`
+- **驗證**:
+  - ✓ 日誌過濾器安裝到所有 4 個主進程
+  - ✓ 虛擁倉位日誌正確顯示
+  - ✓ Binance 交易執行日誌正確顯示
+  - ✓ 錯誤日誌保留並顯示
+  - ✓ ML 訓練日誌現在包含 "Model learning count" 和 "Model cumulative score"
+- **預期 Railway 日誌内容**:
+  - 模型累積分數示例: "Model cumulative score: 105.5"
+  - 學習數量示例: "Model learning count: 25 samples"
+  - 倉位狀態示例: "Position opened: BTC/USDT" 或 "❌ Failed to close BNB/USDT"
+  - 虛擁倉位: "🎓 Virtual position closed: ETH/USDT | ROI: +5%"
+  - 系統錯誤: "ERROR: Connection failed"
+
+### ✅ **PostgreSQL 資料庫最適化 - 12 個 ML 特徵完整記錄** (Nov 25, 03:30)
 - **問題**: 虛擁交易數據進入資料庫，但 12 個 ML 特徵缺失，無法被 ML 模型學習
 - **根本原因**: 
   - virtual_trades 表缺少 9 個技術指標欄位

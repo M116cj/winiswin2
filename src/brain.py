@@ -38,11 +38,15 @@ from src.percentage_return_model import PercentageReturnModel
 from src.position_sizing import PositionSizingFactory
 from src.capital_tracker import init_capital_tracker, get_capital_tracker, get_total_equity
 
+# ✅ Railway 日誌過濾
+from src.utils.railway_logger import setup_railway_logger
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - [Brain] - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+setup_railway_logger(logger)
 
 # Global symbols list (synchronized with feed process)
 _symbols: List[str] = []

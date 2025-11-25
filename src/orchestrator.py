@@ -6,11 +6,15 @@ Runs background tasks including system monitoring and automated maintenance
 import logging
 import asyncio
 
+# ✅ Railway 日誌過濾
+from src.utils.railway_logger import setup_railway_logger
+
 logging.basicConfig(
     level=logging.WARNING,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+setup_railway_logger(logger)
 
 
 async def main():
