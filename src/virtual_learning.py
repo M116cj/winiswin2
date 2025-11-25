@@ -195,7 +195,7 @@ async def open_virtual_position(signal: Dict) -> bool:
             except:
                 pass
         
-        # 🎯 提取 12 個 ML 特徵
+        # 🎯 提取 12 個 ML 特徵 ✅ 修復：同時支持 signal['features'] 和 signal 頂層字段
         patterns = signal.get('patterns', {})
         features = signal.get('features', patterns)
         if isinstance(features, str):
@@ -205,13 +205,15 @@ async def open_virtual_position(signal: Dict) -> bool:
             except:
                 features = {}
         
-        fvg = float(features.get('fvg', 0.5))
-        liquidity = float(features.get('liquidity', 0.5))
-        rsi = float(features.get('rsi', 50))
-        atr = float(features.get('atr', 0))
-        macd = float(features.get('macd', 0))
-        bb_width = float(features.get('bb_width', 0))
-        position_size_pct = signal.get('position_size_pct', 0.0065)
+        # ✅ 新增邏輯：先從 signal 頂層檢查，再從 features 檢查，最後使用默認值
+        # 這支持 Trade 進程傳遞的 virtual_order（頂層字段）和 Brain 發送的 signal（features 鍵）
+        fvg = float(signal.get('fvg', features.get('fvg', 0.5)))
+        liquidity = float(signal.get('liquidity', features.get('liquidity', 0.5)))
+        rsi = float(signal.get('rsi', features.get('rsi', 50)))
+        atr = float(signal.get('atr', features.get('atr', 0)))
+        macd = float(signal.get('macd', features.get('macd', 0)))
+        bb_width = float(signal.get('bb_width', features.get('bb_width', 0)))
+        position_size_pct = signal.get('position_size_pct', features.get('position_size_pct', 0.0065))
         
         # Insert position WITH features
         await conn.execute("""
