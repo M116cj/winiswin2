@@ -119,10 +119,10 @@ async def _ensure_virtual_positions_table():
 
 async def open_virtual_position(signal: Dict) -> bool:
     """
-    Open virtual position - SAVES TO POSTGRESQL FOR CROSS-PROCESS SHARING
+    ✅ FIXED: Open virtual position with ML features - SAVES TO POSTGRESQL FOR CROSS-PROCESS SHARING
     
     Args:
-        signal: {symbol, side, confidence, quantity, entry_price}
+        signal: {symbol, side, confidence, quantity, entry_price, patterns/features}
     
     Returns:
         True if position opened successfully
@@ -175,14 +175,34 @@ async def open_virtual_position(signal: Dict) -> bool:
             )
         """)
         
-        # Insert position
+        # 🎯 提取 12 個 ML 特徵
+        patterns = signal.get('patterns', {})
+        features = signal.get('features', patterns)
+        if isinstance(features, str):
+            import json
+            try:
+                features = json.loads(features)
+            except:
+                features = {}
+        
+        fvg = float(features.get('fvg', 0.5))
+        liquidity = float(features.get('liquidity', 0.5))
+        rsi = float(features.get('rsi', 50))
+        atr = float(features.get('atr', 0))
+        macd = float(features.get('macd', 0))
+        bb_width = float(features.get('bb_width', 0))
+        position_size_pct = signal.get('position_size_pct', 0.0065)
+        
+        # Insert position WITH features
         await conn.execute("""
             INSERT INTO virtual_positions 
-            (position_id, symbol, side, quantity, entry_price, entry_confidence, entry_time, tp_level, sl_level, status)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            (position_id, symbol, side, quantity, entry_price, entry_confidence, entry_time, 
+             tp_level, sl_level, status, confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
             ON CONFLICT (position_id) DO NOTHING
         """,
-            position_id, symbol, side, quantity, entry_price, confidence, entry_time, tp_level, sl_level, 'OPEN'
+            position_id, symbol, side, quantity, entry_price, confidence, entry_time, 
+            tp_level, sl_level, 'OPEN', confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct
         )
         
         await conn.close()
@@ -310,6 +330,7 @@ async def check_virtual_tp_sl() -> None:
                     _virtual_account['balance'] += pnl
                     _virtual_account['total_pnl'] += pnl
                 
+                # 🎯 提取 12 個 ML 特徵 (從已保存的信號)
                 closed_positions.append({
                     'position_id': pos['position_id'],
                     'symbol': symbol,
@@ -321,7 +342,16 @@ async def check_virtual_tp_sl() -> None:
                     'pnl': pnl,
                     'roi_pct': roi_pct,
                     'reward_score': reward_score,
-                    'entry_time': pos['entry_time']
+                    'entry_time': pos['entry_time'],
+                    # ✅ 新增: 12 個特徵
+                    'confidence': pos.get('confidence', 0.65),
+                    'fvg': pos.get('fvg', 0.5),
+                    'liquidity': pos.get('liquidity', 0.5),
+                    'rsi': pos.get('rsi', 50),
+                    'atr': pos.get('atr', 0),
+                    'macd': pos.get('macd', 0),
+                    'bb_width': pos.get('bb_width', 0),
+                    'position_size_pct': pos.get('position_size_pct', 0),
                 })
                 
                 logger.critical(
@@ -380,11 +410,13 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
         except Exception:
             pass  # Column already exists
         
-        # Insert closed trades with reward shaping data
+        # 🎯 Insert closed trades WITH all 12 ML features
         for trade in closed_positions:
             await conn.execute("""
-                INSERT INTO virtual_trades (position_id, symbol, side, quantity, entry_price, close_price, pnl, roi_pct, reward_score, reason)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                INSERT INTO virtual_trades 
+                (position_id, symbol, side, quantity, entry_price, close_price, pnl, roi_pct, reward_score, reason,
+                 confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
                 ON CONFLICT (position_id) DO NOTHING
             """,
                 trade['position_id'],
@@ -396,7 +428,16 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
                 trade['pnl'],
                 trade.get('roi_pct', 0),
                 trade.get('reward_score', 0),
-                trade['reason']
+                trade['reason'],
+                # ✅ 12 個特徵
+                trade.get('confidence', 0.65),
+                trade.get('fvg', 0.5),
+                trade.get('liquidity', 0.5),
+                trade.get('rsi', 50),
+                trade.get('atr', 0),
+                trade.get('macd', 0),
+                trade.get('bb_width', 0),
+                trade.get('position_size_pct', 0)
             )
         
         await conn.close()
