@@ -372,8 +372,10 @@ async def main():
                                                         VALUES ($1, $2, $3, $4, $5, $6, $7, '1m')
                                                     """, symbol, int(ts), float(o), float(h), float(l), float(c), float(v))
                                                     await conn.close()
+                                                else:
+                                                    logger.critical("❌ Market data: Failed to get database connection")
                                             except Exception as e:
-                                                logger.debug(f"Market data persistence: {e}")
+                                                logger.critical(f"❌ Market data persistence error: {e}", exc_info=True)
                                         
                                         # Store to Redis cache (fast access)
                                         try:
@@ -391,9 +393,9 @@ async def main():
                                                 await redis_client.set(f"market:{symbol}", market_data, ex=3600)  # 1hr TTL
                                                 await redis_client.close()
                                         except Exception as e:
-                                            logger.debug(f"Redis market data: {e}")
+                                            logger.critical(f"❌ Redis market data error: {e}", exc_info=True)
                                     except Exception as e:
-                                        logger.debug(f"Market data collection: {e}")
+                                        logger.critical(f"❌ Market data collection error: {e}", exc_info=True)
                                     
                                     if candle_count % 100 == 0:
                                         logger.info(f"📊 Feed: {candle_count} candles written to ring buffer")

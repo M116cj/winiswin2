@@ -508,7 +508,7 @@ async def _save_virtual_trades(closed_positions: List[Dict]) -> None:
             await integrator.add_virtual_trade(trade)
     
     except Exception as e:
-        logger.warning(f"⚠️ Failed to save virtual trades: {e}")
+        logger.critical(f"❌ Failed to save virtual trades: {e}", exc_info=True)
 
 
 async def get_virtual_state() -> Dict:

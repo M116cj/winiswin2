@@ -150,7 +150,7 @@ def initialize_system():
         if schema_result:
             logger.critical("✅ Database schema initialized successfully")
         else:
-            logger.warning("⚠️ Database schema initialization failed")
+            logger.critical("❌ CRITICAL: Database schema initialization returned False - check DATABASE_URL")
     except Exception as e:
         logger.critical(f"❌ Error initializing database: {e}", exc_info=True)
         sys.exit(1)
