@@ -198,19 +198,30 @@ class MLVirtualIntegrator:
         from src.data_formats import extract_ml_features
         from src.reward_shaping import get_sample_weight, get_label_from_score
         
-        # 構建完整的信號格式
+        # ✅ 使用虛擁交易中的實際特徵值 (不是默認值)
+        # 從虛擁交易中提取所有 12 個 ML 特徵
+        confidence = trade.get('confidence', 0.65)
+        fvg = trade.get('fvg', 0.5)
+        liquidity = trade.get('liquidity', 0.5)
+        rsi = trade.get('rsi', 50.0)
+        atr = trade.get('atr', 0.0)
+        macd = trade.get('macd', 0.0)
+        bb_width = trade.get('bb_width', 0.0)
+        position_size_pct = trade.get('position_size_pct', 0.01)
+        
+        # ✅ 構建完整的信號格式 - 使用虛擁交易中的實際 12 個 ML 特徵
         signal_data = {
-            'confidence': 0.65,  # Default confidence from virtual signals
+            'confidence': confidence,  # ✅ 使用虛擁交易中的實際 confidence
             'features': {
-                'confidence': 0.65,
-                'fvg': 1.0,
-                'liquidity': 0.8,
-                'rsi': 50,
-                'atr': 0,
-                'macd': 0,
-                'bb_width': 0,
+                'confidence': confidence,         # ✅ 實際值
+                'fvg': fvg,                       # ✅ 實際值
+                'liquidity': liquidity,           # ✅ 實際值
+                'rsi': rsi,                       # ✅ 實際值
+                'atr': atr,                       # ✅ 實際值
+                'macd': macd,                     # ✅ 實際值
+                'bb_width': bb_width,             # ✅ 實際值
                 'position_size': trade.get('quantity', 0),
-                'position_size_pct': 0.0065,  # 0.65% of 10k
+                'position_size_pct': position_size_pct,  # ✅ 實際值
             },
             'position_size': trade.get('quantity', 0),
         }
@@ -271,10 +282,11 @@ async def train_ml_with_virtual_data(ml_model) -> bool:
         db_url = get_database_url()
         conn = await asyncpg.connect(db_url)
         
-        # ✅ 直接從 PostgreSQL 讀取虛擁交易 (而不是依賴內存列表)
+        # ✅ 直接從 PostgreSQL 讀取虛擁交易 WITH 所有 12 個 ML 特徵
         virtual_trades = await conn.fetch("""
             SELECT position_id, symbol, side, quantity, entry_price, close_price, 
-                   pnl, roi_pct, reward_score, reason, entry_time, close_time
+                   pnl, roi_pct, reward_score, reason, entry_time, close_time,
+                   confidence, fvg, liquidity, rsi, atr, macd, bb_width, position_size_pct
             FROM virtual_trades
             WHERE roi_pct IS NOT NULL
             ORDER BY created_at DESC
